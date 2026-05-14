@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Datasets lourds
+Datasets/
+Datasets/**/*.tar.gz
+Datasets/**/*.gz
+Datasets/**/*.zip
+Datasets/**/*.rar
+Datasets/**/*.bz2
+Datasets/BGL/
+Datasets/DARPA_eval_b/
+Datasets/outside.tcpdump/
+Datasets/HDFS_1/
+Datasets/Extra.py
+
+# Fichiers volumineux
+*.evtx
+*.log
+Datasets/Dataset_csv/*.csv
+
+# Fichiers temporaires
+*.tmp
+*.temp
+*.swp
+*~
+.DS_Store
+
+# Sorties et résultats temporaires
+*.out
+output/
+results/
+temp/
+tmp/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Documentation / fichiers binaires cachés
+*.docx
+*.pdf
+*.zip
+
+# Virtualenv local
+.env
+.venv
