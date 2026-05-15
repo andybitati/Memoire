@@ -34,19 +34,37 @@ $knownLogs = Get-WinEvent -ListLog * -ErrorAction SilentlyContinue |
     Where-Object { $_.LogFilePath } |
     Select-Object LogName, LogFilePath, RecordCount, IsEnabled
 
+# Certains journaux proteges n'apparaissent pas dans Get-WinEvent -ListLog *
+# lorsqu'on n'est pas administrateur. Cette fonction reconstruit alors le nom
+# logique le plus probable a partir du nom du fichier:
+#   Security.evtx -> Security
+#   Microsoft-Windows-X%4Operational.evtx -> Microsoft-Windows-X/Operational
+function Get-FallbackLogName {
+    param([string]$FileName)
+
+    $baseName = [System.IO.Path]::GetFileNameWithoutExtension($FileName)
+    if ($baseName.Contains("%4")) {
+        return ($baseName -replace "%4", "/")
+    }
+    return $baseName
+}
+
 $manifest = foreach ($file in $recentFiles) {
     $matchedLog = $knownLogs | Where-Object {
         [System.IO.Path]::GetFileName($_.LogFilePath) -ieq $file.Name
     } | Select-Object -First 1
+
+    $logName = if ($matchedLog) { $matchedLog.LogName } else { Get-FallbackLogName -FileName $file.Name }
 
     [pscustomobject]@{
         FileName      = $file.Name
         FullName      = $file.FullName
         LastWriteTime = $file.LastWriteTime
         Length        = $file.Length
-        LogName       = if ($matchedLog) { $matchedLog.LogName } else { "" }
+        LogName       = $logName
         RecordCount   = if ($matchedLog) { $matchedLog.RecordCount } else { "" }
         IsEnabled     = if ($matchedLog) { $matchedLog.IsEnabled } else { "" }
+        LogNameSource = if ($matchedLog) { "Get-WinEvent -ListLog" } else { "Nom deduit du fichier" }
     }
 }
 

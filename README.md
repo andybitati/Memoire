@@ -127,6 +127,53 @@ python -m pip install python-evtx
 python -c "import sys; sys.path.insert(0, r'src\logminer'); import pipeline; print(pipeline.run_pipeline(r'C:\chemin\Security.evtx', r'data\processed', 'security_evtx.csv', debug=True))"
 ```
 
+## Vérifier Les Journaux Windows Récents
+
+Le dossier Windows utilisé pour les journaux actifs est:
+
+```text
+C:\Windows\System32\winevt\Logs
+```
+
+Un script a été ajouté pour travailler avec ce dossier sans prendre tous les journaux du système. Il sélectionne uniquement les fichiers `.evtx` modifiés pendant les deux derniers jours, puis exporte les événements lisibles vers `data/processed`.
+
+Commande à lancer depuis la racine du projet:
+
+```powershell
+cd F:\Cours\TFE
+powershell -ExecutionPolicy Bypass -File scripts\export_recent_windows_events.ps1 -Days 2
+```
+
+Fichiers produits:
+
+- `data/processed/windows_recent_manifest.csv`: liste des fichiers `.evtx` sélectionnés, avec leur date, taille et nom logique Windows.
+- `data/processed/windows_recent_events.csv`: événements extraits, au format CSV avec séparateur `;`.
+- `data/processed/windows_recent_failures.csv`: journaux non lus et raison de l'échec.
+
+Lors de la vérification du 15/05/2026, le script a sélectionné `114` fichiers `.evtx` modifiés dans les deux derniers jours. Il a exporté `23402` événements lisibles depuis `95` journaux. `19` journaux ont demandé des droits administrateur ou un accès Windows plus élevé.
+
+Exemples de journaux protégés rencontrés:
+
+- `Security.evtx`
+- `Microsoft-Windows-GroupPolicy%4Operational.evtx`
+- `Microsoft-Windows-SMBServer%4Operational.evtx`
+- `Microsoft-Windows-SMBClient%4Operational.evtx`
+- `Microsoft-Windows-Hyper-V-Hypervisor-Admin.evtx`
+
+Ces fichiers ne doivent pas être ignorés: ils sont importants pour la sécurité. Pour les exploiter plus tard, il faudra ouvrir PowerShell en administrateur et copier/exporter les journaux protégés dans `data/raw/windows_events/`, puis traiter les copies.
+
+Exemple prévu pour plus tard, en console administrateur:
+
+```powershell
+cd F:\Cours\TFE
+New-Item -ItemType Directory -Force data\raw\windows_events
+wevtutil epl Security data\raw\windows_events\Security.evtx
+wevtutil epl System data\raw\windows_events\System.evtx
+wevtutil epl Application data\raw\windows_events\Application.evtx
+```
+
+Ensuite, les copies pourront être analysées avec le pipeline Python ou avec un script dédié.
+
 ## Extraire Le Texte D'un PDF
 
 ```powershell
@@ -165,6 +212,18 @@ Déjà réparé et utilisable:
 - `src/logminer/io/csv_writer.py`
 - `src/logminer/parsers/windows_event.py`
 - `src/logminer/writer.py`
+- `scripts/export_recent_windows_events.ps1`
+- `scripts/process_recent_windows_events.py`
+
+Avancées du 15/05/2026:
+
+- réorganisation du dépôt autour de `src/`, `docs/`, `scripts/`, `data/` et `archive/`;
+- ajout de `requirements.txt`;
+- ajout d'un script PowerShell pour vérifier les journaux Windows récents;
+- vérification réelle sur `C:\Windows\System32\winevt\Logs` avec uniquement les fichiers des deux derniers jours;
+- production de CSV dans `data/processed`;
+- identification claire des journaux qui exigent une console administrateur;
+- décision de traiter ces journaux protégés plus tard par copie/export administrateur.
 
 À compléter/réparer ensuite:
 
@@ -172,9 +231,11 @@ Déjà réparé et utilisable:
 - `src/logminer/normalizers/categorizer.py`;
 - `src/logminer/normalizers/runner.py`;
 - tests sur HDFS, BGL, Apache, Syslog et EVTX réel.
+- copie/export des journaux Windows protégés en mode administrateur.
 
 ## Prochaines Étapes
 
+- Exporter les journaux Windows protégés avec une console administrateur.
 - Stabiliser tous les parseurs.
 - Finaliser la catégorisation sécurité.
 - Générer des features ML depuis les CSV.
