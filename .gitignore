@@ -26,6 +26,8 @@ Thumbs.db
 
 # Datasets lourds
 Datasets/
+data/raw/
+data/processed/
 Datasets/**/*.tar.gz
 Datasets/**/*.gz
 Datasets/**/*.zip
@@ -60,7 +62,9 @@ tmp/
 tools/
 recovered_disasm/
 recovered_py/
+recovered_pycdc/
 recovered_pycdc/examples/out/
+archive/recovery_artifacts/
 
 # Jupyter
 .ipynb_checkpoints/
@@ -69,6 +73,7 @@ recovered_pycdc/examples/out/
 # Documentation / fichiers binaires cachés
 *.docx
 *.pdf
+!docs/**/*.pdf
 *.zip
 
 # Virtualenv local

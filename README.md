@@ -1,125 +1,143 @@
 # TFE - Détection d'anomalies dans les journaux systèmes et réseaux
 
-Ce dépôt contient les documents, jeux de données, scripts et prototypes liés au mémoire:
+Ce dépôt accompagne le mémoire:
 
 **Détection Autonome et Distribuée d'Anomalies dans les Journaux Systèmes et Réseaux à l'aide d'Agents Intelligents Multi-Tâches**.
 
-L'objectif général est de construire un système capable de collecter différents types de journaux, les parser, les normaliser, les catégoriser, puis les préparer pour des agents IA de détection d'anomalies.
+Le but est de construire progressivement un système capable de collecter des journaux hétérogènes, les parser, les normaliser, puis les préparer pour des agents IA de détection d'anomalies.
 
-## Objectif Du Projet
+## Structure Du Projet
 
-Le mémoire vise à traiter des journaux hétérogènes comme:
+```text
+TFE/
+├── README.md
+├── requirements.txt
+├── src/
+│   └── logminer/
+├── docs/
+│   ├── memoire/
+│   ├── references/
+│   └── recovery/
+├── examples/
+├── scripts/
+├── data/
+│   ├── raw/
+│   ├── processed/
+│   └── samples/
+└── archive/
+    └── recovery_artifacts/
+```
 
-- logs Linux/syslog;
-- journaux Windows Event Log;
-- logs Apache/Nginx;
-- captures réseau `pcap` ou sorties `tcpdump`;
-- datasets publics comme HDFS, BGL et DARPA;
-- formats sécurité comme CEF/LEEF;
-- logs JSON/JSONL et CloudTrail.
+Rôles des dossiers:
 
-Le travail actuel se concentre sur la première grande brique technique: **Logminer**, un pipeline de prétraitement qui transforme des logs bruts en CSV normalisé.
-
-## Architecture Prévue
-
-Le système final du mémoire est pensé comme une architecture multi-agents:
-
-- **Agent 1 - Collecte et parsing**: lit les logs bruts et détecte leur format.
-- **Agent 2 - Prétraitement et normalisation**: transforme les événements dans un schéma commun.
-- **Agent 3 - Détection d'anomalies**: applique des modèles comme Isolation Forest, Autoencoder, One-Class SVM ou LSTM léger.
-- **Agent 4 - Corrélation contextuelle**: relie plusieurs événements suspects.
-- **Agent 5 - Visualisation**: affiche les alertes, statistiques et anomalies dans un dashboard.
-
-Le code actuellement reconstruit prépare surtout les agents 1 et 2.
-
-## Structure Du Dépôt
-
-- `Memoire/`: documents de rédaction du mémoire.
-- `Documentation/`: références documentaires et normes utiles.
-- `Datasets/`: jeux de données ou fichiers bruts liés aux tests.
-- `Preprocessing/`: emplacement historique du module Logminer.
-- `recovered_pycdc/`: sources Python reconstruites depuis les fichiers `.pyc`.
-- `recovered_disasm/`: désassemblages complets des `.pyc`, utiles pour réparer les parties manquantes.
-- `recovered_py/`: anciennes sorties incomplètes de `decompyle3`; ne pas utiliser comme source principale.
-- `tools/`: outils utilisés pour la récupération, notamment `pycdc`.
-- `RECOVERY_README.md`: résumé de la récupération `.pyc -> .py`.
-- `requirements.txt`: dépendances Python à installer pour utiliser les scripts et préparer les étapes IA.
+- `src/logminer/`: code principal du pipeline de prétraitement des logs.
+- `docs/memoire/`: documents liés au mémoire.
+- `docs/references/`: articles, normes et PDF de référence.
+- `docs/recovery/`: notes sur la récupération des fichiers `.py` depuis les `.pyc`.
+- `examples/`: petits fichiers d'exemple pour tester rapidement le code.
+- `scripts/`: scripts utilitaires, par exemple extraction de texte PDF.
+- `data/raw/`: datasets bruts volumineux, non versionnés.
+- `data/processed/`: sorties de prétraitement, non versionnées.
+- `data/samples/`: petits échantillons locaux de test.
+- `archive/recovery_artifacts/`: artefacts de récupération à garder localement si nécessaire.
 
 ## Installation
 
-Créer/activer un environnement Python, puis installer les dépendances:
+Créer ou activer un environnement Python, puis installer les dépendances:
 
 ```powershell
 python -m pip install -r requirements.txt
 ```
 
-`python-evtx` sert uniquement à lire directement les fichiers `.evtx`. Si cette dépendance pose problème, il est possible d'exporter les journaux Windows en XML et de les traiter avec le parseur Windows Event.
+La dépendance `python-evtx` sert uniquement à lire les fichiers Windows `.evtx`. Si elle pose problème, il est possible d'exporter les journaux Windows en XML et de les traiter sans dépendance supplémentaire.
 
-## État De La Récupération
+## Logminer
 
-Des fichiers Python originaux avaient disparu et il ne restait que des `.pyc`. La récupération a été faite avec `pycdc`, car `decompyle3` et `uncompyle6` ne supportaient pas correctement les bytecodes Python 3.11.
+`src/logminer` est la brique de prétraitement du mémoire. Elle couvre principalement:
 
-Les fichiers reconstruits les plus importants sont dans:
+- Agent 1: collecte et parsing des logs.
+- Agent 2: prétraitement et normalisation.
+
+Flux général:
 
 ```text
-recovered_pycdc/Preprocessing/Logminer
+logs bruts -> détection du format -> parseur spécialisé -> CSV normalisé -> modèles IA/dashboard
 ```
 
-Fichiers déjà réparés et commentés:
+### Composants
 
-- `pipeline.py`
-- `io/csv_writer.py`
-- `writer.py`
-- `parsers/windows_event.py`
-- `detectors/file_detector.py`
-- `detectors/__init__.py`
+- `pipeline.py`: orchestre le traitement complet d'un fichier ou dossier.
+- `detectors/file_detector.py`: détecte le format d'un log (`syslog`, `win_event`, `apache`, `hdfs`, `bgl`, `pcap`, etc.).
+- `io/csv_writer.py`: écrit un CSV conforme au schéma commun.
+- `schema/columns.py`: définit les colonnes normalisées.
+- `parsers/`: contient les parseurs spécialisés par format.
+- `normalizers/`: prépare l'harmonisation des sévérités et la catégorisation sécurité.
+- `writer.py`: compatibilité avec les parseurs récupérés qui importent `emit`.
 
-Certains autres parseurs récupérés peuvent encore contenir des zones incomplètes. Quand un parseur spécialisé ne fonctionne pas, le pipeline peut basculer vers un parseur de secours `unknown` pour conserver au moins les messages bruts.
+## Utiliser Le Pipeline
 
-## Composants Logminer
-
-### `pipeline.py`
-
-Rôle: orchestrer le traitement complet.
-
-Il reçoit un fichier ou un dossier, détecte le type de chaque log, charge le parseur correspondant, puis écrit les résultats dans un CSV normalisé.
-
-Exemple:
+Tester avec l'exemple Windows Event fourni:
 
 ```powershell
-python -c "import sys; sys.path.insert(0, r'recovered_pycdc\Preprocessing\Logminer'); import pipeline; print(pipeline.run_pipeline(r'recovered_pycdc\examples\windows_event_sample.xml', r'recovered_pycdc\examples\out', 'windows_events.csv', debug=True))"
+python -c "import sys; sys.path.insert(0, r'src\logminer'); import pipeline; print(pipeline.run_pipeline(r'examples\windows_event_sample.xml', r'data\processed', 'windows_events.csv', debug=True))"
 ```
 
-### `detectors/file_detector.py`
+Sortie attendue:
 
-Rôle: reconnaître le format d'un fichier de log.
+```text
+data/processed/windows_events.csv
+```
 
-Fonctions principales:
-
-- `detect_kind(path)`: retourne le type détecté, par exemple `win_event`, `syslog`, `apache`, `hdfs`, `bgl`, `pcap`, `jsonl`, `unknown`.
-- `detect_file(input_path)`: retourne le premier fichier exploitable avec son type.
-- `iter_files(input_path)`: parcourt un fichier ou un dossier récursivement.
-
-Tester uniquement la détection:
+Traiter un fichier unique:
 
 ```powershell
-python -c "import sys; sys.path.insert(0, r'recovered_pycdc\Preprocessing\Logminer'); from detectors.file_detector import detect_kind; print(detect_kind(r'recovered_pycdc\examples\windows_event_sample.xml'))"
+python -c "import sys; sys.path.insert(0, r'src\logminer'); import pipeline; print(pipeline.run_pipeline(r'chemin\vers\fichier.log', r'data\processed', 'dataset.csv', debug=True))"
 ```
 
-### `io/csv_writer.py`
+Traiter un dossier:
 
-Rôle: écrire les événements dans un CSV propre.
+```powershell
+python -c "import sys; sys.path.insert(0, r'src\logminer'); import pipeline; print(pipeline.run_pipeline(r'data\raw', r'data\processed', 'dataset.csv', debug=True))"
+```
 
-Il garantit que toutes les lignes respectent le même schéma, même si les parseurs ne fournissent pas tous les champs.
+## Tester La Détection De Format
 
-Fonctions principales:
+```powershell
+python -c "import sys; sys.path.insert(0, r'src\logminer'); from detectors.file_detector import detect_kind; print(detect_kind(r'examples\windows_event_sample.xml'))"
+```
 
-- `open_writer(base_out, part=0, sep=';')`: ouvre un CSV et écrit l'en-tête.
-- `emit(writer, base)`: normalise un événement et écrit une ligne.
+Résultat attendu:
 
-### `schema/columns.py`
+```text
+win_event
+```
 
-Rôle: définir le contrat de données.
+## Utiliser Le Parseur Windows Event
+
+Pour un export XML Windows Event:
+
+```powershell
+python -c "import sys; sys.path.insert(0, r'src\logminer'); import pipeline; print(pipeline.run_pipeline(r'C:\chemin\security.xml', r'data\processed', 'windows_security.csv', debug=True))"
+```
+
+Pour un fichier `.evtx`:
+
+```powershell
+python -m pip install python-evtx
+python -c "import sys; sys.path.insert(0, r'src\logminer'); import pipeline; print(pipeline.run_pipeline(r'C:\chemin\Security.evtx', r'data\processed', 'security_evtx.csv', debug=True))"
+```
+
+## Extraire Le Texte D'un PDF
+
+```powershell
+python scripts\extract_pdf.py docs\memoire\mon_memoire.pdf
+```
+
+Si aucun PDF n'est donné, le script utilise le premier PDF trouvé dans `docs/memoire`.
+
+## Données Produites
+
+Les CSV produits suivent le schéma de `src/logminer/schema/columns.py`.
 
 Colonnes importantes:
 
@@ -134,128 +152,31 @@ Colonnes importantes:
 - `category`, `subcategory`
 - `message`
 
-Ce schéma sert de base pour les modèles IA et le dashboard.
+Ces données serviront ensuite à l'entraînement ou au test de modèles comme Isolation Forest, Autoencoder, One-Class SVM ou LSTM léger.
 
-### `parsers/windows_event.py`
+## État Actuel
 
-Rôle: parser les journaux Windows.
+Le code a été récupéré depuis des fichiers `.pyc`, puis réorganisé.
 
-Formats supportés:
+Déjà réparé et utilisable:
 
-- exports XML Windows Event Viewer;
-- fichiers `.evtx` si la dépendance `python-evtx` est installée.
+- `src/logminer/pipeline.py`
+- `src/logminer/detectors/file_detector.py`
+- `src/logminer/io/csv_writer.py`
+- `src/logminer/parsers/windows_event.py`
+- `src/logminer/writer.py`
 
-Utilisation avec XML:
+À compléter/réparer ensuite:
 
-```powershell
-python -c "import sys; sys.path.insert(0, r'recovered_pycdc\Preprocessing\Logminer'); import pipeline; print(pipeline.run_pipeline(r'C:\chemin\security.xml', r'Dataset_csv', 'windows_security.csv', debug=True))"
-```
-
-Utilisation avec EVTX:
-
-```powershell
-python -m pip install python-evtx
-python -c "import sys; sys.path.insert(0, r'recovered_pycdc\Preprocessing\Logminer'); import pipeline; print(pipeline.run_pipeline(r'C:\chemin\Security.evtx', r'Dataset_csv', 'security_evtx.csv', debug=True))"
-```
-
-### `parsers/*.py`
-
-Rôle: parser chaque famille de logs.
-
-Parseurs présents:
-
-- `apache.py`: logs Apache/Nginx.
-- `syslog.py`: logs Linux/syslog.
-- `hdfs.py`: dataset HDFS.
-- `bgl.py`: dataset BGL.
-- `tcpdump_text.py`: sorties réseau tcpdump.
-- `pcap.py`: captures réseau.
-- `jsonl.py`: logs JSON ligne par ligne.
-- `cef_leef.py`: formats sécurité CEF/LEEF.
-- `cloudtrail.py`: logs AWS CloudTrail.
-- `praudit_text.py` et `praudit_xml.py`: logs d'audit.
-- `unknown.py`: fallback quand le format est inconnu.
-
-Certains parseurs récupérés doivent encore être réparés avant usage avancé.
-
-### `normalizers/*.py`
-
-Rôle: enrichir et harmoniser les événements avant écriture CSV.
-
-Composants:
-
-- `base.py`: classe de base des normaliseurs.
-- `default.py`: harmonise les niveaux de sévérité.
-- `categorizer.py`: classe les événements en familles sécurité.
-- `runner.py`: applique la chaîne de normalisation.
-
-Ces fichiers serviront à préparer les données pour les agents IA, par exemple en ajoutant `category` et `subcategory`.
-
-## Utilisation Complète
-
-Traiter un fichier:
-
-```powershell
-python -c "import sys; sys.path.insert(0, r'recovered_pycdc\Preprocessing\Logminer'); import pipeline; print(pipeline.run_pipeline(r'Application.evtx', r'Dataset_csv', 'application.csv', debug=True))"
-```
-
-Traiter un dossier:
-
-```powershell
-python -c "import sys; sys.path.insert(0, r'recovered_pycdc\Preprocessing\Logminer'); import pipeline; print(pipeline.run_pipeline(r'Datasets', r'Dataset_csv', 'dataset.csv', debug=True))"
-```
-
-Changer le séparateur CSV:
-
-```powershell
-python -c "import sys; sys.path.insert(0, r'recovered_pycdc\Preprocessing\Logminer'); import pipeline; print(pipeline.run_pipeline(r'Datasets', r'Dataset_csv', 'dataset.csv', sep=',', debug=True))"
-```
-
-## Exemple Inclus
-
-Un exemple Windows Event XML est disponible ici:
-
-```text
-recovered_pycdc/examples/windows_event_sample.xml
-```
-
-Commande de test:
-
-```powershell
-python -c "import sys; sys.path.insert(0, r'recovered_pycdc\Preprocessing\Logminer'); import pipeline; print(pipeline.run_pipeline(r'recovered_pycdc\examples\windows_event_sample.xml', r'recovered_pycdc\examples\out', 'windows_events.csv', debug=True))"
-```
-
-Résultat attendu:
-
-```text
-recovered_pycdc/examples/out/windows_events.csv
-```
-
-## Données Produites
-
-Le CSV final est conçu pour être utilisé par:
-
-- des notebooks d'analyse;
-- des modèles de détection d'anomalies;
-- des agents IA spécialisés;
-- un dashboard Streamlit, Flask ou Dash;
-- des évaluations de performance avec précision, rappel, F1-score et latence.
+- certains parseurs récupérés dans `src/logminer/parsers/`;
+- `src/logminer/normalizers/categorizer.py`;
+- `src/logminer/normalizers/runner.py`;
+- tests sur HDFS, BGL, Apache, Syslog et EVTX réel.
 
 ## Prochaines Étapes
 
-- Réparer les parseurs encore incomplets.
-- Finaliser `normalizers/categorizer.py` et `normalizers/runner.py`.
-- Ajouter des tests sur HDFS, BGL, syslog, Apache et EVTX réel.
-- Créer un module de features ML à partir du CSV.
-- Implémenter un premier détecteur Isolation Forest.
-- Préparer un dashboard de visualisation des anomalies.
-
-## Remarque Importante
-
-Le dossier de travail principal est actuellement:
-
-```text
-recovered_pycdc/Preprocessing/Logminer
-```
-
-Le dossier `recovered_py/` ne doit pas être utilisé comme base principale, car il contient surtout les échecs de décompilation produits par `decompyle3`.
+- Stabiliser tous les parseurs.
+- Finaliser la catégorisation sécurité.
+- Générer des features ML depuis les CSV.
+- Ajouter un premier modèle Isolation Forest.
+- Construire un dashboard simple de visualisation des anomalies.
