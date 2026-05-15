@@ -1,0 +1,2092 @@
+file_detector.cpython-311.pyc (Python 3.11)
+[Code]
+    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+    Object Name: <module>
+    Qualified Name: <module>
+    Arg Count: 0
+    Pos Only Arg Count: 0
+    KW Only Arg Count: 0
+    Stack Size: 8
+    Flags: 0x00000000
+    [Names]
+        '__doc__'
+        'os'
+        're'
+        'json'
+        'typing'
+        'Tuple'
+        'List'
+        'str'
+        'bool'
+        'sniff_pcap'
+        'sniff_xml'
+        'int'
+        'sample_lines'
+        'looks_like_cef_leef'
+        'looks_like_win_xml'
+        'looks_like_cloudtrail'
+        'looks_like_bgl'
+        'looks_like_hdfs'
+        'looks_like_praudit_text'
+        'looks_like_tcpdump_text'
+        'detect_file'
+        'detect_kind'
+        'iter_files'
+        'looks_like_syslog'
+        'looks_like_apache'
+        'looks_like_jsonl'
+        'looks_like_win_event'
+    [Locals+Names]
+    [Constants]
+        'Détection du type de fichier (format) pour dispatcher vers le bon parseur.'
+        0
+        None
+        (
+            'Tuple'
+            'List'
+        )
+        'path'
+        'return'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: sniff_pcap
+            Qualified Name: sniff_pcap
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 6
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'open'
+                'read'
+                'int'
+                'from_bytes'
+                'Exception'
+            [Locals+Names]
+                'path'
+                'f'
+                'sig'
+                'bval'
+                'lval'
+            [Constants]
+                None
+                'rb'
+                4
+                b'\n\r\r\n'
+                True
+                'big'
+                'little'
+                (
+                    0xA1B2C3D4
+                    0xA1B23C4D
+                )
+                False
+            [Disassembly]
+                0       RESUME                          0
+                2       NOP                             
+                4       LOAD_GLOBAL                     1: NULL + open
+                16      LOAD_FAST                       0: path
+                18      LOAD_CONST                      1: 'rb'
+                20      PRECALL                         2
+                24      CALL                            2
+                34      BEFORE_WITH                     
+                36      STORE_FAST                      1: f
+                38      LOAD_FAST                       1: f
+                40      LOAD_METHOD                     1: read
+                62      LOAD_CONST                      2: 4
+                64      PRECALL                         1
+                68      CALL                            1
+                78      STORE_FAST                      2: sig
+                80      LOAD_CONST                      0: None
+                82      LOAD_CONST                      0: None
+                84      LOAD_CONST                      0: None
+                86      PRECALL                         2
+                90      CALL                            2
+                100     POP_TOP                         
+                102     JUMP_FORWARD                    11 (to 126)
+                104     PUSH_EXC_INFO                   
+                106     WITH_EXCEPT_START               
+                108     POP_JUMP_FORWARD_IF_TRUE        4 (to 118)
+                110     RERAISE                         2
+                112     COPY                            3
+                114     POP_EXCEPT                      
+                116     RERAISE                         1
+                118     POP_TOP                         
+                120     POP_EXCEPT                      
+                122     POP_TOP                         
+                124     POP_TOP                         
+                126     LOAD_FAST                       2: sig
+                128     LOAD_CONST                      3: b'\n\r\r\n'
+                130     COMPARE_OP                      2 (==)
+                136     POP_JUMP_FORWARD_IF_FALSE       2 (to 142)
+                138     LOAD_CONST                      4: True
+                140     RETURN_VALUE                    
+                142     LOAD_GLOBAL                     4: int
+                154     LOAD_METHOD                     3: from_bytes
+                176     LOAD_FAST                       2: sig
+                178     LOAD_CONST                      5: 'big'
+                180     PRECALL                         2
+                184     CALL                            2
+                194     STORE_FAST                      3: bval
+                196     LOAD_GLOBAL                     4: int
+                208     LOAD_METHOD                     3: from_bytes
+                230     LOAD_FAST                       2: sig
+                232     LOAD_CONST                      6: 'little'
+                234     PRECALL                         2
+                238     CALL                            2
+                248     STORE_FAST                      4: lval
+                250     LOAD_FAST                       3: bval
+                252     LOAD_CONST                      7: (0xA1B2C3D4, 0xA1B23C4D)
+                254     CONTAINS_OP                     0 (in)
+                256     JUMP_IF_TRUE_OR_POP             3 (to 6)
+                258     LOAD_FAST                       4: lval
+                260     LOAD_CONST                      7: (0xA1B2C3D4, 0xA1B23C4D)
+                262     CONTAINS_OP                     0 (in)
+                264     RETURN_VALUE                    
+                266     PUSH_EXC_INFO                   
+                268     LOAD_GLOBAL                     8: Exception
+                280     CHECK_EXC_MATCH                 
+                282     POP_JUMP_FORWARD_IF_FALSE       4 (to 292)
+                284     POP_TOP                         
+                286     POP_EXCEPT                      
+                288     LOAD_CONST                      8: False
+                290     RETURN_VALUE                    
+                292     RERAISE                         0
+                294     COPY                            3
+                296     POP_EXCEPT                      
+                298     RERAISE                         1
+            [Exception Table]
+                4 to 36 -> 266 [0] 
+                36 to 80 -> 104 [1] lasti
+                80 to 104 -> 266 [0] 
+                104 to 112 -> 112 [3] lasti
+                112 to 118 -> 266 [0] 
+                118 to 120 -> 112 [3] lasti
+                120 to 138 -> 266 [0] 
+                142 to 264 -> 266 [0] 
+                266 to 286 -> 294 [1] lasti
+                292 to 294 -> 294 [1] lasti
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: sniff_xml
+            Qualified Name: sniff_xml
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 6
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'open'
+                'read'
+                'lstrip'
+                'startswith'
+                'Exception'
+            [Locals+Names]
+                'path'
+                'f'
+                'head'
+            [Constants]
+                None
+                'rb'
+                128
+                b'<'
+                False
+            [Disassembly]
+                0       RESUME                          0
+                2       NOP                             
+                4       LOAD_GLOBAL                     1: NULL + open
+                16      LOAD_FAST                       0: path
+                18      LOAD_CONST                      1: 'rb'
+                20      PRECALL                         2
+                24      CALL                            2
+                34      BEFORE_WITH                     
+                36      STORE_FAST                      1: f
+                38      LOAD_FAST                       1: f
+                40      LOAD_METHOD                     1: read
+                62      LOAD_CONST                      2: 128
+                64      PRECALL                         1
+                68      CALL                            1
+                78      STORE_FAST                      2: head
+                80      LOAD_CONST                      0: None
+                82      LOAD_CONST                      0: None
+                84      LOAD_CONST                      0: None
+                86      PRECALL                         2
+                90      CALL                            2
+                100     POP_TOP                         
+                102     JUMP_FORWARD                    11 (to 126)
+                104     PUSH_EXC_INFO                   
+                106     WITH_EXCEPT_START               
+                108     POP_JUMP_FORWARD_IF_TRUE        4 (to 118)
+                110     RERAISE                         2
+                112     COPY                            3
+                114     POP_EXCEPT                      
+                116     RERAISE                         1
+                118     POP_TOP                         
+                120     POP_EXCEPT                      
+                122     POP_TOP                         
+                124     POP_TOP                         
+                126     LOAD_FAST                       2: head
+                128     LOAD_METHOD                     2: lstrip
+                150     PRECALL                         0
+                154     CALL                            0
+                164     LOAD_METHOD                     3: startswith
+                186     LOAD_CONST                      3: b'<'
+                188     PRECALL                         1
+                192     CALL                            1
+                202     RETURN_VALUE                    
+                204     PUSH_EXC_INFO                   
+                206     LOAD_GLOBAL                     8: Exception
+                218     CHECK_EXC_MATCH                 
+                220     POP_JUMP_FORWARD_IF_FALSE       4 (to 230)
+                222     POP_TOP                         
+                224     POP_EXCEPT                      
+                226     LOAD_CONST                      4: False
+                228     RETURN_VALUE                    
+                230     RERAISE                         0
+                232     COPY                            3
+                234     POP_EXCEPT                      
+                236     RERAISE                         1
+            [Exception Table]
+                4 to 36 -> 204 [0] 
+                36 to 80 -> 104 [1] lasti
+                80 to 104 -> 204 [0] 
+                104 to 112 -> 112 [3] lasti
+                112 to 118 -> 204 [0] 
+                118 to 120 -> 112 [3] lasti
+                120 to 202 -> 204 [0] 
+                204 to 224 -> 232 [1] lasti
+                230 to 232 -> 232 [1] lasti
+        40
+        'n'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: sample_lines
+            Qualified Name: sample_lines
+            Arg Count: 2
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 8
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'open'
+                'range'
+                'readline'
+                'append'
+                'decode'
+                'rstrip'
+                'Exception'
+            [Locals+Names]
+                'path'
+                'n'
+                'out'
+                'fb'
+                '_'
+                'raw'
+            [Constants]
+                None
+                'rb'
+                'utf-8'
+                'ignore'
+                (
+                    'errors'
+                )
+                '\n'
+            [Disassembly]
+                0       RESUME                          0
+                2       BUILD_LIST                      0
+                4       STORE_FAST                      2: out
+                6       NOP                             
+                8       LOAD_GLOBAL                     1: NULL + open
+                20      LOAD_FAST                       0: path
+                22      LOAD_CONST                      1: 'rb'
+                24      PRECALL                         2
+                28      CALL                            2
+                38      BEFORE_WITH                     
+                40      STORE_FAST                      3: fb
+                42      LOAD_GLOBAL                     3: NULL + range
+                54      LOAD_FAST                       1: n
+                56      PRECALL                         1
+                60      CALL                            1
+                70      GET_ITER                        
+                72      FOR_ITER                        87 (to 248)
+                74      STORE_FAST                      4: _
+                76      LOAD_FAST                       3: fb
+                78      LOAD_METHOD                     2: readline
+                100     PRECALL                         0
+                104     CALL                            0
+                114     STORE_FAST                      5: raw
+                116     LOAD_FAST                       5: raw
+                118     POP_JUMP_FORWARD_IF_TRUE        2 (to 124)
+                120     POP_TOP                         
+                122     JUMP_FORWARD                    62 (to 248)
+                124     LOAD_FAST                       2: out
+                126     LOAD_METHOD                     3: append
+                148     LOAD_FAST                       5: raw
+                150     LOAD_METHOD                     4: decode
+                172     LOAD_CONST                      2: 'utf-8'
+                174     LOAD_CONST                      3: 'ignore'
+                176     KW_NAMES                        4: ('errors',)
+                178     PRECALL                         2
+                182     CALL                            2
+                192     LOAD_METHOD                     5: rstrip
+                214     LOAD_CONST                      5: '\n'
+                216     PRECALL                         1
+                220     CALL                            1
+                230     PRECALL                         1
+                234     CALL                            1
+                244     POP_TOP                         
+                246     JUMP_BACKWARD                   88 (to 72)
+                248     LOAD_CONST                      0: None
+                250     LOAD_CONST                      0: None
+                252     LOAD_CONST                      0: None
+                254     PRECALL                         2
+                258     CALL                            2
+                268     POP_TOP                         
+                270     JUMP_FORWARD                    11 (to 294)
+                272     PUSH_EXC_INFO                   
+                274     WITH_EXCEPT_START               
+                276     POP_JUMP_FORWARD_IF_TRUE        4 (to 286)
+                278     RERAISE                         2
+                280     COPY                            3
+                282     POP_EXCEPT                      
+                284     RERAISE                         1
+                286     POP_TOP                         
+                288     POP_EXCEPT                      
+                290     POP_TOP                         
+                292     POP_TOP                         
+                294     JUMP_FORWARD                    16 (to 328)
+                296     PUSH_EXC_INFO                   
+                298     LOAD_GLOBAL                     12: Exception
+                310     CHECK_EXC_MATCH                 
+                312     POP_JUMP_FORWARD_IF_FALSE       3 (to 320)
+                314     POP_TOP                         
+                316     POP_EXCEPT                      
+                318     JUMP_FORWARD                    4 (to 328)
+                320     RERAISE                         0
+                322     COPY                            3
+                324     POP_EXCEPT                      
+                326     RERAISE                         1
+                328     LOAD_FAST                       2: out
+                330     RETURN_VALUE                    
+            [Exception Table]
+                8 to 40 -> 296 [0] 
+                40 to 248 -> 272 [1] lasti
+                248 to 272 -> 296 [0] 
+                272 to 280 -> 280 [3] lasti
+                280 to 286 -> 296 [0] 
+                286 to 288 -> 280 [3] lasti
+                288 to 294 -> 296 [0] 
+                296 to 316 -> 322 [1] lasti
+                320 to 322 -> 322 [1] lasti
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: looks_like_cef_leef
+            Qualified Name: looks_like_cef_leef
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 4
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'any'
+            [Locals+Names]
+                'lines'
+            [Constants]
+                None
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+                    Object Name: <genexpr>
+                    Qualified Name: looks_like_cef_leef.<locals>.<genexpr>
+                    Arg Count: 1
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 0
+                    Stack Size: 4
+                    Flags: 0x00000033 (CO_OPTIMIZED | CO_NEWLOCALS | CO_NESTED | CO_GENERATOR)
+                    [Names]
+                        'startswith'
+                    [Locals+Names]
+                        '.0'
+                        'l'
+                    [Constants]
+                        'CEF:'
+                        'LEEF:'
+                        None
+                    [Disassembly]
+                        0       RETURN_GENERATOR                
+                        2       POP_TOP                         
+                        4       RESUME                          0
+                        6       LOAD_FAST                       0: .0
+                        8       FOR_ITER                        46 (to 102)
+                        10      STORE_FAST                      1: l
+                        12      LOAD_FAST                       1: l
+                        14      LOAD_METHOD                     0: startswith
+                        36      LOAD_CONST                      0: 'CEF:'
+                        38      PRECALL                         1
+                        42      CALL                            1
+                        52      JUMP_IF_TRUE_OR_POP             20 (to 40)
+                        54      LOAD_FAST                       1: l
+                        56      LOAD_METHOD                     0: startswith
+                        78      LOAD_CONST                      1: 'LEEF:'
+                        80      PRECALL                         1
+                        84      CALL                            1
+                        94      YIELD_VALUE                     
+                        96      RESUME                          1
+                        98      POP_TOP                         
+                        100     JUMP_BACKWARD                   47 (to 8)
+                        102     LOAD_CONST                      2: None
+                        104     RETURN_VALUE                    
+                    [Exception Table]
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_GLOBAL                     1: NULL + any
+                14      LOAD_CONST                      1: <CODE> <genexpr>
+                16      MAKE_FUNCTION                   0
+                18      LOAD_FAST                       0: lines
+                20      GET_ITER                        
+                22      PRECALL                         0
+                26      CALL                            0
+                36      PRECALL                         1
+                40      CALL                            1
+                50      RETURN_VALUE                    
+            [Exception Table]
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: looks_like_win_xml
+            Qualified Name: looks_like_win_xml
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 4
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'any'
+            [Locals+Names]
+                'lines'
+            [Constants]
+                None
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+                    Object Name: <genexpr>
+                    Qualified Name: looks_like_win_xml.<locals>.<genexpr>
+                    Arg Count: 1
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 0
+                    Stack Size: 7
+                    Flags: 0x00000033 (CO_OPTIMIZED | CO_NEWLOCALS | CO_NESTED | CO_GENERATOR)
+                    [Names]
+                        'join'
+                    [Locals+Names]
+                        '.0'
+                        'l'
+                        'lines'
+                    [Constants]
+                        '<Event'
+                        '<System'
+                        ''
+                        None
+                        20
+                    [Disassembly]
+                        0       COPY_FREE_VARS                  1
+                        2       RETURN_GENERATOR                
+                        4       POP_TOP                         
+                        6       RESUME                          0
+                        8       LOAD_FAST                       0: .0
+                        10      FOR_ITER                        39 (to 90)
+                        12      STORE_FAST                      1: l
+                        14      LOAD_CONST                      0: '<Event'
+                        16      LOAD_FAST                       1: l
+                        18      CONTAINS_OP                     0 (in)
+                        20      JUMP_IF_FALSE_OR_POP            30 (to 60)
+                        22      LOAD_CONST                      1: '<System'
+                        24      LOAD_CONST                      2: ''
+                        26      LOAD_METHOD                     0: join
+                        48      LOAD_DEREF                      2: lines
+                        50      LOAD_CONST                      3: None
+                        52      LOAD_CONST                      4: 20
+                        54      BUILD_SLICE                     2
+                        56      BINARY_SUBSCR                   
+                        66      PRECALL                         1
+                        70      CALL                            1
+                        80      CONTAINS_OP                     0 (in)
+                        82      YIELD_VALUE                     
+                        84      RESUME                          1
+                        86      POP_TOP                         
+                        88      JUMP_BACKWARD                   40 (to 10)
+                        90      LOAD_CONST                      3: None
+                        92      RETURN_VALUE                    
+                    [Exception Table]
+            [Disassembly]
+                0       MAKE_CELL                       0: lines
+                2       RESUME                          0
+                4       LOAD_GLOBAL                     1: NULL + any
+                16      LOAD_CLOSURE                    0: lines
+                18      BUILD_TUPLE                     1
+                20      LOAD_CONST                      1: <CODE> <genexpr>
+                22      MAKE_FUNCTION                   8
+                24      LOAD_DEREF                      0: lines
+                26      GET_ITER                        
+                28      PRECALL                         0
+                32      CALL                            0
+                42      PRECALL                         1
+                46      CALL                            1
+                56      RETURN_VALUE                    
+            [Exception Table]
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: looks_like_cloudtrail
+            Qualified Name: looks_like_cloudtrail
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 5
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'join'
+                'strip'
+                'startswith'
+                'Exception'
+                'looks_like_cef_leef'
+                'path'
+                'looks_like_win_xml'
+                'looks_like_cloudtrail'
+                'lower'
+                'endswith'
+                'sample_lines'
+            [Locals+Names]
+                'lines'
+                's'
+                'l'
+            [Constants]
+                None
+                ''
+                5
+                '{'
+                '"Records"'
+                True
+                20
+                '"eventTime"'
+                '"eventSource"'
+                False
+            [Disassembly]
+                0       RESUME                          0
+                2       NOP                             
+                4       LOAD_CONST                      1: ''
+                6       LOAD_METHOD                     0: join
+                28      LOAD_FAST                       0: lines
+                30      LOAD_CONST                      0: None
+                32      LOAD_CONST                      2: 5
+                34      BUILD_SLICE                     2
+                36      BINARY_SUBSCR                   
+                46      PRECALL                         1
+                50      CALL                            1
+                60      LOAD_METHOD                     1: strip
+                82      PRECALL                         0
+                86      CALL                            0
+                96      STORE_FAST                      1: s
+                98      LOAD_FAST                       1: s
+                100     LOAD_METHOD                     2: startswith
+                122     LOAD_CONST                      3: '{'
+                124     PRECALL                         1
+                128     CALL                            1
+                138     POP_JUMP_FORWARD_IF_FALSE       6 (to 152)
+                140     LOAD_CONST                      4: '"Records"'
+                142     LOAD_FAST                       1: s
+                144     CONTAINS_OP                     0 (in)
+                146     POP_JUMP_FORWARD_IF_FALSE       2 (to 152)
+                148     LOAD_CONST                      5: True
+                150     RETURN_VALUE                    
+                152     JUMP_FORWARD                    16 (to 186)
+                154     PUSH_EXC_INFO                   
+                156     LOAD_GLOBAL                     6: Exception
+                168     CHECK_EXC_MATCH                 
+                170     POP_JUMP_FORWARD_IF_FALSE       3 (to 178)
+                172     POP_TOP                         
+                174     POP_EXCEPT                      
+                176     JUMP_FORWARD                    4 (to 186)
+                178     RERAISE                         0
+                180     COPY                            3
+                182     POP_EXCEPT                      
+                184     RERAISE                         1
+                186     LOAD_FAST                       0: lines
+                188     LOAD_CONST                      0: None
+                190     LOAD_CONST                      6: 20
+                192     BUILD_SLICE                     2
+                194     BINARY_SUBSCR                   
+                204     GET_ITER                        
+                206     FOR_ITER                        13 (to 234)
+                208     STORE_FAST                      2: l
+                210     LOAD_CONST                      7: '"eventTime"'
+                212     LOAD_FAST                       2: l
+                214     CONTAINS_OP                     0 (in)
+                216     POP_JUMP_FORWARD_IF_FALSE       7 (to 232)
+                218     LOAD_CONST                      8: '"eventSource"'
+                220     LOAD_FAST                       2: l
+                222     CONTAINS_OP                     0 (in)
+                224     POP_JUMP_FORWARD_IF_FALSE       3 (to 232)
+                226     POP_TOP                         
+                228     LOAD_CONST                      5: True
+                230     RETURN_VALUE                    
+                232     JUMP_BACKWARD                   14 (to 206)
+                234     LOAD_CONST                      9: False
+                236     RETURN_VALUE                    
+            [Exception Table]
+                4 to 148 -> 154 [0] 
+                154 to 174 -> 180 [1] lasti
+                178 to 180 -> 180 [1] lasti
+        'lines'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: looks_like_bgl
+            Qualified Name: looks_like_bgl
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 4
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                're'
+                'compile'
+                'any'
+            [Locals+Names]
+                'lines'
+                'rx'
+            [Constants]
+                None
+                '\\d+\\s+\\d{4}\\.\\d{2}\\.\\d{2}\\s+\\S+\\s+\\d{4}-\\d{2}-\\d{2}-\\d{2}\\.\\d{2}\\.\\d{2}\\.\\d+\\s+\\S+\\s+RAS\\s+\\S+\\s+\\w+'
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+                    Object Name: <genexpr>
+                    Qualified Name: looks_like_bgl.<locals>.<genexpr>
+                    Arg Count: 1
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 0
+                    Stack Size: 4
+                    Flags: 0x00000033 (CO_OPTIMIZED | CO_NEWLOCALS | CO_NESTED | CO_GENERATOR)
+                    [Names]
+                        'search'
+                    [Locals+Names]
+                        '.0'
+                        'l'
+                        'rx'
+                    [Constants]
+                        None
+                    [Disassembly]
+                        0       COPY_FREE_VARS                  1
+                        2       RETURN_GENERATOR                
+                        4       POP_TOP                         
+                        6       RESUME                          0
+                        8       LOAD_FAST                       0: .0
+                        10      FOR_ITER                        25 (to 62)
+                        12      STORE_FAST                      1: l
+                        14      LOAD_DEREF                      2: rx
+                        16      LOAD_METHOD                     0: search
+                        38      LOAD_FAST                       1: l
+                        40      PRECALL                         1
+                        44      CALL                            1
+                        54      YIELD_VALUE                     
+                        56      RESUME                          1
+                        58      POP_TOP                         
+                        60      JUMP_BACKWARD                   26 (to 10)
+                        62      LOAD_CONST                      0: None
+                        64      RETURN_VALUE                    
+                    [Exception Table]
+            [Disassembly]
+                0       MAKE_CELL                       1: rx
+                2       RESUME                          0
+                4       LOAD_GLOBAL                     1: NULL + re
+                16      LOAD_ATTR                       1: compile
+                26      LOAD_CONST                      1: '\\d+\\s+\\d{4}\\.\\d{2}\\.\\d{2}\\s+\\S+\\s+\\d{4}-\\d{2}-\\d{2}-\\d{2}\\.\\d{2}\\.\\d{2}\\.\\d+\\s+\\S+\\s+RAS\\s+\\S+\\s+\\w+'
+                28      PRECALL                         1
+                32      CALL                            1
+                42      STORE_DEREF                     1: rx
+                44      LOAD_GLOBAL                     5: NULL + any
+                56      LOAD_CLOSURE                    1: rx
+                58      BUILD_TUPLE                     1
+                60      LOAD_CONST                      2: <CODE> <genexpr>
+                62      MAKE_FUNCTION                   8
+                64      LOAD_FAST                       0: lines
+                66      GET_ITER                        
+                68      PRECALL                         0
+                72      CALL                            0
+                82      PRECALL                         1
+                86      CALL                            1
+                96      RETURN_VALUE                    
+            [Exception Table]
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: looks_like_hdfs
+            Qualified Name: looks_like_hdfs
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 4
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                're'
+                'compile'
+                'any'
+            [Locals+Names]
+                'lines'
+                'long'
+                'short'
+            [Constants]
+                None
+                '^\\d{6}\\s+\\d{6}\\s+\\d+\\s+[A-Za-z]+\\s+[^:]+:\\s+'
+                '^\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}(?:[.,]\\d{3,6})?\\s+[A-Za-z]+\\s+[^:]+[:\\s-]\\s'
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+                    Object Name: <genexpr>
+                    Qualified Name: looks_like_hdfs.<locals>.<genexpr>
+                    Arg Count: 1
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 0
+                    Stack Size: 4
+                    Flags: 0x00000033 (CO_OPTIMIZED | CO_NEWLOCALS | CO_NESTED | CO_GENERATOR)
+                    [Names]
+                        'search'
+                    [Locals+Names]
+                        '.0'
+                        'l'
+                        'long'
+                        'short'
+                    [Constants]
+                        None
+                    [Disassembly]
+                        0       COPY_FREE_VARS                  2
+                        2       RETURN_GENERATOR                
+                        4       POP_TOP                         
+                        6       RESUME                          0
+                        8       LOAD_FAST                       0: .0
+                        10      FOR_ITER                        46 (to 104)
+                        12      STORE_FAST                      1: l
+                        14      LOAD_DEREF                      3: short
+                        16      LOAD_METHOD                     0: search
+                        38      LOAD_FAST                       1: l
+                        40      PRECALL                         1
+                        44      CALL                            1
+                        54      JUMP_IF_TRUE_OR_POP             20 (to 40)
+                        56      LOAD_DEREF                      2: long
+                        58      LOAD_METHOD                     0: search
+                        80      LOAD_FAST                       1: l
+                        82      PRECALL                         1
+                        86      CALL                            1
+                        96      YIELD_VALUE                     
+                        98      RESUME                          1
+                        100     POP_TOP                         
+                        102     JUMP_BACKWARD                   47 (to 10)
+                        104     LOAD_CONST                      0: None
+                        106     RETURN_VALUE                    
+                    [Exception Table]
+            [Disassembly]
+                0       MAKE_CELL                       1: long
+                2       MAKE_CELL                       2: short
+                4       RESUME                          0
+                6       LOAD_GLOBAL                     1: NULL + re
+                18      LOAD_ATTR                       1: compile
+                28      LOAD_CONST                      1: '^\\d{6}\\s+\\d{6}\\s+\\d+\\s+[A-Za-z]+\\s+[^:]+:\\s+'
+                30      PRECALL                         1
+                34      CALL                            1
+                44      STORE_DEREF                     2: short
+                46      LOAD_GLOBAL                     1: NULL + re
+                58      LOAD_ATTR                       1: compile
+                68      LOAD_CONST                      2: '^\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}(?:[.,]\\d{3,6})?\\s+[A-Za-z]+\\s+[^:]+[:\\s-]\\s'
+                70      PRECALL                         1
+                74      CALL                            1
+                84      STORE_DEREF                     1: long
+                86      LOAD_GLOBAL                     5: NULL + any
+                98      LOAD_CLOSURE                    1: long
+                100     LOAD_CLOSURE                    2: short
+                102     BUILD_TUPLE                     2
+                104     LOAD_CONST                      3: <CODE> <genexpr>
+                106     MAKE_FUNCTION                   8
+                108     LOAD_FAST                       0: lines
+                110     GET_ITER                        
+                112     PRECALL                         0
+                116     CALL                            0
+                126     PRECALL                         1
+                130     CALL                            1
+                140     RETURN_VALUE                    
+            [Exception Table]
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: looks_like_praudit_text
+            Qualified Name: looks_like_praudit_text
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 4
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'any'
+            [Locals+Names]
+                'lines'
+            [Constants]
+                None
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+                    Object Name: <genexpr>
+                    Qualified Name: looks_like_praudit_text.<locals>.<genexpr>
+                    Arg Count: 1
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 0
+                    Stack Size: 4
+                    Flags: 0x00000033 (CO_OPTIMIZED | CO_NEWLOCALS | CO_NESTED | CO_GENERATOR)
+                    [Names]
+                        'startswith'
+                    [Locals+Names]
+                        '.0'
+                        'l'
+                    [Constants]
+                        'header,'
+                        'subject'
+                        ',trailer,'
+                        None
+                    [Disassembly]
+                        0       RETURN_GENERATOR                
+                        2       POP_TOP                         
+                        4       RESUME                          0
+                        6       LOAD_FAST                       0: .0
+                        8       FOR_ITER                        50 (to 110)
+                        10      STORE_FAST                      1: l
+                        12      LOAD_FAST                       1: l
+                        14      LOAD_METHOD                     0: startswith
+                        36      LOAD_CONST                      0: 'header,'
+                        38      PRECALL                         1
+                        42      CALL                            1
+                        52      JUMP_IF_TRUE_OR_POP             24 (to 48)
+                        54      LOAD_FAST                       1: l
+                        56      LOAD_METHOD                     0: startswith
+                        78      LOAD_CONST                      1: 'subject'
+                        80      PRECALL                         1
+                        84      CALL                            1
+                        94      JUMP_IF_TRUE_OR_POP             3 (to 6)
+                        96      LOAD_CONST                      2: ',trailer,'
+                        98      LOAD_FAST                       1: l
+                        100     CONTAINS_OP                     0 (in)
+                        102     YIELD_VALUE                     
+                        104     RESUME                          1
+                        106     POP_TOP                         
+                        108     JUMP_BACKWARD                   51 (to 8)
+                        110     LOAD_CONST                      3: None
+                        112     RETURN_VALUE                    
+                    [Exception Table]
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_GLOBAL                     1: NULL + any
+                14      LOAD_CONST                      1: <CODE> <genexpr>
+                16      MAKE_FUNCTION                   0
+                18      LOAD_FAST                       0: lines
+                20      GET_ITER                        
+                22      PRECALL                         0
+                26      CALL                            0
+                36      PRECALL                         1
+                40      CALL                            1
+                50      RETURN_VALUE                    
+            [Exception Table]
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: looks_like_tcpdump_text
+            Qualified Name: looks_like_tcpdump_text
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 4
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'any'
+            [Locals+Names]
+                'lines'
+            [Constants]
+                None
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+                    Object Name: <genexpr>
+                    Qualified Name: looks_like_tcpdump_text.<locals>.<genexpr>
+                    Arg Count: 1
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 0
+                    Stack Size: 5
+                    Flags: 0x00000033 (CO_OPTIMIZED | CO_NEWLOCALS | CO_NESTED | CO_GENERATOR)
+                    [Names]
+                        're'
+                        'match'
+                    [Locals+Names]
+                        '.0'
+                        'l'
+                    [Constants]
+                        '^\\d{2}:\\d{2}:\\d{2}\\.\\d+\\s+\\S+\\s+'
+                        None
+                    [Disassembly]
+                        0       RETURN_GENERATOR                
+                        2       POP_TOP                         
+                        4       RESUME                          0
+                        6       LOAD_FAST                       0: .0
+                        8       FOR_ITER                        25 (to 60)
+                        10      STORE_FAST                      1: l
+                        12      LOAD_GLOBAL                     1: NULL + re
+                        24      LOAD_ATTR                       1: match
+                        34      LOAD_CONST                      0: '^\\d{2}:\\d{2}:\\d{2}\\.\\d+\\s+\\S+\\s+'
+                        36      LOAD_FAST                       1: l
+                        38      PRECALL                         2
+                        42      CALL                            2
+                        52      YIELD_VALUE                     
+                        54      RESUME                          1
+                        56      POP_TOP                         
+                        58      JUMP_BACKWARD                   26 (to 8)
+                        60      LOAD_CONST                      1: None
+                        62      RETURN_VALUE                    
+                    [Exception Table]
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_GLOBAL                     1: NULL + any
+                14      LOAD_CONST                      1: <CODE> <genexpr>
+                16      MAKE_FUNCTION                   0
+                18      LOAD_FAST                       0: lines
+                20      GET_ITER                        
+                22      PRECALL                         0
+                26      CALL                            0
+                36      PRECALL                         1
+                40      CALL                            1
+                50      RETURN_VALUE                    
+            [Exception Table]
+        'input_path'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: detect_file
+            Qualified Name: detect_file
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 7
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'os'
+                'path'
+                'isdir'
+                'walk'
+                'join'
+                'sniff_pcap'
+                'sniff_xml'
+                'sample_lines'
+                'looks_like_bgl'
+                'looks_like_hdfs'
+                'looks_like_praudit_text'
+                'looks_like_tcpdump_text'
+                'SystemExit'
+            [Locals+Names]
+                'input_path'
+                'root'
+                '_'
+                'files'
+                'fn'
+                'p'
+                'lines'
+                'path'
+            [Constants]
+                "Retourne (kind, path) pour le premier fichier plausible.\n       kind ∈ {'pcap','praudit_xml','praudit_text','bgl','hdfs','tcpdump_text','unknown'}"
+                'pcap'
+                'praudit_xml'
+                'bgl'
+                'hdfs'
+                'praudit_text'
+                'tcpdump_text'
+                'unknown'
+                'Dossier vide.'
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_GLOBAL                     0: os
+                14      LOAD_ATTR                       1: path
+                24      LOAD_METHOD                     2: isdir
+                46      LOAD_FAST                       0: input_path
+                48      PRECALL                         1
+                52      CALL                            1
+                62      POP_JUMP_FORWARD_IF_FALSE       365 (to 796)
+                66      LOAD_GLOBAL                     1: NULL + os
+                78      LOAD_ATTR                       3: walk
+                88      LOAD_FAST                       0: input_path
+                90      PRECALL                         1
+                94      CALL                            1
+                104     GET_ITER                        
+                106     FOR_ITER                        89 (to 286)
+                108     UNPACK_SEQUENCE                 3
+                112     STORE_FAST                      1: root
+                114     STORE_FAST                      2: _
+                116     STORE_FAST                      3: files
+                118     LOAD_FAST                       3: files
+                120     GET_ITER                        
+                122     FOR_ITER                        80 (to 284)
+                124     STORE_FAST                      4: fn
+                126     LOAD_GLOBAL                     0: os
+                138     LOAD_ATTR                       1: path
+                148     LOAD_METHOD                     4: join
+                170     LOAD_FAST                       1: root
+                172     LOAD_FAST                       4: fn
+                174     PRECALL                         2
+                178     CALL                            2
+                188     STORE_FAST                      5: p
+                190     LOAD_GLOBAL                     11: NULL + sniff_pcap
+                202     LOAD_FAST                       5: p
+                204     PRECALL                         1
+                208     CALL                            1
+                218     POP_JUMP_FORWARD_IF_FALSE       8 (to 236)
+                220     LOAD_CONST                      1: 'pcap'
+                222     LOAD_FAST                       5: p
+                224     BUILD_TUPLE                     2
+                226     SWAP                            2
+                228     POP_TOP                         
+                230     SWAP                            2
+                232     POP_TOP                         
+                234     RETURN_VALUE                    
+                236     LOAD_GLOBAL                     13: NULL + sniff_xml
+                248     LOAD_FAST                       5: p
+                250     PRECALL                         1
+                254     CALL                            1
+                264     POP_JUMP_FORWARD_IF_FALSE       8 (to 282)
+                266     LOAD_CONST                      2: 'praudit_xml'
+                268     LOAD_FAST                       5: p
+                270     BUILD_TUPLE                     2
+                272     SWAP                            2
+                274     POP_TOP                         
+                276     SWAP                            2
+                278     POP_TOP                         
+                280     RETURN_VALUE                    
+                282     JUMP_BACKWARD                   81 (to 122)
+                284     JUMP_BACKWARD                   90 (to 106)
+                286     LOAD_GLOBAL                     1: NULL + os
+                298     LOAD_ATTR                       3: walk
+                308     LOAD_FAST                       0: input_path
+                310     PRECALL                         1
+                314     CALL                            1
+                324     GET_ITER                        
+                326     FOR_ITER                        150 (to 628)
+                328     UNPACK_SEQUENCE                 3
+                332     STORE_FAST                      1: root
+                334     STORE_FAST                      2: _
+                336     STORE_FAST                      3: files
+                338     LOAD_FAST                       3: files
+                340     GET_ITER                        
+                342     FOR_ITER                        141 (to 626)
+                344     STORE_FAST                      4: fn
+                346     LOAD_GLOBAL                     0: os
+                358     LOAD_ATTR                       1: path
+                368     LOAD_METHOD                     4: join
+                390     LOAD_FAST                       1: root
+                392     LOAD_FAST                       4: fn
+                394     PRECALL                         2
+                398     CALL                            2
+                408     STORE_FAST                      5: p
+                410     LOAD_GLOBAL                     15: NULL + sample_lines
+                422     LOAD_FAST                       5: p
+                424     PRECALL                         1
+                428     CALL                            1
+                438     STORE_FAST                      6: lines
+                440     LOAD_GLOBAL                     17: NULL + looks_like_bgl
+                452     LOAD_FAST                       6: lines
+                454     PRECALL                         1
+                458     CALL                            1
+                468     POP_JUMP_FORWARD_IF_FALSE       8 (to 486)
+                470     LOAD_CONST                      3: 'bgl'
+                472     LOAD_FAST                       5: p
+                474     BUILD_TUPLE                     2
+                476     SWAP                            2
+                478     POP_TOP                         
+                480     SWAP                            2
+                482     POP_TOP                         
+                484     RETURN_VALUE                    
+                486     LOAD_GLOBAL                     19: NULL + looks_like_hdfs
+                498     LOAD_FAST                       6: lines
+                500     PRECALL                         1
+                504     CALL                            1
+                514     POP_JUMP_FORWARD_IF_FALSE       8 (to 532)
+                516     LOAD_CONST                      4: 'hdfs'
+                518     LOAD_FAST                       5: p
+                520     BUILD_TUPLE                     2
+                522     SWAP                            2
+                524     POP_TOP                         
+                526     SWAP                            2
+                528     POP_TOP                         
+                530     RETURN_VALUE                    
+                532     LOAD_GLOBAL                     21: NULL + looks_like_praudit_text
+                544     LOAD_FAST                       6: lines
+                546     PRECALL                         1
+                550     CALL                            1
+                560     POP_JUMP_FORWARD_IF_FALSE       8 (to 578)
+                562     LOAD_CONST                      5: 'praudit_text'
+                564     LOAD_FAST                       5: p
+                566     BUILD_TUPLE                     2
+                568     SWAP                            2
+                570     POP_TOP                         
+                572     SWAP                            2
+                574     POP_TOP                         
+                576     RETURN_VALUE                    
+                578     LOAD_GLOBAL                     23: NULL + looks_like_tcpdump_text
+                590     LOAD_FAST                       6: lines
+                592     PRECALL                         1
+                596     CALL                            1
+                606     POP_JUMP_FORWARD_IF_FALSE       8 (to 624)
+                608     LOAD_CONST                      6: 'tcpdump_text'
+                610     LOAD_FAST                       5: p
+                612     BUILD_TUPLE                     2
+                614     SWAP                            2
+                616     POP_TOP                         
+                618     SWAP                            2
+                620     POP_TOP                         
+                622     RETURN_VALUE                    
+                624     JUMP_BACKWARD                   142 (to 342)
+                626     JUMP_BACKWARD                   151 (to 326)
+                628     LOAD_GLOBAL                     1: NULL + os
+                640     LOAD_ATTR                       3: walk
+                650     LOAD_FAST                       0: input_path
+                652     PRECALL                         1
+                656     CALL                            1
+                666     GET_ITER                        
+                668     FOR_ITER                        48 (to 766)
+                670     UNPACK_SEQUENCE                 3
+                674     STORE_FAST                      1: root
+                676     STORE_FAST                      2: _
+                678     STORE_FAST                      3: files
+                680     LOAD_FAST                       3: files
+                682     GET_ITER                        
+                684     FOR_ITER                        39 (to 764)
+                686     STORE_FAST                      4: fn
+                688     LOAD_CONST                      7: 'unknown'
+                690     LOAD_GLOBAL                     0: os
+                702     LOAD_ATTR                       1: path
+                712     LOAD_METHOD                     4: join
+                734     LOAD_FAST                       1: root
+                736     LOAD_FAST                       4: fn
+                738     PRECALL                         2
+                742     CALL                            2
+                752     BUILD_TUPLE                     2
+                754     SWAP                            2
+                756     POP_TOP                         
+                758     SWAP                            2
+                760     POP_TOP                         
+                762     RETURN_VALUE                    
+                764     JUMP_BACKWARD                   49 (to 668)
+                766     LOAD_GLOBAL                     25: NULL + SystemExit
+                778     LOAD_CONST                      8: 'Dossier vide.'
+                780     PRECALL                         1
+                784     CALL                            1
+                794     RAISE_VARARGS                   1
+                796     LOAD_FAST                       0: input_path
+                798     STORE_FAST                      7: path
+                800     LOAD_GLOBAL                     11: NULL + sniff_pcap
+                812     LOAD_FAST                       7: path
+                814     PRECALL                         1
+                818     CALL                            1
+                828     POP_JUMP_FORWARD_IF_FALSE       4 (to 838)
+                830     LOAD_CONST                      1: 'pcap'
+                832     LOAD_FAST                       7: path
+                834     BUILD_TUPLE                     2
+                836     RETURN_VALUE                    
+                838     LOAD_GLOBAL                     13: NULL + sniff_xml
+                850     LOAD_FAST                       7: path
+                852     PRECALL                         1
+                856     CALL                            1
+                866     POP_JUMP_FORWARD_IF_FALSE       4 (to 876)
+                868     LOAD_CONST                      2: 'praudit_xml'
+                870     LOAD_FAST                       7: path
+                872     BUILD_TUPLE                     2
+                874     RETURN_VALUE                    
+                876     LOAD_GLOBAL                     15: NULL + sample_lines
+                888     LOAD_FAST                       7: path
+                890     PRECALL                         1
+                894     CALL                            1
+                904     STORE_FAST                      6: lines
+                906     LOAD_GLOBAL                     17: NULL + looks_like_bgl
+                918     LOAD_FAST                       6: lines
+                920     PRECALL                         1
+                924     CALL                            1
+                934     POP_JUMP_FORWARD_IF_FALSE       4 (to 944)
+                936     LOAD_CONST                      3: 'bgl'
+                938     LOAD_FAST                       7: path
+                940     BUILD_TUPLE                     2
+                942     RETURN_VALUE                    
+                944     LOAD_GLOBAL                     19: NULL + looks_like_hdfs
+                956     LOAD_FAST                       6: lines
+                958     PRECALL                         1
+                962     CALL                            1
+                972     POP_JUMP_FORWARD_IF_FALSE       4 (to 982)
+                974     LOAD_CONST                      4: 'hdfs'
+                976     LOAD_FAST                       7: path
+                978     BUILD_TUPLE                     2
+                980     RETURN_VALUE                    
+                982     LOAD_GLOBAL                     21: NULL + looks_like_praudit_text
+                994     LOAD_FAST                       6: lines
+                996     PRECALL                         1
+                1000    CALL                            1
+                1010    POP_JUMP_FORWARD_IF_FALSE       4 (to 1020)
+                1012    LOAD_CONST                      5: 'praudit_text'
+                1014    LOAD_FAST                       7: path
+                1016    BUILD_TUPLE                     2
+                1018    RETURN_VALUE                    
+                1020    LOAD_GLOBAL                     23: NULL + looks_like_tcpdump_text
+                1032    LOAD_FAST                       6: lines
+                1034    PRECALL                         1
+                1038    CALL                            1
+                1048    POP_JUMP_FORWARD_IF_FALSE       4 (to 1058)
+                1050    LOAD_CONST                      6: 'tcpdump_text'
+                1052    LOAD_FAST                       7: path
+                1054    BUILD_TUPLE                     2
+                1056    RETURN_VALUE                    
+                1058    LOAD_CONST                      7: 'unknown'
+                1060    LOAD_FAST                       7: path
+                1062    BUILD_TUPLE                     2
+                1064    RETURN_VALUE                    
+            [Exception Table]
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: detect_kind
+            Qualified Name: detect_kind
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 3
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'lower'
+                'endswith'
+                'sniff_pcap'
+                'sniff_xml'
+                'sample_lines'
+                'looks_like_bgl'
+                'looks_like_hdfs'
+                'looks_like_praudit_text'
+                'looks_like_tcpdump_text'
+                'looks_like_syslog'
+                'looks_like_apache'
+                'looks_like_jsonl'
+                'looks_like_cef_leef'
+                'looks_like_cloudtrail'
+                'looks_like_win_event'
+            [Locals+Names]
+                'path'
+                'low'
+                'lines'
+            [Constants]
+                "Détecte le type d'un fichier *unique* (sans parcourir un dossier)."
+                '.tcpdump'
+                '.tcpdump.txt'
+                '.dump'
+                'tcpdump_text'
+                'pcap'
+                'praudit_xml'
+                'bgl'
+                'hdfs'
+                'praudit_text'
+                'syslog'
+                'apache'
+                'jsonl'
+                'cef_leef'
+                'cloudtrail'
+                'win_event'
+                'unknown'
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_FAST                       0: path
+                4       LOAD_METHOD                     0: lower
+                26      PRECALL                         0
+                30      CALL                            0
+                40      STORE_FAST                      1: low
+                42      LOAD_FAST                       1: low
+                44      LOAD_METHOD                     1: endswith
+                66      LOAD_CONST                      1: '.tcpdump'
+                68      PRECALL                         1
+                72      CALL                            1
+                82      POP_JUMP_FORWARD_IF_TRUE        42 (to 168)
+                84      LOAD_FAST                       1: low
+                86      LOAD_METHOD                     1: endswith
+                108     LOAD_CONST                      2: '.tcpdump.txt'
+                110     PRECALL                         1
+                114     CALL                            1
+                124     POP_JUMP_FORWARD_IF_TRUE        21 (to 168)
+                126     LOAD_FAST                       1: low
+                128     LOAD_METHOD                     1: endswith
+                150     LOAD_CONST                      3: '.dump'
+                152     PRECALL                         1
+                156     CALL                            1
+                166     POP_JUMP_FORWARD_IF_FALSE       2 (to 172)
+                168     LOAD_CONST                      4: 'tcpdump_text'
+                170     RETURN_VALUE                    
+                172     LOAD_GLOBAL                     5: NULL + sniff_pcap
+                184     LOAD_FAST                       0: path
+                186     PRECALL                         1
+                190     CALL                            1
+                200     POP_JUMP_FORWARD_IF_FALSE       2 (to 206)
+                202     LOAD_CONST                      5: 'pcap'
+                204     RETURN_VALUE                    
+                206     LOAD_GLOBAL                     7: NULL + sniff_xml
+                218     LOAD_FAST                       0: path
+                220     PRECALL                         1
+                224     CALL                            1
+                234     POP_JUMP_FORWARD_IF_FALSE       2 (to 240)
+                236     LOAD_CONST                      6: 'praudit_xml'
+                238     RETURN_VALUE                    
+                240     LOAD_GLOBAL                     9: NULL + sample_lines
+                252     LOAD_FAST                       0: path
+                254     PRECALL                         1
+                258     CALL                            1
+                268     STORE_FAST                      2: lines
+                270     LOAD_GLOBAL                     11: NULL + looks_like_bgl
+                282     LOAD_FAST                       2: lines
+                284     PRECALL                         1
+                288     CALL                            1
+                298     POP_JUMP_FORWARD_IF_FALSE       2 (to 304)
+                300     LOAD_CONST                      7: 'bgl'
+                302     RETURN_VALUE                    
+                304     LOAD_GLOBAL                     13: NULL + looks_like_hdfs
+                316     LOAD_FAST                       2: lines
+                318     PRECALL                         1
+                322     CALL                            1
+                332     POP_JUMP_FORWARD_IF_FALSE       2 (to 338)
+                334     LOAD_CONST                      8: 'hdfs'
+                336     RETURN_VALUE                    
+                338     LOAD_GLOBAL                     15: NULL + looks_like_praudit_text
+                350     LOAD_FAST                       2: lines
+                352     PRECALL                         1
+                356     CALL                            1
+                366     POP_JUMP_FORWARD_IF_FALSE       2 (to 372)
+                368     LOAD_CONST                      9: 'praudit_text'
+                370     RETURN_VALUE                    
+                372     LOAD_GLOBAL                     17: NULL + looks_like_tcpdump_text
+                384     LOAD_FAST                       2: lines
+                386     PRECALL                         1
+                390     CALL                            1
+                400     POP_JUMP_FORWARD_IF_FALSE       2 (to 406)
+                402     LOAD_CONST                      4: 'tcpdump_text'
+                404     RETURN_VALUE                    
+                406     LOAD_GLOBAL                     19: NULL + looks_like_syslog
+                418     LOAD_FAST                       2: lines
+                420     PRECALL                         1
+                424     CALL                            1
+                434     POP_JUMP_FORWARD_IF_FALSE       2 (to 440)
+                436     LOAD_CONST                      10: 'syslog'
+                438     RETURN_VALUE                    
+                440     LOAD_GLOBAL                     21: NULL + looks_like_apache
+                452     LOAD_FAST                       2: lines
+                454     PRECALL                         1
+                458     CALL                            1
+                468     POP_JUMP_FORWARD_IF_FALSE       2 (to 474)
+                470     LOAD_CONST                      11: 'apache'
+                472     RETURN_VALUE                    
+                474     LOAD_GLOBAL                     23: NULL + looks_like_jsonl
+                486     LOAD_FAST                       2: lines
+                488     PRECALL                         1
+                492     CALL                            1
+                502     POP_JUMP_FORWARD_IF_FALSE       2 (to 508)
+                504     LOAD_CONST                      12: 'jsonl'
+                506     RETURN_VALUE                    
+                508     LOAD_GLOBAL                     25: NULL + looks_like_cef_leef
+                520     LOAD_FAST                       2: lines
+                522     PRECALL                         1
+                526     CALL                            1
+                536     POP_JUMP_FORWARD_IF_FALSE       2 (to 542)
+                538     LOAD_CONST                      13: 'cef_leef'
+                540     RETURN_VALUE                    
+                542     LOAD_GLOBAL                     27: NULL + looks_like_cloudtrail
+                554     LOAD_FAST                       2: lines
+                556     PRECALL                         1
+                560     CALL                            1
+                570     POP_JUMP_FORWARD_IF_FALSE       2 (to 576)
+                572     LOAD_CONST                      14: 'cloudtrail'
+                574     RETURN_VALUE                    
+                576     LOAD_GLOBAL                     29: NULL + looks_like_win_event
+                588     LOAD_FAST                       2: lines
+                590     PRECALL                         1
+                594     CALL                            1
+                604     POP_JUMP_FORWARD_IF_FALSE       2 (to 610)
+                606     LOAD_CONST                      15: 'win_event'
+                608     RETURN_VALUE                    
+                610     LOAD_CONST                      16: 'unknown'
+                612     RETURN_VALUE                    
+            [Exception Table]
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: iter_files
+            Qualified Name: iter_files
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 6
+            Flags: 0x00000023 (CO_OPTIMIZED | CO_NEWLOCALS | CO_GENERATOR)
+            [Names]
+                'os'
+                'path'
+                'isdir'
+                'walk'
+                'join'
+            [Locals+Names]
+                'input_path'
+                'root'
+                '_'
+                'files'
+                'fn'
+            [Constants]
+                "Itère sur tous les fichiers d'un chemin (fichier unique ou dossier récursif)."
+                None
+            [Disassembly]
+                0       RETURN_GENERATOR                
+                2       POP_TOP                         
+                4       RESUME                          0
+                6       LOAD_GLOBAL                     0: os
+                18      LOAD_ATTR                       1: path
+                28      LOAD_METHOD                     2: isdir
+                50      LOAD_FAST                       0: input_path
+                52      PRECALL                         1
+                56      CALL                            1
+                66      POP_JUMP_FORWARD_IF_FALSE       68 (to 204)
+                68      LOAD_GLOBAL                     1: NULL + os
+                80      LOAD_ATTR                       3: walk
+                90      LOAD_FAST                       0: input_path
+                92      PRECALL                         1
+                96      CALL                            1
+                106     GET_ITER                        
+                108     FOR_ITER                        45 (to 200)
+                110     UNPACK_SEQUENCE                 3
+                114     STORE_FAST                      1: root
+                116     STORE_FAST                      2: _
+                118     STORE_FAST                      3: files
+                120     LOAD_FAST                       3: files
+                122     GET_ITER                        
+                124     FOR_ITER                        36 (to 198)
+                126     STORE_FAST                      4: fn
+                128     LOAD_GLOBAL                     0: os
+                140     LOAD_ATTR                       1: path
+                150     LOAD_METHOD                     4: join
+                172     LOAD_FAST                       1: root
+                174     LOAD_FAST                       4: fn
+                176     PRECALL                         2
+                180     CALL                            2
+                190     YIELD_VALUE                     
+                192     RESUME                          1
+                194     POP_TOP                         
+                196     JUMP_BACKWARD                   37 (to 124)
+                198     JUMP_BACKWARD                   46 (to 108)
+                200     LOAD_CONST                      1: None
+                202     RETURN_VALUE                    
+                204     LOAD_FAST                       0: input_path
+                206     YIELD_VALUE                     
+                208     RESUME                          1
+                210     POP_TOP                         
+                212     LOAD_CONST                      1: None
+                214     RETURN_VALUE                    
+            [Exception Table]
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: looks_like_syslog
+            Qualified Name: looks_like_syslog
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 4
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                're'
+                'compile'
+                'any'
+            [Locals+Names]
+                'lines'
+                'r'
+            [Constants]
+                None
+                '^[A-Z][a-z]{2}\\s+\\d{1,2}\\s+\\d{2}:\\d{2}:\\d{2}\\s+\\S+\\s+\\S+'
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+                    Object Name: <genexpr>
+                    Qualified Name: looks_like_syslog.<locals>.<genexpr>
+                    Arg Count: 1
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 0
+                    Stack Size: 4
+                    Flags: 0x00000033 (CO_OPTIMIZED | CO_NEWLOCALS | CO_NESTED | CO_GENERATOR)
+                    [Names]
+                        'search'
+                    [Locals+Names]
+                        '.0'
+                        'l'
+                        'r'
+                    [Constants]
+                        None
+                    [Disassembly]
+                        0       COPY_FREE_VARS                  1
+                        2       RETURN_GENERATOR                
+                        4       POP_TOP                         
+                        6       RESUME                          0
+                        8       LOAD_FAST                       0: .0
+                        10      FOR_ITER                        25 (to 62)
+                        12      STORE_FAST                      1: l
+                        14      LOAD_DEREF                      2: r
+                        16      LOAD_METHOD                     0: search
+                        38      LOAD_FAST                       1: l
+                        40      PRECALL                         1
+                        44      CALL                            1
+                        54      YIELD_VALUE                     
+                        56      RESUME                          1
+                        58      POP_TOP                         
+                        60      JUMP_BACKWARD                   26 (to 10)
+                        62      LOAD_CONST                      0: None
+                        64      RETURN_VALUE                    
+                    [Exception Table]
+            [Disassembly]
+                0       MAKE_CELL                       1: r
+                2       RESUME                          0
+                4       LOAD_GLOBAL                     1: NULL + re
+                16      LOAD_ATTR                       1: compile
+                26      LOAD_CONST                      1: '^[A-Z][a-z]{2}\\s+\\d{1,2}\\s+\\d{2}:\\d{2}:\\d{2}\\s+\\S+\\s+\\S+'
+                28      PRECALL                         1
+                32      CALL                            1
+                42      STORE_DEREF                     1: r
+                44      LOAD_GLOBAL                     5: NULL + any
+                56      LOAD_CLOSURE                    1: r
+                58      BUILD_TUPLE                     1
+                60      LOAD_CONST                      2: <CODE> <genexpr>
+                62      MAKE_FUNCTION                   8
+                64      LOAD_FAST                       0: lines
+                66      GET_ITER                        
+                68      PRECALL                         0
+                72      CALL                            0
+                82      PRECALL                         1
+                86      CALL                            1
+                96      RETURN_VALUE                    
+            [Exception Table]
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: looks_like_apache
+            Qualified Name: looks_like_apache
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 4
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                're'
+                'compile'
+                'any'
+            [Locals+Names]
+                'lines'
+                'r'
+            [Constants]
+                None
+                '^\\d{1,3}(?:\\.\\d{1,3}){3}\\s+\\S+\\s+\\S+\\s+\\[[^\\]]+\\]\\s+\\"(GET|POST|PUT|DELETE|HEAD|OPTIONS)\\s'
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+                    Object Name: <genexpr>
+                    Qualified Name: looks_like_apache.<locals>.<genexpr>
+                    Arg Count: 1
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 0
+                    Stack Size: 4
+                    Flags: 0x00000033 (CO_OPTIMIZED | CO_NEWLOCALS | CO_NESTED | CO_GENERATOR)
+                    [Names]
+                        'search'
+                    [Locals+Names]
+                        '.0'
+                        'l'
+                        'r'
+                    [Constants]
+                        None
+                    [Disassembly]
+                        0       COPY_FREE_VARS                  1
+                        2       RETURN_GENERATOR                
+                        4       POP_TOP                         
+                        6       RESUME                          0
+                        8       LOAD_FAST                       0: .0
+                        10      FOR_ITER                        25 (to 62)
+                        12      STORE_FAST                      1: l
+                        14      LOAD_DEREF                      2: r
+                        16      LOAD_METHOD                     0: search
+                        38      LOAD_FAST                       1: l
+                        40      PRECALL                         1
+                        44      CALL                            1
+                        54      YIELD_VALUE                     
+                        56      RESUME                          1
+                        58      POP_TOP                         
+                        60      JUMP_BACKWARD                   26 (to 10)
+                        62      LOAD_CONST                      0: None
+                        64      RETURN_VALUE                    
+                    [Exception Table]
+            [Disassembly]
+                0       MAKE_CELL                       1: r
+                2       RESUME                          0
+                4       LOAD_GLOBAL                     1: NULL + re
+                16      LOAD_ATTR                       1: compile
+                26      LOAD_CONST                      1: '^\\d{1,3}(?:\\.\\d{1,3}){3}\\s+\\S+\\s+\\S+\\s+\\[[^\\]]+\\]\\s+\\"(GET|POST|PUT|DELETE|HEAD|OPTIONS)\\s'
+                28      PRECALL                         1
+                32      CALL                            1
+                42      STORE_DEREF                     1: r
+                44      LOAD_GLOBAL                     5: NULL + any
+                56      LOAD_CLOSURE                    1: r
+                58      BUILD_TUPLE                     1
+                60      LOAD_CONST                      2: <CODE> <genexpr>
+                62      MAKE_FUNCTION                   8
+                64      LOAD_FAST                       0: lines
+                66      GET_ITER                        
+                68      PRECALL                         0
+                72      CALL                            0
+                82      PRECALL                         1
+                86      CALL                            1
+                96      RETURN_VALUE                    
+            [Exception Table]
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: looks_like_jsonl
+            Qualified Name: looks_like_jsonl
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 5
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'strip'
+                'endswith'
+                'json'
+                'loads'
+                'Exception'
+            [Locals+Names]
+                'lines'
+                'l'
+                's'
+            [Constants]
+                None
+                0
+                '{'
+                '}'
+                True
+                False
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_FAST                       0: lines
+                4       GET_ITER                        
+                6       FOR_ITER                        98 (to 204)
+                8       STORE_FAST                      1: l
+                10      LOAD_FAST                       1: l
+                12      LOAD_METHOD                     0: strip
+                34      PRECALL                         0
+                38      CALL                            0
+                48      STORE_FAST                      2: s
+                50      LOAD_FAST                       2: s
+                52      POP_JUMP_FORWARD_IF_TRUE        1 (to 56)
+                54      JUMP_BACKWARD                   25 (to 6)
+                56      LOAD_FAST                       2: s
+                58      LOAD_CONST                      1: 0
+                60      BINARY_SUBSCR                   
+                70      LOAD_CONST                      2: '{'
+                72      COMPARE_OP                      2 (==)
+                78      POP_JUMP_FORWARD_IF_FALSE       61 (to 202)
+                80      LOAD_FAST                       2: s
+                82      LOAD_METHOD                     1: endswith
+                104     LOAD_CONST                      3: '}'
+                106     PRECALL                         1
+                110     CALL                            1
+                120     POP_JUMP_FORWARD_IF_FALSE       40 (to 202)
+                122     NOP                             
+                124     LOAD_GLOBAL                     5: NULL + json
+                136     LOAD_ATTR                       3: loads
+                146     LOAD_FAST                       2: s
+                148     PRECALL                         1
+                152     CALL                            1
+                162     POP_TOP                         
+                164     POP_TOP                         
+                166     LOAD_CONST                      4: True
+                168     RETURN_VALUE                    
+                170     PUSH_EXC_INFO                   
+                172     LOAD_GLOBAL                     8: Exception
+                184     CHECK_EXC_MATCH                 
+                186     POP_JUMP_FORWARD_IF_FALSE       3 (to 194)
+                188     POP_TOP                         
+                190     POP_EXCEPT                      
+                192     JUMP_BACKWARD                   94 (to 6)
+                194     RERAISE                         0
+                196     COPY                            3
+                198     POP_EXCEPT                      
+                200     RERAISE                         1
+                202     JUMP_BACKWARD                   99 (to 6)
+                204     LOAD_CONST                      5: False
+                206     RETURN_VALUE                    
+            [Exception Table]
+                124 to 164 -> 170 [1] 
+                170 to 190 -> 196 [2] lasti
+                194 to 196 -> 196 [2] lasti
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+            Object Name: looks_like_win_event
+            Qualified Name: looks_like_win_event
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 4
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'any'
+            [Locals+Names]
+                'lines'
+                'keys'
+            [Constants]
+                None
+                (
+                    'EventID'
+                    'Provider'
+                    'Level'
+                    'Computer'
+                    'TimeCreated'
+                )
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+                    Object Name: <genexpr>
+                    Qualified Name: looks_like_win_event.<locals>.<genexpr>
+                    Arg Count: 1
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 0
+                    Stack Size: 5
+                    Flags: 0x00000033 (CO_OPTIMIZED | CO_NEWLOCALS | CO_NESTED | CO_GENERATOR)
+                    [Names]
+                        'all'
+                    [Locals+Names]
+                        '.0'
+                        'l'
+                    [Constants]
+                        [Code]
+                            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+                            Object Name: <genexpr>
+                            Qualified Name: looks_like_win_event.<locals>.<genexpr>.<genexpr>
+                            Arg Count: 1
+                            Pos Only Arg Count: 0
+                            KW Only Arg Count: 0
+                            Stack Size: 3
+                            Flags: 0x00000033 (CO_OPTIMIZED | CO_NEWLOCALS | CO_NESTED | CO_GENERATOR)
+                            [Names]
+                            [Locals+Names]
+                                '.0'
+                                'k'
+                                'l'
+                            [Constants]
+                                None
+                            [Disassembly]
+                                0       COPY_FREE_VARS                  1
+                                2       RETURN_GENERATOR                
+                                4       POP_TOP                         
+                                6       RESUME                          0
+                                8       LOAD_FAST                       0: .0
+                                10      FOR_ITER                        8 (to 28)
+                                12      STORE_FAST                      1: k
+                                14      LOAD_FAST                       1: k
+                                16      LOAD_DEREF                      2: l
+                                18      CONTAINS_OP                     0 (in)
+                                20      YIELD_VALUE                     
+                                22      RESUME                          1
+                                24      POP_TOP                         
+                                26      JUMP_BACKWARD                   9 (to 10)
+                                28      LOAD_CONST                      0: None
+                                30      RETURN_VALUE                    
+                            [Exception Table]
+                        (
+                            'Event'
+                        )
+                        None
+                    [Disassembly]
+                        0       MAKE_CELL                       1: l
+                        2       RETURN_GENERATOR                
+                        4       POP_TOP                         
+                        6       RESUME                          0
+                        8       LOAD_FAST                       0: .0
+                        10      FOR_ITER                        31 (to 74)
+                        12      STORE_DEREF                     1: l
+                        14      LOAD_GLOBAL                     1: NULL + all
+                        26      LOAD_CLOSURE                    1: l
+                        28      BUILD_TUPLE                     1
+                        30      LOAD_CONST                      0: <CODE> <genexpr>
+                        32      MAKE_FUNCTION                   8
+                        34      LOAD_CONST                      1: ('Event',)
+                        36      GET_ITER                        
+                        38      PRECALL                         0
+                        42      CALL                            0
+                        52      PRECALL                         1
+                        56      CALL                            1
+                        66      YIELD_VALUE                     
+                        68      RESUME                          1
+                        70      POP_TOP                         
+                        72      JUMP_BACKWARD                   32 (to 10)
+                        74      LOAD_CONST                      2: None
+                        76      RETURN_VALUE                    
+                    [Exception Table]
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+                    Object Name: <genexpr>
+                    Qualified Name: looks_like_win_event.<locals>.<genexpr>
+                    Arg Count: 1
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 0
+                    Stack Size: 5
+                    Flags: 0x00000033 (CO_OPTIMIZED | CO_NEWLOCALS | CO_NESTED | CO_GENERATOR)
+                    [Names]
+                        'any'
+                    [Locals+Names]
+                        '.0'
+                        'l'
+                        'keys'
+                    [Constants]
+                        [Code]
+                            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\detectors\file_detector.py
+                            Object Name: <genexpr>
+                            Qualified Name: looks_like_win_event.<locals>.<genexpr>.<genexpr>
+                            Arg Count: 1
+                            Pos Only Arg Count: 0
+                            KW Only Arg Count: 0
+                            Stack Size: 3
+                            Flags: 0x00000033 (CO_OPTIMIZED | CO_NEWLOCALS | CO_NESTED | CO_GENERATOR)
+                            [Names]
+                            [Locals+Names]
+                                '.0'
+                                'k'
+                                'l'
+                            [Constants]
+                                None
+                            [Disassembly]
+                                0       COPY_FREE_VARS                  1
+                                2       RETURN_GENERATOR                
+                                4       POP_TOP                         
+                                6       RESUME                          0
+                                8       LOAD_FAST                       0: .0
+                                10      FOR_ITER                        8 (to 28)
+                                12      STORE_FAST                      1: k
+                                14      LOAD_FAST                       1: k
+                                16      LOAD_DEREF                      2: l
+                                18      CONTAINS_OP                     0 (in)
+                                20      YIELD_VALUE                     
+                                22      RESUME                          1
+                                24      POP_TOP                         
+                                26      JUMP_BACKWARD                   9 (to 10)
+                                28      LOAD_CONST                      0: None
+                                30      RETURN_VALUE                    
+                            [Exception Table]
+                        None
+                    [Disassembly]
+                        0       COPY_FREE_VARS                  1
+                        2       MAKE_CELL                       1: l
+                        4       RETURN_GENERATOR                
+                        6       POP_TOP                         
+                        8       RESUME                          0
+                        10      LOAD_FAST                       0: .0
+                        12      FOR_ITER                        31 (to 76)
+                        14      STORE_DEREF                     1: l
+                        16      LOAD_GLOBAL                     1: NULL + any
+                        28      LOAD_CLOSURE                    1: l
+                        30      BUILD_TUPLE                     1
+                        32      LOAD_CONST                      0: <CODE> <genexpr>
+                        34      MAKE_FUNCTION                   8
+                        36      LOAD_DEREF                      2: keys
+                        38      GET_ITER                        
+                        40      PRECALL                         0
+                        44      CALL                            0
+                        54      PRECALL                         1
+                        58      CALL                            1
+                        68      YIELD_VALUE                     
+                        70      RESUME                          1
+                        72      POP_TOP                         
+                        74      JUMP_BACKWARD                   32 (to 12)
+                        76      LOAD_CONST                      1: None
+                        78      RETURN_VALUE                    
+                    [Exception Table]
+            [Disassembly]
+                0       MAKE_CELL                       1: keys
+                2       RESUME                          0
+                4       LOAD_CONST                      1: ('EventID', 'Provider', 'Level', 'Computer', 'TimeCreated')
+                6       STORE_DEREF                     1: keys
+                8       LOAD_GLOBAL                     1: NULL + any
+                20      LOAD_CONST                      2: <CODE> <genexpr>
+                22      MAKE_FUNCTION                   0
+                24      LOAD_FAST                       0: lines
+                26      GET_ITER                        
+                28      PRECALL                         0
+                32      CALL                            0
+                42      PRECALL                         1
+                46      CALL                            1
+                56      JUMP_IF_FALSE_OR_POP            26 (to 52)
+                58      LOAD_GLOBAL                     1: NULL + any
+                70      LOAD_CLOSURE                    1: keys
+                72      BUILD_TUPLE                     1
+                74      LOAD_CONST                      3: <CODE> <genexpr>
+                76      MAKE_FUNCTION                   8
+                78      LOAD_FAST                       0: lines
+                80      GET_ITER                        
+                82      PRECALL                         0
+                86      CALL                            0
+                96      PRECALL                         1
+                100     CALL                            1
+                110     RETURN_VALUE                    
+            [Exception Table]
+        (
+            40
+        )
+    [Disassembly]
+        0       RESUME                          0
+        2       LOAD_CONST                      0: 'Détection du type de fichier (format) pour dispatcher vers le bon parseur.'
+        4       STORE_NAME                      0: __doc__
+        6       LOAD_CONST                      1: 0
+        8       LOAD_CONST                      2: None
+        10      IMPORT_NAME                     1: os
+        12      STORE_NAME                      1: os
+        14      LOAD_CONST                      1: 0
+        16      LOAD_CONST                      2: None
+        18      IMPORT_NAME                     2: re
+        20      STORE_NAME                      2: re
+        22      LOAD_CONST                      1: 0
+        24      LOAD_CONST                      2: None
+        26      IMPORT_NAME                     3: json
+        28      STORE_NAME                      3: json
+        30      LOAD_CONST                      1: 0
+        32      LOAD_CONST                      3: ('Tuple', 'List')
+        34      IMPORT_NAME                     4: typing
+        36      IMPORT_FROM                     5: Tuple
+        38      STORE_NAME                      5: Tuple
+        40      IMPORT_FROM                     6: List
+        42      STORE_NAME                      6: List
+        44      POP_TOP                         
+        46      LOAD_CONST                      4: 'path'
+        48      LOAD_NAME                       7: str
+        50      LOAD_CONST                      5: 'return'
+        52      LOAD_NAME                       8: bool
+        54      BUILD_TUPLE                     4
+        56      LOAD_CONST                      6: <CODE> sniff_pcap
+        58      MAKE_FUNCTION                   4
+        60      STORE_NAME                      9: sniff_pcap
+        62      LOAD_CONST                      4: 'path'
+        64      LOAD_NAME                       7: str
+        66      LOAD_CONST                      5: 'return'
+        68      LOAD_NAME                       8: bool
+        70      BUILD_TUPLE                     4
+        72      LOAD_CONST                      7: <CODE> sniff_xml
+        74      MAKE_FUNCTION                   4
+        76      STORE_NAME                      10: sniff_xml
+        78      LOAD_CONST                      27: (40,)
+        80      LOAD_CONST                      4: 'path'
+        82      LOAD_NAME                       7: str
+        84      LOAD_CONST                      9: 'n'
+        86      LOAD_NAME                       11: int
+        88      LOAD_CONST                      5: 'return'
+        90      LOAD_NAME                       6: List
+        92      LOAD_NAME                       7: str
+        94      BINARY_SUBSCR                   
+        104     BUILD_TUPLE                     6
+        106     LOAD_CONST                      10: <CODE> sample_lines
+        108     MAKE_FUNCTION                   5
+        110     STORE_NAME                      12: sample_lines
+        112     LOAD_CONST                      11: <CODE> looks_like_cef_leef
+        114     MAKE_FUNCTION                   0
+        116     STORE_NAME                      13: looks_like_cef_leef
+        118     LOAD_CONST                      12: <CODE> looks_like_win_xml
+        120     MAKE_FUNCTION                   0
+        122     STORE_NAME                      14: looks_like_win_xml
+        124     LOAD_CONST                      13: <CODE> looks_like_cloudtrail
+        126     MAKE_FUNCTION                   0
+        128     STORE_NAME                      15: looks_like_cloudtrail
+        130     LOAD_CONST                      14: 'lines'
+        132     LOAD_NAME                       6: List
+        134     LOAD_NAME                       7: str
+        136     BINARY_SUBSCR                   
+        146     LOAD_CONST                      5: 'return'
+        148     LOAD_NAME                       8: bool
+        150     BUILD_TUPLE                     4
+        152     LOAD_CONST                      15: <CODE> looks_like_bgl
+        154     MAKE_FUNCTION                   4
+        156     STORE_NAME                      16: looks_like_bgl
+        158     LOAD_CONST                      14: 'lines'
+        160     LOAD_NAME                       6: List
+        162     LOAD_NAME                       7: str
+        164     BINARY_SUBSCR                   
+        174     LOAD_CONST                      5: 'return'
+        176     LOAD_NAME                       8: bool
+        178     BUILD_TUPLE                     4
+        180     LOAD_CONST                      16: <CODE> looks_like_hdfs
+        182     MAKE_FUNCTION                   4
+        184     STORE_NAME                      17: looks_like_hdfs
+        186     LOAD_CONST                      14: 'lines'
+        188     LOAD_NAME                       6: List
+        190     LOAD_NAME                       7: str
+        192     BINARY_SUBSCR                   
+        202     LOAD_CONST                      5: 'return'
+        204     LOAD_NAME                       8: bool
+        206     BUILD_TUPLE                     4
+        208     LOAD_CONST                      17: <CODE> looks_like_praudit_text
+        210     MAKE_FUNCTION                   4
+        212     STORE_NAME                      18: looks_like_praudit_text
+        214     LOAD_CONST                      14: 'lines'
+        216     LOAD_NAME                       6: List
+        218     LOAD_NAME                       7: str
+        220     BINARY_SUBSCR                   
+        230     LOAD_CONST                      5: 'return'
+        232     LOAD_NAME                       8: bool
+        234     BUILD_TUPLE                     4
+        236     LOAD_CONST                      18: <CODE> looks_like_tcpdump_text
+        238     MAKE_FUNCTION                   4
+        240     STORE_NAME                      19: looks_like_tcpdump_text
+        242     LOAD_CONST                      19: 'input_path'
+        244     LOAD_NAME                       7: str
+        246     LOAD_CONST                      5: 'return'
+        248     LOAD_NAME                       5: Tuple
+        250     LOAD_NAME                       7: str
+        252     LOAD_NAME                       7: str
+        254     BUILD_TUPLE                     2
+        256     BINARY_SUBSCR                   
+        266     BUILD_TUPLE                     4
+        268     LOAD_CONST                      20: <CODE> detect_file
+        270     MAKE_FUNCTION                   4
+        272     STORE_NAME                      20: detect_file
+        274     LOAD_CONST                      4: 'path'
+        276     LOAD_NAME                       7: str
+        278     LOAD_CONST                      5: 'return'
+        280     LOAD_NAME                       7: str
+        282     BUILD_TUPLE                     4
+        284     LOAD_CONST                      21: <CODE> detect_kind
+        286     MAKE_FUNCTION                   4
+        288     STORE_NAME                      21: detect_kind
+        290     LOAD_CONST                      19: 'input_path'
+        292     LOAD_NAME                       7: str
+        294     BUILD_TUPLE                     2
+        296     LOAD_CONST                      22: <CODE> iter_files
+        298     MAKE_FUNCTION                   4
+        300     STORE_NAME                      22: iter_files
+        302     LOAD_CONST                      14: 'lines'
+        304     LOAD_NAME                       6: List
+        306     LOAD_NAME                       7: str
+        308     BINARY_SUBSCR                   
+        318     LOAD_CONST                      5: 'return'
+        320     LOAD_NAME                       8: bool
+        322     BUILD_TUPLE                     4
+        324     LOAD_CONST                      23: <CODE> looks_like_syslog
+        326     MAKE_FUNCTION                   4
+        328     STORE_NAME                      23: looks_like_syslog
+        330     LOAD_CONST                      14: 'lines'
+        332     LOAD_NAME                       6: List
+        334     LOAD_NAME                       7: str
+        336     BINARY_SUBSCR                   
+        346     LOAD_CONST                      5: 'return'
+        348     LOAD_NAME                       8: bool
+        350     BUILD_TUPLE                     4
+        352     LOAD_CONST                      24: <CODE> looks_like_apache
+        354     MAKE_FUNCTION                   4
+        356     STORE_NAME                      24: looks_like_apache
+        358     LOAD_CONST                      14: 'lines'
+        360     LOAD_NAME                       6: List
+        362     LOAD_NAME                       7: str
+        364     BINARY_SUBSCR                   
+        374     LOAD_CONST                      5: 'return'
+        376     LOAD_NAME                       8: bool
+        378     BUILD_TUPLE                     4
+        380     LOAD_CONST                      25: <CODE> looks_like_jsonl
+        382     MAKE_FUNCTION                   4
+        384     STORE_NAME                      25: looks_like_jsonl
+        386     LOAD_CONST                      14: 'lines'
+        388     LOAD_NAME                       6: List
+        390     LOAD_NAME                       7: str
+        392     BINARY_SUBSCR                   
+        402     LOAD_CONST                      5: 'return'
+        404     LOAD_NAME                       8: bool
+        406     BUILD_TUPLE                     4
+        408     LOAD_CONST                      26: <CODE> looks_like_win_event
+        410     MAKE_FUNCTION                   4
+        412     STORE_NAME                      26: looks_like_win_event
+        414     LOAD_CONST                      2: None
+        416     RETURN_VALUE                    
+    [Exception Table]

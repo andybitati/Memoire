@@ -1,0 +1,871 @@
+cloudtrail.cpython-311.pyc (Python 3.11)
+[Code]
+    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\cloudtrail.py
+    Object Name: <module>
+    Qualified Name: <module>
+    Arg Count: 0
+    Pos Only Arg Count: 0
+    KW Only Arg Count: 0
+    Stack Size: 4
+    Flags: 0x00000000
+    [Names]
+        '__doc__'
+        'os'
+        'sys'
+        'json'
+        'gzip'
+        'common'
+        'clean'
+        'make_pbar'
+        'writer'
+        'emit'
+        'str'
+        '_open_maybe_gz'
+        '_emit_record'
+        'Parser'
+    [Locals+Names]
+    [Constants]
+        'Parseur AWS CloudTrail (JSON / JSON.GZ).'
+        0
+        None
+        2
+        (
+            'clean'
+            'make_pbar'
+        )
+        (
+            'emit'
+        )
+        'path'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\cloudtrail.py
+            Object Name: _open_maybe_gz
+            Qualified Name: _open_maybe_gz
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 6
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'lower'
+                'endswith'
+                'gzip'
+                'open'
+            [Locals+Names]
+                'path'
+            [Constants]
+                None
+                '.gz'
+                'rt'
+                'utf-8'
+                'ignore'
+                (
+                    'encoding'
+                    'errors'
+                )
+                'r'
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_FAST                       0: path
+                4       LOAD_METHOD                     0: lower
+                26      PRECALL                         0
+                30      CALL                            0
+                40      LOAD_METHOD                     1: endswith
+                62      LOAD_CONST                      1: '.gz'
+                64      PRECALL                         1
+                68      CALL                            1
+                78      POP_JUMP_FORWARD_IF_FALSE       24 (to 128)
+                80      LOAD_GLOBAL                     5: NULL + gzip
+                92      LOAD_ATTR                       3: open
+                102     LOAD_FAST                       0: path
+                104     LOAD_CONST                      2: 'rt'
+                106     LOAD_CONST                      3: 'utf-8'
+                108     LOAD_CONST                      4: 'ignore'
+                110     KW_NAMES                        5: ('encoding', 'errors')
+                112     PRECALL                         4
+                116     CALL                            4
+                126     JUMP_FORWARD                    18 (to 164)
+                128     LOAD_GLOBAL                     7: NULL + open
+                140     LOAD_FAST                       0: path
+                142     LOAD_CONST                      6: 'r'
+                144     LOAD_CONST                      3: 'utf-8'
+                146     LOAD_CONST                      4: 'ignore'
+                148     KW_NAMES                        5: ('encoding', 'errors')
+                150     PRECALL                         4
+                154     CALL                            4
+                164     RETURN_VALUE                    
+            [Exception Table]
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\cloudtrail.py
+            Object Name: _emit_record
+            Qualified Name: _emit_record
+            Arg Count: 3
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 20
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'dict'
+                'get'
+                'clean'
+                'json'
+                'dumps'
+                'str'
+                'emit'
+            [Locals+Names]
+                'writer'
+                'path'
+                'rec'
+                'base'
+            [Constants]
+                None
+                'cloudtrail'
+                'aws'
+                'eventTime'
+                ''
+                'eventName'
+                'eventSource'
+                'userIdentity'
+                'arn'
+                'type'
+                'sourceIPAddress'
+                'awsRegion'
+                'errorMessage'
+                'requestParameters'
+                2000
+                (
+                    'dataset'
+                    'subtype'
+                    'filepath'
+                    'timestamp_iso'
+                    'event'
+                    'source'
+                    'user'
+                    'src_ip'
+                    'aws_region'
+                    'severity'
+                    'message'
+                )
+                'httpMethod'
+                'additionalEventData'
+                'http_method'
+                'url'
+                'http_url'
+                'responseElements'
+                'statusCode'
+                'http_status'
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_GLOBAL                     1: NULL + dict
+                14      LOAD_CONST                      1: 'cloudtrail'
+                16      LOAD_CONST                      2: 'aws'
+                18      LOAD_FAST                       1: path
+                20      LOAD_FAST                       2: rec
+                22      LOAD_METHOD                     1: get
+                44      LOAD_CONST                      3: 'eventTime'
+                46      PRECALL                         1
+                50      CALL                            1
+                60      JUMP_IF_TRUE_OR_POP             1 (to 2)
+                62      LOAD_CONST                      4: ''
+                64      LOAD_FAST                       2: rec
+                66      LOAD_METHOD                     1: get
+                88      LOAD_CONST                      5: 'eventName'
+                90      LOAD_CONST                      4: ''
+                92      PRECALL                         2
+                96      CALL                            2
+                106     LOAD_FAST                       2: rec
+                108     LOAD_METHOD                     1: get
+                130     LOAD_CONST                      6: 'eventSource'
+                132     LOAD_CONST                      4: ''
+                134     PRECALL                         2
+                138     CALL                            2
+                148     LOAD_FAST                       2: rec
+                150     LOAD_METHOD                     1: get
+                172     LOAD_CONST                      7: 'userIdentity'
+                174     BUILD_MAP                       0
+                176     PRECALL                         2
+                180     CALL                            2
+                190     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                192     BUILD_MAP                       0
+                194     LOAD_METHOD                     1: get
+                216     LOAD_CONST                      8: 'arn'
+                218     LOAD_CONST                      4: ''
+                220     PRECALL                         2
+                224     CALL                            2
+                234     JUMP_IF_TRUE_OR_POP             43 (to 86)
+                236     LOAD_FAST                       2: rec
+                238     LOAD_METHOD                     1: get
+                260     LOAD_CONST                      7: 'userIdentity'
+                262     BUILD_MAP                       0
+                264     PRECALL                         2
+                268     CALL                            2
+                278     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                280     BUILD_MAP                       0
+                282     LOAD_METHOD                     1: get
+                304     LOAD_CONST                      9: 'type'
+                306     LOAD_CONST                      4: ''
+                308     PRECALL                         2
+                312     CALL                            2
+                322     LOAD_FAST                       2: rec
+                324     LOAD_METHOD                     1: get
+                346     LOAD_CONST                      10: 'sourceIPAddress'
+                348     LOAD_CONST                      4: ''
+                350     PRECALL                         2
+                354     CALL                            2
+                364     LOAD_FAST                       2: rec
+                366     LOAD_METHOD                     1: get
+                388     LOAD_CONST                      11: 'awsRegion'
+                390     LOAD_CONST                      4: ''
+                392     PRECALL                         2
+                396     CALL                            2
+                406     LOAD_CONST                      4: ''
+                408     LOAD_GLOBAL                     5: NULL + clean
+                420     LOAD_FAST                       2: rec
+                422     LOAD_METHOD                     1: get
+                444     LOAD_CONST                      12: 'errorMessage'
+                446     LOAD_CONST                      4: ''
+                448     PRECALL                         2
+                452     CALL                            2
+                462     JUMP_IF_TRUE_OR_POP             47 (to 94)
+                464     LOAD_GLOBAL                     7: NULL + json
+                476     LOAD_ATTR                       4: dumps
+                486     LOAD_FAST                       2: rec
+                488     LOAD_METHOD                     1: get
+                510     LOAD_CONST                      13: 'requestParameters'
+                512     BUILD_MAP                       0
+                514     PRECALL                         2
+                518     CALL                            2
+                528     PRECALL                         1
+                532     CALL                            1
+                542     LOAD_CONST                      0: None
+                544     LOAD_CONST                      14: 2000
+                546     BUILD_SLICE                     2
+                548     BINARY_SUBSCR                   
+                558     PRECALL                         1
+                562     CALL                            1
+                572     KW_NAMES                        15: ('dataset', 'subtype', 'filepath', 'timestamp_iso', 'event', 'source', 'user', 'src_ip', 'aws_region', 'severity', 'message')
+                574     PRECALL                         11
+                578     CALL                            11
+                588     STORE_FAST                      3: base
+                590     LOAD_FAST                       2: rec
+                592     LOAD_METHOD                     1: get
+                614     LOAD_CONST                      13: 'requestParameters'
+                616     BUILD_MAP                       0
+                618     PRECALL                         2
+                622     CALL                            2
+                632     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                634     BUILD_MAP                       0
+                636     LOAD_METHOD                     1: get
+                658     LOAD_CONST                      16: 'httpMethod'
+                660     LOAD_CONST                      4: ''
+                662     PRECALL                         2
+                666     CALL                            2
+                676     JUMP_IF_TRUE_OR_POP             43 (to 86)
+                678     LOAD_FAST                       2: rec
+                680     LOAD_METHOD                     1: get
+                702     LOAD_CONST                      17: 'additionalEventData'
+                704     BUILD_MAP                       0
+                706     PRECALL                         2
+                710     CALL                            2
+                720     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                722     BUILD_MAP                       0
+                724     LOAD_METHOD                     1: get
+                746     LOAD_CONST                      16: 'httpMethod'
+                748     LOAD_CONST                      4: ''
+                750     PRECALL                         2
+                754     CALL                            2
+                764     LOAD_FAST                       3: base
+                766     LOAD_CONST                      18: 'http_method'
+                768     STORE_SUBSCR                    
+                772     LOAD_FAST                       2: rec
+                774     LOAD_METHOD                     1: get
+                796     LOAD_CONST                      13: 'requestParameters'
+                798     BUILD_MAP                       0
+                800     PRECALL                         2
+                804     CALL                            2
+                814     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                816     BUILD_MAP                       0
+                818     LOAD_METHOD                     1: get
+                840     LOAD_CONST                      19: 'url'
+                842     LOAD_CONST                      4: ''
+                844     PRECALL                         2
+                848     CALL                            2
+                858     LOAD_FAST                       3: base
+                860     LOAD_CONST                      20: 'http_url'
+                862     STORE_SUBSCR                    
+                866     LOAD_GLOBAL                     11: NULL + str
+                878     LOAD_FAST                       2: rec
+                880     LOAD_METHOD                     1: get
+                902     LOAD_CONST                      21: 'responseElements'
+                904     BUILD_MAP                       0
+                906     PRECALL                         2
+                910     CALL                            2
+                920     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                922     BUILD_MAP                       0
+                924     LOAD_METHOD                     1: get
+                946     LOAD_CONST                      22: 'statusCode'
+                948     LOAD_CONST                      4: ''
+                950     PRECALL                         2
+                954     CALL                            2
+                964     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                966     LOAD_CONST                      4: ''
+                968     PRECALL                         1
+                972     CALL                            1
+                982     LOAD_FAST                       3: base
+                984     LOAD_CONST                      23: 'http_status'
+                986     STORE_SUBSCR                    
+                990     LOAD_GLOBAL                     13: NULL + emit
+                1002    LOAD_FAST                       0: writer
+                1004    LOAD_FAST                       3: base
+                1006    PRECALL                         2
+                1010    CALL                            2
+                1020    POP_TOP                         
+                1022    LOAD_CONST                      0: None
+                1024    RETURN_VALUE                    
+            [Exception Table]
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\cloudtrail.py
+            Object Name: Parser
+            Qualified Name: Parser
+            Arg Count: 0
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 12
+            Flags: 0x00000000
+            [Names]
+                '__name__'
+                '__module__'
+                '__qualname__'
+                'subtype'
+                'str'
+                'int'
+                'bool'
+                'parse'
+            [Locals+Names]
+            [Constants]
+                'Parser'
+                'cloudtrail'
+                'path'
+                'sep'
+                'split_rows'
+                'progress_every'
+                'use_tqdm'
+                'debug'
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\cloudtrail.py
+                    Object Name: parse
+                    Qualified Name: Parser.parse
+                    Arg Count: 4
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 4
+                    Stack Size: 7
+                    Flags: 0x00000023 (CO_OPTIMIZED | CO_NEWLOCALS | CO_GENERATOR)
+                    [Names]
+                        'os'
+                        'path'
+                        'exists'
+                        'getsize'
+                        'make_pbar'
+                        '_open_maybe_gz'
+                        'read'
+                        'close'
+                        'seek'
+                        'readline'
+                        'lstrip'
+                        'startswith'
+                        'json'
+                        'load'
+                        'get'
+                        '_emit_record'
+                        'Exception'
+                        'print'
+                        'sys'
+                        'stderr'
+                        'strip'
+                        'loads'
+                    [Locals+Names]
+                        'self'
+                        'path'
+                        'writer'
+                        'sep'
+                        'split_rows'
+                        'progress_every'
+                        'use_tqdm'
+                        'debug'
+                        'fsize'
+                        'pbar'
+                        'part_rows'
+                        'lineno'
+                        'f'
+                        'head'
+                        'first'
+                        'obj'
+                        'records'
+                        'rec'
+                        'e'
+                        's'
+                        'r'
+                    [Constants]
+                        None
+                        'CloudTrail'
+                        'B'
+                        0
+                        1
+                        '{'
+                        'Records'
+                        'records'
+                        'split'
+                        '[DEBUG] CloudTrail JSON error: '
+                        (
+                            'file'
+                        )
+                        True
+                        ''
+                        '[DEBUG] CloudTrail bad line @'
+                        '[DEBUG] CloudTrail stream error: '
+                    [Disassembly]
+                        0       RETURN_GENERATOR                
+                        2       POP_TOP                         
+                        4       RESUME                          0
+                        6       LOAD_GLOBAL                     0: os
+                        18      LOAD_ATTR                       1: path
+                        28      LOAD_METHOD                     2: exists
+                        50      LOAD_FAST                       1: path
+                        52      PRECALL                         1
+                        56      CALL                            1
+                        66      POP_JUMP_FORWARD_IF_FALSE       31 (to 130)
+                        68      LOAD_GLOBAL                     0: os
+                        80      LOAD_ATTR                       1: path
+                        90      LOAD_METHOD                     3: getsize
+                        112     LOAD_FAST                       1: path
+                        114     PRECALL                         1
+                        118     CALL                            1
+                        128     JUMP_FORWARD                    1 (to 132)
+                        130     LOAD_CONST                      0: None
+                        132     STORE_FAST                      8: fsize
+                        134     LOAD_GLOBAL                     9: NULL + make_pbar
+                        146     LOAD_FAST                       8: fsize
+                        148     LOAD_CONST                      1: 'CloudTrail'
+                        150     LOAD_CONST                      2: 'B'
+                        152     PRECALL                         3
+                        156     CALL                            3
+                        166     STORE_FAST                      9: pbar
+                        168     LOAD_CONST                      3: 0
+                        170     STORE_FAST                      10: part_rows
+                        172     LOAD_CONST                      3: 0
+                        174     STORE_FAST                      11: lineno
+                        176     LOAD_GLOBAL                     11: NULL + _open_maybe_gz
+                        188     LOAD_FAST                       1: path
+                        190     PRECALL                         1
+                        194     CALL                            1
+                        204     BEFORE_WITH                     
+                        206     STORE_FAST                      12: f
+                        208     LOAD_FAST                       12: f
+                        210     LOAD_METHOD                     6: read
+                        232     LOAD_CONST                      4: 1
+                        234     PRECALL                         1
+                        238     CALL                            1
+                        248     STORE_FAST                      13: head
+                        250     LOAD_FAST                       13: head
+                        252     POP_JUMP_FORWARD_IF_TRUE        36 (to 326)
+                        254     LOAD_FAST                       9: pbar
+                        256     POP_JUMP_FORWARD_IF_NONE        20 (to 298)
+                        258     LOAD_FAST                       9: pbar
+                        260     LOAD_METHOD                     7: close
+                        282     PRECALL                         0
+                        286     CALL                            0
+                        296     POP_TOP                         
+                        298     NOP                             
+                        300     LOAD_CONST                      0: None
+                        302     LOAD_CONST                      0: None
+                        304     LOAD_CONST                      0: None
+                        306     PRECALL                         2
+                        310     CALL                            2
+                        320     POP_TOP                         
+                        322     LOAD_CONST                      0: None
+                        324     RETURN_VALUE                    
+                        326     LOAD_FAST                       12: f
+                        328     LOAD_METHOD                     8: seek
+                        350     LOAD_CONST                      3: 0
+                        352     PRECALL                         1
+                        356     CALL                            1
+                        366     POP_TOP                         
+                        368     LOAD_FAST                       12: f
+                        370     LOAD_METHOD                     9: readline
+                        392     PRECALL                         0
+                        396     CALL                            0
+                        406     STORE_FAST                      14: first
+                        408     LOAD_FAST                       14: first
+                        410     LOAD_METHOD                     10: lstrip
+                        432     PRECALL                         0
+                        436     CALL                            0
+                        446     LOAD_METHOD                     11: startswith
+                        468     LOAD_CONST                      5: '{'
+                        470     PRECALL                         1
+                        474     CALL                            1
+                        484     POP_JUMP_FORWARD_IF_FALSE       185 (to 856)
+                        486     LOAD_FAST                       12: f
+                        488     LOAD_METHOD                     8: seek
+                        510     LOAD_CONST                      3: 0
+                        512     PRECALL                         1
+                        516     CALL                            1
+                        526     POP_TOP                         
+                        528     NOP                             
+                        530     LOAD_GLOBAL                     25: NULL + json
+                        542     LOAD_ATTR                       13: load
+                        552     LOAD_FAST                       12: f
+                        554     PRECALL                         1
+                        558     CALL                            1
+                        568     STORE_FAST                      15: obj
+                        570     LOAD_FAST                       15: obj
+                        572     LOAD_METHOD                     14: get
+                        594     LOAD_CONST                      6: 'Records'
+                        596     PRECALL                         1
+                        600     CALL                            1
+                        610     JUMP_IF_TRUE_OR_POP             22 (to 44)
+                        612     LOAD_FAST                       15: obj
+                        614     LOAD_METHOD                     14: get
+                        636     LOAD_CONST                      7: 'records'
+                        638     PRECALL                         1
+                        642     CALL                            1
+                        652     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        654     BUILD_LIST                      0
+                        656     STORE_FAST                      16: records
+                        658     LOAD_FAST                       16: records
+                        660     GET_ITER                        
+                        662     FOR_ITER                        38 (to 740)
+                        664     STORE_FAST                      17: rec
+                        666     LOAD_GLOBAL                     31: NULL + _emit_record
+                        678     LOAD_FAST                       2: writer
+                        680     LOAD_FAST                       1: path
+                        682     LOAD_FAST                       17: rec
+                        684     PRECALL                         3
+                        688     CALL                            3
+                        698     POP_TOP                         
+                        700     LOAD_FAST                       10: part_rows
+                        702     LOAD_CONST                      4: 1
+                        704     BINARY_OP                       13 (+=)
+                        708     STORE_FAST                      10: part_rows
+                        710     LOAD_FAST                       4: split_rows
+                        712     POP_JUMP_FORWARD_IF_FALSE       12 (to 738)
+                        714     LOAD_FAST                       10: part_rows
+                        716     LOAD_FAST                       4: split_rows
+                        718     COMPARE_OP                      5 (>=)
+                        724     POP_JUMP_FORWARD_IF_FALSE       6 (to 738)
+                        726     LOAD_CONST                      8: 'split'
+                        728     YIELD_VALUE                     
+                        730     RESUME                          1
+                        732     POP_TOP                         
+                        734     LOAD_CONST                      3: 0
+                        736     STORE_FAST                      10: part_rows
+                        738     JUMP_BACKWARD                   39 (to 662)
+                        740     JUMP_FORWARD                    318 (to 1380)
+                        744     PUSH_EXC_INFO                   
+                        746     LOAD_GLOBAL                     32: Exception
+                        758     CHECK_EXC_MATCH                 
+                        760     POP_JUMP_FORWARD_IF_FALSE       43 (to 848)
+                        762     STORE_FAST                      18: e
+                        764     LOAD_FAST                       7: debug
+                        766     POP_JUMP_FORWARD_IF_FALSE       30 (to 828)
+                        768     LOAD_GLOBAL                     35: NULL + print
+                        780     LOAD_CONST                      9: '[DEBUG] CloudTrail JSON error: '
+                        782     LOAD_FAST                       18: e
+                        784     FORMAT_VALUE                    0 (FVC_NONE)
+                        786     BUILD_STRING                    2
+                        788     LOAD_GLOBAL                     36: sys
+                        800     LOAD_ATTR                       19: stderr
+                        810     KW_NAMES                        10: ('file',)
+                        812     PRECALL                         2
+                        816     CALL                            2
+                        826     POP_TOP                         
+                        828     POP_EXCEPT                      
+                        830     LOAD_CONST                      0: None
+                        832     STORE_FAST                      18: e
+                        834     DELETE_FAST                     18: e
+                        836     JUMP_FORWARD                    270 (to 1380)
+                        840     LOAD_CONST                      0: None
+                        842     STORE_FAST                      18: e
+                        844     DELETE_FAST                     18: e
+                        846     RERAISE                         1
+                        848     RERAISE                         0
+                        850     COPY                            3
+                        852     POP_EXCEPT                      
+                        854     RERAISE                         1
+                        856     NOP                             
+                        858     NOP                             
+                        860     LOAD_FAST                       14: first
+                        862     POP_JUMP_FORWARD_IF_FALSE       2 (to 868)
+                        864     LOAD_FAST                       14: first
+                        866     JUMP_FORWARD                    19 (to 906)
+                        868     LOAD_FAST                       12: f
+                        870     LOAD_METHOD                     9: readline
+                        892     PRECALL                         0
+                        896     CALL                            0
+                        906     STORE_FAST                      19: s
+                        908     LOAD_FAST                       19: s
+                        910     POP_JUMP_FORWARD_IF_TRUE        1 (to 914)
+                        912     JUMP_FORWARD                    177 (to 1268)
+                        914     LOAD_FAST                       11: lineno
+                        916     LOAD_CONST                      4: 1
+                        918     BINARY_OP                       13 (+=)
+                        922     STORE_FAST                      11: lineno
+                        924     LOAD_FAST                       19: s
+                        926     LOAD_METHOD                     20: strip
+                        948     PRECALL                         0
+                        952     CALL                            0
+                        962     STORE_FAST                      19: s
+                        964     LOAD_FAST                       19: s
+                        966     POP_JUMP_FORWARD_IF_TRUE        3 (to 974)
+                        968     LOAD_CONST                      12: ''
+                        970     STORE_FAST                      14: first
+                        972     JUMP_BACKWARD                   58 (to 858)
+                        974     NOP                             
+                        976     LOAD_GLOBAL                     25: NULL + json
+                        988     LOAD_ATTR                       21: loads
+                        998     LOAD_FAST                       19: s
+                        1000    PRECALL                         1
+                        1004    CALL                            1
+                        1014    STORE_FAST                      17: rec
+                        1016    LOAD_CONST                      6: 'Records'
+                        1018    LOAD_FAST                       17: rec
+                        1020    CONTAINS_OP                     0 (in)
+                        1022    POP_JUMP_FORWARD_IF_FALSE       34 (to 1092)
+                        1024    LOAD_FAST                       17: rec
+                        1026    LOAD_CONST                      6: 'Records'
+                        1028    BINARY_SUBSCR                   
+                        1038    GET_ITER                        
+                        1040    FOR_ITER                        24 (to 1090)
+                        1042    STORE_FAST                      20: r
+                        1044    LOAD_GLOBAL                     31: NULL + _emit_record
+                        1056    LOAD_FAST                       2: writer
+                        1058    LOAD_FAST                       1: path
+                        1060    LOAD_FAST                       20: r
+                        1062    PRECALL                         3
+                        1066    CALL                            3
+                        1076    POP_TOP                         
+                        1078    LOAD_FAST                       10: part_rows
+                        1080    LOAD_CONST                      4: 1
+                        1082    BINARY_OP                       13 (+=)
+                        1086    STORE_FAST                      10: part_rows
+                        1088    JUMP_BACKWARD                   25 (to 1040)
+                        1090    JUMP_FORWARD                    22 (to 1136)
+                        1092    LOAD_GLOBAL                     31: NULL + _emit_record
+                        1104    LOAD_FAST                       2: writer
+                        1106    LOAD_FAST                       1: path
+                        1108    LOAD_FAST                       17: rec
+                        1110    PRECALL                         3
+                        1114    CALL                            3
+                        1124    POP_TOP                         
+                        1126    LOAD_FAST                       10: part_rows
+                        1128    LOAD_CONST                      4: 1
+                        1130    BINARY_OP                       13 (+=)
+                        1134    STORE_FAST                      10: part_rows
+                        1136    JUMP_FORWARD                    48 (to 1234)
+                        1138    PUSH_EXC_INFO                   
+                        1140    LOAD_GLOBAL                     32: Exception
+                        1152    CHECK_EXC_MATCH                 
+                        1154    POP_JUMP_FORWARD_IF_FALSE       35 (to 1226)
+                        1156    POP_TOP                         
+                        1158    LOAD_FAST                       7: debug
+                        1160    POP_JUMP_FORWARD_IF_FALSE       30 (to 1222)
+                        1162    LOAD_GLOBAL                     35: NULL + print
+                        1174    LOAD_CONST                      13: '[DEBUG] CloudTrail bad line @'
+                        1176    LOAD_FAST                       11: lineno
+                        1178    FORMAT_VALUE                    0 (FVC_NONE)
+                        1180    BUILD_STRING                    2
+                        1182    LOAD_GLOBAL                     36: sys
+                        1194    LOAD_ATTR                       19: stderr
+                        1204    KW_NAMES                        10: ('file',)
+                        1206    PRECALL                         2
+                        1210    CALL                            2
+                        1220    POP_TOP                         
+                        1222    POP_EXCEPT                      
+                        1224    JUMP_FORWARD                    4 (to 1234)
+                        1226    RERAISE                         0
+                        1228    COPY                            3
+                        1230    POP_EXCEPT                      
+                        1232    RERAISE                         1
+                        1234    LOAD_FAST                       4: split_rows
+                        1236    POP_JUMP_FORWARD_IF_FALSE       12 (to 1262)
+                        1238    LOAD_FAST                       10: part_rows
+                        1240    LOAD_FAST                       4: split_rows
+                        1242    COMPARE_OP                      5 (>=)
+                        1248    POP_JUMP_FORWARD_IF_FALSE       6 (to 1262)
+                        1250    LOAD_CONST                      8: 'split'
+                        1252    YIELD_VALUE                     
+                        1254    RESUME                          1
+                        1256    POP_TOP                         
+                        1258    LOAD_CONST                      3: 0
+                        1260    STORE_FAST                      10: part_rows
+                        1262    LOAD_CONST                      12: ''
+                        1264    STORE_FAST                      14: first
+                        1266    JUMP_BACKWARD                   204 (to 860)
+                        1268    JUMP_FORWARD                    55 (to 1380)
+                        1270    PUSH_EXC_INFO                   
+                        1272    LOAD_GLOBAL                     32: Exception
+                        1284    CHECK_EXC_MATCH                 
+                        1286    POP_JUMP_FORWARD_IF_FALSE       42 (to 1372)
+                        1288    STORE_FAST                      18: e
+                        1290    LOAD_FAST                       7: debug
+                        1292    POP_JUMP_FORWARD_IF_FALSE       30 (to 1354)
+                        1294    LOAD_GLOBAL                     35: NULL + print
+                        1306    LOAD_CONST                      14: '[DEBUG] CloudTrail stream error: '
+                        1308    LOAD_FAST                       18: e
+                        1310    FORMAT_VALUE                    0 (FVC_NONE)
+                        1312    BUILD_STRING                    2
+                        1314    LOAD_GLOBAL                     36: sys
+                        1326    LOAD_ATTR                       19: stderr
+                        1336    KW_NAMES                        10: ('file',)
+                        1338    PRECALL                         2
+                        1342    CALL                            2
+                        1352    POP_TOP                         
+                        1354    POP_EXCEPT                      
+                        1356    LOAD_CONST                      0: None
+                        1358    STORE_FAST                      18: e
+                        1360    DELETE_FAST                     18: e
+                        1362    JUMP_FORWARD                    8 (to 1380)
+                        1364    LOAD_CONST                      0: None
+                        1366    STORE_FAST                      18: e
+                        1368    DELETE_FAST                     18: e
+                        1370    RERAISE                         1
+                        1372    RERAISE                         0
+                        1374    COPY                            3
+                        1376    POP_EXCEPT                      
+                        1378    RERAISE                         1
+                        1380    LOAD_CONST                      0: None
+                        1382    LOAD_CONST                      0: None
+                        1384    LOAD_CONST                      0: None
+                        1386    PRECALL                         2
+                        1390    CALL                            2
+                        1400    POP_TOP                         
+                        1402    JUMP_FORWARD                    11 (to 1426)
+                        1404    PUSH_EXC_INFO                   
+                        1406    WITH_EXCEPT_START               
+                        1408    POP_JUMP_FORWARD_IF_TRUE        4 (to 1418)
+                        1410    RERAISE                         2
+                        1412    COPY                            3
+                        1414    POP_EXCEPT                      
+                        1416    RERAISE                         1
+                        1418    POP_TOP                         
+                        1420    POP_EXCEPT                      
+                        1422    POP_TOP                         
+                        1424    POP_TOP                         
+                        1426    LOAD_FAST                       9: pbar
+                        1428    POP_JUMP_FORWARD_IF_NONE        22 (to 1474)
+                        1430    LOAD_FAST                       9: pbar
+                        1432    LOAD_METHOD                     7: close
+                        1454    PRECALL                         0
+                        1458    CALL                            0
+                        1468    POP_TOP                         
+                        1470    LOAD_CONST                      0: None
+                        1472    RETURN_VALUE                    
+                        1474    LOAD_CONST                      0: None
+                        1476    RETURN_VALUE                    
+                    [Exception Table]
+                        206 to 300 -> 1404 [1] lasti
+                        326 to 528 -> 1404 [1] lasti
+                        530 to 740 -> 744 [1] 
+                        740 to 744 -> 1404 [1] lasti
+                        744 to 764 -> 850 [2] lasti
+                        764 to 828 -> 840 [2] lasti
+                        828 to 840 -> 1404 [1] lasti
+                        840 to 850 -> 850 [2] lasti
+                        850 to 856 -> 1404 [1] lasti
+                        858 to 974 -> 1270 [1] 
+                        976 to 1136 -> 1138 [1] 
+                        1136 to 1138 -> 1270 [1] 
+                        1138 to 1222 -> 1228 [2] lasti
+                        1222 to 1226 -> 1270 [1] 
+                        1226 to 1228 -> 1228 [2] lasti
+                        1228 to 1268 -> 1270 [1] 
+                        1268 to 1270 -> 1404 [1] lasti
+                        1270 to 1290 -> 1374 [2] lasti
+                        1290 to 1354 -> 1364 [2] lasti
+                        1354 to 1364 -> 1404 [1] lasti
+                        1364 to 1374 -> 1374 [2] lasti
+                        1374 to 1380 -> 1404 [1] lasti
+                        1404 to 1412 -> 1412 [3] lasti
+                        1418 to 1420 -> 1412 [3] lasti
+                None
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_NAME                       0: __name__
+                4       STORE_NAME                      1: __module__
+                6       LOAD_CONST                      0: 'Parser'
+                8       STORE_NAME                      2: __qualname__
+                10      LOAD_CONST                      1: 'cloudtrail'
+                12      STORE_NAME                      3: subtype
+                14      LOAD_CONST                      2: 'path'
+                16      LOAD_NAME                       4: str
+                18      LOAD_CONST                      3: 'sep'
+                20      LOAD_NAME                       4: str
+                22      LOAD_CONST                      4: 'split_rows'
+                24      LOAD_NAME                       5: int
+                26      LOAD_CONST                      5: 'progress_every'
+                28      LOAD_NAME                       5: int
+                30      LOAD_CONST                      6: 'use_tqdm'
+                32      LOAD_NAME                       6: bool
+                34      LOAD_CONST                      7: 'debug'
+                36      LOAD_NAME                       6: bool
+                38      BUILD_TUPLE                     12
+                40      LOAD_CONST                      8: <CODE> parse
+                42      MAKE_FUNCTION                   4
+                44      STORE_NAME                      7: parse
+                46      LOAD_CONST                      9: None
+                48      RETURN_VALUE                    
+            [Exception Table]
+        'Parser'
+    [Disassembly]
+        0       RESUME                          0
+        2       LOAD_CONST                      0: 'Parseur AWS CloudTrail (JSON / JSON.GZ).'
+        4       STORE_NAME                      0: __doc__
+        6       LOAD_CONST                      1: 0
+        8       LOAD_CONST                      2: None
+        10      IMPORT_NAME                     1: os
+        12      STORE_NAME                      1: os
+        14      LOAD_CONST                      1: 0
+        16      LOAD_CONST                      2: None
+        18      IMPORT_NAME                     2: sys
+        20      STORE_NAME                      2: sys
+        22      LOAD_CONST                      1: 0
+        24      LOAD_CONST                      2: None
+        26      IMPORT_NAME                     3: json
+        28      STORE_NAME                      3: json
+        30      LOAD_CONST                      1: 0
+        32      LOAD_CONST                      2: None
+        34      IMPORT_NAME                     4: gzip
+        36      STORE_NAME                      4: gzip
+        38      LOAD_CONST                      3: 2
+        40      LOAD_CONST                      4: ('clean', 'make_pbar')
+        42      IMPORT_NAME                     5: common
+        44      IMPORT_FROM                     6: clean
+        46      STORE_NAME                      6: clean
+        48      IMPORT_FROM                     7: make_pbar
+        50      STORE_NAME                      7: make_pbar
+        52      POP_TOP                         
+        54      LOAD_CONST                      3: 2
+        56      LOAD_CONST                      5: ('emit',)
+        58      IMPORT_NAME                     8: writer
+        60      IMPORT_FROM                     9: emit
+        62      STORE_NAME                      9: emit
+        64      POP_TOP                         
+        66      LOAD_CONST                      6: 'path'
+        68      LOAD_NAME                       10: str
+        70      BUILD_TUPLE                     2
+        72      LOAD_CONST                      7: <CODE> _open_maybe_gz
+        74      MAKE_FUNCTION                   4
+        76      STORE_NAME                      11: _open_maybe_gz
+        78      LOAD_CONST                      8: <CODE> _emit_record
+        80      MAKE_FUNCTION                   0
+        82      STORE_NAME                      12: _emit_record
+        84      PUSH_NULL                       
+        86      LOAD_BUILD_CLASS                
+        88      LOAD_CONST                      9: <CODE> Parser
+        90      MAKE_FUNCTION                   0
+        92      LOAD_CONST                      10: 'Parser'
+        94      PRECALL                         2
+        98      CALL                            2
+        108     STORE_NAME                      13: Parser
+        110     LOAD_CONST                      2: None
+        112     RETURN_VALUE                    
+    [Exception Table]

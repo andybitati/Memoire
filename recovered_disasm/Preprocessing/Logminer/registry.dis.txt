@@ -1,0 +1,164 @@
+registry.cpython-311.pyc (Python 3.11)
+[Code]
+    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\registry.py
+    Object Name: <module>
+    Qualified Name: <module>
+    Arg Count: 0
+    Pos Only Arg Count: 0
+    KW Only Arg Count: 0
+    Stack Size: 14
+    Flags: 0x00000000
+    [Names]
+        '__doc__'
+        'parsers.hdfs'
+        'Parser'
+        'HDFSParser'
+        'parsers.bgl'
+        'BGLParser'
+        'parsers.tcpdump_text'
+        'TcpdumpTextParser'
+        'parsers.praudit_text'
+        'PrauditTextParser'
+        'parsers.pcap'
+        'PCAPParser'
+        'parsers.praudit_xml'
+        'PrauditXMLParser'
+        'parsers.syslog'
+        'SyslogParser'
+        'parsers.apache'
+        'ApacheParser'
+        'parsers.jsonl'
+        'JSONLParser'
+        'parsers.cef_leef'
+        'CEFLEEFParser'
+        'parsers.windows_event'
+        'WinEventParser'
+        'parsers.cloudtrail'
+        'CloudTrailParser'
+        'parsers.unknown'
+        'UnknownParser'
+        'PARSERS'
+    [Locals+Names]
+    [Constants]
+        'Registre (type détecté -> classe parseur).'
+        1
+        (
+            'Parser'
+        )
+        (
+            'hdfs'
+            'bgl'
+            'tcpdump_text'
+            'praudit_text'
+            'pcap'
+            'praudit_xml'
+            'syslog'
+            'apache'
+            'jsonl'
+            'cef_leef'
+            'win_event'
+            'cloudtrail'
+            'unknown'
+        )
+        None
+    [Disassembly]
+        0       RESUME                          0
+        2       LOAD_CONST                      0: 'Registre (type détecté -> classe parseur).'
+        4       STORE_NAME                      0: __doc__
+        6       LOAD_CONST                      1: 1
+        8       LOAD_CONST                      2: ('Parser',)
+        10      IMPORT_NAME                     1: parsers.hdfs
+        12      IMPORT_FROM                     2: Parser
+        14      STORE_NAME                      3: HDFSParser
+        16      POP_TOP                         
+        18      LOAD_CONST                      1: 1
+        20      LOAD_CONST                      2: ('Parser',)
+        22      IMPORT_NAME                     4: parsers.bgl
+        24      IMPORT_FROM                     2: Parser
+        26      STORE_NAME                      5: BGLParser
+        28      POP_TOP                         
+        30      LOAD_CONST                      1: 1
+        32      LOAD_CONST                      2: ('Parser',)
+        34      IMPORT_NAME                     6: parsers.tcpdump_text
+        36      IMPORT_FROM                     2: Parser
+        38      STORE_NAME                      7: TcpdumpTextParser
+        40      POP_TOP                         
+        42      LOAD_CONST                      1: 1
+        44      LOAD_CONST                      2: ('Parser',)
+        46      IMPORT_NAME                     8: parsers.praudit_text
+        48      IMPORT_FROM                     2: Parser
+        50      STORE_NAME                      9: PrauditTextParser
+        52      POP_TOP                         
+        54      LOAD_CONST                      1: 1
+        56      LOAD_CONST                      2: ('Parser',)
+        58      IMPORT_NAME                     10: parsers.pcap
+        60      IMPORT_FROM                     2: Parser
+        62      STORE_NAME                      11: PCAPParser
+        64      POP_TOP                         
+        66      LOAD_CONST                      1: 1
+        68      LOAD_CONST                      2: ('Parser',)
+        70      IMPORT_NAME                     12: parsers.praudit_xml
+        72      IMPORT_FROM                     2: Parser
+        74      STORE_NAME                      13: PrauditXMLParser
+        76      POP_TOP                         
+        78      LOAD_CONST                      1: 1
+        80      LOAD_CONST                      2: ('Parser',)
+        82      IMPORT_NAME                     14: parsers.syslog
+        84      IMPORT_FROM                     2: Parser
+        86      STORE_NAME                      15: SyslogParser
+        88      POP_TOP                         
+        90      LOAD_CONST                      1: 1
+        92      LOAD_CONST                      2: ('Parser',)
+        94      IMPORT_NAME                     16: parsers.apache
+        96      IMPORT_FROM                     2: Parser
+        98      STORE_NAME                      17: ApacheParser
+        100     POP_TOP                         
+        102     LOAD_CONST                      1: 1
+        104     LOAD_CONST                      2: ('Parser',)
+        106     IMPORT_NAME                     18: parsers.jsonl
+        108     IMPORT_FROM                     2: Parser
+        110     STORE_NAME                      19: JSONLParser
+        112     POP_TOP                         
+        114     LOAD_CONST                      1: 1
+        116     LOAD_CONST                      2: ('Parser',)
+        118     IMPORT_NAME                     20: parsers.cef_leef
+        120     IMPORT_FROM                     2: Parser
+        122     STORE_NAME                      21: CEFLEEFParser
+        124     POP_TOP                         
+        126     LOAD_CONST                      1: 1
+        128     LOAD_CONST                      2: ('Parser',)
+        130     IMPORT_NAME                     22: parsers.windows_event
+        132     IMPORT_FROM                     2: Parser
+        134     STORE_NAME                      23: WinEventParser
+        136     POP_TOP                         
+        138     LOAD_CONST                      1: 1
+        140     LOAD_CONST                      2: ('Parser',)
+        142     IMPORT_NAME                     24: parsers.cloudtrail
+        144     IMPORT_FROM                     2: Parser
+        146     STORE_NAME                      25: CloudTrailParser
+        148     POP_TOP                         
+        150     LOAD_CONST                      1: 1
+        152     LOAD_CONST                      2: ('Parser',)
+        154     IMPORT_NAME                     26: parsers.unknown
+        156     IMPORT_FROM                     2: Parser
+        158     STORE_NAME                      27: UnknownParser
+        160     POP_TOP                         
+        162     LOAD_NAME                       3: HDFSParser
+        164     LOAD_NAME                       5: BGLParser
+        166     LOAD_NAME                       7: TcpdumpTextParser
+        168     LOAD_NAME                       9: PrauditTextParser
+        170     LOAD_NAME                       11: PCAPParser
+        172     LOAD_NAME                       13: PrauditXMLParser
+        174     LOAD_NAME                       15: SyslogParser
+        176     LOAD_NAME                       17: ApacheParser
+        178     LOAD_NAME                       19: JSONLParser
+        180     LOAD_NAME                       21: CEFLEEFParser
+        182     LOAD_NAME                       23: WinEventParser
+        184     LOAD_NAME                       25: CloudTrailParser
+        186     LOAD_NAME                       27: UnknownParser
+        188     LOAD_CONST                      3: ('hdfs', 'bgl', 'tcpdump_text', 'praudit_text', 'pcap', 'praudit_xml', 'syslog', 'apache', 'jsonl', 'cef_leef', 'win_event', 'cloudtrail', 'unknown')
+        190     BUILD_CONST_KEY_MAP             13
+        192     STORE_NAME                      28: PARSERS
+        194     LOAD_CONST                      4: None
+        196     RETURN_VALUE                    
+    [Exception Table]

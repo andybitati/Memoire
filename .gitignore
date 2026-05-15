@@ -56,6 +56,12 @@ results/
 temp/
 tmp/
 
+# Outils et artefacts de décompilation/récupération
+tools/
+recovered_disasm/
+recovered_py/
+recovered_pycdc/examples/out/
+
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb

@@ -1,0 +1,838 @@
+tcpdump_text.cpython-311.pyc (Python 3.11)
+[Code]
+    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\tcpdump_text.py
+    Object Name: <module>
+    Qualified Name: <module>
+    Arg Count: 0
+    Pos Only Arg Count: 0
+    KW Only Arg Count: 0
+    Stack Size: 12
+    Flags: 0x00000000
+    [Names]
+        '__doc__'
+        're'
+        'os'
+        'sys'
+        'datetime'
+        'timezone'
+        'typing'
+        'Iterable'
+        'Tuple'
+        'common'
+        'clean'
+        'make_pbar'
+        'writer'
+        'emit'
+        'compile'
+        'TS_FULL_RE'
+        'TS_SHORT_RE'
+        'PROTO_RE'
+        'IP4_EP_RE'
+        'IP6_EP_RE'
+        'FLAGS_RE'
+        'LEN_RE'
+        'str'
+        'parse_line'
+        'Parser'
+    [Locals+Names]
+    [Constants]
+        'Parseur tcpdump texte.'
+        0
+        None
+        (
+            'datetime'
+            'timezone'
+        )
+        (
+            'Iterable'
+            'Tuple'
+        )
+        2
+        (
+            'clean'
+            'make_pbar'
+        )
+        (
+            'emit'
+        )
+        '^(?P<ts>\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}\\.\\d+)\\s+(?P<rest>.*)$'
+        '^(?P<ts>\\d{2}:\\d{2}:\\d{2}\\.\\d+)\\s+(?P<rest>.*)$'
+        '^(?P<proto>\\S+)\\s+(?P<rest>.*)$'
+        '(?P<sip>\\d{1,3}(?:\\.\\d{1,3}){3})(?:\\.(?P<sport>\\d+))?\\s*>\\s*(?P<dip>\\d{1,3}(?:\\.\\d{1,3}){3})(?:\\.(?P<dport>\\d+))?:\\s*(?P<msg>.*)$'
+        '(?P<sip>\\[[0-9a-fA-F:]+\\]|[0-9a-fA-F:]+)(?:\\.(?P<sport>\\d+))?\\s*>\\s*(?P<dip>\\[[0-9a-fA-F:]+\\]|[0-9a-fA-F:]+)(?:\\.(?P<dport>\\d+))?:\\s*(?P<msg>.*)$'
+        'Flags\\s+\\[([A-Za-z\\.]+)\\]'
+        '(?:length|len)\\s+(\\d+)'
+        'line'
+        'return'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\tcpdump_text.py
+            Object Name: parse_line
+            Qualified Name: parse_line
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 10
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'TS_FULL_RE'
+                'match'
+                'datetime'
+                'strptime'
+                'group'
+                'replace'
+                'timezone'
+                'utc'
+                'isoformat'
+                'TS_SHORT_RE'
+                'utcnow'
+                'date'
+                'PROTO_RE'
+                'IP4_EP_RE'
+                'search'
+                'IP6_EP_RE'
+                'strip'
+                'FLAGS_RE'
+                'LEN_RE'
+                'clean'
+            [Locals+Names]
+                'line'
+                'ts_iso'
+                'rest1'
+                'm'
+                'ts'
+                'm2'
+                'today'
+                'proto'
+                'rest2'
+                'sip'
+                'sport'
+                'dip'
+                'dport'
+                'msg'
+                'ep'
+                'flags'
+                'length'
+            [Constants]
+                None
+                ''
+                'ts'
+                '%Y-%m-%d %H:%M:%S.%f'
+                (
+                    'tzinfo'
+                )
+                'rest'
+                ' '
+                'proto'
+                'sip'
+                '[]'
+                'dip'
+                'sport'
+                'dport'
+                'msg'
+                1
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_CONST                      1: ''
+                4       STORE_FAST                      1: ts_iso
+                6       LOAD_FAST                       0: line
+                8       STORE_FAST                      2: rest1
+                10      LOAD_GLOBAL                     0: TS_FULL_RE
+                22      LOAD_METHOD                     1: match
+                44      LOAD_FAST                       0: line
+                46      PRECALL                         1
+                50      CALL                            1
+                60      STORE_FAST                      3: m
+                62      LOAD_FAST                       3: m
+                64      POP_JUMP_FORWARD_IF_FALSE       112 (to 290)
+                66      LOAD_GLOBAL                     5: NULL + datetime
+                78      LOAD_ATTR                       3: strptime
+                88      LOAD_FAST                       3: m
+                90      LOAD_METHOD                     4: group
+                112     LOAD_CONST                      2: 'ts'
+                114     PRECALL                         1
+                118     CALL                            1
+                128     LOAD_CONST                      3: '%Y-%m-%d %H:%M:%S.%f'
+                130     PRECALL                         2
+                134     CALL                            2
+                144     LOAD_METHOD                     5: replace
+                166     LOAD_GLOBAL                     12: timezone
+                178     LOAD_ATTR                       7: utc
+                188     KW_NAMES                        4: ('tzinfo',)
+                190     PRECALL                         1
+                194     CALL                            1
+                204     STORE_FAST                      4: ts
+                206     LOAD_FAST                       4: ts
+                208     LOAD_METHOD                     8: isoformat
+                230     PRECALL                         0
+                234     CALL                            0
+                244     STORE_FAST                      1: ts_iso
+                246     LOAD_FAST                       3: m
+                248     LOAD_METHOD                     4: group
+                270     LOAD_CONST                      5: 'rest'
+                272     PRECALL                         1
+                276     CALL                            1
+                286     STORE_FAST                      2: rest1
+                288     JUMP_FORWARD                    181 (to 652)
+                290     LOAD_GLOBAL                     18: TS_SHORT_RE
+                302     LOAD_METHOD                     1: match
+                324     LOAD_FAST                       0: line
+                326     PRECALL                         1
+                330     CALL                            1
+                340     STORE_FAST                      5: m2
+                342     LOAD_FAST                       5: m2
+                344     POP_JUMP_FORWARD_IF_FALSE       153 (to 652)
+                346     LOAD_GLOBAL                     5: NULL + datetime
+                358     LOAD_ATTR                       10: utcnow
+                368     PRECALL                         0
+                372     CALL                            0
+                382     LOAD_METHOD                     11: date
+                404     PRECALL                         0
+                408     CALL                            0
+                418     STORE_FAST                      6: today
+                420     LOAD_GLOBAL                     5: NULL + datetime
+                432     LOAD_ATTR                       3: strptime
+                442     LOAD_FAST                       6: today
+                444     FORMAT_VALUE                    0 (FVC_NONE)
+                446     LOAD_CONST                      6: ' '
+                448     LOAD_FAST                       5: m2
+                450     LOAD_METHOD                     4: group
+                472     LOAD_CONST                      2: 'ts'
+                474     PRECALL                         1
+                478     CALL                            1
+                488     FORMAT_VALUE                    0 (FVC_NONE)
+                490     BUILD_STRING                    3
+                492     LOAD_CONST                      3: '%Y-%m-%d %H:%M:%S.%f'
+                494     PRECALL                         2
+                498     CALL                            2
+                508     LOAD_METHOD                     5: replace
+                530     LOAD_GLOBAL                     12: timezone
+                542     LOAD_ATTR                       7: utc
+                552     KW_NAMES                        4: ('tzinfo',)
+                554     PRECALL                         1
+                558     CALL                            1
+                568     STORE_FAST                      4: ts
+                570     LOAD_FAST                       4: ts
+                572     LOAD_METHOD                     8: isoformat
+                594     PRECALL                         0
+                598     CALL                            0
+                608     STORE_FAST                      1: ts_iso
+                610     LOAD_FAST                       5: m2
+                612     LOAD_METHOD                     4: group
+                634     LOAD_CONST                      5: 'rest'
+                636     PRECALL                         1
+                640     CALL                            1
+                650     STORE_FAST                      2: rest1
+                652     LOAD_CONST                      1: ''
+                654     STORE_FAST                      7: proto
+                656     LOAD_FAST                       2: rest1
+                658     STORE_FAST                      8: rest2
+                660     LOAD_GLOBAL                     24: PROTO_RE
+                672     LOAD_METHOD                     1: match
+                694     LOAD_FAST                       2: rest1
+                696     PRECALL                         1
+                700     CALL                            1
+                710     STORE_FAST                      3: m
+                712     LOAD_FAST                       3: m
+                714     POP_JUMP_FORWARD_IF_FALSE       42 (to 800)
+                716     LOAD_FAST                       3: m
+                718     LOAD_METHOD                     4: group
+                740     LOAD_CONST                      7: 'proto'
+                742     PRECALL                         1
+                746     CALL                            1
+                756     STORE_FAST                      7: proto
+                758     LOAD_FAST                       3: m
+                760     LOAD_METHOD                     4: group
+                782     LOAD_CONST                      5: 'rest'
+                784     PRECALL                         1
+                788     CALL                            1
+                798     STORE_FAST                      8: rest2
+                800     LOAD_CONST                      1: ''
+                802     COPY                            1
+                804     STORE_FAST                      9: sip
+                806     COPY                            1
+                808     STORE_FAST                      10: sport
+                810     COPY                            1
+                812     STORE_FAST                      11: dip
+                814     STORE_FAST                      12: dport
+                816     LOAD_FAST                       8: rest2
+                818     STORE_FAST                      13: msg
+                820     LOAD_GLOBAL                     26: IP4_EP_RE
+                832     LOAD_METHOD                     14: search
+                854     LOAD_FAST                       8: rest2
+                856     PRECALL                         1
+                860     CALL                            1
+                870     JUMP_IF_TRUE_OR_POP             25 (to 50)
+                872     LOAD_GLOBAL                     30: IP6_EP_RE
+                884     LOAD_METHOD                     14: search
+                906     LOAD_FAST                       8: rest2
+                908     PRECALL                         1
+                912     CALL                            1
+                922     STORE_FAST                      14: ep
+                924     LOAD_FAST                       14: ep
+                926     POP_JUMP_FORWARD_IF_FALSE       147 (to 1222)
+                928     LOAD_FAST                       14: ep
+                930     LOAD_METHOD                     4: group
+                952     LOAD_CONST                      8: 'sip'
+                954     PRECALL                         1
+                958     CALL                            1
+                968     LOAD_METHOD                     16: strip
+                990     LOAD_CONST                      9: '[]'
+                992     PRECALL                         1
+                996     CALL                            1
+                1006    STORE_FAST                      9: sip
+                1008    LOAD_FAST                       14: ep
+                1010    LOAD_METHOD                     4: group
+                1032    LOAD_CONST                      10: 'dip'
+                1034    PRECALL                         1
+                1038    CALL                            1
+                1048    LOAD_METHOD                     16: strip
+                1070    LOAD_CONST                      9: '[]'
+                1072    PRECALL                         1
+                1076    CALL                            1
+                1086    STORE_FAST                      11: dip
+                1088    LOAD_FAST                       14: ep
+                1090    LOAD_METHOD                     4: group
+                1112    LOAD_CONST                      11: 'sport'
+                1114    PRECALL                         1
+                1118    CALL                            1
+                1128    JUMP_IF_TRUE_OR_POP             1 (to 2)
+                1130    LOAD_CONST                      1: ''
+                1132    STORE_FAST                      10: sport
+                1134    LOAD_FAST                       14: ep
+                1136    LOAD_METHOD                     4: group
+                1158    LOAD_CONST                      12: 'dport'
+                1160    PRECALL                         1
+                1164    CALL                            1
+                1174    JUMP_IF_TRUE_OR_POP             1 (to 2)
+                1176    LOAD_CONST                      1: ''
+                1178    STORE_FAST                      12: dport
+                1180    LOAD_FAST                       14: ep
+                1182    LOAD_METHOD                     4: group
+                1204    LOAD_CONST                      13: 'msg'
+                1206    PRECALL                         1
+                1210    CALL                            1
+                1220    STORE_FAST                      13: msg
+                1222    LOAD_GLOBAL                     34: FLAGS_RE
+                1234    LOAD_METHOD                     14: search
+                1256    LOAD_FAST                       13: msg
+                1258    PRECALL                         1
+                1262    CALL                            1
+                1272    POP_JUMP_FORWARD_IF_FALSE       45 (to 1364)
+                1274    LOAD_GLOBAL                     34: FLAGS_RE
+                1286    LOAD_METHOD                     14: search
+                1308    LOAD_FAST                       13: msg
+                1310    PRECALL                         1
+                1314    CALL                            1
+                1324    LOAD_METHOD                     4: group
+                1346    LOAD_CONST                      14: 1
+                1348    PRECALL                         1
+                1352    CALL                            1
+                1362    JUMP_FORWARD                    1 (to 1366)
+                1364    LOAD_CONST                      1: ''
+                1366    STORE_FAST                      15: flags
+                1368    LOAD_GLOBAL                     36: LEN_RE
+                1380    LOAD_METHOD                     14: search
+                1402    LOAD_FAST                       13: msg
+                1404    PRECALL                         1
+                1408    CALL                            1
+                1418    POP_JUMP_FORWARD_IF_FALSE       45 (to 1510)
+                1420    LOAD_GLOBAL                     36: LEN_RE
+                1432    LOAD_METHOD                     14: search
+                1454    LOAD_FAST                       13: msg
+                1456    PRECALL                         1
+                1460    CALL                            1
+                1470    LOAD_METHOD                     4: group
+                1492    LOAD_CONST                      14: 1
+                1494    PRECALL                         1
+                1498    CALL                            1
+                1508    JUMP_FORWARD                    1 (to 1512)
+                1510    LOAD_CONST                      1: ''
+                1512    STORE_FAST                      16: length
+                1514    LOAD_FAST                       1: ts_iso
+                1516    LOAD_FAST                       7: proto
+                1518    LOAD_FAST                       9: sip
+                1520    LOAD_FAST                       10: sport
+                1522    LOAD_FAST                       11: dip
+                1524    LOAD_FAST                       12: dport
+                1526    LOAD_FAST                       15: flags
+                1528    LOAD_GLOBAL                     39: NULL + clean
+                1540    LOAD_FAST                       13: msg
+                1542    PRECALL                         1
+                1546    CALL                            1
+                1556    BUILD_TUPLE                     8
+                1558    RETURN_VALUE                    
+            [Exception Table]
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\tcpdump_text.py
+            Object Name: Parser
+            Qualified Name: Parser
+            Arg Count: 0
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 15
+            Flags: 0x00000000
+            [Names]
+                '__name__'
+                '__module__'
+                '__qualname__'
+                'subtype'
+                'str'
+                'int'
+                'bool'
+                'Iterable'
+                'parse'
+            [Locals+Names]
+            [Constants]
+                'Parser'
+                'tcpdump_text'
+                'path'
+                'sep'
+                'split_rows'
+                'progress_every'
+                'use_tqdm'
+                'debug'
+                'return'
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\tcpdump_text.py
+                    Object Name: parse
+                    Qualified Name: Parser.parse
+                    Arg Count: 4
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 4
+                    Stack Size: 17
+                    Flags: 0x00000023 (CO_OPTIMIZED | CO_NEWLOCALS | CO_GENERATOR)
+                    [Names]
+                        'make_pbar'
+                        'os'
+                        'path'
+                        'getsize'
+                        'open'
+                        'readline'
+                        'update'
+                        'len'
+                        'decode'
+                        'rstrip'
+                        'strip'
+                        'parse_line'
+                        'dict'
+                        'subtype'
+                        'LEN_RE'
+                        'search'
+                        'group'
+                        'emit'
+                        'print'
+                        'sys'
+                        'stderr'
+                        'close'
+                    [Locals+Names]
+                        'self'
+                        'path'
+                        'writer'
+                        'sep'
+                        'split_rows'
+                        'progress_every'
+                        'use_tqdm'
+                        'debug'
+                        'pbar'
+                        'part_rows'
+                        'fb'
+                        'lineno'
+                        'raw'
+                        'line'
+                        'ts'
+                        'proto'
+                        'sip'
+                        'sport'
+                        'dip'
+                        'dport'
+                        'flags'
+                        'msg'
+                        'base'
+                    [Constants]
+                        None
+                        'tcpdump(text)'
+                        'B'
+                        0
+                        'rb'
+                        True
+                        1
+                        'utf-8'
+                        'ignore'
+                        (
+                            'errors'
+                        )
+                        '\n'
+                        'tcpdump'
+                        ''
+                        (
+                            'dataset'
+                            'subtype'
+                            'filepath'
+                            'lineno'
+                            'timestamp_iso'
+                            'proto'
+                            'src_ip'
+                            'src_port'
+                            'dst_ip'
+                            'dst_port'
+                            'flags'
+                            'length'
+                            'message'
+                        )
+                        '[progress] tcpdump lignes: '
+                        ','
+                        (
+                            'file'
+                        )
+                        'split'
+                    [Disassembly]
+                        0       RETURN_GENERATOR                
+                        2       POP_TOP                         
+                        4       RESUME                          0
+                        6       LOAD_GLOBAL                     1: NULL + make_pbar
+                        18      LOAD_GLOBAL                     2: os
+                        30      LOAD_ATTR                       2: path
+                        40      LOAD_METHOD                     3: getsize
+                        62      LOAD_FAST                       1: path
+                        64      PRECALL                         1
+                        68      CALL                            1
+                        78      LOAD_CONST                      1: 'tcpdump(text)'
+                        80      LOAD_CONST                      2: 'B'
+                        82      PRECALL                         3
+                        86      CALL                            3
+                        96      STORE_FAST                      8: pbar
+                        98      LOAD_CONST                      3: 0
+                        100     STORE_FAST                      9: part_rows
+                        102     LOAD_GLOBAL                     9: NULL + open
+                        114     LOAD_FAST                       1: path
+                        116     LOAD_CONST                      4: 'rb'
+                        118     PRECALL                         2
+                        122     CALL                            2
+                        132     BEFORE_WITH                     
+                        134     STORE_FAST                      10: fb
+                        136     LOAD_CONST                      3: 0
+                        138     STORE_FAST                      11: lineno
+                        140     NOP                             
+                        142     LOAD_FAST                       10: fb
+                        144     LOAD_METHOD                     5: readline
+                        166     PRECALL                         0
+                        170     CALL                            0
+                        180     STORE_FAST                      12: raw
+                        182     LOAD_FAST                       12: raw
+                        184     POP_JUMP_FORWARD_IF_TRUE        2 (to 190)
+                        186     JUMP_FORWARD                    311 (to 812)
+                        190     LOAD_FAST                       8: pbar
+                        192     POP_JUMP_FORWARD_IF_NONE        34 (to 262)
+                        194     LOAD_FAST                       8: pbar
+                        196     LOAD_METHOD                     6: update
+                        218     LOAD_GLOBAL                     15: NULL + len
+                        230     LOAD_FAST                       12: raw
+                        232     PRECALL                         1
+                        236     CALL                            1
+                        246     PRECALL                         1
+                        250     CALL                            1
+                        260     POP_TOP                         
+                        262     LOAD_FAST                       11: lineno
+                        264     LOAD_CONST                      6: 1
+                        266     BINARY_OP                       13 (+=)
+                        270     STORE_FAST                      11: lineno
+                        272     LOAD_FAST                       12: raw
+                        274     LOAD_METHOD                     8: decode
+                        296     LOAD_CONST                      7: 'utf-8'
+                        298     LOAD_CONST                      8: 'ignore'
+                        300     KW_NAMES                        9: ('errors',)
+                        302     PRECALL                         2
+                        306     CALL                            2
+                        316     LOAD_METHOD                     9: rstrip
+                        338     LOAD_CONST                      10: '\n'
+                        340     PRECALL                         1
+                        344     CALL                            1
+                        354     STORE_FAST                      13: line
+                        356     LOAD_FAST                       13: line
+                        358     LOAD_METHOD                     10: strip
+                        380     PRECALL                         0
+                        384     CALL                            0
+                        394     POP_JUMP_FORWARD_IF_TRUE        1 (to 398)
+                        396     JUMP_BACKWARD                   129 (to 140)
+                        398     LOAD_GLOBAL                     23: NULL + parse_line
+                        410     LOAD_FAST                       13: line
+                        412     PRECALL                         1
+                        416     CALL                            1
+                        426     UNPACK_SEQUENCE                 8
+                        430     STORE_FAST                      14: ts
+                        432     STORE_FAST                      15: proto
+                        434     STORE_FAST                      16: sip
+                        436     STORE_FAST                      17: sport
+                        438     STORE_FAST                      18: dip
+                        440     STORE_FAST                      19: dport
+                        442     STORE_FAST                      20: flags
+                        444     STORE_FAST                      21: msg
+                        446     LOAD_GLOBAL                     25: NULL + dict
+                        458     LOAD_CONST                      11: 'tcpdump'
+                        460     LOAD_FAST                       0: self
+                        462     LOAD_ATTR                       13: subtype
+                        472     LOAD_FAST                       1: path
+                        474     LOAD_FAST                       11: lineno
+                        476     LOAD_FAST                       14: ts
+                        478     LOAD_FAST                       15: proto
+                        480     LOAD_FAST                       16: sip
+                        482     LOAD_FAST                       17: sport
+                        484     LOAD_FAST                       18: dip
+                        486     LOAD_FAST                       19: dport
+                        488     LOAD_FAST                       20: flags
+                        490     LOAD_GLOBAL                     28: LEN_RE
+                        502     LOAD_METHOD                     15: search
+                        524     LOAD_FAST                       21: msg
+                        526     PRECALL                         1
+                        530     CALL                            1
+                        540     POP_JUMP_FORWARD_IF_FALSE       45 (to 632)
+                        542     LOAD_GLOBAL                     28: LEN_RE
+                        554     LOAD_METHOD                     15: search
+                        576     LOAD_FAST                       21: msg
+                        578     PRECALL                         1
+                        582     CALL                            1
+                        592     LOAD_METHOD                     16: group
+                        614     LOAD_CONST                      6: 1
+                        616     PRECALL                         1
+                        620     CALL                            1
+                        630     JUMP_FORWARD                    1 (to 634)
+                        632     LOAD_CONST                      12: ''
+                        634     LOAD_FAST                       21: msg
+                        636     KW_NAMES                        13: ('dataset', 'subtype', 'filepath', 'lineno', 'timestamp_iso', 'proto', 'src_ip', 'src_port', 'dst_ip', 'dst_port', 'flags', 'length', 'message')
+                        638     PRECALL                         13
+                        642     CALL                            13
+                        652     STORE_FAST                      22: base
+                        654     LOAD_GLOBAL                     35: NULL + emit
+                        666     LOAD_FAST                       2: writer
+                        668     LOAD_FAST                       22: base
+                        670     PRECALL                         2
+                        674     CALL                            2
+                        684     POP_TOP                         
+                        686     LOAD_FAST                       9: part_rows
+                        688     LOAD_CONST                      6: 1
+                        690     BINARY_OP                       13 (+=)
+                        694     STORE_FAST                      9: part_rows
+                        696     LOAD_FAST                       5: progress_every
+                        698     POP_JUMP_FORWARD_IF_FALSE       40 (to 780)
+                        700     LOAD_FAST                       11: lineno
+                        702     LOAD_FAST                       5: progress_every
+                        704     BINARY_OP                       6 (%)
+                        708     LOAD_CONST                      3: 0
+                        710     COMPARE_OP                      2 (==)
+                        716     POP_JUMP_FORWARD_IF_FALSE       31 (to 780)
+                        718     LOAD_GLOBAL                     37: NULL + print
+                        730     LOAD_CONST                      14: '[progress] tcpdump lignes: '
+                        732     LOAD_FAST                       11: lineno
+                        734     LOAD_CONST                      15: ','
+                        736     FORMAT_VALUE                    4 (FVC_NONE | FVS_HAVE_SPEC)
+                        738     BUILD_STRING                    2
+                        740     LOAD_GLOBAL                     38: sys
+                        752     LOAD_ATTR                       20: stderr
+                        762     KW_NAMES                        16: ('file',)
+                        764     PRECALL                         2
+                        768     CALL                            2
+                        778     POP_TOP                         
+                        780     LOAD_FAST                       4: split_rows
+                        782     POP_JUMP_FORWARD_IF_FALSE       12 (to 808)
+                        784     LOAD_FAST                       9: part_rows
+                        786     LOAD_FAST                       4: split_rows
+                        788     COMPARE_OP                      5 (>=)
+                        794     POP_JUMP_FORWARD_IF_FALSE       6 (to 808)
+                        796     LOAD_CONST                      17: 'split'
+                        798     YIELD_VALUE                     
+                        800     RESUME                          1
+                        802     POP_TOP                         
+                        804     LOAD_CONST                      3: 0
+                        806     STORE_FAST                      9: part_rows
+                        808     JUMP_BACKWARD                   335 (to 142)
+                        812     NOP                             
+                        814     LOAD_CONST                      0: None
+                        816     LOAD_CONST                      0: None
+                        818     LOAD_CONST                      0: None
+                        820     PRECALL                         2
+                        824     CALL                            2
+                        834     POP_TOP                         
+                        836     JUMP_FORWARD                    11 (to 860)
+                        838     PUSH_EXC_INFO                   
+                        840     WITH_EXCEPT_START               
+                        842     POP_JUMP_FORWARD_IF_TRUE        4 (to 852)
+                        844     RERAISE                         2
+                        846     COPY                            3
+                        848     POP_EXCEPT                      
+                        850     RERAISE                         1
+                        852     POP_TOP                         
+                        854     POP_EXCEPT                      
+                        856     POP_TOP                         
+                        858     POP_TOP                         
+                        860     LOAD_FAST                       8: pbar
+                        862     POP_JUMP_FORWARD_IF_NONE        22 (to 908)
+                        864     LOAD_FAST                       8: pbar
+                        866     LOAD_METHOD                     21: close
+                        888     PRECALL                         0
+                        892     CALL                            0
+                        902     POP_TOP                         
+                        904     LOAD_CONST                      0: None
+                        906     RETURN_VALUE                    
+                        908     LOAD_CONST                      0: None
+                        910     RETURN_VALUE                    
+                    [Exception Table]
+                        134 to 812 -> 838 [1] lasti
+                        838 to 846 -> 846 [3] lasti
+                        852 to 854 -> 846 [3] lasti
+                None
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_NAME                       0: __name__
+                4       STORE_NAME                      1: __module__
+                6       LOAD_CONST                      0: 'Parser'
+                8       STORE_NAME                      2: __qualname__
+                10      LOAD_CONST                      1: 'tcpdump_text'
+                12      STORE_NAME                      3: subtype
+                14      LOAD_CONST                      2: 'path'
+                16      LOAD_NAME                       4: str
+                18      LOAD_CONST                      3: 'sep'
+                20      LOAD_NAME                       4: str
+                22      LOAD_CONST                      4: 'split_rows'
+                24      LOAD_NAME                       5: int
+                26      LOAD_CONST                      5: 'progress_every'
+                28      LOAD_NAME                       5: int
+                30      LOAD_CONST                      6: 'use_tqdm'
+                32      LOAD_NAME                       6: bool
+                34      LOAD_CONST                      7: 'debug'
+                36      LOAD_NAME                       6: bool
+                38      LOAD_CONST                      8: 'return'
+                40      LOAD_NAME                       7: Iterable
+                42      LOAD_NAME                       4: str
+                44      BINARY_SUBSCR                   
+                54      BUILD_TUPLE                     14
+                56      LOAD_CONST                      9: <CODE> parse
+                58      MAKE_FUNCTION                   4
+                60      STORE_NAME                      8: parse
+                62      LOAD_CONST                      10: None
+                64      RETURN_VALUE                    
+            [Exception Table]
+        'Parser'
+    [Disassembly]
+        0       RESUME                          0
+        2       LOAD_CONST                      0: 'Parseur tcpdump texte.'
+        4       STORE_NAME                      0: __doc__
+        6       LOAD_CONST                      1: 0
+        8       LOAD_CONST                      2: None
+        10      IMPORT_NAME                     1: re
+        12      STORE_NAME                      1: re
+        14      LOAD_CONST                      1: 0
+        16      LOAD_CONST                      2: None
+        18      IMPORT_NAME                     2: os
+        20      STORE_NAME                      2: os
+        22      LOAD_CONST                      1: 0
+        24      LOAD_CONST                      2: None
+        26      IMPORT_NAME                     3: sys
+        28      STORE_NAME                      3: sys
+        30      LOAD_CONST                      1: 0
+        32      LOAD_CONST                      3: ('datetime', 'timezone')
+        34      IMPORT_NAME                     4: datetime
+        36      IMPORT_FROM                     4: datetime
+        38      STORE_NAME                      4: datetime
+        40      IMPORT_FROM                     5: timezone
+        42      STORE_NAME                      5: timezone
+        44      POP_TOP                         
+        46      LOAD_CONST                      1: 0
+        48      LOAD_CONST                      4: ('Iterable', 'Tuple')
+        50      IMPORT_NAME                     6: typing
+        52      IMPORT_FROM                     7: Iterable
+        54      STORE_NAME                      7: Iterable
+        56      IMPORT_FROM                     8: Tuple
+        58      STORE_NAME                      8: Tuple
+        60      POP_TOP                         
+        62      LOAD_CONST                      5: 2
+        64      LOAD_CONST                      6: ('clean', 'make_pbar')
+        66      IMPORT_NAME                     9: common
+        68      IMPORT_FROM                     10: clean
+        70      STORE_NAME                      10: clean
+        72      IMPORT_FROM                     11: make_pbar
+        74      STORE_NAME                      11: make_pbar
+        76      POP_TOP                         
+        78      LOAD_CONST                      5: 2
+        80      LOAD_CONST                      7: ('emit',)
+        82      IMPORT_NAME                     12: writer
+        84      IMPORT_FROM                     13: emit
+        86      STORE_NAME                      13: emit
+        88      POP_TOP                         
+        90      PUSH_NULL                       
+        92      LOAD_NAME                       1: re
+        94      LOAD_ATTR                       14: compile
+        104     LOAD_CONST                      8: '^(?P<ts>\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}\\.\\d+)\\s+(?P<rest>.*)$'
+        106     PRECALL                         1
+        110     CALL                            1
+        120     STORE_NAME                      15: TS_FULL_RE
+        122     PUSH_NULL                       
+        124     LOAD_NAME                       1: re
+        126     LOAD_ATTR                       14: compile
+        136     LOAD_CONST                      9: '^(?P<ts>\\d{2}:\\d{2}:\\d{2}\\.\\d+)\\s+(?P<rest>.*)$'
+        138     PRECALL                         1
+        142     CALL                            1
+        152     STORE_NAME                      16: TS_SHORT_RE
+        154     PUSH_NULL                       
+        156     LOAD_NAME                       1: re
+        158     LOAD_ATTR                       14: compile
+        168     LOAD_CONST                      10: '^(?P<proto>\\S+)\\s+(?P<rest>.*)$'
+        170     PRECALL                         1
+        174     CALL                            1
+        184     STORE_NAME                      17: PROTO_RE
+        186     PUSH_NULL                       
+        188     LOAD_NAME                       1: re
+        190     LOAD_ATTR                       14: compile
+        200     LOAD_CONST                      11: '(?P<sip>\\d{1,3}(?:\\.\\d{1,3}){3})(?:\\.(?P<sport>\\d+))?\\s*>\\s*(?P<dip>\\d{1,3}(?:\\.\\d{1,3}){3})(?:\\.(?P<dport>\\d+))?:\\s*(?P<msg>.*)$'
+        202     PRECALL                         1
+        206     CALL                            1
+        216     STORE_NAME                      18: IP4_EP_RE
+        218     PUSH_NULL                       
+        220     LOAD_NAME                       1: re
+        222     LOAD_ATTR                       14: compile
+        232     LOAD_CONST                      12: '(?P<sip>\\[[0-9a-fA-F:]+\\]|[0-9a-fA-F:]+)(?:\\.(?P<sport>\\d+))?\\s*>\\s*(?P<dip>\\[[0-9a-fA-F:]+\\]|[0-9a-fA-F:]+)(?:\\.(?P<dport>\\d+))?:\\s*(?P<msg>.*)$'
+        234     PRECALL                         1
+        238     CALL                            1
+        248     STORE_NAME                      19: IP6_EP_RE
+        250     PUSH_NULL                       
+        252     LOAD_NAME                       1: re
+        254     LOAD_ATTR                       14: compile
+        264     LOAD_CONST                      13: 'Flags\\s+\\[([A-Za-z\\.]+)\\]'
+        266     PRECALL                         1
+        270     CALL                            1
+        280     STORE_NAME                      20: FLAGS_RE
+        282     PUSH_NULL                       
+        284     LOAD_NAME                       1: re
+        286     LOAD_ATTR                       14: compile
+        296     LOAD_CONST                      14: '(?:length|len)\\s+(\\d+)'
+        298     PRECALL                         1
+        302     CALL                            1
+        312     STORE_NAME                      21: LEN_RE
+        314     LOAD_CONST                      15: 'line'
+        316     LOAD_NAME                       22: str
+        318     LOAD_CONST                      16: 'return'
+        320     LOAD_NAME                       8: Tuple
+        322     LOAD_NAME                       22: str
+        324     LOAD_NAME                       22: str
+        326     LOAD_NAME                       22: str
+        328     LOAD_NAME                       22: str
+        330     LOAD_NAME                       22: str
+        332     LOAD_NAME                       22: str
+        334     LOAD_NAME                       22: str
+        336     LOAD_NAME                       22: str
+        338     BUILD_TUPLE                     8
+        340     BINARY_SUBSCR                   
+        350     BUILD_TUPLE                     4
+        352     LOAD_CONST                      17: <CODE> parse_line
+        354     MAKE_FUNCTION                   4
+        356     STORE_NAME                      23: parse_line
+        358     PUSH_NULL                       
+        360     LOAD_BUILD_CLASS                
+        362     LOAD_CONST                      18: <CODE> Parser
+        364     MAKE_FUNCTION                   0
+        366     LOAD_CONST                      19: 'Parser'
+        368     PRECALL                         2
+        372     CALL                            2
+        382     STORE_NAME                      24: Parser
+        384     LOAD_CONST                      2: None
+        386     RETURN_VALUE                    
+    [Exception Table]

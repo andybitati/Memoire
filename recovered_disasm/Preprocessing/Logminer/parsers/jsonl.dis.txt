@@ -1,0 +1,587 @@
+jsonl.cpython-311.pyc (Python 3.11)
+[Code]
+    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\jsonl.py
+    Object Name: <module>
+    Qualified Name: <module>
+    Arg Count: 0
+    Pos Only Arg Count: 0
+    KW Only Arg Count: 0
+    Stack Size: 4
+    Flags: 0x00000000
+    [Names]
+        '__doc__'
+        'os'
+        'json'
+        'sys'
+        'typing'
+        'Iterable'
+        'common'
+        'clean'
+        'make_pbar'
+        'norm_sev'
+        'writer'
+        'emit'
+        'Parser'
+    [Locals+Names]
+    [Constants]
+        'Parseur JSON Lines (1 JSON par ligne).'
+        0
+        None
+        (
+            'Iterable'
+        )
+        2
+        (
+            'clean'
+            'make_pbar'
+            'norm_sev'
+        )
+        (
+            'emit'
+        )
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\jsonl.py
+            Object Name: Parser
+            Qualified Name: Parser
+            Arg Count: 0
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 15
+            Flags: 0x00000000
+            [Names]
+                '__name__'
+                '__module__'
+                '__qualname__'
+                'subtype'
+                'str'
+                'int'
+                'bool'
+                'Iterable'
+                'parse'
+            [Locals+Names]
+            [Constants]
+                'Parser'
+                'jsonl'
+                'path'
+                'sep'
+                'split_rows'
+                'progress_every'
+                'use_tqdm'
+                'debug'
+                'return'
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\jsonl.py
+                    Object Name: parse
+                    Qualified Name: Parser.parse
+                    Arg Count: 4
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 4
+                    Stack Size: 21
+                    Flags: 0x00000023 (CO_OPTIMIZED | CO_NEWLOCALS | CO_GENERATOR)
+                    [Names]
+                        'make_pbar'
+                        'os'
+                        'path'
+                        'getsize'
+                        'open'
+                        'readline'
+                        'update'
+                        'len'
+                        'decode'
+                        'strip'
+                        'json'
+                        'loads'
+                        'dict'
+                        'subtype'
+                        'get'
+                        'norm_sev'
+                        'str'
+                        'clean'
+                        'emit'
+                        'Exception'
+                        'print'
+                        'sys'
+                        'stderr'
+                        'close'
+                    [Locals+Names]
+                        'self'
+                        'path'
+                        'writer'
+                        'sep'
+                        'split_rows'
+                        'progress_every'
+                        'use_tqdm'
+                        'debug'
+                        'pbar'
+                        'part_rows'
+                        'lineno'
+                        'fb'
+                        'raw'
+                        's'
+                        'obj'
+                        'base'
+                    [Constants]
+                        None
+                        'jsonl'
+                        'B'
+                        0
+                        'rb'
+                        True
+                        1
+                        'utf-8'
+                        'ignore'
+                        (
+                            'errors'
+                        )
+                        'json'
+                        'timestamp'
+                        '@timestamp'
+                        'time'
+                        ''
+                        'level'
+                        'severity'
+                        'logger'
+                        'source'
+                        'host'
+                        'pid'
+                        'message'
+                        'msg'
+                        'src_ip'
+                        'client_ip'
+                        'dst_ip'
+                        'status'
+                        'method'
+                        'url'
+                        (
+                            'dataset'
+                            'subtype'
+                            'filepath'
+                            'lineno'
+                            'timestamp_iso'
+                            'severity'
+                            'source'
+                            'host'
+                            'pid'
+                            'message'
+                            'src_ip'
+                            'dst_ip'
+                            'http_status'
+                            'http_method'
+                            'http_url'
+                        )
+                        'invalid'
+                        (
+                            'dataset'
+                            'subtype'
+                            'filepath'
+                            'lineno'
+                            'message'
+                        )
+                        '[progress] jsonl lignes: '
+                        ','
+                        (
+                            'file'
+                        )
+                        'split'
+                    [Disassembly]
+                        0       RETURN_GENERATOR                
+                        2       POP_TOP                         
+                        4       RESUME                          0
+                        6       LOAD_GLOBAL                     1: NULL + make_pbar
+                        18      LOAD_GLOBAL                     2: os
+                        30      LOAD_ATTR                       2: path
+                        40      LOAD_METHOD                     3: getsize
+                        62      LOAD_FAST                       1: path
+                        64      PRECALL                         1
+                        68      CALL                            1
+                        78      LOAD_CONST                      1: 'jsonl'
+                        80      LOAD_CONST                      2: 'B'
+                        82      PRECALL                         3
+                        86      CALL                            3
+                        96      STORE_FAST                      8: pbar
+                        98      LOAD_CONST                      3: 0
+                        100     STORE_FAST                      9: part_rows
+                        102     LOAD_CONST                      3: 0
+                        104     STORE_FAST                      10: lineno
+                        106     LOAD_GLOBAL                     9: NULL + open
+                        118     LOAD_FAST                       1: path
+                        120     LOAD_CONST                      4: 'rb'
+                        122     PRECALL                         2
+                        126     CALL                            2
+                        136     BEFORE_WITH                     
+                        138     STORE_FAST                      11: fb
+                        140     NOP                             
+                        142     LOAD_FAST                       11: fb
+                        144     LOAD_METHOD                     5: readline
+                        166     PRECALL                         0
+                        170     CALL                            0
+                        180     STORE_FAST                      12: raw
+                        182     LOAD_FAST                       12: raw
+                        184     POP_JUMP_FORWARD_IF_TRUE        2 (to 190)
+                        186     JUMP_FORWARD                    684 (to 1558)
+                        190     LOAD_FAST                       8: pbar
+                        192     POP_JUMP_FORWARD_IF_NONE        34 (to 262)
+                        194     LOAD_FAST                       8: pbar
+                        196     LOAD_METHOD                     6: update
+                        218     LOAD_GLOBAL                     15: NULL + len
+                        230     LOAD_FAST                       12: raw
+                        232     PRECALL                         1
+                        236     CALL                            1
+                        246     PRECALL                         1
+                        250     CALL                            1
+                        260     POP_TOP                         
+                        262     LOAD_FAST                       10: lineno
+                        264     LOAD_CONST                      6: 1
+                        266     BINARY_OP                       13 (+=)
+                        270     STORE_FAST                      10: lineno
+                        272     LOAD_FAST                       12: raw
+                        274     LOAD_METHOD                     8: decode
+                        296     LOAD_CONST                      7: 'utf-8'
+                        298     LOAD_CONST                      8: 'ignore'
+                        300     KW_NAMES                        9: ('errors',)
+                        302     PRECALL                         2
+                        306     CALL                            2
+                        316     LOAD_METHOD                     9: strip
+                        338     PRECALL                         0
+                        342     CALL                            0
+                        352     STORE_FAST                      13: s
+                        354     LOAD_FAST                       13: s
+                        356     POP_JUMP_FORWARD_IF_TRUE        1 (to 360)
+                        358     JUMP_BACKWARD                   110 (to 140)
+                        360     NOP                             
+                        362     LOAD_GLOBAL                     21: NULL + json
+                        374     LOAD_ATTR                       11: loads
+                        384     LOAD_FAST                       13: s
+                        386     PRECALL                         1
+                        390     CALL                            1
+                        400     STORE_FAST                      14: obj
+                        402     LOAD_GLOBAL                     25: NULL + dict
+                        414     LOAD_CONST                      10: 'json'
+                        416     LOAD_FAST                       0: self
+                        418     LOAD_ATTR                       13: subtype
+                        428     LOAD_FAST                       1: path
+                        430     LOAD_FAST                       10: lineno
+                        432     LOAD_FAST                       14: obj
+                        434     LOAD_METHOD                     14: get
+                        456     LOAD_CONST                      11: 'timestamp'
+                        458     PRECALL                         1
+                        462     CALL                            1
+                        472     JUMP_IF_TRUE_OR_POP             43 (to 86)
+                        474     LOAD_FAST                       14: obj
+                        476     LOAD_METHOD                     14: get
+                        498     LOAD_CONST                      12: '@timestamp'
+                        500     PRECALL                         1
+                        504     CALL                            1
+                        514     JUMP_IF_TRUE_OR_POP             22 (to 44)
+                        516     LOAD_FAST                       14: obj
+                        518     LOAD_METHOD                     14: get
+                        540     LOAD_CONST                      13: 'time'
+                        542     PRECALL                         1
+                        546     CALL                            1
+                        556     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        558     LOAD_CONST                      14: ''
+                        560     LOAD_GLOBAL                     31: NULL + norm_sev
+                        572     LOAD_FAST                       14: obj
+                        574     LOAD_METHOD                     14: get
+                        596     LOAD_CONST                      15: 'level'
+                        598     PRECALL                         1
+                        602     CALL                            1
+                        612     JUMP_IF_TRUE_OR_POP             22 (to 44)
+                        614     LOAD_FAST                       14: obj
+                        616     LOAD_METHOD                     14: get
+                        638     LOAD_CONST                      16: 'severity'
+                        640     PRECALL                         1
+                        644     CALL                            1
+                        654     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        656     LOAD_CONST                      14: ''
+                        658     PRECALL                         1
+                        662     CALL                            1
+                        672     LOAD_FAST                       14: obj
+                        674     LOAD_METHOD                     14: get
+                        696     LOAD_CONST                      17: 'logger'
+                        698     PRECALL                         1
+                        702     CALL                            1
+                        712     JUMP_IF_TRUE_OR_POP             22 (to 44)
+                        714     LOAD_FAST                       14: obj
+                        716     LOAD_METHOD                     14: get
+                        738     LOAD_CONST                      18: 'source'
+                        740     PRECALL                         1
+                        744     CALL                            1
+                        754     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        756     LOAD_CONST                      14: ''
+                        758     LOAD_FAST                       14: obj
+                        760     LOAD_METHOD                     14: get
+                        782     LOAD_CONST                      19: 'host'
+                        784     PRECALL                         1
+                        788     CALL                            1
+                        798     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        800     LOAD_CONST                      14: ''
+                        802     LOAD_GLOBAL                     33: NULL + str
+                        814     LOAD_FAST                       14: obj
+                        816     LOAD_METHOD                     14: get
+                        838     LOAD_CONST                      20: 'pid'
+                        840     LOAD_CONST                      14: ''
+                        842     PRECALL                         2
+                        846     CALL                            2
+                        856     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        858     LOAD_CONST                      14: ''
+                        860     PRECALL                         1
+                        864     CALL                            1
+                        874     LOAD_GLOBAL                     35: NULL + clean
+                        886     LOAD_FAST                       14: obj
+                        888     LOAD_METHOD                     14: get
+                        910     LOAD_CONST                      21: 'message'
+                        912     PRECALL                         1
+                        916     CALL                            1
+                        926     JUMP_IF_TRUE_OR_POP             22 (to 44)
+                        928     LOAD_FAST                       14: obj
+                        930     LOAD_METHOD                     14: get
+                        952     LOAD_CONST                      22: 'msg'
+                        954     PRECALL                         1
+                        958     CALL                            1
+                        968     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        970     LOAD_FAST                       13: s
+                        972     PRECALL                         1
+                        976     CALL                            1
+                        986     LOAD_FAST                       14: obj
+                        988     LOAD_METHOD                     14: get
+                        1010    LOAD_CONST                      23: 'src_ip'
+                        1012    PRECALL                         1
+                        1016    CALL                            1
+                        1026    JUMP_IF_TRUE_OR_POP             22 (to 44)
+                        1028    LOAD_FAST                       14: obj
+                        1030    LOAD_METHOD                     14: get
+                        1052    LOAD_CONST                      24: 'client_ip'
+                        1054    PRECALL                         1
+                        1058    CALL                            1
+                        1068    JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        1070    LOAD_CONST                      14: ''
+                        1072    LOAD_FAST                       14: obj
+                        1074    LOAD_METHOD                     14: get
+                        1096    LOAD_CONST                      25: 'dst_ip'
+                        1098    PRECALL                         1
+                        1102    CALL                            1
+                        1112    JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        1114    LOAD_CONST                      14: ''
+                        1116    LOAD_GLOBAL                     33: NULL + str
+                        1128    LOAD_FAST                       14: obj
+                        1130    LOAD_METHOD                     14: get
+                        1152    LOAD_CONST                      26: 'status'
+                        1154    LOAD_CONST                      14: ''
+                        1156    PRECALL                         2
+                        1160    CALL                            2
+                        1170    JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        1172    LOAD_CONST                      14: ''
+                        1174    PRECALL                         1
+                        1178    CALL                            1
+                        1188    LOAD_FAST                       14: obj
+                        1190    LOAD_METHOD                     14: get
+                        1212    LOAD_CONST                      27: 'method'
+                        1214    LOAD_CONST                      14: ''
+                        1216    PRECALL                         2
+                        1220    CALL                            2
+                        1230    JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        1232    LOAD_CONST                      14: ''
+                        1234    LOAD_FAST                       14: obj
+                        1236    LOAD_METHOD                     14: get
+                        1258    LOAD_CONST                      28: 'url'
+                        1260    LOAD_CONST                      14: ''
+                        1262    PRECALL                         2
+                        1266    CALL                            2
+                        1276    JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        1278    LOAD_CONST                      14: ''
+                        1280    KW_NAMES                        29: ('dataset', 'subtype', 'filepath', 'lineno', 'timestamp_iso', 'severity', 'source', 'host', 'pid', 'message', 'src_ip', 'dst_ip', 'http_status', 'http_method', 'http_url')
+                        1282    PRECALL                         15
+                        1286    CALL                            15
+                        1296    STORE_FAST                      15: base
+                        1298    LOAD_GLOBAL                     37: NULL + emit
+                        1310    LOAD_FAST                       2: writer
+                        1312    LOAD_FAST                       15: base
+                        1314    PRECALL                         2
+                        1318    CALL                            2
+                        1328    POP_TOP                         
+                        1330    JUMP_FORWARD                    50 (to 1432)
+                        1332    PUSH_EXC_INFO                   
+                        1334    LOAD_GLOBAL                     38: Exception
+                        1346    CHECK_EXC_MATCH                 
+                        1348    POP_JUMP_FORWARD_IF_FALSE       37 (to 1424)
+                        1350    POP_TOP                         
+                        1352    LOAD_GLOBAL                     37: NULL + emit
+                        1364    LOAD_FAST                       2: writer
+                        1366    LOAD_GLOBAL                     25: NULL + dict
+                        1378    LOAD_CONST                      10: 'json'
+                        1380    LOAD_CONST                      30: 'invalid'
+                        1382    LOAD_FAST                       1: path
+                        1384    LOAD_FAST                       10: lineno
+                        1386    LOAD_FAST                       13: s
+                        1388    KW_NAMES                        31: ('dataset', 'subtype', 'filepath', 'lineno', 'message')
+                        1390    PRECALL                         5
+                        1394    CALL                            5
+                        1404    PRECALL                         2
+                        1408    CALL                            2
+                        1418    POP_TOP                         
+                        1420    POP_EXCEPT                      
+                        1422    JUMP_FORWARD                    4 (to 1432)
+                        1424    RERAISE                         0
+                        1426    COPY                            3
+                        1428    POP_EXCEPT                      
+                        1430    RERAISE                         1
+                        1432    LOAD_FAST                       9: part_rows
+                        1434    LOAD_CONST                      6: 1
+                        1436    BINARY_OP                       13 (+=)
+                        1440    STORE_FAST                      9: part_rows
+                        1442    LOAD_FAST                       5: progress_every
+                        1444    POP_JUMP_FORWARD_IF_FALSE       40 (to 1526)
+                        1446    LOAD_FAST                       10: lineno
+                        1448    LOAD_FAST                       5: progress_every
+                        1450    BINARY_OP                       6 (%)
+                        1454    LOAD_CONST                      3: 0
+                        1456    COMPARE_OP                      2 (==)
+                        1462    POP_JUMP_FORWARD_IF_FALSE       31 (to 1526)
+                        1464    LOAD_GLOBAL                     41: NULL + print
+                        1476    LOAD_CONST                      32: '[progress] jsonl lignes: '
+                        1478    LOAD_FAST                       10: lineno
+                        1480    LOAD_CONST                      33: ','
+                        1482    FORMAT_VALUE                    4 (FVC_NONE | FVS_HAVE_SPEC)
+                        1484    BUILD_STRING                    2
+                        1486    LOAD_GLOBAL                     42: sys
+                        1498    LOAD_ATTR                       22: stderr
+                        1508    KW_NAMES                        34: ('file',)
+                        1510    PRECALL                         2
+                        1514    CALL                            2
+                        1524    POP_TOP                         
+                        1526    LOAD_FAST                       4: split_rows
+                        1528    POP_JUMP_FORWARD_IF_FALSE       12 (to 1554)
+                        1530    LOAD_FAST                       9: part_rows
+                        1532    LOAD_FAST                       4: split_rows
+                        1534    COMPARE_OP                      5 (>=)
+                        1540    POP_JUMP_FORWARD_IF_FALSE       6 (to 1554)
+                        1542    LOAD_CONST                      35: 'split'
+                        1544    YIELD_VALUE                     
+                        1546    RESUME                          1
+                        1548    POP_TOP                         
+                        1550    LOAD_CONST                      3: 0
+                        1552    STORE_FAST                      9: part_rows
+                        1554    JUMP_BACKWARD                   708 (to 142)
+                        1558    NOP                             
+                        1560    LOAD_CONST                      0: None
+                        1562    LOAD_CONST                      0: None
+                        1564    LOAD_CONST                      0: None
+                        1566    PRECALL                         2
+                        1570    CALL                            2
+                        1580    POP_TOP                         
+                        1582    JUMP_FORWARD                    11 (to 1606)
+                        1584    PUSH_EXC_INFO                   
+                        1586    WITH_EXCEPT_START               
+                        1588    POP_JUMP_FORWARD_IF_TRUE        4 (to 1598)
+                        1590    RERAISE                         2
+                        1592    COPY                            3
+                        1594    POP_EXCEPT                      
+                        1596    RERAISE                         1
+                        1598    POP_TOP                         
+                        1600    POP_EXCEPT                      
+                        1602    POP_TOP                         
+                        1604    POP_TOP                         
+                        1606    LOAD_FAST                       8: pbar
+                        1608    POP_JUMP_FORWARD_IF_NONE        22 (to 1654)
+                        1610    LOAD_FAST                       8: pbar
+                        1612    LOAD_METHOD                     23: close
+                        1634    PRECALL                         0
+                        1638    CALL                            0
+                        1648    POP_TOP                         
+                        1650    LOAD_CONST                      0: None
+                        1652    RETURN_VALUE                    
+                        1654    LOAD_CONST                      0: None
+                        1656    RETURN_VALUE                    
+                    [Exception Table]
+                        138 to 360 -> 1584 [1] lasti
+                        362 to 1330 -> 1332 [1] 
+                        1330 to 1332 -> 1584 [1] lasti
+                        1332 to 1420 -> 1426 [2] lasti
+                        1420 to 1424 -> 1584 [1] lasti
+                        1424 to 1426 -> 1426 [2] lasti
+                        1426 to 1558 -> 1584 [1] lasti
+                        1584 to 1592 -> 1592 [3] lasti
+                        1598 to 1600 -> 1592 [3] lasti
+                None
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_NAME                       0: __name__
+                4       STORE_NAME                      1: __module__
+                6       LOAD_CONST                      0: 'Parser'
+                8       STORE_NAME                      2: __qualname__
+                10      LOAD_CONST                      1: 'jsonl'
+                12      STORE_NAME                      3: subtype
+                14      LOAD_CONST                      2: 'path'
+                16      LOAD_NAME                       4: str
+                18      LOAD_CONST                      3: 'sep'
+                20      LOAD_NAME                       4: str
+                22      LOAD_CONST                      4: 'split_rows'
+                24      LOAD_NAME                       5: int
+                26      LOAD_CONST                      5: 'progress_every'
+                28      LOAD_NAME                       5: int
+                30      LOAD_CONST                      6: 'use_tqdm'
+                32      LOAD_NAME                       6: bool
+                34      LOAD_CONST                      7: 'debug'
+                36      LOAD_NAME                       6: bool
+                38      LOAD_CONST                      8: 'return'
+                40      LOAD_NAME                       7: Iterable
+                42      LOAD_NAME                       4: str
+                44      BINARY_SUBSCR                   
+                54      BUILD_TUPLE                     14
+                56      LOAD_CONST                      9: <CODE> parse
+                58      MAKE_FUNCTION                   4
+                60      STORE_NAME                      8: parse
+                62      LOAD_CONST                      10: None
+                64      RETURN_VALUE                    
+            [Exception Table]
+        'Parser'
+    [Disassembly]
+        0       RESUME                          0
+        2       LOAD_CONST                      0: 'Parseur JSON Lines (1 JSON par ligne).'
+        4       STORE_NAME                      0: __doc__
+        6       LOAD_CONST                      1: 0
+        8       LOAD_CONST                      2: None
+        10      IMPORT_NAME                     1: os
+        12      STORE_NAME                      1: os
+        14      LOAD_CONST                      1: 0
+        16      LOAD_CONST                      2: None
+        18      IMPORT_NAME                     2: json
+        20      STORE_NAME                      2: json
+        22      LOAD_CONST                      1: 0
+        24      LOAD_CONST                      2: None
+        26      IMPORT_NAME                     3: sys
+        28      STORE_NAME                      3: sys
+        30      LOAD_CONST                      1: 0
+        32      LOAD_CONST                      3: ('Iterable',)
+        34      IMPORT_NAME                     4: typing
+        36      IMPORT_FROM                     5: Iterable
+        38      STORE_NAME                      5: Iterable
+        40      POP_TOP                         
+        42      LOAD_CONST                      4: 2
+        44      LOAD_CONST                      5: ('clean', 'make_pbar', 'norm_sev')
+        46      IMPORT_NAME                     6: common
+        48      IMPORT_FROM                     7: clean
+        50      STORE_NAME                      7: clean
+        52      IMPORT_FROM                     8: make_pbar
+        54      STORE_NAME                      8: make_pbar
+        56      IMPORT_FROM                     9: norm_sev
+        58      STORE_NAME                      9: norm_sev
+        60      POP_TOP                         
+        62      LOAD_CONST                      4: 2
+        64      LOAD_CONST                      6: ('emit',)
+        66      IMPORT_NAME                     10: writer
+        68      IMPORT_FROM                     11: emit
+        70      STORE_NAME                      11: emit
+        72      POP_TOP                         
+        74      PUSH_NULL                       
+        76      LOAD_BUILD_CLASS                
+        78      LOAD_CONST                      7: <CODE> Parser
+        80      MAKE_FUNCTION                   0
+        82      LOAD_CONST                      8: 'Parser'
+        84      PRECALL                         2
+        88      CALL                            2
+        98      STORE_NAME                      12: Parser
+        100     LOAD_CONST                      2: None
+        102     RETURN_VALUE                    
+    [Exception Table]

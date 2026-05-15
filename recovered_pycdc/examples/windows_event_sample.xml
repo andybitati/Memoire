@@ -1,0 +1,18 @@
+<Events>
+  <Event>
+    <System>
+      <Provider Name="Microsoft-Windows-Security-Auditing" />
+      <EventID>4625</EventID>
+      <Level>2</Level>
+      <TimeCreated SystemTime="2026-05-15T10:20:30Z" />
+      <Execution ProcessID="1234" ThreadID="5678" />
+      <Computer>LAB-WIN01</Computer>
+      <Security UserID="S-1-5-18" />
+    </System>
+    <EventData>
+      <Data Name="TargetUserName">admin</Data>
+      <Data Name="IpAddress">192.168.1.25</Data>
+      <Data Name="FailureReason">Unknown user name or bad password.</Data>
+    </EventData>
+  </Event>
+</Events>

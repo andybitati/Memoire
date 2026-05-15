@@ -1,0 +1,500 @@
+common.cpython-311.pyc (Python 3.11)
+[Code]
+    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\common.py
+    Object Name: <module>
+    Qualified Name: <module>
+    Arg Count: 0
+    Pos Only Arg Count: 0
+    KW Only Arg Count: 0
+    Stack Size: 8
+    Flags: 0x00000000
+    [Names]
+        '__doc__'
+        're'
+        'datetime'
+        'timezone'
+        'typing'
+        'Optional'
+        'str'
+        'clean'
+        'to_iso'
+        'parse_epoch'
+        'compile'
+        'DATETIME_RE'
+        'EPOCH_RE'
+        'IP4_RE'
+        'IP6_RE'
+        'I'
+        'PORT_BOTH_RE'
+        'ALIASES_SEV'
+        'norm_sev'
+        'tqdm'
+        'Exception'
+        'int'
+        'make_pbar'
+    [Locals+Names]
+    [Constants]
+        'Outils communs : nettoyage, timestamps, tqdm, normalisation.'
+        0
+        None
+        (
+            'datetime'
+            'timezone'
+        )
+        (
+            'Optional'
+        )
+        's'
+        'return'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\common.py
+            Object Name: clean
+            Qualified Name: clean
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 8
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                're'
+                'sub'
+                'replace'
+                'strip'
+            [Locals+Names]
+                's'
+            [Constants]
+                'Compacte les espaces et supprime CR/LF.'
+                ''
+                '\\s+'
+                ' '
+                '\r'
+                '\n'
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_FAST                       0: s
+                4       POP_JUMP_FORWARD_IF_TRUE        2 (to 10)
+                6       LOAD_CONST                      1: ''
+                8       RETURN_VALUE                    
+                10      LOAD_GLOBAL                     1: NULL + re
+                22      LOAD_ATTR                       1: sub
+                32      LOAD_CONST                      2: '\\s+'
+                34      LOAD_CONST                      3: ' '
+                36      LOAD_FAST                       0: s
+                38      LOAD_METHOD                     2: replace
+                60      LOAD_CONST                      4: '\r'
+                62      LOAD_CONST                      3: ' '
+                64      PRECALL                         2
+                68      CALL                            2
+                78      LOAD_METHOD                     2: replace
+                100     LOAD_CONST                      5: '\n'
+                102     LOAD_CONST                      3: ' '
+                104     PRECALL                         2
+                108     CALL                            2
+                118     PRECALL                         3
+                122     CALL                            3
+                132     LOAD_METHOD                     3: strip
+                154     PRECALL                         0
+                158     CALL                            0
+                168     RETURN_VALUE                    
+            [Exception Table]
+        'dt'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\common.py
+            Object Name: to_iso
+            Qualified Name: to_iso
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 2
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'isoformat'
+            [Locals+Names]
+                'dt'
+            [Constants]
+                None
+                ''
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_FAST                       0: dt
+                4       POP_JUMP_FORWARD_IF_FALSE       20 (to 46)
+                6       LOAD_FAST                       0: dt
+                8       LOAD_METHOD                     0: isoformat
+                30      PRECALL                         0
+                34      CALL                            0
+                44      JUMP_FORWARD                    1 (to 48)
+                46      LOAD_CONST                      1: ''
+                48      RETURN_VALUE                    
+            [Exception Table]
+        'sec'
+        'subsec'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\common.py
+            Object Name: parse_epoch
+            Qualified Name: parse_epoch
+            Arg Count: 2
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 4
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'int'
+                'datetime'
+                'fromtimestamp'
+                'timezone'
+                'utc'
+                'replace'
+                'Exception'
+            [Locals+Names]
+                'sec'
+                'subsec'
+                's'
+                'ns'
+                'us'
+            [Constants]
+                'Epoch secondes + sous-secondes (ns/us).'
+                0
+                999999
+                1000
+                (
+                    'tz'
+                )
+                (
+                    'microsecond'
+                )
+                None
+            [Disassembly]
+                0       RESUME                          0
+                2       NOP                             
+                4       LOAD_GLOBAL                     1: NULL + int
+                16      LOAD_FAST                       0: sec
+                18      PRECALL                         1
+                22      CALL                            1
+                32      STORE_FAST                      2: s
+                34      LOAD_FAST                       1: subsec
+                36      POP_JUMP_FORWARD_IF_FALSE       15 (to 68)
+                38      LOAD_GLOBAL                     1: NULL + int
+                50      LOAD_FAST                       1: subsec
+                52      PRECALL                         1
+                56      CALL                            1
+                66      JUMP_FORWARD                    1 (to 70)
+                68      LOAD_CONST                      1: 0
+                70      STORE_FAST                      3: ns
+                72      LOAD_FAST                       3: ns
+                74      LOAD_CONST                      2: 999999
+                76      COMPARE_OP                      4 (>)
+                82      POP_JUMP_FORWARD_IF_FALSE       5 (to 94)
+                84      LOAD_FAST                       3: ns
+                86      LOAD_CONST                      3: 1000
+                88      BINARY_OP                       2 (//)
+                92      JUMP_FORWARD                    1 (to 96)
+                94      LOAD_FAST                       3: ns
+                96      STORE_FAST                      4: us
+                98      LOAD_GLOBAL                     3: NULL + datetime
+                110     LOAD_ATTR                       2: fromtimestamp
+                120     LOAD_FAST                       2: s
+                122     LOAD_GLOBAL                     6: timezone
+                134     LOAD_ATTR                       4: utc
+                144     KW_NAMES                        4: ('tz',)
+                146     PRECALL                         2
+                150     CALL                            2
+                160     LOAD_METHOD                     5: replace
+                182     LOAD_FAST                       4: us
+                184     KW_NAMES                        5: ('microsecond',)
+                186     PRECALL                         1
+                190     CALL                            1
+                200     RETURN_VALUE                    
+                202     PUSH_EXC_INFO                   
+                204     LOAD_GLOBAL                     12: Exception
+                216     CHECK_EXC_MATCH                 
+                218     POP_JUMP_FORWARD_IF_FALSE       4 (to 228)
+                220     POP_TOP                         
+                222     POP_EXCEPT                      
+                224     LOAD_CONST                      6: None
+                226     RETURN_VALUE                    
+                228     RERAISE                         0
+                230     COPY                            3
+                232     POP_EXCEPT                      
+                234     RERAISE                         1
+            [Exception Table]
+                4 to 200 -> 202 [0] 
+                202 to 222 -> 230 [1] lasti
+                228 to 230 -> 230 [1] lasti
+        '\\d{4}-\\d{2}-\\d{2}[ T]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,9})?'
+        '(?P<sec>\\d{10})(?:\\.(?P<sub>\\d{1,9}))?'
+        '\\b\\d{1,3}(?:\\.\\d{1,3}){3}\\b'
+        '\\b[0-9a-fA-F:]{2,}\\b'
+        '(?:^|[^A-Za-z])(src|sport|s_port)\\D*(?P<s>\\d+)|(?:^|[^A-Za-z])(dst|dport|d_port)\\D*(?P<d>\\d+)'
+        'WARN'
+        'ERROR'
+        'CRITICAL'
+        'INFO'
+        'DEBUG'
+        (
+            'WARNING'
+            'WARN'
+            'ERR'
+            'CRIT'
+            'SEVERE'
+            'INF'
+            'DBG'
+        )
+        'sev'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\common.py
+            Object Name: norm_sev
+            Qualified Name: norm_sev
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 4
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'upper'
+                'ALIASES_SEV'
+                'get'
+            [Locals+Names]
+                'sev'
+                'up'
+            [Constants]
+                None
+                ''
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_FAST                       0: sev
+                4       POP_JUMP_FORWARD_IF_TRUE        2 (to 10)
+                6       LOAD_CONST                      1: ''
+                8       RETURN_VALUE                    
+                10      LOAD_FAST                       0: sev
+                12      LOAD_METHOD                     0: upper
+                34      PRECALL                         0
+                38      CALL                            0
+                48      STORE_FAST                      1: up
+                50      LOAD_GLOBAL                     2: ALIASES_SEV
+                62      LOAD_METHOD                     2: get
+                84      LOAD_FAST                       1: up
+                86      LOAD_FAST                       1: up
+                88      PRECALL                         2
+                92      CALL                            2
+                102     RETURN_VALUE                    
+            [Exception Table]
+        (
+            'tqdm'
+        )
+        'total'
+        'desc'
+        'unit'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\common.py
+            Object Name: make_pbar
+            Qualified Name: make_pbar
+            Arg Count: 3
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 7
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'tqdm'
+            [Locals+Names]
+                'total'
+                'desc'
+                'unit'
+            [Constants]
+                'Crée une barre tqdm optionnelle.\n       total=None -> total=0 pour éviter bool(None) indéfini.'
+                None
+                0
+                False
+                (
+                    'total'
+                    'unit'
+                    'desc'
+                    'leave'
+                )
+                True
+                (
+                    'total'
+                    'unit'
+                    'unit_scale'
+                    'desc'
+                    'leave'
+                )
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_GLOBAL                     0: tqdm
+                14      POP_JUMP_FORWARD_IF_TRUE        2 (to 20)
+                16      LOAD_CONST                      1: None
+                18      RETURN_VALUE                    
+                20      LOAD_FAST                       0: total
+                22      POP_JUMP_FORWARD_IF_NOT_NONE    19 (to 62)
+                24      LOAD_GLOBAL                     1: NULL + tqdm
+                36      LOAD_CONST                      2: 0
+                38      LOAD_FAST                       2: unit
+                40      LOAD_FAST                       1: desc
+                42      LOAD_CONST                      3: False
+                44      KW_NAMES                        4: ('total', 'unit', 'desc', 'leave')
+                46      PRECALL                         4
+                50      CALL                            4
+                60      RETURN_VALUE                    
+                62      LOAD_GLOBAL                     1: NULL + tqdm
+                74      LOAD_FAST                       0: total
+                76      LOAD_FAST                       2: unit
+                78      LOAD_CONST                      5: True
+                80      LOAD_FAST                       1: desc
+                82      LOAD_CONST                      3: False
+                84      KW_NAMES                        6: ('total', 'unit', 'unit_scale', 'desc', 'leave')
+                86      PRECALL                         5
+                90      CALL                            5
+                100     RETURN_VALUE                    
+            [Exception Table]
+    [Disassembly]
+        0       RESUME                          0
+        2       LOAD_CONST                      0: 'Outils communs : nettoyage, timestamps, tqdm, normalisation.'
+        4       STORE_NAME                      0: __doc__
+        6       LOAD_CONST                      1: 0
+        8       LOAD_CONST                      2: None
+        10      IMPORT_NAME                     1: re
+        12      STORE_NAME                      1: re
+        14      LOAD_CONST                      1: 0
+        16      LOAD_CONST                      3: ('datetime', 'timezone')
+        18      IMPORT_NAME                     2: datetime
+        20      IMPORT_FROM                     2: datetime
+        22      STORE_NAME                      2: datetime
+        24      IMPORT_FROM                     3: timezone
+        26      STORE_NAME                      3: timezone
+        28      POP_TOP                         
+        30      LOAD_CONST                      1: 0
+        32      LOAD_CONST                      4: ('Optional',)
+        34      IMPORT_NAME                     4: typing
+        36      IMPORT_FROM                     5: Optional
+        38      STORE_NAME                      5: Optional
+        40      POP_TOP                         
+        42      LOAD_CONST                      5: 's'
+        44      LOAD_NAME                       5: Optional
+        46      LOAD_NAME                       6: str
+        48      BINARY_SUBSCR                   
+        58      LOAD_CONST                      6: 'return'
+        60      LOAD_NAME                       6: str
+        62      BUILD_TUPLE                     4
+        64      LOAD_CONST                      7: <CODE> clean
+        66      MAKE_FUNCTION                   4
+        68      STORE_NAME                      7: clean
+        70      LOAD_CONST                      8: 'dt'
+        72      LOAD_NAME                       5: Optional
+        74      LOAD_NAME                       2: datetime
+        76      BINARY_SUBSCR                   
+        86      LOAD_CONST                      6: 'return'
+        88      LOAD_NAME                       6: str
+        90      BUILD_TUPLE                     4
+        92      LOAD_CONST                      9: <CODE> to_iso
+        94      MAKE_FUNCTION                   4
+        96      STORE_NAME                      8: to_iso
+        98      LOAD_CONST                      10: 'sec'
+        100     LOAD_NAME                       6: str
+        102     LOAD_CONST                      11: 'subsec'
+        104     LOAD_NAME                       5: Optional
+        106     LOAD_NAME                       6: str
+        108     BINARY_SUBSCR                   
+        118     LOAD_CONST                      6: 'return'
+        120     LOAD_NAME                       5: Optional
+        122     LOAD_NAME                       2: datetime
+        124     BINARY_SUBSCR                   
+        134     BUILD_TUPLE                     6
+        136     LOAD_CONST                      12: <CODE> parse_epoch
+        138     MAKE_FUNCTION                   4
+        140     STORE_NAME                      9: parse_epoch
+        142     PUSH_NULL                       
+        144     LOAD_NAME                       1: re
+        146     LOAD_ATTR                       10: compile
+        156     LOAD_CONST                      13: '\\d{4}-\\d{2}-\\d{2}[ T]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,9})?'
+        158     PRECALL                         1
+        162     CALL                            1
+        172     STORE_NAME                      11: DATETIME_RE
+        174     PUSH_NULL                       
+        176     LOAD_NAME                       1: re
+        178     LOAD_ATTR                       10: compile
+        188     LOAD_CONST                      14: '(?P<sec>\\d{10})(?:\\.(?P<sub>\\d{1,9}))?'
+        190     PRECALL                         1
+        194     CALL                            1
+        204     STORE_NAME                      12: EPOCH_RE
+        206     PUSH_NULL                       
+        208     LOAD_NAME                       1: re
+        210     LOAD_ATTR                       10: compile
+        220     LOAD_CONST                      15: '\\b\\d{1,3}(?:\\.\\d{1,3}){3}\\b'
+        222     PRECALL                         1
+        226     CALL                            1
+        236     STORE_NAME                      13: IP4_RE
+        238     PUSH_NULL                       
+        240     LOAD_NAME                       1: re
+        242     LOAD_ATTR                       10: compile
+        252     LOAD_CONST                      16: '\\b[0-9a-fA-F:]{2,}\\b'
+        254     PRECALL                         1
+        258     CALL                            1
+        268     STORE_NAME                      14: IP6_RE
+        270     PUSH_NULL                       
+        272     LOAD_NAME                       1: re
+        274     LOAD_ATTR                       10: compile
+        284     LOAD_CONST                      17: '(?:^|[^A-Za-z])(src|sport|s_port)\\D*(?P<s>\\d+)|(?:^|[^A-Za-z])(dst|dport|d_port)\\D*(?P<d>\\d+)'
+        286     LOAD_NAME                       1: re
+        288     LOAD_ATTR                       15: I
+        298     PRECALL                         2
+        302     CALL                            2
+        312     STORE_NAME                      16: PORT_BOTH_RE
+        314     LOAD_CONST                      18: 'WARN'
+        316     LOAD_CONST                      18: 'WARN'
+        318     LOAD_CONST                      19: 'ERROR'
+        320     LOAD_CONST                      20: 'CRITICAL'
+        322     LOAD_CONST                      20: 'CRITICAL'
+        324     LOAD_CONST                      21: 'INFO'
+        326     LOAD_CONST                      22: 'DEBUG'
+        328     LOAD_CONST                      23: ('WARNING', 'WARN', 'ERR', 'CRIT', 'SEVERE', 'INF', 'DBG')
+        330     BUILD_CONST_KEY_MAP             7
+        332     STORE_NAME                      17: ALIASES_SEV
+        334     LOAD_CONST                      24: 'sev'
+        336     LOAD_NAME                       5: Optional
+        338     LOAD_NAME                       6: str
+        340     BINARY_SUBSCR                   
+        350     LOAD_CONST                      6: 'return'
+        352     LOAD_NAME                       6: str
+        354     BUILD_TUPLE                     4
+        356     LOAD_CONST                      25: <CODE> norm_sev
+        358     MAKE_FUNCTION                   4
+        360     STORE_NAME                      18: norm_sev
+        362     NOP                             
+        364     LOAD_CONST                      1: 0
+        366     LOAD_CONST                      26: ('tqdm',)
+        368     IMPORT_NAME                     19: tqdm
+        370     IMPORT_FROM                     19: tqdm
+        372     STORE_NAME                      19: tqdm
+        374     POP_TOP                         
+        376     JUMP_FORWARD                    13 (to 404)
+        378     PUSH_EXC_INFO                   
+        380     LOAD_NAME                       20: Exception
+        382     CHECK_EXC_MATCH                 
+        384     POP_JUMP_FORWARD_IF_FALSE       5 (to 396)
+        386     POP_TOP                         
+        388     LOAD_CONST                      2: None
+        390     STORE_NAME                      19: tqdm
+        392     POP_EXCEPT                      
+        394     JUMP_FORWARD                    4 (to 404)
+        396     RERAISE                         0
+        398     COPY                            3
+        400     POP_EXCEPT                      
+        402     RERAISE                         1
+        404     LOAD_CONST                      27: 'total'
+        406     LOAD_NAME                       5: Optional
+        408     LOAD_NAME                       21: int
+        410     BINARY_SUBSCR                   
+        420     LOAD_CONST                      28: 'desc'
+        422     LOAD_NAME                       6: str
+        424     LOAD_CONST                      29: 'unit'
+        426     LOAD_NAME                       6: str
+        428     BUILD_TUPLE                     6
+        430     LOAD_CONST                      30: <CODE> make_pbar
+        432     MAKE_FUNCTION                   4
+        434     STORE_NAME                      22: make_pbar
+        436     LOAD_CONST                      2: None
+        438     RETURN_VALUE                    
+    [Exception Table]
+        364 to 376 -> 378 [0] 
+        378 to 392 -> 398 [1] lasti
+        396 to 398 -> 398 [1] lasti

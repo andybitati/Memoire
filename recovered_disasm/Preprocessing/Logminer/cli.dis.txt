@@ -1,0 +1,305 @@
+cli.cpython-311.pyc (Python 3.11)
+[Code]
+    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\cli.py
+    Object Name: <module>
+    Qualified Name: <module>
+    Arg Count: 0
+    Pos Only Arg Count: 0
+    KW Only Arg Count: 0
+    Stack Size: 4
+    Flags: 0x00000000
+    [Names]
+        '__doc__'
+        'argparse'
+        'os'
+        'sys'
+        'pipeline'
+        'run_pipeline'
+        'int'
+        'main'
+        '__name__'
+        'SystemExit'
+    [Locals+Names]
+    [Constants]
+        'CLI officielle du pipeline Logminer.\n\nExemples:\n  - Convertir un fichier:\n      python -m Logminer.cli -i /var/log/auth.log --out-dir Dataset_csv --name auth.csv\n\n  - Convertir un dossier (récursif):\n      python -m Logminer.cli -i ./Dataset_raw --out-dir Dataset_csv --name dataset.csv --tqdm\n'
+        0
+        None
+        1
+        (
+            'run_pipeline'
+        )
+        'return'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\cli.py
+            Object Name: main
+            Qualified Name: main
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 10
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'argparse'
+                'ArgumentParser'
+                'add_argument'
+                'int'
+                'parse_args'
+                'os'
+                'makedirs'
+                'out_dir'
+                'run_pipeline'
+                'input'
+                'name'
+                'sep'
+                'split_rows'
+                'progress_every'
+                'tqdm'
+                'debug'
+                'print'
+                'join'
+            [Locals+Names]
+                'argv'
+                'p'
+                'args'
+                'produced'
+            [Constants]
+                None
+                'Logminer: détection -> parsing -> CSV normalisé'
+                (
+                    'description'
+                )
+                '-i'
+                '--input'
+                True
+                "Chemin d'entrée: fichier ou dossier"
+                (
+                    'required'
+                    'help'
+                )
+                '--out-dir'
+                'Dataset_csv'
+                'Dossier où enregistrer tous les CSV'
+                (
+                    'default'
+                    'help'
+                )
+                '--name'
+                'dataset.csv'
+                'Nom du CSV principal (dans --out-dir)'
+                '--sep'
+                ';'
+                'Séparateur CSV'
+                '--split-rows'
+                0
+                'Rotation: max lignes par CSV (0 = pas de split)'
+                (
+                    'type'
+                    'default'
+                    'help'
+                )
+                '--progress-every'
+                'Affiche une progression toutes N lignes (si supporté)'
+                '--tqdm'
+                'store_true'
+                'Barre de progression (si supporté)'
+                (
+                    'action'
+                    'help'
+                )
+                '--debug'
+                'Mode debug'
+                (
+                    'exist_ok'
+                )
+                (
+                    'input_path'
+                    'out_dir'
+                    'out_name'
+                    'sep'
+                    'split_rows'
+                    'progress_every'
+                    'use_tqdm'
+                    'debug'
+                )
+                '\n'
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_GLOBAL                     1: NULL + argparse
+                14      LOAD_ATTR                       1: ArgumentParser
+                24      LOAD_CONST                      1: 'Logminer: détection -> parsing -> CSV normalisé'
+                26      KW_NAMES                        2: ('description',)
+                28      PRECALL                         1
+                32      CALL                            1
+                42      STORE_FAST                      1: p
+                44      LOAD_FAST                       1: p
+                46      LOAD_METHOD                     2: add_argument
+                68      LOAD_CONST                      3: '-i'
+                70      LOAD_CONST                      4: '--input'
+                72      LOAD_CONST                      5: True
+                74      LOAD_CONST                      6: "Chemin d'entrée: fichier ou dossier"
+                76      KW_NAMES                        7: ('required', 'help')
+                78      PRECALL                         4
+                82      CALL                            4
+                92      POP_TOP                         
+                94      LOAD_FAST                       1: p
+                96      LOAD_METHOD                     2: add_argument
+                118     LOAD_CONST                      8: '--out-dir'
+                120     LOAD_CONST                      9: 'Dataset_csv'
+                122     LOAD_CONST                      10: 'Dossier où enregistrer tous les CSV'
+                124     KW_NAMES                        11: ('default', 'help')
+                126     PRECALL                         3
+                130     CALL                            3
+                140     POP_TOP                         
+                142     LOAD_FAST                       1: p
+                144     LOAD_METHOD                     2: add_argument
+                166     LOAD_CONST                      12: '--name'
+                168     LOAD_CONST                      13: 'dataset.csv'
+                170     LOAD_CONST                      14: 'Nom du CSV principal (dans --out-dir)'
+                172     KW_NAMES                        11: ('default', 'help')
+                174     PRECALL                         3
+                178     CALL                            3
+                188     POP_TOP                         
+                190     LOAD_FAST                       1: p
+                192     LOAD_METHOD                     2: add_argument
+                214     LOAD_CONST                      15: '--sep'
+                216     LOAD_CONST                      16: ';'
+                218     LOAD_CONST                      17: 'Séparateur CSV'
+                220     KW_NAMES                        11: ('default', 'help')
+                222     PRECALL                         3
+                226     CALL                            3
+                236     POP_TOP                         
+                238     LOAD_FAST                       1: p
+                240     LOAD_METHOD                     2: add_argument
+                262     LOAD_CONST                      18: '--split-rows'
+                264     LOAD_GLOBAL                     6: int
+                276     LOAD_CONST                      19: 0
+                278     LOAD_CONST                      20: 'Rotation: max lignes par CSV (0 = pas de split)'
+                280     KW_NAMES                        21: ('type', 'default', 'help')
+                282     PRECALL                         4
+                286     CALL                            4
+                296     POP_TOP                         
+                298     LOAD_FAST                       1: p
+                300     LOAD_METHOD                     2: add_argument
+                322     LOAD_CONST                      22: '--progress-every'
+                324     LOAD_GLOBAL                     6: int
+                336     LOAD_CONST                      19: 0
+                338     LOAD_CONST                      23: 'Affiche une progression toutes N lignes (si supporté)'
+                340     KW_NAMES                        21: ('type', 'default', 'help')
+                342     PRECALL                         4
+                346     CALL                            4
+                356     POP_TOP                         
+                358     LOAD_FAST                       1: p
+                360     LOAD_METHOD                     2: add_argument
+                382     LOAD_CONST                      24: '--tqdm'
+                384     LOAD_CONST                      25: 'store_true'
+                386     LOAD_CONST                      26: 'Barre de progression (si supporté)'
+                388     KW_NAMES                        27: ('action', 'help')
+                390     PRECALL                         3
+                394     CALL                            3
+                404     POP_TOP                         
+                406     LOAD_FAST                       1: p
+                408     LOAD_METHOD                     2: add_argument
+                430     LOAD_CONST                      28: '--debug'
+                432     LOAD_CONST                      25: 'store_true'
+                434     LOAD_CONST                      29: 'Mode debug'
+                436     KW_NAMES                        27: ('action', 'help')
+                438     PRECALL                         3
+                442     CALL                            3
+                452     POP_TOP                         
+                454     LOAD_FAST                       1: p
+                456     LOAD_METHOD                     4: parse_args
+                478     LOAD_FAST                       0: argv
+                480     PRECALL                         1
+                484     CALL                            1
+                494     STORE_FAST                      2: args
+                496     LOAD_GLOBAL                     11: NULL + os
+                508     LOAD_ATTR                       6: makedirs
+                518     LOAD_FAST                       2: args
+                520     LOAD_ATTR                       7: out_dir
+                530     LOAD_CONST                      5: True
+                532     KW_NAMES                        30: ('exist_ok',)
+                534     PRECALL                         2
+                538     CALL                            2
+                548     POP_TOP                         
+                550     LOAD_GLOBAL                     17: NULL + run_pipeline
+                562     LOAD_FAST                       2: args
+                564     LOAD_ATTR                       9: input
+                574     LOAD_FAST                       2: args
+                576     LOAD_ATTR                       7: out_dir
+                586     LOAD_FAST                       2: args
+                588     LOAD_ATTR                       10: name
+                598     LOAD_FAST                       2: args
+                600     LOAD_ATTR                       11: sep
+                610     LOAD_FAST                       2: args
+                612     LOAD_ATTR                       12: split_rows
+                622     LOAD_FAST                       2: args
+                624     LOAD_ATTR                       13: progress_every
+                634     LOAD_FAST                       2: args
+                636     LOAD_ATTR                       14: tqdm
+                646     LOAD_FAST                       2: args
+                648     LOAD_ATTR                       15: debug
+                658     KW_NAMES                        31: ('input_path', 'out_dir', 'out_name', 'sep', 'split_rows', 'progress_every', 'use_tqdm', 'debug')
+                660     PRECALL                         8
+                664     CALL                            8
+                674     STORE_FAST                      3: produced
+                676     LOAD_GLOBAL                     33: NULL + print
+                688     LOAD_CONST                      32: '\n'
+                690     LOAD_METHOD                     17: join
+                712     LOAD_FAST                       3: produced
+                714     PRECALL                         1
+                718     CALL                            1
+                728     PRECALL                         1
+                732     CALL                            1
+                742     POP_TOP                         
+                744     LOAD_CONST                      19: 0
+                746     RETURN_VALUE                    
+            [Exception Table]
+        '__main__'
+        (
+            None
+        )
+    [Disassembly]
+        0       RESUME                          0
+        2       LOAD_CONST                      0: 'CLI officielle du pipeline Logminer.\n\nExemples:\n  - Convertir un fichier:\n      python -m Logminer.cli -i /var/log/auth.log --out-dir Dataset_csv --name auth.csv\n\n  - Convertir un dossier (récursif):\n      python -m Logminer.cli -i ./Dataset_raw --out-dir Dataset_csv --name dataset.csv --tqdm\n'
+        4       STORE_NAME                      0: __doc__
+        6       LOAD_CONST                      1: 0
+        8       LOAD_CONST                      2: None
+        10      IMPORT_NAME                     1: argparse
+        12      STORE_NAME                      1: argparse
+        14      LOAD_CONST                      1: 0
+        16      LOAD_CONST                      2: None
+        18      IMPORT_NAME                     2: os
+        20      STORE_NAME                      2: os
+        22      LOAD_CONST                      1: 0
+        24      LOAD_CONST                      2: None
+        26      IMPORT_NAME                     3: sys
+        28      STORE_NAME                      3: sys
+        30      LOAD_CONST                      3: 1
+        32      LOAD_CONST                      4: ('run_pipeline',)
+        34      IMPORT_NAME                     4: pipeline
+        36      IMPORT_FROM                     5: run_pipeline
+        38      STORE_NAME                      5: run_pipeline
+        40      POP_TOP                         
+        42      LOAD_CONST                      8: (None,)
+        44      LOAD_CONST                      5: 'return'
+        46      LOAD_NAME                       6: int
+        48      BUILD_TUPLE                     2
+        50      LOAD_CONST                      6: <CODE> main
+        52      MAKE_FUNCTION                   5
+        54      STORE_NAME                      7: main
+        56      LOAD_NAME                       8: __name__
+        58      LOAD_CONST                      7: '__main__'
+        60      COMPARE_OP                      2 (==)
+        66      POP_JUMP_FORWARD_IF_FALSE       19 (to 106)
+        68      PUSH_NULL                       
+        70      LOAD_NAME                       9: SystemExit
+        72      PUSH_NULL                       
+        74      LOAD_NAME                       7: main
+        76      PRECALL                         0
+        80      CALL                            0
+        90      PRECALL                         1
+        94      CALL                            1
+        104     RAISE_VARARGS                   1
+        106     LOAD_CONST                      2: None
+        108     RETURN_VALUE                    
+    [Exception Table]

@@ -1,0 +1,732 @@
+apache.cpython-311.pyc (Python 3.11)
+[Code]
+    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\apache.py
+    Object Name: <module>
+    Qualified Name: <module>
+    Arg Count: 0
+    Pos Only Arg Count: 0
+    KW Only Arg Count: 0
+    Stack Size: 4
+    Flags: 0x00000000
+    [Names]
+        '__doc__'
+        'os'
+        're'
+        'json'
+        'sys'
+        'typing'
+        'Iterable'
+        'common'
+        'make_pbar'
+        'writer'
+        'emit'
+        'compile'
+        'APACHE_COMBINED'
+        'str'
+        'parse_apache_dt'
+        'Parser'
+    [Locals+Names]
+    [Constants]
+        'Parseur Apache/Nginx access (Combined + JSON access).'
+        0
+        None
+        (
+            'Iterable'
+        )
+        2
+        (
+            'make_pbar'
+        )
+        (
+            'emit'
+        )
+        '^(?P<ip>\\S+)\\s+\\S+\\s+\\S+\\s+\\[(?P<dt>[^\\]]+)\\]\\s+"(?P<met>[A-Z]+)\\s+(?P<url>[^"]*)"\\s+(?P<st>\\d{3})\\s+(?P<bytes>\\S+)\\s+"(?P<ref>[^"]*)"\\s+"(?P<ua>[^"]*)"'
+        's'
+        'return'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\apache.py
+            Object Name: parse_apache_dt
+            Qualified Name: parse_apache_dt
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 4
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'datetime'
+                'timezone'
+                'strptime'
+                'astimezone'
+                'utc'
+                'isoformat'
+                'Exception'
+            [Locals+Names]
+                's'
+                'datetime'
+                'timezone'
+                'dt'
+            [Constants]
+                None
+                0
+                (
+                    'datetime'
+                    'timezone'
+                )
+                '%d/%b/%Y:%H:%M:%S %z'
+                ''
+            [Disassembly]
+                0       RESUME                          0
+                2       NOP                             
+                4       LOAD_CONST                      1: 0
+                6       LOAD_CONST                      2: ('datetime', 'timezone')
+                8       IMPORT_NAME                     0: datetime
+                10      IMPORT_FROM                     0: datetime
+                12      STORE_FAST                      1: datetime
+                14      IMPORT_FROM                     1: timezone
+                16      STORE_FAST                      2: timezone
+                18      POP_TOP                         
+                20      LOAD_FAST                       1: datetime
+                22      LOAD_METHOD                     2: strptime
+                44      LOAD_FAST                       0: s
+                46      LOAD_CONST                      3: '%d/%b/%Y:%H:%M:%S %z'
+                48      PRECALL                         2
+                52      CALL                            2
+                62      STORE_FAST                      3: dt
+                64      LOAD_FAST                       3: dt
+                66      LOAD_METHOD                     3: astimezone
+                88      LOAD_FAST                       2: timezone
+                90      LOAD_ATTR                       4: utc
+                100     PRECALL                         1
+                104     CALL                            1
+                114     LOAD_METHOD                     5: isoformat
+                136     PRECALL                         0
+                140     CALL                            0
+                150     RETURN_VALUE                    
+                152     PUSH_EXC_INFO                   
+                154     LOAD_GLOBAL                     12: Exception
+                166     CHECK_EXC_MATCH                 
+                168     POP_JUMP_FORWARD_IF_FALSE       4 (to 178)
+                170     POP_TOP                         
+                172     POP_EXCEPT                      
+                174     LOAD_CONST                      4: ''
+                176     RETURN_VALUE                    
+                178     RERAISE                         0
+                180     COPY                            3
+                182     POP_EXCEPT                      
+                184     RERAISE                         1
+            [Exception Table]
+                4 to 150 -> 152 [0] 
+                152 to 172 -> 180 [1] lasti
+                178 to 180 -> 180 [1] lasti
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\apache.py
+            Object Name: Parser
+            Qualified Name: Parser
+            Arg Count: 0
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 15
+            Flags: 0x00000000
+            [Names]
+                '__name__'
+                '__module__'
+                '__qualname__'
+                'subtype'
+                'str'
+                'int'
+                'bool'
+                'Iterable'
+                'parse'
+            [Locals+Names]
+            [Constants]
+                'Parser'
+                'apache'
+                'path'
+                'sep'
+                'split_rows'
+                'progress_every'
+                'use_tqdm'
+                'debug'
+                'return'
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\parsers\apache.py
+                    Object Name: parse
+                    Qualified Name: Parser.parse
+                    Arg Count: 4
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 4
+                    Stack Size: 19
+                    Flags: 0x00000023 (CO_OPTIMIZED | CO_NEWLOCALS | CO_GENERATOR)
+                    [Names]
+                        'make_pbar'
+                        'os'
+                        'path'
+                        'getsize'
+                        'open'
+                        'readline'
+                        'update'
+                        'len'
+                        'decode'
+                        'rstrip'
+                        'strip'
+                        'lstrip'
+                        'startswith'
+                        'json'
+                        'loads'
+                        'dict'
+                        'get'
+                        'str'
+                        'emit'
+                        'Exception'
+                        'APACHE_COMBINED'
+                        'match'
+                        'subtype'
+                        'parse_apache_dt'
+                        'group'
+                        'print'
+                        'sys'
+                        'stderr'
+                        'close'
+                    [Locals+Names]
+                        'self'
+                        'path'
+                        'writer'
+                        'sep'
+                        'split_rows'
+                        'progress_every'
+                        'use_tqdm'
+                        'debug'
+                        'pbar'
+                        'part_rows'
+                        'lineno'
+                        'fb'
+                        'raw'
+                        'line'
+                        'obj'
+                        'base'
+                        'm'
+                    [Constants]
+                        None
+                        'apache'
+                        'B'
+                        0
+                        'rb'
+                        True
+                        1
+                        'utf-8'
+                        'ignore'
+                        (
+                            'errors'
+                        )
+                        '\n'
+                        '{'
+                        'web'
+                        'nginx_json'
+                        'time_iso8601'
+                        '@timestamp'
+                        ''
+                        'remote_addr'
+                        'request_method'
+                        'request_uri'
+                        'request'
+                        'status'
+                        'body_bytes_sent'
+                        'http_user_agent'
+                        'http_referer'
+                        (
+                            'dataset'
+                            'subtype'
+                            'filepath'
+                            'lineno'
+                            'timestamp_iso'
+                            'src_ip'
+                            'http_method'
+                            'http_url'
+                            'http_status'
+                            'bytes_sent'
+                            'user_agent'
+                            'referrer'
+                            'message'
+                        )
+                        'unknown_json'
+                        (
+                            'dataset'
+                            'subtype'
+                            'filepath'
+                            'lineno'
+                            'message'
+                        )
+                        'dt'
+                        'ip'
+                        'met'
+                        'url'
+                        'st'
+                        'bytes'
+                        'ua'
+                        'ref'
+                        'unknown_line'
+                        '[progress] apache lignes: '
+                        ','
+                        (
+                            'file'
+                        )
+                        'split'
+                    [Disassembly]
+                        0       RETURN_GENERATOR                
+                        2       POP_TOP                         
+                        4       RESUME                          0
+                        6       LOAD_GLOBAL                     1: NULL + make_pbar
+                        18      LOAD_GLOBAL                     2: os
+                        30      LOAD_ATTR                       2: path
+                        40      LOAD_METHOD                     3: getsize
+                        62      LOAD_FAST                       1: path
+                        64      PRECALL                         1
+                        68      CALL                            1
+                        78      LOAD_CONST                      1: 'apache'
+                        80      LOAD_CONST                      2: 'B'
+                        82      PRECALL                         3
+                        86      CALL                            3
+                        96      STORE_FAST                      8: pbar
+                        98      LOAD_CONST                      3: 0
+                        100     STORE_FAST                      9: part_rows
+                        102     LOAD_CONST                      3: 0
+                        104     STORE_FAST                      10: lineno
+                        106     LOAD_GLOBAL                     9: NULL + open
+                        118     LOAD_FAST                       1: path
+                        120     LOAD_CONST                      4: 'rb'
+                        122     PRECALL                         2
+                        126     CALL                            2
+                        136     BEFORE_WITH                     
+                        138     STORE_FAST                      11: fb
+                        140     NOP                             
+                        142     LOAD_FAST                       11: fb
+                        144     LOAD_METHOD                     5: readline
+                        166     PRECALL                         0
+                        170     CALL                            0
+                        180     STORE_FAST                      12: raw
+                        182     LOAD_FAST                       12: raw
+                        184     POP_JUMP_FORWARD_IF_TRUE        2 (to 190)
+                        186     JUMP_FORWARD                    854 (to 1898)
+                        190     LOAD_FAST                       8: pbar
+                        192     POP_JUMP_FORWARD_IF_NONE        34 (to 262)
+                        194     LOAD_FAST                       8: pbar
+                        196     LOAD_METHOD                     6: update
+                        218     LOAD_GLOBAL                     15: NULL + len
+                        230     LOAD_FAST                       12: raw
+                        232     PRECALL                         1
+                        236     CALL                            1
+                        246     PRECALL                         1
+                        250     CALL                            1
+                        260     POP_TOP                         
+                        262     LOAD_FAST                       10: lineno
+                        264     LOAD_CONST                      6: 1
+                        266     BINARY_OP                       13 (+=)
+                        270     STORE_FAST                      10: lineno
+                        272     LOAD_FAST                       12: raw
+                        274     LOAD_METHOD                     8: decode
+                        296     LOAD_CONST                      7: 'utf-8'
+                        298     LOAD_CONST                      8: 'ignore'
+                        300     KW_NAMES                        9: ('errors',)
+                        302     PRECALL                         2
+                        306     CALL                            2
+                        316     LOAD_METHOD                     9: rstrip
+                        338     LOAD_CONST                      10: '\n'
+                        340     PRECALL                         1
+                        344     CALL                            1
+                        354     STORE_FAST                      13: line
+                        356     LOAD_FAST                       13: line
+                        358     LOAD_METHOD                     10: strip
+                        380     PRECALL                         0
+                        384     CALL                            0
+                        394     POP_JUMP_FORWARD_IF_TRUE        1 (to 398)
+                        396     JUMP_BACKWARD                   129 (to 140)
+                        398     LOAD_FAST                       13: line
+                        400     LOAD_METHOD                     11: lstrip
+                        422     PRECALL                         0
+                        426     CALL                            0
+                        436     LOAD_METHOD                     12: startswith
+                        458     LOAD_CONST                      11: '{'
+                        460     PRECALL                         1
+                        464     CALL                            1
+                        474     POP_JUMP_FORWARD_IF_FALSE       370 (to 1218)
+                        478     NOP                             
+                        480     LOAD_GLOBAL                     27: NULL + json
+                        492     LOAD_ATTR                       14: loads
+                        502     LOAD_FAST                       13: line
+                        504     PRECALL                         1
+                        508     CALL                            1
+                        518     STORE_FAST                      14: obj
+                        520     LOAD_GLOBAL                     31: NULL + dict
+                        532     LOAD_CONST                      12: 'web'
+                        534     LOAD_CONST                      13: 'nginx_json'
+                        536     LOAD_FAST                       1: path
+                        538     LOAD_FAST                       10: lineno
+                        540     LOAD_FAST                       14: obj
+                        542     LOAD_METHOD                     16: get
+                        564     LOAD_CONST                      14: 'time_iso8601'
+                        566     PRECALL                         1
+                        570     CALL                            1
+                        580     JUMP_IF_TRUE_OR_POP             22 (to 44)
+                        582     LOAD_FAST                       14: obj
+                        584     LOAD_METHOD                     16: get
+                        606     LOAD_CONST                      15: '@timestamp'
+                        608     PRECALL                         1
+                        612     CALL                            1
+                        622     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        624     LOAD_CONST                      16: ''
+                        626     LOAD_FAST                       14: obj
+                        628     LOAD_METHOD                     16: get
+                        650     LOAD_CONST                      17: 'remote_addr'
+                        652     LOAD_CONST                      16: ''
+                        654     PRECALL                         2
+                        658     CALL                            2
+                        668     LOAD_FAST                       14: obj
+                        670     LOAD_METHOD                     16: get
+                        692     LOAD_CONST                      18: 'request_method'
+                        694     LOAD_CONST                      16: ''
+                        696     PRECALL                         2
+                        700     CALL                            2
+                        710     LOAD_FAST                       14: obj
+                        712     LOAD_METHOD                     16: get
+                        734     LOAD_CONST                      19: 'request_uri'
+                        736     PRECALL                         1
+                        740     CALL                            1
+                        750     JUMP_IF_TRUE_OR_POP             22 (to 44)
+                        752     LOAD_FAST                       14: obj
+                        754     LOAD_METHOD                     16: get
+                        776     LOAD_CONST                      20: 'request'
+                        778     PRECALL                         1
+                        782     CALL                            1
+                        792     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        794     LOAD_CONST                      16: ''
+                        796     LOAD_GLOBAL                     35: NULL + str
+                        808     LOAD_FAST                       14: obj
+                        810     LOAD_METHOD                     16: get
+                        832     LOAD_CONST                      21: 'status'
+                        834     LOAD_CONST                      16: ''
+                        836     PRECALL                         2
+                        840     CALL                            2
+                        850     PRECALL                         1
+                        854     CALL                            1
+                        864     LOAD_GLOBAL                     35: NULL + str
+                        876     LOAD_FAST                       14: obj
+                        878     LOAD_METHOD                     16: get
+                        900     LOAD_CONST                      22: 'body_bytes_sent'
+                        902     LOAD_CONST                      16: ''
+                        904     PRECALL                         2
+                        908     CALL                            2
+                        918     PRECALL                         1
+                        922     CALL                            1
+                        932     LOAD_FAST                       14: obj
+                        934     LOAD_METHOD                     16: get
+                        956     LOAD_CONST                      23: 'http_user_agent'
+                        958     LOAD_CONST                      16: ''
+                        960     PRECALL                         2
+                        964     CALL                            2
+                        974     LOAD_FAST                       14: obj
+                        976     LOAD_METHOD                     16: get
+                        998     LOAD_CONST                      24: 'http_referer'
+                        1000    LOAD_CONST                      16: ''
+                        1002    PRECALL                         2
+                        1006    CALL                            2
+                        1016    LOAD_FAST                       14: obj
+                        1018    LOAD_METHOD                     16: get
+                        1040    LOAD_CONST                      20: 'request'
+                        1042    LOAD_CONST                      16: ''
+                        1044    PRECALL                         2
+                        1048    CALL                            2
+                        1058    JUMP_IF_TRUE_OR_POP             1 (to 2)
+                        1060    LOAD_CONST                      16: ''
+                        1062    KW_NAMES                        25: ('dataset', 'subtype', 'filepath', 'lineno', 'timestamp_iso', 'src_ip', 'http_method', 'http_url', 'http_status', 'bytes_sent', 'user_agent', 'referrer', 'message')
+                        1064    PRECALL                         13
+                        1068    CALL                            13
+                        1078    STORE_FAST                      15: base
+                        1080    LOAD_GLOBAL                     37: NULL + emit
+                        1092    LOAD_FAST                       2: writer
+                        1094    LOAD_FAST                       15: base
+                        1096    PRECALL                         2
+                        1100    CALL                            2
+                        1110    POP_TOP                         
+                        1112    JUMP_FORWARD                    328 (to 1772)
+                        1116    PUSH_EXC_INFO                   
+                        1118    LOAD_GLOBAL                     38: Exception
+                        1130    CHECK_EXC_MATCH                 
+                        1132    POP_JUMP_FORWARD_IF_FALSE       38 (to 1210)
+                        1134    POP_TOP                         
+                        1136    LOAD_GLOBAL                     37: NULL + emit
+                        1148    LOAD_FAST                       2: writer
+                        1150    LOAD_GLOBAL                     31: NULL + dict
+                        1162    LOAD_CONST                      12: 'web'
+                        1164    LOAD_CONST                      26: 'unknown_json'
+                        1166    LOAD_FAST                       1: path
+                        1168    LOAD_FAST                       10: lineno
+                        1170    LOAD_FAST                       13: line
+                        1172    KW_NAMES                        27: ('dataset', 'subtype', 'filepath', 'lineno', 'message')
+                        1174    PRECALL                         5
+                        1178    CALL                            5
+                        1188    PRECALL                         2
+                        1192    CALL                            2
+                        1202    POP_TOP                         
+                        1204    POP_EXCEPT                      
+                        1206    JUMP_FORWARD                    281 (to 1772)
+                        1210    RERAISE                         0
+                        1212    COPY                            3
+                        1214    POP_EXCEPT                      
+                        1216    RERAISE                         1
+                        1218    LOAD_GLOBAL                     40: APACHE_COMBINED
+                        1230    LOAD_METHOD                     21: match
+                        1252    LOAD_FAST                       13: line
+                        1254    PRECALL                         1
+                        1258    CALL                            1
+                        1268    STORE_FAST                      16: m
+                        1270    LOAD_FAST                       16: m
+                        1272    POP_JUMP_FORWARD_IF_FALSE       215 (to 1704)
+                        1274    LOAD_GLOBAL                     31: NULL + dict
+                        1286    LOAD_CONST                      12: 'web'
+                        1288    LOAD_FAST                       0: self
+                        1290    LOAD_ATTR                       22: subtype
+                        1300    LOAD_FAST                       1: path
+                        1302    LOAD_FAST                       10: lineno
+                        1304    LOAD_GLOBAL                     47: NULL + parse_apache_dt
+                        1316    LOAD_FAST                       16: m
+                        1318    LOAD_METHOD                     24: group
+                        1340    LOAD_CONST                      28: 'dt'
+                        1342    PRECALL                         1
+                        1346    CALL                            1
+                        1356    PRECALL                         1
+                        1360    CALL                            1
+                        1370    LOAD_FAST                       16: m
+                        1372    LOAD_METHOD                     24: group
+                        1394    LOAD_CONST                      29: 'ip'
+                        1396    PRECALL                         1
+                        1400    CALL                            1
+                        1410    LOAD_FAST                       16: m
+                        1412    LOAD_METHOD                     24: group
+                        1434    LOAD_CONST                      30: 'met'
+                        1436    PRECALL                         1
+                        1440    CALL                            1
+                        1450    LOAD_FAST                       16: m
+                        1452    LOAD_METHOD                     24: group
+                        1474    LOAD_CONST                      31: 'url'
+                        1476    PRECALL                         1
+                        1480    CALL                            1
+                        1490    LOAD_FAST                       16: m
+                        1492    LOAD_METHOD                     24: group
+                        1514    LOAD_CONST                      32: 'st'
+                        1516    PRECALL                         1
+                        1520    CALL                            1
+                        1530    LOAD_FAST                       16: m
+                        1532    LOAD_METHOD                     24: group
+                        1554    LOAD_CONST                      33: 'bytes'
+                        1556    PRECALL                         1
+                        1560    CALL                            1
+                        1570    LOAD_FAST                       16: m
+                        1572    LOAD_METHOD                     24: group
+                        1594    LOAD_CONST                      34: 'ua'
+                        1596    PRECALL                         1
+                        1600    CALL                            1
+                        1610    LOAD_FAST                       16: m
+                        1612    LOAD_METHOD                     24: group
+                        1634    LOAD_CONST                      35: 'ref'
+                        1636    PRECALL                         1
+                        1640    CALL                            1
+                        1650    LOAD_CONST                      16: ''
+                        1652    KW_NAMES                        25: ('dataset', 'subtype', 'filepath', 'lineno', 'timestamp_iso', 'src_ip', 'http_method', 'http_url', 'http_status', 'bytes_sent', 'user_agent', 'referrer', 'message')
+                        1654    PRECALL                         13
+                        1658    CALL                            13
+                        1668    STORE_FAST                      15: base
+                        1670    LOAD_GLOBAL                     37: NULL + emit
+                        1682    LOAD_FAST                       2: writer
+                        1684    LOAD_FAST                       15: base
+                        1686    PRECALL                         2
+                        1690    CALL                            2
+                        1700    POP_TOP                         
+                        1702    JUMP_FORWARD                    34 (to 1772)
+                        1704    LOAD_GLOBAL                     37: NULL + emit
+                        1716    LOAD_FAST                       2: writer
+                        1718    LOAD_GLOBAL                     31: NULL + dict
+                        1730    LOAD_CONST                      12: 'web'
+                        1732    LOAD_CONST                      36: 'unknown_line'
+                        1734    LOAD_FAST                       1: path
+                        1736    LOAD_FAST                       10: lineno
+                        1738    LOAD_FAST                       13: line
+                        1740    KW_NAMES                        27: ('dataset', 'subtype', 'filepath', 'lineno', 'message')
+                        1742    PRECALL                         5
+                        1746    CALL                            5
+                        1756    PRECALL                         2
+                        1760    CALL                            2
+                        1770    POP_TOP                         
+                        1772    LOAD_FAST                       9: part_rows
+                        1774    LOAD_CONST                      6: 1
+                        1776    BINARY_OP                       13 (+=)
+                        1780    STORE_FAST                      9: part_rows
+                        1782    LOAD_FAST                       5: progress_every
+                        1784    POP_JUMP_FORWARD_IF_FALSE       40 (to 1866)
+                        1786    LOAD_FAST                       10: lineno
+                        1788    LOAD_FAST                       5: progress_every
+                        1790    BINARY_OP                       6 (%)
+                        1794    LOAD_CONST                      3: 0
+                        1796    COMPARE_OP                      2 (==)
+                        1802    POP_JUMP_FORWARD_IF_FALSE       31 (to 1866)
+                        1804    LOAD_GLOBAL                     51: NULL + print
+                        1816    LOAD_CONST                      37: '[progress] apache lignes: '
+                        1818    LOAD_FAST                       10: lineno
+                        1820    LOAD_CONST                      38: ','
+                        1822    FORMAT_VALUE                    4 (FVC_NONE | FVS_HAVE_SPEC)
+                        1824    BUILD_STRING                    2
+                        1826    LOAD_GLOBAL                     52: sys
+                        1838    LOAD_ATTR                       27: stderr
+                        1848    KW_NAMES                        39: ('file',)
+                        1850    PRECALL                         2
+                        1854    CALL                            2
+                        1864    POP_TOP                         
+                        1866    LOAD_FAST                       4: split_rows
+                        1868    POP_JUMP_FORWARD_IF_FALSE       12 (to 1894)
+                        1870    LOAD_FAST                       9: part_rows
+                        1872    LOAD_FAST                       4: split_rows
+                        1874    COMPARE_OP                      5 (>=)
+                        1880    POP_JUMP_FORWARD_IF_FALSE       6 (to 1894)
+                        1882    LOAD_CONST                      40: 'split'
+                        1884    YIELD_VALUE                     
+                        1886    RESUME                          1
+                        1888    POP_TOP                         
+                        1890    LOAD_CONST                      3: 0
+                        1892    STORE_FAST                      9: part_rows
+                        1894    JUMP_BACKWARD                   878 (to 142)
+                        1898    NOP                             
+                        1900    LOAD_CONST                      0: None
+                        1902    LOAD_CONST                      0: None
+                        1904    LOAD_CONST                      0: None
+                        1906    PRECALL                         2
+                        1910    CALL                            2
+                        1920    POP_TOP                         
+                        1922    JUMP_FORWARD                    11 (to 1946)
+                        1924    PUSH_EXC_INFO                   
+                        1926    WITH_EXCEPT_START               
+                        1928    POP_JUMP_FORWARD_IF_TRUE        4 (to 1938)
+                        1930    RERAISE                         2
+                        1932    COPY                            3
+                        1934    POP_EXCEPT                      
+                        1936    RERAISE                         1
+                        1938    POP_TOP                         
+                        1940    POP_EXCEPT                      
+                        1942    POP_TOP                         
+                        1944    POP_TOP                         
+                        1946    LOAD_FAST                       8: pbar
+                        1948    POP_JUMP_FORWARD_IF_NONE        22 (to 1994)
+                        1950    LOAD_FAST                       8: pbar
+                        1952    LOAD_METHOD                     28: close
+                        1974    PRECALL                         0
+                        1978    CALL                            0
+                        1988    POP_TOP                         
+                        1990    LOAD_CONST                      0: None
+                        1992    RETURN_VALUE                    
+                        1994    LOAD_CONST                      0: None
+                        1996    RETURN_VALUE                    
+                    [Exception Table]
+                        138 to 478 -> 1924 [1] lasti
+                        480 to 1112 -> 1116 [1] 
+                        1112 to 1116 -> 1924 [1] lasti
+                        1116 to 1204 -> 1212 [2] lasti
+                        1204 to 1210 -> 1924 [1] lasti
+                        1210 to 1212 -> 1212 [2] lasti
+                        1212 to 1898 -> 1924 [1] lasti
+                        1924 to 1932 -> 1932 [3] lasti
+                        1938 to 1940 -> 1932 [3] lasti
+                None
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_NAME                       0: __name__
+                4       STORE_NAME                      1: __module__
+                6       LOAD_CONST                      0: 'Parser'
+                8       STORE_NAME                      2: __qualname__
+                10      LOAD_CONST                      1: 'apache'
+                12      STORE_NAME                      3: subtype
+                14      LOAD_CONST                      2: 'path'
+                16      LOAD_NAME                       4: str
+                18      LOAD_CONST                      3: 'sep'
+                20      LOAD_NAME                       4: str
+                22      LOAD_CONST                      4: 'split_rows'
+                24      LOAD_NAME                       5: int
+                26      LOAD_CONST                      5: 'progress_every'
+                28      LOAD_NAME                       5: int
+                30      LOAD_CONST                      6: 'use_tqdm'
+                32      LOAD_NAME                       6: bool
+                34      LOAD_CONST                      7: 'debug'
+                36      LOAD_NAME                       6: bool
+                38      LOAD_CONST                      8: 'return'
+                40      LOAD_NAME                       7: Iterable
+                42      LOAD_NAME                       4: str
+                44      BINARY_SUBSCR                   
+                54      BUILD_TUPLE                     14
+                56      LOAD_CONST                      9: <CODE> parse
+                58      MAKE_FUNCTION                   4
+                60      STORE_NAME                      8: parse
+                62      LOAD_CONST                      10: None
+                64      RETURN_VALUE                    
+            [Exception Table]
+        'Parser'
+    [Disassembly]
+        0       RESUME                          0
+        2       LOAD_CONST                      0: 'Parseur Apache/Nginx access (Combined + JSON access).'
+        4       STORE_NAME                      0: __doc__
+        6       LOAD_CONST                      1: 0
+        8       LOAD_CONST                      2: None
+        10      IMPORT_NAME                     1: os
+        12      STORE_NAME                      1: os
+        14      LOAD_CONST                      1: 0
+        16      LOAD_CONST                      2: None
+        18      IMPORT_NAME                     2: re
+        20      STORE_NAME                      2: re
+        22      LOAD_CONST                      1: 0
+        24      LOAD_CONST                      2: None
+        26      IMPORT_NAME                     3: json
+        28      STORE_NAME                      3: json
+        30      LOAD_CONST                      1: 0
+        32      LOAD_CONST                      2: None
+        34      IMPORT_NAME                     4: sys
+        36      STORE_NAME                      4: sys
+        38      LOAD_CONST                      1: 0
+        40      LOAD_CONST                      3: ('Iterable',)
+        42      IMPORT_NAME                     5: typing
+        44      IMPORT_FROM                     6: Iterable
+        46      STORE_NAME                      6: Iterable
+        48      POP_TOP                         
+        50      LOAD_CONST                      4: 2
+        52      LOAD_CONST                      5: ('make_pbar',)
+        54      IMPORT_NAME                     7: common
+        56      IMPORT_FROM                     8: make_pbar
+        58      STORE_NAME                      8: make_pbar
+        60      POP_TOP                         
+        62      LOAD_CONST                      4: 2
+        64      LOAD_CONST                      6: ('emit',)
+        66      IMPORT_NAME                     9: writer
+        68      IMPORT_FROM                     10: emit
+        70      STORE_NAME                      10: emit
+        72      POP_TOP                         
+        74      PUSH_NULL                       
+        76      LOAD_NAME                       2: re
+        78      LOAD_ATTR                       11: compile
+        88      LOAD_CONST                      7: '^(?P<ip>\\S+)\\s+\\S+\\s+\\S+\\s+\\[(?P<dt>[^\\]]+)\\]\\s+"(?P<met>[A-Z]+)\\s+(?P<url>[^"]*)"\\s+(?P<st>\\d{3})\\s+(?P<bytes>\\S+)\\s+"(?P<ref>[^"]*)"\\s+"(?P<ua>[^"]*)"'
+        90      PRECALL                         1
+        94      CALL                            1
+        104     STORE_NAME                      12: APACHE_COMBINED
+        106     LOAD_CONST                      8: 's'
+        108     LOAD_NAME                       13: str
+        110     LOAD_CONST                      9: 'return'
+        112     LOAD_NAME                       13: str
+        114     BUILD_TUPLE                     4
+        116     LOAD_CONST                      10: <CODE> parse_apache_dt
+        118     MAKE_FUNCTION                   4
+        120     STORE_NAME                      14: parse_apache_dt
+        122     PUSH_NULL                       
+        124     LOAD_BUILD_CLASS                
+        126     LOAD_CONST                      11: <CODE> Parser
+        128     MAKE_FUNCTION                   0
+        130     LOAD_CONST                      12: 'Parser'
+        132     PRECALL                         2
+        136     CALL                            2
+        146     STORE_NAME                      15: Parser
+        148     LOAD_CONST                      2: None
+        150     RETURN_VALUE                    
+    [Exception Table]

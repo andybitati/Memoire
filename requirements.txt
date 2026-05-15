@@ -1,0 +1,23 @@
+# Dépendances principales du projet TFE / Logminer.
+#
+# Installation:
+#   python -m pip install -r requirements.txt
+
+# Extraction de texte depuis les PDF du mémoire et de la documentation.
+PyPDF2>=3.0.0
+
+# Barres de progression optionnelles utilisées par certains parseurs.
+tqdm>=4.66.0
+
+# Lecture directe des fichiers Windows Event Log natifs (.evtx).
+# Si l'installation échoue, exporter les journaux Windows en XML reste possible.
+python-evtx>=0.7.4
+
+# Dépendances utiles pour les futures étapes IA mentionnées dans le mémoire.
+# Elles serviront aux notebooks/prototypes de détection d'anomalies.
+numpy>=1.26.0
+pandas>=2.2.0
+scikit-learn>=1.4.0
+
+# Dashboard léger prévu pour la visualisation des alertes/anomalies.
+streamlit>=1.36.0

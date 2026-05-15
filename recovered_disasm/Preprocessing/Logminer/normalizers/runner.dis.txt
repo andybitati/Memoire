@@ -1,0 +1,218 @@
+runner.cpython-311.pyc (Python 3.11)
+[Code]
+    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\normalizers\runner.py
+    Object Name: <module>
+    Qualified Name: <module>
+    Arg Count: 0
+    Pos Only Arg Count: 0
+    KW Only Arg Count: 0
+    Stack Size: 3
+    Flags: 0x01000000 (CO_FUTURE_ANNOTATIONS)
+    [Names]
+        '__doc__'
+        '__future__'
+        'annotations'
+        'typing'
+        'Dict'
+        'Any'
+        'List'
+        'default'
+        'DefaultNormalizer'
+        'categorizer'
+        'CategorizerNormalizer'
+        'base'
+        'BaseNormalizer'
+        '_DEFAULTS'
+        '__annotations__'
+        'get_default_normalizers'
+        'normalize_event'
+    [Locals+Names]
+    [Constants]
+        "Runner de normalisation.\n\nLes parseurs appellent actuellement `emit(writer, base)` directement.\nPour éviter de modifier tous les parseurs, on applique ici une chaîne de\nnormalizers juste avant l'écriture CSV.\n\nCette chaîne est volontairement simple:\n- DefaultNormalizer: harmonise les niveaux de sévérité\n- CategorizerNormalizer: ajoute `category/subcategory`\n\nLes agents IA pourront ajouter d'autres normalizers (enrichissement, mapping MITRE, etc.).\n"
+        0
+        (
+            'annotations'
+        )
+        (
+            'Dict'
+            'Any'
+            'List'
+        )
+        1
+        (
+            'DefaultNormalizer'
+        )
+        (
+            'CategorizerNormalizer'
+        )
+        (
+            'BaseNormalizer'
+        )
+        None
+        'List[BaseNormalizer] | None'
+        '_DEFAULTS'
+        'return'
+        'List[BaseNormalizer]'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\normalizers\runner.py
+            Object Name: get_default_normalizers
+            Qualified Name: get_default_normalizers
+            Arg Count: 0
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 3
+            Flags: 0x01000003 (CO_OPTIMIZED | CO_NEWLOCALS | CO_FUTURE_ANNOTATIONS)
+            [Names]
+                '_DEFAULTS'
+                'DefaultNormalizer'
+                'CategorizerNormalizer'
+            [Locals+Names]
+            [Constants]
+                'Retourne une liste singleton de normalizers par défaut.'
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_GLOBAL                     0: _DEFAULTS
+                14      POP_JUMP_FORWARD_IF_NOT_NONE    28 (to 72)
+                16      LOAD_GLOBAL                     3: NULL + DefaultNormalizer
+                28      PRECALL                         0
+                32      CALL                            0
+                42      LOAD_GLOBAL                     5: NULL + CategorizerNormalizer
+                54      PRECALL                         0
+                58      CALL                            0
+                68      BUILD_LIST                      2
+                70      STORE_GLOBAL                    0: _DEFAULTS
+                72      LOAD_GLOBAL                     0: _DEFAULTS
+                84      RETURN_VALUE                    
+            [Exception Table]
+        'event'
+        'Dict[str, Any]'
+        'normalizers'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\normalizers\runner.py
+            Object Name: normalize_event
+            Qualified Name: normalize_event
+            Arg Count: 2
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 5
+            Flags: 0x01000003 (CO_OPTIMIZED | CO_NEWLOCALS | CO_FUTURE_ANNOTATIONS)
+            [Names]
+                'get_default_normalizers'
+                'normalize'
+                'Exception'
+            [Locals+Names]
+                'event'
+                'normalizers'
+                'chain'
+                'n'
+            [Constants]
+                "Applique les normalizers (non destructifs) et retourne l'événement."
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_FAST                       1: normalizers
+                4       JUMP_IF_TRUE_OR_POP             13 (to 26)
+                6       LOAD_GLOBAL                     1: NULL + get_default_normalizers
+                18      PRECALL                         0
+                22      CALL                            0
+                32      STORE_FAST                      2: chain
+                34      LOAD_FAST                       2: chain
+                36      GET_ITER                        
+                38      FOR_ITER                        40 (to 120)
+                40      STORE_FAST                      3: n
+                42      NOP                             
+                44      LOAD_FAST                       3: n
+                46      LOAD_METHOD                     1: normalize
+                68      LOAD_FAST                       0: event
+                70      PRECALL                         1
+                74      CALL                            1
+                84      STORE_FAST                      0: event
+                86      JUMP_BACKWARD                   25 (to 38)
+                88      PUSH_EXC_INFO                   
+                90      LOAD_GLOBAL                     4: Exception
+                102     CHECK_EXC_MATCH                 
+                104     POP_JUMP_FORWARD_IF_FALSE       3 (to 112)
+                106     POP_TOP                         
+                108     POP_EXCEPT                      
+                110     JUMP_BACKWARD                   37 (to 38)
+                112     RERAISE                         0
+                114     COPY                            3
+                116     POP_EXCEPT                      
+                118     RERAISE                         1
+                120     LOAD_FAST                       0: event
+                122     RETURN_VALUE                    
+            [Exception Table]
+                44 to 86 -> 88 [1] 
+                88 to 108 -> 114 [2] lasti
+                112 to 114 -> 114 [2] lasti
+        (
+            'return'
+            'List[BaseNormalizer]'
+        )
+        (
+            None
+        )
+        (
+            'event'
+            'Dict[str, Any]'
+            'normalizers'
+            'List[BaseNormalizer] | None'
+            'return'
+            'Dict[str, Any]'
+        )
+    [Disassembly]
+        0       RESUME                          0
+        2       SETUP_ANNOTATIONS               
+        4       LOAD_CONST                      0: "Runner de normalisation.\n\nLes parseurs appellent actuellement `emit(writer, base)` directement.\nPour éviter de modifier tous les parseurs, on applique ici une chaîne de\nnormalizers juste avant l'écriture CSV.\n\nCette chaîne est volontairement simple:\n- DefaultNormalizer: harmonise les niveaux de sévérité\n- CategorizerNormalizer: ajoute `category/subcategory`\n\nLes agents IA pourront ajouter d'autres normalizers (enrichissement, mapping MITRE, etc.).\n"
+        6       STORE_NAME                      0: __doc__
+        8       LOAD_CONST                      1: 0
+        10      LOAD_CONST                      2: ('annotations',)
+        12      IMPORT_NAME                     1: __future__
+        14      IMPORT_FROM                     2: annotations
+        16      STORE_NAME                      2: annotations
+        18      POP_TOP                         
+        20      LOAD_CONST                      1: 0
+        22      LOAD_CONST                      3: ('Dict', 'Any', 'List')
+        24      IMPORT_NAME                     3: typing
+        26      IMPORT_FROM                     4: Dict
+        28      STORE_NAME                      4: Dict
+        30      IMPORT_FROM                     5: Any
+        32      STORE_NAME                      5: Any
+        34      IMPORT_FROM                     6: List
+        36      STORE_NAME                      6: List
+        38      POP_TOP                         
+        40      LOAD_CONST                      4: 1
+        42      LOAD_CONST                      5: ('DefaultNormalizer',)
+        44      IMPORT_NAME                     7: default
+        46      IMPORT_FROM                     8: DefaultNormalizer
+        48      STORE_NAME                      8: DefaultNormalizer
+        50      POP_TOP                         
+        52      LOAD_CONST                      4: 1
+        54      LOAD_CONST                      6: ('CategorizerNormalizer',)
+        56      IMPORT_NAME                     9: categorizer
+        58      IMPORT_FROM                     10: CategorizerNormalizer
+        60      STORE_NAME                      10: CategorizerNormalizer
+        62      POP_TOP                         
+        64      LOAD_CONST                      4: 1
+        66      LOAD_CONST                      7: ('BaseNormalizer',)
+        68      IMPORT_NAME                     11: base
+        70      IMPORT_FROM                     12: BaseNormalizer
+        72      STORE_NAME                      12: BaseNormalizer
+        74      POP_TOP                         
+        76      LOAD_CONST                      8: None
+        78      STORE_GLOBAL                    13: _DEFAULTS
+        80      LOAD_CONST                      9: 'List[BaseNormalizer] | None'
+        82      LOAD_NAME                       14: __annotations__
+        84      LOAD_CONST                      10: '_DEFAULTS'
+        86      STORE_SUBSCR                    
+        90      LOAD_CONST                      18: ('return', 'List[BaseNormalizer]')
+        92      LOAD_CONST                      13: <CODE> get_default_normalizers
+        94      MAKE_FUNCTION                   4
+        96      STORE_NAME                      15: get_default_normalizers
+        98      LOAD_CONST                      19: (None,)
+        100     LOAD_CONST                      20: ('event', 'Dict[str, Any]', 'normalizers', 'List[BaseNormalizer] | None', 'return', 'Dict[str, Any]')
+        102     LOAD_CONST                      17: <CODE> normalize_event
+        104     MAKE_FUNCTION                   5
+        106     STORE_NAME                      16: normalize_event
+        108     LOAD_CONST                      8: None
+        110     RETURN_VALUE                    
+    [Exception Table]

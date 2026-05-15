@@ -1,0 +1,544 @@
+pipeline.cpython-311.pyc (Python 3.11)
+[Code]
+    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\pipeline.py
+    Object Name: <module>
+    Qualified Name: <module>
+    Arg Count: 0
+    Pos Only Arg Count: 0
+    KW Only Arg Count: 0
+    Stack Size: 3
+    Flags: 0x01000000 (CO_FUTURE_ANNOTATIONS)
+    [Names]
+        '__doc__'
+        '__future__'
+        'annotations'
+        'os'
+        'typing'
+        'List'
+        'Optional'
+        'detectors.file_detector'
+        'detect_kind'
+        'iter_files'
+        'registry'
+        'PARSERS'
+        'io.csv_writer'
+        'open_writer'
+        '_ensure_dir'
+        'run_pipeline'
+    [Locals+Names]
+    [Constants]
+        'Pipeline de prétraitement (détection -> parsing -> écriture CSV).\n\nCe module constitue le point d\'entrée "stable" pour l\'exploitation future par des agents IA.\nIl expose une API simple et déterministe : `run_pipeline(...)`.\n\nDesign:\n- detectors: identifie le type de fichier\n- registry: mappe type -> parseur\n- io.csv_writer: écrit le CSV selon le schéma unifié (schema.columns.COLUMNS)\n'
+        0
+        (
+            'annotations'
+        )
+        None
+        (
+            'List'
+            'Optional'
+        )
+        1
+        (
+            'detect_kind'
+            'iter_files'
+        )
+        (
+            'PARSERS'
+        )
+        (
+            'open_writer'
+        )
+        'path'
+        'str'
+        'return'
+        'None'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\pipeline.py
+            Object Name: _ensure_dir
+            Qualified Name: _ensure_dir
+            Arg Count: 1
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 4
+            Flags: 0x01000003 (CO_OPTIMIZED | CO_NEWLOCALS | CO_FUTURE_ANNOTATIONS)
+            [Names]
+                'os'
+                'makedirs'
+            [Locals+Names]
+                'path'
+            [Constants]
+                None
+                True
+                (
+                    'exist_ok'
+                )
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_GLOBAL                     1: NULL + os
+                14      LOAD_ATTR                       1: makedirs
+                24      LOAD_FAST                       0: path
+                26      LOAD_CONST                      1: True
+                28      KW_NAMES                        2: ('exist_ok',)
+                30      PRECALL                         2
+                34      CALL                            2
+                44      POP_TOP                         
+                46      LOAD_CONST                      0: None
+                48      RETURN_VALUE                    
+            [Exception Table]
+        'Dataset_csv'
+        'dataset.csv'
+        ';'
+        False
+        'input_path'
+        'out_dir'
+        'out_name'
+        'sep'
+        'split_rows'
+        'int'
+        'progress_every'
+        'use_tqdm'
+        'bool'
+        'debug'
+        'List[str]'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\pipeline.py
+            Object Name: run_pipeline
+            Qualified Name: run_pipeline
+            Arg Count: 8
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 10
+            Flags: 0x01000003 (CO_OPTIMIZED | CO_NEWLOCALS | CO_FUTURE_ANNOTATIONS)
+            [Names]
+                '_ensure_dir'
+                'os'
+                'path'
+                'join'
+                'open_writer'
+                'append'
+                'iter_files'
+                'isdir'
+                'basename'
+                'startswith'
+                'endswith'
+                'detect_kind'
+                'print'
+                'PARSERS'
+                'get'
+                'RuntimeError'
+                'parse'
+                'close'
+                'Exception'
+            [Locals+Names]
+                'input_path'
+                'out_dir'
+                'out_name'
+                'sep'
+                'split_rows'
+                'progress_every'
+                'use_tqdm'
+                'debug'
+                'rotate'
+                'path'
+                'fn'
+                'kind'
+                'parser_cls'
+                'parser'
+                'sig'
+                'uniq'
+                'p'
+                'f_out'
+                'out_path'
+                'output_csv'
+                'part'
+                'produced'
+                'writer'
+            [Constants]
+                'Traite `input_path` (fichier ou dossier) et écrit un CSV (ou plusieurs si split).\n\n    Retourne la liste des chemins CSV produits.\n    '
+                0
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\pipeline.py
+                    Object Name: rotate
+                    Qualified Name: run_pipeline.<locals>.rotate
+                    Arg Count: 0
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 0
+                    Stack Size: 5
+                    Flags: 0x01000013 (CO_OPTIMIZED | CO_NEWLOCALS | CO_NESTED | CO_FUTURE_ANNOTATIONS)
+                    [Names]
+                        'close'
+                        'Exception'
+                        'open_writer'
+                        'append'
+                    [Locals+Names]
+                        'f_out'
+                        'out_path'
+                        'output_csv'
+                        'part'
+                        'produced'
+                        'sep'
+                        'writer'
+                    [Constants]
+                        None
+                        1
+                    [Disassembly]
+                        0       COPY_FREE_VARS                  7
+                        2       RESUME                          0
+                        4       NOP                             
+                        6       LOAD_DEREF                      0: f_out
+                        8       LOAD_METHOD                     0: close
+                        30      PRECALL                         0
+                        34      CALL                            0
+                        44      POP_TOP                         
+                        46      JUMP_FORWARD                    16 (to 80)
+                        48      PUSH_EXC_INFO                   
+                        50      LOAD_GLOBAL                     2: Exception
+                        62      CHECK_EXC_MATCH                 
+                        64      POP_JUMP_FORWARD_IF_FALSE       3 (to 72)
+                        66      POP_TOP                         
+                        68      POP_EXCEPT                      
+                        70      JUMP_FORWARD                    4 (to 80)
+                        72      RERAISE                         0
+                        74      COPY                            3
+                        76      POP_EXCEPT                      
+                        78      RERAISE                         1
+                        80      LOAD_DEREF                      3: part
+                        82      LOAD_CONST                      1: 1
+                        84      BINARY_OP                       13 (+=)
+                        88      STORE_DEREF                     3: part
+                        90      LOAD_GLOBAL                     5: NULL + open_writer
+                        102     LOAD_DEREF                      2: output_csv
+                        104     LOAD_DEREF                      3: part
+                        106     LOAD_DEREF                      5: sep
+                        108     PRECALL                         3
+                        112     CALL                            3
+                        122     UNPACK_SEQUENCE                 3
+                        126     STORE_DEREF                     0: f_out
+                        128     STORE_DEREF                     6: writer
+                        130     STORE_DEREF                     1: out_path
+                        132     LOAD_DEREF                      4: produced
+                        134     LOAD_METHOD                     3: append
+                        156     LOAD_DEREF                      1: out_path
+                        158     PRECALL                         1
+                        162     CALL                            1
+                        172     POP_TOP                         
+                        174     LOAD_CONST                      0: None
+                        176     RETURN_VALUE                    
+                    [Exception Table]
+                        6 to 46 -> 48 [0] 
+                        48 to 68 -> 74 [1] lasti
+                        72 to 74 -> 74 [1] lasti
+                '.'
+                '.pyc'
+                '[debug] '
+                ' -> '
+                'unknown'
+                None
+                "No parser registered for kind='"
+                "'. Add it to registry.py."
+                (
+                    'split_rows'
+                    'progress_every'
+                    'use_tqdm'
+                    'debug'
+                )
+                'split'
+            [Disassembly]
+                0       MAKE_CELL                       3: sep
+                2       MAKE_CELL                       17: f_out
+                4       MAKE_CELL                       18: out_path
+                6       MAKE_CELL                       19: output_csv
+                8       MAKE_CELL                       20: part
+                10      MAKE_CELL                       21: produced
+                12      MAKE_CELL                       22: writer
+                14      RESUME                          0
+                16      LOAD_GLOBAL                     1: NULL + _ensure_dir
+                28      LOAD_FAST                       1: out_dir
+                30      PRECALL                         1
+                34      CALL                            1
+                44      POP_TOP                         
+                46      LOAD_GLOBAL                     2: os
+                58      LOAD_ATTR                       2: path
+                68      LOAD_METHOD                     3: join
+                90      LOAD_FAST                       1: out_dir
+                92      LOAD_FAST                       2: out_name
+                94      PRECALL                         2
+                98      CALL                            2
+                108     STORE_DEREF                     19: output_csv
+                110     BUILD_LIST                      0
+                112     STORE_DEREF                     21: produced
+                114     LOAD_GLOBAL                     9: NULL + open_writer
+                126     LOAD_DEREF                      19: output_csv
+                128     LOAD_CONST                      1: 0
+                130     LOAD_DEREF                      3: sep
+                132     PRECALL                         3
+                136     CALL                            3
+                146     UNPACK_SEQUENCE                 3
+                150     STORE_DEREF                     17: f_out
+                152     STORE_DEREF                     22: writer
+                154     STORE_DEREF                     18: out_path
+                156     LOAD_DEREF                      21: produced
+                158     LOAD_METHOD                     5: append
+                180     LOAD_DEREF                      18: out_path
+                182     PRECALL                         1
+                186     CALL                            1
+                196     POP_TOP                         
+                198     LOAD_CONST                      1: 0
+                200     STORE_DEREF                     20: part
+                202     LOAD_CLOSURE                    17: f_out
+                204     LOAD_CLOSURE                    18: out_path
+                206     LOAD_CLOSURE                    19: output_csv
+                208     LOAD_CLOSURE                    20: part
+                210     LOAD_CLOSURE                    21: produced
+                212     LOAD_CLOSURE                    3: sep
+                214     LOAD_CLOSURE                    22: writer
+                216     BUILD_TUPLE                     7
+                218     LOAD_CONST                      2: <CODE> rotate
+                220     MAKE_FUNCTION                   8
+                222     STORE_FAST                      8: rotate
+                224     LOAD_GLOBAL                     13: NULL + iter_files
+                236     LOAD_FAST                       0: input_path
+                238     PRECALL                         1
+                242     CALL                            1
+                252     GET_ITER                        
+                254     FOR_ITER                        267 (to 792)
+                258     STORE_FAST                      9: path
+                260     LOAD_GLOBAL                     2: os
+                272     LOAD_ATTR                       2: path
+                282     LOAD_METHOD                     7: isdir
+                304     LOAD_FAST                       9: path
+                306     PRECALL                         1
+                310     CALL                            1
+                320     POP_JUMP_FORWARD_IF_FALSE       1 (to 324)
+                322     JUMP_BACKWARD                   35 (to 254)
+                324     LOAD_GLOBAL                     2: os
+                336     LOAD_ATTR                       2: path
+                346     LOAD_METHOD                     8: basename
+                368     LOAD_FAST                       9: path
+                370     PRECALL                         1
+                374     CALL                            1
+                384     STORE_FAST                      10: fn
+                386     LOAD_FAST                       10: fn
+                388     LOAD_METHOD                     9: startswith
+                410     LOAD_CONST                      3: '.'
+                412     PRECALL                         1
+                416     CALL                            1
+                426     POP_JUMP_FORWARD_IF_TRUE        21 (to 470)
+                428     LOAD_FAST                       10: fn
+                430     LOAD_METHOD                     10: endswith
+                452     LOAD_CONST                      4: '.pyc'
+                454     PRECALL                         1
+                458     CALL                            1
+                468     POP_JUMP_FORWARD_IF_FALSE       1 (to 472)
+                470     JUMP_BACKWARD                   109 (to 254)
+                472     LOAD_GLOBAL                     23: NULL + detect_kind
+                484     LOAD_FAST                       9: path
+                486     PRECALL                         1
+                490     CALL                            1
+                500     STORE_FAST                      11: kind
+                502     LOAD_FAST                       7: debug
+                504     POP_JUMP_FORWARD_IF_FALSE       21 (to 548)
+                506     LOAD_GLOBAL                     25: NULL + print
+                518     LOAD_CONST                      5: '[debug] '
+                520     LOAD_FAST                       9: path
+                522     FORMAT_VALUE                    0 (FVC_NONE)
+                524     LOAD_CONST                      6: ' -> '
+                526     LOAD_FAST                       11: kind
+                528     FORMAT_VALUE                    0 (FVC_NONE)
+                530     BUILD_STRING                    4
+                532     PRECALL                         1
+                536     CALL                            1
+                546     POP_TOP                         
+                548     LOAD_GLOBAL                     27: NULL + PARSERS
+                560     LOAD_ATTR                       14: get
+                570     LOAD_FAST                       11: kind
+                572     PRECALL                         1
+                576     CALL                            1
+                586     JUMP_IF_TRUE_OR_POP             19 (to 38)
+                588     LOAD_GLOBAL                     27: NULL + PARSERS
+                600     LOAD_ATTR                       14: get
+                610     LOAD_CONST                      7: 'unknown'
+                612     PRECALL                         1
+                616     CALL                            1
+                626     STORE_FAST                      12: parser_cls
+                628     LOAD_FAST                       12: parser_cls
+                630     POP_JUMP_FORWARD_IF_NOT_NONE    19 (to 670)
+                632     LOAD_GLOBAL                     31: NULL + RuntimeError
+                644     LOAD_CONST                      9: "No parser registered for kind='"
+                646     LOAD_FAST                       11: kind
+                648     FORMAT_VALUE                    0 (FVC_NONE)
+                650     LOAD_CONST                      10: "'. Add it to registry.py."
+                652     BUILD_STRING                    3
+                654     PRECALL                         1
+                658     CALL                            1
+                668     RAISE_VARARGS                   1
+                670     PUSH_NULL                       
+                672     LOAD_FAST                       12: parser_cls
+                674     PRECALL                         0
+                678     CALL                            0
+                688     STORE_FAST                      13: parser
+                690     LOAD_FAST                       13: parser
+                692     LOAD_METHOD                     16: parse
+                714     LOAD_FAST                       9: path
+                716     LOAD_DEREF                      22: writer
+                718     LOAD_DEREF                      3: sep
+                720     LOAD_FAST                       4: split_rows
+                722     LOAD_FAST                       5: progress_every
+                724     LOAD_FAST                       6: use_tqdm
+                726     LOAD_FAST                       7: debug
+                728     KW_NAMES                        11: ('split_rows', 'progress_every', 'use_tqdm', 'debug')
+                730     PRECALL                         7
+                734     CALL                            7
+                744     JUMP_IF_TRUE_OR_POP             1 (to 2)
+                746     BUILD_LIST                      0
+                748     GET_ITER                        
+                750     FOR_ITER                        18 (to 788)
+                752     STORE_FAST                      14: sig
+                754     LOAD_FAST                       14: sig
+                756     LOAD_CONST                      12: 'split'
+                758     COMPARE_OP                      2 (==)
+                764     POP_JUMP_FORWARD_IF_FALSE       10 (to 786)
+                766     PUSH_NULL                       
+                768     LOAD_FAST                       8: rotate
+                770     PRECALL                         0
+                774     CALL                            0
+                784     POP_TOP                         
+                786     JUMP_BACKWARD                   19 (to 750)
+                788     JUMP_BACKWARD                   269 (to 254)
+                792     NOP                             
+                794     LOAD_DEREF                      17: f_out
+                796     LOAD_METHOD                     17: close
+                818     PRECALL                         0
+                822     CALL                            0
+                832     POP_TOP                         
+                834     JUMP_FORWARD                    16 (to 868)
+                836     PUSH_EXC_INFO                   
+                838     LOAD_GLOBAL                     36: Exception
+                850     CHECK_EXC_MATCH                 
+                852     POP_JUMP_FORWARD_IF_FALSE       3 (to 860)
+                854     POP_TOP                         
+                856     POP_EXCEPT                      
+                858     JUMP_FORWARD                    4 (to 868)
+                860     RERAISE                         0
+                862     COPY                            3
+                864     POP_EXCEPT                      
+                866     RERAISE                         1
+                868     BUILD_LIST                      0
+                870     STORE_FAST                      15: uniq
+                872     LOAD_DEREF                      21: produced
+                874     GET_ITER                        
+                876     FOR_ITER                        27 (to 932)
+                878     STORE_FAST                      16: p
+                880     LOAD_FAST                       16: p
+                882     LOAD_FAST                       15: uniq
+                884     CONTAINS_OP                     1 (not in)
+                886     POP_JUMP_FORWARD_IF_FALSE       21 (to 930)
+                888     LOAD_FAST                       15: uniq
+                890     LOAD_METHOD                     5: append
+                912     LOAD_FAST                       16: p
+                914     PRECALL                         1
+                918     CALL                            1
+                928     POP_TOP                         
+                930     JUMP_BACKWARD                   28 (to 876)
+                932     LOAD_FAST                       15: uniq
+                934     RETURN_VALUE                    
+            [Exception Table]
+                794 to 834 -> 836 [0] 
+                836 to 856 -> 862 [1] lasti
+                860 to 862 -> 862 [1] lasti
+        (
+            'path'
+            'str'
+            'return'
+            'None'
+        )
+        (
+            'Dataset_csv'
+            'dataset.csv'
+            ';'
+            0
+            0
+            False
+            False
+        )
+        (
+            'input_path'
+            'str'
+            'out_dir'
+            'str'
+            'out_name'
+            'str'
+            'sep'
+            'str'
+            'split_rows'
+            'int'
+            'progress_every'
+            'int'
+            'use_tqdm'
+            'bool'
+            'debug'
+            'bool'
+            'return'
+            'List[str]'
+        )
+    [Disassembly]
+        0       RESUME                          0
+        2       LOAD_CONST                      0: 'Pipeline de prétraitement (détection -> parsing -> écriture CSV).\n\nCe module constitue le point d\'entrée "stable" pour l\'exploitation future par des agents IA.\nIl expose une API simple et déterministe : `run_pipeline(...)`.\n\nDesign:\n- detectors: identifie le type de fichier\n- registry: mappe type -> parseur\n- io.csv_writer: écrit le CSV selon le schéma unifié (schema.columns.COLUMNS)\n'
+        4       STORE_NAME                      0: __doc__
+        6       LOAD_CONST                      1: 0
+        8       LOAD_CONST                      2: ('annotations',)
+        10      IMPORT_NAME                     1: __future__
+        12      IMPORT_FROM                     2: annotations
+        14      STORE_NAME                      2: annotations
+        16      POP_TOP                         
+        18      LOAD_CONST                      1: 0
+        20      LOAD_CONST                      3: None
+        22      IMPORT_NAME                     3: os
+        24      STORE_NAME                      3: os
+        26      LOAD_CONST                      1: 0
+        28      LOAD_CONST                      4: ('List', 'Optional')
+        30      IMPORT_NAME                     4: typing
+        32      IMPORT_FROM                     5: List
+        34      STORE_NAME                      5: List
+        36      IMPORT_FROM                     6: Optional
+        38      STORE_NAME                      6: Optional
+        40      POP_TOP                         
+        42      LOAD_CONST                      5: 1
+        44      LOAD_CONST                      6: ('detect_kind', 'iter_files')
+        46      IMPORT_NAME                     7: detectors.file_detector
+        48      IMPORT_FROM                     8: detect_kind
+        50      STORE_NAME                      8: detect_kind
+        52      IMPORT_FROM                     9: iter_files
+        54      STORE_NAME                      9: iter_files
+        56      POP_TOP                         
+        58      LOAD_CONST                      5: 1
+        60      LOAD_CONST                      7: ('PARSERS',)
+        62      IMPORT_NAME                     10: registry
+        64      IMPORT_FROM                     11: PARSERS
+        66      STORE_NAME                      11: PARSERS
+        68      POP_TOP                         
+        70      LOAD_CONST                      5: 1
+        72      LOAD_CONST                      8: ('open_writer',)
+        74      IMPORT_NAME                     12: io.csv_writer
+        76      IMPORT_FROM                     13: open_writer
+        78      STORE_NAME                      13: open_writer
+        80      POP_TOP                         
+        82      LOAD_CONST                      30: ('path', 'str', 'return', 'None')
+        84      LOAD_CONST                      13: <CODE> _ensure_dir
+        86      MAKE_FUNCTION                   4
+        88      STORE_NAME                      14: _ensure_dir
+        90      NOP                             
+        92      NOP                             
+        94      NOP                             
+        96      NOP                             
+        98      NOP                             
+        100     NOP                             
+        102     NOP                             
+        104     LOAD_CONST                      31: ('Dataset_csv', 'dataset.csv', ';', 0, 0, False, False)
+        106     LOAD_CONST                      32: ('input_path', 'str', 'out_dir', 'str', 'out_name', 'str', 'sep', 'str', 'split_rows', 'int', 'progress_every', 'int', 'use_tqdm', 'bool', 'debug', 'bool', 'return', 'List[str]')
+        108     LOAD_CONST                      29: <CODE> run_pipeline
+        110     MAKE_FUNCTION                   5
+        112     STORE_NAME                      15: run_pipeline
+        114     LOAD_CONST                      3: None
+        116     RETURN_VALUE                    
+    [Exception Table]

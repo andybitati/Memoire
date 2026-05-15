@@ -1,0 +1,315 @@
+csv_writer.cpython-311.pyc (Python 3.11)
+[Code]
+    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\io\csv_writer.py
+    Object Name: <module>
+    Qualified Name: <module>
+    Arg Count: 0
+    Pos Only Arg Count: 0
+    KW Only Arg Count: 0
+    Stack Size: 6
+    Flags: 0x00000000
+    [Names]
+        '__doc__'
+        'csv'
+        'os'
+        'typing'
+        'Dict'
+        'Any'
+        'schema.columns'
+        'COLUMNS'
+        'normalizers.runner'
+        'normalize_event'
+        'str'
+        'int'
+        'open_writer'
+        'emit'
+    [Locals+Names]
+    [Constants]
+        'Writer CSV et schéma de colonnes.'
+        0
+        None
+        (
+            'Dict'
+            'Any'
+        )
+        2
+        (
+            'COLUMNS'
+        )
+        (
+            'normalize_event'
+        )
+        'base_out'
+        'part'
+        'sep'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\io\csv_writer.py
+            Object Name: open_writer
+            Qualified Name: open_writer
+            Arg Count: 3
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 7
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'os'
+                'path'
+                'splitext'
+                'open'
+                'csv'
+                'DictWriter'
+                'COLUMNS'
+                'QUOTE_MINIMAL'
+                'writeheader'
+            [Locals+Names]
+                'base_out'
+                'part'
+                'sep'
+                'path'
+                'f'
+                'w'
+            [Constants]
+                None
+                0
+                '_part'
+                '03d'
+                '.csv'
+                'w'
+                ''
+                'utf-8-sig'
+                (
+                    'newline'
+                    'encoding'
+                )
+                '"'
+                (
+                    'fieldnames'
+                    'delimiter'
+                    'quotechar'
+                    'quoting'
+                )
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_FAST                       1: part
+                4       LOAD_CONST                      1: 0
+                6       COMPARE_OP                      2 (==)
+                12      POP_JUMP_FORWARD_IF_FALSE       2 (to 18)
+                14      LOAD_FAST                       0: base_out
+                16      JUMP_FORWARD                    43 (to 104)
+                18      LOAD_GLOBAL                     0: os
+                30      LOAD_ATTR                       1: path
+                40      LOAD_METHOD                     2: splitext
+                62      LOAD_FAST                       0: base_out
+                64      PRECALL                         1
+                68      CALL                            1
+                78      LOAD_CONST                      1: 0
+                80      BINARY_SUBSCR                   
+                90      FORMAT_VALUE                    0 (FVC_NONE)
+                92      LOAD_CONST                      2: '_part'
+                94      LOAD_FAST                       1: part
+                96      LOAD_CONST                      3: '03d'
+                98      FORMAT_VALUE                    4 (FVC_NONE | FVS_HAVE_SPEC)
+                100     LOAD_CONST                      4: '.csv'
+                102     BUILD_STRING                    4
+                104     STORE_FAST                      3: path
+                106     LOAD_GLOBAL                     7: NULL + open
+                118     LOAD_FAST                       3: path
+                120     LOAD_CONST                      5: 'w'
+                122     LOAD_CONST                      6: ''
+                124     LOAD_CONST                      7: 'utf-8-sig'
+                126     KW_NAMES                        8: ('newline', 'encoding')
+                128     PRECALL                         4
+                132     CALL                            4
+                142     STORE_FAST                      4: f
+                144     LOAD_GLOBAL                     9: NULL + csv
+                156     LOAD_ATTR                       5: DictWriter
+                166     LOAD_FAST                       4: f
+                168     LOAD_GLOBAL                     12: COLUMNS
+                180     LOAD_FAST                       2: sep
+                182     LOAD_CONST                      9: '"'
+                184     LOAD_GLOBAL                     8: csv
+                196     LOAD_ATTR                       7: QUOTE_MINIMAL
+                206     KW_NAMES                        10: ('fieldnames', 'delimiter', 'quotechar', 'quoting')
+                208     PRECALL                         5
+                212     CALL                            5
+                222     STORE_FAST                      5: w
+                224     LOAD_FAST                       5: w
+                226     LOAD_METHOD                     8: writeheader
+                248     PRECALL                         0
+                252     CALL                            0
+                262     POP_TOP                         
+                264     LOAD_FAST                       4: f
+                266     LOAD_FAST                       5: w
+                268     LOAD_FAST                       3: path
+                270     BUILD_TUPLE                     3
+                272     RETURN_VALUE                    
+            [Exception Table]
+        'base'
+        [Code]
+            File Name: F:\Cours\Mémoire\Preprocessing\Logminer\io\csv_writer.py
+            Object Name: emit
+            Qualified Name: emit
+            Arg Count: 2
+            Pos Only Arg Count: 0
+            KW Only Arg Count: 0
+            Stack Size: 5
+            Flags: 0x00000003 (CO_OPTIMIZED | CO_NEWLOCALS)
+            [Names]
+                'normalize_event'
+                'dict'
+                'COLUMNS'
+                'items'
+                'isinstance'
+                'str'
+                'writerow'
+            [Locals+Names]
+                'writer'
+                'base'
+                'row'
+                'k'
+                'v'
+            [Constants]
+                'Ecrit une ligne en garantissant toutes les colonnes.'
+                [Code]
+                    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\io\csv_writer.py
+                    Object Name: <dictcomp>
+                    Qualified Name: emit.<locals>.<dictcomp>
+                    Arg Count: 1
+                    Pos Only Arg Count: 0
+                    KW Only Arg Count: 0
+                    Stack Size: 4
+                    Flags: 0x00000013 (CO_OPTIMIZED | CO_NEWLOCALS | CO_NESTED)
+                    [Names]
+                    [Locals+Names]
+                        '.0'
+                        'k'
+                    [Constants]
+                        ''
+                    [Disassembly]
+                        0       RESUME                          0
+                        2       BUILD_MAP                       0
+                        4       LOAD_FAST                       0: .0
+                        6       FOR_ITER                        5 (to 18)
+                        8       STORE_FAST                      1: k
+                        10      LOAD_FAST                       1: k
+                        12      LOAD_CONST                      0: ''
+                        14      MAP_ADD                         2
+                        16      JUMP_BACKWARD                   6 (to 6)
+                        18      RETURN_VALUE                    
+                    [Exception Table]
+                None
+                ''
+            [Disassembly]
+                0       RESUME                          0
+                2       LOAD_GLOBAL                     1: NULL + normalize_event
+                14      LOAD_GLOBAL                     3: NULL + dict
+                26      LOAD_FAST                       1: base
+                28      PRECALL                         1
+                32      CALL                            1
+                42      PRECALL                         1
+                46      CALL                            1
+                56      STORE_FAST                      1: base
+                58      LOAD_CONST                      1: <CODE> <dictcomp>
+                60      MAKE_FUNCTION                   0
+                62      LOAD_GLOBAL                     4: COLUMNS
+                74      GET_ITER                        
+                76      PRECALL                         0
+                80      CALL                            0
+                90      STORE_FAST                      2: row
+                92      LOAD_FAST                       1: base
+                94      LOAD_METHOD                     3: items
+                116     PRECALL                         0
+                120     CALL                            0
+                130     GET_ITER                        
+                132     FOR_ITER                        54 (to 242)
+                134     UNPACK_SEQUENCE                 2
+                138     STORE_FAST                      3: k
+                140     STORE_FAST                      4: v
+                142     LOAD_FAST                       3: k
+                144     LOAD_FAST                       2: row
+                146     CONTAINS_OP                     0 (in)
+                148     POP_JUMP_FORWARD_IF_FALSE       45 (to 240)
+                150     LOAD_GLOBAL                     9: NULL + isinstance
+                162     LOAD_FAST                       4: v
+                164     LOAD_GLOBAL                     10: str
+                176     PRECALL                         2
+                180     CALL                            2
+                190     POP_JUMP_FORWARD_IF_FALSE       2 (to 196)
+                192     LOAD_FAST                       4: v
+                194     JUMP_FORWARD                    18 (to 232)
+                196     LOAD_FAST                       4: v
+                198     POP_JUMP_FORWARD_IF_NONE        15 (to 230)
+                200     LOAD_GLOBAL                     11: NULL + str
+                212     LOAD_FAST                       4: v
+                214     PRECALL                         1
+                218     CALL                            1
+                228     JUMP_FORWARD                    1 (to 232)
+                230     LOAD_CONST                      3: ''
+                232     LOAD_FAST                       2: row
+                234     LOAD_FAST                       3: k
+                236     STORE_SUBSCR                    
+                240     JUMP_BACKWARD                   55 (to 132)
+                242     LOAD_FAST                       0: writer
+                244     LOAD_METHOD                     6: writerow
+                266     LOAD_FAST                       2: row
+                268     PRECALL                         1
+                272     CALL                            1
+                282     POP_TOP                         
+                284     LOAD_CONST                      2: None
+                286     RETURN_VALUE                    
+            [Exception Table]
+    [Disassembly]
+        0       RESUME                          0
+        2       LOAD_CONST                      0: 'Writer CSV et schéma de colonnes.'
+        4       STORE_NAME                      0: __doc__
+        6       LOAD_CONST                      1: 0
+        8       LOAD_CONST                      2: None
+        10      IMPORT_NAME                     1: csv
+        12      STORE_NAME                      1: csv
+        14      LOAD_CONST                      1: 0
+        16      LOAD_CONST                      2: None
+        18      IMPORT_NAME                     2: os
+        20      STORE_NAME                      2: os
+        22      LOAD_CONST                      1: 0
+        24      LOAD_CONST                      3: ('Dict', 'Any')
+        26      IMPORT_NAME                     3: typing
+        28      IMPORT_FROM                     4: Dict
+        30      STORE_NAME                      4: Dict
+        32      IMPORT_FROM                     5: Any
+        34      STORE_NAME                      5: Any
+        36      POP_TOP                         
+        38      LOAD_CONST                      4: 2
+        40      LOAD_CONST                      5: ('COLUMNS',)
+        42      IMPORT_NAME                     6: schema.columns
+        44      IMPORT_FROM                     7: COLUMNS
+        46      STORE_NAME                      7: COLUMNS
+        48      POP_TOP                         
+        50      LOAD_CONST                      4: 2
+        52      LOAD_CONST                      6: ('normalize_event',)
+        54      IMPORT_NAME                     8: normalizers.runner
+        56      IMPORT_FROM                     9: normalize_event
+        58      STORE_NAME                      9: normalize_event
+        60      POP_TOP                         
+        62      LOAD_CONST                      7: 'base_out'
+        64      LOAD_NAME                       10: str
+        66      LOAD_CONST                      8: 'part'
+        68      LOAD_NAME                       11: int
+        70      LOAD_CONST                      9: 'sep'
+        72      LOAD_NAME                       10: str
+        74      BUILD_TUPLE                     6
+        76      LOAD_CONST                      10: <CODE> open_writer
+        78      MAKE_FUNCTION                   4
+        80      STORE_NAME                      12: open_writer
+        82      LOAD_CONST                      11: 'base'
+        84      LOAD_NAME                       4: Dict
+        86      LOAD_NAME                       10: str
+        88      LOAD_NAME                       5: Any
+        90      BUILD_TUPLE                     2
+        92      BINARY_SUBSCR                   
+        102     BUILD_TUPLE                     2
+        104     LOAD_CONST                      12: <CODE> emit
+        106     MAKE_FUNCTION                   4
+        108     STORE_NAME                      13: emit
+        110     LOAD_CONST                      2: None
+        112     RETURN_VALUE                    
+    [Exception Table]

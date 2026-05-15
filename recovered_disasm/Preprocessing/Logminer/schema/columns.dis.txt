@@ -1,0 +1,72 @@
+columns.cpython-311.pyc (Python 3.11)
+[Code]
+    File Name: F:\Cours\Mémoire\Preprocessing\Logminer\schema\columns.py
+    Object Name: <module>
+    Qualified Name: <module>
+    Arg Count: 0
+    Pos Only Arg Count: 0
+    KW Only Arg Count: 0
+    Stack Size: 2
+    Flags: 0x00000000
+    [Names]
+        '__doc__'
+        'COLUMNS'
+    [Locals+Names]
+    [Constants]
+        "Schéma unifié des colonnes CSV produites par Logminer.\n\nCe schéma sert de contrat de données entre parseurs/normaliseurs et les outils d'exploitation (SIEM/ML/agents).\n"
+        (
+            'dataset'
+            'subtype'
+            'filepath'
+            'lineno'
+            'recno'
+            'timestamp_iso'
+            'severity'
+            'event'
+            'source'
+            'component'
+            'host'
+            'pid'
+            'tid'
+            'session'
+            'user'
+            'uid'
+            'gid'
+            'auid'
+            'euid'
+            'egid'
+            'exe'
+            'path'
+            'path_all'
+            'exec_args'
+            'exec_args_all'
+            'exec_env_all'
+            'src_ip'
+            'src_port'
+            'dst_ip'
+            'dst_port'
+            'proto'
+            'length'
+            'flags'
+            'http_method'
+            'http_url'
+            'http_status'
+            'bytes_sent'
+            'user_agent'
+            'referrer'
+            'category'
+            'subcategory'
+            'message'
+        )
+        None
+    [Disassembly]
+        0       RESUME                          0
+        2       LOAD_CONST                      0: "Schéma unifié des colonnes CSV produites par Logminer.\n\nCe schéma sert de contrat de données entre parseurs/normaliseurs et les outils d'exploitation (SIEM/ML/agents).\n"
+        4       STORE_NAME                      0: __doc__
+        6       BUILD_LIST                      0
+        8       LOAD_CONST                      1: ('dataset', 'subtype', 'filepath', 'lineno', 'recno', 'timestamp_iso', 'severity', 'event', 'source', 'component', 'host', 'pid', 'tid', 'session', 'user', 'uid', 'gid', 'auid', 'euid', 'egid', 'exe', 'path', 'path_all', 'exec_args', 'exec_args_all', 'exec_env_all', 'src_ip', 'src_port', 'dst_ip', 'dst_port', 'proto', 'length', 'flags', 'http_method', 'http_url', 'http_status', 'bytes_sent', 'user_agent', 'referrer', 'category', 'subcategory', 'message')
+        10      LIST_EXTEND                     1
+        12      STORE_NAME                      1: COLUMNS
+        14      LOAD_CONST                      2: None
+        16      RETURN_VALUE                    
+    [Exception Table]
