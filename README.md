@@ -135,13 +135,19 @@ Le dossier Windows utilisé pour les journaux actifs est:
 C:\Windows\System32\winevt\Logs
 ```
 
-Un script a été ajouté pour travailler avec ce dossier sans prendre tous les journaux du système. Il sélectionne uniquement les fichiers `.evtx` modifiés pendant les deux derniers jours, puis exporte les événements lisibles vers `data/processed`.
+Un script principal a été ajouté pour automatiser toute la collecte Windows. Il:
+
+- sélectionne les fichiers `.evtx` modifiés pendant les derniers jours demandés;
+- exporte les événements récents lisibles via `Get-WinEvent`;
+- crée des copies `.evtx` des journaux importants avec `wevtutil`;
+- lance le pipeline Logminer sur les copies disponibles;
+- écrit un résumé d'exécution.
 
 Commande à lancer depuis la racine du projet:
 
 ```powershell
 cd F:\Cours\TFE
-powershell -ExecutionPolicy Bypass -File scripts\export_recent_windows_events.ps1 -Days 2
+powershell -ExecutionPolicy Bypass -File scripts\collect_windows_events.ps1 -Days 2
 ```
 
 Fichiers produits:
@@ -149,6 +155,23 @@ Fichiers produits:
 - `data/processed/windows_recent_manifest.csv`: liste des fichiers `.evtx` sélectionnés, avec leur date, taille et nom logique Windows.
 - `data/processed/windows_recent_events.csv`: événements extraits, au format CSV avec séparateur `;`.
 - `data/processed/windows_recent_failures.csv`: journaux non lus et raison de l'échec.
+- `data/processed/windows_evtx_copy_report.csv`: résultat des copies `.evtx` faites avec `wevtutil`.
+- `data/processed/windows_copies_pipeline.csv`: CSV normalisé produit par Logminer depuis les copies `.evtx`.
+- `data/processed/windows_collection_summary.txt`: résumé de l'exécution.
+
+Par défaut, le script tente de copier `Application`, `System` et `Security` dans `data/raw/windows_events/`. Si `Security` échoue avec `Accès refusé`, relancer la même commande depuis PowerShell ouvert en administrateur.
+
+Pour choisir explicitement les journaux à copier:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\collect_windows_events.ps1 -Days 2 -CopyLogs Application,System,Security
+```
+
+Pour relancer uniquement le parsing des copies déjà présentes:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\collect_windows_events.ps1 -SkipRecentExport -SkipCopyExport
+```
 
 Lors de la vérification du 15/05/2026, le script a sélectionné `114` fichiers `.evtx` modifiés dans les deux derniers jours. Il a exporté `23402` événements lisibles depuis `95` journaux. `19` journaux ont demandé des droits administrateur ou un accès Windows plus élevé.
 
@@ -160,7 +183,7 @@ Exemples de journaux protégés rencontrés:
 - `Microsoft-Windows-SMBClient%4Operational.evtx`
 - `Microsoft-Windows-Hyper-V-Hypervisor-Admin.evtx`
 
-Ces fichiers ne doivent pas être ignorés: ils sont importants pour la sécurité. Pour les exploiter plus tard, il faudra ouvrir PowerShell en administrateur et copier/exporter les journaux protégés dans `data/raw/windows_events/`, puis traiter les copies.
+Ces fichiers ne doivent pas être ignorés: ils sont importants pour la sécurité. Pour les exploiter, ouvrir PowerShell en administrateur et relancer `scripts\collect_windows_events.ps1`; le script copiera les journaux protégés dans `data/raw/windows_events/`, puis traitera les copies.
 
 Exemple prévu pour plus tard, en console administrateur:
 
@@ -172,7 +195,7 @@ wevtutil epl System data\raw\windows_events\System.evtx
 wevtutil epl Application data\raw\windows_events\Application.evtx
 ```
 
-Ensuite, les copies pourront être analysées avec le pipeline Python ou avec un script dédié.
+Ensuite, les copies pourront être analysées directement avec le pipeline Python ou en relançant `scripts\collect_windows_events.ps1 -SkipRecentExport -SkipCopyExport`.
 
 ## Extraire Le Texte D'un PDF
 

@@ -38,12 +38,12 @@ def clean(value: str) -> str:
 try:
     # Dependances optionnelles: elles ne sont necessaires que pour les .evtx.
     from Evtx.Evtx import Evtx
-    from Evtx.Views import evtx_file_xml_view
+    from Evtx.Views import evtx_record_xml_view
 
     HAVE_EVTX = True
 except Exception:
     Evtx = None
-    evtx_file_xml_view = None
+    evtx_record_xml_view = None
     HAVE_EVTX = False
 
 
@@ -246,11 +246,14 @@ def _iter_xml_events(path: str) -> Iterator[ET.Element]:
 def _iter_evtx_events(path: str) -> Iterator[ET.Element]:
     """Convertit les records EVTX en elements XML exploitables."""
 
-    assert Evtx is not None and evtx_file_xml_view is not None
+    assert Evtx is not None and evtx_record_xml_view is not None
 
     with Evtx(path) as log:
-        for xml_record in evtx_file_xml_view(log):
+        for record in log.records():
             try:
+                xml_record = evtx_record_xml_view(record)
                 yield ET.fromstring(xml_record)
-            except ET.ParseError:
+            except Exception:
+                # Les exports reels peuvent contenir quelques records que
+                # python-evtx ne sait pas rendre; on garde le reste du journal.
                 continue
