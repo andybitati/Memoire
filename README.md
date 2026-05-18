@@ -15,6 +15,8 @@ TFE/
 ├── src/
 │   └── logminer/
 ├── docs/
+│   ├── anomaly_detection/
+│   ├── architecture/
 │   ├── memoire/
 │   ├── references/
 │   └── recovery/
@@ -31,6 +33,8 @@ TFE/
 Rôles des dossiers:
 
 - `src/logminer/`: code principal du pipeline de prétraitement des logs.
+- `docs/anomaly_detection/`: étude comparative liée à l'objectif 2.
+- `docs/architecture/`: conception de l'architecture multi-agents IA liée à l'objectif 3.
 - `docs/memoire/`: documents liés au mémoire.
 - `docs/references/`: articles, normes et PDF de référence.
 - `docs/recovery/`: notes sur la récupération des fichiers `.py` depuis les `.pyc`.
@@ -51,12 +55,22 @@ python -m pip install -r requirements.txt
 
 La dépendance `python-evtx` sert uniquement à lire les fichiers Windows `.evtx`. Si elle pose problème, il est possible d'exporter les journaux Windows en XML et de les traiter sans dépendance supplémentaire.
 
+Les expériences deep learning de l'objectif 2 sont séparées pour éviter une installation de base trop lourde:
+
+```powershell
+python -m pip install -r requirements-ai.txt
+```
+
+TensorFlow/Keras est privilégié pour le LSTM. PyTorch est aussi intégré comme backend de secours expérimental.
+
 ## Logminer
 
 `src/logminer` est la brique de prétraitement du mémoire. Elle couvre principalement:
 
 - Agent 1: collecte et parsing des logs.
 - Agent 2: prétraitement et normalisation.
+
+La conception globale des agents est documentée dans `docs/architecture/README.md`.
 
 Flux général:
 
@@ -222,7 +236,67 @@ Colonnes importantes:
 - `category`, `subcategory`
 - `message`
 
-Ces données serviront ensuite à l'entraînement ou au test de modèles comme Isolation Forest, Autoencoder, One-Class SVM ou LSTM léger.
+Ces données serviront ensuite à l'entraînement ou au test de méthodes statistiques et IA: z-score, IQR, histogramme, Isolation Forest, k-Means, Autoencoder, One-Class SVM, LOF ou LSTM léger.
+
+La comparaison des approches de détection est documentée dans `docs/anomaly_detection/README.md`.
+
+## Détecter Les Anomalies
+
+Un premier agent de détection non supervisé est disponible avec Isolation Forest. Il lit un CSV normalisé Logminer, construit des features ML, puis produit un fichier enrichi avec `anomaly_score`, `is_anomaly` et `anomaly_rank`.
+
+```powershell
+python src\logminer\agents\detector.py -i data\processed\windows_copies_pipeline.csv -o data\processed\anomalies.csv
+```
+
+La conversion en variables ML se trouve dans `src/logminer/features/event_features.py`.
+
+Pour comparer les approches de l'objectif 2:
+
+```powershell
+python src\logminer\agents\baseline_detector.py -i data\processed\windows_copies_pipeline.csv -o data\processed\baseline_anomalies.csv --contamination 0.02
+python src\logminer\agents\model_compare.py -i data\processed\windows_copies_pipeline.csv -o data\processed\model_comparison.csv --contamination 0.02
+```
+
+Le comparateur `model_compare.py` produit une grille expérimentale complète pour le mémoire: baseline explicable, méthodes statistiques (`z_score`, `iqr`, `histogram`) et méthodes IA non supervisées (`isolation_forest`, `kmeans`, `one_class_svm`, `local_outlier_factor`, `autoencoder_mlp`, `lstm`). Le LSTM utilise TensorFlow/Keras en priorité, puis PyTorch si TensorFlow n'est pas disponible. Il sera ignoré automatiquement si aucun backend deep learning n'est installé.
+
+## Communication Entre Agents
+
+Les agents disponibles communiquent avec un bus local JSONL. Chaque étape publie un message dans `data/processed/agent_messages.jsonl`: lancement du workflow, parsing terminé, détection lancée, détection terminée, etc.
+
+Commande d'orchestration locale:
+
+```powershell
+python src\logminer\agents\orchestrator.py -i examples\windows_event_sample.xml --parsed-name orchestrated_windows.csv --anomalies-name orchestrated_anomalies.csv
+```
+
+Pour les journaux Windows, `scripts\collect_windows_events.ps1` lance aussi la détection après le parsing, sauf si `-SkipDetection` est fourni.
+
+## Corréler Et Visualiser
+
+L'agent corrélateur regroupe les anomalies candidates en incidents:
+
+```powershell
+python src\logminer\agents\correlator.py -i data\processed\anomalies.csv -o data\processed\incidents.csv
+```
+
+Le dashboard Streamlit lit les événements, anomalies, incidents et messages d'agents:
+
+```powershell
+streamlit run src\logminer\agents\dashboard.py
+```
+
+Une version React plus responsive est disponible dans `web/dashboard`. Elle utilise un petit serveur Node natif pour exposer les CSV de `data/processed` en JSON.
+
+```powershell
+cd web\dashboard
+npm run dev
+```
+
+URL locale:
+
+```text
+http://127.0.0.1:5173
+```
 
 ## État Actuel
 
@@ -235,6 +309,18 @@ Déjà réparé et utilisable:
 - `src/logminer/io/csv_writer.py`
 - `src/logminer/parsers/windows_event.py`
 - `src/logminer/writer.py`
+- `src/logminer/normalizers/runner.py`
+- `src/logminer/normalizers/categorizer.py`
+- `src/logminer/features/event_features.py`
+- `src/logminer/agents/baseline_detector.py`
+- `src/logminer/agents/detector.py`
+- `src/logminer/agents/model_compare.py`
+- `src/logminer/agents/correlator.py`
+- `src/logminer/agents/dashboard.py`
+- `src/logminer/agents/bus.py`
+- `src/logminer/agents/parser_agent.py`
+- `src/logminer/agents/orchestrator.py`
+- `web/dashboard/`
 - `scripts/export_recent_windows_events.ps1`
 - `scripts/process_recent_windows_events.py`
 
@@ -251,8 +337,6 @@ Avancées du 15/05/2026:
 À compléter/réparer ensuite:
 
 - certains parseurs récupérés dans `src/logminer/parsers/`;
-- `src/logminer/normalizers/categorizer.py`;
-- `src/logminer/normalizers/runner.py`;
 - tests sur HDFS, BGL, Apache, Syslog et EVTX réel.
 - copie/export des journaux Windows protégés en mode administrateur.
 
@@ -260,7 +344,6 @@ Avancées du 15/05/2026:
 
 - Exporter les journaux Windows protégés avec une console administrateur.
 - Stabiliser tous les parseurs.
-- Finaliser la catégorisation sécurité.
-- Générer des features ML depuis les CSV.
-- Ajouter un premier modèle Isolation Forest.
+- Améliorer la catégorisation sécurité avec plus de règles.
+- Ajouter un agent de corrélation temporelle.
 - Construire un dashboard simple de visualisation des anomalies.

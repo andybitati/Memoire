@@ -19,5 +19,8 @@ numpy>=1.26.0
 pandas>=2.2.0
 scikit-learn>=1.4.0
 
+# Les backends deep learning du prototype LSTM sont separes dans
+# requirements-ai.txt pour ne pas alourdir l'installation de base.
+
 # Dashboard léger prévu pour la visualisation des alertes/anomalies.
 streamlit>=1.36.0

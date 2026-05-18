@@ -1,0 +1,12 @@
+# Dependances IA avancees pour les experiences deep learning de Logminer.
+#
+# Installation recommandee apres les dependances de base:
+#   python -m pip install -r requirements.txt
+#   python -m pip install -r requirements-ai.txt
+#
+# TensorFlow est le backend prioritaire pour le LSTM dans
+# src/logminer/agents/model_compare.py. PyTorch est conserve comme secours
+# experimental si TensorFlow n'est pas disponible sur la machine.
+
+tensorflow>=2.16.0
+torch>=2.3.0

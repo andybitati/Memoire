@@ -1,39 +1,44 @@
-# Source Generated with Decompyle++
-# File: runner.cpython-311.pyc (Python 3.11)
+"""Chaine de normalisation appliquee avant l'ecriture CSV."""
 
-"""Runner de normalisation.
-
-Les parseurs appellent actuellement `emit(writer, base)` directement.
-Pour éviter de modifier tous les parseurs, on applique ici une chaîne de
-normalizers juste avant l'écriture CSV.
-
-Cette chaîne est volontairement simple:
-- DefaultNormalizer: harmonise les niveaux de sévérité
-- CategorizerNormalizer: ajoute `category/subcategory`
-
-Les agents IA pourront ajouter d'autres normalizers (enrichissement, mapping MITRE, etc.).
-"""
 from __future__ import annotations
-from typing import Dict, Any, List
-from default import DefaultNormalizer
-from categorizer import CategorizerNormalizer
-from base import BaseNormalizer
-_DEFAULTS: 'List[BaseNormalizer] | None' = None
 
-def get_default_normalizers():
-    '''Retourne une liste singleton de normalizers par défaut.'''
-    pass
-# WARNING: Decompyle incomplete
+from typing import Any, Dict, Iterable, List
+
+try:
+    from .base import BaseNormalizer
+    from .categorizer import CategorizerNormalizer
+    from .default import DefaultNormalizer
+except ImportError:
+    from base import BaseNormalizer
+    from categorizer import CategorizerNormalizer
+    from default import DefaultNormalizer
 
 
-def normalize_event(event = None, normalizers = None):
-    """Applique les normalizers (non destructifs) et retourne l'événement."""
-    if not normalizers:
-        pass
-    chain = get_default_normalizers()
-    for n in chain:
-        event = n.normalize(event)
+_DEFAULTS: List[BaseNormalizer] | None = None
+
+
+def get_default_normalizers() -> List[BaseNormalizer]:
+    """Retourne les normaliseurs standards dans un ordre stable."""
+
+    global _DEFAULTS
+    if _DEFAULTS is None:
+        _DEFAULTS = [DefaultNormalizer(), CategorizerNormalizer()]
+    return _DEFAULTS
+
+
+def normalize_event(
+    event: Dict[str, Any] | None,
+    normalizers: Iterable[BaseNormalizer] | None = None,
+) -> Dict[str, Any]:
+    """Applique les normaliseurs et preserve l'evenement en cas d'erreur."""
+
+    normalized = dict(event or {})
+    chain = list(normalizers) if normalizers is not None else get_default_normalizers()
+
+    for normalizer in chain:
+        try:
+            normalized = normalizer.normalize(normalized)
         except Exception:
             continue
-        return event
 
+    return normalized
