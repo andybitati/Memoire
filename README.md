@@ -18,6 +18,7 @@ TFE/
 │   ├── anomaly_detection/
 │   ├── architecture/
 │   ├── memoire/
+│   ├── roadmap/
 │   ├── references/
 │   └── recovery/
 ├── examples/
@@ -36,6 +37,7 @@ Rôles des dossiers:
 - `docs/anomaly_detection/`: étude comparative liée à l'objectif 2.
 - `docs/architecture/`: conception de l'architecture multi-agents IA liée à l'objectif 3.
 - `docs/memoire/`: documents liés au mémoire.
+- `docs/roadmap/`: suivi des objectifs restants et livrables attendus.
 - `docs/references/`: articles, normes et PDF de référence.
 - `docs/recovery/`: notes sur la récupération des fichiers `.py` depuis les `.pyc`.
 - `examples/`: petits fichiers d'exemple pour tester rapidement le code.
