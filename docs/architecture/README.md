@@ -130,6 +130,45 @@ detection.completed
 workflow.completed
 ```
 
+## Lecture Humaine Des Messages Agents
+
+Les messages du bus local sont volontairement structurés pour la machine, mais
+ils doivent rester lisibles pour un analyste ou un developpeur. Le dashboard web
+traduit donc les informations techniques en trois niveaux:
+
+| Niveau affiche | Source technique | Utilite humaine |
+| --- | --- | --- |
+| Etape | `message_type` | Comprendre ce que le workflow est en train de faire |
+| Acteurs | `source` -> `target` | Identifier quel agent a parle a quel agent |
+| Details | `payload` | Voir les fichiers produits, volumes d'evenements ou fenetres de correlation |
+
+Exemple de traduction:
+
+| Message brut | Presentation dashboard |
+| --- | --- |
+| `parse.completed` | Parsing termine |
+| `detection.completed` | Detection terminee |
+| `correlation.completed` | Correlation terminee |
+| `parser -> detector` | Parseur -> Detecteur IA |
+
+Cette presentation evite d'exposer directement du JSON a l'utilisateur final.
+Le JSON reste disponible dans le journal brut, mais l'ecran principal privilegie
+un fil chronologique comprehensible.
+
+## Presentation Des Incidents
+
+Un incident doit etre plus lisible qu'un groupe technique de lignes CSV. Le
+dashboard affiche maintenant:
+
+- un resume court genere par le correlateur;
+- la severite maximale du groupe;
+- le nombre d'evenements concernes;
+- la categorie et la fenetre temporelle;
+- les incidents les plus importants en premier.
+
+Cette presentation sert de pont entre l'objectif 2, qui produit des anomalies,
+et l'objectif 3, qui les rend exploitables dans une architecture multi-agents.
+
 ## Endpoints Cibles
 
 Ces endpoints ne sont pas encore implementes; ils servent de specification pour la suite.
@@ -159,7 +198,8 @@ Ce qui existe deja:
 - orchestrateur local parseur -> detecteur.
 - agent correlateur produisant `incidents.csv`;
 - dashboard Streamlit pour prototype rapide;
-- dashboard React responsive pour une interface plus soignee.
+- dashboard React responsive pour une interface plus soignee;
+- affichage humain du flux agents, des incidents et des resultats de validation.
 
 Ce qui reste a construire:
 
@@ -178,7 +218,8 @@ Ce qui reste a construire:
 7. Fait: ajouter un correlateur simple base sur fenetres temporelles.
 8. Fait: construire un dashboard Streamlit lisant les CSV produits.
 9. Fait: ajouter un dashboard React responsive avec API locale Node.
-10. Ajouter ensuite FastAPI si les agents doivent tourner comme services separes.
+10. Fait: rendre lisibles les communications agents et les incidents dans le dashboard.
+11. Ajouter ensuite FastAPI si les agents doivent tourner comme services separes.
 
 Commande de detection:
 

@@ -83,6 +83,69 @@ Cette commande execute la grille experimentale complete:
 - IA tabulaire: `isolation_forest`, `kmeans`, `one_class_svm`, `local_outlier_factor`, `autoencoder_mlp`;
 - IA sequence: `lstm_tensorflow` ou `lstm_pytorch`, marque comme ignore si aucun backend deep learning n'est installe.
 
+## Validation Avec Datasets Labellises
+
+La validation objective se fait avec des datasets contenant une verite terrain.
+Deux jeux sont actuellement prepares localement:
+
+- HDFS: labels par `BlockId` dans `data/raw/Datasets/HDFS_1/anomaly_label.csv`;
+- BGL: label normal/anomalie porte par le premier marqueur de chaque ligne du log brut.
+
+Les fichiers bruts sont volumineux. Pour eviter de charger plusieurs Go en
+memoire a chaque essai, `scripts/prepare_validation_dataset.py` cree des CSV
+normalises et echantillonnes avec une colonne `label`.
+
+Preparation HDFS:
+
+```powershell
+python scripts\prepare_validation_dataset.py hdfs `
+  --input data\raw\Datasets\Dataset_csv\hdfs.csv `
+  --labels data\raw\Datasets\HDFS_1\anomaly_label.csv `
+  --output data\processed\validation_hdfs.csv `
+  --max-normal 3000 `
+  --max-anomaly 3000
+```
+
+Preparation BGL:
+
+```powershell
+python scripts\prepare_validation_dataset.py bgl `
+  --input data\raw\Datasets\BGL\BGL.log `
+  --output data\processed\validation_bgl.csv `
+  --max-normal 3000 `
+  --max-anomaly 3000
+```
+
+Evaluation avec labels:
+
+```powershell
+python src\logminer\agents\model_compare.py `
+  -i data\processed\validation_hdfs.csv `
+  -o data\processed\validation_hdfs_metrics.csv `
+  --contamination auto `
+  --label-column label
+
+python src\logminer\agents\model_compare.py `
+  -i data\processed\validation_bgl.csv `
+  -o data\processed\validation_bgl_metrics.csv `
+  --contamination auto `
+  --label-column label
+```
+
+`--contamination auto` utilise le taux reel d'anomalies du dataset labellise.
+Cela rend la comparaison plus juste, car chaque modele predit un volume
+d'anomalies comparable au volume attendu.
+
+Synthese des meilleurs modeles:
+
+```powershell
+python scripts\summarize_validation_metrics.py `
+  data\processed\validation_hdfs_metrics.csv `
+  data\processed\validation_bgl_metrics.csv `
+  -o data\processed\validation_summary.csv `
+  --top-n 3
+```
+
 ## Sortie Comparative
 
 Le fichier `data/processed/model_comparison.csv` contient:
@@ -98,6 +161,8 @@ Le fichier `data/processed/model_comparison.csv` contient:
 | `overlap_rate` | Part du modele recouverte par la baseline |
 | `duration_sec` | Temps d'execution |
 | `precision`, `recall`, `f1` | Ajoutes seulement si une colonne de labels est fournie |
+| `accuracy`, `specificity` | Exactitude globale et rappel de la classe normale |
+| `tp`, `fp`, `fn`, `tn` | Matrice de confusion |
 
 ## Interpretation Pour Le Memoire
 
@@ -118,8 +183,19 @@ Exploitation recommandee:
 Avec un dataset labellise plus tard, par exemple HDFS ou BGL annote, le meme script pourra produire precision, rappel et F1-score avec:
 
 ```powershell
-python src\logminer\agents\model_compare.py -i data\processed\dataset_labelise.csv --label-column label
+python src\logminer\agents\model_compare.py -i data\processed\dataset_labelise.csv --label-column label --contamination auto
 ```
+
+Resultats de validation actuels sur echantillons equilibres de 6000 lignes:
+
+| Dataset | Meilleur modele observe | Precision | Recall | F1 |
+| --- | --- | ---: | ---: | ---: |
+| BGL | z-score / histogramme / k-Means | 0.994333 | 0.994333 | 0.994333 |
+| HDFS | LSTM TensorFlow | 0.632667 | 0.632667 | 0.632667 |
+
+Ces valeurs sont des resultats experimentaux sur echantillons prepares. Elles
+doivent etre presentees comme validation initiale, pas comme performance finale
+generalisee a tout le dataset.
 
 ## Etat Actuel
 
@@ -132,9 +208,12 @@ Fait:
 - prototype LSTM TensorFlow prioritaire avec secours PyTorch;
 - export CSV comparatif;
 - compatibilite future avec labels.
+- preparation HDFS/BGL labellisee;
+- metriques precision, recall, F1, accuracy, specificity et matrice de confusion;
+- synthese `data/processed/validation_summary.csv`.
 
 Reste a faire:
 
-- tester sur datasets labellises HDFS/BGL;
 - ajuster les features pour les logs reseau;
+- elargir la validation a plus de lignes ou a des splits train/test;
 - integrer les resultats dans le chapitre 2 et le chapitre 5 du memoire.

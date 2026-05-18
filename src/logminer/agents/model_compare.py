@@ -30,7 +30,7 @@ os.environ.setdefault("TF_ENABLE_ONEDNN_OPTS", "0")
 
 from sklearn.ensemble import IsolationForest
 from sklearn.cluster import MiniBatchKMeans
-from sklearn.metrics import f1_score, precision_score, recall_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.neural_network import MLPRegressor
 from sklearn.preprocessing import StandardScaler
@@ -50,6 +50,19 @@ from features.event_features import build_feature_frame, load_events
 
 
 ModelResult = Dict[str, object]
+
+AUTO_LABEL_COLUMNS = [
+    "label",
+    "Label",
+    "is_anomaly",
+    "is_attack",
+    "anomaly",
+    "anomaly_label",
+    "class",
+    "Class",
+    "target",
+    "Target",
+]
 
 
 def _clip_contamination(value: float) -> float:
@@ -514,11 +527,54 @@ def run_lstm(events: pd.DataFrame, contamination: float, random_state: int) -> M
             }
 
 
+def _detect_label_column(events: pd.DataFrame, label_column: str = "") -> str:
+    """Retourne la colonne de verite terrain a utiliser pour la validation.
+
+    Les datasets publics ne nomment pas toujours le label de la meme maniere:
+    HDFS utilise souvent `Label`, UNSW-NB15 utilise parfois `label` ou
+    `attack_cat`, et nos CSV prepares utilisent `label`. Cette detection evite
+    de devoir memoriser chaque nom de colonne a chaque execution.
+    """
+
+    if label_column and label_column in events.columns:
+        return label_column
+
+    for candidate in AUTO_LABEL_COLUMNS:
+        if candidate in events.columns:
+            return candidate
+
+    return ""
+
+
 def _labels_from_column(events: pd.DataFrame, label_column: str) -> pd.Series | None:
-    if not label_column or label_column not in events.columns:
+    selected_column = _detect_label_column(events, label_column)
+    if not selected_column:
         return None
-    values = events[label_column].astype(str).str.lower()
-    return values.isin({"1", "true", "yes", "anomaly", "anomalous", "attack", "malicious"}).astype(int)
+
+    values = events[selected_column].astype(str).str.strip().str.lower()
+    positive_values = {
+        "1",
+        "true",
+        "yes",
+        "y",
+        "anomaly",
+        "anomalous",
+        "abnormal",
+        "attack",
+        "attacked",
+        "malicious",
+        "failure",
+        "failed",
+        "fail",
+        "error",
+    }
+    negative_values = {"0", "false", "no", "n", "normal", "benign", "none", "-"}
+
+    numeric_values = pd.to_numeric(values, errors="coerce")
+    labels = values.isin(positive_values).astype(int)
+    labels = labels.mask(values.isin(negative_values), 0)
+    labels = labels.mask(numeric_values.notna(), (numeric_values.fillna(0) != 0).astype(int))
+    return labels.astype(int)
 
 
 def _summarize(
@@ -547,9 +603,21 @@ def _summarize(
     }
 
     if truth is not None:
+        true_positive = int(((truth == 1) & (labels == 1)).sum())
+        false_positive = int(((truth == 0) & (labels == 1)).sum())
+        false_negative = int(((truth == 1) & (labels == 0)).sum())
+        true_negative = int(((truth == 0) & (labels == 0)).sum())
+        specificity = true_negative / max(true_negative + false_positive, 1)
+
         row["precision"] = round(float(precision_score(truth, labels, zero_division=0)), 6)
         row["recall"] = round(float(recall_score(truth, labels, zero_division=0)), 6)
         row["f1"] = round(float(f1_score(truth, labels, zero_division=0)), 6)
+        row["accuracy"] = round(float(accuracy_score(truth, labels)), 6)
+        row["specificity"] = round(float(specificity), 6)
+        row["tp"] = true_positive
+        row["fp"] = false_positive
+        row["fn"] = false_negative
+        row["tn"] = true_negative
 
     return row
 
@@ -558,7 +626,7 @@ def compare_models(
     input_csv: str | Path,
     output_csv: str | Path = "data/processed/model_comparison.csv",
     sep: str = ";",
-    contamination: float = 0.05,
+    contamination: float | str = 0.05,
     random_state: int = 42,
     label_column: str = "",
     max_categorical_unique: int = 100,
@@ -569,31 +637,38 @@ def compare_models(
     if events.empty:
         raise ValueError(f"Aucun evenement a comparer dans {input_csv}")
 
+    truth = _labels_from_column(events, label_column)
+    if isinstance(contamination, str) and contamination.lower() == "auto":
+        if truth is None:
+            raise ValueError("--contamination auto demande une colonne de label detectable")
+        effective_contamination = max(float(truth.mean()), 1 / max(len(truth), 1))
+    else:
+        effective_contamination = float(contamination)
+
     features = build_feature_frame(events, max_categorical_unique=max_categorical_unique)
     if features.empty:
         raise ValueError("Impossible de construire des features ML depuis le CSV fourni")
 
     results: list[ModelResult] = []
-    baseline_result = run_baseline(events, contamination, random_state)
+    baseline_result = run_baseline(events, effective_contamination, random_state)
     results.append(baseline_result)
 
     # Methodes statistiques simples. Elles servent de repere explicable avant
     # les modeles IA: un developpeur peut facilement relier le score a une
     # rarete, une distance a la moyenne ou une sortie des quartiles.
-    results.append(run_z_score(features, contamination, random_state))
-    results.append(run_iqr(features, contamination, random_state))
-    results.append(run_histogram(events, contamination, random_state))
+    results.append(run_z_score(features, effective_contamination, random_state))
+    results.append(run_iqr(features, effective_contamination, random_state))
+    results.append(run_histogram(events, effective_contamination, random_state))
 
     # Modeles IA non supervises. Ils exploitent la meme matrice numerique pour
     # rendre la comparaison reproductible entre approches.
-    results.append(run_isolation_forest(features, contamination, random_state))
-    results.append(run_kmeans(features, contamination, random_state))
-    results.append(run_one_class_svm(features, contamination, random_state))
-    results.append(run_lof(features, contamination, random_state))
-    results.append(run_autoencoder(features, contamination, random_state))
-    results.append(run_lstm(events, contamination, random_state))
+    results.append(run_isolation_forest(features, effective_contamination, random_state))
+    results.append(run_kmeans(features, effective_contamination, random_state))
+    results.append(run_one_class_svm(features, effective_contamination, random_state))
+    results.append(run_lof(features, effective_contamination, random_state))
+    results.append(run_autoencoder(features, effective_contamination, random_state))
+    results.append(run_lstm(events, effective_contamination, random_state))
 
-    truth = _labels_from_column(events, label_column)
     baseline_labels = pd.Series(baseline_result["labels"]).astype(int)
     summary = [_summarize(result, len(events), baseline_labels, truth) for result in results]
 
@@ -609,7 +684,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument("-i", "--input", required=True, help="CSV normalise Logminer")
     parser.add_argument("-o", "--output", default="data/processed/model_comparison.csv", help="CSV comparatif")
     parser.add_argument("--sep", default=";", help="Separateur CSV")
-    parser.add_argument("--contamination", type=float, default=0.05, help="Proportion attendue d'anomalies")
+    parser.add_argument("--contamination", default="0.05", help="Proportion attendue d'anomalies, ou 'auto' avec labels")
     parser.add_argument("--random-state", type=int, default=42, help="Graine aleatoire")
     parser.add_argument("--label-column", default="", help="Colonne optionnelle de verite terrain")
     parser.add_argument("--max-categorical-unique", type=int, default=100, help="Limite one-hot par colonne")

@@ -10,10 +10,16 @@ const preferredPort = Number(process.env.PORT || 5173);
 let activePort = preferredPort;
 
 const dataFiles = {
-  events: "windows_copies_pipeline.csv",
-  anomalies: "anomalies.csv",
-  incidents: "incidents.csv",
-  messages: "agent_messages.jsonl",
+  events: ["windows_copies_pipeline.csv"],
+  anomalies: ["anomalies.csv"],
+  incidents: ["incidents.csv"],
+  messages: [
+    "agent_messages.jsonl",
+    "agent_messages_full_test.jsonl",
+    "full_orchestrator_messages_test.jsonl",
+    "agent_messages_corr_test.jsonl",
+  ],
+  validation: ["validation_summary.csv"],
 };
 
 const staticTypes = {
@@ -85,14 +91,31 @@ async function handleApi(req, res) {
     const url = new URL(req.url, `http://127.0.0.1:${activePort}`);
     const type = url.searchParams.get("type") || "";
     const limit = Number(url.searchParams.get("limit") || "0");
-    const file = dataFiles[type];
+    const candidates = dataFiles[type];
 
-    if (!file) {
+    if (!candidates) {
       sendJson(res, 400, { error: "unknown data type" });
       return;
     }
 
-    const raw = await fs.readFile(path.join(processedDir, file), "utf8");
+    let file = "";
+    let raw = "";
+    for (const candidate of candidates) {
+      try {
+        raw = await fs.readFile(path.join(processedDir, candidate), "utf8");
+        file = candidate;
+        break;
+      } catch {
+        // On essaie le fichier candidat suivant. Cela permet au dashboard de
+        // rester lisible meme si un run n'a pas encore produit tous les CSV.
+      }
+    }
+
+    if (!file) {
+      sendJson(res, 200, { file: "", count: 0, data: [] });
+      return;
+    }
+
     const data =
       type === "messages"
         ? raw

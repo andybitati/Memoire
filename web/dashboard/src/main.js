@@ -6,6 +6,7 @@ let state = {
   anomalies: [],
   incidents: [],
   messages: [],
+  validation: [],
   meta: {},
   filters: { query: "", host: "", severity: "", category: "", source: "" },
 };
@@ -77,6 +78,7 @@ async function loadData() {
       fetchData("incidents", 2000),
       fetchOptionalData("messages", 200),
     ]);
+    const validation = await fetchOptionalData("validation", 50);
     state = {
       ...state,
       loading: false,
@@ -85,11 +87,13 @@ async function loadData() {
       anomalies: anomalies.data,
       incidents: incidents.data,
       messages: messages.data,
+      validation: validation.data,
       meta: {
         events: events.count,
         anomalies: anomalies.count,
         incidents: incidents.count,
         messages: messages.count,
+        validation: validation.count,
       },
     };
   } catch (error) {
@@ -142,6 +146,130 @@ function stat(icon, label, value, tone) {
   `;
 }
 
+const AGENT_LABELS = {
+  collector: "Collecteur",
+  parser: "Parseur",
+  normalizer: "Normaliseur",
+  detector: "Détecteur IA",
+  correlator: "Corrélateur",
+  visualizer: "Visualiseur",
+  orchestrator: "Orchestrateur",
+  dashboard: "Dashboard",
+};
+
+const MESSAGE_LABELS = {
+  "workflow.started": "Workflow lancé",
+  "workflow.completed": "Workflow terminé",
+  "parse.started": "Parsing lancé",
+  "parse.completed": "Parsing terminé",
+  "detection.started": "Détection lancée",
+  "detection.completed": "Détection terminée",
+  "correlation.started": "Corrélation lancée",
+  "correlation.completed": "Corrélation terminée",
+};
+
+function agentName(value) {
+  return AGENT_LABELS[String(value || "").toLowerCase()] || String(value || "Agent inconnu");
+}
+
+function messageTitle(message) {
+  return MESSAGE_LABELS[message.message_type] || String(message.message_type || "Message agent");
+}
+
+function formatDateTime(value) {
+  const date = new Date(value || "");
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
+
+function payloadSummary(payload) {
+  if (!payload || typeof payload !== "object") return "";
+  const readableKeys = {
+    input_csv: "entrée",
+    output_csv: "sortie",
+    events: "événements",
+    anomalies: "anomalies",
+    incidents: "incidents",
+    files: "fichiers",
+    window_minutes: "fenêtre",
+  };
+  return Object.entries(payload)
+    .filter(([, value]) => value !== "" && value !== null && value !== undefined)
+    .slice(0, 4)
+    .map(([key, value]) => `${readableKeys[key] || key}: ${String(value)}`)
+    .join(" · ");
+}
+
+function latestRun(messages) {
+  return [...messages].reverse().find((message) => message.run_id)?.run_id || "";
+}
+
+function agentFlowPanel(messages) {
+  const runId = latestRun(messages);
+  const rows = runId ? messages.filter((message) => message.run_id === runId) : messages;
+  const ordered = rows.slice(-12);
+
+  return `
+    <section class="panel agentFlow">
+      <div class="panelHeader">
+        <div><h2>Flux agents</h2><p>${runId ? `Run ${escapeHtml(runId.slice(0, 10))}` : "Aucun run actif"}</p></div>
+        <span class="icon">↬</span>
+      </div>
+      ${
+        ordered.length
+          ? `<ol class="flowSteps">
+              ${ordered
+                .map(
+                  (message) => `
+                    <li class="${message.status === "error" ? "flowError" : ""}">
+                      <span class="stepDot"></span>
+                      <div>
+                        <strong>${escapeHtml(messageTitle(message))}</strong>
+                        <span>${escapeHtml(agentName(message.source))} → ${escapeHtml(agentName(message.target))}</span>
+                        <small>${escapeHtml(formatDateTime(message.timestamp))}${payloadSummary(message.payload) ? ` · ${escapeHtml(payloadSummary(message.payload))}` : ""}</small>
+                      </div>
+                    </li>
+                  `,
+                )
+                .join("")}
+            </ol>`
+          : `<div class="emptyState">Aucun message agent disponible pour le moment.</div>`
+      }
+    </section>
+  `;
+}
+
+function validationPanel(rows) {
+  return `
+    <section class="panel validationPanel">
+      <div class="panelHeader"><h2>Validation modèles</h2><span class="icon">✓</span></div>
+      ${
+        rows.length
+          ? rows
+              .slice(0, 6)
+              .map(
+                (row) => `
+                  <article class="validationItem">
+                    <div>
+                      <strong>${escapeHtml(String(row.dataset || "").toUpperCase())} · ${escapeHtml(row.model)}</strong>
+                      <span>F1 ${escapeHtml(row.f1)} · Recall ${escapeHtml(row.recall)} · Precision ${escapeHtml(row.precision)}</span>
+                    </div>
+                    <span class="pill info">${escapeHtml(row.events || "0")} lignes</span>
+                  </article>
+                `,
+              )
+              .join("")
+          : `<div class="emptyState">Aucune synthèse de validation trouvée.</div>`
+      }
+    </section>
+  `;
+}
+
 function timeline(rows) {
   const map = new Map();
   rows.forEach((row) => {
@@ -173,21 +301,30 @@ function timeline(rows) {
 }
 
 function incidentsPanel(rows) {
+  const sorted = [...rows].sort((a, b) => Number(b.event_count || 0) - Number(a.event_count || 0));
   return `
     <section class="panel">
       <div class="panelHeader"><h2>Incidents corrélés</h2><span class="icon">⇄</span></div>
       <div class="incidentList">
-        ${rows
+        ${sorted
           .slice(0, 8)
           .map(
             (incident) => `
               <article class="incident">
-                <div><strong>${escapeHtml(incident.incident_id)}</strong><span>${escapeHtml(incident.summary)}</span></div>
-                <div class="incidentMeta"><span class="pill ${severityClass(incident.severity)}">${escapeHtml(incident.severity || "N/A")}</span><span>${escapeHtml(incident.event_count)} evt</span></div>
+                <div>
+                  <strong>${escapeHtml(incident.incident_id)}</strong>
+                  <span>${escapeHtml(incident.summary)}</span>
+                  <small>${escapeHtml(formatDateTime(incident.start_time))} → ${escapeHtml(formatDateTime(incident.end_time))}</small>
+                </div>
+                <div class="incidentMeta">
+                  <span class="pill ${severityClass(incident.severity)}">${escapeHtml(incident.severity || "N/A")}</span>
+                  <span>${escapeHtml(incident.event_count)} evt</span>
+                  <small>${escapeHtml(incident.category || "catégorie inconnue")}</small>
+                </div>
               </article>
             `,
           )
-          .join("")}
+          .join("") || `<div class="emptyState">Aucun incident corrélé.</div>`}
       </div>
     </section>
   `;
@@ -229,19 +366,19 @@ function dataTable(title, rows, columns, icon) {
 function messagesPanel(rows) {
   return `
     <section class="panel messages">
-      <div class="panelHeader"><h2>Communication agents</h2><span class="icon">↬</span></div>
+      <div class="panelHeader"><h2>Journal agents</h2><span class="icon">▤</span></div>
       ${rows
         .slice(-8)
         .map(
           (message) => `
             <div class="message">
-              <span>${escapeHtml(message.message_type)}</span>
-              <strong>${escapeHtml(message.source)} → ${escapeHtml(message.target)}</strong>
-              <small>${escapeHtml(message.status)}</small>
+              <span>${escapeHtml(messageTitle(message))}</span>
+              <strong>${escapeHtml(agentName(message.source))} → ${escapeHtml(agentName(message.target))}</strong>
+              <small>${escapeHtml(message.status || "ok")}</small>
             </div>
           `,
         )
-        .join("")}
+        .join("") || `<div class="emptyState">Aucun message brut à afficher.</div>`}
     </section>
   `;
 }
@@ -268,8 +405,12 @@ function render() {
         </div>
         <div class="mainGrid">
           ${timeline(filteredEvents)}
-          ${incidentsPanel(state.incidents)}
+          <div class="sideStack">
+            ${agentFlowPanel(state.messages)}
+            ${validationPanel(state.validation)}
+          </div>
         </div>
+        ${incidentsPanel(state.incidents)}
         ${dataTable("Anomalies candidates", filteredAnomalies, ["timestamp_iso", "severity", "event", "source", "host", "category", "anomaly_score", "message"], "◆")}
         ${dataTable("Événements normalisés", filteredEvents, ["timestamp_iso", "severity", "event", "source", "host", "user", "category", "message"], "▤")}
         ${messagesPanel(state.messages)}

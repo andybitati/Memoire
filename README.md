@@ -259,6 +259,18 @@ python src\logminer\agents\model_compare.py -i data\processed\windows_copies_pip
 
 Le comparateur `model_compare.py` produit une grille expérimentale complète pour le mémoire: baseline explicable, méthodes statistiques (`z_score`, `iqr`, `histogram`) et méthodes IA non supervisées (`isolation_forest`, `kmeans`, `one_class_svm`, `local_outlier_factor`, `autoencoder_mlp`, `lstm`). Le LSTM utilise TensorFlow/Keras en priorité, puis PyTorch si TensorFlow n'est pas disponible. Il sera ignoré automatiquement si aucun backend deep learning n'est installé.
 
+Pour valider avec des datasets labellisés HDFS/BGL:
+
+```powershell
+python scripts\prepare_validation_dataset.py hdfs --input data\raw\Datasets\Dataset_csv\hdfs.csv --labels data\raw\Datasets\HDFS_1\anomaly_label.csv --output data\processed\validation_hdfs.csv --max-normal 3000 --max-anomaly 3000
+python scripts\prepare_validation_dataset.py bgl --input data\raw\Datasets\BGL\BGL.log --output data\processed\validation_bgl.csv --max-normal 3000 --max-anomaly 3000
+python src\logminer\agents\model_compare.py -i data\processed\validation_hdfs.csv -o data\processed\validation_hdfs_metrics.csv --contamination auto --label-column label
+python src\logminer\agents\model_compare.py -i data\processed\validation_bgl.csv -o data\processed\validation_bgl_metrics.csv --contamination auto --label-column label
+python scripts\summarize_validation_metrics.py data\processed\validation_hdfs_metrics.csv data\processed\validation_bgl_metrics.csv -o data\processed\validation_summary.csv
+```
+
+Ces sorties ajoutent `precision`, `recall`, `f1`, `accuracy`, `specificity` et la matrice de confusion `tp/fp/fn/tn`.
+
 ## Communication Entre Agents
 
 Les agents disponibles communiquent avec un bus local JSONL. Chaque étape publie un message dans `data/processed/agent_messages.jsonl`: lancement du workflow, parsing terminé, détection lancée, détection terminée, etc.

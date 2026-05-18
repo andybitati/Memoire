@@ -247,6 +247,12 @@ select {
   font-size: 17px;
 }
 
+.panelHeader p {
+  margin: 4px 0 0;
+  color: #9ea8b6;
+  font-size: 12px;
+}
+
 .timeline {
   min-height: 310px;
 }
@@ -306,11 +312,129 @@ select {
   font-size: 13px;
 }
 
+.incident small {
+  display: block;
+  margin-top: 4px;
+  color: #8f9aac;
+  font-size: 12px;
+}
+
 .incidentMeta {
   display: grid;
   justify-items: end;
   gap: 5px;
   white-space: nowrap;
+}
+
+.sideStack {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.agentFlow,
+.validationPanel {
+  min-height: 0;
+}
+
+.flowSteps {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flowSteps::before {
+  position: absolute;
+  top: 9px;
+  bottom: 9px;
+  left: 8px;
+  width: 1px;
+  background: #303846;
+  content: "";
+}
+
+.flowSteps li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.stepDot {
+  z-index: 1;
+  width: 17px;
+  height: 17px;
+  margin-top: 2px;
+  border: 3px solid #181d25;
+  border-radius: 999px;
+  background: #6ad6a5;
+}
+
+.flowError .stepDot {
+  background: #ff6b6b;
+}
+
+.flowSteps strong,
+.flowSteps span,
+.flowSteps small {
+  display: block;
+}
+
+.flowSteps strong {
+  color: #f4f6f8;
+  font-size: 14px;
+}
+
+.flowSteps span {
+  color: #c5ceda;
+  font-size: 13px;
+}
+
+.flowSteps small {
+  margin-top: 2px;
+  color: #8f9aac;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.validationItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid #29303a;
+  padding: 10px 0;
+}
+
+.validationItem:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.validationItem strong,
+.validationItem span {
+  display: block;
+}
+
+.validationItem strong {
+  font-size: 14px;
+}
+
+.validationItem span {
+  color: #aeb8c6;
+  font-size: 12px;
+}
+
+.emptyState {
+  border: 1px dashed #384150;
+  border-radius: 8px;
+  padding: 14px;
+  color: #9ea8b6;
+  background: #141922;
+  font-size: 13px;
 }
 
 .tablePanel {
@@ -423,6 +547,10 @@ td:last-child {
   .statsGrid {
     grid-template-columns: 1fr 1fr;
   }
+
+  .sideStack {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 720px) {
@@ -447,5 +575,15 @@ td:last-child {
 
   .message {
     grid-template-columns: 1fr;
+  }
+
+  .incident,
+  .validationItem {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .incidentMeta {
+    justify-items: start;
   }
 }
