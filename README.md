@@ -18,6 +18,7 @@ TFE/
 │   ├── anomaly_detection/
 │   ├── architecture/
 │   ├── memoire/
+│   ├── model_training/
 │   ├── roadmap/
 │   ├── references/
 │   └── recovery/
@@ -37,6 +38,7 @@ Rôles des dossiers:
 - `docs/anomaly_detection/`: étude comparative liée à l'objectif 2.
 - `docs/architecture/`: conception de l'architecture multi-agents IA liée à l'objectif 3.
 - `docs/memoire/`: documents liés au mémoire.
+- `docs/model_training/`: entraînement cloud et sauvegarde des modèles.
 - `docs/roadmap/`: suivi des objectifs restants et livrables attendus.
 - `docs/references/`: articles, normes et PDF de référence.
 - `docs/recovery/`: notes sur la récupération des fichiers `.py` depuis les `.pyc`.
@@ -251,6 +253,18 @@ python src\logminer\agents\detector.py -i data\processed\windows_copies_pipeline
 ```
 
 La conversion en variables ML se trouve dans `src/logminer/features/event_features.py`.
+
+Pour entraîner un modèle sur un grand dataset puis le sauvegarder:
+
+```powershell
+python src\logminer\agents\detector.py -i data\processed\cloud_training_dataset.csv -o data\processed\cloud_training_anomalies.csv --contamination 0.02 --model-out models\isolation_forest_cloud.joblib
+```
+
+Pour réutiliser localement un modèle entraîné sur le cloud:
+
+```powershell
+python src\logminer\agents\detector.py -i data\processed\windows_copies_pipeline.csv -o data\processed\anomalies_from_cloud_model.csv --model-in models\isolation_forest_cloud.joblib
+```
 
 Pour comparer les approches de l'objectif 2:
 

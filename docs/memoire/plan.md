@@ -112,12 +112,14 @@ Elements disponibles:
 - `data/processed/validation_bgl_metrics.csv`;
 - `data/processed/validation_summary.csv`;
 - scripts de preparation et synthese.
+- sauvegarde de modeles avec `joblib` pour entrainement cloud.
 
 Reste a rediger:
 
 - protocole experimental;
 - description des datasets Windows, HDFS et BGL;
 - tableaux precision, recall, F1;
+- protocole d'entrainement cloud et reutilisation locale des modeles;
 - analyse comparative des modeles;
 - interpretation des performances.
 
@@ -164,6 +166,5 @@ Reste a rediger:
 | 3. Concevoir l'architecture multi-agents | Avance | `docs/architecture/README.md` | FastAPI optionnel |
 | 4. Correler les anomalies en incidents | Partiel | `incidents.csv` | Priorite et justification |
 | 5. Visualiser et superviser | Partiel avance | `web/dashboard` | Vue detail incident |
-| 6. Evaluer experimentalement | Partiel avance | HDFS/BGL metrics | Split train/test, reseau |
+| 6. Evaluer experimentalement | Partiel avance | HDFS/BGL metrics, joblib | Split train/test, reseau, cloud |
 | 7. Rediger et discuter | Debut | docs existantes | Redaction chapitre par chapitre |
-

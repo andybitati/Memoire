@@ -58,6 +58,11 @@ results/
 temp/
 tmp/
 
+# Modeles entraines localement ou sur le cloud
+models/*.joblib
+models/*.pkl
+!models/.gitkeep
+
 # Outils et artefacts de décompilation/récupération
 tools/
 recovered_disasm/

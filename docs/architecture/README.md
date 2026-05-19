@@ -117,6 +117,54 @@ Phase 3: FastAPI pour exposer parseur/detecteur/dashboard
 Phase 4: Redis ou MQTT si le flux temps reel devient necessaire
 ```
 
+## Entrainement Cloud Et Artefacts Modeles
+
+Les grands datasets, par exemple HDFS complet, BGL complet ou UNSW-NB15, ne
+doivent pas forcement etre entraines sur la machine locale. Le flux recommande
+est:
+
+```text
+dataset volumineux -> entrainement cloud -> artefact joblib -> inference locale
+```
+
+L'agent detecteur supporte maintenant deux modes:
+
+| Mode | Option | Usage |
+| --- | --- | --- |
+| Entrainement + scoring | `--model-out` | Entraine Isolation Forest et sauvegarde le modele |
+| Inference seule | `--model-in` | Recharge un modele joblib et score un nouveau CSV |
+
+Exemple d'entrainement sur le cloud:
+
+```powershell
+python src\logminer\agents\detector.py `
+  -i data\processed\cloud_training_dataset.csv `
+  -o data\processed\cloud_training_anomalies.csv `
+  --contamination 0.02 `
+  --model-out models\isolation_forest_hdfs_bgl.joblib
+```
+
+Exemple d'inference locale avec le modele recupere:
+
+```powershell
+python src\logminer\agents\detector.py `
+  -i data\processed\windows_copies_pipeline.csv `
+  -o data\processed\anomalies_from_cloud_model.csv `
+  --model-in models\isolation_forest_hdfs_bgl.joblib
+```
+
+L'artefact sauvegarde:
+
+- le modele `IsolationForest`;
+- l'ordre exact des colonnes de features;
+- les parametres d'entrainement;
+- la date d'entrainement;
+- le nombre de lignes utilisees.
+
+Cette structure evite un probleme classique: les colonnes one-hot peuvent
+changer entre entrainement et inference. Au chargement, le detecteur realigne
+automatiquement les features sur le schema appris.
+
 La phase 2 est implementee avec `src/logminer/agents/bus.py`. Chaque agent publie des messages dans `data/processed/agent_messages.jsonl`.
 
 Exemple de sequence de messages:
@@ -194,6 +242,7 @@ Ce qui existe deja:
 - normalisation semantique des severites et categories;
 - conversion des evenements normalises en features ML;
 - premier agent detecteur Isolation Forest.
+- sauvegarde et chargement de modeles `joblib` pour entrainement cloud;
 - communication locale entre agents avec bus JSONL;
 - orchestrateur local parseur -> detecteur.
 - agent correlateur produisant `incidents.csv`;
@@ -205,6 +254,7 @@ Ce qui reste a construire:
 
 - enrichissement des regles de correlation;
 - stockage persistant des alertes/incidents;
+- strategie de versionnement des modeles entraines sur le cloud;
 - endpoints FastAPI pour agents separes.
 
 ## Roadmap Technique
