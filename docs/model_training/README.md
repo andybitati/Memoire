@@ -23,6 +23,19 @@ python src\logminer\agents\detector.py `
   --model-out models\isolation_forest_cloud.joblib
 ```
 
+Si plusieurs CSV traites doivent etre utilises ensemble, construire d'abord un
+fichier d'entrainement fusionne:
+
+```powershell
+python scripts\build_cloud_training_dataset.py `
+  --input-dir data\processed\cloud_train_sources `
+  --output data\processed\cloud_training_dataset.csv `
+  --max-rows-per-file 50000
+```
+
+`--max-rows-per-file` permet d'eviter qu'un seul dataset tres volumineux domine
+tout l'entrainement. Pour utiliser toutes les lignes, mettre `0`.
+
 L'artefact contient:
 
 - le modele `IsolationForest`;
@@ -63,4 +76,3 @@ il suffit de conserver:
 - les metadonnees du modele;
 - les resultats de validation;
 - le chemin ou l'identifiant de stockage cloud.
-

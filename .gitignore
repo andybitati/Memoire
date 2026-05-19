@@ -63,6 +63,9 @@ models/*.joblib
 models/*.pkl
 !models/.gitkeep
 
+# Dossiers prepares pour upload cloud/Drive
+cloud_upload/
+
 # Outils et artefacts de décompilation/récupération
 tools/
 recovered_disasm/
