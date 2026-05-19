@@ -12,6 +12,7 @@ import argparse
 import os
 import sys
 import time
+import tracemalloc
 import warnings
 from pathlib import Path
 from typing import Dict, Optional
@@ -64,6 +65,24 @@ AUTO_LABEL_COLUMNS = [
     "Target",
 ]
 
+ADAPTABILITY_SCORE = {
+    "rule_baseline": 0.55,
+    "static_thresholds": 0.35,
+    "z_score": 0.45,
+    "iqr": 0.45,
+    "histogram": 0.55,
+    "entropy": 0.60,
+    "isolation_forest": 0.85,
+    "kmeans": 0.70,
+    "one_class_svm": 0.65,
+    "local_outlier_factor": 0.65,
+    "autoencoder_mlp": 0.80,
+    "lstm_tensorflow": 0.85,
+    "lstm_pytorch": 0.85,
+    "ensemble_global": 0.75,
+    "ensemble_selected": 0.80,
+}
+
 
 def _clip_contamination(value: float) -> float:
     return min(max(float(value), 0.001), 0.5)
@@ -92,6 +111,55 @@ def _standardize(features: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(scaled, index=features.index, columns=features.columns)
 
 
+def _run_with_resource_tracking(runner, *args) -> ModelResult:
+    """Execute un detecteur et mesure le pic memoire Python.
+
+    La duree reste mesuree dans chaque detecteur pour garder les notes locales.
+    `tracemalloc` donne ici une estimation utile pour comparer les methodes
+    entre elles pendant l'objectif 2. Ce n'est pas une mesure OS parfaite, mais
+    elle suffit pour une grille experimentale reproductible.
+    """
+
+    tracemalloc.start()
+    try:
+        result = runner(*args)
+        _, peak = tracemalloc.get_traced_memory()
+    finally:
+        tracemalloc.stop()
+
+    result["memory_peak_mb"] = round(peak / (1024 * 1024), 4)
+    return result
+
+
+def _score_direction(result: ModelResult) -> str:
+    """Indique si un score fort ou faible represente une anomalie."""
+
+    if result["model"] in {"isolation_forest", "one_class_svm", "local_outlier_factor"}:
+        return "lower"
+    return "higher"
+
+
+def _anomaly_strength(result: ModelResult) -> pd.Series:
+    """Transforme les scores heterogenes en force d'anomalie 0..1."""
+
+    scores = pd.Series(result["scores"]).astype(float)
+    if scores.nunique(dropna=False) <= 1:
+        return pd.Series(0.0, index=scores.index)
+    if _score_direction(result) == "lower":
+        scores = -scores
+    return scores.rank(method="average", pct=True).fillna(0.0)
+
+
+def _shannon_entropy(value: str) -> float:
+    """Entropie de Shannon d'une chaine, utile pour reperer messages atypiques."""
+
+    text = str(value or "")
+    if not text:
+        return 0.0
+    counts = pd.Series(list(text)).value_counts(normalize=True)
+    return float(-(counts * np.log2(counts)).sum())
+
+
 def run_baseline(events: pd.DataFrame, contamination: float, random_state: int) -> ModelResult:
     started = time.perf_counter()
     scored = score_events(events)
@@ -102,6 +170,39 @@ def run_baseline(events: pd.DataFrame, contamination: float, random_state: int) 
         "scores": scored["baseline_score"],
         "duration_sec": time.perf_counter() - started,
         "notes": "Regles + rarete event/source",
+    }
+
+
+def run_static_thresholds(events: pd.DataFrame, features: pd.DataFrame, contamination: float, random_state: int) -> ModelResult:
+    """Detection traditionnelle par seuils simples.
+
+    Cette methode represente les approches classiques: severite elevee, statut
+    HTTP critique, message contenant erreur/echec/refus, ou taille/message
+    anormalement long. Elle est moins flexible qu'un modele IA, mais tres
+    explicable dans le memoire.
+    """
+
+    started = time.perf_counter()
+    severity_score = features.get("severity_score", pd.Series(0, index=events.index)).astype(float)
+    http_status = pd.to_numeric(events.get("http_status", pd.Series("", index=events.index)), errors="coerce").fillna(0)
+    message = events.get("message", pd.Series("", index=events.index)).astype(str)
+    message_len = features.get("message_len", pd.Series(0, index=events.index)).astype(float)
+    length_threshold = float(message_len.quantile(0.95)) if len(message_len) else 0.0
+
+    scores = pd.Series(0.0, index=events.index)
+    scores += (severity_score >= 4).astype(float) * 1.0
+    scores += (http_status >= 500).astype(float) * 0.8
+    scores += (http_status.isin([401, 403])).astype(float) * 0.6
+    scores += message.str.contains("error|failed|failure|denied|attack|malware|exception", case=False, regex=True).astype(float) * 0.8
+    scores += (message_len >= length_threshold).astype(float) * 0.3
+
+    labels = _top_by_score(scores, contamination, lower_is_more_anomalous=False)
+    return {
+        "model": "static_thresholds",
+        "labels": labels,
+        "scores": scores,
+        "duration_sec": time.perf_counter() - started,
+        "notes": "Traditionnel: seuils severite/http/message",
     }
 
 
@@ -182,6 +283,39 @@ def run_histogram(events: pd.DataFrame, contamination: float, random_state: int)
         "scores": scores,
         "duration_sec": time.perf_counter() - started,
         "notes": "Statistique: rarete event/source/severite",
+    }
+
+
+def run_entropy(events: pd.DataFrame, contamination: float, random_state: int) -> ModelResult:
+    """Detection par entropie et surprise categorielle.
+
+    Les approches par entropie cherchent des distributions inhabituelles. Ici,
+    on combine l'entropie du message avec la surprise des champs categoriels
+    principaux. Un message tres aleatoire ou une combinaison rare obtient un
+    score plus eleve.
+    """
+
+    started = time.perf_counter()
+    message = events.get("message", pd.Series("", index=events.index)).astype(str)
+    entropy = message.map(_shannon_entropy)
+
+    surprise = pd.Series(0.0, index=events.index)
+    columns = [column for column in ("event", "source", "host", "severity", "category") if column in events]
+    for column in columns:
+        values = events[column].fillna("").astype(str)
+        frequencies = values.value_counts(dropna=False, normalize=True)
+        surprise += values.map(lambda value: -np.log2(max(float(frequencies.get(value, 0.0)), 1e-12)))
+
+    if columns:
+        surprise = surprise / len(columns)
+    scores = entropy + surprise
+    labels = _top_by_score(scores, contamination, lower_is_more_anomalous=False)
+    return {
+        "model": "entropy",
+        "labels": labels,
+        "scores": scores,
+        "duration_sec": time.perf_counter() - started,
+        "notes": "Traditionnel: entropie message + surprise categorielle",
     }
 
 
@@ -527,6 +661,46 @@ def run_lstm(events: pd.DataFrame, contamination: float, random_state: int) -> M
             }
 
 
+def run_ensemble(
+    results: list[ModelResult],
+    contamination: float,
+    model_name: str = "ensemble_global",
+    include_models: set[str] | None = None,
+) -> ModelResult:
+    """Agrege plusieurs detecteurs en score global.
+
+    Le score global moyenne les rangs d'anomalie des detecteurs individuels. Il
+    respecte l'idee de pipeline multi-modeles: chaque methode vote selon sa
+    vision de l'anomalie, puis l'ensemble retient les evenements les plus
+    consensuellement suspects.
+    """
+
+    started = time.perf_counter()
+    usable = [
+        result
+        for result in results
+        if result["model"] not in {"ensemble_global", "ensemble_selected"}
+        and (include_models is None or str(result["model"]) in include_models)
+        and not str(result.get("notes", "")).lower().startswith("ignore:")
+    ]
+    if not usable:
+        index = pd.Series(results[0]["scores"]).index if results else pd.RangeIndex(0)
+        scores = pd.Series(0.0, index=index)
+    else:
+        strengths = [_anomaly_strength(result) for result in usable]
+        scores = pd.concat(strengths, axis=1).mean(axis=1)
+
+    labels = _top_by_score(scores, contamination, lower_is_more_anomalous=False)
+    return {
+        "model": model_name,
+        "labels": labels,
+        "scores": scores,
+        "duration_sec": time.perf_counter() - started,
+        "memory_peak_mb": round(scores.memory_usage(deep=True) / (1024 * 1024), 4),
+        "notes": f"Pipeline ensemble: moyenne de {len(usable)} detecteurs",
+    }
+
+
 def _detect_label_column(events: pd.DataFrame, label_column: str = "") -> str:
     """Retourne la colonne de verite terrain a utiliser pour la validation.
 
@@ -599,6 +773,8 @@ def _summarize(
         "overlap_with_baseline": overlap,
         "overlap_rate": round(overlap / max(anomaly_count, 1), 6),
         "duration_sec": round(float(result["duration_sec"]), 4),
+        "memory_peak_mb": round(float(result.get("memory_peak_mb", 0.0)), 4),
+        "adaptability_score": ADAPTABILITY_SCORE.get(str(result["model"]), 0.5),
         "notes": result["notes"],
     }
 
@@ -620,6 +796,44 @@ def _summarize(
         row["tn"] = true_negative
 
     return row
+
+
+def _add_selection_scores(summary: list[dict[str, object]], has_truth: bool) -> pd.DataFrame:
+    """Ajoute un score multicritere pour choisir le modele final.
+
+    Le score respecte les criteres de l'objectif 2:
+    precision/F1 si labels disponibles, temps de traitement, consommation
+    memoire et capacite d'adaptation. Les poids restent volontairement simples
+    et explicites pour le memoire.
+    """
+
+    frame = pd.DataFrame(summary)
+    if frame.empty:
+        return frame
+
+    duration = pd.to_numeric(frame["duration_sec"], errors="coerce").fillna(0)
+    memory = pd.to_numeric(frame["memory_peak_mb"], errors="coerce").fillna(0)
+    adaptability = pd.to_numeric(frame["adaptability_score"], errors="coerce").fillna(0.5)
+
+    duration_score = 1 - (duration / max(float(duration.max()), 1e-9))
+    memory_score = 1 - (memory / max(float(memory.max()), 1e-9))
+
+    if has_truth and "f1" in frame.columns:
+        quality = pd.to_numeric(frame["f1"], errors="coerce").fillna(0)
+    else:
+        # Sans labels, on utilise un proxy prudent: proximite avec la baseline
+        # explicable et taux d'anomalies non nul.
+        quality = pd.to_numeric(frame["overlap_rate"], errors="coerce").fillna(0)
+
+    frame["time_score"] = duration_score.round(6)
+    frame["memory_score"] = memory_score.round(6)
+    frame["selection_score"] = (
+        quality * 0.45
+        + duration_score * 0.20
+        + memory_score * 0.15
+        + adaptability * 0.20
+    ).round(6)
+    return frame
 
 
 def compare_models(
@@ -650,32 +864,50 @@ def compare_models(
         raise ValueError("Impossible de construire des features ML depuis le CSV fourni")
 
     results: list[ModelResult] = []
-    baseline_result = run_baseline(events, effective_contamination, random_state)
+    baseline_result = _run_with_resource_tracking(run_baseline, events, effective_contamination, random_state)
     results.append(baseline_result)
 
-    # Methodes statistiques simples. Elles servent de repere explicable avant
-    # les modeles IA: un developpeur peut facilement relier le score a une
-    # rarete, une distance a la moyenne ou une sortie des quartiles.
-    results.append(run_z_score(features, effective_contamination, random_state))
-    results.append(run_iqr(features, effective_contamination, random_state))
-    results.append(run_histogram(events, effective_contamination, random_state))
+    # Methodes traditionnelles et statistiques. Elles servent de repere
+    # explicable avant les modeles IA: seuils, entropie, rarete, distance a la
+    # moyenne ou sortie des quartiles.
+    results.append(_run_with_resource_tracking(run_static_thresholds, events, features, effective_contamination, random_state))
+    results.append(_run_with_resource_tracking(run_z_score, features, effective_contamination, random_state))
+    results.append(_run_with_resource_tracking(run_iqr, features, effective_contamination, random_state))
+    results.append(_run_with_resource_tracking(run_histogram, events, effective_contamination, random_state))
+    results.append(_run_with_resource_tracking(run_entropy, events, effective_contamination, random_state))
 
     # Modeles IA non supervises. Ils exploitent la meme matrice numerique pour
     # rendre la comparaison reproductible entre approches.
-    results.append(run_isolation_forest(features, effective_contamination, random_state))
-    results.append(run_kmeans(features, effective_contamination, random_state))
-    results.append(run_one_class_svm(features, effective_contamination, random_state))
-    results.append(run_lof(features, effective_contamination, random_state))
-    results.append(run_autoencoder(features, effective_contamination, random_state))
-    results.append(run_lstm(events, effective_contamination, random_state))
+    results.append(_run_with_resource_tracking(run_isolation_forest, features, effective_contamination, random_state))
+    results.append(_run_with_resource_tracking(run_kmeans, features, effective_contamination, random_state))
+    results.append(_run_with_resource_tracking(run_one_class_svm, features, effective_contamination, random_state))
+    results.append(_run_with_resource_tracking(run_lof, features, effective_contamination, random_state))
+    results.append(_run_with_resource_tracking(run_autoencoder, features, effective_contamination, random_state))
+    results.append(_run_with_resource_tracking(run_lstm, events, effective_contamination, random_state))
+
+    # Pipeline global: agrege les signaux des detecteurs precedents pour tester
+    # si la combinaison ameliore la precision globale.
+    selected_models = {
+        "rule_baseline",
+        "static_thresholds",
+        "histogram",
+        "entropy",
+        "isolation_forest",
+        "autoencoder_mlp",
+        "lstm_tensorflow",
+        "lstm_pytorch",
+    }
+    results.append(run_ensemble(results, effective_contamination, "ensemble_global"))
+    results.append(run_ensemble(results, effective_contamination, "ensemble_selected", selected_models))
 
     baseline_labels = pd.Series(baseline_result["labels"]).astype(int)
     summary = [_summarize(result, len(events), baseline_labels, truth) for result in results]
+    output_frame = _add_selection_scores(summary, has_truth=truth is not None)
 
     output_path = Path(output_csv)
     if output_path.parent:
         output_path.parent.mkdir(parents=True, exist_ok=True)
-    pd.DataFrame(summary).to_csv(output_path, sep=sep, index=False, encoding="utf-8-sig")
+    output_frame.to_csv(output_path, sep=sep, index=False, encoding="utf-8-sig")
     return str(output_path)
 
 

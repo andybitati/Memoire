@@ -11,20 +11,23 @@ L'objectif n'est pas seulement de lancer un modele IA. Il faut montrer une demar
 | Approche | Type | Role dans le projet | Fichier |
 | --- | --- | --- | --- |
 | Baseline par regles | Heuristique explicable | Point de comparaison simple | `src/logminer/agents/baseline_detector.py` |
+| Seuils simples | Traditionnelle | Regles fixes sur severite, HTTP et message | `src/logminer/agents/model_compare.py` |
 | z-score | Statistique | Ecart maximal a la moyenne | `src/logminer/agents/model_compare.py` |
 | IQR | Statistique robuste | Sortie des bornes interquartiles | `src/logminer/agents/model_compare.py` |
 | Histogramme | Statistique explicable | Rarete des valeurs event/source/severite | `src/logminer/agents/model_compare.py` |
+| Entropie | Traditionnelle/statistique | Entropie du message et surprise categorielle | `src/logminer/agents/model_compare.py` |
 | Isolation Forest | IA non supervisee | Modele principal initial | `src/logminer/agents/detector.py` |
 | k-Means | IA non supervisee | Distance au groupe le plus proche | `src/logminer/agents/model_compare.py` |
 | One-Class SVM | IA non supervisee | Comparaison ML classique | `src/logminer/agents/model_compare.py` |
 | Local Outlier Factor | IA non supervisee | Comparaison par densite locale | `src/logminer/agents/model_compare.py` |
 | Autoencoder MLP | IA / deep learning leger | Erreur de reconstruction | `src/logminer/agents/model_compare.py` |
 | LSTM TensorFlow/PyTorch | IA sequence optionnelle | Prediction de sequence d'evenements | `src/logminer/agents/model_compare.py` |
+| Ensemble global | Pipeline multi-modeles | Agregation des scores de plusieurs detecteurs | `src/logminer/agents/model_compare.py` |
 
 ## Pourquoi Ces Methodes
 
 - La baseline par regles donne un resultat interpretable: severite, categorie securite, mots suspects et rarete.
-- z-score, IQR et histogramme donnent des references statistiques simples, utiles pour expliquer les anomalies sans modele opaque.
+- seuils, z-score, IQR, histogramme et entropie donnent des references traditionnelles/statistiques simples, utiles pour expliquer les anomalies sans modele opaque.
 - Isolation Forest est robuste sur donnees tabulaires et fonctionne sans labels.
 - k-Means detecte les evenements eloignes de leur groupe le plus proche.
 - One-Class SVM est une reference classique pour apprendre une frontiere du comportement normal.
@@ -79,9 +82,33 @@ TensorFlow est teste en premier. Si TensorFlow n'est pas disponible mais que PyT
 
 Cette commande execute la grille experimentale complete:
 
-- statistiques: `rule_baseline`, `z_score`, `iqr`, `histogram`;
+- traditionnelles/statistiques: `rule_baseline`, `static_thresholds`, `z_score`, `iqr`, `histogram`, `entropy`;
 - IA tabulaire: `isolation_forest`, `kmeans`, `one_class_svm`, `local_outlier_factor`, `autoencoder_mlp`;
 - IA sequence: `lstm_tensorflow` ou `lstm_pytorch`, marque comme ignore si aucun backend deep learning n'est installe.
+- pipeline global: `ensemble_global`, `ensemble_selected`.
+
+## Logs Simules Avec Anomalies Injectees
+
+Pour respecter l'objectif d'evaluation sur logs simules, un dataset Windows peut
+etre genere en injectant des anomalies controlees:
+
+```powershell
+python scripts\inject_simulated_anomalies.py `
+  -i data\processed\windows_copies_pipeline.csv `
+  -o data\processed\validation_simulated_windows.csv `
+  --anomaly-fraction 0.05 `
+  --max-rows 6000
+```
+
+Evaluation:
+
+```powershell
+python src\logminer\agents\model_compare.py `
+  -i data\processed\validation_simulated_windows.csv `
+  -o data\processed\validation_simulated_windows_metrics.csv `
+  --contamination auto `
+  --label-column label
+```
 
 ## Validation Avec Datasets Labellises
 
@@ -160,6 +187,9 @@ Le fichier `data/processed/model_comparison.csv` contient:
 | `overlap_with_baseline` | Nombre d'anomalies communes avec la baseline |
 | `overlap_rate` | Part du modele recouverte par la baseline |
 | `duration_sec` | Temps d'execution |
+| `memory_peak_mb` | Pic memoire Python estime par `tracemalloc` |
+| `adaptability_score` | Score qualitatif d'adaptation du modele |
+| `selection_score` | Score multicritere: F1/precision, temps, memoire, adaptabilite |
 | `precision`, `recall`, `f1` | Ajoutes seulement si une colonne de labels est fournie |
 | `accuracy`, `specificity` | Exactitude globale et rappel de la classe normale |
 | `tp`, `fp`, `fn`, `tn` | Matrice de confusion |
@@ -190,8 +220,18 @@ Resultats de validation actuels sur echantillons equilibres de 6000 lignes:
 
 | Dataset | Meilleur modele observe | Precision | Recall | F1 |
 | --- | --- | ---: | ---: | ---: |
-| BGL | z-score / histogramme / k-Means | 0.994333 | 0.994333 | 0.994333 |
-| HDFS | LSTM TensorFlow | 0.632667 | 0.632667 | 0.632667 |
+| BGL | z-score / histogramme / entropie / k-Means | 0.994333 | 0.994333 | 0.994333 |
+| HDFS | LSTM TensorFlow | 0.614000 | 0.614000 | 0.614000 |
+| Windows simule | baseline / IQR / Isolation Forest | 1.000000 | 1.000000 | 1.000000 |
+
+Selon le score multicritere `selection_score`, qui combine qualite, temps,
+memoire et adaptabilite:
+
+| Dataset | Meilleur modele multicritere | Selection score |
+| --- | --- | ---: |
+| BGL | ensemble_selected | 0.957328 |
+| HDFS | ensemble_selected | 0.779572 |
+| Windows simule | Isolation Forest | 0.908556 |
 
 Ces valeurs sont des resultats experimentaux sur echantillons prepares. Elles
 doivent etre presentees comme validation initiale, pas comme performance finale
@@ -202,14 +242,16 @@ generalisee a tout le dataset.
 Fait:
 
 - baseline explicable;
-- z-score, IQR et histogramme;
+- seuils simples, z-score, IQR, histogramme et entropie;
 - Isolation Forest operationnel;
 - comparaison avec k-Means, One-Class SVM, LOF et Autoencoder MLP;
 - prototype LSTM TensorFlow prioritaire avec secours PyTorch;
+- pipeline ensemble global et ensemble selectionne;
 - export CSV comparatif;
 - compatibilite future avec labels.
 - preparation HDFS/BGL labellisee;
-- metriques precision, recall, F1, accuracy, specificity et matrice de confusion;
+- generation de logs simules avec anomalies injectees;
+- metriques precision, recall, F1, accuracy, specificity, memoire, temps et matrice de confusion;
 - synthese `data/processed/validation_summary.csv`.
 
 Reste a faire:
