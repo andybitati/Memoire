@@ -249,6 +249,8 @@ Ce qui existe deja:
 - dashboard Streamlit pour prototype rapide;
 - dashboard React responsive pour une interface plus soignee;
 - affichage humain du flux agents, des incidents et des resultats de validation.
+- explication LLM optionnelle dans le dashboard React, avec repli local si aucune
+  cle API n'est configuree.
 
 Ce qui reste a construire:
 
@@ -269,7 +271,9 @@ Ce qui reste a construire:
 8. Fait: construire un dashboard Streamlit lisant les CSV produits.
 9. Fait: ajouter un dashboard React responsive avec API locale Node.
 10. Fait: rendre lisibles les communications agents et les incidents dans le dashboard.
-11. Ajouter ensuite FastAPI si les agents doivent tourner comme services separes.
+11. Fait: ajouter une explication analyste avec LLM optionnel pour rendre les
+    resultats exploitables par un humain.
+12. Ajouter ensuite FastAPI si les agents doivent tourner comme services separes.
 
 Commande de detection:
 
@@ -301,6 +305,20 @@ URL:
 ```text
 http://127.0.0.1:5173
 ```
+
+Explication LLM optionnelle:
+
+```powershell
+$env:OPENAI_API_KEY="votre-cle-api"
+$env:OPENAI_MODEL="gpt-5.2"
+cd web\dashboard
+npm run dev
+```
+
+Le serveur expose `/api/explain`. Le navigateur envoie seulement un instantane
+compact du dashboard; la cle API reste dans l'environnement du processus Node.
+Sans `OPENAI_API_KEY`, le serveur retourne une synthese locale deterministe pour
+conserver une demonstration utilisable hors ligne.
 
 ## Position Dans Le Memoire
 

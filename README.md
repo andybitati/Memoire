@@ -326,6 +326,17 @@ URL locale:
 http://127.0.0.1:5173
 ```
 
+Le dashboard peut aussi produire une explication lisible des incidents, scores et messages agents. Sans configuration, il utilise une explication locale deterministe. Pour brancher un LLM serveur, configurez la cle avant de lancer Node:
+
+```powershell
+$env:OPENAI_API_KEY="votre-cle-api"
+$env:OPENAI_MODEL="gpt-5.2"
+cd web\dashboard
+npm run dev
+```
+
+La cle reste cote serveur dans `web/dashboard/server.mjs`; elle n'est jamais envoyee au navigateur.
+
 ## État Actuel
 
 Le code a été récupéré depuis des fichiers `.pyc`, puis réorganisé.

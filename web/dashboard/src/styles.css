@@ -93,6 +93,25 @@ select {
   cursor: default;
 }
 
+.secondaryAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  border: 1px solid #36506e;
+  border-radius: 8px;
+  background: #132234;
+  color: #e8f2ff;
+  cursor: pointer;
+  padding: 0 13px;
+}
+
+.secondaryAction:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
 .search {
   display: flex;
   align-items: center;
@@ -250,6 +269,26 @@ select {
 .panelHeader p {
   margin: 4px 0 0;
   color: #9ea8b6;
+  font-size: 12px;
+}
+
+.explanationPanel {
+  margin-bottom: 14px;
+  background: #161d27;
+}
+
+.explanationText {
+  white-space: pre-wrap;
+  color: #dbe4ef;
+  line-height: 1.55;
+  font-size: 14px;
+}
+
+.explanationWarning {
+  margin-top: 12px;
+  border-left: 3px solid #f1bd5b;
+  padding-left: 10px;
+  color: #ffd48a;
   font-size: 12px;
 }
 
@@ -567,6 +606,15 @@ td:last-child {
   .topbar {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .panelHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .secondaryAction {
+    width: 100%;
   }
 
   .topbar h1 {

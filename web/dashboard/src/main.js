@@ -7,6 +7,7 @@ let state = {
   incidents: [],
   messages: [],
   validation: [],
+  explanation: { loading: false, provider: "", text: "", error: "" },
   meta: {},
   filters: { query: "", host: "", severity: "", category: "", source: "" },
 };
@@ -69,7 +70,7 @@ function setFilter(key, value) {
 }
 
 async function loadData() {
-  state = { ...state, loading: true, error: "" };
+  state = { ...state, loading: true, error: "", explanation: { loading: false, provider: "", text: "", error: "" } };
   render();
   try {
     const [events, anomalies, incidents, messages] = await Promise.all([
@@ -99,6 +100,56 @@ async function loadData() {
   } catch (error) {
     state = { ...state, loading: false, error: error.message };
   }
+  render();
+}
+
+function dashboardSnapshot() {
+  const anomalyCount = state.anomalies.filter((row) => row.is_anomaly === "1").length;
+  const criticalIncidents = state.incidents.filter((row) => ["CRITICAL", "ERROR"].includes(row.severity)).length;
+  const incidents = [...state.incidents].sort((a, b) => Number(b.event_count || 0) - Number(a.event_count || 0));
+
+  // On envoie un resume compact au serveur pour limiter le cout LLM et eviter
+  // d'exposer inutilement des logs bruts tres volumineux dans la requete.
+  return {
+    stats: {
+      events: state.meta.events || state.events.length,
+      anomalies: anomalyCount,
+      incidents: state.incidents.length,
+      criticalIncidents,
+      validationRows: state.meta.validation || state.validation.length,
+    },
+    incidents: incidents.slice(0, 8),
+    validation: state.validation.slice(0, 8),
+    recentMessages: state.messages.slice(-10),
+    topAnomalies: state.anomalies.slice(0, 8),
+  };
+}
+
+async function explainDashboard() {
+  state = { ...state, explanation: { loading: true, provider: "", text: "", error: "" } };
+  render();
+
+  try {
+    const response = await fetch("/api/explain", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dashboardSnapshot()),
+    });
+    if (!response.ok) throw new Error("Impossible de produire l'explication");
+    const payload = await response.json();
+    state = {
+      ...state,
+      explanation: {
+        loading: false,
+        provider: payload.provider || "local",
+        text: payload.explanation || "",
+        error: payload.warning || "",
+      },
+    };
+  } catch (error) {
+    state = { ...state, explanation: { loading: false, provider: "", text: "", error: error.message } };
+  }
+
   render();
 }
 
@@ -270,6 +321,28 @@ function validationPanel(rows) {
   `;
 }
 
+function explanationPanel() {
+  const { loading, provider, text, error } = state.explanation;
+  const providerLabel = provider === "openai" ? "LLM OpenAI" : provider === "local" ? "Explication locale" : "Pret";
+
+  return `
+    <section class="panel explanationPanel">
+      <div class="panelHeader">
+        <div><h2>Explication analyste</h2><p>${escapeHtml(providerLabel)}</p></div>
+        <button class="secondaryAction" id="explainBtn" ${loading || state.loading ? "disabled" : ""}>
+          <span class="icon">${loading ? "…" : "✦"}</span>${loading ? "Analyse en cours" : "Expliquer les resultats"}
+        </button>
+      </div>
+      ${
+        text
+          ? `<div class="explanationText">${escapeHtml(text)}</div>`
+          : `<div class="emptyState">Cliquez pour transformer les scores, incidents et messages agents en synthese lisible.</div>`
+      }
+      ${error ? `<div class="explanationWarning">${escapeHtml(error)}</div>` : ""}
+    </section>
+  `;
+}
+
 function timeline(rows) {
   const map = new Map();
   rows.forEach((row) => {
@@ -403,6 +476,7 @@ function render() {
           ${stat("⇄", "Incidents", state.incidents.length, "green")}
           ${stat("!", "Incidents critiques", criticalIncidents, "rose")}
         </div>
+        ${explanationPanel()}
         <div class="mainGrid">
           ${timeline(filteredEvents)}
           <div class="sideStack">
@@ -419,6 +493,7 @@ function render() {
   `;
 
   document.getElementById("reloadBtn")?.addEventListener("click", loadData);
+  document.getElementById("explainBtn")?.addEventListener("click", explainDashboard);
   document.getElementById("queryFilter")?.addEventListener("input", (event) => setFilter("query", event.target.value));
   document.querySelectorAll("[data-filter]").forEach((select) => {
     select.addEventListener("change", (event) => setFilter(event.target.dataset.filter, event.target.value));

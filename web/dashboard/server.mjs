@@ -86,6 +86,129 @@ function sendJson(res, status, body) {
   res.end(JSON.stringify(body));
 }
 
+async function readJsonBody(req) {
+  let body = "";
+  for await (const chunk of req) body += chunk;
+  if (!body.trim()) return {};
+  return JSON.parse(body);
+}
+
+function formatMetric(value) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed.toFixed(3) : "n/a";
+}
+
+function localExplanation(context) {
+  const stats = context.stats || {};
+  const incidents = context.incidents || [];
+  const validation = context.validation || [];
+  const messages = context.recentMessages || [];
+  const bestModel = validation[0] || {};
+  const topIncident = incidents[0] || {};
+
+  const risk =
+    Number(stats.criticalIncidents || 0) > 0
+      ? "priorite elevee"
+      : Number(stats.anomalies || 0) > 0
+        ? "surveillance renforcee"
+        : "situation stable";
+
+  const lines = [
+    `Synthese: le dashboard indique ${stats.events || 0} evenements, ${stats.anomalies || 0} anomalies candidates et ${stats.incidents || 0} incidents correles. Le niveau de lecture global est: ${risk}.`,
+  ];
+
+  if (topIncident.incident_id) {
+    lines.push(
+      `Incident principal: ${topIncident.incident_id} regroupe ${topIncident.event_count || "plusieurs"} evenements avec une severite ${topIncident.severity || "non renseignee"}. ${topIncident.summary || "Il faut ouvrir le detail des evenements lies pour confirmer la cause."}`,
+    );
+  }
+
+  if (bestModel.model) {
+    lines.push(
+      `Validation modele: le meilleur resultat affiche concerne ${bestModel.dataset || "un dataset"} avec ${bestModel.model}. Les scores sont precision ${formatMetric(bestModel.precision)}, recall ${formatMetric(bestModel.recall)} et F1 ${formatMetric(bestModel.f1)}.`,
+    );
+  }
+
+  if (messages.length) {
+    const last = messages[messages.length - 1];
+    lines.push(
+      `Flux agents: le dernier message connu est ${last.message_type || "un message agent"} emis par ${last.source || "un agent"} vers ${last.target || "un autre agent"} avec le statut ${last.status || "inconnu"}.`,
+    );
+  }
+
+  lines.push(
+    "Lecture recommandee: verifier d'abord les incidents critiques, puis comparer les anomalies candidates avec les evenements normalises. Une anomalie isolee n'est pas forcement une attaque; la correlation et la repetition temporelle renforcent le signal.",
+  );
+
+  return lines.join("\n\n");
+}
+
+function extractOpenAiText(payload) {
+  if (typeof payload.output_text === "string" && payload.output_text.trim()) return payload.output_text.trim();
+  const parts = [];
+  for (const item of payload.output || []) {
+    for (const content of item.content || []) {
+      if (typeof content.text === "string") parts.push(content.text);
+    }
+  }
+  return parts.join("\n").trim();
+}
+
+async function callOpenAiExplanation(context) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return null;
+
+  // Le LLM reste cote serveur: aucune cle API n'est exposee dans le navigateur.
+  const response = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: process.env.OPENAI_MODEL || "gpt-5.2",
+      input: [
+        {
+          role: "system",
+          content:
+            "Tu es un analyste SOC francophone. Explique les resultats Logminer en langage clair, sans inventer de donnees. Donne une synthese, les risques, les points a verifier et une action prioritaire.",
+        },
+        {
+          role: "user",
+          content: `Voici un instantane JSON du dashboard Logminer. Explique-le pour un humain:\n${JSON.stringify(context).slice(0, 14000)}`,
+        },
+      ],
+    }),
+  });
+
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(`OpenAI ${response.status}: ${detail.slice(0, 240)}`);
+  }
+
+  return extractOpenAiText(await response.json());
+}
+
+async function handleExplain(req, res) {
+  if (req.method !== "POST") {
+    sendJson(res, 405, { error: "method not allowed" });
+    return;
+  }
+
+  try {
+    const context = await readJsonBody(req);
+    const fallback = localExplanation(context);
+    try {
+      const explanation = await callOpenAiExplanation(context);
+      sendJson(res, 200, { provider: explanation ? "openai" : "local", explanation: explanation || fallback });
+    } catch (error) {
+      sendJson(res, 200, { provider: "local", explanation: fallback, warning: error.message });
+    }
+  } catch (error) {
+    sendJson(res, 400, { error: error.message });
+  }
+}
+
 async function handleApi(req, res) {
   try {
     const url = new URL(req.url, `http://127.0.0.1:${activePort}`);
@@ -163,6 +286,8 @@ async function handleStatic(req, res) {
 const server = http.createServer((req, res) => {
   if (req.url?.startsWith("/api/data")) {
     handleApi(req, res);
+  } else if (req.url?.startsWith("/api/explain")) {
+    handleExplain(req, res);
   } else {
     handleStatic(req, res);
   }
