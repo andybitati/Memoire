@@ -40,6 +40,8 @@ Elements disponibles:
 - `docs/references/nistspecialpublication800-92.pdf`;
 - `docs/references/rfc5424.txt.pdf`;
 - `docs/references/Deep Learning for Anomaly Detection in Log Data.pdf`;
+- `docs/memoire/References_et_ressources_memoire_ANDY_BITATI.pdf`;
+- `docs/memoire/exploitation_references.md`;
 - `docs/anomaly_detection/README.md`.
 
 Reste a rediger:
@@ -61,6 +63,7 @@ Objectifs couverts:
 Elements disponibles:
 
 - `docs/architecture/README.md`;
+- `docs/memoire/exploitation_references.md`;
 - `src/logminer/pipeline.py`;
 - `src/logminer/agents/bus.py`;
 - `src/logminer/agents/orchestrator.py`.
@@ -122,6 +125,8 @@ Reste a rediger:
 - protocole d'entrainement cloud et reutilisation locale des modeles;
 - analyse comparative des modeles;
 - interpretation des performances.
+- ajout des faux positifs par periode lorsque les timestamps et labels sont
+  disponibles.
 
 ## Chapitre 6 - Discussion
 
@@ -165,6 +170,6 @@ Reste a rediger:
 | 2. Detecter et comparer les anomalies | Tres avance | `validation_summary.csv` | Elargir validation |
 | 3. Concevoir l'architecture multi-agents | Avance | `docs/architecture/README.md` | FastAPI optionnel |
 | 4. Correler les anomalies en incidents | Partiel | `incidents.csv` | Priorite et justification |
-| 5. Visualiser et superviser | Partiel avance | `web/dashboard` | Vue detail incident |
-| 6. Evaluer experimentalement | Partiel avance | HDFS/BGL metrics, joblib | Split train/test, reseau, cloud |
+| 5. Visualiser et superviser | Partiel avance | `web/dashboard`, explication LLM/local | Vue detail incident |
+| 6. Evaluer experimentalement | Partiel avance | HDFS/BGL metrics, joblib | Split train/test, reseau, faux positifs par periode |
 | 7. Rediger et discuter | Debut | docs existantes | Redaction chapitre par chapitre |

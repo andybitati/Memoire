@@ -32,7 +32,8 @@ Ce qui existe deja:
 - bus local JSONL avec `src/logminer/agents/bus.py`;
 - orchestrateur local `src/logminer/agents/orchestrator.py`;
 - agents parseur, detecteur, correlateur et visualiseur;
-- presentation humaine du flux agents dans le dashboard.
+- presentation humaine du flux agents dans le dashboard;
+- explication LLM/local des resultats dans le dashboard.
 
 Ce qui manque encore:
 
@@ -40,6 +41,8 @@ Ce qui manque encore:
 - definir une strategie de deploiement cloud/local;
 - documenter le versionnement des modeles et des donnees;
 - formaliser les messages agents comme contrat stable.
+- formaliser l'agent explicateur et l'agent superviseur comme roles
+  architecturaux inspires des architectures IDS multi-agents.
 
 Livrables attendus:
 
@@ -94,6 +97,7 @@ Ce qui existe deja:
 - incidents correles;
 - flux agents lisible;
 - synthese des validations ML.
+- panneau d'explication analyste avec LLM optionnel et repli local.
 
 Ce qui manque encore:
 
@@ -101,6 +105,7 @@ Ce qui manque encore:
 - afficher les anomalies sources d'un incident;
 - ajouter des filtres temporels;
 - exposer les performances des modeles sous forme de tableau dedie;
+- relier l'explication aux incidents, aux scores et aux agents contributeurs;
 - verifier l'ergonomie sur plusieurs tailles d'ecran.
 
 Livrables attendus:
@@ -134,6 +139,8 @@ Ce qui manque encore:
 - entrainer les modeles principaux sur le cloud avec les datasets complets;
 - versionner les artefacts `models/*.joblib`;
 - comparer les temps d'execution et la complexite;
+- ajouter une mesure operationnelle de faux positifs par periode lorsque les
+  timestamps le permettent;
 - interpreter les ecarts entre HDFS et BGL.
 
 Livrables attendus:
@@ -155,6 +162,7 @@ Ce qui existe deja:
 - documentation objectif 2;
 - documentation objectif 3;
 - references bibliographiques dans `docs/references`;
+- exploitation du document de cadrage dans `docs/memoire/exploitation_references.md`;
 - resultats experimentaux dans `data/processed`.
 
 Ce qui manque encore:
@@ -167,6 +175,8 @@ Ce qui manque encore:
 - chapitre discussion;
 - conclusion et perspectives;
 - integration propre des references.
+- discussion critique sur les limites des datasets, des LLMs et du deploiement
+  distribue.
 
 Livrables attendus:
 
@@ -176,7 +186,7 @@ Livrables attendus:
 
 ## Ordre De Travail Recommande
 
-1. Finaliser objectif 4: enrichir la correlation et la priorisation des incidents.
-2. Finaliser objectif 5: rendre le dashboard demonstrable et capturable.
+1. Finaliser objectif 4: enrichir la correlation, la priorisation et les causes probables.
+2. Finaliser objectif 5: rendre le dashboard demonstrable, explicable et capturable.
 3. Finaliser objectif 6: entrainer sur le cloud, sauvegarder les modeles joblib et stabiliser les tableaux.
-4. Finaliser objectif 7: construire le plan detaille puis rediger chapitre par chapitre.
+4. Finaliser objectif 7: rediger chapitre par chapitre en s'appuyant sur `docs/memoire/exploitation_references.md`.
