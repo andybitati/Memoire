@@ -1,0 +1,463 @@
+ETAT DE L'ART
+
+Sujet : Detection autonome et distribuee d'anomalies dans les journaux systemes
+et reseaux a l'aide d'agents intelligents multi-taches
+
+
+1. Introduction
+
+La detection d'anomalies dans les journaux systemes et reseaux occupe une place
+centrale dans la cybersecurite moderne. Les systemes d'information produisent
+en permanence des traces : connexions, erreurs, acces refuses, changements de
+configuration, requetes reseau, alertes applicatives ou evenements de securite.
+Ces journaux constituent une memoire technique de l'activite du systeme. Ils
+permettent de comprendre ce qui s'est passe, mais aussi de detecter des
+comportements suspects avant qu'ils ne deviennent des incidents majeurs.
+
+Le probleme principal vient du volume, de la diversite et du bruit presents dans
+ces donnees. Une attaque ne se manifeste pas toujours par un evenement evident.
+Elle peut apparaitre comme une succession de signaux faibles : plusieurs echecs
+d'authentification, une connexion inhabituelle, une elevation de privileges, un
+service qui redemarre, une communication reseau atypique ou une erreur repetitive.
+L'analyse manuelle devient alors difficile, surtout dans des environnements
+distribues ou plusieurs machines, services et reseaux generent simultanement des
+evenements.
+
+L'etat de l'art montre une evolution progressive des methodes : d'abord les
+modeles fondateurs de detection d'intrusion, puis les approches statistiques et
+machine learning, ensuite les methodes deep learning pour les sequences de logs,
+et enfin les architectures collaboratives basees sur des agents intelligents.
+Cette progression permet de situer le present memoire dans une approche hybride :
+collecter et structurer les journaux, apprendre le comportement normal, detecter
+les ecarts, correler plusieurs alertes, puis expliquer le resultat a un
+administrateur.
+
+
+2. Fondements des systemes de detection d'intrusion
+
+Les travaux de Denning (1987) constituent l'un des points de depart classiques
+des systemes de detection d'intrusion. L'idee principale est qu'un systeme
+informatique laisse des traces dans des journaux d'audit, et que ces traces
+peuvent etre analysees pour identifier des comportements anormaux. Denning
+propose de construire des profils d'activite normale, puis de declencher une
+alerte lorsqu'un comportement s'en eloigne significativement. Cette idee reste
+actuelle : meme avec des modeles recents, la detection d'anomalies repose
+toujours sur une comparaison entre ce qui est observe et ce qui est considere
+comme normal.
+
+Forrest, Hofmeyr, Somayaji et Longstaff (1996) approfondissent cette logique
+au niveau des processus Unix. Leur travail repose sur l'hypothese qu'un
+programme possede un comportement regulier observable a travers ses appels
+systeme. Lorsqu'une intrusion modifie l'execution normale d'un programme, les
+sequences d'appels systeme changent. Cette approche inspiree du systeme
+immunitaire introduit la notion de distinction entre le "soi" et le "non-soi".
+Dans le contexte des journaux systemes, cette idee peut etre etendue aux
+services, aux utilisateurs, aux machines et aux flux reseau : chaque entite
+possede une routine normale que l'on peut apprendre.
+
+Lee, Stolfo et Mok (1999) introduisent ensuite une approche orientee data
+mining pour la detection d'intrusion. Ils montrent qu'il ne suffit pas de
+collecter des traces : il faut les transformer en caracteristiques exploitables,
+identifier des motifs, construire des modeles et evaluer les resultats. Cette
+contribution est importante pour la methodologie du present memoire, car elle
+met en evidence une chaine complete : collecte, preparation, extraction de
+caracteristiques, apprentissage, detection et evaluation.
+
+Axelsson (2000) propose une classification des systemes de detection
+d'intrusion. Il distingue notamment les approches par signatures et les
+approches par anomalies. Les systemes par signatures comparent les evenements a
+des motifs d'attaques connues. Ils sont efficaces contre les menaces deja
+documentees, mais ils detectent difficilement les attaques nouvelles ou les
+variantes inconnues. Les systemes par anomalies, au contraire, cherchent ce qui
+s'ecarte du comportement normal. Ils sont donc plus adaptes a la detection de
+comportements nouveaux, mais ils produisent souvent davantage de faux positifs.
+
+Le present memoire s'inscrit principalement dans cette deuxieme famille. Il ne
+cherche pas seulement a reconnaitre des attaques connues, mais a identifier des
+comportements suspects dans les journaux systemes et reseaux. Cela justifie le
+recours a des methodes statistiques, machine learning, deep learning et a une
+architecture multi-agents capable de croiser plusieurs signaux.
+
+
+3. Notion d'anomalie et types d'anomalies
+
+La detection d'anomalies depasse le seul cadre de la cybersecurite. Chandola,
+Banerjee et Kumar (2009) definissent l'anomalie comme une observation qui
+s'ecarte suffisamment du comportement attendu pour susciter une suspicion. Leur
+survey distingue trois grandes categories : les anomalies ponctuelles, les
+anomalies contextuelles et les anomalies collectives.
+
+Une anomalie ponctuelle correspond a un evenement isole inhabituel. Dans un
+journal systeme, il peut s'agir d'une erreur critique rare, d'un code evenement
+exceptionnel ou d'un acces refuse provenant d'un compte sensible. Une anomalie
+contextuelle depend du moment, de la source ou de l'environnement. Par exemple,
+une connexion administrateur peut etre normale en journee mais suspecte au
+milieu de la nuit, ou normale depuis le reseau interne mais suspecte depuis une
+adresse externe inhabituelle.
+
+L'anomalie collective est particulierement importante pour la securite. Dans ce
+cas, chaque evenement pris separement peut sembler normal, mais leur combinaison
+devient suspecte. Une attaque par force brute, une reconnaissance reseau, une
+exfiltration lente ou un mouvement lateral peuvent se manifester par une
+sequence d'evenements faibles. Cette distinction justifie l'introduction d'un
+agent correlateur dans l'architecture du memoire : il ne suffit pas d'analyser
+les logs ligne par ligne, il faut aussi comprendre leur enchainement et leurs
+relations.
+
+
+4. Journaux systemes et reseaux comme source de donnees
+
+Les journaux systemes et reseaux sont des sources privilegiees pour la detection
+d'intrusion. Ils documentent les actions realisees par les utilisateurs, les
+services, les applications et les composants reseau. Les recommandations du NIST
+SP 800-92 rappellent l'importance de la gestion des logs pour la securite :
+collecte, conservation, analyse et protection des journaux. Le standard RFC 5424
+precise quant a lui le format Syslog, largement utilise pour transporter des
+messages d'evenements dans les environnements Unix, Linux et reseau.
+
+Cependant, les logs sont rarement directement exploitables par des modeles
+d'apprentissage. Ils sont heterogenes, semi-structures et souvent textuels. Une
+ligne de log peut contenir une date, un niveau de severite, un identifiant
+d'evenement, une adresse IP, un nom d'utilisateur, un message libre et des
+parametres variables. Deux messages qui expriment le meme type d'evenement
+peuvent differer par des identifiants, des chemins, des adresses ou des valeurs
+numeriques.
+
+Le pretraitement est donc une etape scientifique a part entiere. Il comprend la
+collecte, le nettoyage, la normalisation, le parsing, l'extraction de templates,
+la transformation en variables numeriques et la creation de sequences
+temporelles. Sans cette etape, les modeles risquent d'apprendre du bruit ou des
+details non generalisables.
+
+Drain, propose par He, Zhu, Zheng et Lyu (2017), repond a ce probleme par une
+approche de parsing en ligne basee sur un arbre de profondeur fixe. Le principe
+est de transformer les messages bruts en templates. Par exemple, plusieurs
+messages du type "User 123 failed login from IP 10.0.0.5" peuvent etre ramenes
+a un modele du type "User <*> failed login from IP <*>". Cette representation
+conserve l'information structurelle tout en supprimant les parametres trop
+variables. Elle facilite la construction de sequences d'evenements et rend les
+alertes plus interpretables.
+
+
+5. Methodes statistiques et machine learning classiques
+
+Avant d'utiliser des architectures profondes, la litterature recommande souvent
+de commencer par des methodes simples et interpretables. Buczak et Guven (2016)
+recensent plusieurs techniques de data mining et machine learning appliquees a
+la detection d'intrusion : arbres de decision, SVM, reseaux de neurones,
+clustering, regles d'association, methodes bayesiennes et ensembles de modeles.
+Khraisat et al. (2019) completent cette analyse en insistant sur les techniques,
+les datasets et les defis pratiques de l'IDS moderne.
+
+Les methodes statistiques, comme les seuils, les z-scores, les intervalles
+interquartiles ou les histogrammes, permettent de detecter rapidement des
+valeurs inhabituelles. Elles sont simples, rapides et peu couteuses, mais elles
+peuvent manquer de finesse lorsque les donnees sont complexes ou fortement
+contextuelles.
+
+Les methodes non supervisees, comme Isolation Forest, LOF, k-Means ou One-Class
+SVM, sont utiles lorsque les labels d'attaque sont absents ou rares. C'est un
+cas frequent en securite, car les journaux reels sont rarement entierement
+annotes. Isolation Forest isole les points atypiques, LOF compare la densite
+locale d'une observation a celle de ses voisins, k-Means detecte les points
+eloignes des centres de clusters, et One-Class SVM cherche une frontiere autour
+du comportement normal.
+
+Ces methodes constituent de bonnes baselines pour le memoire. Elles permettent
+de mesurer si des approches plus avancees apportent un gain reel. Elles sont
+aussi importantes dans une architecture multi-agents, car un agent local doit
+parfois fonctionner avec peu de ressources, peu de donnees et une exigence de
+temps de reponse rapide.
+
+
+6. Deep learning pour la detection d'anomalies dans les logs
+
+Le deep learning a pris une place importante dans la detection d'anomalies
+appliquee aux journaux. Landauer, Onder, Skopik et Wurzenberger (2023)
+proposent une revue des methodes de deep learning pour les logs. Ils montrent
+que les approches modernes suivent souvent une chaine similaire : parsing des
+logs, encodage des evenements, construction de sequences, apprentissage du
+comportement normal, calcul d'un score d'anomalie et declenchement d'une
+alerte.
+
+DeepLog, propose par Du, Li, Zheng et Srikumar (2017), est une reference
+majeure. Il traite les logs comme une sequence comparable a une phrase. Le
+modele LSTM apprend a predire le prochain evenement de log a partir des
+evenements precedents. Si l'evenement observe n'appartient pas aux evenements
+les plus probables, la sequence est consideree comme anormale. Cette methode
+est pertinente pour les journaux systemes, car beaucoup d'activites normales
+suivent des enchainements reguliers.
+
+LogAnomaly, propose par Meng et al. (2019), enrichit cette approche en prenant
+en compte deux dimensions : l'ordre des evenements et leur quantite. Une
+anomalie peut en effet venir d'une sequence inhabituelle, mais aussi d'une
+frequence anormale. Par exemple, un nombre excessif d'echecs de connexion, de
+requetes reseau ou d'erreurs applicatives peut signaler une attaque, meme si
+chaque ligne de log semble normale individuellement.
+
+LogRobust, propose par Zhang et al. (2019), aborde une limite importante des
+systemes bases sur les logs : l'instabilite des messages. Dans un environnement
+reel, les logiciels evoluent, les formats changent et de nouveaux messages
+apparaissent. Un modele trop rigide peut alors confondre evolution normale et
+attaque. Cette reference est importante pour la discussion du memoire, car elle
+montre que la robustesse et l'adaptation sont aussi importantes que la
+performance brute.
+
+Les autoencodeurs constituent une autre famille interessante. Un autoencodeur
+apprend a reconstruire les donnees normales. Lorsqu'une observation est mal
+reconstruite, elle peut etre consideree comme anormale. Cette logique est utile
+pour les logs et les donnees reseau, notamment lorsque l'on dispose surtout de
+donnees normales. Kitsune, propose par Mirsky et al. (2018), applique cette idee
+a la detection d'intrusion reseau en ligne a l'aide d'un ensemble
+d'autoencodeurs legers.
+
+
+7. Transformers, LLM et comprehension semantique des journaux
+
+Les architectures recentes cherchent a mieux capturer le contexte et le sens des
+messages. LogBERT, propose par Guo, Yuan et Wu (2021), applique les principes de
+BERT aux sequences de logs. Le modele apprend le contexte en masquant certains
+evenements et en essayant de les reconstruire. Cette approche permet de detecter
+des sequences improbables sans se limiter a une prediction lineaire du prochain
+evenement.
+
+Les grands modeles de langage ouvrent une autre perspective. LogGPT, propose
+par Han, Yuan et Trabelsi (2023), applique une logique de prediction inspiree
+des modeles GPT aux journaux. LogLLM, propose par Guan et al. (2024), explore
+l'utilisation de grands modeles de langage pour comprendre directement les logs
+textuels et reduire la dependance aux parsers classiques.
+
+Ces approches sont prometteuses pour les agents intelligents multi-taches. Un
+agent explicateur pourrait utiliser un modele de langage pour resumer une
+sequence d'evenements, proposer une cause probable, relier une alerte a une
+tactique MITRE ATT&CK ou produire une recommandation. Toutefois, ces modeles
+doivent etre utilises avec prudence. Ils peuvent etre couteux, difficiles a
+evaluer, sensibles aux donnees d'entree et capables de produire des explications
+plausibles mais incorrectes. Dans ce memoire, les LLM doivent donc etre
+positionnes comme une aide a l'interpretation, et non comme une preuve unique de
+l'intrusion.
+
+
+8. Series temporelles et signaux multivaries
+
+Les logs peuvent aussi etre transformes en series temporelles. Au lieu
+d'analyser chaque ligne individuellement, on peut agreger les evenements par
+fenetre de temps : nombre d'erreurs par minute, nombre d'echecs
+d'authentification, volume de connexions, nombre d'adresses IP distinctes,
+nombre de ports contactes ou frequence d'un template.
+
+MTAD-GAT, propose par Zhao et al. (2020), utilise des graphes d'attention pour
+detecter des anomalies dans des series temporelles multivariees. OmniAnomaly,
+propose par Su et al. (2019), modelise les series temporelles complexes avec un
+reseau recurrent probabiliste. TranAD, propose par Tuli, Casale et Jennings
+(2022), applique des Transformers a la detection d'anomalies multivariees.
+
+Ces travaux sont utiles pour enrichir l'approche du memoire. Les agents peuvent
+surveiller non seulement des messages de logs, mais aussi des indicateurs
+aggreges dans le temps. Cela permet de detecter des attaques progressives, des
+variations lentes ou des comportements distribues qui ne seraient pas visibles
+dans une seule ligne de journal.
+
+
+9. Architectures multi-agents pour la detection d'intrusion
+
+La dimension distribuee du memoire s'appuie sur les travaux relatifs aux agents
+autonomes. Crosbie et Spafford (1995) proposent de defendre un systeme
+informatique a l'aide d'agents autonomes. L'idee est de ne pas concentrer toute
+l'intelligence dans un composant central, mais de repartir l'observation et
+l'analyse entre plusieurs agents specialises.
+
+Balasubramaniyan et al. (1998) formalisent cette idee avec l'architecture
+AAFID, une architecture de detection d'intrusion basee sur des agents autonomes.
+Des agents locaux surveillent une partie du systeme, puis transmettent leurs
+observations a des niveaux superieurs. Spafford et Zamboni (2000) montrent que
+cette organisation peut ameliorer la tolerance aux pannes, la modularite, la
+specialisation et la scalabilite.
+
+Herrero et Corchado (2009) analysent les systemes multi-agents pour la
+detection d'intrusion reseau. Ils montrent que les agents peuvent cooperer,
+echanger des observations, fusionner des alertes et contribuer a une decision
+globale. Bougueroua et al. (2021) completent cette perspective avec une revue
+des systemes collaboratifs de detection d'intrusion bases sur les agents. Ces
+travaux insistent sur la cooperation, la confiance entre agents, la fusion de
+scores, la hierarchie et la correlation des alertes.
+
+Pour le present memoire, une architecture coherente peut etre organisee autour
+de plusieurs roles :
+
+- un agent collecteur charge de recuperer les journaux systemes et reseaux ;
+- un agent parser charge de transformer les messages bruts en evenements
+  structures ;
+- un agent normaliseur charge d'unifier les champs issus de plusieurs sources ;
+- un agent detecteur charge de calculer des scores d'anomalie ;
+- un agent correlateur charge de regrouper plusieurs alertes en incident ;
+- un agent explicateur charge de rendre les alertes comprehensibles ;
+- un agent superviseur charge d'orchestrer les decisions et priorites.
+
+Cette organisation permet de traiter le probleme de maniere modulaire. Chaque
+agent a une responsabilite limitee, mais la cooperation produit une vision plus
+riche. Une anomalie faible sur une machine peut devenir importante si elle est
+correlee a d'autres anomalies sur le reseau ou sur un autre service.
+
+
+10. Datasets et ressources experimentales
+
+L'evaluation des systemes de detection d'anomalies repose souvent sur des
+datasets publics. Pour les logs systemes, LogHub fournit des jeux de donnees
+tels que HDFS, BGL, Thunderbird, Hadoop ou OpenStack. Ces jeux de donnees sont
+tres utilises pour tester le parsing, la sequence de logs et la detection
+d'anomalies. LogHub-2.0 et les outils LogPai permettent egalement d'evaluer les
+parsers et de construire des pipelines experimentaux.
+
+Pour les donnees reseau, UNSW-NB15, CICIDS2017, CSE-CIC-IDS2018 et CTU-13 sont
+des references importantes. UNSW-NB15, propose par Moustafa et Slay (2015),
+contient du trafic normal et plusieurs familles d'attaques. CICIDS2017, propose
+par Sharafaldin, Lashkari et Ghorbani (2018), contient des scenarios comme DoS,
+DDoS, brute force, botnet et attaques web. CTU-13 est utile pour etudier les
+communications de botnets. Bot-IoT et TON_IoT ouvrent la discussion vers les
+environnements IoT et IIoT.
+
+Ces datasets sont utiles pour comparer les modeles, mais ils ne doivent pas etre
+consideres comme une representation parfaite du monde reel. Les travaux de
+Sommer et Paxson (2010) rappellent que les resultats obtenus en laboratoire
+peuvent etre trompeurs si les donnees sont trop propres, trop equilibrees ou
+trop eloignees d'un environnement operationnel. Le memoire doit donc utiliser
+ces datasets comme supports experimentaux, tout en discutant leurs limites.
+
+
+11. Evaluation et limites des approches existantes
+
+L'evaluation d'un systeme de detection d'anomalies ne peut pas se limiter a
+l'accuracy. Dans des donnees de securite, les attaques sont souvent rares. Un
+modele peut obtenir une accuracy elevee en classant presque tout comme normal,
+tout en manquant les attaques importantes. Les metriques essentielles sont donc
+la precision, le rappel, le F1-score, la matrice de confusion, le taux de faux
+positifs et le taux de faux negatifs.
+
+La precision indique la proportion d'alertes qui correspondent vraiment a des
+anomalies. Elle est importante pour reduire la fatigue des analystes. Le rappel
+indique la proportion d'anomalies detectees parmi les anomalies reelles. Il est
+important pour eviter de laisser passer des attaques. Le F1-score donne un
+compromis entre precision et rappel. Dans un contexte operationnel, il faut
+egalement mesurer le nombre de faux positifs par heure ou par jour, le temps de
+detection, la consommation memoire et le temps de calcul.
+
+L'explicabilite est une autre exigence majeure. Une alerte qui indique seulement
+"anomalie detectee" est insuffisante pour un administrateur. Il faut pouvoir
+indiquer les logs concernes, les scores obtenus, les agents ayant contribue a la
+decision, la fenetre temporelle, la source probable et une hypothese de cause.
+Cette exigence justifie l'introduction d'un agent explicateur et d'un tableau de
+bord dans le prototype.
+
+
+12. Positionnement du memoire
+
+La litterature montre que la detection d'anomalies dans les logs est un domaine
+riche, mais fragmente. Certaines approches se concentrent sur le parsing, comme
+Drain. D'autres se concentrent sur les sequences, comme DeepLog et LogAnomaly.
+D'autres explorent les Transformers et les LLM, comme LogBERT, LogGPT et
+LogLLM. Les travaux sur les agents autonomes et collaboratifs montrent quant a
+eux l'interet d'une architecture distribuee, mais ne fournissent pas toujours un
+pipeline experimental complet applique aux logs modernes.
+
+Le present memoire se positionne donc comme une contribution appliquee et
+integree. Son objectif n'est pas uniquement de proposer un nouveau modele, mais
+de construire une chaine complete :
+
+collecte -> parsing -> normalisation -> extraction de caracteristiques ->
+detection multi-modeles -> correlation -> explication -> supervision
+
+Cette chaine permet de comparer plusieurs familles de methodes : statistiques,
+machine learning classique, autoencodeurs, LSTM et eventuellement approches plus
+avancees. Elle permet aussi de structurer le systeme sous forme d'agents
+specialises, capables de cooperer pour transformer des logs bruts en incidents
+comprehensibles.
+
+L'apport principal du memoire peut etre formule ainsi : proposer une
+architecture multi-agent reproductible pour la detection d'anomalies dans les
+journaux systemes et reseaux, combinant detection locale, correlation globale,
+evaluation multicritere et explication des alertes. Cette contribution est
+pertinente parce qu'elle tient compte a la fois des exigences scientifiques
+-- comparaison des methodes et evaluation experimentale -- et des exigences
+operationnelles -- lisibilite, reduction des faux positifs, modularite et
+possibilite de deploiement distribue.
+
+
+13. Conclusion de l'etat de l'art
+
+Les travaux fondateurs sur les IDS ont montre que les journaux d'audit sont une
+source essentielle pour detecter les comportements suspects. Les surveys sur la
+detection d'anomalies et le machine learning ont ensuite fourni les methodes
+necessaires pour transformer ces traces en problemes d'apprentissage. Les
+approches deep learning, notamment DeepLog, LogAnomaly, LogRobust et LogBERT,
+ont montre l'importance des sequences, du contexte et de la robustesse. Les
+travaux recents sur les LLM ouvrent des perspectives pour l'interpretation des
+logs, tandis que les architectures multi-agents fournissent un cadre adapte aux
+systemes distribues.
+
+Cet etat de l'art conduit a une conclusion claire : un systeme efficace de
+detection d'anomalies ne doit pas etre reduit a un seul algorithme. Il doit
+combiner une bonne collecte des donnees, un pretraitement solide, plusieurs
+methodes de detection, une correlation des signaux, une evaluation rigoureuse et
+une explication comprehensible. C'est dans cette direction que s'inscrit le
+prototype Logminer et le memoire associe.
+
+
+References principales mobilisees
+
+- Denning, D. E. (1987). An Intrusion-Detection Model. IEEE Transactions on
+  Software Engineering.
+- Forrest, S., Hofmeyr, S. A., Somayaji, A., & Longstaff, T. A. (1996). A
+  Sense of Self for Unix Processes. IEEE Symposium on Security and Privacy.
+- Lee, W., Stolfo, S. J., & Mok, K. W. (1999). A Data Mining Framework for
+  Building Intrusion Detection Models. IEEE Symposium on Security and Privacy.
+- Axelsson, S. (2000). Intrusion Detection Systems: A Survey and Taxonomy.
+- Chandola, V., Banerjee, A., & Kumar, V. (2009). Anomaly Detection: A Survey.
+  ACM Computing Surveys.
+- Sommer, R., & Paxson, V. (2010). Outside the Closed World: On Using Machine
+  Learning for Network Intrusion Detection. IEEE Symposium on Security and
+  Privacy.
+- Buczak, A. L., & Guven, E. (2016). A Survey of Data Mining and Machine
+  Learning Methods for Cyber Security Intrusion Detection. IEEE Communications
+  Surveys & Tutorials.
+- Khraisat, A., Gondal, I., Vamplew, P., & Kamruzzaman, J. (2019). Survey of
+  Intrusion Detection Systems: Techniques, Datasets and Challenges.
+- He, P., Zhu, J., Zheng, Z., & Lyu, M. R. (2017). Drain: An Online Log Parsing
+  Approach with Fixed Depth Tree.
+- Du, M., Li, F., Zheng, G., & Srikumar, V. (2017). DeepLog: Anomaly Detection
+  and Diagnosis from System Logs through Deep Learning.
+- Meng, W., et al. (2019). LogAnomaly: Unsupervised Detection of Sequential and
+  Quantitative Anomalies in Unstructured Logs.
+- Zhang, X., et al. (2019). Robust Log-Based Anomaly Detection on Unstable Log
+  Data.
+- Guo, H., Yuan, S., & Wu, X. (2021). LogBERT: Log Anomaly Detection via BERT.
+- Landauer, M., Onder, S., Skopik, F., & Wurzenberger, M. (2023). Deep Learning
+  for Anomaly Detection in Log Data: A Survey.
+- Han, X., Yuan, S., & Trabelsi, M. (2023). LogGPT: Log Anomaly Detection via
+  GPT.
+- Guan, W., Cao, J., Qian, S., Gao, J., & Ouyang, C. (2024). LogLLM: Log-based
+  Anomaly Detection Using Large Language Models.
+- Mirsky, Y., Doitshman, T., Elovici, Y., & Shabtai, A. (2018). Kitsune: An
+  Ensemble of Autoencoders for Online Network Intrusion Detection.
+- Zhao, H., et al. (2020). Multivariate Time-Series Anomaly Detection via Graph
+  Attention Network.
+- Su, Y., et al. (2019). Robust Anomaly Detection for Multivariate Time Series
+  through Stochastic Recurrent Neural Network.
+- Tuli, S., Casale, G., & Jennings, N. R. (2022). TranAD: Deep Transformer
+  Networks for Anomaly Detection in Multivariate Time Series Data.
+- Crosbie, M., & Spafford, E. H. (1995). Defending a Computer System Using
+  Autonomous Agents.
+- Balasubramaniyan, J. S., et al. (1998). An Architecture for Intrusion
+  Detection Using Autonomous Agents.
+- Spafford, E. H., & Zamboni, D. (2000). Intrusion Detection Using Autonomous
+  Agents.
+- Herrero, A., & Corchado, E. (2009). Multiagent Systems for Network Intrusion
+  Detection: A Review.
+- Bougueroua, N., et al. (2021). A Survey on Multi-Agent Based Collaborative
+  Intrusion Detection Systems.
+- Moustafa, N., & Slay, J. (2015). UNSW-NB15: A Comprehensive Data Set for
+  Network Intrusion Detection Systems.
+- Sharafaldin, I., Lashkari, A. H., & Ghorbani, A. A. (2018). Toward Generating
+  a New Intrusion Detection Dataset and Intrusion Traffic Characterization.
+- Koroniotis, N., Moustafa, N., Sitnikova, E., & Turnbull, B. (2019). Bot-IoT
+  Dataset and IoT Network Forensic Analytics.
