@@ -303,7 +303,441 @@ Incidents correles: 71
 ```
 
 
-13. FORMULATION POUR LE MEMOIRE
+13. TEST LIVE SUR C:\WINDOWS\SYSTEM32\WINEVT\LOGS
+-------------------------------------------------
+
+Test realise le 29/05/2026 sur les journaux Windows reels:
+
+```text
+Repertoire source: C:\Windows\System32\winevt\Logs
+Fichiers .evtx recents selectionnes: 99
+Evenements recents exportes: 17725
+Echecs ou journaux vides: 12
+Copies EVTX exploitables: Application, System
+Security.evtx: echec, acces refuse sans droits administrateur
+Evenements parses: 61356
+```
+
+Commande de detection:
+
+```powershell
+python src\logminer\agents\detector.py `
+  -i data\processed\windows_live_pipeline_colab_test.csv `
+  -o data\processed\anomalies_live_colab_model.csv `
+  --model-in models\isolation_forest_colab.joblib
+```
+
+Resultats statistiques:
+
+```text
+Evenements analyses: 61356
+Anomalies candidates: 86
+Evenements normaux: 61270
+Taux d'anomalie: 0.0014016559097724754, soit 0.140 %
+Incidents correles: 76
+Moyenne: 1.13 anomalie par incident
+```
+
+Repartition des anomalies:
+
+```text
+WARNING: 68, soit 79.1 %
+ERROR: 18, soit 20.9 %
+
+Microsoft-Windows-Ntfs: 30, soit 34.9 %
+Microsoft-Windows-DistributedCOM: 30, soit 34.9 %
+Windows App Runtime: 9, soit 10.5 %
+Application Error: 8, soit 9.3 %
+Microsoft-Windows-Time-Service: 5, soit 5.8 %
+```
+
+Scores:
+
+```text
+Score moyen global: 0.0482
+Score moyen des anomalies: -0.0057
+Score anomalie minimal: -0.0231
+Score anomalie median: -0.00448
+```
+
+Interpretation:
+
+- le modele fonctionne sur des journaux Windows reels;
+- il est tres selectif sur ce jeu local: 0.140 % d'anomalies;
+- les anomalies detectees sont surtout des erreurs applicatives, NTFS,
+  DistributedCOM et services systeme;
+- aucune attaque explicite n'a ete observee dans les journaux accessibles;
+- cette conclusion reste limitee, car `Security.evtx` n'a pas ete exporte sans
+  droits administrateur.
+
+
+14. EXPORT ADMINISTRATEUR DE SECURITY.EVTX
+------------------------------------------
+
+Pour analyser les evenements d'audit securite Windows, ouvrir PowerShell en
+administrateur, puis executer:
+
+```powershell
+cd F:\Cours\TFE
+
+New-Item -ItemType Directory -Force data\raw\windows_events_admin
+
+wevtutil epl Security data\raw\windows_events_admin\Security.evtx
+wevtutil epl System data\raw\windows_events_admin\System.evtx
+wevtutil epl Application data\raw\windows_events_admin\Application.evtx
+```
+
+Ensuite parser la copie:
+
+```powershell
+python -c "import sys; sys.path.insert(0, r'src\logminer'); import pipeline; print(pipeline.run_pipeline(r'data\raw\windows_events_admin', r'data\processed', 'windows_admin_pipeline.csv', debug=True))"
+```
+
+Appliquer le modele Colab:
+
+```powershell
+python src\logminer\agents\detector.py `
+  -i data\processed\windows_admin_pipeline.csv `
+  -o data\processed\anomalies_admin_colab_model.csv `
+  --model-in models\isolation_forest_colab.joblib
+```
+
+Puis correler:
+
+```powershell
+python src\logminer\agents\correlator.py `
+  -i data\processed\anomalies_admin_colab_model.csv `
+  -o data\processed\incidents_admin_colab_model.csv
+```
+
+Resultat obtenu le 29/05/2026 apres export administrateur dedie:
+
+```text
+Script: scripts/run_security_admin_inference.ps1
+Fichier brut: data/raw/windows_events_admin/Security.evtx
+CSV parse: data/processed/windows_security_pipeline.csv
+Anomalies: data/processed/anomalies_security_colab_model.csv
+Incidents: data/processed/incidents_security_colab_model.csv
+Evenements analyses: 32583
+Anomalies candidates: 203
+Incidents correles: 87
+Priorites incidents: HIGH 3, MEDIUM 80, LOW 4
+Source dominante: Microsoft-Windows-Security-Auditing
+Evenements dominants: 4624 (198 anomalies), 4738 (5 anomalies)
+```
+
+Le correlateur a ete enrichi apres ce test. Les incidents produits contiennent
+maintenant:
+
+```text
+priority
+priority_score
+rationale
+proto
+dst_port
+```
+
+Ces champs rendent les incidents plus exploitables: le score explique pourquoi
+un groupe d'anomalies remonte plus haut qu'un autre, et `proto`/`dst_port`
+permettent de mieux regrouper les journaux reseau.
+
+
+14B. TEST RESEAU SUR OUTSIDE_TCP_DUMP
+-------------------------------------
+
+UNSW-NB15 etant encore en cours de telechargement, le test reseau intermediaire
+a ete fait avec:
+
+```text
+data/raw/Datasets/Dataset_csv/outside_tcp_dump_part001.csv
+```
+
+Un echantillon de 100000 lignes a ete extrait:
+
+```powershell
+python -c "import pandas as pd; src=r'data\raw\Datasets\Dataset_csv\outside_tcp_dump_part001.csv'; out=r'data\processed\outside_tcp_dump_sample.csv'; df=pd.read_csv(src, sep=';', dtype=str, keep_default_na=False, nrows=100000); df.to_csv(out, sep=';', index=False, encoding='utf-8-sig'); print(out); print(len(df))"
+```
+
+Inference avec le modele Colab:
+
+```powershell
+python src\logminer\agents\detector.py `
+  -i data\processed\outside_tcp_dump_sample.csv `
+  -o data\processed\anomalies_outside_tcp_dump_colab_model.csv `
+  --model-in models\isolation_forest_colab.joblib
+
+python src\logminer\agents\correlator.py `
+  -i data\processed\anomalies_outside_tcp_dump_colab_model.csv `
+  -o data\processed\incidents_outside_tcp_dump_colab_model.csv
+```
+
+Resultat:
+
+```text
+Evenements analyses: 100000
+Anomalies candidates: 0
+Incidents correles: 0
+```
+
+Detection dediee au trafic reseau avec Isolation Forest local:
+
+```powershell
+python src\logminer\agents\detector.py `
+  -i data\processed\outside_tcp_dump_sample.csv `
+  -o data\processed\anomalies_outside_tcp_dump_local_iforest.csv `
+  --contamination 0.02 `
+  --max-categorical-unique 200
+
+python src\logminer\agents\correlator.py `
+  -i data\processed\anomalies_outside_tcp_dump_local_iforest.csv `
+  -o data\processed\incidents_outside_tcp_dump_local_iforest.csv
+```
+
+Resultat:
+
+```text
+Evenements analyses: 100000
+Anomalies candidates: 1998
+Incidents correles: 22
+Priorites incidents: MEDIUM 15, LOW 7
+Principaux groupes: UDP/53, TCP/25, UDP/123
+```
+
+Interpretation:
+
+- le modele Colab generaliste ne signale pas d'anomalie sur cet echantillon
+  reseau;
+- un modele dedie a l'echantillon reseau isole environ 2 % d'evenements
+  atypiques, conformement au parametre `--contamination 0.02`;
+- les incidents obtenus ne sont pas des attaques confirmees, mais des groupes
+  de trafic atypique a inspecter;
+- ce resultat sert de validation reseau provisoire en attendant UNSW-NB15.
+
+
+14C. ENTRAINEMENT CLOUD RESEAU: UNSW + TCP_DUMP
+---------------------------------------------------------
+
+Pour construire un modele reseau plus adapte, le flux cloud retenu est:
+
+```text
+UNSWNB15.zip + outside_tcp_dump + fichiers UNSW Parquet
+  -> extraction temporaire dans /content
+  -> fusion CSV/Parquet
+  -> entrainement Isolation Forest
+  -> sauvegarde Drive du modele reseau
+```
+
+L'objectif est de ne pas remplacer aveuglement le modele systeme/Windows, mais
+de produire un artefact specialise reseau:
+
+```text
+isolation_forest_network_colab.joblib
+```
+
+Dans Colab:
+
+```python
+from google.colab import drive
+drive.mount('/content/drive')
+```
+
+Cloner ou mettre a jour le projet:
+
+```python
+%cd /content
+!rm -rf TFE
+!git clone https://github.com/andybitati/Memoire.git TFE
+%cd /content/TFE
+!pip install -r requirements.txt
+```
+
+Preparer les chemins. Dans Colab, on garde les fichiers ZIP dans Drive et on les
+decompresse temporairement dans `/content` au moment de l'entrainement:
+
+```python
+from pathlib import Path
+import zipfile
+import shutil
+
+DRIVE_DATA = Path("/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_data/train")
+WORK_DATA = Path("/content/logminer_network_data")
+EXTRACT_DIR = WORK_DATA / "extracted"
+NETWORK_DIR = WORK_DATA / "network_sources"
+MODEL_DIR = Path("/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models")
+
+EXTRACT_DIR.mkdir(parents=True, exist_ok=True)
+NETWORK_DIR.mkdir(parents=True, exist_ok=True)
+MODEL_DIR.mkdir(parents=True, exist_ok=True)
+```
+
+Extraire `UNSWNB15.zip` dans `/content`:
+
+```python
+for zip_name in ["UNSWNB15.zip"]:
+    zip_path = DRIVE_DATA / zip_name
+    if zip_path.exists():
+        target = EXTRACT_DIR / zip_path.stem
+        target.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(zip_path, "r") as z:
+            z.extractall(target)
+        print("Extrait:", zip_path, "->", target)
+    else:
+        print("Absent:", zip_path)
+```
+
+Copier les fichiers reseau deja disponibles:
+
+```python
+for name in [
+    "outside_tcp_dump.csv",
+    "outside_tcp_dump_part001.csv",
+    "UNSW_NB15_training-set.parquet",
+    "UNSW_NB15_testing-set.parquet",
+]:
+    src = DRIVE_DATA / name
+    if src.exists():
+        shutil.copy2(src, NETWORK_DIR / name)
+        print("Copie:", src.name)
+```
+
+Verifier les fichiers qui seront pris en compte:
+
+```python
+for path in sorted(list(EXTRACT_DIR.rglob("*.csv")) + list(EXTRACT_DIR.rglob("*.parquet")) + list(NETWORK_DIR.glob("*"))):
+    print(path)
+```
+
+Construire le dataset reseau fusionne. Le script accepte maintenant:
+
+- les CSV;
+- les Parquet;
+- plusieurs `--input-dir`;
+- les sous-dossiers avec `--recursive`;
+- `--sep auto` pour lire aussi bien `;` que `,`.
+- `--dedupe name-size` pour ignorer les fichiers dupliques par nom et taille.
+
+```python
+!mkdir -p data/processed models
+
+!python scripts/build_cloud_training_dataset.py \
+  --input-dir "/content/logminer_network_data/extracted/UNSWNB15" \
+  --input-dir "/content/logminer_network_data/network_sources" \
+  --recursive \
+  --sep auto \
+  --dedupe name-size \
+  --output data/processed/network_training_dataset.csv \
+  --max-rows-per-file 50000
+```
+
+Remarque: si un autre ZIP contient les memes CSV que `UNSWNB15.zip`, le
+parametre `--dedupe name-size` garde automatiquement une seule copie quand le
+nom et la taille du fichier sont identiques. Pour une verification stricte,
+utiliser `--dedupe hash`, mais cela lit tous les gros fichiers en entier et peut
+prendre beaucoup plus de temps.
+
+Entrainer le modele reseau:
+
+```python
+!python src/logminer/agents/detector.py \
+  -i data/processed/network_training_dataset.csv \
+  -o data/processed/network_training_anomalies.csv \
+  --contamination 0.02 \
+  --max-categorical-unique 250 \
+  --model-out "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models/isolation_forest_network_colab.joblib"
+```
+
+Copier aussi les anomalies d'entrainement dans Drive:
+
+```python
+!cp data/processed/network_training_anomalies.csv \
+  "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models/network_training_anomalies.csv"
+```
+
+Verifier:
+
+```python
+import pandas as pd
+from pathlib import Path
+
+model_path = Path("/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models/isolation_forest_network_colab.joblib")
+anom_path = Path("/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models/network_training_anomalies.csv")
+
+df = pd.read_csv(anom_path, sep=";")
+print("Modele existe:", model_path.exists())
+print("Taille modele:", model_path.stat().st_size if model_path.exists() else 0)
+print("Evenements:", len(df))
+print("Anomalies:", int(df["is_anomaly"].sum()))
+print("Taux:", float(df["is_anomaly"].mean()))
+```
+
+Interpretation attendue:
+
+- ce modele doit mieux representer les flux reseau que le modele Colab general;
+- il pourra etre utilise localement avec:
+
+```powershell
+python src\logminer\agents\detector.py `
+  -i data\processed\outside_tcp_dump_sample.csv `
+  -o data\processed\anomalies_outside_tcp_dump_network_colab.csv `
+  --model-in models\isolation_forest_network_colab.joblib
+```
+
+- le modele systeme/Windows actuel peut rester conserve sous
+  `models/isolation_forest_colab.joblib`;
+- le modele reseau sera conserve separement sous
+  `models/isolation_forest_network_colab.joblib`.
+
+
+14D. AGENT ROUTEUR DE MODELES
+-----------------------------
+
+Un agent routeur a ete ajoute pour choisir automatiquement le modele adapte au
+type de journal:
+
+```text
+src/logminer/agents/model_router.py
+```
+
+Principe:
+
+```text
+logs systeme/Windows/HDFS/BGL/syslog -> models/isolation_forest_colab.joblib
+logs reseau/tcpdump/pcap/UNSW -> models/isolation_forest_network_colab.joblib
+```
+
+Tester seulement la route choisie:
+
+```powershell
+python src\logminer\agents\model_router.py `
+  -i data\processed\windows_security_pipeline.csv
+
+python src\logminer\agents\model_router.py `
+  -i data\processed\outside_tcp_dump_sample.csv
+```
+
+Resultats observes:
+
+```text
+windows_security_pipeline.csv -> system -> models/isolation_forest_colab.joblib
+outside_tcp_dump_sample.csv -> network -> models/isolation_forest_network_colab.joblib
+network_training_smoke_2.csv -> network -> models/isolation_forest_network_colab.joblib
+```
+
+Lancer detection + correlation avec le modele choisi:
+
+```powershell
+python src\logminer\agents\model_router.py `
+  -i data\processed\outside_tcp_dump_sample.csv `
+  --detect `
+  --network-model models\isolation_forest_network_colab.joblib
+```
+
+Tant que le modele reseau Colab n'est pas encore recupere localement, le mode
+`--detect` pour les logs reseau signale que le fichier modele est absent. Le
+mode routeur reste utilisable pour verifier l'orientation.
+
+
+15. FORMULATION POUR LE MEMOIRE
 -------------------------------
 
 Exemple de formulation:
@@ -319,8 +753,18 @@ Exemple de formulation:
 > anomalies candidates, ensuite regroupees en 71 incidents par l'agent de
 > correlation.
 
+Complement apres test live:
 
-14. PROBLEMES FREQUENTS
+> Un second test a ete mene sur les journaux Windows reels presents dans
+> `C:\Windows\System32\winevt\Logs`. Le modele a analyse 61 356 evenements et a
+> identifie 86 anomalies candidates, soit environ 0,140 %. Ces anomalies
+> relevent principalement d'erreurs applicatives, d'avertissements NTFS et
+> d'evenements DistributedCOM. Aucune attaque explicite n'a ete observee dans
+> les journaux accessibles. Cette interpretation reste limitee par l'absence du
+> journal `Security.evtx`, dont l'export exige une console administrateur.
+
+
+16. PROBLEMES FREQUENTS
 -----------------------
 
 Probleme: `credential propagation was unsuccessful`

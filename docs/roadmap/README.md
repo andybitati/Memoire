@@ -65,12 +65,14 @@ Ce qui existe deja:
 - production de `data/processed/incidents.csv`;
 - regroupement par fenetre temporelle;
 - resume humain court par incident;
+- priorite d'incident (`priority`), score explicable (`priority_score`) et
+  justification (`rationale`);
+- regroupement plus lisible des incidents reseau avec `proto` et `dst_port`;
 - affichage des incidents dans le dashboard.
 
 Ce qui manque encore:
 
 - enrichir les regles de correlation;
-- ajouter un score de priorite d'incident;
 - distinguer incident faible, moyen, critique;
 - relier un incident a ses anomalies sources;
 - documenter les limites de la correlation actuelle.
@@ -135,12 +137,19 @@ Ce qui existe deja:
 - modele `models/isolation_forest_colab.joblib` recupere localement;
 - inference locale validee sur `data/processed/windows_copies_pipeline.csv`;
 - correlation des anomalies Colab en `data/processed/incidents_from_colab_model.csv`.
+- inference administrateur sur `Security.evtx`: `32583` evenements, `203`
+  anomalies candidates, `87` incidents correles;
+- test reseau initial sur `outside_tcp_dump_part001.csv`: `100000` evenements,
+  `0` anomalie avec le modele Colab generaliste, puis `1998` anomalies et `22`
+  incidents avec un Isolation Forest local dedie.
 
 Ce qui manque encore:
 
 - evaluer des echantillons plus grands;
 - ajouter un split train/test lorsque le modele le permet;
-- tester un dataset reseau, par exemple `outside_tcp_dump` ou UNSW-NB15;
+- exploiter UNSW-NB15 lorsque le telechargement sera termine;
+- elargir les tests `outside_tcp_dump` a plus de lignes et a un meilleur
+  enrichissement semantique reseau;
 - entrainer ou comparer d'autres modeles principaux sur le cloud si necessaire;
 - documenter le versionnement des artefacts `models/*.joblib`;
 - comparer les temps d'execution et la complexite;

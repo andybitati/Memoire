@@ -22,8 +22,16 @@ if str(BASE_DIR) not in sys.path:
 from agents.bus import LocalMessageBus
 
 
-GROUP_COLUMNS = ["time_window", "host", "user", "source", "category", "subcategory"]
+GROUP_COLUMNS = ["time_window", "host", "user", "source", "category", "subcategory", "proto", "dst_port"]
 SEVERITY_RANK = {"": 0, "DEBUG": 1, "VERBOSE": 1, "INFO": 2, "WARNING": 3, "ERROR": 4, "CRITICAL": 5}
+SECURITY_CATEGORY_WEIGHT = {
+    "AUTHENTICATION": 18,
+    "AUTHORIZATION": 16,
+    "ACCOUNT_MANAGEMENT": 16,
+    "NETWORK": 14,
+    "PROCESS": 12,
+    "SYSTEM": 10,
+}
 
 
 def _severity_max(values: pd.Series) -> str:
@@ -48,8 +56,73 @@ def _summary(group: pd.DataFrame) -> str:
     category = _value_or_unknown(group.get("category", pd.Series(dtype=str)))
     source = _value_or_unknown(group.get("source", pd.Series(dtype=str)))
     host = _value_or_unknown(group.get("host", pd.Series(dtype=str)))
+    proto = _first_non_empty(group.get("proto", pd.Series(dtype=str)))
+    dst_port = _first_non_empty(group.get("dst_port", pd.Series(dtype=str)))
     count = len(group)
+    if category == "UNKNOWN" and source == "UNKNOWN" and (proto or dst_port):
+        target = f"{proto or 'PROTO'}:{dst_port or '*'}"
+        return f"{count} anomalie(s) reseau vers {target}"
     return f"{count} anomalie(s) {category} sur {host} via {source}"
+
+
+def _priority_label(score: int) -> str:
+    if score >= 75:
+        return "CRITICAL"
+    if score >= 50:
+        return "HIGH"
+    if score >= 25:
+        return "MEDIUM"
+    return "LOW"
+
+
+def _priority_details(
+    group: pd.DataFrame,
+    severity: str,
+    event_ids: list[str],
+    anomaly_scores: pd.Series,
+) -> tuple[int, str, str]:
+    """Calcule une priorite explicable pour un incident."""
+
+    category = _value_or_unknown(group.get("category", pd.Series(dtype=str))).upper()
+    proto = _first_non_empty(group.get("proto", pd.Series(dtype=str)))
+    dst_port = _first_non_empty(group.get("dst_port", pd.Series(dtype=str)))
+    event_count = len(group)
+    severity_score = SEVERITY_RANK.get(severity.upper(), 0) * 10
+    volume_score = min(event_count * 4, 30)
+    diversity_score = min(max(len(event_ids) - 1, 0) * 6, 18)
+    category_score = SECURITY_CATEGORY_WEIGHT.get(category, 8 if category != "UNKNOWN" else 0)
+
+    min_score = anomaly_scores.min() if not anomaly_scores.dropna().empty else 0
+    anomaly_depth_score = 0
+    if min_score < -0.05:
+        anomaly_depth_score = 18
+    elif min_score < -0.02:
+        anomaly_depth_score = 12
+    elif min_score < 0:
+        anomaly_depth_score = 8
+
+    priority_score = min(
+        100,
+        int(volume_score + severity_score + diversity_score + category_score + anomaly_depth_score),
+    )
+    priority = _priority_label(priority_score)
+
+    reasons = [
+        f"{event_count} anomalie(s)",
+        f"categorie {category}",
+    ]
+    if severity:
+        reasons.append(f"severite maximale {severity.upper()}")
+    if event_ids:
+        reasons.append(f"evenement(s) {','.join(event_ids[:5])}")
+    if proto:
+        reasons.append(f"protocole {proto}")
+    if dst_port:
+        reasons.append(f"port destination {dst_port}")
+    if min_score < 0:
+        reasons.append(f"score minimal {min_score:.4f}")
+
+    return priority_score, priority, "; ".join(reasons)
 
 
 def correlate_anomalies(
@@ -93,11 +166,16 @@ def correlate_anomalies(
                 "source",
                 "category",
                 "subcategory",
+                "proto",
+                "dst_port",
                 "severity",
+                "priority",
+                "priority_score",
                 "event_count",
                 "min_anomaly_score",
                 "max_anomaly_rank",
                 "events",
+                "rationale",
                 "summary",
             ]
         )
@@ -119,6 +197,8 @@ def correlate_anomalies(
         event_ids = sorted(set(value for value in group.get("event", pd.Series(dtype=str)).astype(str) if value))
         anomaly_scores = pd.to_numeric(group.get("anomaly_score", pd.Series(dtype=str)), errors="coerce")
         anomaly_ranks = pd.to_numeric(group.get("anomaly_rank", pd.Series(dtype=str)), errors="coerce")
+        severity = _severity_max(group.get("severity", pd.Series(dtype=str)))
+        priority_score, priority, rationale = _priority_details(group, severity, event_ids, anomaly_scores)
 
         rows.append(
             {
@@ -130,17 +210,22 @@ def correlate_anomalies(
                 "source": _value_or_unknown(group["source"]),
                 "category": _value_or_unknown(group["category"]),
                 "subcategory": _value_or_unknown(group["subcategory"]),
-                "severity": _severity_max(group.get("severity", pd.Series(dtype=str))),
+                "proto": _first_non_empty(group["proto"]),
+                "dst_port": _first_non_empty(group["dst_port"]),
+                "severity": severity,
+                "priority": priority,
+                "priority_score": priority_score,
                 "event_count": len(group),
                 "min_anomaly_score": anomaly_scores.min() if not anomaly_scores.dropna().empty else "",
                 "max_anomaly_rank": int(anomaly_ranks.max()) if not anomaly_ranks.dropna().empty else "",
                 "events": ",".join(event_ids[:20]),
+                "rationale": rationale,
                 "summary": _summary(group),
             }
         )
 
     incidents = pd.DataFrame(rows)
-    incidents = incidents.sort_values(["event_count", "severity", "start_time"], ascending=[False, False, True])
+    incidents = incidents.sort_values(["priority_score", "event_count", "start_time"], ascending=[False, False, True])
     incidents.to_csv(output_path, sep=sep, index=False, encoding="utf-8-sig")
 
     if bus is not None:

@@ -401,17 +401,34 @@ Avancées du 29/05/2026:
 - récupération du modèle dans `models/`;
 - validation de l'inférence locale avec `--model-in`;
 - corrélation des anomalies locales en incidents.
+- test live sur `C:\Windows\System32\winevt\Logs`: `61356` événements analysés,
+  `86` anomalies candidates, `76` incidents corrélés;
+- constat: anomalies surtout système/applicatives; aucune attaque explicite dans
+  les journaux accessibles sans administrateur;
+- limite identifiée: `Security.evtx` doit être exporté depuis PowerShell
+  administrateur pour compléter l'analyse sécurité.
+- export administrateur de `Security.evtx` réalisé et analysé: `32583`
+  événements, `203` anomalies candidates, `87` incidents corrélés;
+- corrélateur enrichi avec `priority`, `priority_score`, `rationale`, ainsi que
+  `proto` et `dst_port` pour rendre les incidents réseau exploitables;
+- agent routeur ajouté avec `src/logminer/agents/model_router.py` pour orienter
+  les logs système vers `isolation_forest_colab.joblib` et les logs réseau vers
+  `isolation_forest_network_colab.joblib`;
+- test réseau initial sur `outside_tcp_dump_part001.csv`: échantillon de
+  `100000` lignes, `0` anomalie avec le modèle Colab généraliste, puis `1998`
+  anomalies et `22` incidents avec un Isolation Forest local dédié au trafic
+  réseau.
 
 À compléter/réparer ensuite:
 
 - certains parseurs récupérés dans `src/logminer/parsers/`;
 - tests plus larges sur HDFS, BGL, Apache, Syslog et EVTX réel.
-- copie/export des journaux Windows protégés en mode administrateur.
+- exploitation de UNSW-NB15 lorsque le téléchargement sera terminé.
 
 ## Prochaines Étapes
 
-- Exporter les journaux Windows protégés avec une console administrateur.
+- Exploiter UNSW-NB15 lorsque le téléchargement sera terminé.
+- Élargir le test réseau au-delà de l'échantillon `outside_tcp_dump`.
 - Stabiliser tous les parseurs.
 - Améliorer la catégorisation sécurité avec plus de règles.
-- Ajouter un agent de corrélation temporelle.
-- Construire un dashboard simple de visualisation des anomalies.
+- Enrichir encore la priorisation des incidents et la vue détail dans le dashboard.
