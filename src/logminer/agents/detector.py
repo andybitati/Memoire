@@ -1,4 +1,15 @@
-"""Agent detecteur d'anomalies base sur Isolation Forest."""
+"""Agent detecteur d'anomalies base sur Isolation Forest.
+
+Role dans le projet:
+    Cet agent correspond a la brique "detection IA". Il consomme un CSV deja
+    normalise par Logminer, transforme les evenements en features numeriques,
+    puis produit un CSV enrichi avec un score d'anomalie et un indicateur
+    `is_anomaly`.
+
+Deux modes sont volontairement supportes:
+    - entrainement local/cloud avec `--model-out`;
+    - inference seule avec `--model-in`, pour reutiliser un modele Colab.
+"""
 
 from __future__ import annotations
 
@@ -22,6 +33,8 @@ from features.event_features import build_feature_frame, load_events
 try:
     from agents.bus import LocalMessageBus
 except ImportError:
+    # Le bus est utile pour l'orchestration multi-agents, mais le detecteur doit
+    # rester utilisable seul dans Colab ou en ligne de commande minimale.
     LocalMessageBus = None
 
 
@@ -46,6 +59,8 @@ def detect_anomalies(
     """
 
     if bus is not None:
+        # Message de cycle de vie: il permet au dashboard et a l'orchestrateur
+        # de reconstruire le deroulement du workflow sans lire stdout.
         bus.publish(
             source="detector",
             target="correlator",
@@ -59,24 +74,37 @@ def detect_anomalies(
             },
         )
 
+    # Le detecteur part toujours du CSV normalise. Les parseurs heterogenes ont
+    # deja fait leur travail en amont; ici on ne manipule plus que du tabulaire.
     events = load_events(input_csv, sep=sep)
     if events.empty:
         raise ValueError(f"Aucun evenement a analyser dans {input_csv}")
 
+    # `build_feature_frame` centralise la transformation ML: numeriques,
+    # severite, temps, longueur du message et one-hot categoriel borne.
     features = build_feature_frame(events, max_categorical_unique=max_categorical_unique)
     if features.empty:
         raise ValueError("Impossible de construire des features ML depuis le CSV fourni")
 
+    # Scikit-learn impose une contamination dans ]0, 0.5]. On borne la valeur
+    # pour eviter qu'un parametre CLI invalide casse l'experience.
     contamination = min(max(float(contamination), 0.001), 0.5)
     if len(events) < 20:
+        # Sur les tres petits jeux de test, une contamination de 5 % peut etre
+        # impossible a materialiser proprement; on la ramene a au plus 1 ligne.
         contamination = min(contamination, 1 / max(len(events), 1))
 
     if model_in:
+        # Mode inference: on recharge le modele et surtout son schema de
+        # colonnes. C'est indispensable avec les variables one-hot, car un CSV
+        # local peut ne pas contenir exactement les categories vues en Colab.
         artifact = load_model_artifact(model_in)
         model = artifact["model"]
         feature_columns = artifact["feature_columns"]
         features = align_features(features, feature_columns)
     else:
+        # Mode entrainement: Isolation Forest est choisi pour sa robustesse sur
+        # donnees tabulaires heterogenes et son absence de besoin en labels.
         model = IsolationForest(
             n_estimators=200,
             contamination=contamination,
@@ -85,6 +113,8 @@ def detect_anomalies(
         )
         labels = model.fit_predict(features)
         if model_out:
+            # L'artefact joblib sauvegarde plus que le modele: il embarque aussi
+            # le schema des features pour rendre l'inference reproductible.
             save_model_artifact(
                 model_out,
                 model=model,
@@ -97,9 +127,13 @@ def detect_anomalies(
             )
 
     if model_in:
+        # En mode inference, le modele est deja entraine; on ne fait que predire
+        # les labels sur les features realignees.
         labels = model.predict(features)
     scores = model.decision_function(features)
 
+    # Convention scikit-learn: -1 = anomalie, +1 = normal. Le score le plus bas
+    # indique les evenements les plus isoles.
     result = events.copy()
     result["anomaly_score"] = scores
     result["is_anomaly"] = (labels == -1).astype(int)
@@ -109,6 +143,8 @@ def detect_anomalies(
     if output_path.parent:
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # Les anomalies sont placees en tete du CSV pour faciliter l'inspection dans
+    # Excel, le dashboard ou une lecture rapide en console.
     result.sort_values(["is_anomaly", "anomaly_score"], ascending=[False, True]).to_csv(
         output_path,
         sep=sep,
@@ -118,6 +154,8 @@ def detect_anomalies(
 
     anomaly_count = int(result["is_anomaly"].sum())
     if bus is not None:
+        # Message final: il donne au correlateur et au dashboard le volume exact
+        # analyse et le nombre d'alertes candidates.
         bus.publish(
             source="detector",
             target="correlator",
@@ -155,6 +193,8 @@ def save_model_artifact(
 
     output_path = Path(path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    # Metadata utile pour le memoire et la reproductibilite: volume
+    # d'entrainement, contamination, date et parametres principaux.
     artifact = {
         "model_type": "isolation_forest",
         "model": model,
@@ -176,6 +216,8 @@ def load_model_artifact(path: str | Path) -> dict:
     """Charge un artefact joblib produit par `save_model_artifact`."""
 
     artifact = joblib.load(path)
+    # On refuse les joblib incomplets: charger uniquement un estimateur ne
+    # suffirait pas, car le schema des colonnes serait perdu.
     if not isinstance(artifact, dict) or "model" not in artifact or "feature_columns" not in artifact:
         raise ValueError(f"Artefact modele invalide: {path}")
     return artifact
@@ -184,6 +226,8 @@ def load_model_artifact(path: str | Path) -> dict:
 def align_features(features: pd.DataFrame, feature_columns: list[str]) -> pd.DataFrame:
     """Realigne les features d'inference sur le schema d'entrainement."""
 
+    # Les colonnes absentes dans le CSV d'inference valent 0; les colonnes
+    # nouvelles sont ignorees. Cela stabilise l'inference entre datasets.
     return features.reindex(columns=feature_columns, fill_value=0).astype(float)
 
 
@@ -207,6 +251,8 @@ def main(argv: Optional[list[str]] = None) -> int:
             raise RuntimeError("Bus local indisponible")
         bus = LocalMessageBus(args.bus, run_id=args.run_id)
 
+    # La fonction interne est appelee aussi par l'orchestrateur et le routeur:
+    # la CLI reste donc fine, sans dupliquer la logique de detection.
     output = detect_anomalies(
         input_csv=args.input,
         output_csv=args.output,
@@ -219,6 +265,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         bus=bus,
     )
 
+    # Petit resume lisible pour les executions manuelles et les traces Colab.
     anomalies = pd.read_csv(output, sep=args.sep, dtype=str, keep_default_na=False)
     count = int((anomalies.get("is_anomaly", "0").astype(str) == "1").sum())
     print(f"CSV anomalies: {output}")
