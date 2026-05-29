@@ -62,6 +62,13 @@ tmp/
 models/*.joblib
 models/*.pkl
 !models/.gitkeep
+!models/isolation_forest_colab.joblib
+!models/isolation_forest_fallback_colab.joblib
+!models/isolation_forest_windows_local.joblib
+!models/isolation_forest_hdfs_colab.joblib
+!models/isolation_forest_bgl_colab.joblib
+!models/isolation_forest_linux_colab.joblib
+!models/isolation_forest_network_colab.joblib
 
 # Dossiers prepares pour upload cloud/Drive
 cloud_upload/
