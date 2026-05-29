@@ -15,7 +15,7 @@ prototype et transformer les resultats techniques en memoire defendable.
 | Objectif 3 | Architecture multi-agents | Avance | Haute |
 | Objectif 4 | Correlation contextuelle et gestion des incidents | Prototype fonctionnel | Haute |
 | Objectif 5 | Visualisation, supervision et exploitation humaine | Prototype fonctionnel | Haute |
-| Objectif 6 | Evaluation experimentale complete et entrainement cloud | Validation initiale faite | Haute |
+| Objectif 6 | Evaluation experimentale complete et entrainement cloud | Entrainement Colab valide | Haute |
 | Objectif 7 | Redaction, discussion et perspectives | A structurer | Haute |
 
 ## Objectif 3 - Architecture Multi-Agents
@@ -125,23 +125,41 @@ Ce qui existe deja:
 
 - validation HDFS;
 - validation BGL;
+- validation Windows simule;
 - `precision`, `recall`, `f1`;
 - `accuracy`, `specificity`;
 - matrice de confusion `tp/fp/fn/tn`;
 - synthese `data/processed/validation_summary.csv`;
 - sauvegarde de modele `joblib` via `src/logminer/agents/detector.py`.
+- entrainement cloud Google Colab sur donnees Drive;
+- modele `models/isolation_forest_colab.joblib` recupere localement;
+- inference locale validee sur `data/processed/windows_copies_pipeline.csv`;
+- correlation des anomalies Colab en `data/processed/incidents_from_colab_model.csv`.
 
 Ce qui manque encore:
 
 - evaluer des echantillons plus grands;
 - ajouter un split train/test lorsque le modele le permet;
 - tester un dataset reseau, par exemple `outside_tcp_dump` ou UNSW-NB15;
-- entrainer les modeles principaux sur le cloud avec les datasets complets;
-- versionner les artefacts `models/*.joblib`;
+- entrainer ou comparer d'autres modeles principaux sur le cloud si necessaire;
+- documenter le versionnement des artefacts `models/*.joblib`;
 - comparer les temps d'execution et la complexite;
 - ajouter une mesure operationnelle de faux positifs par periode lorsque les
   timestamps le permettent;
 - interpreter les ecarts entre HDFS et BGL.
+
+Resultat cloud principal du 29/05/2026:
+
+```text
+Environnement: Google Colab + Google Drive
+Modele: Isolation Forest
+Evenements d'entrainement: 287862
+Colonnes: 79
+Contamination: 0.02
+Anomalies cloud: 5754
+Inference locale Windows: 61313 evenements, 81 anomalies
+Correlation locale: 71 incidents
+```
 
 Livrables attendus:
 

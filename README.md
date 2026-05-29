@@ -266,6 +266,27 @@ Pour réutiliser localement un modèle entraîné sur le cloud:
 python src\logminer\agents\detector.py -i data\processed\windows_copies_pipeline.csv -o data\processed\anomalies_from_cloud_model.csv --model-in models\isolation_forest_cloud.joblib
 ```
 
+Le modèle principal entraîné sur Google Colab avec les données Drive est:
+
+```text
+models/isolation_forest_colab.joblib
+```
+
+Résultats du 29/05/2026:
+
+- entraînement Colab sur `287862` événements fusionnés depuis `cloud_upload/logminer_cloud_data/train`;
+- `5754` anomalies candidates sur le dataset cloud avec `--contamination 0.02`;
+- inférence locale sur `61313` événements Windows;
+- `81` anomalies candidates locales;
+- `71` incidents corrélés dans `data/processed/incidents_from_colab_model.csv`.
+
+Commande locale validée:
+
+```powershell
+python src\logminer\agents\detector.py -i data\processed\windows_copies_pipeline.csv -o data\processed\anomalies_from_colab_model.csv --model-in models\isolation_forest_colab.joblib
+python src\logminer\agents\correlator.py -i data\processed\anomalies_from_colab_model.csv -o data\processed\incidents_from_colab_model.csv
+```
+
 Pour comparer les approches de l'objectif 2:
 
 ```powershell
@@ -373,10 +394,18 @@ Avancées du 15/05/2026:
 - identification claire des journaux qui exigent une console administrateur;
 - décision de traiter ces journaux protégés plus tard par copie/export administrateur.
 
+Avancées du 29/05/2026:
+
+- entraînement cloud réalisé sur Google Colab à partir des données Google Drive;
+- sauvegarde du modèle `isolation_forest_colab.joblib`;
+- récupération du modèle dans `models/`;
+- validation de l'inférence locale avec `--model-in`;
+- corrélation des anomalies locales en incidents.
+
 À compléter/réparer ensuite:
 
 - certains parseurs récupérés dans `src/logminer/parsers/`;
-- tests sur HDFS, BGL, Apache, Syslog et EVTX réel.
+- tests plus larges sur HDFS, BGL, Apache, Syslog et EVTX réel.
 - copie/export des journaux Windows protégés en mode administrateur.
 
 ## Prochaines Étapes

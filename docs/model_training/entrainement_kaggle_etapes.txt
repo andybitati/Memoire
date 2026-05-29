@@ -1,351 +1,343 @@
-ETAPES POUR ENTRAINER LE MODELE LOGMINER SUR KAGGLE
-===================================================
+ETAPES POUR ENTRAINER LE MODELE LOGMINER SUR GOOGLE COLAB
+==========================================================
+
+Note
+----
+
+Ce fichier etait initialement dedie a Kaggle. Le flux retenu pour le projet est
+maintenant Google Colab + Google Drive, car les donnees volumineuses sont deja
+stockees dans Drive et Colab peut monter Drive directement.
+
+Kaggle reste possible si les donnees sont importees comme Dataset Kaggle, mais
+Drive direct est plus simple avec Colab.
+
 
 Objectif
 --------
 
-Entrainer le modele Isolation Forest sur Kaggle avec un gros dataset de logs,
-sauvegarder le modele au format .joblib, puis recuperer ce modele pour
-l'utiliser localement dans Logminer avec l'option --model-in.
+Entrainer le modele Isolation Forest sur Google Colab avec les datasets stockes
+dans Google Drive, sauvegarder le modele au format `.joblib`, puis recuperer ce
+modele pour l'utiliser localement dans Logminer avec l'option `--model-in`.
 
 Le flux global est:
 
-1. preparer les donnees localement;
-2. envoyer le code et les donnees sur Kaggle;
-3. lancer l'entrainement dans un Notebook Kaggle;
-4. sauvegarder le modele .joblib;
-5. telecharger le modele;
-6. utiliser le modele entraine sur les logs locaux.
+1. monter Google Drive dans Colab;
+2. cloner le code du projet;
+3. lire les donnees depuis `cloud_upload/logminer_cloud_data`;
+4. construire un CSV d'entrainement cloud fusionne;
+5. entrainer Isolation Forest;
+6. sauvegarder le modele `.joblib` dans Drive;
+7. reutiliser ce modele localement sur les logs Windows;
+8. correler les anomalies en incidents.
 
 
-1. PREPARER LE DATASET LOCAL
-----------------------------
+1. STRUCTURE ATTENDUE DANS GOOGLE DRIVE
+---------------------------------------
 
-Le modele attend un CSV deja normalise par Logminer. Il faut donc partir de
-fichiers produits par le pipeline, par exemple:
+Le dossier Drive utilise pour l'experience est:
 
-- data/processed/windows_copies_pipeline.csv
-- data/processed/validation_hdfs.csv
-- data/processed/validation_bgl.csv
-- ou tout autre CSV normalise produit par src/logminer/pipeline.py
+```text
+/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_data
+```
 
-Si plusieurs CSV doivent etre fusionnes pour l'entrainement cloud, placer les
-sources dans un dossier dedie:
+Sur le poste local, la structure correspond a:
 
-data/processed/cloud_train_sources/
+```text
+cloud_upload/
+  logminer_cloud_data/
+    train/
+    validation/
+    metadata/
+```
 
-Puis lancer:
+Le dossier `train/` contient les grands CSV d'entrainement:
 
-python scripts/build_cloud_training_dataset.py ^
-  --input-dir data/processed/cloud_train_sources ^
-  --output data/processed/cloud_training_dataset.csv ^
-  --max-rows-per-file 50000
+- `hdfs.csv`
+- `bgl.csv`
+- `outside_tcp_dump.csv`
+- `outside_tcp_dump_part001.csv`
+- `windows_copies_pipeline.csv`
+- `windows_recent_events.csv`
+- fichiers systeme/reseau plus petits.
 
-Remarques:
+Le dossier `validation/` contient les CSV labellises et les metriques:
 
-- --max-rows-per-file 50000 evite qu'un seul gros dataset domine tout.
-- Pour utiliser toutes les lignes, mettre --max-rows-per-file 0.
-- Le fichier principal a envoyer sur Kaggle sera:
-
-data/processed/cloud_training_dataset.csv
-
-
-2. PREPARER LES FICHIERS A ENVOYER SUR KAGGLE
----------------------------------------------
-
-Kaggle doit avoir le code Logminer et le dataset.
-
-Option simple recommandee:
-
-1. creer une archive .zip du projet ou au minimum des dossiers suivants:
-
-   src/
-   scripts/
-   requirements.txt
-   data/processed/cloud_training_dataset.csv
-
-2. ne pas inclure les dossiers inutiles ou trop lourds:
-
-   .git/
-   .venv/
-   __pycache__/
-   archive/
-   data/raw/ si les donnees brutes sont trop volumineuses
-
-3. verifier que l'archive contient bien:
-
-   src/logminer/agents/detector.py
-   src/logminer/features/event_features.py
-   data/processed/cloud_training_dataset.csv
-   requirements.txt
+- `validation_hdfs.csv`
+- `validation_bgl.csv`
+- `validation_simulated_windows.csv`
+- `validation_summary.csv`
 
 
-3. CREER UN DATASET KAGGLE
+2. MONTER GOOGLE DRIVE DANS COLAB
+---------------------------------
+
+Dans une cellule Colab:
+
+```python
+from google.colab import drive
+drive.mount('/content/drive')
+```
+
+Si Drive est deja monte, Colab affiche:
+
+```text
+Drive already mounted at /content/drive
+```
+
+C'est normal. En cas de probleme d'authentification:
+
+```python
+from google.colab import drive
+drive.mount('/content/drive', force_remount=True)
+```
+
+
+3. CLONER LE CODE LOGMINER
 --------------------------
 
-Dans Kaggle:
+```python
+%cd /content
+!git clone https://github.com/andybitati/Memoire.git TFE
+%cd /content/TFE
+!pip install -r requirements.txt
+```
 
-1. ouvrir Kaggle;
-2. aller dans Datasets;
-3. creer un nouveau dataset prive;
-4. envoyer l'archive du projet ou les fichiers prepares;
-5. attendre la fin de l'import.
+Si `/content/TFE` existe deja:
 
-Nom conseille pour le dataset Kaggle:
-
-logminer-training-data
-
-
-4. CREER UN NOTEBOOK KAGGLE
----------------------------
-
-Dans Kaggle:
-
-1. creer un nouveau Notebook;
-2. ajouter le dataset cree a l'etape precedente comme input;
-3. choisir Python comme environnement;
-4. activer Internet seulement si des dependances doivent etre installees;
-5. le GPU n'est pas necessaire pour Isolation Forest.
-
-Isolation Forest utilise scikit-learn. Un CPU Kaggle suffit normalement.
+```python
+%cd /content
+!rm -rf TFE
+!git clone https://github.com/andybitati/Memoire.git TFE
+%cd /content/TFE
+!pip install -r requirements.txt
+```
 
 
-5. PREPARER L'ENVIRONNEMENT DANS LE NOTEBOOK
---------------------------------------------
+4. VERIFIER LES DONNEES DRIVE
+-----------------------------
 
-Dans une cellule Kaggle, commencer par localiser les fichiers:
-
+```python
 import os
 
-for root, dirs, files in os.walk("/kaggle/input"):
-    level = root.replace("/kaggle/input", "").count(os.sep)
-    if level < 3:
+DATA_DIR = "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_data"
+TRAIN_DIR = f"{DATA_DIR}/train"
+VALIDATION_DIR = f"{DATA_DIR}/validation"
+
+for root, dirs, files in os.walk(DATA_DIR):
+    level = root.replace(DATA_DIR, "").count(os.sep)
+    if level < 2:
         print(root)
         for name in files[:10]:
             print("  ", name)
+```
 
-Si le projet est envoye sous forme de .zip, le decompresser:
+Si le dossier Drive ne contient pas d'accent dans son nom, utiliser exactement
+le chemin affiche par Colab:
 
-import zipfile
-from pathlib import Path
-
-zip_path = "/kaggle/input/logminer-training-data/TFE.zip"
-work_dir = Path("/kaggle/working/TFE")
-
-with zipfile.ZipFile(zip_path, "r") as z:
-    z.extractall(work_dir)
-
-Si les fichiers sont deja visibles directement dans /kaggle/input, copier le
-projet vers /kaggle/working, car /kaggle/input est en lecture seule.
-
-Exemple:
-
-import shutil
-from pathlib import Path
-
-src = Path("/kaggle/input/logminer-training-data")
-dst = Path("/kaggle/working/TFE")
-
-if dst.exists():
-    shutil.rmtree(dst)
-
-shutil.copytree(src, dst)
+```python
+DATA_DIR = "/content/drive/MyDrive/Memoire/cloud_upload/logminer_cloud_data"
+```
 
 
-6. INSTALLER LES DEPENDANCES
-----------------------------
+5. CONSTRUIRE LE DATASET D'ENTRAINEMENT CLOUD
+---------------------------------------------
 
-Dans le Notebook:
+```python
+%cd /content/TFE
 
-%cd /kaggle/working/TFE
-!python -m pip install -r requirements.txt
+!mkdir -p data/processed models
+!mkdir -p "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models"
 
-Si Kaggle a deja pandas, scikit-learn et joblib, cette etape peut etre rapide.
-Pour l'entrainement Isolation Forest, requirements-ai.txt n'est pas necessaire.
+!python scripts/build_cloud_training_dataset.py \
+  --input-dir "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_data/train" \
+  --output data/processed/cloud_training_dataset.csv \
+  --max-rows-per-file 50000
+```
+
+Remarques:
+
+- `--max-rows-per-file 50000` evite qu'un seul gros dataset domine tout.
+- Pour utiliser toutes les lignes, mettre `--max-rows-per-file 0`.
+- Pour un dossier Drive nomme differemment, adapter les chemins exactement
+  comme ils apparaissent dans Colab.
 
 
-7. LANCER L'ENTRAINEMENT SUR KAGGLE
------------------------------------
+6. ENTRAINER ET SAUVEGARDER LE MODELE
+-------------------------------------
 
-Depuis /kaggle/working/TFE, lancer:
-
+```python
 !python src/logminer/agents/detector.py \
   -i data/processed/cloud_training_dataset.csv \
   -o data/processed/cloud_training_anomalies.csv \
   --contamination 0.02 \
   --max-categorical-unique 200 \
-  --model-out models/isolation_forest_kaggle.joblib
+  --model-out "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models/isolation_forest_colab.joblib"
+```
 
 Parametres importants:
 
-- --contamination 0.02 signifie que le modele attend environ 2 % d'anomalies.
-- --max-categorical-unique 200 garde plus de categories one-hot.
-- --model-out indique ou sauvegarder le modele entraine.
-
-Si le dataset est tres grand et que Kaggle manque de memoire, reduire:
-
---max-categorical-unique 100
-
-ou creer un cloud_training_dataset.csv plus petit avec --max-rows-per-file.
+- `--contamination 0.02`: le modele isole environ 2 % d'anomalies.
+- `--max-categorical-unique 200`: conserve plus de categories one-hot.
+- `--model-out`: sauvegarde directement le modele dans Google Drive.
 
 
-8. VERIFIER LES SORTIES
------------------------
+7. COPIER LES ANOMALIES DANS DRIVE
+----------------------------------
 
-Verifier que les fichiers existent:
+```python
+!cp data/processed/cloud_training_anomalies.csv \
+  "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models/cloud_training_anomalies.csv"
+```
 
+
+8. VERIFIER LES RESULTATS DANS COLAB
+------------------------------------
+
+```python
 from pathlib import Path
-
-for path in [
-    "models/isolation_forest_kaggle.joblib",
-    "data/processed/cloud_training_anomalies.csv",
-]:
-    p = Path(path)
-    print(path, p.exists(), p.stat().st_size if p.exists() else 0)
-
-Verifier rapidement le nombre d'anomalies:
-
 import pandas as pd
 
-df = pd.read_csv("data/processed/cloud_training_anomalies.csv", sep=";")
+model_path = Path("/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models/isolation_forest_colab.joblib")
+anom_path = Path("/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models/cloud_training_anomalies.csv")
+
+print("Modele existe:", model_path.exists())
+print("Taille modele:", model_path.stat().st_size if model_path.exists() else 0)
+
+df = pd.read_csv(anom_path, sep=";")
 print("Evenements:", len(df))
 print("Anomalies:", int(df["is_anomaly"].sum()))
 print("Taux:", float(df["is_anomaly"].mean()))
+```
+
+Un avertissement `DtypeWarning` peut apparaitre pendant la lecture du CSV. Il
+n'est pas bloquant: il signale seulement que certaines colonnes melangent des
+types differents, ce qui est attendu avec des journaux heterogenes.
 
 
-9. SAUVEGARDER LES ARTEFACTS KAGGLE
------------------------------------
+9. RESULTATS OBTENUS LE 29/05/2026
+----------------------------------
 
-Les fichiers importants sont:
+Experience Colab realisee avec les donnees Drive:
 
-models/isolation_forest_kaggle.joblib
-data/processed/cloud_training_anomalies.csv
+```text
+Dataset cloud fusionne: data/processed/cloud_training_dataset.csv
+Lignes totales: 287862
+Colonnes: 79
+Modele: Isolation Forest
+Contamination: 0.02
+Max categories one-hot: 200
+Anomalies candidates sur le dataset cloud: 5754
+Taux d'anomalies: 0.019988744606790752
+Modele sauvegarde: isolation_forest_colab.joblib
+Taille du modele: 2158082 octets
+```
 
-Pour faciliter le telechargement, les copier dans /kaggle/working/outputs:
+Interpretation:
 
-from pathlib import Path
-import shutil
-
-out = Path("/kaggle/working/outputs")
-out.mkdir(exist_ok=True)
-
-shutil.copy2(
-    "models/isolation_forest_kaggle.joblib",
-    out / "isolation_forest_kaggle.joblib",
-)
-
-shutil.copy2(
-    "data/processed/cloud_training_anomalies.csv",
-    out / "cloud_training_anomalies.csv",
-)
-
-Les fichiers places dans /kaggle/working peuvent ensuite etre recuperes depuis
-la section Output du Notebook Kaggle.
+- le taux observe est coherent avec `--contamination 0.02`;
+- le modele est reutilisable localement sans reentrainement;
+- l'artefact `.joblib` contient le modele et le schema des features.
 
 
-10. TELECHARGER LE MODELE
--------------------------
+10. RECUPERER LE MODELE EN LOCAL
+--------------------------------
 
-Depuis Kaggle:
+Depuis Google Drive, recuperer:
 
-1. ouvrir le Notebook termine;
-2. aller dans la zone Output;
-3. telecharger isolation_forest_kaggle.joblib;
-4. copier ce fichier localement dans:
+```text
+cloud_upload/logminer_cloud_models/isolation_forest_colab.joblib
+```
 
-models/isolation_forest_kaggle.joblib
+Le placer localement dans:
 
-Convention conseillee si plusieurs essais sont faits:
-
-models/isolation_forest_kaggle_hdfs_bgl_20260527.joblib
-models/isolation_forest_kaggle_windows_20260527.joblib
+```text
+models/isolation_forest_colab.joblib
+```
 
 
-11. UTILISER LE MODELE KAGGLE EN LOCAL
---------------------------------------
+11. UTILISER LE MODELE COLAB EN LOCAL
+-------------------------------------
 
 Depuis la racine du projet local:
 
-python src\logminer\agents\detector.py ^
-  -i data\processed\windows_copies_pipeline.csv ^
-  -o data\processed\anomalies_from_kaggle_model.csv ^
-  --model-in models\isolation_forest_kaggle.joblib
+```powershell
+python src\logminer\agents\detector.py `
+  -i data\processed\windows_copies_pipeline.csv `
+  -o data\processed\anomalies_from_colab_model.csv `
+  --model-in models\isolation_forest_colab.joblib
+```
 
-Le script va:
+Resultat obtenu localement le 29/05/2026:
 
-1. charger le modele Kaggle;
-2. reconstruire les features locales;
-3. realigner les colonnes sur le schema sauvegarde dans le .joblib;
-4. produire les anomalies dans:
+```text
+Evenements analyses: 61313
+Anomalies candidates: 81
+Modele charge: models\isolation_forest_colab.joblib
+```
 
-data/processed/anomalies_from_kaggle_model.csv
+Un avertissement de version scikit-learn peut apparaitre si Colab et le poste
+local n'utilisent pas la meme version:
 
+```text
+Modele entraine avec scikit-learn 1.6.1
+Modele charge localement avec scikit-learn 1.7.2
+```
 
-12. INTEGRER LE RESULTAT AU PIPELINE LOCAL
-------------------------------------------
-
-Apres inference locale, utiliser les anomalies produites pour la correlation:
-
-python src\logminer\agents\correlator.py ^
-  -i data\processed\anomalies_from_kaggle_model.csv ^
-  -o data\processed\incidents_from_kaggle_model.csv
-
-Si l'orchestrateur local accepte deja les chemins personnalises, utiliser le
-fichier anomalies_from_kaggle_model.csv comme sortie du detecteur.
+L'inference a fonctionne malgre cet avertissement. Pour une reproductibilite
+stricte, aligner les versions scikit-learn entre Colab et le poste local.
 
 
-13. CE QU'IL FAUT NOTER POUR LE MEMOIRE
----------------------------------------
+12. CORRELER LES ANOMALIES LOCALES
+----------------------------------
 
-Conserver dans le memoire ou dans les notes d'experimentation:
+```powershell
+python src\logminer\agents\correlator.py `
+  -i data\processed\anomalies_from_colab_model.csv `
+  -o data\processed\incidents_from_colab_model.csv
+```
 
-- nom du dataset Kaggle utilise;
-- nombre de lignes d'entrainement;
-- contamination choisie;
-- valeur de --max-categorical-unique;
-- temps approximatif d'entrainement;
-- taille du fichier .joblib;
-- nombre d'anomalies detectees sur le dataset cloud;
-- nombre d'anomalies detectees sur les logs locaux;
-- limites: entrainement non supervise, labels absents ou partiels, dependance
-  aux features disponibles dans les logs.
+Resultat obtenu:
+
+```text
+Incidents correles: 71
+```
+
+
+13. FORMULATION POUR LE MEMOIRE
+-------------------------------
 
 Exemple de formulation:
 
-"Le modele principal a ete entraine sur Kaggle afin de traiter un volume de
-donnees superieur aux capacites du poste local. L'artefact obtenu au format
-joblib contient a la fois le modele Isolation Forest et le schema des features,
-ce qui permet de le reutiliser localement sans reentrainement."
+> Le modele principal a ete entraine sur Google Colab afin de traiter un volume
+> de donnees superieur aux capacites pratiques du poste local. Les donnees
+> etaient stockees dans Google Drive et ont ete fusionnees dans un dataset de
+> 287 862 evenements. Le modele Isolation Forest a ete entraine avec un taux de
+> contamination fixe a 0,02, conduisant a l'identification de 5 754 anomalies
+> candidates. L'artefact obtenu au format joblib contient le modele et le schema
+> des features, ce qui permet sa reutilisation locale sans reentrainement. Lors
+> de l'inference locale sur 61 313 evenements Windows, le modele a identifie 81
+> anomalies candidates, ensuite regroupees en 71 incidents par l'agent de
+> correlation.
 
 
 14. PROBLEMES FREQUENTS
 -----------------------
 
-Probleme: FileNotFoundError sur cloud_training_dataset.csv
-Solution: verifier le chemin exact sous /kaggle/input ou /kaggle/working.
+Probleme: `credential propagation was unsuccessful`
+Solution: relancer Colab, deconnecter et supprimer le runtime, puis remonter
+Drive avec `force_remount=True`.
 
-Probleme: /kaggle/input est en lecture seule
-Solution: copier le projet dans /kaggle/working avant l'entrainement.
+Probleme: `fatal: destination path 'TFE' already exists`
+Solution: supprimer `/content/TFE` ou reutiliser le clone existant.
+
+Probleme: `FileNotFoundError` sur les donnees Drive
+Solution: verifier le chemin exact dans `MyDrive`, notamment les accents dans
+`Memoire` / `Mémoire`.
 
 Probleme: memoire insuffisante
-Solution: reduire --max-categorical-unique ou limiter les lignes avec
-scripts/build_cloud_training_dataset.py.
+Solution: reduire `--max-categorical-unique` a 100 ou diminuer
+`--max-rows-per-file`.
 
-Probleme: modele .joblib introuvable dans les outputs
-Solution: copier explicitement le fichier dans /kaggle/working/outputs.
-
-Probleme: resultats locaux incoherents
-Solution: verifier que le CSV local est bien normalise par Logminer et que
-l'option --model-in pointe vers le bon .joblib.
-
-
-15. COMMANDE LOCALE FINALE A RETENIR
-------------------------------------
-
-Une fois le modele Kaggle recupere:
-
-python src\logminer\agents\detector.py ^
-  -i data\processed\windows_copies_pipeline.csv ^
-  -o data\processed\anomalies_from_kaggle_model.csv ^
-  --model-in models\isolation_forest_kaggle.joblib
-
+Probleme: avertissement scikit-learn au chargement local
+Solution: aligner la version scikit-learn locale avec celle de Colab, ou noter
+cet ecart comme limite de reproductibilite.
