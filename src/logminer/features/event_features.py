@@ -1,4 +1,13 @@
-"""Conversion des evenements normalises en variables utilisables par le ML."""
+"""Conversion des evenements normalises en variables utilisables par le ML.
+
+Le projet manipule deux types de donnees:
+    - le schema Logminer normalise (`src_port`, `dst_port`, `severity`, etc.);
+    - des datasets reseau deja structures comme UNSW/CIC-DDoS, avec des
+      colonnes numeriques riches (`Flow Duration`, `Total Fwd Packets`, etc.).
+
+Le constructeur de features doit donc rester compatible avec le schema commun,
+mais aussi recuperer les colonnes numeriques utiles des datasets reseau.
+"""
 
 from __future__ import annotations
 
@@ -10,7 +19,35 @@ import pandas as pd
 
 NUMERIC_COLUMNS = ["src_port", "dst_port", "http_status", "bytes_sent", "length", "pid", "tid"]
 CATEGORICAL_COLUMNS = ["dataset", "subtype", "severity", "category", "subcategory"]
-OPTIONAL_CATEGORICAL_COLUMNS = ["event", "source", "host"]
+OPTIONAL_CATEGORICAL_COLUMNS = ["event", "source", "host", "proto", "protocol", "service", "state"]
+
+# Colonnes a ne pas injecter comme variables ML generiques. Les labels doivent
+# rester reserves a l'evaluation; les identifiants/timestamps risquent surtout
+# d'apprendre la provenance ou l'ordre des lignes au lieu du comportement.
+EXCLUDED_GENERIC_COLUMNS = {
+    "label",
+    "attack_cat",
+    "class",
+    "target",
+    "is_anomaly",
+    "anomaly_score",
+    "anomaly_rank",
+    "timestamp_iso",
+    "timestamp",
+    "timecreated",
+    "date_raw",
+    "timestamp_raw",
+    "filepath",
+    "file",
+    "flow id",
+    "source ip",
+    "destination ip",
+    "src_ip",
+    "dst_ip",
+    "message",
+    "content",
+    "eventtemplate",
+}
 
 SEVERITY_SCORE = {
     "": 0,
@@ -30,7 +67,43 @@ def load_events(csv_path: str | Path, sep: str = ";") -> pd.DataFrame:
 
 
 def _to_numeric(series: pd.Series) -> pd.Series:
-    return pd.to_numeric(series, errors="coerce").fillna(0)
+    # Certains datasets reseau utilisent des virgules ou des valeurs Infinity.
+    cleaned = series.astype(str).str.replace(",", ".", regex=False)
+    cleaned = cleaned.replace({"Infinity": "", "inf": "", "-inf": ""})
+    return pd.to_numeric(cleaned, errors="coerce").fillna(0)
+
+
+def _safe_feature_name(column: str) -> str:
+    return "num_" + "".join(ch.lower() if ch.isalnum() else "_" for ch in str(column)).strip("_")
+
+
+def _generic_numeric_features(events: pd.DataFrame, existing: set[str]) -> pd.DataFrame:
+    """Recupere les colonnes numeriques utiles hors schema Logminer.
+
+    C'est indispensable pour UNSWNB15/CIC-DDoS: leurs variables reseau sont
+    deja calculees mais ne portent pas les noms normalises de Logminer.
+    """
+
+    features = pd.DataFrame(index=events.index)
+    for column in events.columns:
+        normalized = str(column).strip().lower().lstrip("\ufeff")
+        if normalized in existing or normalized in EXCLUDED_GENERIC_COLUMNS:
+            continue
+
+        values = _to_numeric(events[column])
+        # On garde une colonne seulement si elle contient assez de valeurs
+        # numeriques non nulles et si elle varie. Cela evite d'ajouter du bruit.
+        raw_numeric = pd.to_numeric(events[column].astype(str).str.replace(",", ".", regex=False), errors="coerce")
+        if raw_numeric.notna().mean() < 0.8:
+            continue
+        if values.nunique(dropna=False) <= 1:
+            continue
+
+        feature_name = _safe_feature_name(column)
+        if feature_name not in features.columns:
+            features[feature_name] = values
+
+    return features
 
 
 def _message_features(events: pd.DataFrame) -> pd.DataFrame:
@@ -91,20 +164,24 @@ def build_feature_frame(
     """
 
     features = pd.DataFrame(index=events.index)
+    used_numeric_columns: set[str] = set()
 
     for column in NUMERIC_COLUMNS:
         if column in events.columns:
             features[column] = _to_numeric(events[column])
+            used_numeric_columns.add(column.lower())
 
     for column in include_columns or []:
         if column in events.columns and column not in features.columns:
             features[column] = _to_numeric(events[column])
+            used_numeric_columns.add(column.lower())
 
     severity = events.get("severity", pd.Series("", index=events.index)).astype(str).str.upper()
     features["severity_score"] = severity.map(SEVERITY_SCORE).fillna(0).astype(int)
 
     parts = [
         features,
+        _generic_numeric_features(events, used_numeric_columns),
         _message_features(events),
         _time_features(events),
         _categorical_features(events, max_categorical_unique),

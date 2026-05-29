@@ -93,7 +93,10 @@ def _infer_csv_sep(path: Path, sep: str) -> str:
     if sep.lower() != "auto":
         return sep
 
-    sample = path.read_text(encoding="utf-8-sig", errors="ignore")[:8192]
+    # On se limite a l'en-tete. Les messages de logs contiennent souvent des
+    # virgules, ce qui peut faire croire a tort qu'un CSV `;` est separe par `,`.
+    with path.open("r", encoding="utf-8-sig", errors="ignore", newline="") as f_in:
+        sample = f_in.readline()
     candidates = [";", ",", "\t"]
     return max(candidates, key=sample.count)
 

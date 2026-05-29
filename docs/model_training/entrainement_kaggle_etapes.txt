@@ -698,11 +698,20 @@ type de journal:
 src/logminer/agents/model_router.py
 ```
 
+Le routage se base sur un profil de features de l'echantillon, pas seulement sur
+le nom du fichier: colonnes actives, valeurs non vides, IP/ports/protocoles,
+EventID Windows, BlockId HDFS, marqueurs BGL/Linux, densite numerique et
+marqueurs textuels.
+
 Principe:
 
 ```text
-logs systeme/Windows/HDFS/BGL/syslog -> models/isolation_forest_colab.joblib
-logs reseau/tcpdump/pcap/UNSW -> models/isolation_forest_network_colab.joblib
+Windows/Event/Security -> models/isolation_forest_windows_local.joblib
+HDFS                   -> models/isolation_forest_hdfs_colab.joblib
+BGL                    -> models/isolation_forest_bgl_colab.joblib
+Reseau/tcpdump/UNSW    -> models/isolation_forest_network_colab.joblib
+Linux/syslog           -> models/isolation_forest_linux_colab.joblib
+Inconnu/fallback       -> models/isolation_forest_colab.joblib
 ```
 
 Tester seulement la route choisie:
@@ -735,6 +744,122 @@ python src\logminer\agents\model_router.py `
 Tant que le modele reseau Colab n'est pas encore recupere localement, le mode
 `--detect` pour les logs reseau signale que le fichier modele est absent. Le
 mode routeur reste utilisable pour verifier l'orientation.
+
+Tests de routage observes:
+
+```text
+windows_security_pipeline.csv -> windows -> models/isolation_forest_windows_local.joblib
+outside_tcp_dump_sample.csv -> network -> models/isolation_forest_network_colab.joblib
+hdfs.csv -> hdfs -> models/isolation_forest_hdfs_colab.joblib
+bgl.csv -> bgl -> models/isolation_forest_bgl_colab.joblib
+```
+
+
+14E. ENTRAINEMENT COLAB PAR TYPE DE LOG
+---------------------------------------
+
+Le modele global initial a montre une limite: les anomalies ne se repartissent
+pas de maniere coherente par dataset. Certains formats, comme
+`Linux_2k.log_structured`, peuvent etre marques entierement atypiques parce
+qu'ils sont tres differents du reste. Pour maximiser la qualite de detection,
+l'architecture retenue devient donc multi-modeles:
+
+```text
+un type de logs -> un modele specialise -> routeur -> detection
+```
+
+Apres montage Drive, clone du projet et installation des dependances, entrainer
+les modeles separement.
+
+Modele Windows:
+
+```bash
+python scripts/build_cloud_training_dataset.py \
+  --input-file "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_data/train/windows_copies_pipeline.csv" \
+  --input-file "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_data/train/windows_recent_events.csv" \
+  --sep auto \
+  --output data/processed/windows_training_dataset.csv \
+  --max-rows-per-file 100000
+
+python src/logminer/agents/detector.py \
+  -i data/processed/windows_training_dataset.csv \
+  -o data/processed/windows_training_anomalies.csv \
+  --contamination 0.02 \
+  --max-categorical-unique 250 \
+  --model-out "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models/isolation_forest_windows_colab.joblib"
+```
+
+Modele HDFS:
+
+```bash
+python scripts/build_cloud_training_dataset.py \
+  --input-file "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_data/train/hdfs.csv" \
+  --sep auto \
+  --output data/processed/hdfs_training_dataset.csv \
+  --max-rows-per-file 100000
+
+python src/logminer/agents/detector.py \
+  -i data/processed/hdfs_training_dataset.csv \
+  -o data/processed/hdfs_training_anomalies.csv \
+  --contamination 0.02 \
+  --max-categorical-unique 250 \
+  --model-out "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models/isolation_forest_hdfs_colab.joblib"
+```
+
+Modele BGL:
+
+```bash
+python scripts/build_cloud_training_dataset.py \
+  --input-file "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_data/train/bgl.csv" \
+  --sep auto \
+  --output data/processed/bgl_training_dataset.csv \
+  --max-rows-per-file 100000
+
+python src/logminer/agents/detector.py \
+  -i data/processed/bgl_training_dataset.csv \
+  -o data/processed/bgl_training_anomalies.csv \
+  --contamination 0.02 \
+  --max-categorical-unique 250 \
+  --model-out "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models/isolation_forest_bgl_colab.joblib"
+```
+
+Modele Linux/syslog:
+
+```bash
+python scripts/build_cloud_training_dataset.py \
+  --input-file "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_data/train/Linux_2k.log_structured.csv" \
+  --sep auto \
+  --output data/processed/linux_training_dataset.csv \
+  --max-rows-per-file 100000
+
+python src/logminer/agents/detector.py \
+  -i data/processed/linux_training_dataset.csv \
+  -o data/processed/linux_training_anomalies.csv \
+  --contamination 0.02 \
+  --max-categorical-unique 250 \
+  --model-out "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models/isolation_forest_linux_colab.joblib"
+```
+
+Modele reseau:
+
+```bash
+python scripts/build_cloud_training_dataset.py \
+  --input-dir "/content/logminer_network_data/UNSWNB15" \
+  --input-file "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_data/train/outside_tcp_dump.csv" \
+  --input-file "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_data/train/outside_tcp_dump_part001.csv" \
+  --recursive \
+  --sep auto \
+  --dedupe name-size \
+  --output data/processed/network_training_dataset.csv \
+  --max-rows-per-file 100000
+
+python src/logminer/agents/detector.py \
+  -i data/processed/network_training_dataset.csv \
+  -o data/processed/network_training_anomalies.csv \
+  --contamination 0.02 \
+  --max-categorical-unique 250 \
+  --model-out "/content/drive/MyDrive/Mémoire/cloud_upload/logminer_cloud_models/isolation_forest_network_colab.joblib"
+```
 
 
 15. FORMULATION POUR LE MEMOIRE
