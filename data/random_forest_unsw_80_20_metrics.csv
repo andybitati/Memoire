@@ -1,0 +1,2 @@
+﻿dataset;model;events;anomalies;anomaly_rate;precision;recall;f1;accuracy;specificity;tp;fp;fn;tn;notes
+unsw_nb15_80_20;random_forest;1474193;1472925;0.99914;0.999999;0.999932;0.999965;0.999931;0.998291;1472923;2;100;1168;RandomForest supervise, entrainement sur echantillon equilibre du train 80%, test par chunks sur le test 20%

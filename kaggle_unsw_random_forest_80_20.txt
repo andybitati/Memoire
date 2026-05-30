@@ -1,0 +1,388 @@
+# Kaggle - UNSWNB15.zip - RandomForest 80/20
+
+Ce fichier contient les cellules a copier dans un notebook Kaggle une fois que
+`UNSWNB15.zip` est uploade comme Dataset Kaggle.
+
+Sur Kaggle:
+- les donnees importees sont dans `/kaggle/input`;
+- les sorties sauvegardees sont dans `/kaggle/working`.
+
+
+## 1. Rechercher le zip ou les fichiers UNSWNB15
+
+```python
+from pathlib import Path
+
+INPUT_ROOT = Path("/kaggle/input")
+WORK_DIR = Path("/kaggle/working")
+
+for p in INPUT_ROOT.rglob("*"):
+    name = p.name.upper()
+    if "UNSW" in name or "NB15" in name or p.suffix.lower() == ".zip":
+        print(p)
+```
+
+
+## 2. Definir le chemin du zip et extraire
+
+Adapte `ZIP_PATH` avec le chemin affiche par la cellule precedente.
+
+```python
+from pathlib import Path
+import zipfile
+import shutil
+
+ZIP_PATH = Path("/kaggle/input/ton-dataset/UNSWNB15.zip")  # <-- adapte ici
+
+EXTRACT_DIR = Path("/kaggle/working/UNSWNB15_extracted")
+
+if EXTRACT_DIR.exists():
+    shutil.rmtree(EXTRACT_DIR)
+
+EXTRACT_DIR.mkdir(parents=True, exist_ok=True)
+
+with zipfile.ZipFile(ZIP_PATH, "r") as z:
+    z.extractall(EXTRACT_DIR)
+
+print("Extraction terminee:", EXTRACT_DIR)
+```
+
+Si les CSV sont deja extraits dans `/kaggle/input`, saute la cellule
+d'extraction et mets directement:
+
+```python
+EXTRACT_DIR = Path("/kaggle/input/ton-dataset/UNSWNB15")
+```
+
+
+## 3. Verifier les CSV attendus
+
+```python
+EXPECTED_FILES = [
+    "DrDoS_DNS_data_1_per.csv",
+    "DrDoS_LDAP_data_2_0_per.csv",
+    "DrDoS_MSSQL_data_1_3_per.csv",
+    "DrDoS_NetBIOS_data_1_3_per.csv",
+    "DrDoS_NTP_data_data_5_per.csv",
+    "DrDoS_SNMP_data_1_3_per.csv",
+    "DrDoS_SSDP_data_2_per.csv",
+    "DrDoS_UDP_data_2_per.csv",
+    "syn_data.csv",
+    "UDPLag_data_2_0_per.csv",
+]
+
+found = {p.name: p for p in EXTRACT_DIR.rglob("*.csv")}
+csv_paths = [found[name] for name in EXPECTED_FILES if name in found]
+missing = [name for name in EXPECTED_FILES if name not in found]
+
+print("CSV trouves:", len(csv_paths))
+for p in csv_paths:
+    print(round(p.stat().st_size / 1024**3, 3), "Go -", p)
+
+if missing:
+    print("Manquants:")
+    for name in missing:
+        print("-", name)
+
+if not csv_paths:
+    raise FileNotFoundError("Aucun CSV attendu trouve.")
+```
+
+
+## 4. Creer le split 80/20 par chunks
+
+Cette cellule lit tous les CSV par morceaux. Elle ne charge pas les 13 Go en RAM.
+
+```python
+import pandas as pd
+import numpy as np
+
+OUT_DIR = Path("/kaggle/working/unsw_80_20")
+OUT_DIR.mkdir(parents=True, exist_ok=True)
+
+TRAIN_CSV = OUT_DIR / "unsw_nb15_train_80.csv"
+TEST_CSV = OUT_DIR / "unsw_nb15_test_20.csv"
+
+for p in [TRAIN_CSV, TEST_CSV]:
+    if p.exists():
+        p.unlink()
+
+rng = np.random.default_rng(42)
+first_train = True
+first_test = True
+
+train_rows = 0
+test_rows = 0
+train_attacks = 0
+
+CHUNKSIZE = 50_000
+
+for path in csv_paths:
+    print("Traitement:", path.name)
+
+    for chunk in pd.read_csv(path, chunksize=CHUNKSIZE):
+        chunk.columns = chunk.columns.str.strip()
+        chunk.insert(0, "dataset", path.stem)
+
+        if "Label" not in chunk.columns:
+            raise ValueError(f"Colonne Label introuvable dans {path.name}")
+
+        chunk["label"] = (
+            chunk["Label"]
+            .astype(str)
+            .str.strip()
+            .str.upper()
+            .ne("BENIGN")
+            .astype(int)
+        )
+
+        mask = rng.random(len(chunk)) < 0.80
+
+        train_part = chunk.loc[mask]
+        test_part = chunk.loc[~mask]
+
+        train_part.to_csv(TRAIN_CSV, sep=";", index=False, mode="a", header=first_train)
+        test_part.to_csv(TEST_CSV, sep=";", index=False, mode="a", header=first_test)
+
+        first_train = False
+        first_test = False
+
+        train_rows += len(train_part)
+        test_rows += len(test_part)
+        train_attacks += int(train_part["label"].sum())
+
+print("Train:", train_rows)
+print("Test :", test_rows)
+print("Taux attaques train:", train_attacks / max(train_rows, 1))
+```
+
+
+## 5. Fonctions de preparation RandomForest
+
+```python
+import pandas as pd
+import numpy as np
+
+DROP_COLS = [
+    "label", "Label",
+    "Flow ID", "Source IP", "Destination IP", "Timestamp",
+    "Unnamed: 0", "dataset"
+]
+
+def prepare_xy(df, feature_columns=None):
+    df.columns = df.columns.str.strip()
+
+    y = pd.to_numeric(df["label"], errors="coerce").fillna(0).astype(int)
+
+    X = df.drop(columns=[c for c in DROP_COLS if c in df.columns], errors="ignore")
+
+    if feature_columns is not None:
+        X = X.reindex(columns=feature_columns, fill_value=0)
+
+    X = X.replace(["Infinity", "inf", "-inf", "NaN", "nan"], np.nan)
+
+    for col in X.columns:
+        X[col] = X[col].astype(str).str.replace(",", ".", regex=False)
+
+    X = X.apply(pd.to_numeric, errors="coerce").fillna(0).astype("float32")
+    return X, y
+```
+
+
+## 6. Construire un echantillon equilibre du train 80%
+
+Ce choix evite de faire planter Kaggle et donne un modele supervise plus stable.
+
+```python
+MAX_NORMAL = 50_000
+MAX_ATTACK = 50_000
+
+normal_parts = []
+attack_parts = []
+
+normal_count = 0
+attack_count = 0
+
+for chunk in pd.read_csv(TRAIN_CSV, sep=";", chunksize=CHUNKSIZE):
+    chunk.columns = chunk.columns.str.strip()
+
+    y_chunk = pd.to_numeric(chunk["label"], errors="coerce").fillna(0).astype(int)
+
+    normal_chunk = chunk[y_chunk == 0]
+    attack_chunk = chunk[y_chunk == 1]
+
+    if normal_count < MAX_NORMAL and len(normal_chunk) > 0:
+        take = min(len(normal_chunk), MAX_NORMAL - normal_count)
+        normal_parts.append(normal_chunk.sample(n=take, random_state=42))
+        normal_count += take
+
+    if attack_count < MAX_ATTACK and len(attack_chunk) > 0:
+        take = min(len(attack_chunk), MAX_ATTACK - attack_count)
+        attack_parts.append(attack_chunk.sample(n=take, random_state=42))
+        attack_count += take
+
+    print("Normal:", normal_count, "Attack:", attack_count)
+
+    if normal_count >= MAX_NORMAL and attack_count >= MAX_ATTACK:
+        break
+
+train_sample = pd.concat(normal_parts + attack_parts, ignore_index=True)
+train_sample = train_sample.sample(frac=1, random_state=42).reset_index(drop=True)
+
+X_train, y_train = prepare_xy(train_sample)
+FEATURE_COLUMNS = list(X_train.columns)
+
+print("Echantillon:", X_train.shape)
+print(y_train.value_counts())
+```
+
+
+## 7. Entrainer et sauvegarder RandomForest
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+import joblib
+
+RF_MODEL_PATH = OUT_DIR / "random_forest_network_unsw_80_20.joblib"
+
+rf = RandomForestClassifier(
+    n_estimators=50,
+    max_depth=15,
+    min_samples_leaf=2,
+    max_features="sqrt",
+    class_weight="balanced",
+    random_state=42,
+    n_jobs=2,
+    verbose=1
+)
+
+rf.fit(X_train, y_train)
+
+joblib.dump({
+    "model_type": "random_forest",
+    "model": rf,
+    "feature_columns": FEATURE_COLUMNS,
+    "metadata": {
+        "dataset": "UNSWNB15",
+        "split": "80/20",
+        "train_sample_rows": int(len(X_train)),
+        "normal_sample": int((y_train == 0).sum()),
+        "attack_sample": int((y_train == 1).sum()),
+    }
+}, RF_MODEL_PATH)
+
+print("Modele sauvegarde:", RF_MODEL_PATH)
+```
+
+
+## 8. Tester par chunks et produire les metriques
+
+```python
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+
+all_true = []
+all_pred = []
+
+for chunk in pd.read_csv(TEST_CSV, sep=";", chunksize=CHUNKSIZE):
+    X_chunk, y_chunk = prepare_xy(chunk, feature_columns=FEATURE_COLUMNS)
+    pred_chunk = rf.predict(X_chunk)
+
+    all_true.append(y_chunk.to_numpy())
+    all_pred.append(pred_chunk)
+
+y_test = np.concatenate(all_true)
+y_pred = np.concatenate(all_pred)
+
+tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
+specificity = tn / max(tn + fp, 1)
+
+row = {
+    "dataset": "unsw_nb15_80_20",
+    "model": "random_forest",
+    "events": int(len(y_test)),
+    "anomalies": int(y_pred.sum()),
+    "anomaly_rate": round(float(y_pred.mean()), 6),
+    "precision": round(float(precision_score(y_test, y_pred, zero_division=0)), 6),
+    "recall": round(float(recall_score(y_test, y_pred, zero_division=0)), 6),
+    "f1": round(float(f1_score(y_test, y_pred, zero_division=0)), 6),
+    "accuracy": round(float(accuracy_score(y_test, y_pred)), 6),
+    "specificity": round(float(specificity), 6),
+    "tp": int(tp),
+    "fp": int(fp),
+    "fn": int(fn),
+    "tn": int(tn),
+    "notes": "RandomForest supervise sur donnees reseau, split 80/20, test par chunks sur Kaggle",
+}
+
+RF_METRICS_CSV = OUT_DIR / "random_forest_unsw_80_20_metrics.csv"
+RF_SUMMARY_TXT = OUT_DIR / "random_forest_unsw_80_20_resume.txt"
+
+metrics_df = pd.DataFrame([row])
+metrics_df.to_csv(RF_METRICS_CSV, sep=";", index=False, encoding="utf-8-sig")
+
+with open(RF_SUMMARY_TXT, "w", encoding="utf-8") as f:
+    f.write("Resume RandomForest UNSWNB15 80/20\n")
+    f.write("==================================\n\n")
+    for k, v in row.items():
+        f.write(f"{k}: {v}\n")
+
+display(metrics_df)
+
+print("Accuracy :", row["accuracy"])
+print("Precision:", row["precision"])
+print("Recall   :", row["recall"])
+print("F1-score :", row["f1"])
+print("Specificity:", row["specificity"])
+print("TP:", row["tp"], "FP:", row["fp"], "FN:", row["fn"], "TN:", row["tn"])
+print("Modele:", RF_MODEL_PATH)
+print("Metriques:", RF_METRICS_CSV)
+print("Resume:", RF_SUMMARY_TXT)
+```
+
+
+## 9. Compresser les sorties pour telechargement
+
+```python
+import shutil
+
+ARCHIVE_PATH = shutil.make_archive(
+    "/kaggle/working/unsw_80_20_random_forest_results",
+    "zip",
+    OUT_DIR
+)
+
+print("Archive creee:", ARCHIVE_PATH)
+```
+
+
+## Reglages si Kaggle plante
+
+Commencer avec:
+
+```python
+CHUNKSIZE = 50_000
+MAX_NORMAL = 50_000
+MAX_ATTACK = 50_000
+```
+
+Si Kaggle plante encore:
+
+```python
+CHUNKSIZE = 20_000
+MAX_NORMAL = 25_000
+MAX_ATTACK = 25_000
+```
+
+Si Kaggle tient bien et que tu veux un modele plus robuste:
+
+```python
+MAX_NORMAL = 100_000
+MAX_ATTACK = 100_000
+```
+
+Puis augmenter legerement RandomForest:
+
+```python
+n_estimators=80
+max_depth=20
+```
