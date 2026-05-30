@@ -26,6 +26,8 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+import joblib
+import numpy as np
 import pandas as pd
 
 
@@ -42,7 +44,7 @@ MODEL_DEFAULTS = {
     "windows": "models/isolation_forest_windows_local.joblib",
     "hdfs": "models/isolation_forest_hdfs_colab.joblib",
     "bgl": "models/isolation_forest_bgl_colab.joblib",
-    "network": "models/isolation_forest_network_colab.joblib",
+    "network": "models/random_forest_network_unsw_80_20_sampled.joblib",
     "linux": "models/isolation_forest_linux_colab.joblib",
     "fallback": "models/isolation_forest_colab.joblib",
 }
@@ -406,6 +408,123 @@ def _default_output(input_path: Path, suffix: str) -> Path:
     return Path("data/processed") / f"{stem}_{suffix}.csv"
 
 
+SUPERVISED_DROP_COLUMNS = {
+    "label",
+    "Label",
+    "Flow ID",
+    "Source IP",
+    "Destination IP",
+    "Timestamp",
+    "Unnamed: 0",
+    "dataset",
+}
+
+
+def _supervised_features(events: pd.DataFrame, feature_columns: list[str]) -> pd.DataFrame:
+    """Prepare les features attendues par un modele supervise tabulaire.
+
+    Le RandomForest reseau a ete entraine directement sur les colonnes CIC/DDoS
+    (`Flow Duration`, `Total Fwd Packets`, etc.), et non sur les features
+    generiques de `detector.py`. Le routeur garde donc une preparation dediee.
+    """
+
+    chunk = events.copy()
+    chunk.columns = chunk.columns.astype(str).str.strip()
+    features = chunk.drop(columns=[column for column in SUPERVISED_DROP_COLUMNS if column in chunk.columns], errors="ignore")
+    features = features.reindex(columns=feature_columns, fill_value=0)
+    features = features.replace(["Infinity", "INF", "inf", "-inf", "-Infinity", "NaN", "nan"], np.nan)
+
+    for column in features.columns:
+        features[column] = features[column].astype(str).str.replace(",", ".", regex=False)
+
+    features = features.apply(pd.to_numeric, errors="coerce")
+    features = features.replace([np.inf, -np.inf], np.nan).fillna(0)
+    features = features.clip(lower=-1e12, upper=1e12)
+    return features.astype("float64")
+
+
+def _positive_class_probability(model: object, features: pd.DataFrame, labels: np.ndarray) -> np.ndarray:
+    """Retourne la probabilite d'attaque si le modele l'expose."""
+
+    if hasattr(model, "predict_proba"):
+        probabilities = model.predict_proba(features)
+        classes = list(getattr(model, "classes_", []))
+        if 1 in classes:
+            return probabilities[:, classes.index(1)]
+        if len(classes) >= 2:
+            return probabilities[:, -1]
+    return labels.astype(float)
+
+
+def _detect_supervised_model(
+    input_csv: str | Path,
+    output_csv: str | Path,
+    *,
+    sep: str,
+    artifact: dict[str, object],
+    chunksize: int = 100000,
+) -> str:
+    """Score un CSV avec un artefact supervise sauvegarde au format Logminer."""
+
+    model = artifact["model"]
+    if hasattr(model, "n_jobs"):
+        # Les artefacts Colab/Kaggle peuvent avoir ete entraines avec n_jobs>1.
+        # En inference locale routee, un seul worker evite les erreurs de pool
+        # Windows/sandbox sans changer les predictions.
+        model.n_jobs = 1
+    if hasattr(model, "verbose"):
+        model.verbose = 0
+    feature_columns = list(artifact["feature_columns"])
+    input_path = Path(input_csv)
+    output_path = Path(output_csv)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    csv_sep = _infer_sep(input_path) if sep.lower() == "auto" else sep
+    if input_path.suffix.lower() == ".parquet":
+        chunks = [pd.read_parquet(input_path)]
+    else:
+        chunks = pd.read_csv(input_path, sep=csv_sep, dtype=str, keep_default_na=False, chunksize=chunksize)
+
+    write_header = True
+    total = 0
+    anomaly_count = 0
+    for events in chunks:
+        features = _supervised_features(events, feature_columns)
+        labels = model.predict(features).astype(int)
+        probabilities = _positive_class_probability(model, features, labels)
+
+        result = events.copy()
+        # Convention Logminer: les scores les plus bas sont les plus anormaux.
+        result["anomaly_score"] = -probabilities
+        result["is_anomaly"] = (labels == 1).astype(int)
+        result["anomaly_rank"] = pd.Series(result["anomaly_score"]).rank(method="first", ascending=True).astype(int) + total
+
+        result.sort_values(["is_anomaly", "anomaly_score"], ascending=[False, True]).to_csv(
+            output_path,
+            sep=csv_sep,
+            index=False,
+            encoding="utf-8-sig",
+            mode="w" if write_header else "a",
+            header=write_header,
+        )
+        write_header = False
+        total += len(result)
+        anomaly_count += int(result["is_anomaly"].sum())
+
+    print(f"CSV anomalies: {output_path}")
+    print(f"Evenements analyses: {total}")
+    print(f"Anomalies candidates: {anomaly_count}")
+    print(f"Modele supervise charge: {artifact.get('model_type', type(model).__name__)}")
+    return str(output_path)
+
+
+def _load_model_artifact(path: Path) -> dict[str, object]:
+    artifact = joblib.load(path)
+    if not isinstance(artifact, dict) or "model" not in artifact:
+        raise ValueError(f"Artefact modele invalide: {path}")
+    return artifact
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Agent routeur systeme/reseau pour choisir le bon modele")
     parser.add_argument("-i", "--input", required=True, help="CSV/Parquet normalise ou fichier brut a classifier")
@@ -449,8 +568,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     if not args.detect:
         return 0
 
-    # Etape 2 optionnelle: lancer le detecteur avec le modele route. Pour les
-    # logs reseau, cela necessite d'avoir recupere le modele Colab reseau.
+    # Etape 2 optionnelle: lancer le detecteur avec le modele route.
     model_path = Path(str(route["model"]))
     if not model_path.exists():
         raise FileNotFoundError(f"Modele choisi introuvable: {model_path}")
@@ -463,10 +581,17 @@ def main(argv: Optional[list[str]] = None) -> int:
         else _default_output(input_path, f"{route['family']}_incidents")
     )
 
-    # Le detecteur lit un CSV avec separateur explicite. Si le routeur a detecte
-    # automatiquement le separateur, on garde la convention Logminer `;`.
-    detect_anomalies(args.input, anomalies_output, sep=";" if args.sep == "auto" else args.sep, model_in=model_path)
-    correlate_anomalies(anomalies_output, incidents_output, window_minutes=args.window_minutes)
+    artifact = _load_model_artifact(model_path)
+    if artifact.get("model_type") == "random_forest":
+        _detect_supervised_model(args.input, anomalies_output, sep=args.sep, artifact=artifact)
+        correlation_sep = _infer_sep(anomalies_output) if args.sep == "auto" else args.sep
+        correlate_anomalies(anomalies_output, incidents_output, sep=correlation_sep, window_minutes=args.window_minutes)
+    else:
+        # Le detecteur Isolation Forest lit un CSV avec separateur explicite. Si
+        # le routeur a detecte automatiquement le separateur, on garde la
+        # convention Logminer `;`.
+        detect_anomalies(args.input, anomalies_output, sep=";" if args.sep == "auto" else args.sep, model_in=model_path)
+        correlate_anomalies(anomalies_output, incidents_output, window_minutes=args.window_minutes)
 
     print(f"CSV anomalies: {anomalies_output}")
     print(f"CSV incidents: {incidents_output}")

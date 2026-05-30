@@ -182,7 +182,8 @@ def correlate_anomalies(
         incidents.to_csv(output_path, sep=sep, index=False, encoding="utf-8-sig")
         return str(output_path)
 
-    timestamps = pd.to_datetime(anomalies.get("timestamp_iso", ""), errors="coerce", utc=True)
+    raw_timestamps = anomalies.get("timestamp_iso", pd.Series("", index=anomalies.index))
+    timestamps = pd.to_datetime(raw_timestamps, errors="coerce", utc=True)
     anomalies["timestamp_dt"] = timestamps
     anomalies["time_window"] = timestamps.dt.floor(f"{max(window_minutes, 1)}min").astype(str).fillna("unknown")
 
