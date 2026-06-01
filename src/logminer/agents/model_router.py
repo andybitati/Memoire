@@ -5,7 +5,10 @@ Cet agent choisit le modele d'anomalie adapte a la famille du journal:
 - windows: Windows Event, Security, System, Application;
 - hdfs: journaux HDFS;
 - bgl: journaux BlueGene/L;
+- wazuh: alertes Wazuh/Elastic, auditd, syscheck, SCA, web-accesslog;
 - network: tcpdump, pcap, UNSWNB15, flux IP/ports/protocoles;
+- network_cicids: flux CICIDS/MachineLearningCVE;
+- linux_auth: authentification Linux tabulaire;
 - linux: syslog/Linux structure;
 - fallback: modele general si la famille reste incertaine.
 
@@ -44,7 +47,10 @@ MODEL_DEFAULTS = {
     "windows": "models/isolation_forest_windows_local.joblib",
     "hdfs": "models/isolation_forest_hdfs_colab.joblib",
     "bgl": "models/isolation_forest_bgl_colab.joblib",
+    "wazuh": "models/isolation_forest_wazuh.joblib",
     "network": "models/random_forest_network_unsw_80_20_sampled.joblib",
+    "network_cicids": "models/random_forest_network_cicids.joblib",
+    "linux_auth": "models/random_forest_linux_auth.joblib",
     "linux": "models/isolation_forest_linux_colab.joblib",
     "fallback": "models/isolation_forest_colab.joblib",
 }
@@ -65,8 +71,11 @@ FAMILY_LABELS = {
     "windows": ("windows", "win_event", "security.evtx", "microsoft-windows", "security-auditing"),
     "hdfs": ("hdfs", "blk_", "dfs."),
     "bgl": ("bgl", "bluegene", "ras"),
+    "wazuh": ("wazuh", "ossec", "_source.rule", "_source.decoder", "syscheck", "auditd", "web-accesslog"),
+    "network_cicids": ("machinelearningcve", "workinghours", "cicids", "iscx", "pcap_iscx"),
     "network": ("pcap", "tcpdump", "unsw", "ddos", "drdos", "tcp", "udp", "icmp"),
-    "linux": ("linux", "syslog", "ubuntu", "kernel"),
+    "linux_auth": ("linux_auth", "auth", "sshd", "sudo"),
+    "linux": ("linux", "syslog", "ubuntu", "kernel", "auth", "sshd", "sudo"),
 }
 IP_RE = re.compile(r"\b\d{1,3}(?:\.\d{1,3}){3}\b")
 PORT_RE = re.compile(r"^\d{1,5}$")
@@ -109,8 +118,40 @@ FAMILY_COLUMNS = {
     "windows": SYSTEM_COLUMNS | {"recno", "session"},
     "hdfs": {"blockid", "block_id", "blk", "event", "component"},
     "bgl": {"event", "component", "severity", "source"},
+    "wazuh": {
+        "_source.rule.level",
+        "_source.rule.description",
+        "_source.rule.groups",
+        "_source.decoder.name",
+        "_source.full_log",
+        "_source.@timestamp",
+        "wazuh_rule_level",
+        "wazuh_decoder",
+    },
+    "network_cicids": {
+        "destination port",
+        "flow duration",
+        "total fwd packets",
+        "total backward packets",
+        "flow bytes/s",
+        "flow packets/s",
+        "label",
+    },
     "network": NETWORK_COLUMNS,
-    "linux": {"facility", "program", "severity", "host", "pid", "message"},
+    "linux_auth": {"server", "username", "attempts", "status", "anomaly_label", "service"},
+    "linux": {
+        "facility",
+        "program",
+        "severity",
+        "host",
+        "pid",
+        "message",
+        "server",
+        "username",
+        "attempts",
+        "status",
+        "anomaly_label",
+    },
 }
 
 
@@ -128,10 +169,14 @@ def _read_sample(path: Path, sep: str, nrows: int) -> pd.DataFrame:
     if suffix == ".parquet":
         # Les fichiers UNSW Parquet sont deja structures; quelques lignes
         # suffisent pour identifier leurs colonnes reseau.
-        return pd.read_parquet(path).head(nrows).astype(str)
+        df = pd.read_parquet(path).head(nrows).astype(str)
+        df.columns = [str(column).strip().lstrip("\ufeff") for column in df.columns]
+        return df
 
     csv_sep = _infer_sep(path) if sep.lower() == "auto" else sep
-    return pd.read_csv(path, sep=csv_sep, dtype=str, keep_default_na=False, nrows=nrows)
+    df = pd.read_csv(path, sep=csv_sep, dtype=str, keep_default_na=False, nrows=nrows)
+    df.columns = [str(column).strip().lstrip("\ufeff") for column in df.columns]
+    return df
 
 
 def _series_values(df: pd.DataFrame, column: str, limit: int = 300) -> pd.Series:
@@ -169,7 +214,7 @@ def _sample_profile(df: pd.DataFrame, path: Path | None = None) -> dict[str, obj
     generiques comme `severity`, `source` ou `message`.
     """
 
-    original_columns = [str(column).lstrip("\ufeff") for column in df.columns]
+    original_columns = [str(column).strip().lstrip("\ufeff") for column in df.columns]
     lower_columns = {column.lower() for column in original_columns}
     lower_to_original = {column.lower(): column for column in original_columns}
 
@@ -283,6 +328,23 @@ def _score_dataframe(df: pd.DataFrame, path: Path | None = None) -> tuple[dict[s
         scores["network"] += network_feature_hits * 12
         reasons.append(f"features reseau={network_feature_hits}")
 
+    cicids_columns = {
+        "destination port",
+        "flow duration",
+        "total fwd packets",
+        "total backward packets",
+        "flow bytes/s",
+        "flow packets/s",
+        "label",
+    }
+    cicids_hits = len(lower_columns & cicids_columns)
+    if cicids_hits >= 5:
+        scores["network_cicids"] += 80 + cicids_hits * 8
+        reasons.append(f"features cicids={cicids_hits}")
+    if path is not None and any(token in path.as_posix().lower() for token in ("machinelearningcve", "pcap_iscx", "workinghours")):
+        scores["network_cicids"] += 45
+        reasons.append("nom fichier CICIDS/MachineLearningCVE")
+
     # Features Windows: provider Microsoft, EventID numerique, colonnes host/user
     # et champs typiques de l'Event Log.
     windows_feature_hits = 0
@@ -322,6 +384,30 @@ def _score_dataframe(df: pd.DataFrame, path: Path | None = None) -> tuple[dict[s
         scores["bgl"] += bgl_feature_hits * 12
         reasons.append(f"features bgl={bgl_feature_hits}")
 
+    wazuh_columns = {
+        "_source.rule.level",
+        "_source.rule.description",
+        "_source.rule.groups",
+        "_source.decoder.name",
+        "_source.full_log",
+        "_source.@timestamp",
+        "wazuh_rule_level",
+        "wazuh_decoder",
+    }
+    wazuh_hits = len(lower_columns & wazuh_columns)
+    if wazuh_hits >= 4:
+        scores["wazuh"] += 90 + wazuh_hits * 8
+        reasons.append(f"features wazuh={wazuh_hits}")
+    elif wazuh_hits >= 2:
+        scores["wazuh"] += 120 + wazuh_hits * 12
+        reasons.append(f"features wazuh normalise={wazuh_hits}")
+    if "subtype" in lower_to_original and "wazuh" in _series_values(df, lower_to_original["subtype"], 300).str.lower().str.cat(sep=" "):
+        scores["wazuh"] += 80
+        reasons.append("subtype wazuh")
+    if any(token in text for token in ("auditd", "syscheck", "web-accesslog", "ossec", "wazuh", "rootcheck")):
+        scores["wazuh"] += 45
+        reasons.append("marqueurs wazuh")
+
     # Features Linux/syslog: marqueurs systeme Linux, colonnes process/pid et
     # messages kernel/auth. On garde ce score modere pour ne pas voler Windows.
     linux_feature_hits = 0
@@ -334,6 +420,21 @@ def _score_dataframe(df: pd.DataFrame, path: Path | None = None) -> tuple[dict[s
     if linux_feature_hits:
         scores["linux"] += linux_feature_hits * 10
         reasons.append(f"features linux={linux_feature_hits}")
+
+    # Les datasets Linux/auth tabulaires possedent aussi IP/port/protocole, ce
+    # qui peut les faire ressembler a du reseau pur. On privilegie pourtant la
+    # famille Linux quand les colonnes de contexte d'authentification sont
+    # presentes ensemble.
+    linux_auth_columns = {"username", "service", "attempts", "status", "anomaly_label"}
+    linux_auth_hits = len(lower_columns & linux_auth_columns)
+    if linux_auth_hits >= 3 and _has_column(lower_columns, "source_ip", "src_ip") and _has_column(lower_columns, "port", "src_port"):
+        scores["linux_auth"] += 70 + linux_auth_hits * 8
+        scores["linux"] += 20 + linux_auth_hits * 3
+        reasons.append(f"features linux/auth={linux_auth_hits}")
+    if path is not None and "linux_auth" in path.name.lower():
+        scores["linux_auth"] += 45
+        scores["linux"] += 15
+        reasons.append("nom fichier linux_auth")
 
     # Signal statistique transversal: les datasets reseau tabulaires ont souvent
     # beaucoup plus de colonnes numeriques que les logs systeme normalises.
@@ -381,7 +482,7 @@ def route_model(
 
     # En cas d'egalite, l'ordre ci-dessous privilegie les familles specialisees
     # avant le fallback general.
-    priority = ["windows", "hdfs", "bgl", "network", "linux", "fallback"]
+    priority = ["windows", "hdfs", "bgl", "wazuh", "network_cicids", "network", "linux_auth", "linux", "fallback"]
     sorted_scores = sorted(priority, key=lambda family: scores.get(family, 0), reverse=True)
     family = sorted_scores[0]
     confidence = scores.get(sorted_scores[0], 0) - scores.get(sorted_scores[1], 0)
@@ -518,6 +619,93 @@ def _detect_supervised_model(
     return str(output_path)
 
 
+LINUX_AUTH_ALIASES = {
+    "timestamp": ["timestamp", "timestamp_iso"],
+    "source_ip": ["source_ip", "src_ip"],
+    "server": ["server", "host", "city"],
+    "username": ["username", "user"],
+    "service": ["service", "source", "component"],
+    "attempts": ["attempts"],
+    "status": ["status"],
+    "port": ["port", "src_port"],
+    "protocol": ["protocol", "proto"],
+}
+
+
+def _first_alias(events: pd.DataFrame, aliases: list[str]) -> pd.Series:
+    lower_to_original = {str(column).lower(): column for column in events.columns}
+    for alias in aliases:
+        column = lower_to_original.get(alias.lower())
+        if column is not None:
+            return events[column].fillna("").astype(str)
+    return pd.Series("", index=events.index, dtype=str)
+
+
+def _linux_auth_features(events: pd.DataFrame, feature_columns: list[str]) -> pd.DataFrame:
+    """Prepare les colonnes attendues par le pipeline supervise Linux/auth."""
+
+    features = pd.DataFrame(index=events.index)
+    for target, aliases in LINUX_AUTH_ALIASES.items():
+        features[target] = _first_alias(events, aliases)
+
+    timestamps = pd.to_datetime(features["timestamp"], errors="coerce", utc=True)
+    features["hour"] = timestamps.dt.hour.fillna(0).astype(int)
+    features["weekday"] = timestamps.dt.weekday.fillna(0).astype(int)
+    features["attempts"] = pd.to_numeric(features["attempts"].str.replace(",", ".", regex=False), errors="coerce").fillna(0)
+    features["port"] = pd.to_numeric(features["port"].str.replace(",", ".", regex=False), errors="coerce").fillna(0)
+    return features.reindex(columns=feature_columns, fill_value="")
+
+
+def _detect_linux_auth_model(
+    input_csv: str | Path,
+    output_csv: str | Path,
+    *,
+    sep: str,
+    artifact: dict[str, object],
+    chunksize: int = 100000,
+) -> str:
+    """Score un CSV Linux/auth avec son modele supervise dedie."""
+
+    model = artifact["model"]
+    feature_columns = list(artifact["feature_columns"])
+    input_path = Path(input_csv)
+    output_path = Path(output_csv)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    csv_sep = _infer_sep(input_path) if sep.lower() == "auto" else sep
+    chunks = pd.read_csv(input_path, sep=csv_sep, dtype=str, keep_default_na=False, chunksize=chunksize)
+
+    write_header = True
+    total = 0
+    anomaly_count = 0
+    for events in chunks:
+        features = _linux_auth_features(events, feature_columns)
+        labels = model.predict(features).astype(int)
+        probabilities = _positive_class_probability(model, features, labels)
+
+        result = events.copy()
+        result["anomaly_score"] = -probabilities
+        result["is_anomaly"] = (labels == 1).astype(int)
+        result["anomaly_rank"] = pd.Series(result["anomaly_score"]).rank(method="first", ascending=True).astype(int) + total
+        result.sort_values(["is_anomaly", "anomaly_score"], ascending=[False, True]).to_csv(
+            output_path,
+            sep=csv_sep,
+            index=False,
+            encoding="utf-8-sig",
+            mode="w" if write_header else "a",
+            header=write_header,
+        )
+        write_header = False
+        total += len(result)
+        anomaly_count += int(result["is_anomaly"].sum())
+
+    print(f"CSV anomalies: {output_path}")
+    print(f"Evenements analyses: {total}")
+    print(f"Anomalies candidates: {anomaly_count}")
+    print(f"Modele Linux/auth charge: {artifact.get('model_type', type(model).__name__)}")
+    return str(output_path)
+
+
 def _load_model_artifact(path: Path) -> dict[str, object]:
     artifact = joblib.load(path)
     if not isinstance(artifact, dict) or "model" not in artifact:
@@ -533,7 +721,10 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument("--windows-model", default=MODEL_DEFAULTS["windows"], help="Modele Windows")
     parser.add_argument("--hdfs-model", default=MODEL_DEFAULTS["hdfs"], help="Modele HDFS")
     parser.add_argument("--bgl-model", default=MODEL_DEFAULTS["bgl"], help="Modele BGL")
+    parser.add_argument("--wazuh-model", default=MODEL_DEFAULTS["wazuh"], help="Modele Wazuh")
+    parser.add_argument("--network-cicids-model", default=MODEL_DEFAULTS["network_cicids"], help="Modele reseau CICIDS")
     parser.add_argument("--network-model", default=MODEL_DEFAULTS["network"], help="Modele reseau")
+    parser.add_argument("--linux-auth-model", default=MODEL_DEFAULTS["linux_auth"], help="Modele Linux/auth")
     parser.add_argument("--linux-model", default=MODEL_DEFAULTS["linux"], help="Modele Linux/syslog")
     parser.add_argument("--fallback-model", default=MODEL_DEFAULTS["fallback"], help="Modele general de secours")
     parser.add_argument("--detect", action="store_true", help="Lance detection + correlation avec le modele choisi")
@@ -551,7 +742,10 @@ def main(argv: Optional[list[str]] = None) -> int:
             "windows": args.windows_model,
             "hdfs": args.hdfs_model,
             "bgl": args.bgl_model,
+            "wazuh": args.wazuh_model,
+            "network_cicids": args.network_cicids_model,
             "network": args.network_model,
+            "linux_auth": args.linux_auth_model,
             "linux": args.linux_model,
             "fallback": args.fallback_model,
         },
@@ -582,16 +776,21 @@ def main(argv: Optional[list[str]] = None) -> int:
     )
 
     artifact = _load_model_artifact(model_path)
-    if artifact.get("model_type") == "random_forest":
+    if artifact.get("model_type") == "random_forest_linux_auth":
+        _detect_linux_auth_model(args.input, anomalies_output, sep=args.sep, artifact=artifact)
+        correlation_sep = _infer_sep(anomalies_output) if args.sep == "auto" else args.sep
+        correlate_anomalies(anomalies_output, incidents_output, sep=correlation_sep, window_minutes=args.window_minutes)
+    elif str(artifact.get("model_type", "")).startswith("random_forest"):
         _detect_supervised_model(args.input, anomalies_output, sep=args.sep, artifact=artifact)
         correlation_sep = _infer_sep(anomalies_output) if args.sep == "auto" else args.sep
         correlate_anomalies(anomalies_output, incidents_output, sep=correlation_sep, window_minutes=args.window_minutes)
     else:
         # Le detecteur Isolation Forest lit un CSV avec separateur explicite. Si
-        # le routeur a detecte automatiquement le separateur, on garde la
-        # convention Logminer `;`.
-        detect_anomalies(args.input, anomalies_output, sep=";" if args.sep == "auto" else args.sep, model_in=model_path)
-        correlate_anomalies(anomalies_output, incidents_output, window_minutes=args.window_minutes)
+        # le routeur a detecte automatiquement le separateur, on reutilise le
+        # separateur reel du fichier d'entree.
+        inference_sep = _infer_sep(input_path) if args.sep == "auto" else args.sep
+        detect_anomalies(args.input, anomalies_output, sep=inference_sep, model_in=model_path)
+        correlate_anomalies(anomalies_output, incidents_output, sep=inference_sep, window_minutes=args.window_minutes)
 
     print(f"CSV anomalies: {anomalies_output}")
     print(f"CSV incidents: {incidents_output}")

@@ -311,7 +311,10 @@ signaux propres a chaque famille.
 Windows/Event/Security -> models/isolation_forest_windows_local.joblib
 HDFS                   -> models/isolation_forest_hdfs_colab.joblib
 BGL                    -> models/isolation_forest_bgl_colab.joblib
-Reseau/tcpdump/UNSW    -> models/isolation_forest_network_colab.joblib
+Wazuh/SIEM/auditd/FIM  -> models/isolation_forest_wazuh.joblib
+Reseau/CICIDS2017      -> models/random_forest_network_cicids.joblib
+Reseau/tcpdump/UNSW    -> models/random_forest_network_unsw_80_20_sampled.joblib
+Linux/auth tabulaire   -> models/random_forest_linux_auth.joblib
 Linux/syslog           -> models/isolation_forest_linux_colab.joblib
 Inconnu/fallback       -> models/isolation_forest_colab.joblib
 ```
@@ -320,7 +323,10 @@ Verifier la route:
 
 ```powershell
 python src\logminer\agents\model_router.py -i data\processed\windows_security_pipeline.csv
+python src\logminer\agents\model_router.py -i data\raw\Datasets\03-04-January.csv --sep auto
 python src\logminer\agents\model_router.py -i data\processed\outside_tcp_dump_sample.csv
+python src\logminer\agents\model_router.py -i data\raw\Datasets\MachineLearningCSV\MachineLearningCVE\Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv --sep auto
+python src\logminer\agents\model_router.py -i data\raw\Datasets\linux_auth_logs_labeled.csv --sep auto
 ```
 
 Executer detection + correlation avec le modele choisi:
@@ -357,6 +363,183 @@ python src/logminer/agents/detector.py \
   --max-categorical-unique 250 \
   --model-out models/isolation_forest_windows_local.joblib
 ```
+
+Wazuh/SIEM/auditd/FIM:
+
+Les fichiers dates `*-January.csv`, `*-October*.csv` et `*-December*.csv`
+places dans `data/raw/Datasets` sont des exports Wazuh/Elastic. Ils couvrent
+une surface differente des datasets reseau et Linux/auth:
+
+```text
+auditd / audit_command
+syscheck / File Integrity Monitoring
+SCA / Security Configuration Assessment
+web-accesslog / attaques web
+dpkg / changements de paquets
+pam, sshd, sudo / authentification et elevation
+rootcheck / controles hote
+```
+
+Ils sont exploitables, mais doivent etre separes des modeles Windows, Linux/auth
+et reseau. Le routeur les identifie comme `wazuh` et utilise:
+
+```text
+models/isolation_forest_wazuh.joblib
+```
+
+Normalisation des 17 CSV dates vers le schema Logminer:
+
+```bash
+python scripts/prepare_wazuh_dataset.py \
+  --input-dir data/raw/Datasets \
+  -o data/processed/wazuh_months_logminer.csv
+```
+
+Entrainement du modele Wazuh:
+
+```bash
+python src/logminer/agents/detector.py \
+  -i data/processed/wazuh_months_logminer.csv \
+  -o data/processed/wazuh_months_anomalies.csv \
+  --sep ";" \
+  --contamination 0.03 \
+  --max-categorical-unique 250 \
+  --model-out models/isolation_forest_wazuh.joblib
+```
+
+Resultats locaux:
+
+```text
+Evenements Wazuh normalises: 122563
+Anomalies candidates: 3676
+```
+
+Repartition des familles normalisees:
+
+```text
+linux_audit: 83520
+web_attack: 26637
+authentication: 4342
+file_integrity: 4140
+security_configuration: 1616
+package: 1233
+wazuh/autre: 1075
+```
+
+Les anomalies du modele Wazuh concernent surtout `file_integrity`, `package`,
+`security_configuration`, puis quelques evenements web et authentification. Ce
+comportement est coherent avec un modele non supervise: il isole les alertes
+Wazuh rares ou structurellement differentes, sans pretendre remplacer les
+niveaux de regles Wazuh.
+
+Linux/auth tabulaire:
+
+Les CSV `linux_auth_logs_*.csv` ajoutent une couverture utile des journaux
+d'authentification Linux. Comme ils contiennent aussi `source_ip`, `port` et
+`protocol`, ils peuvent ressembler a des flux reseau. Le routeur les traite
+desormais comme une famille separee `linux_auth` lorsque les colonnes
+`username`, `service`, `attempts`, `status` ou `anomaly_label` sont presentes.
+
+Un modele supervise dedie est disponible:
+
+```text
+models/random_forest_linux_auth.joblib
+```
+
+Il est entraine sur:
+
+```text
+data/raw/Datasets/linux_auth_logs_labeled.csv
+data/raw/Datasets/linux_auth_logs_full(new_unbalanced).csv
+```
+
+Commande reproductible:
+
+```bash
+python scripts/train_linux_auth_model.py \
+  -i "data/raw/Datasets/linux_auth_logs_labeled.csv" \
+  -i "data/raw/Datasets/linux_auth_logs_full(new_unbalanced).csv" \
+  --model-out models/random_forest_linux_auth.joblib \
+  --metrics-out data/processed/random_forest_linux_auth_metrics.csv \
+  --max-normal 120000 \
+  --max-anomaly 0
+```
+
+Resultats du modele combine:
+
+```text
+Validation interne:
+accuracy: 0.936444
+precision: 0.923040
+recall: 0.910253
+f1: 0.916602
+
+Generalisation observee:
+linux_auth_logs_full(new_unbalanced).csv -> F1: 1.000000
+linux_auth_logs_full(balanced).csv       -> F1: 0.992251
+linux_auth_logs_labeled.csv              -> F1: 0.483490
+```
+
+Le fichier `linux_auth_logs_labeled.csv` est plus difficile: le modele garde un
+bon rappel, mais produit davantage de faux positifs. Pour le memoire, il doit
+donc etre presente comme test de generalisation plus dur, pas comme seul
+dataset d'entrainement.
+
+Inference routee sur un fichier Linux/auth sans label:
+
+```bash
+python src/logminer/agents/model_router.py \
+  -i "data/raw/Datasets/linux_auth_logs_multiple_anomalies.csv" \
+  --sep auto \
+  --detect \
+  -o data/processed/linux_auth_multiple_anomalies_rf.csv \
+  --incidents-output data/processed/linux_auth_multiple_anomalies_incidents.csv
+```
+
+Lors de la verification locale, ce fichier sans `anomaly_label` produit:
+
+```text
+Evenements analyses: 500000
+Anomalies candidates: 62331
+```
+
+Option: entrainement Linux mixte non supervise:
+
+Si l'objectif est d'avoir un modele Linux non supervise plus large, les donnees
+Linux/auth peuvent aussi etre normalisees vers le schema commun puis fusionnees
+avec les journaux syslog/Linux classiques:
+
+```bash
+python scripts/prepare_linux_auth_dataset.py \
+  -i "data/raw/Datasets/linux_auth_logs_labeled.csv" \
+  -o data/processed/linux_auth_labeled_logminer.csv
+```
+
+Construire un entrainement Linux plus large:
+
+```bash
+python scripts/build_cloud_training_dataset.py \
+  --input-file data/processed/linux_auth_labeled_logminer.csv \
+  --input-file data/raw/Datasets/Dataset_csv/Linux_2k.log_structured.csv \
+  --input-file data/raw/Datasets/Dataset_csv/Operating_System_Logs_logs.csv \
+  --input-file data/raw/Datasets/Dataset_csv/Server_Logs_logs.csv \
+  --input-file data/raw/Datasets/Dataset_csv/Syslog_Data_logs.csv \
+  --sep auto \
+  --output data/processed/linux_training_dataset.csv \
+  --max-rows-per-file 100000
+
+python src/logminer/agents/detector.py \
+  -i data/processed/linux_training_dataset.csv \
+  -o data/processed/linux_training_anomalies.csv \
+  --contamination 0.02 \
+  --max-categorical-unique 250 \
+  --model-out models/isolation_forest_linux_colab.joblib
+```
+
+Dans ce cas, les labels `anomaly_label` restent utiles pour l'evaluation
+humaine et les comparaisons supervise/non supervise, mais le modele produit
+reste un Isolation Forest non supervise afin de rester compatible avec les
+journaux non labellises.
 
 HDFS:
 
@@ -410,6 +593,63 @@ python src/logminer/agents/detector.py \
 ```
 
 Reseau:
+
+Les fichiers du dossier `data/raw/Datasets/MachineLearningCSV/MachineLearningCVE`
+correspondent a CICIDS2017/CICFlowMeter. Ils sont exploitables dans le travail,
+mais ils ne doivent pas etre confondus avec UNSW/CIC-DDoS: le transfert du
+modele UNSW vers ces fichiers donne des resultats irreguliers. Un modele
+dedie est donc utilise:
+
+```text
+models/random_forest_network_cicids.joblib
+```
+
+Contenu exploitable:
+
+```text
+Monday-WorkingHours.pcap_ISCX.csv                         -> BENIGN seulement
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv          -> DDoS
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv      -> PortScan
+Friday-WorkingHours-Morning.pcap_ISCX.csv                 -> Bot
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv -> Infiltration
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv    -> Web attacks
+Tuesday-WorkingHours.pcap_ISCX.csv                        -> FTP/SSH Patator
+Wednesday-workingHours.pcap_ISCX.csv                      -> DoS/Heartbleed
+```
+
+Commande reproductible:
+
+```bash
+python scripts/train_cicids_network_model.py \
+  --input-dir data/raw/Datasets/MachineLearningCSV/MachineLearningCVE \
+  --model-out models/random_forest_network_cicids.joblib \
+  --metrics-out data/processed/random_forest_network_cicids_metrics.csv \
+  --max-benign 150000 \
+  --max-attack 180000 \
+  --max-per-attack-label 30000
+```
+
+Resultats locaux:
+
+```text
+train_rows: 223692
+test_rows: 55924
+benign_rows_used: 150000
+attack_rows_used: 129616
+accuracy: 0.997371
+precision: 0.997760
+recall: 0.996567
+f1: 0.997163
+tp: 25835
+fp: 58
+fn: 89
+tn: 29942
+```
+
+Le routeur reconnait ces fichiers comme `network_cicids` et les separe du
+modele `network` entraine sur UNSW.
+
+Reseau UNSW/tcpdump:
 
 ```bash
 python scripts/build_cloud_training_dataset.py \

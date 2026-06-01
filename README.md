@@ -38,7 +38,8 @@ Rôles des dossiers:
 - `docs/anomaly_detection/`: étude comparative liée à l'objectif 2.
 - `docs/architecture/`: conception de l'architecture multi-agents IA liée à l'objectif 3.
 - `docs/memoire/`: documents liés au mémoire.
-- `docs/model_training/`: entraînement cloud et sauvegarde des modèles.
+- `docs/model_training/`: entraînement cloud, sauvegarde des modèles et registre
+  d'exploitation dans `docs/model_training/model_registry.md`.
 - `docs/roadmap/`: suivi des objectifs restants et livrables attendus.
 - `docs/references/`: articles, normes et PDF de référence.
 - `docs/recovery/`: notes sur la récupération des fichiers `.py` depuis les `.pyc`.
