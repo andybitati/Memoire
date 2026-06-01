@@ -27,8 +27,10 @@ if str(BASE_DIR) not in sys.path:
 from agents.model_router import MODEL_DEFAULTS, route_model, run_routed_detection
 from agents.correlator import correlate_anomalies
 from agents.bus import RedisMessageBus
+from agents.audit import read_audit, write_audit
 from agents.collector_agent import DEFAULT_ROOTS, discover_logs
 from agents.privilege_agent import request_windows_sensitive_collection
+from agents.resource_monitor import snapshot as resource_snapshot
 from agents.runtime_agent import ensure_runtime, runtime_status
 from pipeline import run_pipeline
 
@@ -199,6 +201,13 @@ def _publish(
         bus.publish(source=source, target=target, message_type=message_type, payload=payload, status=status)
 
 
+def _audit(action: str, status: str = "ok", target: str = "", details: dict[str, Any] | None = None) -> None:
+    try:
+        write_audit(action=action, status=status, actor="api", target=target, details=details)
+    except Exception:
+        pass
+
+
 def _run_workflow(request: RunRequest, input_path: Path, run_id: str, bus: RedisMessageBus | None) -> dict[str, Any]:
     out_dir = _path(request.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -292,6 +301,17 @@ def models() -> dict[str, Any]:
     return {"models": [_model_summary(family, artifact) for family, artifact in MODEL_DEFAULTS.items()]}
 
 
+@app.get("/audit")
+def audit(limit: int = 100) -> dict[str, Any]:
+    entries = read_audit(limit=max(1, min(limit, 1000)))
+    return {"count": len(entries), "events": [asdict(entry) for entry in entries]}
+
+
+@app.get("/resources")
+def resources() -> dict[str, Any]:
+    return resource_snapshot()
+
+
 @app.get("/runtime/status")
 def get_runtime_status() -> dict[str, Any]:
     return asdict(runtime_status())
@@ -325,6 +345,12 @@ def prepare_runtime(request: RuntimePrepareRequest) -> dict[str, Any]:
         payload=asdict(status),
         status="ok" if status.services_started or status.docker_engine else "warning",
     )
+    _audit(
+        "runtime.prepare",
+        status="ok" if status.services_started or status.docker_engine else "warning",
+        target="docker",
+        details=asdict(status),
+    )
     return asdict(status)
 
 
@@ -343,6 +369,12 @@ def collect_discover(request: DiscoverRequest) -> dict[str, Any]:
         max_files=request.max_files,
         max_bytes=max(1, request.max_mb) * 1024 * 1024,
         bus=bus,
+    )
+    _audit(
+        "collector.discover",
+        status="ok" if candidates else "warning",
+        target="local_logs",
+        details={"count": len(candidates), "selected": candidates[0].path if candidates else "", "roots": request.roots},
     )
     return {
         "run_id": bus.run_id if bus is not None else request.run_id,
@@ -375,6 +407,12 @@ def collect_windows_privileged(request: PrivilegedWindowsCollectRequest) -> dict
         message_type="privilege.request.completed",
         payload=asdict(result),
         status="ok" if result.launched else "warning",
+    )
+    _audit(
+        "privilege.request",
+        status="ok" if result.launched else "warning",
+        target="windows_sensitive_logs",
+        details=asdict(result),
     )
     return {"run_id": bus.run_id if bus is not None else request.run_id, **asdict(result)}
 
@@ -477,7 +515,9 @@ def run(request: RunRequest) -> dict[str, Any]:
     input_path = _existing_path(request.input_path)
     run_id = request.run_id or datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     bus = _redis_bus(run_id) if request.use_redis else None
-    return _run_workflow(request, input_path, run_id, bus)
+    response = _run_workflow(request, input_path, run_id, bus)
+    _audit("workflow.run", target=str(input_path), details=response)
+    return response
 
 
 @app.post("/run/discovered")
@@ -513,4 +553,6 @@ def run_discovered(request: RunDiscoveredRequest) -> dict[str, Any]:
         use_redis=request.use_redis,
     )
     response = _run_workflow(workflow, selected, run_id, bus)
-    return {"selected": asdict(candidates[0]), **response}
+    full_response = {"selected": asdict(candidates[0]), **response}
+    _audit("workflow.run_discovered", target=str(selected), details=full_response)
+    return full_response

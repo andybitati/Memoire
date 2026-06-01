@@ -354,6 +354,24 @@ async function handleRedisEvents(req, res) {
   }
 }
 
+async function handleAudit(req, res) {
+  try {
+    const url = new URL(req.url, `http://127.0.0.1:${activePort}`);
+    const limit = url.searchParams.get("limit") || "100";
+    sendJson(res, 200, await fetchJson(`${fastApiBase}/audit?limit=${encodeURIComponent(limit)}`));
+  } catch (error) {
+    sendJson(res, 200, { count: 0, events: [], error: error.message });
+  }
+}
+
+async function handleResources(req, res) {
+  try {
+    sendJson(res, 200, await fetchJson(`${fastApiBase}/resources`));
+  } catch (error) {
+    sendJson(res, 200, { available: false, message: error.message });
+  }
+}
+
 async function handleCollectDiscover(req, res) {
   try {
     sendJson(
@@ -437,6 +455,10 @@ const server = http.createServer((req, res) => {
     handleRuntimePrepare(req, res);
   } else if (req.url?.startsWith("/api/redis-events")) {
     handleRedisEvents(req, res);
+  } else if (req.url?.startsWith("/api/audit")) {
+    handleAudit(req, res);
+  } else if (req.url?.startsWith("/api/resources")) {
+    handleResources(req, res);
   } else if (req.url?.startsWith("/api/collect-discover")) {
     handleCollectDiscover(req, res);
   } else if (req.url?.startsWith("/api/privileged-collect")) {

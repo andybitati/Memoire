@@ -1,4 +1,6 @@
 const DATA_LIMIT = 8000;
+const AUTO_REFRESH_MS = 5 * 60 * 1000;
+
 let state = {
   loading: true,
   error: "",
@@ -7,8 +9,10 @@ let state = {
   incidents: [],
   messages: [],
   redisMessages: [],
+  audit: [],
   validation: [],
   services: { api: {}, redis: {}, models: [] },
+  resources: {},
   collector: { loading: false, error: "", selected: null, candidates: [] },
   privilege: { loading: false, error: "", result: null },
   runtime: { loading: false, error: "", result: null },
@@ -16,9 +20,21 @@ let state = {
   explanation: { loading: false, provider: "", text: "", error: "" },
   meta: {},
   filters: { query: "", host: "", severity: "", category: "", source: "" },
+  view: "overview",
+  browserNotifications: false,
+  lastRefreshAt: "",
+  nextRefreshAt: "",
+  autoRefreshEnabled: true,
+  autoAnalysisEnabled: true,
+  lastAutoAnalysisAt: "",
+  refreshMode: "initial",
 };
 
 const root = document.getElementById("root");
+let autoRefreshTimer = null;
+let refreshClockTimer = null;
+let refreshInFlight = false;
+let analysisInFlight = false;
 
 async function fetchData(type, limit = DATA_LIMIT) {
   const response = await fetch(`/api/data?type=${type}&limit=${limit}`);
@@ -77,6 +93,50 @@ function severityClass(value) {
   return "muted";
 }
 
+function severityValue(value) {
+  const numeric = Number(String(value || "").replace(",", "."));
+  if (Number.isFinite(numeric)) return numeric;
+  const severity = String(value || "").toUpperCase();
+  if (severity === "CRITICAL") return 10;
+  if (severity === "ERROR") return 8;
+  if (severity === "WARNING") return 5;
+  return 0;
+}
+
+function worryingKeyword(row) {
+  const text = `${row.event || ""} ${row.category || ""} ${row.message || ""}`.toLowerCase();
+  return ["sql injection", "xss", "brute force", "attack", "authentication failure", "failed login", "privilege", "malware"].find((keyword) =>
+    text.includes(keyword),
+  );
+}
+
+function urgentAlerts() {
+  const incidentAlerts = state.incidents
+    .filter((incident) => severityValue(incident.severity) >= 8)
+    .map((incident) => ({
+      type: "Incident",
+      title: incident.summary || incident.incident_id || "Incident critique",
+      detail: `${incident.event_count || 0} événements · ${incident.category || "catégorie inconnue"}`,
+      severity: incident.severity || "CRITICAL",
+      score: severityValue(incident.severity) + Number(incident.event_count || 0) / 10,
+    }));
+
+  const anomalyAlerts = state.anomalies
+    .filter((row) => row.is_anomaly === "1" || severityValue(row.severity) >= 7 || worryingKeyword(row))
+    .map((row) => {
+      const keyword = worryingKeyword(row);
+      return {
+        type: "Alerte",
+        title: row.event || keyword || "Anomalie inquiétante",
+        detail: row.message || row.source || row.category || "Signal à vérifier",
+        severity: row.severity || (keyword ? "WARNING" : "N/A"),
+        score: severityValue(row.severity) + (keyword ? 3 : 0) + Number(row.is_anomaly === "1" ? 2 : 0),
+      };
+    });
+
+  return [...incidentAlerts, ...anomalyAlerts].sort((a, b) => b.score - a.score).slice(0, 6);
+}
+
 function filterRows(rows) {
   const filters = state.filters;
   const query = filters.query.trim().toLowerCase();
@@ -96,17 +156,56 @@ function setFilter(key, value) {
   render();
 }
 
-async function loadData() {
-  state = { ...state, loading: true, error: "", explanation: { loading: false, provider: "", text: "", error: "" } };
+function setView(view) {
+  state = { ...state, view };
+  render();
+}
+
+async function enableBrowserNotifications() {
+  if (!("Notification" in window)) {
+    state = { ...state, error: "Notifications navigateur non supportées" };
+    render();
+    return;
+  }
+  const permission = await Notification.requestPermission();
+  state = { ...state, browserNotifications: permission === "granted" };
+  render();
+}
+
+function maybeNotify(alerts) {
+  if (!state.browserNotifications || !alerts.length || !("Notification" in window) || Notification.permission !== "granted") return;
+  const latestKey = `${alerts[0].title}|${alerts[0].detail}`;
+  if (state.lastNotificationKey === latestKey) return;
+  state.lastNotificationKey = latestKey;
+  new Notification("Logminer: alerte prioritaire", {
+    body: `${alerts[0].type}: ${alerts[0].title}`,
+    silent: false,
+  });
+}
+
+async function loadData(options = {}) {
+  const { mode = "manual", silent = false, skipAutoAnalysis = false } = options;
+  if (refreshInFlight) return;
+  refreshInFlight = true;
+  let shouldRunAutoAnalysis = false;
+  state = {
+    ...state,
+    loading: true,
+    error: "",
+    refreshMode: mode,
+    explanation: silent ? state.explanation : { loading: false, provider: "", text: "", error: "" },
+  };
   render();
   try {
-    const [events, anomalies, incidents, messages, services, redisEvents] = await Promise.all([
+    const [events, anomalies, incidents, messages, services, redisEvents, audit, resources] = await Promise.all([
       fetchData("events"),
       fetchData("anomalies"),
       fetchData("incidents", 2000),
       fetchOptionalData("messages", 200),
       fetchJson("/api/services"),
       fetchJson("/api/redis-events?count=100"),
+      fetchJson("/api/audit?limit=100"),
+      fetchJson("/api/resources"),
     ]);
     const validation = await fetchOptionalData("validation", 50);
     state = {
@@ -118,21 +217,34 @@ async function loadData() {
       incidents: normalizeRows(incidents.data),
       messages: messages.data,
       redisMessages: redisEvents.events || [],
+      audit: audit.events || [],
       validation: validation.data,
       services,
+      resources,
       meta: {
         events: events.count,
         anomalies: anomalies.count,
         incidents: incidents.count,
         messages: messages.count,
         redisMessages: redisEvents.count,
+        audit: audit.count,
         validation: validation.count,
       },
+      lastRefreshAt: new Date().toISOString(),
+      refreshMode: mode,
     };
+    shouldRunAutoAnalysis = state.autoAnalysisEnabled && !skipAutoAnalysis && !analysisInFlight;
+    scheduleAutoRefresh();
   } catch (error) {
-    state = { ...state, loading: false, error: error.message };
+    state = { ...state, loading: false, error: error.message, refreshMode: mode };
+    scheduleAutoRefresh();
+  } finally {
+    refreshInFlight = false;
   }
   render();
+  if (shouldRunAutoAnalysis) {
+    await runAutonomousScan({ source: "refresh", refreshAfter: true });
+  }
 }
 
 async function discoverLogs() {
@@ -172,16 +284,23 @@ async function requestPrivilegedCollect() {
   render();
 }
 
-async function runAutonomousScan() {
-  state = { ...state, autoRun: { loading: true, error: "", result: null } };
+async function runAutonomousScan(options = {}) {
+  const { source = "manual", refreshAfter = true } = options;
+  if (analysisInFlight) return;
+  analysisInFlight = true;
+  state = { ...state, autoRun: { loading: true, error: "", result: null }, refreshMode: source === "refresh" ? "analysis" : state.refreshMode };
   render();
   try {
     const result = await fetchJson("/api/auto-run", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
-    state = { ...state, autoRun: { loading: false, error: "", result } };
-    await loadData();
+    state = { ...state, autoRun: { loading: false, error: "", result }, lastAutoAnalysisAt: new Date().toISOString() };
+    if (refreshAfter) {
+      await loadData({ mode: "analysis", silent: true, skipAutoAnalysis: true });
+    }
     state = { ...state, autoRun: { loading: false, error: "", result } };
   } catch (error) {
     state = { ...state, autoRun: { loading: false, error: error.message, result: null } };
+  } finally {
+    analysisInFlight = false;
   }
   render();
 }
@@ -273,10 +392,16 @@ function sidebar() {
     <aside class="sidebar">
       <div class="brand"><span class="icon">◈</span><div><strong>Logminer</strong><span>Agents IA</span></div></div>
       <button class="primaryAction" id="reloadBtn" ${state.loading ? "disabled" : ""}><span class="icon">↻</span>Actualiser</button>
+      <button class="secondaryAction fullWidth" id="browserNotifBtn"><span class="icon">!</span>${state.browserNotifications ? "Notifications actives" : "Activer notifications"}</button>
       <button class="secondaryAction fullWidth" id="runtimeBtn" ${state.runtime.loading ? "disabled" : ""}><span class="icon">◉</span>${state.runtime.loading ? "Préparation" : "Préparer runtime"}</button>
       <button class="secondaryAction fullWidth" id="privilegedBtn" ${state.privilege.loading ? "disabled" : ""}><span class="icon">⌘</span>${state.privilege.loading ? "Demande" : "Autoriser journaux sensibles"}</button>
-      <button class="secondaryAction fullWidth" id="discoverBtn" ${state.collector.loading ? "disabled" : ""}><span class="icon">⌕</span>${state.collector.loading ? "Scan" : "Chercher logs"}</button>
-      <button class="secondaryAction fullWidth" id="autoRunBtn" ${state.autoRun.loading ? "disabled" : ""}><span class="icon">▶</span>${state.autoRun.loading ? "Analyse" : "Analyse autonome"}</button>
+      <button class="secondaryAction fullWidth" id="discoverBtn" ${state.collector.loading ? "disabled" : ""}><span class="icon">⌕</span>${state.collector.loading ? "Recherche" : "Trouver les journaux"}</button>
+      <button class="primaryAction" id="autoRunBtn" ${state.autoRun.loading ? "disabled" : ""}><span class="icon">▶</span>${state.autoRun.loading ? "Analyse en cours" : "Lancer l'analyse"}</button>
+      <div class="viewSwitch">
+        <button data-view="overview" class="${state.view === "overview" ? "activeView" : ""}">Vue d'ensemble</button>
+        <button data-view="results" class="${state.view === "results" ? "activeView" : ""}">Résultats</button>
+        <button data-view="technical" class="${state.view === "technical" ? "activeView" : ""}">Technique</button>
+      </div>
       <label class="search"><span class="icon">⌕</span><input id="queryFilter" value="${escapeHtml(state.filters.query)}" placeholder="Rechercher message, source, user" /></label>
       <div class="filterTitle"><span class="icon">≡</span>Filtres</div>
       ${Object.entries(options)
@@ -299,6 +424,38 @@ function stat(icon, label, value, tone) {
       <span class="icon">${icon}</span>
       <div><span>${escapeHtml(label)}</span><strong>${Number(value || 0).toLocaleString("fr-FR")}</strong></div>
     </section>
+  `;
+}
+
+function statusBadge(label, ok, detail) {
+  return `
+    <div class="healthItem">
+      <span class="dot ${ok ? "" : "errorDot"}"></span>
+      <div><strong>${escapeHtml(label)}</strong><small>${escapeHtml(detail || (ok ? "OK" : "À vérifier"))}</small></div>
+    </div>
+  `;
+}
+
+function hudRing(label, value, detail, tone = "") {
+  return `
+    <div class="hudRing ${tone}">
+      <div class="ringCore">
+        <span>${escapeHtml(String(value))}</span>
+      </div>
+      <strong>${escapeHtml(label)}</strong>
+      <small>${escapeHtml(detail || "")}</small>
+    </div>
+  `;
+}
+
+function percentBar(label, value, detail, tone = "") {
+  const safeValue = Number.isFinite(Number(value)) ? Math.max(0, Math.min(100, Number(value))) : 0;
+  return `
+    <div class="resourceMetric ${tone}">
+      <div><strong>${escapeHtml(label)}</strong><span>${escapeHtml(detail || "")}</span></div>
+      <div class="meter"><span style="width:${safeValue}%"></span></div>
+      <small>${Number.isFinite(Number(value)) ? `${safeValue.toFixed(1)}%` : "n/a"}</small>
+    </div>
   `;
 }
 
@@ -351,6 +508,47 @@ function formatDateTime(value) {
   }).format(date);
 }
 
+function formatTime(value) {
+  const date = new Date(value || "");
+  if (Number.isNaN(date.getTime())) return "--:--";
+  return new Intl.DateTimeFormat("fr-FR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).format(date);
+}
+
+function remainingRefreshLabel() {
+  if (!state.nextRefreshAt) return "Auto 5 min";
+  const remaining = Math.max(0, new Date(state.nextRefreshAt).getTime() - Date.now());
+  const minutes = Math.floor(remaining / 60000);
+  const seconds = Math.floor((remaining % 60000) / 1000);
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function updateRefreshClock() {
+  const nextNode = document.getElementById("nextRefreshClock");
+  const lastNode = document.getElementById("lastRefreshClock");
+  if (nextNode) nextNode.textContent = remainingRefreshLabel();
+  if (lastNode) lastNode.textContent = state.lastRefreshAt ? formatTime(state.lastRefreshAt) : "--:--";
+}
+
+function scheduleAutoRefresh() {
+  window.clearTimeout(autoRefreshTimer);
+  const nextRefreshAt = new Date(Date.now() + AUTO_REFRESH_MS).toISOString();
+  state = { ...state, nextRefreshAt };
+  autoRefreshTimer = window.setTimeout(() => {
+    loadData({ mode: "auto", silent: true });
+  }, AUTO_REFRESH_MS);
+  updateRefreshClock();
+}
+
+function startRefreshClock() {
+  window.clearInterval(refreshClockTimer);
+  refreshClockTimer = window.setInterval(updateRefreshClock, 1000);
+  updateRefreshClock();
+}
+
 function payloadSummary(payload) {
   if (!payload || typeof payload !== "object") return "";
   const readableKeys = {
@@ -398,8 +596,217 @@ function servicePanel() {
         <span>${selected ? escapeHtml(selected.path) : "Aucun fichier sélectionné par le collecteur."}</span>
         ${result ? `<small>Dernier run: ${escapeHtml(result.run_id)} · ${escapeHtml(result.anomalies_rows ?? "0")} anomalies · ${escapeHtml(result.incidents_rows ?? "0")} incidents</small>` : ""}
         ${privilege ? `<small>Accès sensible: ${escapeHtml(privilege.message || (privilege.launched ? "demande lancée" : "non autorisé"))}</small>` : ""}
+        ${privilege?.launcher_path ? `<small>Lanceur admin: ${escapeHtml(privilege.launcher_path)}</small>` : ""}
         ${state.collector.error || state.autoRun.error || state.runtime.error || state.privilege.error ? `<small class="inlineError">${escapeHtml(state.collector.error || state.autoRun.error || state.runtime.error || state.privilege.error)}</small>` : ""}
       </div>
+    </section>
+  `;
+}
+
+function operatorSummaryPanel() {
+  const redisOk = state.services.redis?.status === "ok";
+  const apiOk = state.services.api?.status === "ok";
+  const latestAudit = state.audit[state.audit.length - 1];
+  const result = state.autoRun.result;
+  const selected = state.collector.selected;
+  const nextAction = result
+    ? "Consulter les résultats ou demander une explication analyste."
+    : selected
+      ? "Lancer l'analyse pour traiter les journaux trouvés."
+      : "Trouver les journaux puis lancer l'analyse.";
+
+  return `
+    <section class="starkHero">
+      <div class="radarModule">
+        <div class="radar">
+          <span class="sweep"></span>
+          <span class="blip b1"></span>
+          <span class="blip b2"></span>
+          <span class="blip b3"></span>
+        </div>
+        <div class="radarStatus">
+          <strong>LOGMINER CORE</strong>
+          <span>${redisOk && apiOk ? "ONLINE" : "DEGRADED"}</span>
+        </div>
+      </div>
+      <div class="missionBrief">
+        <span class="eyebrow">Poste de pilotage</span>
+        <h2>Que dois-je faire maintenant ?</h2>
+        <p>${escapeHtml(nextAction)}</p>
+        <div class="hudMiniGrid">
+          ${hudRing("API", apiOk ? "ON" : "OFF", apiOk ? "Disponible" : "À vérifier", apiOk ? "ok" : "warn")}
+          ${hudRing("REDIS", redisOk ? "ON" : "OFF", redisOk ? "Bus actif" : "Bus absent", redisOk ? "ok" : "warn")}
+          ${hudRing("AUDIT", latestAudit ? "LOG" : "---", latestAudit ? latestAudit.action : "Aucune action", latestAudit ? "ok" : "idle")}
+        </div>
+      </div>
+      <div class="healthGrid">
+        ${statusBadge("API", apiOk, apiOk ? "Disponible" : state.services.api?.error)}
+        ${statusBadge("Bus Redis", redisOk, redisOk ? "Messages agents actifs" : state.services.redis?.error)}
+        ${statusBadge("Audit", Boolean(latestAudit), latestAudit ? latestAudit.action : "Aucune action enregistrée")}
+      </div>
+    </section>
+  `;
+}
+
+function warningNotificationPanel(alerts) {
+  if (!alerts.length) return "";
+  const top = alerts[0];
+  return `
+    <section class="warningBanner" role="alert">
+      <div class="warningIcon">!</div>
+      <div class="warningContent">
+        <span class="eyebrow">Attention administrateur</span>
+        <h2>${escapeHtml(alerts.length)} signal${alerts.length > 1 ? "aux" : ""} à vérifier en priorité</h2>
+        <p>${escapeHtml(top.type)}: ${escapeHtml(top.title)} · ${escapeHtml(top.detail)}</p>
+        <div class="warningList">
+          ${alerts
+            .slice(0, 3)
+            .map(
+              (alert) => `
+                <article>
+                  <strong>${escapeHtml(alert.type)} · ${escapeHtml(alert.title)}</strong>
+                  <span>${escapeHtml(alert.detail)}</span>
+                </article>
+              `,
+            )
+            .join("")}
+        </div>
+      </div>
+      <button class="warningAction" id="openResultsBtn">Voir les résultats</button>
+    </section>
+  `;
+}
+
+function resourcesPanel() {
+  const resources = state.resources || {};
+  return `
+    <section class="panel resourcesPanel hudPanel">
+      <div class="panelHeader">
+        <div><h2>Consommation ressources</h2><p>${escapeHtml(resources.message || "Mesure locale")}</p></div>
+        <span class="icon">◷</span>
+      </div>
+      ${
+        resources.available
+          ? `<div class="resourcesGrid">
+              ${percentBar("CPU machine", resources.cpu_percent, "charge instantanée")}
+              ${percentBar("Mémoire machine", resources.memory_percent, `${resources.memory_used_mb} / ${resources.memory_total_mb} MB`)}
+              ${percentBar("Disque", resources.disk_percent, `${resources.disk_free_gb} GB libres`)}
+              <div class="resourceMetric">
+                <div><strong>Processus Logminer</strong><span>${escapeHtml(String(resources.process_count || 0))} processus suivis</span></div>
+                <div class="processValue">${escapeHtml(String(resources.process_memory_mb || 0))} MB</div>
+                <small>RAM API</small>
+              </div>
+            </div>`
+          : `<div class="emptyState">${escapeHtml(resources.message || "Mesure des ressources indisponible.")}</div>`
+      }
+    </section>
+  `;
+}
+
+function workflowPanel() {
+  const runtime = state.runtime.result || state.services.runtime || {};
+  const selected = state.collector.selected;
+  const result = state.autoRun.result;
+  const privilege = state.privilege.result;
+  const redisOk = state.services.redis?.status === "ok";
+
+  const steps = [
+    {
+      title: "Infrastructure",
+      status: redisOk ? "Prêt" : runtime?.docker_engine ? "Docker prêt" : "À vérifier",
+      detail: redisOk ? "Redis répond pour le bus agents." : runtime?.message || "Docker/Redis non confirmés.",
+      tone: redisOk || runtime?.docker_engine ? "okStep" : "warnStep",
+    },
+    {
+      title: "Accès sensible",
+      status: privilege?.launched ? "Demande lancée" : "Optionnel",
+      detail: privilege?.message || "Seulement nécessaire pour Security.evtx ou journaux protégés.",
+      tone: privilege?.launched ? "okStep" : "idleStep",
+    },
+    {
+      title: "Journaux",
+      status: selected ? "Trouvés" : "En attente",
+      detail: selected ? selected.path : "Le collecteur choisira une source locale accessible.",
+      tone: selected ? "okStep" : "idleStep",
+    },
+    {
+      title: "Analyse",
+      status: result ? "Terminée" : "Prête",
+      detail: result ? `${result.input_rows || 0} lignes examinées, ${result.anomalies_rows || 0} résultats scorés.` : "Le bouton Lancer l'analyse lance collecte, routage et détection.",
+      tone: result ? "okStep" : "idleStep",
+    },
+  ];
+
+  return `
+    <section class="panel workflowPanel hudPanel">
+      <div class="panelHeader"><h2>Parcours d'analyse</h2><span class="icon">▶</span></div>
+      <div class="workflowGrid">
+        ${steps
+          .map(
+            (step, index) => `
+              <article class="workflowStep ${step.tone}">
+                <span class="stepNumber">${index + 1}</span>
+                <div>
+                  <strong>${escapeHtml(step.title)}</strong>
+                  <span>${escapeHtml(step.status)}</span>
+                  <small>${escapeHtml(step.detail)}</small>
+                </div>
+              </article>
+            `,
+          )
+          .join("")}
+      </div>
+    </section>
+  `;
+}
+
+function quickFindingsPanel() {
+  const rows = state.anomalies.filter((row) => row.is_anomaly === "1").slice(0, 5);
+  return `
+    <section class="panel hudPanel">
+      <div class="panelHeader"><h2>Signaux à regarder</h2><span class="icon">◆</span></div>
+      ${
+        rows.length
+          ? `<div class="signalList">
+              ${rows
+                .map(
+                  (row) => `
+                    <article class="signalItem">
+                      <div>
+                        <strong>${escapeHtml(row.event || row.category || "Signal détecté")}</strong>
+                        <span>${escapeHtml(row.message || row.source || "")}</span>
+                      </div>
+                      <span class="pill ${severityClass(row.severity)}">${escapeHtml(row.severity || "N/A")}</span>
+                    </article>
+                  `,
+                )
+                .join("")}
+            </div>`
+          : `<div class="emptyState">Aucun signal prioritaire dans les résultats chargés.</div>`
+      }
+    </section>
+  `;
+}
+
+function auditPanel(rows) {
+  return `
+    <section class="panel messages">
+      <div class="panelHeader"><h2>Journal d'audit système</h2><span class="icon">▤</span></div>
+      ${rows
+        .slice(-12)
+        .reverse()
+        .map(
+          (entry) => `
+            <div class="auditRow">
+              <div>
+                <strong>${escapeHtml(entry.action)}</strong>
+                <span>${escapeHtml(entry.target || "système")}</span>
+              </div>
+              <small>${escapeHtml(entry.status || "ok")}</small>
+            </div>
+          `,
+        )
+        .join("") || `<div class="emptyState">Aucune action auditée pour le moment.</div>`}
     </section>
   `;
 }
@@ -520,7 +927,7 @@ function timeline(rows) {
 function incidentsPanel(rows) {
   const sorted = [...rows].sort((a, b) => Number(b.event_count || 0) - Number(a.event_count || 0));
   return `
-    <section class="panel">
+    <section class="panel hudPanel">
       <div class="panelHeader"><h2>Incidents corrélés</h2><span class="icon">⇄</span></div>
       <div class="incidentList">
         ${sorted
@@ -625,6 +1032,9 @@ function render() {
   const filteredAnomalies = filterRows(state.anomalies);
   const anomalyCount = state.anomalies.filter((row) => row.is_anomaly === "1").length;
   const criticalIncidents = state.incidents.filter((row) => ["CRITICAL", "ERROR"].includes(row.severity)).length;
+  const alerts = urgentAlerts();
+  document.title = alerts.length ? `(${alerts.length}) Alertes Logminer` : "Logminer Agents";
+  maybeNotify(alerts);
 
   root.innerHTML = `
     <div class="app">
@@ -632,43 +1042,81 @@ function render() {
       <main class="content">
         <header class="topbar">
           <div><span>Surveillance multi-agents</span><h1>Centre d’analyse Logminer</h1></div>
-          <div class="status"><span class="${state.error ? "dot errorDot" : "dot"}"></span>${escapeHtml(state.error || (state.loading ? "Chargement" : "Données synchronisées"))}</div>
+          <div class="statusCluster">
+            <div class="status"><span class="${state.error ? "dot errorDot" : "dot"}"></span>${escapeHtml(state.error || (state.loading ? "Synchronisation" : "Données synchronisées"))}</div>
+            <div class="refreshHud ${state.loading ? "isRefreshing" : ""} ${state.autoRun.loading ? "isAnalyzing" : ""}">
+              <span class="refreshSweep"></span>
+              <strong>${state.autoRun.loading ? "Analyse automatique" : "Auto-refresh + analyse"}</strong>
+              <span><b id="nextRefreshClock">${escapeHtml(remainingRefreshLabel())}</b> · dernier <b id="lastRefreshClock">${escapeHtml(state.lastRefreshAt ? formatTime(state.lastRefreshAt) : "--:--")}</b></span>
+              <small>Analyse ${state.lastAutoAnalysisAt ? `à ${escapeHtml(formatTime(state.lastAutoAnalysisAt))}` : "en attente"}</small>
+            </div>
+          </div>
         </header>
+        ${warningNotificationPanel(alerts)}
         <div class="statsGrid">
           ${stat("▣", "Événements", state.meta.events || state.events.length, "blue")}
           ${stat("⚠", "Anomalies", anomalyCount, "amber")}
           ${stat("⇄", "Incidents", state.incidents.length, "green")}
           ${stat("!", "Incidents critiques", criticalIncidents, "rose")}
         </div>
-        ${servicePanel()}
-        ${explanationPanel()}
-        <div class="mainGrid">
-          ${timeline(filteredEvents)}
-          <div class="sideStack">
-            ${agentFlowPanel([...state.messages, ...state.redisMessages])}
-            ${validationPanel(state.validation)}
-          </div>
-        </div>
-        ${incidentsPanel(state.incidents)}
-        ${dataTable("Anomalies candidates", filteredAnomalies, ["timestamp_iso", "severity", "event", "source", "host", "category", "anomaly_score", "message"], "◆")}
-        ${dataTable("Événements normalisés", filteredEvents, ["timestamp_iso", "severity", "event", "source", "host", "user", "category", "message"], "▤")}
-        ${redisPanel(state.redisMessages)}
-        ${messagesPanel(state.messages)}
+        ${
+          state.view === "overview"
+            ? `
+              ${operatorSummaryPanel()}
+              ${workflowPanel()}
+              ${resourcesPanel()}
+              <div class="mainGrid compactMain">
+                ${quickFindingsPanel()}
+                <div class="sideStack">
+                  ${incidentsPanel(state.incidents)}
+                  ${agentFlowPanel([...state.messages, ...state.redisMessages])}
+                </div>
+              </div>
+              ${explanationPanel()}
+            `
+            : state.view === "results"
+              ? `
+                ${incidentsPanel(state.incidents)}
+                ${dataTable("Anomalies candidates", filteredAnomalies, ["timestamp_iso", "severity", "event", "source", "host", "category", "anomaly_score", "message"], "◆")}
+                ${dataTable("Événements normalisés", filteredEvents, ["timestamp_iso", "severity", "event", "source", "host", "user", "category", "message"], "▤")}
+              `
+              : `
+                ${servicePanel()}
+                ${resourcesPanel()}
+                <div class="mainGrid">
+                  ${timeline(filteredEvents)}
+                  <div class="sideStack">
+                    ${agentFlowPanel([...state.messages, ...state.redisMessages])}
+                    ${validationPanel(state.validation)}
+                  </div>
+                </div>
+                ${redisPanel(state.redisMessages)}
+                ${auditPanel(state.audit)}
+                ${messagesPanel(state.messages)}
+              `
+        }
       </main>
     </div>
   `;
 
   document.getElementById("reloadBtn")?.addEventListener("click", loadData);
+  document.getElementById("browserNotifBtn")?.addEventListener("click", enableBrowserNotifications);
   document.getElementById("runtimeBtn")?.addEventListener("click", prepareRuntime);
+  document.getElementById("openResultsBtn")?.addEventListener("click", () => setView("results"));
   document.getElementById("privilegedBtn")?.addEventListener("click", requestPrivilegedCollect);
   document.getElementById("discoverBtn")?.addEventListener("click", discoverLogs);
   document.getElementById("autoRunBtn")?.addEventListener("click", runAutonomousScan);
   document.getElementById("explainBtn")?.addEventListener("click", explainDashboard);
   document.getElementById("queryFilter")?.addEventListener("input", (event) => setFilter("query", event.target.value));
+  document.querySelectorAll("[data-view]").forEach((button) => {
+    button.addEventListener("click", (event) => setView(event.target.dataset.view));
+  });
   document.querySelectorAll("[data-filter]").forEach((select) => {
     select.addEventListener("change", (event) => setFilter(event.target.dataset.filter, event.target.value));
   });
+  updateRefreshClock();
 }
 
 render();
-loadData();
+startRefreshClock();
+loadData({ mode: "initial" });
