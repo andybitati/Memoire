@@ -6,10 +6,10 @@ role de risque:
 
 - **V1**: prototype local stable, pilote par CLI et fichiers CSV; c'est le
   socle de secours si les evolutions suivantes deviennent instables;
-- **V2**: exposition progressive des agents par FastAPI, a integrer au memoire
-  si elle reste compatible avec la V1;
-- **V3**: orchestration evenementielle avec Redis/MQTT si le temps reel devient
-  necessaire et si le calendrier le permet.
+- **V2**: exposition progressive des agents par FastAPI, compatible avec la V1;
+- **V3**: orchestration evenementielle avec Redis/MQTT. Redis est maintenant
+  amorce comme bus optionnel de la V2, afin de preparer le fonctionnement
+  distribue.
 
 ## V1 - Prototype CLI Stable
 
@@ -101,6 +101,8 @@ Endpoints deja disponibles:
 
 ```text
 GET  /health
+GET  /redis/health
+GET  /events
 GET  /models
 POST /route
 POST /parse
@@ -125,6 +127,7 @@ Dashboard / client
   -> orchestrateur
   -> parseur / routeur / detecteur / correlateur
   -> stockage CSV ou base locale
+  -> Redis Streams si use_redis=true
 ```
 
 La V2 devra conserver la compatibilite avec les commandes CLI: l'API ne doit
@@ -132,7 +135,9 @@ pas dupliquer la logique, mais appeler les fonctions deja testees.
 
 ## V3 Possible - Redis Ou MQTT
 
-Redis ou MQTT deviennent utiles si le prototype evolue vers:
+Redis est introduit progressivement comme bus optionnel. MQTT reste une option
+si le prototype evolue vers des collecteurs plus proches de l'IoT ou du temps
+reel. Ces bus deviennent utiles pour:
 
 - plusieurs collecteurs en parallele;
 - traitement quasi temps reel;
@@ -140,7 +145,8 @@ Redis ou MQTT deviennent utiles si le prototype evolue vers:
 - agents deployes sur plusieurs machines;
 - reprise apres incident.
 
-Dans cette version, le bus JSONL local de la V1 devient un bus evenementiel:
+Dans cette version, le bus JSONL local de la V1 devient un bus evenementiel.
+Le prototype Redis publie deja ces familles d'evenements dans un Stream:
 
 ```text
 collector.events
@@ -150,9 +156,18 @@ correlation.completed
 incident.created
 ```
 
+Configuration Redis locale:
+
+```powershell
+docker compose -f docker-compose.redis.yml up -d
+$env:LOGMINER_REDIS_URL="redis://localhost:6379/0"
+$env:LOGMINER_REDIS_STREAM="logminer:events"
+```
+
 ## Decision Actuelle
 
-La redaction commence sur la V1 stable, mais FastAPI/Redis restent des objectifs
-du memoire. La regle est de ne jamais casser la V1: chaque evolution V2/V3 doit
-etre ajoutee par-dessus la chaine CLI deja validee, ou rester documentee comme
-prototype partiel si elle n'est pas suffisamment stable.
+La redaction commence sur la V1 stable, pendant que FastAPI et Redis deviennent
+des extensions concretes du memoire. La regle est de ne jamais casser la V1:
+chaque evolution V2/V3 doit etre ajoutee par-dessus la chaine CLI deja validee,
+ou rester documentee comme prototype partiel si elle n'est pas suffisamment
+stable.

@@ -243,8 +243,9 @@ Angles de discussion:
 - Wazuh fournit une couche SIEM riche, mais les alertes non supervisees restent
   des signaux candidats;
 - le prototype V1 est local et modulaire; une premiere V2 FastAPI expose deja
-  le routage, le parsing, la detection et la correlation sans casser la CLI,
-  puis la V3 pourra utiliser Redis ou MQTT pour un deploiement distribue.
+  le routage, le parsing, la detection et la correlation sans casser la CLI;
+  Redis est ajoute comme bus evenementiel optionnel pour preparer le
+  deploiement distribue.
 
 ## Chapitre 7 - Conclusion Et Perspectives
 
@@ -256,7 +257,7 @@ Reste a rediger:
 
 - bilan objectif par objectif;
 - contribution principale;
-- perspectives integrees au memoire: consolidation V2 FastAPI, V3 Redis/MQTT, temps reel,
+- perspectives integrees au memoire: consolidation V2 FastAPI, bus Redis/MQTT, temps reel,
   enrichissement des features, integration SOC/SIEM.
 
 Message final a faire ressortir:
@@ -275,7 +276,7 @@ Message final a faire ressortir:
 | --- | --- | --- | --- |
 | 1. Collecter, parser et normaliser | Tres avance | Pipeline Logminer, Windows, Wazuh, Linux/auth, reseau | Rediger methodologie |
 | 2. Detecter et comparer les anomalies | Tres avance | Modeles joblib, registres, metriques supervisees | Consolider tableaux |
-| 3. Concevoir l'architecture multi-agents | Tres avance | `docs/architecture/README.md`, bus, orchestrateur, routeur, V2 FastAPI locale | Rediger chapitre 3 |
+| 3. Concevoir l'architecture multi-agents | Tres avance | `docs/architecture/README.md`, bus JSONL, Redis optionnel, orchestrateur, routeur, V2 FastAPI locale | Rediger chapitre 3 |
 | 4. Correler les anomalies en incidents | Avance | `correlator.py`, incidents, priorites | Documenter limites |
 | 5. Visualiser et superviser | Avance | `web/dashboard`, Streamlit, explication locale/LLM | Captures et scenario demo |
 | 6. Evaluer experimentalement | Tres avance | HDFS, BGL, Windows, UNSW, CICIDS, Linux/auth, Wazuh | Tableau final et analyse |
@@ -288,7 +289,7 @@ Message final a faire ressortir:
 3. Chapitre 3 - Methodologie et architecture, car la matiere est deja claire.
 4. Chapitre 4 - Implementation du prototype.
 5. Chapitre 5 - Experimentations et resultats.
-6. Consolider la V2 FastAPI locale sans fragiliser la V1.
+6. Consolider la V2 FastAPI + Redis locale sans fragiliser la V1.
 7. Chapitre 6 - Discussion, limites et evolution V2/V3.
 8. Chapitre 2 - Etat de l'art, a consolider avec les references.
 9. Chapitre 7 - Conclusion et perspectives.

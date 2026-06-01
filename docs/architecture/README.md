@@ -121,7 +121,8 @@ La V1 est la version stable du memoire et doit rester fonctionnelle. La
 trajectoire V2/V3 fait aussi partie du memoire, mais elle est construite
 au-dessus de la V1 pour ne pas perdre les avancees deja validees. Elle est
 documentee dans `docs/architecture/v1_cli_v2_services.md`. Le premier service
-FastAPI V2 est documente dans `docs/architecture/v2_fastapi.md`.
+FastAPI V2 et le bus Redis optionnel sont documentes dans
+`docs/architecture/v2_fastapi.md`.
 
 ## Entrainement Cloud Et Artefacts Modeles
 
