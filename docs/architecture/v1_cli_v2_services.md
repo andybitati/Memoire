@@ -87,9 +87,17 @@ streamlit run src\logminer\agents\dashboard.py
 ## V2 - Services FastAPI
 
 FastAPI servira a exposer les agents sous forme de services HTTP, sans changer
-la logique metier deja stabilisee en V1.
+la logique metier deja stabilisee en V1. La premiere version locale est
+maintenant disponible et testable.
 
-Endpoints cibles:
+Le premier squelette V2 est implemente dans:
+
+```text
+src/logminer/api.py
+docs/architecture/v2_fastapi.md
+```
+
+Endpoints deja disponibles:
 
 ```text
 GET  /health
@@ -99,6 +107,11 @@ POST /parse
 POST /detect
 POST /correlate
 POST /run
+```
+
+Endpoints a ajouter si la V2 doit gerer un historique de runs:
+
+```text
 GET  /runs/{run_id}
 GET  /runs/{run_id}/anomalies
 GET  /runs/{run_id}/incidents

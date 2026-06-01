@@ -25,3 +25,8 @@ joblib>=1.3.0
 
 # Dashboard léger prévu pour la visualisation des alertes/anomalies.
 streamlit>=1.36.0
+
+# API REST V2 pour exposer les agents sans casser la V1 CLI.
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+httpx>=0.27.0

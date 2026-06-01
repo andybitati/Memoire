@@ -42,7 +42,7 @@ Le travail est organise en deux versions:
 | Version | Objectif | Etat |
 | --- | --- | --- |
 | V1 - Prototype CLI stable | Conserver une chaine locale reproductible par commandes: parsing, routage, detection, correlation, dashboard et modeles `.joblib` | Socle de secours et version defendable si les evolutions suivantes echouent |
-| V2 - Services FastAPI | Exposer les agents avec FastAPI tout en reutilisant la logique CLI stable | Evolution a integrer au memoire si elle reste stable |
+| V2 - Services FastAPI | Exposer les agents avec FastAPI tout en reutilisant la logique CLI stable | Premiere API locale disponible; a consolider dans le memoire |
 | V3 - Bus Redis/MQTT | Ajouter une file d'evenements pour rapprocher le prototype d'un fonctionnement distribue ou temps reel | Extension avancee, a integrer si le temps le permet |
 
 La V1 ne doit pas etre fragilisee par l'ajout premature d'une API. Elle sert de
@@ -268,7 +268,7 @@ Livrables attendus:
 4. Rediger le chapitre 4: implementation du prototype Logminer V1.
 5. Rediger le chapitre 5: experimentations et resultats, avec les tableaux de
    modeles.
-6. Faire evoluer prudemment vers V2 FastAPI, en conservant la compatibilite CLI.
+6. Consolider la V2 FastAPI locale, en conservant la compatibilite CLI.
 7. Completer le chapitre 2: etat de l'art, en l'appuyant sur les references
    deja rassemblees.
 8. Rediger le chapitre 6: discussion critique, limites et evolution V2/V3.

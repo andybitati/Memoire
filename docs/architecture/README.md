@@ -120,7 +120,8 @@ V3: Redis ou MQTT si le flux temps reel devient necessaire
 La V1 est la version stable du memoire et doit rester fonctionnelle. La
 trajectoire V2/V3 fait aussi partie du memoire, mais elle est construite
 au-dessus de la V1 pour ne pas perdre les avancees deja validees. Elle est
-documentee dans `docs/architecture/v1_cli_v2_services.md`.
+documentee dans `docs/architecture/v1_cli_v2_services.md`. Le premier service
+FastAPI V2 est documente dans `docs/architecture/v2_fastapi.md`.
 
 ## Entrainement Cloud Et Artefacts Modeles
 
