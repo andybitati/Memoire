@@ -713,6 +713,49 @@ def _load_model_artifact(path: Path) -> dict[str, object]:
     return artifact
 
 
+def run_routed_detection(
+    input_path: str | Path,
+    *,
+    sep: str = "auto",
+    sample_rows: int = 1000,
+    output: str | Path | None = None,
+    incidents_output: str | Path | None = None,
+    window_minutes: int = 15,
+    models: dict[str, str | Path] | None = None,
+) -> dict[str, object]:
+    """Lance detection + correlation avec le modele choisi par le routeur."""
+
+    route = route_model(input_path, sep=sep, sample_rows=sample_rows, models=models)
+    model_path = Path(str(route["model"]))
+    if not model_path.exists():
+        raise FileNotFoundError(f"Modele choisi introuvable: {model_path}")
+
+    input_file = Path(input_path)
+    anomalies_output = Path(output) if output else _default_output(input_file, f"{route['family']}_anomalies")
+    incidents_csv = Path(incidents_output) if incidents_output else _default_output(input_file, f"{route['family']}_incidents")
+
+    artifact = _load_model_artifact(model_path)
+    if artifact.get("model_type") == "random_forest_linux_auth":
+        _detect_linux_auth_model(input_file, anomalies_output, sep=sep, artifact=artifact)
+        correlation_sep = _infer_sep(anomalies_output) if sep == "auto" else sep
+        correlate_anomalies(anomalies_output, incidents_csv, sep=correlation_sep, window_minutes=window_minutes)
+    elif str(artifact.get("model_type", "")).startswith("random_forest"):
+        _detect_supervised_model(input_file, anomalies_output, sep=sep, artifact=artifact)
+        correlation_sep = _infer_sep(anomalies_output) if sep == "auto" else sep
+        correlate_anomalies(anomalies_output, incidents_csv, sep=correlation_sep, window_minutes=window_minutes)
+    else:
+        inference_sep = _infer_sep(input_file) if sep == "auto" else sep
+        detect_anomalies(input_file, anomalies_output, sep=inference_sep, model_in=model_path)
+        correlate_anomalies(anomalies_output, incidents_csv, sep=inference_sep, window_minutes=window_minutes)
+
+    return {
+        "route": route,
+        "model_type": artifact.get("model_type", type(artifact.get("model")).__name__),
+        "anomalies_csv": str(anomalies_output),
+        "incidents_csv": str(incidents_csv),
+    }
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Agent routeur systeme/reseau pour choisir le bon modele")
     parser.add_argument("-i", "--input", required=True, help="CSV/Parquet normalise ou fichier brut a classifier")
@@ -775,25 +818,28 @@ def main(argv: Optional[list[str]] = None) -> int:
         else _default_output(input_path, f"{route['family']}_incidents")
     )
 
-    artifact = _load_model_artifact(model_path)
-    if artifact.get("model_type") == "random_forest_linux_auth":
-        _detect_linux_auth_model(args.input, anomalies_output, sep=args.sep, artifact=artifact)
-        correlation_sep = _infer_sep(anomalies_output) if args.sep == "auto" else args.sep
-        correlate_anomalies(anomalies_output, incidents_output, sep=correlation_sep, window_minutes=args.window_minutes)
-    elif str(artifact.get("model_type", "")).startswith("random_forest"):
-        _detect_supervised_model(args.input, anomalies_output, sep=args.sep, artifact=artifact)
-        correlation_sep = _infer_sep(anomalies_output) if args.sep == "auto" else args.sep
-        correlate_anomalies(anomalies_output, incidents_output, sep=correlation_sep, window_minutes=args.window_minutes)
-    else:
-        # Le detecteur Isolation Forest lit un CSV avec separateur explicite. Si
-        # le routeur a detecte automatiquement le separateur, on reutilise le
-        # separateur reel du fichier d'entree.
-        inference_sep = _infer_sep(input_path) if args.sep == "auto" else args.sep
-        detect_anomalies(args.input, anomalies_output, sep=inference_sep, model_in=model_path)
-        correlate_anomalies(anomalies_output, incidents_output, sep=inference_sep, window_minutes=args.window_minutes)
+    result = run_routed_detection(
+        args.input,
+        sep=args.sep,
+        sample_rows=args.sample_rows,
+        output=anomalies_output,
+        incidents_output=incidents_output,
+        window_minutes=args.window_minutes,
+        models={
+            "windows": args.windows_model,
+            "hdfs": args.hdfs_model,
+            "bgl": args.bgl_model,
+            "wazuh": args.wazuh_model,
+            "network_cicids": args.network_cicids_model,
+            "network": args.network_model,
+            "linux_auth": args.linux_auth_model,
+            "linux": args.linux_model,
+            "fallback": args.fallback_model,
+        },
+    )
 
-    print(f"CSV anomalies: {anomalies_output}")
-    print(f"CSV incidents: {incidents_output}")
+    print(f"CSV anomalies: {result['anomalies_csv']}")
+    print(f"CSV incidents: {result['incidents_csv']}")
     return 0
 
 

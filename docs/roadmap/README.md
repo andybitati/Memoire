@@ -35,6 +35,21 @@ redaction du memoire sur les parties deja realisees. Le projet dispose:
 La priorite change donc: il faut maintenant transformer les resultats techniques
 en chapitres de memoire, tableaux, figures et discussion critique.
 
+## Strategie De Stabilisation
+
+Le travail est organise en deux versions:
+
+| Version | Objectif | Etat |
+| --- | --- | --- |
+| V1 - Prototype CLI stable | Conserver une chaine locale reproductible par commandes: parsing, routage, detection, correlation, dashboard et modeles `.joblib` | Socle de secours et version defendable si les evolutions suivantes echouent |
+| V2 - Services FastAPI | Exposer les agents avec FastAPI tout en reutilisant la logique CLI stable | Evolution a integrer au memoire si elle reste stable |
+| V3 - Bus Redis/MQTT | Ajouter une file d'evenements pour rapprocher le prototype d'un fonctionnement distribue ou temps reel | Extension avancee, a integrer si le temps le permet |
+
+La V1 ne doit pas etre fragilisee par l'ajout premature d'une API. Elle sert de
+base de repli pour la soutenance et de point stable pour la redaction. Les V2 et
+V3 restent bien dans le perimetre du memoire, mais elles doivent etre developpees
+par-dessus la V1 sans casser la chaine CLI deja validee.
+
 ## Objectif 3 - Architecture Multi-Agents
 
 But:
@@ -56,14 +71,17 @@ Ce qui existe deja:
 - separation des familles `windows`, `wazuh`, `network_cicids`, `network`,
   `linux_auth`, `linux`, `hdfs`, `bgl` et `fallback`.
 
-Ce qui manque encore:
+Ce qui manque encore pour la V1:
 
-- exposer les agents comme services FastAPI si necessaire, a presenter comme
-  perspective plutot que comme obligation du prototype;
-- definir une strategie de deploiement cloud/local dans la discussion;
 - formaliser les messages agents comme contrat stable.
 - formaliser l'agent explicateur et l'agent superviseur comme roles
   architecturaux inspires des architectures IDS multi-agents.
+
+Ce qui passe en V2/V3:
+
+- exposer les agents comme services FastAPI;
+- remplacer ou completer le bus JSONL local par Redis/MQTT;
+- definir un deploiement distribue cloud/local.
 
 Livrables attendus:
 
@@ -244,13 +262,15 @@ Livrables attendus:
 
 ## Ordre De Travail Recommande
 
-1. Rediger le chapitre 1: introduction, contexte, problematique, objectifs.
-2. Rediger le chapitre 3: methodologie et architecture multi-agents.
-3. Rediger le chapitre 4: implementation du prototype Logminer.
-4. Rediger le chapitre 5: experimentations et resultats, avec les tableaux de
+1. Stabiliser et documenter la V1 CLI existante comme point de sauvegarde.
+2. Rediger le chapitre 1: introduction, contexte, problematique, objectifs.
+3. Rediger le chapitre 3: methodologie et architecture multi-agents.
+4. Rediger le chapitre 4: implementation du prototype Logminer V1.
+5. Rediger le chapitre 5: experimentations et resultats, avec les tableaux de
    modeles.
-5. Completer le chapitre 2: etat de l'art, en l'appuyant sur les references
+6. Faire evoluer prudemment vers V2 FastAPI, en conservant la compatibilite CLI.
+7. Completer le chapitre 2: etat de l'art, en l'appuyant sur les references
    deja rassemblees.
-6. Rediger le chapitre 6: discussion critique et limites.
-7. Finaliser le chapitre 7: conclusion et perspectives.
-8. En parallele: capturer le dashboard et produire les figures/tableaux finaux.
+8. Rediger le chapitre 6: discussion critique, limites et evolution V2/V3.
+9. Finaliser le chapitre 7: conclusion et perspectives.
+10. En parallele: capturer le dashboard et produire les figures/tableaux finaux.

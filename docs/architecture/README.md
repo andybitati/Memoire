@@ -108,14 +108,19 @@ Le prototype peut evoluer en trois niveaux.
 | Services REST | FastAPI | Agents executables separement avec endpoints clairs | Quand le detecteur IA est ajoute |
 | Bus d'evenements | Redis, MQTT ou sockets | Flux quasi temps reel et agents distribues | Quand plusieurs sources tournent en parallele |
 
-Le choix recommande pour le prototype est:
+Le choix retenu pour stabiliser le prototype et organiser les evolutions du
+memoire est:
 
 ```text
-Phase 1: fichiers CSV
-Phase 2: bus local JSONL pour tracer la communication entre agents
-Phase 3: FastAPI pour exposer parseur/detecteur/dashboard
-Phase 4: Redis ou MQTT si le flux temps reel devient necessaire
+V1: fichiers CSV + CLI + bus local JSONL, version de secours defendable
+V2: FastAPI pour exposer parseur/detecteur/correlateur/dashboard
+V3: Redis ou MQTT si le flux temps reel devient necessaire
 ```
+
+La V1 est la version stable du memoire et doit rester fonctionnelle. La
+trajectoire V2/V3 fait aussi partie du memoire, mais elle est construite
+au-dessus de la V1 pour ne pas perdre les avancees deja validees. Elle est
+documentee dans `docs/architecture/v1_cli_v2_services.md`.
 
 ## Entrainement Cloud Et Artefacts Modeles
 
@@ -257,7 +262,7 @@ Ce qui reste a construire:
 - enrichissement des regles de correlation;
 - stockage persistant des alertes/incidents;
 - strategie de versionnement des modeles entraines sur le cloud;
-- endpoints FastAPI pour agents separes.
+- trajectoire FastAPI/Redis documentee comme V2/V3.
 
 ## Roadmap Technique
 
@@ -273,7 +278,8 @@ Ce qui reste a construire:
 10. Fait: rendre lisibles les communications agents et les incidents dans le dashboard.
 11. Fait: ajouter une explication analyste avec LLM optionnel pour rendre les
     resultats exploitables par un humain.
-12. Ajouter ensuite FastAPI si les agents doivent tourner comme services separes.
+12. Rediger et stabiliser la V1 CLI; construire FastAPI/Redis ensuite comme
+    V2/V3 du memoire.
 
 Commande de detection:
 

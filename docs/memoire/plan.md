@@ -106,7 +106,9 @@ Elements a presenter:
   visualiseur, explicateur/superviseur en perspective;
 - contrat CSV commun: `timestamp_iso`, `severity`, `event`, `source`, `host`,
   `user`, `src_ip`, `dst_ip`, `category`, `message`;
-- strategie multi-modeles par famille de logs.
+- strategie multi-modeles par famille de logs;
+- choix de stabiliser une V1 locale en CLI comme socle de secours, avant une
+  V2 FastAPI et une V3 Redis/MQTT egalement destinees au memoire.
 
 ## Chapitre 4 - Implementation Du Prototype
 
@@ -148,6 +150,7 @@ Sections recommandees:
 6. Entrainement et sauvegarde des modeles.
 7. Correlation et priorisation des incidents.
 8. Dashboard et exploitation humaine.
+9. Commandes CLI reproductibles de la V1 stable.
 
 ## Chapitre 5 - Experimentations Et Resultats
 
@@ -215,7 +218,8 @@ Elements disponibles:
 - limites connues des echantillons equilibres;
 - difference de performance HDFS/BGL;
 - contraintes Windows et droits administrateur;
-- prototype local non encore distribue via FastAPI/Redis.
+- choix volontaire d'une V1 locale/CLI comme version defendable si les
+  evolutions V2/V3 deviennent instables.
 - transfert difficile entre datasets reseau, par exemple UNSW vers CICIDS;
 - faux positifs observes sur Linux/auth selon la distribution;
 - necessite d'un routeur multi-modeles pour eviter les confusions de formats;
@@ -238,8 +242,9 @@ Angles de discussion:
   avec prudence a cause du desequilibre et de la distribution des donnees;
 - Wazuh fournit une couche SIEM riche, mais les alertes non supervisees restent
   des signaux candidats;
-- le prototype est local et modulaire, mais peut evoluer vers FastAPI, Redis ou
-  MQTT pour un deploiement distribue.
+- le prototype V1 est local et modulaire; la V2 doit exposer les agents via
+  FastAPI sans casser la CLI, puis la V3 pourra utiliser Redis ou MQTT pour un
+  deploiement distribue.
 
 ## Chapitre 7 - Conclusion Et Perspectives
 
@@ -251,7 +256,7 @@ Reste a rediger:
 
 - bilan objectif par objectif;
 - contribution principale;
-- perspectives: FastAPI, Redis/MQTT, temps reel, datasets reseau,
+- perspectives integrees au memoire: V2 FastAPI, V3 Redis/MQTT, temps reel,
   enrichissement des features, integration SOC/SIEM.
 
 Message final a faire ressortir:
@@ -278,10 +283,12 @@ Message final a faire ressortir:
 
 ## Ordre De Redaction A Partir De Maintenant
 
-1. Chapitre 1 - Introduction generale.
-2. Chapitre 3 - Methodologie et architecture, car la matiere est deja claire.
-3. Chapitre 4 - Implementation du prototype.
-4. Chapitre 5 - Experimentations et resultats.
-5. Chapitre 6 - Discussion.
-6. Chapitre 2 - Etat de l'art, a consolider avec les references.
-7. Chapitre 7 - Conclusion et perspectives.
+1. Stabiliser la V1 CLI dans la documentation comme filet de securite.
+2. Chapitre 1 - Introduction generale.
+3. Chapitre 3 - Methodologie et architecture, car la matiere est deja claire.
+4. Chapitre 4 - Implementation du prototype.
+5. Chapitre 5 - Experimentations et resultats.
+6. Faire evoluer vers V2 FastAPI si la V1 reste stable.
+7. Chapitre 6 - Discussion, limites et evolution V2/V3.
+8. Chapitre 2 - Etat de l'art, a consolider avec les references.
+9. Chapitre 7 - Conclusion et perspectives.
