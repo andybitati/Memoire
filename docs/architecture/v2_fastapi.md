@@ -49,19 +49,85 @@ $env:LOGMINER_REDIS_URL="redis://localhost:6379/0"
 $env:LOGMINER_REDIS_STREAM="logminer:events"
 ```
 
+## Agent Runtime Docker
+
+La V2 prevoit un agent runtime charge de faciliter le travail de
+l'administrateur. Son role est de verifier la presence de Docker, de tenter de
+lancer Docker Desktop sur Windows lorsque c'est possible, puis de demarrer les
+services Logminer declares dans `docker-compose.redis.yml`.
+
+Endpoints associes:
+
+| Endpoint | Role |
+| --- | --- |
+| `GET /runtime/status` | Lire l'etat Docker sans action |
+| `POST /runtime/prepare` | Preparer Docker et lancer les services Compose |
+
+Exemple:
+
+```powershell
+Invoke-RestMethod `
+  -Method Post `
+  -Uri http://127.0.0.1:8000/runtime/prepare `
+  -ContentType "application/json" `
+  -Body '{"start_desktop":true,"wait_seconds":45}'
+```
+
+Limite volontaire: l'agent ne contourne pas les droits de la machine. Si Docker
+Desktop, WSL2 ou la plateforme de machine virtuelle demandent une action
+administrateur, l'agent le signale et laisse l'administrateur appliquer la
+correction.
+
+## Autorisation Des Journaux Sensibles
+
+Certains journaux, par exemple `Security.evtx` sous Windows, exigent des droits
+administrateur. La V2 introduit un agent d'autorisation privilegiee qui demande
+une validation via le mecanisme natif du systeme, par exemple l'invite UAC sous
+Windows.
+
+Principe important: Logminer ne demande pas et ne stocke jamais le mot de passe
+administrateur. L'administrateur valide l'action dans la fenetre securisee du
+systeme d'exploitation. Si l'autorisation est acceptee, le script de collecte
+exporte les journaux sensibles vers `data/raw/windows_events_admin`, puis les
+agents standards peuvent les examiner.
+
+Endpoint associe:
+
+| Endpoint | Role |
+| --- | --- |
+| `POST /collect/windows/privileged` | Demander une collecte Windows elevee via UAC |
+
+Exemple:
+
+```powershell
+Invoke-RestMethod `
+  -Method Post `
+  -Uri http://127.0.0.1:8000/collect/windows/privileged `
+  -ContentType "application/json" `
+  -Body '{"days":2,"copy_logs":["Application","System","Security"]}'
+```
+
+Cette approche garde une trace claire de l'intention dans Redis/JSONL, tout en
+laissant le controle final a l'administrateur systeme et reseau.
+
 ## Endpoints
 
 | Endpoint | Role |
 | --- | --- |
 | `GET /health` | Verifier que l'API repond |
+| `GET /runtime/status` | Verifier Docker sans lancer de service |
+| `POST /runtime/prepare` | Demarrer Docker/Compose lorsque c'est possible |
 | `GET /redis/health` | Verifier la connexion au serveur Redis |
 | `GET /events` | Lire les evenements publies dans Redis |
 | `GET /models` | Lister les familles de modeles et leurs artefacts |
+| `POST /collect/discover` | Decouvrir automatiquement les journaux candidats |
+| `POST /collect/windows/privileged` | Demander l'autorisation admin pour les journaux sensibles |
 | `POST /route` | Identifier la famille de logs et le modele choisi |
 | `POST /parse` | Parser un log brut vers un CSV Logminer |
 | `POST /detect` | Lancer detection + correlation sur un CSV/Parquet |
 | `POST /correlate` | Rejouer uniquement la correlation sur un CSV d'anomalies |
 | `POST /run` | Lancer parsing optionnel, routage, detection et correlation |
+| `POST /run/discovered` | Lancer collecte locale, routage, detection et correlation |
 
 ## Exemple De Routage
 

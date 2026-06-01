@@ -112,6 +112,11 @@ select {
   cursor: default;
 }
 
+.fullWidth {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
 .search {
   display: flex;
   align-items: center;
@@ -275,6 +280,64 @@ select {
 .explanationPanel {
   margin-bottom: 14px;
   background: #161d27;
+}
+
+.servicePanel {
+  margin-bottom: 14px;
+}
+
+.serviceGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.serviceItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid #303846;
+  border-radius: 8px;
+  padding: 10px;
+  background: #11151d;
+}
+
+.serviceItem strong,
+.serviceItem small,
+.collectorBox strong,
+.collectorBox span,
+.collectorBox small {
+  display: block;
+}
+
+.serviceItem small,
+.collectorBox small {
+  overflow: hidden;
+  color: #9ea8b6;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.collectorBox {
+  display: grid;
+  gap: 5px;
+  border: 1px solid #303846;
+  border-radius: 8px;
+  padding: 11px;
+  background: #141922;
+}
+
+.collectorBox span {
+  overflow-wrap: anywhere;
+  color: #cbd4df;
+  font-size: 13px;
+}
+
+.inlineError {
+  color: #ffb4bf !important;
 }
 
 .explanationText {
@@ -583,6 +646,7 @@ td:last-child {
   }
 
   .mainGrid,
+  .serviceGrid,
   .statsGrid {
     grid-template-columns: 1fr 1fr;
   }
@@ -599,6 +663,7 @@ td:last-child {
 
   .sidebar,
   .mainGrid,
+  .serviceGrid,
   .statsGrid {
     grid-template-columns: 1fr;
   }

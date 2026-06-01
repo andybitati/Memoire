@@ -6,7 +6,13 @@ let state = {
   anomalies: [],
   incidents: [],
   messages: [],
+  redisMessages: [],
   validation: [],
+  services: { api: {}, redis: {}, models: [] },
+  collector: { loading: false, error: "", selected: null, candidates: [] },
+  privilege: { loading: false, error: "", result: null },
+  runtime: { loading: false, error: "", result: null },
+  autoRun: { loading: false, error: "", result: null },
   explanation: { loading: false, provider: "", text: "", error: "" },
   meta: {},
   filters: { query: "", host: "", severity: "", category: "", source: "" },
@@ -28,6 +34,13 @@ async function fetchOptionalData(type, limit = DATA_LIMIT) {
   }
 }
 
+async function fetchJson(path, options = {}) {
+  const response = await fetch(path, options);
+  const payload = await response.json();
+  if (!response.ok) throw new Error(payload.error || payload.detail || `Erreur HTTP ${response.status}`);
+  return payload;
+}
+
 function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -39,6 +52,20 @@ function escapeHtml(value) {
 
 function uniqueValues(rows, key) {
   return Array.from(new Set(rows.map((row) => row[key]).filter(Boolean))).sort();
+}
+
+function normalizeRows(rows) {
+  return rows.map((row) => ({
+    ...row,
+    timestamp_iso: row.timestamp_iso || row["_source.@timestamp"] || row.timestamp || "",
+    severity: row.severity || row["_source.rule.level"] || "",
+    event: row.event || row["_source.rule.description"] || row["_source.decoder.name"] || "",
+    source: row.source || row["_source.location"] || row["_source.decoder.name"] || "",
+    host: row.host || row["_source.agent.name"] || row["_source.predecoder.hostname"] || "",
+    user: row.user || row["_source.data.dstuser"] || "",
+    category: row.category || row["_source.rule.groups"] || row["_source.rule.mitre.tactic"] || "",
+    message: row.message || row["_source.full_log"] || row["_source.rule.description"] || "",
+  }));
 }
 
 function severityClass(value) {
@@ -73,32 +100,106 @@ async function loadData() {
   state = { ...state, loading: true, error: "", explanation: { loading: false, provider: "", text: "", error: "" } };
   render();
   try {
-    const [events, anomalies, incidents, messages] = await Promise.all([
+    const [events, anomalies, incidents, messages, services, redisEvents] = await Promise.all([
       fetchData("events"),
       fetchData("anomalies"),
       fetchData("incidents", 2000),
       fetchOptionalData("messages", 200),
+      fetchJson("/api/services"),
+      fetchJson("/api/redis-events?count=100"),
     ]);
     const validation = await fetchOptionalData("validation", 50);
     state = {
       ...state,
       loading: false,
       error: "",
-      events: events.data,
-      anomalies: anomalies.data,
-      incidents: incidents.data,
+      events: normalizeRows(events.data),
+      anomalies: normalizeRows(anomalies.data),
+      incidents: normalizeRows(incidents.data),
       messages: messages.data,
+      redisMessages: redisEvents.events || [],
       validation: validation.data,
+      services,
       meta: {
         events: events.count,
         anomalies: anomalies.count,
         incidents: incidents.count,
         messages: messages.count,
+        redisMessages: redisEvents.count,
         validation: validation.count,
       },
     };
   } catch (error) {
     state = { ...state, loading: false, error: error.message };
+  }
+  render();
+}
+
+async function discoverLogs() {
+  state = { ...state, collector: { ...state.collector, loading: true, error: "" } };
+  render();
+  try {
+    const result = await fetchJson("/api/collect-discover", { method: "POST" });
+    state = {
+      ...state,
+      collector: {
+        loading: false,
+        error: "",
+        selected: result.selected,
+        candidates: result.candidates || [],
+      },
+      redisMessages: result.run_id ? state.redisMessages : state.redisMessages,
+    };
+  } catch (error) {
+    state = { ...state, collector: { ...state.collector, loading: false, error: error.message } };
+  }
+  render();
+}
+
+async function requestPrivilegedCollect() {
+  state = { ...state, privilege: { loading: true, error: "", result: null } };
+  render();
+  try {
+    const result = await fetchJson("/api/privileged-collect", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ copy_logs: ["Application", "System", "Security"], days: 2 }),
+    });
+    state = { ...state, privilege: { loading: false, error: "", result } };
+  } catch (error) {
+    state = { ...state, privilege: { loading: false, error: error.message, result: null } };
+  }
+  render();
+}
+
+async function runAutonomousScan() {
+  state = { ...state, autoRun: { loading: true, error: "", result: null } };
+  render();
+  try {
+    const result = await fetchJson("/api/auto-run", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+    state = { ...state, autoRun: { loading: false, error: "", result } };
+    await loadData();
+    state = { ...state, autoRun: { loading: false, error: "", result } };
+  } catch (error) {
+    state = { ...state, autoRun: { loading: false, error: error.message, result: null } };
+  }
+  render();
+}
+
+async function prepareRuntime() {
+  state = { ...state, runtime: { loading: true, error: "", result: null } };
+  render();
+  try {
+    const result = await fetchJson("/api/runtime-prepare", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    });
+    state = { ...state, runtime: { loading: false, error: "", result } };
+    await loadData();
+    state = { ...state, runtime: { loading: false, error: "", result } };
+  } catch (error) {
+    state = { ...state, runtime: { loading: false, error: error.message, result: null } };
   }
   render();
 }
@@ -172,6 +273,10 @@ function sidebar() {
     <aside class="sidebar">
       <div class="brand"><span class="icon">◈</span><div><strong>Logminer</strong><span>Agents IA</span></div></div>
       <button class="primaryAction" id="reloadBtn" ${state.loading ? "disabled" : ""}><span class="icon">↻</span>Actualiser</button>
+      <button class="secondaryAction fullWidth" id="runtimeBtn" ${state.runtime.loading ? "disabled" : ""}><span class="icon">◉</span>${state.runtime.loading ? "Préparation" : "Préparer runtime"}</button>
+      <button class="secondaryAction fullWidth" id="privilegedBtn" ${state.privilege.loading ? "disabled" : ""}><span class="icon">⌘</span>${state.privilege.loading ? "Demande" : "Autoriser journaux sensibles"}</button>
+      <button class="secondaryAction fullWidth" id="discoverBtn" ${state.collector.loading ? "disabled" : ""}><span class="icon">⌕</span>${state.collector.loading ? "Scan" : "Chercher logs"}</button>
+      <button class="secondaryAction fullWidth" id="autoRunBtn" ${state.autoRun.loading ? "disabled" : ""}><span class="icon">▶</span>${state.autoRun.loading ? "Analyse" : "Analyse autonome"}</button>
       <label class="search"><span class="icon">⌕</span><input id="queryFilter" value="${escapeHtml(state.filters.query)}" placeholder="Rechercher message, source, user" /></label>
       <div class="filterTitle"><span class="icon">≡</span>Filtres</div>
       ${Object.entries(options)
@@ -206,11 +311,19 @@ const AGENT_LABELS = {
   visualizer: "Visualiseur",
   orchestrator: "Orchestrateur",
   dashboard: "Dashboard",
+  runtime: "Runtime Docker",
+  privilege: "Autorisation admin",
 };
 
 const MESSAGE_LABELS = {
   "workflow.started": "Workflow lancé",
   "workflow.completed": "Workflow terminé",
+  "collector.discovery.started": "Recherche des journaux",
+  "collector.discovery.completed": "Journaux trouvés",
+  "runtime.prepare.started": "Préparation runtime",
+  "runtime.prepare.completed": "Runtime prêt",
+  "privilege.request.started": "Autorisation demandée",
+  "privilege.request.completed": "Autorisation traitée",
   "parse.started": "Parsing lancé",
   "parse.completed": "Parsing terminé",
   "detection.started": "Détection lancée",
@@ -258,6 +371,37 @@ function payloadSummary(payload) {
 
 function latestRun(messages) {
   return [...messages].reverse().find((message) => message.run_id)?.run_id || "";
+}
+
+function servicePanel() {
+  const { api, redis, models } = state.services;
+  const runtime = state.runtime.result || state.services.runtime || {};
+  const modelCount = (models || []).filter((model) => model.exists).length;
+  const selected = state.collector.selected;
+  const result = state.autoRun.result;
+  const privilege = state.privilege.result;
+
+  return `
+    <section class="panel servicePanel">
+      <div class="panelHeader">
+        <div><h2>Services V2</h2><p>${escapeHtml(state.services.apiBase || "FastAPI locale")}</p></div>
+        <span class="icon">◎</span>
+      </div>
+      <div class="serviceGrid">
+        <div class="serviceItem"><span class="dot ${api?.status === "ok" ? "" : "errorDot"}"></span><div><strong>FastAPI</strong><small>${escapeHtml(api?.status || "inconnu")}</small></div></div>
+        <div class="serviceItem"><span class="dot ${redis?.status === "ok" ? "" : "errorDot"}"></span><div><strong>Redis Streams</strong><small>${escapeHtml(redis?.stream || redis?.error || "non vérifié")}</small></div></div>
+        <div class="serviceItem"><span class="dot ${runtime?.docker_engine ? "" : "errorDot"}"></span><div><strong>Docker</strong><small>${escapeHtml(runtime?.message || "état non vérifié")}</small></div></div>
+        <div class="serviceItem"><span class="dot"></span><div><strong>Modèles</strong><small>${modelCount}/${(models || []).length} artefacts disponibles</small></div></div>
+      </div>
+      <div class="collectorBox">
+        <strong>Collecteur autonome</strong>
+        <span>${selected ? escapeHtml(selected.path) : "Aucun fichier sélectionné par le collecteur."}</span>
+        ${result ? `<small>Dernier run: ${escapeHtml(result.run_id)} · ${escapeHtml(result.anomalies_rows ?? "0")} anomalies · ${escapeHtml(result.incidents_rows ?? "0")} incidents</small>` : ""}
+        ${privilege ? `<small>Accès sensible: ${escapeHtml(privilege.message || (privilege.launched ? "demande lancée" : "non autorisé"))}</small>` : ""}
+        ${state.collector.error || state.autoRun.error || state.runtime.error || state.privilege.error ? `<small class="inlineError">${escapeHtml(state.collector.error || state.autoRun.error || state.runtime.error || state.privilege.error)}</small>` : ""}
+      </div>
+    </section>
+  `;
 }
 
 function agentFlowPanel(messages) {
@@ -456,6 +600,26 @@ function messagesPanel(rows) {
   `;
 }
 
+function redisPanel(rows) {
+  return `
+    <section class="panel messages">
+      <div class="panelHeader"><h2>Redis events</h2><span class="icon">↬</span></div>
+      ${rows
+        .slice(-10)
+        .map(
+          (message) => `
+            <div class="message">
+              <span>${escapeHtml(messageTitle(message))}</span>
+              <strong>${escapeHtml(agentName(message.source))} → ${escapeHtml(agentName(message.target))}</strong>
+              <small>${escapeHtml(message.status || "ok")}</small>
+            </div>
+          `,
+        )
+        .join("") || `<div class="emptyState">Aucun événement Redis à afficher.</div>`}
+    </section>
+  `;
+}
+
 function render() {
   const filteredEvents = filterRows(state.events);
   const filteredAnomalies = filterRows(state.anomalies);
@@ -476,23 +640,29 @@ function render() {
           ${stat("⇄", "Incidents", state.incidents.length, "green")}
           ${stat("!", "Incidents critiques", criticalIncidents, "rose")}
         </div>
+        ${servicePanel()}
         ${explanationPanel()}
         <div class="mainGrid">
           ${timeline(filteredEvents)}
           <div class="sideStack">
-            ${agentFlowPanel(state.messages)}
+            ${agentFlowPanel([...state.messages, ...state.redisMessages])}
             ${validationPanel(state.validation)}
           </div>
         </div>
         ${incidentsPanel(state.incidents)}
         ${dataTable("Anomalies candidates", filteredAnomalies, ["timestamp_iso", "severity", "event", "source", "host", "category", "anomaly_score", "message"], "◆")}
         ${dataTable("Événements normalisés", filteredEvents, ["timestamp_iso", "severity", "event", "source", "host", "user", "category", "message"], "▤")}
+        ${redisPanel(state.redisMessages)}
         ${messagesPanel(state.messages)}
       </main>
     </div>
   `;
 
   document.getElementById("reloadBtn")?.addEventListener("click", loadData);
+  document.getElementById("runtimeBtn")?.addEventListener("click", prepareRuntime);
+  document.getElementById("privilegedBtn")?.addEventListener("click", requestPrivilegedCollect);
+  document.getElementById("discoverBtn")?.addEventListener("click", discoverLogs);
+  document.getElementById("autoRunBtn")?.addEventListener("click", runAutonomousScan);
   document.getElementById("explainBtn")?.addEventListener("click", explainDashboard);
   document.getElementById("queryFilter")?.addEventListener("input", (event) => setFilter("query", event.target.value));
   document.querySelectorAll("[data-filter]").forEach((select) => {

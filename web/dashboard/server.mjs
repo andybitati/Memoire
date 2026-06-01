@@ -7,6 +7,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
 const processedDir = path.join(root, "data", "processed");
 const preferredPort = Number(process.env.PORT || 5173);
+const fastApiBase = process.env.LOGMINER_API_URL || "http://127.0.0.1:8000";
 let activePort = preferredPort;
 
 const dataFiles = {
@@ -20,6 +21,12 @@ const dataFiles = {
     "agent_messages_corr_test.jsonl",
   ],
   validation: ["validation_summary.csv"],
+};
+
+const dynamicDataPatterns = {
+  events: /^api_.+_parsed\.csv$/i,
+  anomalies: /^api_.+_anomalies\.csv$/i,
+  incidents: /^api_.+_incidents\.csv$/i,
 };
 
 const staticTypes = {
@@ -81,9 +88,27 @@ function parseCsv(text, delimiter = ";") {
   });
 }
 
+function inferDelimiter(text) {
+  const firstLine = text.split(/\r?\n/, 1)[0] || "";
+  return [",", ";", "\t"].sort((a, b) => firstLine.split(b).length - firstLine.split(a).length)[0];
+}
+
 function sendJson(res, status, body) {
   res.writeHead(status, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" });
   res.end(JSON.stringify(body));
+}
+
+async function fetchJson(url, options = {}) {
+  const response = await fetch(url, options);
+  const text = await response.text();
+  let body = {};
+  try {
+    body = text ? JSON.parse(text) : {};
+  } catch {
+    body = { raw: text };
+  }
+  if (!response.ok) throw new Error(body.detail || body.error || `HTTP ${response.status}`);
+  return body;
 }
 
 async function readJsonBody(req) {
@@ -223,7 +248,22 @@ async function handleApi(req, res) {
 
     let file = "";
     let raw = "";
-    for (const candidate of candidates) {
+    let resolvedCandidates = [...candidates];
+    const dynamicPattern = dynamicDataPatterns[type];
+    if (dynamicPattern) {
+      const entries = await fs.readdir(processedDir, { withFileTypes: true });
+      const dynamic = await Promise.all(
+        entries
+          .filter((entry) => entry.isFile() && dynamicPattern.test(entry.name))
+          .map(async (entry) => {
+            const stat = await fs.stat(path.join(processedDir, entry.name));
+            return { name: entry.name, mtimeMs: stat.mtimeMs };
+          }),
+      );
+      resolvedCandidates = dynamic.sort((a, b) => b.mtimeMs - a.mtimeMs).map((entry) => entry.name).concat(resolvedCandidates);
+    }
+
+    for (const candidate of resolvedCandidates) {
       try {
         raw = await fs.readFile(path.join(processedDir, candidate), "utf8");
         file = candidate;
@@ -251,11 +291,116 @@ async function handleApi(req, res) {
                 return [];
               }
             })
-        : parseCsv(raw);
+        : parseCsv(raw, inferDelimiter(raw));
 
     sendJson(res, 200, { file, count: data.length, data: limit > 0 ? data.slice(0, limit) : data });
   } catch (error) {
     sendJson(res, 404, { error: error.message });
+  }
+}
+
+async function handleServices(req, res) {
+  try {
+    const [health, redisHealth, models, runtime] = await Promise.allSettled([
+      fetchJson(`${fastApiBase}/health`),
+      fetchJson(`${fastApiBase}/redis/health`),
+      fetchJson(`${fastApiBase}/models`),
+      fetchJson(`${fastApiBase}/runtime/status`),
+    ]);
+
+    sendJson(res, 200, {
+      apiBase: fastApiBase,
+      api: health.status === "fulfilled" ? health.value : { status: "down", error: health.reason.message },
+      redis:
+        redisHealth.status === "fulfilled"
+          ? redisHealth.value
+          : { status: "down", error: redisHealth.reason.message },
+      models: models.status === "fulfilled" ? models.value.models || [] : [],
+      runtime: runtime.status === "fulfilled" ? runtime.value : { docker_cli: false, docker_engine: false, message: runtime.reason.message },
+    });
+  } catch (error) {
+    sendJson(res, 200, { apiBase: fastApiBase, api: { status: "down", error: error.message }, redis: { status: "down" }, models: [], runtime: {} });
+  }
+}
+
+async function handleRuntimePrepare(req, res) {
+  try {
+    const body = req.method === "POST" ? await readJsonBody(req) : {};
+    sendJson(
+      res,
+      200,
+      await fetchJson(`${fastApiBase}/runtime/prepare`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ start_desktop: true, wait_seconds: 45, ...body }),
+      }),
+    );
+  } catch (error) {
+    sendJson(res, 502, { error: error.message });
+  }
+}
+
+async function handleRedisEvents(req, res) {
+  try {
+    const url = new URL(req.url, `http://127.0.0.1:${activePort}`);
+    const runId = url.searchParams.get("run_id");
+    const count = url.searchParams.get("count") || "100";
+    const target = new URL(`${fastApiBase}/events`);
+    target.searchParams.set("count", count);
+    if (runId) target.searchParams.set("run_id", runId);
+    sendJson(res, 200, await fetchJson(target));
+  } catch (error) {
+    sendJson(res, 200, { stream: "", count: 0, events: [], error: error.message });
+  }
+}
+
+async function handleCollectDiscover(req, res) {
+  try {
+    sendJson(
+      res,
+      200,
+      await fetchJson(`${fastApiBase}/collect/discover`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ use_redis: true, max_files: 25, max_mb: 100 }),
+      }),
+    );
+  } catch (error) {
+    sendJson(res, 502, { error: error.message });
+  }
+}
+
+async function handlePrivilegedCollect(req, res) {
+  try {
+    const body = req.method === "POST" ? await readJsonBody(req) : {};
+    sendJson(
+      res,
+      200,
+      await fetchJson(`${fastApiBase}/collect/windows/privileged`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ use_redis: true, days: 2, ...body }),
+      }),
+    );
+  } catch (error) {
+    sendJson(res, 502, { error: error.message });
+  }
+}
+
+async function handleAutoRun(req, res) {
+  try {
+    const body = req.method === "POST" ? await readJsonBody(req) : {};
+    sendJson(
+      res,
+      200,
+      await fetchJson(`${fastApiBase}/run/discovered`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ use_redis: true, max_mb: 5, ...body }),
+      }),
+    );
+  } catch (error) {
+    sendJson(res, 502, { error: error.message });
   }
 }
 
@@ -286,6 +431,18 @@ async function handleStatic(req, res) {
 const server = http.createServer((req, res) => {
   if (req.url?.startsWith("/api/data")) {
     handleApi(req, res);
+  } else if (req.url?.startsWith("/api/services")) {
+    handleServices(req, res);
+  } else if (req.url?.startsWith("/api/runtime-prepare")) {
+    handleRuntimePrepare(req, res);
+  } else if (req.url?.startsWith("/api/redis-events")) {
+    handleRedisEvents(req, res);
+  } else if (req.url?.startsWith("/api/collect-discover")) {
+    handleCollectDiscover(req, res);
+  } else if (req.url?.startsWith("/api/privileged-collect")) {
+    handlePrivilegedCollect(req, res);
+  } else if (req.url?.startsWith("/api/auto-run")) {
+    handleAutoRun(req, res);
   } else if (req.url?.startsWith("/api/explain")) {
     handleExplain(req, res);
   } else {

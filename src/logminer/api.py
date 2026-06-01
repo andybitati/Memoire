@@ -27,6 +27,9 @@ if str(BASE_DIR) not in sys.path:
 from agents.model_router import MODEL_DEFAULTS, route_model, run_routed_detection
 from agents.correlator import correlate_anomalies
 from agents.bus import RedisMessageBus
+from agents.collector_agent import DEFAULT_ROOTS, discover_logs
+from agents.privilege_agent import request_windows_sensitive_collection
+from agents.runtime_agent import ensure_runtime, runtime_status
 from pipeline import run_pipeline
 
 
@@ -80,6 +83,41 @@ class RunRequest(BaseModel):
     window_minutes: int = 15
     run_id: str | None = None
     use_redis: bool = False
+
+
+class DiscoverRequest(BaseModel):
+    roots: list[str] = Field(default_factory=lambda: list(DEFAULT_ROOTS))
+    max_files: int = 50
+    max_mb: int = 100
+    run_id: str | None = None
+    use_redis: bool = False
+
+
+class RunDiscoveredRequest(BaseModel):
+    roots: list[str] = Field(default_factory=lambda: list(DEFAULT_ROOTS))
+    out_dir: str = "data/processed"
+    sep: str = "auto"
+    sample_rows: int = 1000
+    window_minutes: int = 15
+    run_id: str | None = None
+    use_redis: bool = True
+    max_mb: int = 100
+
+
+class RuntimePrepareRequest(BaseModel):
+    compose_file: str = "docker-compose.redis.yml"
+    start_desktop: bool = True
+    wait_seconds: int = 45
+    run_id: str | None = None
+
+
+class PrivilegedWindowsCollectRequest(BaseModel):
+    days: int = 2
+    copy_logs: list[str] = Field(default_factory=lambda: ["Application", "System", "Security"])
+    raw_directory: str = "data\\raw\\windows_events_admin"
+    output_directory: str = "data\\processed"
+    run_id: str | None = None
+    use_redis: bool = True
 
 
 class EventsRequest(BaseModel):
@@ -161,6 +199,61 @@ def _publish(
         bus.publish(source=source, target=target, message_type=message_type, payload=payload, status=status)
 
 
+def _run_workflow(request: RunRequest, input_path: Path, run_id: str, bus: RedisMessageBus | None) -> dict[str, Any]:
+    out_dir = _path(request.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    _publish(
+        bus,
+        source="api",
+        target="orchestrator",
+        message_type="workflow.started",
+        payload={"input_path": str(input_path), "out_dir": str(out_dir), "parse_if_needed": request.parse_if_needed},
+    )
+
+    source_for_detection = input_path
+    parsed_csv = ""
+    if request.parse_if_needed and input_path.suffix.lower() not in {".csv", ".parquet"}:
+        parsed_name = f"api_{run_id}_parsed.csv"
+        parse_sep = ";" if request.sep == "auto" else request.sep
+        _publish(bus, "orchestrator", "parser", "parsing.started", {"input_path": str(input_path)})
+        produced = run_pipeline(str(input_path), str(out_dir), parsed_name, sep=parse_sep)
+        if not produced:
+            _publish(bus, "parser", "orchestrator", "parsing.failed", {"reason": "no parsed csv produced"}, status="error")
+            raise HTTPException(status_code=400, detail="Aucun CSV produit par le parsing")
+        source_for_detection = _path(produced[0])
+        parsed_csv = str(source_for_detection)
+        _publish(bus, "parser", "orchestrator", "parsing.completed", {"parsed_csv": parsed_csv})
+
+    anomalies_csv = out_dir / f"api_{run_id}_anomalies.csv"
+    incidents_csv = out_dir / f"api_{run_id}_incidents.csv"
+    _publish(bus, "orchestrator", "detector", "detection.started", {"input_path": str(source_for_detection)})
+    try:
+        result = run_routed_detection(
+            source_for_detection,
+            sep=request.sep,
+            sample_rows=request.sample_rows,
+            output=anomalies_csv,
+            incidents_output=incidents_csv,
+            window_minutes=request.window_minutes,
+            models=_model_paths(),
+        )
+    except Exception as exc:
+        _publish(bus, "detector", "orchestrator", "workflow.failed", {"error": str(exc)}, status="error")
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    response = {
+        "run_id": run_id,
+        "input_path": str(input_path),
+        "parsed_csv": parsed_csv,
+        **result,
+        "input_rows": _count_rows(source_for_detection, request.sep),
+        "anomalies_rows": _count_rows(result["anomalies_csv"], _infer_sep(_path(result["anomalies_csv"]))),
+        "incidents_rows": _count_rows(result["incidents_csv"], _infer_sep(_path(result["incidents_csv"]))),
+    }
+    _publish(bus, "orchestrator", "api", "workflow.completed", response)
+    return response
+
+
 @app.get("/health")
 def health() -> dict[str, Any]:
     return {
@@ -197,6 +290,93 @@ def events(run_id: str | None = None, count: int = 100) -> dict[str, Any]:
 @app.get("/models")
 def models() -> dict[str, Any]:
     return {"models": [_model_summary(family, artifact) for family, artifact in MODEL_DEFAULTS.items()]}
+
+
+@app.get("/runtime/status")
+def get_runtime_status() -> dict[str, Any]:
+    return asdict(runtime_status())
+
+
+@app.post("/runtime/prepare")
+def prepare_runtime(request: RuntimePrepareRequest) -> dict[str, Any]:
+    bus = None
+    try:
+        bus = _redis_bus(request.run_id)
+    except HTTPException:
+        bus = None
+
+    _publish(
+        bus,
+        source="api",
+        target="runtime",
+        message_type="runtime.prepare.started",
+        payload={"compose_file": request.compose_file, "start_desktop": request.start_desktop},
+    )
+    status = ensure_runtime(
+        compose_file=request.compose_file,
+        start_desktop=request.start_desktop,
+        wait_seconds=request.wait_seconds,
+    )
+    _publish(
+        bus,
+        source="runtime",
+        target="api",
+        message_type="runtime.prepare.completed",
+        payload=asdict(status),
+        status="ok" if status.services_started or status.docker_engine else "warning",
+    )
+    return asdict(status)
+
+
+@app.post("/collect/discover")
+def collect_discover(request: DiscoverRequest) -> dict[str, Any]:
+    bus = _redis_bus(request.run_id) if request.use_redis else None
+    _publish(
+        bus,
+        source="api",
+        target="collector",
+        message_type="collector.discovery.started",
+        payload={"roots": request.roots, "max_mb": request.max_mb},
+    )
+    candidates = discover_logs(
+        roots=request.roots,
+        max_files=request.max_files,
+        max_bytes=max(1, request.max_mb) * 1024 * 1024,
+        bus=bus,
+    )
+    return {
+        "run_id": bus.run_id if bus is not None else request.run_id,
+        "count": len(candidates),
+        "selected": asdict(candidates[0]) if candidates else None,
+        "candidates": [asdict(candidate) for candidate in candidates],
+    }
+
+
+@app.post("/collect/windows/privileged")
+def collect_windows_privileged(request: PrivilegedWindowsCollectRequest) -> dict[str, Any]:
+    bus = _redis_bus(request.run_id) if request.use_redis else None
+    _publish(
+        bus,
+        source="api",
+        target="privilege",
+        message_type="privilege.request.started",
+        payload={"days": request.days, "copy_logs": request.copy_logs},
+    )
+    result = request_windows_sensitive_collection(
+        days=request.days,
+        copy_logs=request.copy_logs,
+        raw_directory=request.raw_directory,
+        output_directory=request.output_directory,
+    )
+    _publish(
+        bus,
+        source="privilege",
+        target="collector",
+        message_type="privilege.request.completed",
+        payload=asdict(result),
+        status="ok" if result.launched else "warning",
+    )
+    return {"run_id": bus.run_id if bus is not None else request.run_id, **asdict(result)}
 
 
 @app.post("/route")
@@ -297,55 +477,40 @@ def run(request: RunRequest) -> dict[str, Any]:
     input_path = _existing_path(request.input_path)
     run_id = request.run_id or datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     bus = _redis_bus(run_id) if request.use_redis else None
-    out_dir = _path(request.out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
+    return _run_workflow(request, input_path, run_id, bus)
+
+
+@app.post("/run/discovered")
+def run_discovered(request: RunDiscoveredRequest) -> dict[str, Any]:
+    run_id = request.run_id or datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    bus = _redis_bus(run_id) if request.use_redis else None
     _publish(
         bus,
-        source="api",
-        target="orchestrator",
-        message_type="workflow.started",
-        payload={"input_path": str(input_path), "out_dir": str(out_dir), "parse_if_needed": request.parse_if_needed},
+        source="orchestrator",
+        target="collector",
+        message_type="collector.discovery.started",
+        payload={"roots": request.roots, "max_mb": request.max_mb},
     )
+    candidates = discover_logs(
+        roots=request.roots,
+        max_files=1,
+        max_bytes=max(1, request.max_mb) * 1024 * 1024,
+        bus=bus,
+    )
+    if not candidates:
+        _publish(bus, "collector", "orchestrator", "workflow.failed", {"reason": "no log candidate found"}, status="error")
+        raise HTTPException(status_code=404, detail="Aucun journal candidat trouve")
 
-    source_for_detection = input_path
-    parsed_csv = ""
-    if request.parse_if_needed and input_path.suffix.lower() not in {".csv", ".parquet"}:
-        parsed_name = f"api_{run_id}_parsed.csv"
-        parse_sep = ";" if request.sep == "auto" else request.sep
-        _publish(bus, "orchestrator", "parser", "parsing.started", {"input_path": str(input_path)})
-        produced = run_pipeline(input_path, out_dir, parsed_name, sep=parse_sep)
-        if not produced:
-            _publish(bus, "parser", "orchestrator", "parsing.failed", {"reason": "no parsed csv produced"}, status="error")
-            raise HTTPException(status_code=400, detail="Aucun CSV produit par le parsing")
-        source_for_detection = _path(produced[0])
-        parsed_csv = str(source_for_detection)
-        _publish(bus, "parser", "orchestrator", "parsing.completed", {"parsed_csv": parsed_csv})
-
-    anomalies_csv = out_dir / f"api_{run_id}_anomalies.csv"
-    incidents_csv = out_dir / f"api_{run_id}_incidents.csv"
-    _publish(bus, "orchestrator", "detector", "detection.started", {"input_path": str(source_for_detection)})
-    try:
-        result = run_routed_detection(
-            source_for_detection,
-            sep=request.sep,
-            sample_rows=request.sample_rows,
-            output=anomalies_csv,
-            incidents_output=incidents_csv,
-            window_minutes=request.window_minutes,
-            models=_model_paths(),
-        )
-    except Exception as exc:
-        _publish(bus, "detector", "orchestrator", "workflow.failed", {"error": str(exc)}, status="error")
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-    response = {
-        "run_id": run_id,
-        "input_path": str(input_path),
-        "parsed_csv": parsed_csv,
-        **result,
-        "input_rows": _count_rows(source_for_detection, request.sep),
-        "anomalies_rows": _count_rows(result["anomalies_csv"], _infer_sep(_path(result["anomalies_csv"]))),
-        "incidents_rows": _count_rows(result["incidents_csv"], _infer_sep(_path(result["incidents_csv"]))),
-    }
-    _publish(bus, "orchestrator", "api", "workflow.completed", response)
-    return response
+    selected = _existing_path(candidates[0].path)
+    workflow = RunRequest(
+        input_path=str(selected),
+        parse_if_needed=selected.suffix.lower() not in {".csv", ".parquet"},
+        out_dir=request.out_dir,
+        sep=request.sep,
+        sample_rows=request.sample_rows,
+        window_minutes=request.window_minutes,
+        run_id=run_id,
+        use_redis=request.use_redis,
+    )
+    response = _run_workflow(workflow, selected, run_id, bus)
+    return {"selected": asdict(candidates[0]), **response}
