@@ -12,11 +12,28 @@ prototype et transformer les resultats techniques en memoire defendable.
 
 | Objectif | Theme | Etat actuel | Priorite |
 | --- | --- | --- | --- |
-| Objectif 3 | Architecture multi-agents | Avance | Haute |
-| Objectif 4 | Correlation contextuelle et gestion des incidents | Prototype fonctionnel | Haute |
-| Objectif 5 | Visualisation, supervision et exploitation humaine | Prototype fonctionnel | Haute |
-| Objectif 6 | Evaluation experimentale complete et entrainement cloud | Entrainement Colab valide | Haute |
-| Objectif 7 | Redaction, discussion et perspectives | A structurer | Haute |
+| Objectif 3 | Architecture multi-agents | Tres avance | Haute |
+| Objectif 4 | Correlation contextuelle et gestion des incidents | Prototype fonctionnel avance | Haute |
+| Objectif 5 | Visualisation, supervision et exploitation humaine | Prototype fonctionnel | Moyenne |
+| Objectif 6 | Evaluation experimentale complete et entrainement cloud/local | Tres avance | Haute |
+| Objectif 7 | Redaction, discussion et perspectives | Phase de redaction a demarrer | Haute |
+
+## Etat General Au 01/06/2026
+
+Le prototype technique est maintenant suffisamment avance pour commencer la
+redaction du memoire sur les parties deja realisees. Le projet dispose:
+
+- d'un pipeline de parsing et normalisation multi-sources;
+- d'une architecture multi-agents locale;
+- d'un routeur multi-modeles par famille de journaux;
+- de modeles sauvegardes pour Windows, Linux/auth, Linux/syslog, Wazuh/SIEM,
+  CICIDS, UNSW, HDFS, BGL et fallback;
+- d'un registre des modeles dans `docs/model_training/model_registry.md`;
+- d'experimentations quantitatives sur plusieurs datasets labellises et non
+  labellises.
+
+La priorite change donc: il faut maintenant transformer les resultats techniques
+en chapitres de memoire, tableaux, figures et discussion critique.
 
 ## Objectif 3 - Architecture Multi-Agents
 
@@ -34,12 +51,16 @@ Ce qui existe deja:
 - agents parseur, detecteur, correlateur et visualiseur;
 - presentation humaine du flux agents dans le dashboard;
 - explication LLM/local des resultats dans le dashboard.
+- routeur multi-modeles `src/logminer/agents/model_router.py`;
+- registre des modeles entraines et reutilisables;
+- separation des familles `windows`, `wazuh`, `network_cicids`, `network`,
+  `linux_auth`, `linux`, `hdfs`, `bgl` et `fallback`.
 
 Ce qui manque encore:
 
-- exposer les agents comme services FastAPI si necessaire;
-- definir une strategie de deploiement cloud/local;
-- documenter le versionnement des modeles et des donnees;
+- exposer les agents comme services FastAPI si necessaire, a presenter comme
+  perspective plutot que comme obligation du prototype;
+- definir une strategie de deploiement cloud/local dans la discussion;
 - formaliser les messages agents comme contrat stable.
 - formaliser l'agent explicateur et l'agent superviseur comme roles
   architecturaux inspires des architectures IDS multi-agents.
@@ -73,7 +94,6 @@ Ce qui existe deja:
 Ce qui manque encore:
 
 - enrichir les regles de correlation;
-- distinguer incident faible, moyen, critique;
 - relier un incident a ses anomalies sources;
 - documenter les limites de la correlation actuelle.
 
@@ -142,16 +162,25 @@ Ce qui existe deja:
 - test reseau initial sur `outside_tcp_dump_part001.csv`: `100000` evenements,
   `0` anomalie avec le modele Colab generaliste, puis `1998` anomalies et `22`
   incidents avec un Isolation Forest local dedie.
+- modele RandomForest reseau UNSW/CIC-DDoS avec split 80/20:
+  F1-score `0.999965`;
+- modele RandomForest CICIDS/MachineLearningCVE:
+  F1-score `0.997163`;
+- modele RandomForest Linux/auth:
+  F1-score interne `0.916602`;
+- modele Isolation Forest Wazuh/SIEM:
+  `122563` evenements normalises et `3676` anomalies candidates;
+- registre des artefacts et modeles dans
+  `docs/model_training/model_registry.md`;
+- sauvegarde des nouveaux modeles dans GitHub, avec Git LFS pour le modele
+  Linux/auth.
 
 Ce qui manque encore:
 
-- evaluer des echantillons plus grands;
-- ajouter un split train/test lorsque le modele le permet;
-- exploiter UNSW-NB15 lorsque le telechargement sera termine;
-- elargir les tests `outside_tcp_dump` a plus de lignes et a un meilleur
-  enrichissement semantique reseau;
-- entrainer ou comparer d'autres modeles principaux sur le cloud si necessaire;
-- documenter le versionnement des artefacts `models/*.joblib`;
+- consolider les resultats dans un tableau final unique;
+- distinguer clairement les evaluations supervisees et non supervisees;
+- documenter les limites du transfert entre datasets, par exemple UNSW vers
+  CICIDS;
 - comparer les temps d'execution et la complexite;
 - ajouter une mesure operationnelle de faux positifs par periode lorsque les
   timestamps le permettent;
@@ -191,10 +220,12 @@ Ce qui existe deja:
 - references bibliographiques dans `docs/references`;
 - exploitation du document de cadrage dans `docs/memoire/exploitation_references.md`;
 - resultats experimentaux dans `data/processed`.
+- plan de memoire dans `docs/memoire/plan.md`;
+- registre des modeles dans `docs/model_training/model_registry.md`;
+- documentation des entrainements dans `docs/model_training/README.md`.
 
 Ce qui manque encore:
 
-- plan detaille du memoire;
 - chapitre d'etat de l'art;
 - chapitre methodologie;
 - chapitre implementation;
@@ -213,7 +244,13 @@ Livrables attendus:
 
 ## Ordre De Travail Recommande
 
-1. Finaliser objectif 4: enrichir la correlation, la priorisation et les causes probables.
-2. Finaliser objectif 5: rendre le dashboard demonstrable, explicable et capturable.
-3. Finaliser objectif 6: entrainer sur le cloud, sauvegarder les modeles joblib et stabiliser les tableaux.
-4. Finaliser objectif 7: rediger chapitre par chapitre en s'appuyant sur `docs/memoire/exploitation_references.md`.
+1. Rediger le chapitre 1: introduction, contexte, problematique, objectifs.
+2. Rediger le chapitre 3: methodologie et architecture multi-agents.
+3. Rediger le chapitre 4: implementation du prototype Logminer.
+4. Rediger le chapitre 5: experimentations et resultats, avec les tableaux de
+   modeles.
+5. Completer le chapitre 2: etat de l'art, en l'appuyant sur les references
+   deja rassemblees.
+6. Rediger le chapitre 6: discussion critique et limites.
+7. Finaliser le chapitre 7: conclusion et perspectives.
+8. En parallele: capturer le dashboard et produire les figures/tableaux finaux.

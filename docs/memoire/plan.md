@@ -21,6 +21,9 @@ Elements disponibles:
 - titre et sujet du TFE;
 - prototype Logminer;
 - pipeline de collecte et d'analyse.
+- architecture multi-agents deja implementee;
+- plusieurs familles de journaux exploitees: Windows, Linux, Wazuh, HDFS, BGL,
+  UNSW et CICIDS.
 
 Reste a rediger:
 
@@ -28,6 +31,15 @@ Reste a rediger:
 - problematique;
 - objectifs 1 a 7;
 - methodologie generale.
+
+Priorite de redaction:
+
+- expliquer pourquoi la detection manuelle dans des journaux heterogenes est
+  difficile;
+- presenter l'hypothese centrale: une architecture multi-agents avec modeles
+  specialises par famille de logs ameliore l'exploitation des anomalies;
+- annoncer les contributions: pipeline Logminer, routeur multi-modeles,
+  correlation, dashboard et evaluation multi-datasets.
 
 ## Chapitre 2 - Etat De L'Art
 
@@ -53,6 +65,14 @@ Reste a rediger:
 - deep learning pour logs;
 - architectures multi-agents.
 
+Priorite de redaction:
+
+- rediger d'abord les sections directement utiles au prototype:
+  journalisation, SIEM/Wazuh, detection d'anomalies, Isolation Forest,
+  RandomForest, architectures multi-agents;
+- garder le deep learning comme comparaison et perspective, sans en faire le
+  coeur du prototype.
+
 ## Chapitre 3 - Methodologie Et Architecture Proposee
 
 Objectifs couverts:
@@ -67,6 +87,8 @@ Elements disponibles:
 - `src/logminer/pipeline.py`;
 - `src/logminer/agents/bus.py`;
 - `src/logminer/agents/orchestrator.py`.
+- `src/logminer/agents/model_router.py`;
+- registre des modeles dans `docs/model_training/model_registry.md`.
 
 Reste a rediger:
 
@@ -75,6 +97,16 @@ Reste a rediger:
 - contrat de donnees normalisees;
 - choix du bus JSONL pour le prototype;
 - justification de la modularite.
+
+Elements a presenter:
+
+- flux general: collecte -> parsing -> normalisation -> routage modele ->
+  detection -> correlation -> visualisation;
+- agents: collecteur, parseur, normaliseur, routeur, detecteur, correlateur,
+  visualiseur, explicateur/superviseur en perspective;
+- contrat CSV commun: `timestamp_iso`, `severity`, `event`, `source`, `host`,
+  `user`, `src_ip`, `dst_ip`, `category`, `message`;
+- strategie multi-modeles par famille de logs.
 
 ## Chapitre 4 - Implementation Du Prototype
 
@@ -94,6 +126,10 @@ Elements disponibles:
 - detecteurs;
 - correlateur;
 - dashboards Streamlit et web.
+- scripts de preparation Linux/auth, Wazuh et CICIDS;
+- routeur multi-modeles;
+- artefacts `.joblib` sauvegardes;
+- Git LFS pour le modele Linux/auth.
 
 Reste a rediger:
 
@@ -101,6 +137,17 @@ Reste a rediger:
 - choix techniques;
 - exemples de commandes;
 - limites d'implementation.
+
+Sections recommandees:
+
+1. Structure du projet et dossiers principaux.
+2. Pipeline de normalisation Logminer.
+3. Extraction/collecte Windows et traitement des datasets bruts.
+4. Construction des features ML.
+5. Routeur multi-modeles.
+6. Entrainement et sauvegarde des modeles.
+7. Correlation et priorisation des incidents.
+8. Dashboard et exploitation humaine.
 
 ## Chapitre 5 - Experimentations Et Resultats
 
@@ -116,17 +163,46 @@ Elements disponibles:
 - `data/processed/validation_summary.csv`;
 - scripts de preparation et synthese.
 - sauvegarde de modeles avec `joblib` pour entrainement cloud.
+- `docs/model_training/model_registry.md`;
+- `docs/model_training/random_forest_unsw_80_20_analysis.md`;
+- `data/processed/random_forest_linux_auth_metrics.csv`;
+- `data/processed/random_forest_network_cicids_metrics.csv`;
+- resultats Wazuh dans `data/processed/wazuh_months_anomalies.csv`;
+- modele RandomForest UNSW/CIC-DDoS;
+- modele RandomForest CICIDS2017;
+- modele RandomForest Linux/auth;
+- modele Isolation Forest Wazuh;
+- modeles Isolation Forest HDFS, BGL, Windows, Linux et fallback.
 
 Reste a rediger:
 
 - protocole experimental;
-- description des datasets Windows, HDFS et BGL;
+- description des datasets Windows, Linux/auth, Wazuh, HDFS, BGL, UNSW et
+  CICIDS;
 - tableaux precision, recall, F1;
 - protocole d'entrainement cloud et reutilisation locale des modeles;
 - analyse comparative des modeles;
 - interpretation des performances.
 - ajout des faux positifs par periode lorsque les timestamps et labels sont
   disponibles.
+
+Tableau de resultats a construire:
+
+| Famille | Dataset | Modele | Type | Resultat principal |
+| --- | --- | --- | --- | --- |
+| Windows | Security/Application/System | Isolation Forest | Non supervise | anomalies et incidents correles |
+| Wazuh | January/October/December exports | Isolation Forest | Non supervise | 122563 evenements, 3676 anomalies |
+| Linux/auth | linux_auth_logs_* | RandomForest | Supervise | F1 interne 0.916602 |
+| CICIDS | MachineLearningCVE | RandomForest | Supervise | F1 0.997163 |
+| UNSW/CIC-DDoS | UNSWNB15/CIC-DDoS | RandomForest | Supervise | F1 0.999965 |
+| HDFS | HDFS logs | Isolation Forest | Non supervise | validation existante |
+| BGL | BlueGene/L | Isolation Forest | Non supervise | validation existante |
+
+Point important:
+
+- separer clairement les resultats supervises, ou les labels permettent une
+  evaluation precision/recall/F1, et les resultats non supervises, ou les
+  anomalies sont des candidats a interpreter.
 
 ## Chapitre 6 - Discussion
 
@@ -140,6 +216,12 @@ Elements disponibles:
 - difference de performance HDFS/BGL;
 - contraintes Windows et droits administrateur;
 - prototype local non encore distribue via FastAPI/Redis.
+- transfert difficile entre datasets reseau, par exemple UNSW vers CICIDS;
+- faux positifs observes sur Linux/auth selon la distribution;
+- necessite d'un routeur multi-modeles pour eviter les confusions de formats;
+- dependance aux labels pour les modeles supervises;
+- limites des modeles non supervises qui detectent la rarete plus que
+  l'attaque prouvee.
 
 Reste a rediger:
 
@@ -148,6 +230,16 @@ Reste a rediger:
 - limites de generalisation;
 - limites de performance;
 - ameliorations possibles.
+
+Angles de discussion:
+
+- l'approche multi-modeles est plus pertinente qu'un modele global unique;
+- les performances tres elevees sur certains datasets doivent etre interpretees
+  avec prudence a cause du desequilibre et de la distribution des donnees;
+- Wazuh fournit une couche SIEM riche, mais les alertes non supervisees restent
+  des signaux candidats;
+- le prototype est local et modulaire, mais peut evoluer vers FastAPI, Redis ou
+  MQTT pour un deploiement distribue.
 
 ## Chapitre 7 - Conclusion Et Perspectives
 
@@ -162,14 +254,34 @@ Reste a rediger:
 - perspectives: FastAPI, Redis/MQTT, temps reel, datasets reseau,
   enrichissement des features, integration SOC/SIEM.
 
+Message final a faire ressortir:
+
+- le travail propose une architecture autonome et modulaire de detection
+  d'anomalies;
+- la contribution principale est le couplage entre agents specialises,
+  normalisation commune, routage par famille de journaux et modeles adaptes;
+- les resultats montrent une faisabilite technique sur des sources heterogenes,
+  tout en laissant ouvertes les questions de generalisation, de temps reel et
+  d'integration SOC.
+
 ## Tableau De Suivi Des Objectifs
 
 | Objectif | Statut | Preuve actuelle | Prochaine action |
 | --- | --- | --- | --- |
-| 1. Collecter, parser et normaliser | Avance | `windows_copies_pipeline.csv` | Stabiliser autres parseurs |
-| 2. Detecter et comparer les anomalies | Tres avance | `validation_summary.csv` | Elargir validation |
-| 3. Concevoir l'architecture multi-agents | Avance | `docs/architecture/README.md` | FastAPI optionnel |
-| 4. Correler les anomalies en incidents | Partiel | `incidents.csv` | Priorite et justification |
-| 5. Visualiser et superviser | Partiel avance | `web/dashboard`, explication LLM/local | Vue detail incident |
-| 6. Evaluer experimentalement | Partiel avance | HDFS/BGL metrics, joblib | Split train/test, reseau, faux positifs par periode |
-| 7. Rediger et discuter | Debut | docs existantes | Redaction chapitre par chapitre |
+| 1. Collecter, parser et normaliser | Tres avance | Pipeline Logminer, Windows, Wazuh, Linux/auth, reseau | Rediger methodologie |
+| 2. Detecter et comparer les anomalies | Tres avance | Modeles joblib, registres, metriques supervisees | Consolider tableaux |
+| 3. Concevoir l'architecture multi-agents | Tres avance | `docs/architecture/README.md`, bus, orchestrateur, routeur | Rediger chapitre 3 |
+| 4. Correler les anomalies en incidents | Avance | `correlator.py`, incidents, priorites | Documenter limites |
+| 5. Visualiser et superviser | Avance | `web/dashboard`, Streamlit, explication locale/LLM | Captures et scenario demo |
+| 6. Evaluer experimentalement | Tres avance | HDFS, BGL, Windows, UNSW, CICIDS, Linux/auth, Wazuh | Tableau final et analyse |
+| 7. Rediger et discuter | A demarrer maintenant | Plan, docs, resultats, references | Redaction chapitre par chapitre |
+
+## Ordre De Redaction A Partir De Maintenant
+
+1. Chapitre 1 - Introduction generale.
+2. Chapitre 3 - Methodologie et architecture, car la matiere est deja claire.
+3. Chapitre 4 - Implementation du prototype.
+4. Chapitre 5 - Experimentations et resultats.
+5. Chapitre 6 - Discussion.
+6. Chapitre 2 - Etat de l'art, a consolider avec les references.
+7. Chapitre 7 - Conclusion et perspectives.
