@@ -11,6 +11,7 @@ import sys
 from dataclasses import asdict
 from datetime import datetime, timezone
 import os
+from time import perf_counter
 from pathlib import Path
 from typing import Any
 
@@ -36,7 +37,7 @@ from pipeline import run_pipeline
 
 
 app = FastAPI(
-    title="Logminer API",
+    title="Ariel Logminer API",
     description="API V2 locale pour router, detecter et correler des journaux heterogenes.",
     version="0.1.0",
 )
@@ -127,6 +128,16 @@ class EventsRequest(BaseModel):
     count: int = 100
 
 
+class AlertDecisionRequest(BaseModel):
+    alert_id: str = Field(..., description="Identifiant d'alerte, incident ou ligne analysee")
+    decision: str = Field(..., description="accept, reject ou reclassify")
+    analyst: str = "dashboard"
+    severity: str | None = None
+    category: str | None = None
+    reason: str = ""
+    run_id: str | None = None
+
+
 def _path(value: str | Path) -> Path:
     path = Path(value).expanduser()
     if path.is_absolute():
@@ -209,6 +220,8 @@ def _audit(action: str, status: str = "ok", target: str = "", details: dict[str,
 
 
 def _run_workflow(request: RunRequest, input_path: Path, run_id: str, bus: RedisMessageBus | None) -> dict[str, Any]:
+    workflow_started = perf_counter()
+    timings: dict[str, float] = {}
     out_dir = _path(request.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     _publish(
@@ -222,6 +235,7 @@ def _run_workflow(request: RunRequest, input_path: Path, run_id: str, bus: Redis
     source_for_detection = input_path
     parsed_csv = ""
     if request.parse_if_needed and input_path.suffix.lower() not in {".csv", ".parquet"}:
+        parse_started = perf_counter()
         parsed_name = f"api_{run_id}_parsed.csv"
         parse_sep = ";" if request.sep == "auto" else request.sep
         _publish(bus, "orchestrator", "parser", "parsing.started", {"input_path": str(input_path)})
@@ -231,12 +245,14 @@ def _run_workflow(request: RunRequest, input_path: Path, run_id: str, bus: Redis
             raise HTTPException(status_code=400, detail="Aucun CSV produit par le parsing")
         source_for_detection = _path(produced[0])
         parsed_csv = str(source_for_detection)
+        timings["parse_sec"] = round(perf_counter() - parse_started, 4)
         _publish(bus, "parser", "orchestrator", "parsing.completed", {"parsed_csv": parsed_csv})
 
     anomalies_csv = out_dir / f"api_{run_id}_anomalies.csv"
     incidents_csv = out_dir / f"api_{run_id}_incidents.csv"
     _publish(bus, "orchestrator", "detector", "detection.started", {"input_path": str(source_for_detection)})
     try:
+        detection_started = perf_counter()
         result = run_routed_detection(
             source_for_detection,
             sep=request.sep,
@@ -246,6 +262,7 @@ def _run_workflow(request: RunRequest, input_path: Path, run_id: str, bus: Redis
             window_minutes=request.window_minutes,
             models=_model_paths(),
         )
+        timings["detect_and_correlate_sec"] = round(perf_counter() - detection_started, 4)
     except Exception as exc:
         _publish(bus, "detector", "orchestrator", "workflow.failed", {"error": str(exc)}, status="error")
         raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -258,6 +275,7 @@ def _run_workflow(request: RunRequest, input_path: Path, run_id: str, bus: Redis
         "input_rows": _count_rows(source_for_detection, request.sep),
         "anomalies_rows": _count_rows(result["anomalies_csv"], _infer_sep(_path(result["anomalies_csv"]))),
         "incidents_rows": _count_rows(result["incidents_csv"], _infer_sep(_path(result["incidents_csv"]))),
+        "timings": {**timings, "workflow_sec": round(perf_counter() - workflow_started, 4)},
     }
     _publish(bus, "orchestrator", "api", "workflow.completed", response)
     return response
@@ -305,6 +323,27 @@ def models() -> dict[str, Any]:
 def audit(limit: int = 100) -> dict[str, Any]:
     entries = read_audit(limit=max(1, min(limit, 1000)))
     return {"count": len(entries), "events": [asdict(entry) for entry in entries]}
+
+
+@app.post("/alerts/decision")
+def alert_decision(request: AlertDecisionRequest) -> dict[str, Any]:
+    allowed = {"accept", "reject", "reclassify"}
+    decision = request.decision.strip().lower()
+    if decision not in allowed:
+        raise HTTPException(status_code=400, detail=f"Decision invalide: {request.decision}")
+    entry = write_audit(
+        action=f"alert.{decision}",
+        status="ok",
+        actor=request.analyst or "dashboard",
+        target=request.alert_id,
+        details={
+            "run_id": request.run_id,
+            "severity": request.severity,
+            "category": request.category,
+            "reason": request.reason,
+        },
+    )
+    return {"decision": decision, "audit": asdict(entry)}
 
 
 @app.get("/resources")

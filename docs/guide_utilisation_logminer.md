@@ -1,6 +1,6 @@
-# Guide D'Utilisation De Logminer
+# Guide D'Utilisation D'Ariel Logminer
 
-Ce guide explique comment lancer et utiliser le prototype Logminer V2. Le
+Ce guide explique comment lancer et utiliser le prototype Ariel Logminer V2. Le
 systeme sert a decouvrir des journaux locaux, choisir le modele adapte, detecter
 des anomalies candidates, correler les resultats et afficher une synthese dans
 le dashboard web.
@@ -61,15 +61,22 @@ La vue d'ensemble affiche un parcours en quatre etapes:
 3. Journaux: montre la source choisie par le collecteur.
 4. Analyse: indique si le workflow a ete lance.
 
+Le dashboard se rafraichit automatiquement toutes les 5 secondes et relance le
+workflow d'analyse autonome lorsque aucune analyse n'est deja en cours. Cette
+cadence donne au prototype un comportement temps reel ou quasi temps reel:
+collecte/discovery, routage modele, detection, correlation puis affichage.
+
 ## 4. Parcours Normal
 
 1. Cliquer sur `Actualiser`.
-2. Cliquer sur `Trouver les journaux`.
-3. Cliquer sur `Lancer l'analyse`.
+2. Cliquer sur `Trouver les journaux` si aucune source n'est encore visible.
+3. Laisser l'analyse automatique tourner ou cliquer sur `Lancer l'analyse` pour
+   forcer un cycle immediat.
 4. Ouvrir `Resultats` pour lire les anomalies et evenements.
 5. Cliquer sur `Expliquer les resultats` pour obtenir une synthese humaine.
 
-Le bouton `Lancer l'analyse` appelle le workflow autonome:
+Le rafraichissement automatique et le bouton `Lancer l'analyse` appellent le
+workflow autonome:
 
 ```text
 collecteur -> routeur modele -> detecteur -> correlateur -> dashboard
@@ -88,12 +95,12 @@ api_<run_id>_parsed.csv
 Certains journaux Windows demandent une autorisation administrateur. Le bouton
 `Autoriser journaux sensibles` lance une demande via le mecanisme natif Windows.
 
-Logminer ne lit pas et ne stocke jamais le mot de passe administrateur. Si
+Ariel Logminer ne lit pas et ne stocke jamais le mot de passe administrateur. Si
 Windows affiche une fenetre UAC, l'administrateur valide dans cette fenetre.
 
 Selon la maniere dont le serveur FastAPI a ete lance, Windows peut refuser
 d'afficher l'invite UAC depuis le processus en arriere-plan. Dans ce cas,
-Logminer prepare aussi un lanceur interactif:
+Ariel Logminer prepare aussi un lanceur interactif:
 
 ```text
 scripts/generated/run_windows_sensitive_collection_admin.cmd
@@ -139,7 +146,7 @@ Puis redemarrer Windows.
 
 ## 7. Journal D'Audit
 
-Logminer enregistre les actions importantes dans:
+Ariel Logminer enregistre les actions importantes dans:
 
 ```text
 data/processed/logminer_audit.jsonl
@@ -159,8 +166,12 @@ Il est aussi visible dans la vue `Technique` du dashboard.
 Dans la vue `Resultats`:
 
 - `Incidents correles`: groupes d'evenements lies.
+- `Detail incident`: fenetre temporelle, contexte, justification et anomalies
+  sources probables de l'incident selectionne.
 - `Anomalies candidates`: evenements scores par le modele.
 - `Evenements normalises`: lignes sources nettoyees et uniformisees.
+- `decision`: boutons de validation, rejet ou reclassement d'une alerte.
+- `Exporter`: export CSV des anomalies, evenements ou du detail incident.
 
 Une anomalie candidate n'est pas automatiquement une attaque. Elle doit etre
 interpretee avec:
@@ -170,6 +181,10 @@ interpretee avec:
 - la repetition temporelle;
 - la source;
 - le contexte utilisateur ou reseau.
+
+Chaque decision analyste est ajoutee au journal d'audit avec l'action
+`alert.accept`, `alert.reject` ou `alert.reclassify`. Cela permet de conserver
+une trace exploitable pour l'evaluation qualitative et les retours utilisateur.
 
 ## 9. Depannage Rapide
 
@@ -210,6 +225,18 @@ Invoke-RestMethod `
   -Uri http://127.0.0.1:8000/run/discovered `
   -ContentType "application/json" `
   -Body '{"use_redis":true,"max_mb":5}'
+```
+
+Mesurer le comportement quasi temps reel:
+
+```powershell
+python scripts\benchmark_realtime_workflow.py --cycles 5 --interval-sec 5
+```
+
+Verifier la robustesse multi-source et les logs corrompus/incomplets:
+
+```powershell
+python scripts\run_robustness_scalability_checks.py
 ```
 
 ## 11. Limites Actuelles

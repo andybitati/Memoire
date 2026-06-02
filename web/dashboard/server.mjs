@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
 const processedDir = path.join(root, "data", "processed");
+const picturesDir = path.join(root, "web", "pictures");
 const preferredPort = Number(process.env.PORT || 5173);
 const fastApiBase = process.env.LOGMINER_API_URL || "http://127.0.0.1:8000";
 let activePort = preferredPort;
@@ -33,6 +34,11 @@ const staticTypes = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".css": "text/css; charset=utf-8",
+  ".png": "image/png",
+  ".ico": "image/x-icon",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".svg": "image/svg+xml",
 };
 
 function parseCsv(text, delimiter = ";") {
@@ -196,11 +202,11 @@ async function callOpenAiExplanation(context) {
         {
           role: "system",
           content:
-            "Tu es un analyste SOC francophone. Explique les resultats Logminer en langage clair, sans inventer de donnees. Donne une synthese, les risques, les points a verifier et une action prioritaire.",
+            "Tu es un analyste SOC francophone. Explique les resultats Ariel Logminer en langage clair, sans inventer de donnees. Donne une synthese, les risques, les points a verifier et une action prioritaire.",
         },
         {
           role: "user",
-          content: `Voici un instantane JSON du dashboard Logminer. Explique-le pour un humain:\n${JSON.stringify(context).slice(0, 14000)}`,
+          content: `Voici un instantane JSON du dashboard Ariel Logminer. Explique-le pour un humain:\n${JSON.stringify(context).slice(0, 14000)}`,
         },
       ],
     }),
@@ -422,12 +428,36 @@ async function handleAutoRun(req, res) {
   }
 }
 
+async function handleAlertDecision(req, res) {
+  if (req.method !== "POST") {
+    sendJson(res, 405, { error: "method not allowed" });
+    return;
+  }
+
+  try {
+    const body = await readJsonBody(req);
+    sendJson(
+      res,
+      200,
+      await fetchJson(`${fastApiBase}/alerts/decision`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      }),
+    );
+  } catch (error) {
+    sendJson(res, 502, { error: error.message });
+  }
+}
+
 async function handleStatic(req, res) {
   const url = new URL(req.url, `http://127.0.0.1:${activePort}`);
   const requested = url.pathname === "/" ? "/index.html" : url.pathname;
-  const filePath = path.normalize(path.join(here, requested));
+  const baseDir = requested.startsWith("/pictures/") ? picturesDir : here;
+  const localPath = requested.startsWith("/pictures/") ? requested.replace(/^\/pictures\//, "") : requested;
+  const filePath = path.normalize(path.join(baseDir, localPath));
 
-  if (!filePath.startsWith(here)) {
+  if (!filePath.startsWith(baseDir)) {
     res.writeHead(403);
     res.end("Forbidden");
     return;
@@ -465,6 +495,8 @@ const server = http.createServer((req, res) => {
     handlePrivilegedCollect(req, res);
   } else if (req.url?.startsWith("/api/auto-run")) {
     handleAutoRun(req, res);
+  } else if (req.url?.startsWith("/api/alert-decision")) {
+    handleAlertDecision(req, res);
   } else if (req.url?.startsWith("/api/explain")) {
     handleExplain(req, res);
   } else {
@@ -485,7 +517,7 @@ function listen(port, attemptsLeft = 10) {
   });
 
   server.listen(port, "127.0.0.1", () => {
-    console.log(`Logminer React dashboard: http://127.0.0.1:${port}`);
+    console.log(`Ariel Logminer dashboard: http://127.0.0.1:${port}`);
   });
 }
 

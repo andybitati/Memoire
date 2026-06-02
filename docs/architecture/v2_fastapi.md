@@ -128,6 +128,11 @@ laissant le controle final a l'administrateur systeme et reseau.
 | `POST /correlate` | Rejouer uniquement la correlation sur un CSV d'anomalies |
 | `POST /run` | Lancer parsing optionnel, routage, detection et correlation |
 | `POST /run/discovered` | Lancer collecte locale, routage, detection et correlation |
+| `POST /alerts/decision` | Enregistrer validation, rejet ou reclassement d'une alerte |
+
+Les reponses de workflow incluent un champ `timings` pour mesurer la latence
+globale et les principales etapes disponibles, par exemple `workflow_sec` et
+`detect_and_correlate_sec`.
 
 ## Exemple De Routage
 

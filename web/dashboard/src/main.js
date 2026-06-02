@@ -1,5 +1,5 @@
 const DATA_LIMIT = 8000;
-const AUTO_REFRESH_MS = 5 * 60 * 1000;
+const AUTO_REFRESH_MS = 5 * 1000;
 
 let state = {
   loading: true,
@@ -21,6 +21,10 @@ let state = {
   meta: {},
   filters: { query: "", host: "", severity: "", category: "", source: "" },
   view: "overview",
+  selectedIncidentId: "",
+  alertDecisions: {},
+  decisionAnimations: {},
+  recentDecision: null,
   browserNotifications: false,
   lastRefreshAt: "",
   nextRefreshAt: "",
@@ -121,7 +125,7 @@ function urgentAlerts() {
       score: severityValue(incident.severity) + Number(incident.event_count || 0) / 10,
     }));
 
-  const anomalyAlerts = state.anomalies
+  const anomalyAlerts = pendingAnomalies(state.anomalies)
     .filter((row) => row.is_anomaly === "1" || severityValue(row.severity) >= 7 || worryingKeyword(row))
     .map((row) => {
       const keyword = worryingKeyword(row);
@@ -161,6 +165,78 @@ function setView(view) {
   render();
 }
 
+function selectIncident(incidentId) {
+  state = { ...state, selectedIncidentId: incidentId, view: "results" };
+  render();
+}
+
+function alertKey(row, fallback = "") {
+  return String(
+    row.alert_id ||
+      row.incident_id ||
+      row.recno ||
+      [row.timestamp_iso, row.event, row.source, row.host, row.message].filter(Boolean).join("|") ||
+      fallback,
+  );
+}
+
+function auditDecisions(rows = state.audit) {
+  return rows.reduce((decisions, entry) => {
+    if (String(entry.action || "").startsWith("alert.") && entry.target) {
+      decisions[String(entry.target)] = {
+        action: entry.action,
+        decision: String(entry.action).replace("alert.", ""),
+        timestamp: entry.timestamp || "",
+        actor: entry.actor || "dashboard",
+      };
+    }
+    return decisions;
+  }, {});
+}
+
+function effectiveAlertDecisions() {
+  return { ...auditDecisions(), ...state.alertDecisions };
+}
+
+function pendingAnomalies(rows) {
+  const decisions = effectiveAlertDecisions();
+  return rows.filter((row, index) => !decisions[alertKey(row, `row-${index}`)]);
+}
+
+function decisionLabel(decision) {
+  return {
+    accept: "validée",
+    reject: "rejetée",
+    reclassify: "reclassée",
+  }[decision] || "traitée";
+}
+
+function decisionActionLabel(decision) {
+  return {
+    accept: "Validation",
+    reject: "Rejet",
+    reclassify: "Reclassement",
+  }[decision] || "Décision";
+}
+
+function exportRows(filename, rows) {
+  if (!rows.length) return;
+  const columns = Array.from(rows.reduce((set, row) => {
+    Object.keys(row).forEach((key) => set.add(key));
+    return set;
+  }, new Set()));
+  const escapeCsv = (value) => `"${String(value ?? "").replaceAll('"', '""')}"`;
+  const csv = [columns.join(";")]
+    .concat(rows.map((row) => columns.map((column) => escapeCsv(row[column])).join(";")))
+    .join("\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 async function enableBrowserNotifications() {
   if (!("Notification" in window)) {
     state = { ...state, error: "Notifications navigateur non supportées" };
@@ -177,7 +253,7 @@ function maybeNotify(alerts) {
   const latestKey = `${alerts[0].title}|${alerts[0].detail}`;
   if (state.lastNotificationKey === latestKey) return;
   state.lastNotificationKey = latestKey;
-  new Notification("Logminer: alerte prioritaire", {
+  new Notification("Ariel Logminer: alerte prioritaire", {
     body: `${alerts[0].type}: ${alerts[0].title}`,
     silent: false,
   });
@@ -204,7 +280,7 @@ async function loadData(options = {}) {
       fetchOptionalData("messages", 200),
       fetchJson("/api/services"),
       fetchJson("/api/redis-events?count=100"),
-      fetchJson("/api/audit?limit=100"),
+      fetchJson("/api/audit?limit=1000"),
       fetchJson("/api/resources"),
     ]);
     const validation = await fetchOptionalData("validation", 50);
@@ -305,6 +381,76 @@ async function runAutonomousScan(options = {}) {
   render();
 }
 
+async function decideAlert(alertId, decision, row = {}) {
+  if (!alertId || state.decisionAnimations[alertId]?.status === "saving") return;
+  state = {
+    ...state,
+    decisionAnimations: { ...state.decisionAnimations, [alertId]: { decision, status: "saving" } },
+    recentDecision: {
+      alertId,
+      decision,
+      status: "Enregistrement dans l'audit système...",
+      row,
+    },
+  };
+  render();
+  try {
+    const result = await fetchJson("/api/alert-decision", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        alert_id: alertId,
+        decision,
+        severity: row.severity || "",
+        category: row.category || "",
+        reason: row.event || row.message || "",
+        run_id: state.autoRun.result?.run_id || latestRun([...state.messages, ...state.redisMessages]) || "",
+      }),
+    });
+    state = {
+      ...state,
+      decisionAnimations: { ...state.decisionAnimations, [alertId]: { decision, status: "done" } },
+      recentDecision: {
+        alertId,
+        decision,
+        status: `Anomalie ${decisionLabel(decision)}. Audit écrit: ${result.audit?.action || `alert.${decision}`}.`,
+        row,
+      },
+    };
+    render();
+    window.setTimeout(async () => {
+      state = {
+        ...state,
+        alertDecisions: {
+          ...state.alertDecisions,
+          [alertId]: {
+            action: `alert.${decision}`,
+            decision,
+            timestamp: result.audit?.timestamp || new Date().toISOString(),
+            actor: result.audit?.actor || "dashboard",
+          },
+        },
+        decisionAnimations: Object.fromEntries(Object.entries(state.decisionAnimations).filter(([key]) => key !== alertId)),
+      };
+      render();
+      await loadData({ mode: "decision", silent: true, skipAutoAnalysis: true });
+    }, 700);
+  } catch (error) {
+    state = {
+      ...state,
+      error: error.message,
+      decisionAnimations: Object.fromEntries(Object.entries(state.decisionAnimations).filter(([key]) => key !== alertId)),
+      recentDecision: {
+        alertId,
+        decision,
+        status: `Décision non enregistrée: ${error.message}`,
+        row,
+      },
+    };
+    render();
+  }
+}
+
 async function prepareRuntime() {
   state = { ...state, runtime: { loading: true, error: "", result: null } };
   render();
@@ -390,7 +536,10 @@ function sidebar() {
 
   return `
     <aside class="sidebar">
-      <div class="brand"><span class="icon">◈</span><div><strong>Logminer</strong><span>Agents IA</span></div></div>
+      <div class="brand">
+        <img class="brandLogo" src="/ariel_logminer_mark.png" alt="Ariel Logminer" />
+        <div><strong>Ariel Logminer</strong><span>Agents IA</span></div>
+      </div>
       <button class="primaryAction" id="reloadBtn" ${state.loading ? "disabled" : ""}><span class="icon">↻</span>Actualiser</button>
       <button class="secondaryAction fullWidth" id="browserNotifBtn"><span class="icon">!</span>${state.browserNotifications ? "Notifications actives" : "Activer notifications"}</button>
       <button class="secondaryAction fullWidth" id="runtimeBtn" ${state.runtime.loading ? "disabled" : ""}><span class="icon">◉</span>${state.runtime.loading ? "Préparation" : "Préparer runtime"}</button>
@@ -519,7 +668,7 @@ function formatTime(value) {
 }
 
 function remainingRefreshLabel() {
-  if (!state.nextRefreshAt) return "Auto 5 min";
+  if (!state.nextRefreshAt) return "Auto 5 s";
   const remaining = Math.max(0, new Date(state.nextRefreshAt).getTime() - Date.now());
   const minutes = Math.floor(remaining / 60000);
   const seconds = Math.floor((remaining % 60000) / 1000);
@@ -571,6 +720,75 @@ function latestRun(messages) {
   return [...messages].reverse().find((message) => message.run_id)?.run_id || "";
 }
 
+function eventDate(row) {
+  const date = new Date(row.timestamp_iso || row.start_time || row.end_time || "");
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function temporalBuckets(rows) {
+  const ordered = rows
+    .map((row) => eventDate(row))
+    .filter(Boolean)
+    .sort((a, b) => a.getTime() - b.getTime());
+  const map = new Map();
+  ordered.forEach((date) => {
+    const key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")} ${String(
+      date.getUTCHours(),
+    ).padStart(2, "0")}h`;
+    map.set(key, (map.get(key) || 0) + 1);
+  });
+  return Array.from(map.entries()).slice(-24);
+}
+
+function temporalAnalysisModule(rows) {
+  const buckets = temporalBuckets(rows);
+  const max = Math.max(...buckets.map(([, count]) => count), 1);
+  const latestLabel = buckets.length ? buckets[buckets.length - 1][0] : "Aucune donnée";
+  const peak = buckets.reduce((best, item) => (item[1] > best[1] ? item : best), ["", 0]);
+
+  return `
+    <div class="temporalModule">
+      <div class="temporalHeader">
+        <span class="eyebrow">Analyse temporelle</span>
+        <strong>Timeline & heatmap</strong>
+        <small>${escapeHtml(latestLabel)} · pic ${escapeHtml(String(peak[1] || 0))}</small>
+      </div>
+      <div class="miniTimeline">
+        ${
+          buckets.length
+            ? buckets
+                .map(
+                  ([label, count]) => `
+                    <div class="miniBarColumn" title="${escapeHtml(label)}: ${count}">
+                      <div class="miniBar" style="height:${Math.max(8, (count / max) * 100)}%"></div>
+                    </div>
+                  `,
+                )
+                .join("")
+            : `<div class="emptyState">Aucun timestamp exploitable.</div>`
+        }
+      </div>
+      <div class="heatmapGrid">
+        ${
+          buckets.length
+            ? buckets
+                .map(([label, count]) => {
+                  const level = Math.ceil((count / max) * 5);
+                  return `<span class="heatCell heat${level}" title="${escapeHtml(label)}: ${count}"></span>`;
+                })
+                .join("")
+            : ""
+        }
+      </div>
+      <div class="temporalLegend">
+        <span>Faible</span>
+        <span>Activité horaire</span>
+        <span>Forte</span>
+      </div>
+    </div>
+  `;
+}
+
 function servicePanel() {
   const { api, redis, models } = state.services;
   const runtime = state.runtime.result || state.services.runtime || {};
@@ -617,18 +835,7 @@ function operatorSummaryPanel() {
 
   return `
     <section class="starkHero">
-      <div class="radarModule">
-        <div class="radar">
-          <span class="sweep"></span>
-          <span class="blip b1"></span>
-          <span class="blip b2"></span>
-          <span class="blip b3"></span>
-        </div>
-        <div class="radarStatus">
-          <strong>LOGMINER CORE</strong>
-          <span>${redisOk && apiOk ? "ONLINE" : "DEGRADED"}</span>
-        </div>
-      </div>
+      ${temporalAnalysisModule(state.events.length ? state.events : state.anomalies)}
       <div class="missionBrief">
         <span class="eyebrow">Poste de pilotage</span>
         <h2>Que dois-je faire maintenant ?</h2>
@@ -679,24 +886,36 @@ function warningNotificationPanel(alerts) {
 
 function resourcesPanel() {
   const resources = state.resources || {};
+  const agents = resources.agents || [];
   return `
     <section class="panel resourcesPanel hudPanel">
       <div class="panelHeader">
-        <div><h2>Consommation ressources</h2><p>${escapeHtml(resources.message || "Mesure locale")}</p></div>
+        <div><h2>Consommation par agent</h2><p>${escapeHtml(resources.message || "Mesure agents Ariel Logminer")}</p></div>
         <span class="icon">◷</span>
       </div>
       ${
         resources.available
-          ? `<div class="resourcesGrid">
-              ${percentBar("CPU machine", resources.cpu_percent, "charge instantanée")}
-              ${percentBar("Mémoire machine", resources.memory_percent, `${resources.memory_used_mb} / ${resources.memory_total_mb} MB`)}
-              ${percentBar("Disque", resources.disk_percent, `${resources.disk_free_gb} GB libres`)}
-              <div class="resourceMetric">
-                <div><strong>Processus Logminer</strong><span>${escapeHtml(String(resources.process_count || 0))} processus suivis</span></div>
-                <div class="processValue">${escapeHtml(String(resources.process_memory_mb || 0))} MB</div>
-                <small>RAM API</small>
-              </div>
-            </div>`
+          ? agents.length
+            ? `<div class="agentResources">
+                ${agents
+                  .map(
+                    (agent) => `
+                      <article class="agentResource">
+                        <div>
+                          <strong>${escapeHtml(agent.agent || "Agent Ariel Logminer")}</strong>
+                          <span>${escapeHtml(agent.role || "processus agent")}</span>
+                          <small>PID ${escapeHtml(agent.pids || agent.pid || "")} · ${escapeHtml(agent.status || "unknown")}</small>
+                        </div>
+                        <div class="agentResourceMetrics">
+                          <span><b>${escapeHtml(agent.cpu_percent ?? 0)}</b>% CPU</span>
+                          <span><b>${escapeHtml(agent.memory_mb ?? 0)}</b> MB RAM</span>
+                        </div>
+                      </article>
+                    `,
+                  )
+                  .join("")}
+              </div>`
+            : `<div class="emptyState">Aucun processus agent Ariel Logminer detecte pour le moment.</div>`
           : `<div class="emptyState">${escapeHtml(resources.message || "Mesure des ressources indisponible.")}</div>`
       }
     </section>
@@ -732,7 +951,9 @@ function workflowPanel() {
     {
       title: "Analyse",
       status: result ? "Terminée" : "Prête",
-      detail: result ? `${result.input_rows || 0} lignes examinées, ${result.anomalies_rows || 0} résultats scorés.` : "Le bouton Lancer l'analyse lance collecte, routage et détection.",
+      detail: result
+        ? `${result.input_rows || 0} lignes examinées, ${result.anomalies_rows || 0} résultats scorés, ${result.timings?.workflow_sec || "n/a"} s.`
+        : "Le bouton Lancer l'analyse lance collecte, routage et détection.",
       tone: result ? "okStep" : "idleStep",
     },
   ];
@@ -761,7 +982,7 @@ function workflowPanel() {
 }
 
 function quickFindingsPanel() {
-  const rows = state.anomalies.filter((row) => row.is_anomaly === "1").slice(0, 5);
+  const rows = pendingAnomalies(state.anomalies).filter((row) => row.is_anomaly === "1").slice(0, 5);
   return `
     <section class="panel hudPanel">
       <div class="panelHeader"><h2>Signaux à regarder</h2><span class="icon">◆</span></div>
@@ -788,23 +1009,43 @@ function quickFindingsPanel() {
   `;
 }
 
+function decisionFeedbackPanel() {
+  if (!state.recentDecision) return "";
+  const { alertId, decision, status, row } = state.recentDecision;
+  return `
+    <section class="panel decisionFeedback ${status.includes("non enregistrée") ? "decisionError" : ""}">
+      <div>
+        <strong>${escapeHtml(decisionActionLabel(decision))}: ${escapeHtml(String(alertId).slice(0, 56))}</strong>
+        <span>${escapeHtml(status)}</span>
+        <small>${escapeHtml(row.event || row.category || row.message || "Anomalie candidate")}</small>
+      </div>
+      <span class="decisionPulse"></span>
+    </section>
+  `;
+}
+
 function auditPanel(rows) {
   return `
     <section class="panel messages">
       <div class="panelHeader"><h2>Journal d'audit système</h2><span class="icon">▤</span></div>
       ${rows
-        .slice(-12)
+        .slice(-16)
         .reverse()
         .map(
-          (entry) => `
-            <div class="auditRow">
+          (entry) => {
+            const details = entry.details || {};
+            const detailText = [details.category, details.severity, details.reason].filter(Boolean).join(" · ");
+            return `
+            <div class="auditRow ${String(entry.action || "").startsWith("alert.") ? "auditDecision" : ""}">
               <div>
                 <strong>${escapeHtml(entry.action)}</strong>
                 <span>${escapeHtml(entry.target || "système")}</span>
+                ${detailText ? `<small>${escapeHtml(detailText)}</small>` : ""}
               </div>
               <small>${escapeHtml(entry.status || "ok")}</small>
             </div>
-          `,
+          `;
+          },
         )
         .join("") || `<div class="emptyState">Aucune action auditée pour le moment.</div>`}
     </section>
@@ -944,6 +1185,7 @@ function incidentsPanel(rows) {
                   <span class="pill ${severityClass(incident.severity)}">${escapeHtml(incident.severity || "N/A")}</span>
                   <span>${escapeHtml(incident.event_count)} evt</span>
                   <small>${escapeHtml(incident.category || "catégorie inconnue")}</small>
+                  <button class="miniAction" data-incident-id="${escapeHtml(incident.incident_id || "")}">Détail</button>
                 </div>
               </article>
             `,
@@ -954,19 +1196,103 @@ function incidentsPanel(rows) {
   `;
 }
 
-function dataTable(title, rows, columns, icon) {
+function incidentDetailPanel(incident, anomalies) {
+  if (!incident) {
+    return `
+      <section class="panel detailPanel">
+        <div class="panelHeader"><h2>Détail incident</h2><span class="icon">◎</span></div>
+        <div class="emptyState">Sélectionnez un incident pour voir sa fenêtre, sa justification et les anomalies sources probables.</div>
+      </section>
+    `;
+  }
+  const start = new Date(incident.start_time || "");
+  const end = new Date(incident.end_time || "");
+  const eventIds = new Set(String(incident.events || "").split(",").filter(Boolean));
+  const related = anomalies
+    .filter((row) => {
+      const date = new Date(row.timestamp_iso || "");
+      const inWindow =
+        !Number.isNaN(start.getTime()) &&
+        !Number.isNaN(end.getTime()) &&
+        !Number.isNaN(date.getTime()) &&
+        date >= start &&
+        date <= end;
+      const sameHost = !incident.host || !row.host || row.host === incident.host;
+      const sameSource = !incident.source || !row.source || row.source === incident.source;
+      const sameEvent = !eventIds.size || eventIds.has(String(row.event || ""));
+      return inWindow && sameHost && sameSource && sameEvent;
+    })
+    .slice(0, 12);
+
+  return `
+    <section class="panel detailPanel">
+      <div class="panelHeader">
+        <div><h2>Détail incident ${escapeHtml(incident.incident_id || "")}</h2><p>${escapeHtml(incident.summary || "Incident corrélé")}</p></div>
+        <button class="secondaryAction" id="exportIncidentBtn"><span class="icon">⇩</span>Exporter détail</button>
+      </div>
+      <div class="detailGrid">
+        <div><strong>Fenêtre</strong><span>${escapeHtml(formatDateTime(incident.start_time))} → ${escapeHtml(formatDateTime(incident.end_time))}</span></div>
+        <div><strong>Contexte</strong><span>${escapeHtml(incident.host || "host inconnu")} · ${escapeHtml(incident.source || "source inconnue")}</span></div>
+        <div><strong>Priorité</strong><span>${escapeHtml(incident.priority || incident.severity || "N/A")} · ${escapeHtml(incident.priority_score || "")}</span></div>
+        <div><strong>Événements</strong><span>${escapeHtml(incident.events || "n/a")}</span></div>
+      </div>
+      <div class="rationaleBox">${escapeHtml(incident.rationale || "Aucune justification détaillée disponible pour ce fichier d'incidents.")}</div>
+      <div class="detailList">
+        ${
+          related.length
+            ? related
+                .map(
+                  (row) => `
+                    <article>
+                      <strong>${escapeHtml(row.event || row.category || "Anomalie")}</strong>
+                      <span>${escapeHtml(formatDateTime(row.timestamp_iso))} · ${escapeHtml(row.host || "")} · ${escapeHtml(row.source || "")}</span>
+                      <small>${escapeHtml(row.message || "")}</small>
+                    </article>
+                  `,
+                )
+                .join("")
+            : `<div class="emptyState">Aucune anomalie source retrouvee par correspondance temporelle stricte.</div>`
+        }
+      </div>
+    </section>
+  `;
+}
+
+function dataTable(title, rows, columns, icon, options = {}) {
+  const actionRows = options.alertActions ? rows.slice(0, 120) : [];
   return `
     <section class="panel tablePanel">
-      <div class="panelHeader"><h2>${escapeHtml(title)}</h2><span class="icon">${icon}</span></div>
+      <div class="panelHeader">
+        <h2>${escapeHtml(title)}</h2>
+        <div class="panelActions">
+          ${options.exportName ? `<button class="secondaryAction" data-export="${escapeHtml(options.exportName)}"><span class="icon">⇩</span>Exporter</button>` : ""}
+          <span class="icon">${icon}</span>
+        </div>
+      </div>
       <div class="tableWrap">
         <table>
-          <thead><tr>${columns.map((column) => `<th>${escapeHtml(column)}</th>`).join("")}</tr></thead>
+          <thead><tr>${options.alertActions ? `<th class="decisionColumn">Décision</th>` : ""}${columns.map((column) => `<th>${escapeHtml(column)}</th>`).join("")}</tr></thead>
           <tbody>
             ${rows
               .slice(0, 120)
-              .map(
-                (row) => `
-                  <tr>
+              .map((row, index) => {
+                const alertId = alertKey(row, `row-${index}`);
+                const animation = state.decisionAnimations[alertId] || {};
+                actionRows[index] = row;
+                return `
+                  <tr class="${animation.status === "saving" ? "decisionSaving" : ""} ${animation.status === "done" ? "decisionDone" : ""}">
+                    ${
+                      options.alertActions
+                        ? `<td class="decisionColumn">
+                            <div class="decisionActions">
+                              <button class="acceptDecision" data-alert-action="accept" data-alert-index="${index}" ${animation.status ? "disabled" : ""} title="Valider l'alerte">Valider</button>
+                              <button class="rejectDecision" data-alert-action="reject" data-alert-index="${index}" ${animation.status ? "disabled" : ""} title="Rejeter l'alerte">Rejeter</button>
+                              <button class="reclassifyDecision" data-alert-action="reclassify" data-alert-index="${index}" ${animation.status ? "disabled" : ""} title="Reclasser l'alerte">Reclasser</button>
+                            </div>
+                            <small>${escapeHtml(animation.status === "saving" ? "audit..." : animation.status === "done" ? decisionLabel(animation.decision) : String(alertId).slice(0, 24))}</small>
+                          </td>`
+                        : ""
+                    }
                     ${columns
                       .map((column) => {
                         const value = row[column] || "";
@@ -977,8 +1303,8 @@ function dataTable(title, rows, columns, icon) {
                       })
                       .join("")}
                   </tr>
-                `,
-              )
+                `;
+              })
               .join("")}
           </tbody>
         </table>
@@ -1029,11 +1355,13 @@ function redisPanel(rows) {
 
 function render() {
   const filteredEvents = filterRows(state.events);
-  const filteredAnomalies = filterRows(state.anomalies);
-  const anomalyCount = state.anomalies.filter((row) => row.is_anomaly === "1").length;
+  const pending = pendingAnomalies(state.anomalies);
+  const filteredAnomalies = filterRows(pending);
+  const anomalyCount = pending.filter((row) => row.is_anomaly === "1").length;
   const criticalIncidents = state.incidents.filter((row) => ["CRITICAL", "ERROR"].includes(row.severity)).length;
   const alerts = urgentAlerts();
-  document.title = alerts.length ? `(${alerts.length}) Alertes Logminer` : "Logminer Agents";
+  const selectedIncident = state.incidents.find((incident) => incident.incident_id === state.selectedIncidentId) || state.incidents[0] || null;
+  document.title = alerts.length ? `(${alerts.length}) Alertes Ariel Logminer` : "Ariel Logminer";
   maybeNotify(alerts);
 
   root.innerHTML = `
@@ -1041,18 +1369,19 @@ function render() {
       ${sidebar()}
       <main class="content">
         <header class="topbar">
-          <div><span>Surveillance multi-agents</span><h1>Centre d’analyse Logminer</h1></div>
+          <div><span>Surveillance multi-agents</span><h1>Centre d’analyse Ariel Logminer</h1></div>
           <div class="statusCluster">
             <div class="status"><span class="${state.error ? "dot errorDot" : "dot"}"></span>${escapeHtml(state.error || (state.loading ? "Synchronisation" : "Données synchronisées"))}</div>
             <div class="refreshHud ${state.loading ? "isRefreshing" : ""} ${state.autoRun.loading ? "isAnalyzing" : ""}">
               <span class="refreshSweep"></span>
-              <strong>${state.autoRun.loading ? "Analyse automatique" : "Auto-refresh + analyse"}</strong>
+              <strong>${state.autoRun.loading ? "Analyse en cours" : "Analyse temps réel"}</strong>
               <span><b id="nextRefreshClock">${escapeHtml(remainingRefreshLabel())}</b> · dernier <b id="lastRefreshClock">${escapeHtml(state.lastRefreshAt ? formatTime(state.lastRefreshAt) : "--:--")}</b></span>
               <small>Analyse ${state.lastAutoAnalysisAt ? `à ${escapeHtml(formatTime(state.lastAutoAnalysisAt))}` : "en attente"}</small>
             </div>
           </div>
         </header>
         ${warningNotificationPanel(alerts)}
+        ${decisionFeedbackPanel()}
         <div class="statsGrid">
           ${stat("▣", "Événements", state.meta.events || state.events.length, "blue")}
           ${stat("⚠", "Anomalies", anomalyCount, "amber")}
@@ -1077,8 +1406,9 @@ function render() {
             : state.view === "results"
               ? `
                 ${incidentsPanel(state.incidents)}
-                ${dataTable("Anomalies candidates", filteredAnomalies, ["timestamp_iso", "severity", "event", "source", "host", "category", "anomaly_score", "message"], "◆")}
-                ${dataTable("Événements normalisés", filteredEvents, ["timestamp_iso", "severity", "event", "source", "host", "user", "category", "message"], "▤")}
+                ${incidentDetailPanel(selectedIncident, state.anomalies)}
+                ${dataTable("Anomalies candidates", filteredAnomalies, ["timestamp_iso", "severity", "event", "source", "host", "category", "anomaly_score", "message"], "◆", { alertActions: true, exportName: "anomalies_logminer.csv" })}
+                ${dataTable("Événements normalisés", filteredEvents, ["timestamp_iso", "severity", "event", "source", "host", "user", "category", "message"], "▤", { exportName: "evenements_logminer.csv" })}
               `
               : `
                 ${servicePanel()}
@@ -1113,6 +1443,25 @@ function render() {
   });
   document.querySelectorAll("[data-filter]").forEach((select) => {
     select.addEventListener("change", (event) => setFilter(event.target.dataset.filter, event.target.value));
+  });
+  document.querySelectorAll("[data-incident-id]").forEach((button) => {
+    button.addEventListener("click", (event) => selectIncident(event.currentTarget.dataset.incidentId));
+  });
+  document.querySelectorAll("[data-export]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const filename = event.currentTarget.dataset.export;
+      if (filename.includes("anomalies")) exportRows(filename, filteredAnomalies);
+      else exportRows(filename, filteredEvents);
+    });
+  });
+  document.getElementById("exportIncidentBtn")?.addEventListener("click", () => exportRows("incident_detail_logminer.csv", selectedIncident ? [selectedIncident] : []));
+  document.querySelectorAll("[data-alert-action]").forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      const index = Number(event.currentTarget.dataset.alertIndex);
+      const row = filteredAnomalies.slice(0, 120)[index] || {};
+      const alertId = alertKey(row, `row-${index}`);
+      await decideAlert(String(alertId), event.currentTarget.dataset.alertAction, row);
+    });
   });
   updateRefreshClock();
 }
