@@ -537,8 +537,7 @@ function sidebar() {
   return `
     <aside class="sidebar">
       <div class="brand">
-        <img class="brandLogo" src="/ariel_logminer_mark.png" alt="Ariel Logminer" />
-        <div><strong>Ariel Logminer</strong><span>Agents IA</span></div>
+        <img class="brandLogo brandLogoFull" src="/ariel_logminer_logo_text.png" alt="Ariel Logminer" />
       </div>
       <button class="primaryAction" id="reloadBtn" ${state.loading ? "disabled" : ""}><span class="icon">↻</span>Actualiser</button>
       <button class="secondaryAction fullWidth" id="browserNotifBtn"><span class="icon">!</span>${state.browserNotifications ? "Notifications actives" : "Activer notifications"}</button>
