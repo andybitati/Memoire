@@ -28,6 +28,7 @@ let state = {
   browserNotifications: false,
   lastRefreshAt: "",
   nextRefreshAt: "",
+  realtimeHistory: [],
   autoRefreshEnabled: true,
   autoAnalysisEnabled: true,
   lastAutoAnalysisAt: "",
@@ -77,7 +78,14 @@ function uniqueValues(rows, key) {
 function normalizeRows(rows) {
   return rows.map((row) => ({
     ...row,
-    timestamp_iso: row.timestamp_iso || row["_source.@timestamp"] || row.timestamp || "",
+    timestamp_iso:
+      row.timestamp_iso ||
+      row["_source.@timestamp"] ||
+      row.timestamp ||
+      row["@timestamp"] ||
+      row.TimeCreated ||
+      row.time ||
+      extractTimestampFromText(row.message || row["_source.full_log"] || row.raw || row.event || ""),
     severity: row.severity || row["_source.rule.level"] || "",
     event: row.event || row["_source.rule.description"] || row["_source.decoder.name"] || "",
     source: row.source || row["_source.location"] || row["_source.decoder.name"] || "",
@@ -86,6 +94,33 @@ function normalizeRows(rows) {
     category: row.category || row["_source.rule.groups"] || row["_source.rule.mitre.tactic"] || "",
     message: row.message || row["_source.full_log"] || row["_source.rule.description"] || "",
   }));
+}
+
+function extractTimestampFromText(value) {
+  const text = String(value || "");
+  const apache = text.match(/\[(\d{1,2})\/([A-Za-z]{3})\/(\d{4}):(\d{2}):(\d{2}):(\d{2})\s+([+-]\d{4})\]/);
+  if (apache) {
+    const months = {
+      Jan: "01",
+      Feb: "02",
+      Mar: "03",
+      Apr: "04",
+      May: "05",
+      Jun: "06",
+      Jul: "07",
+      Aug: "08",
+      Sep: "09",
+      Oct: "10",
+      Nov: "11",
+      Dec: "12",
+    };
+    const [, day, month, year, hour, minute, second, offset] = apache;
+    const timezone = `${offset.slice(0, 3)}:${offset.slice(3)}`;
+    return `${year}-${months[month] || "01"}-${day.padStart(2, "0")}T${hour}:${minute}:${second}${timezone}`;
+  }
+
+  const iso = text.match(/\b\d{4}-\d{2}-\d{2}[T ][\d:.]+(?:Z|[+-]\d{2}:?\d{2})?\b/);
+  return iso ? iso[0].replace(" ", "T") : "";
 }
 
 function severityClass(value) {
@@ -105,6 +140,41 @@ function severityValue(value) {
   if (severity === "ERROR") return 8;
   if (severity === "WARNING") return 5;
   return 0;
+}
+
+function numeric(value, fallback = 0) {
+  const parsed = Number(String(value ?? "").replace(",", "."));
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function createRealtimeSample(snapshot) {
+  const agents = snapshot.resources?.agents || [];
+  const cpuCore = numeric(snapshot.resources?.cpu_logminer_core_percent, agents.reduce((total, agent) => total + numeric(agent.cpu_percent), 0));
+  const cpuMachine = numeric(snapshot.resources?.cpu_logminer_machine_percent, agents.reduce((total, agent) => total + numeric(agent.cpu_machine_percent), 0));
+  const memory = agents.reduce((total, agent) => total + numeric(agent.memory_mb), 0);
+  const workflowSec = numeric(snapshot.autoRun?.result?.timings?.workflow_sec, 0);
+  const anomalies = pendingAnomalies(snapshot.anomalies || []).filter((row) => row.is_anomaly === "1").length;
+  const events = snapshot.meta?.events || snapshot.events?.length || 0;
+  const previous = snapshot.realtimeHistory?.[snapshot.realtimeHistory.length - 1];
+  const eventDelta = previous ? events - numeric(previous.events) : 0;
+
+  return {
+    timestamp: new Date().toISOString(),
+    events,
+    eventDelta,
+    loadedEvents: snapshot.events?.length || 0,
+    anomalies,
+    incidents: snapshot.incidents?.length || 0,
+    workflowSec,
+    cpu: cpuMachine,
+    cpuCore,
+    cpuMachine,
+    memory,
+  };
 }
 
 function worryingKeyword(row) {
@@ -308,6 +378,10 @@ async function loadData(options = {}) {
       },
       lastRefreshAt: new Date().toISOString(),
       refreshMode: mode,
+    };
+    state = {
+      ...state,
+      realtimeHistory: [...state.realtimeHistory, createRealtimeSample(state)].slice(-36),
     };
     shouldRunAutoAnalysis = state.autoAnalysisEnabled && !skipAutoAnalysis && !analysisInFlight;
     scheduleAutoRefresh();
@@ -720,7 +794,14 @@ function latestRun(messages) {
 }
 
 function eventDate(row) {
-  const date = new Date(row.timestamp_iso || row.start_time || row.end_time || "");
+  const raw =
+    row.timestamp_iso ||
+    row.start_time ||
+    row.end_time ||
+    row["@timestamp"] ||
+    row["_source.@timestamp"] ||
+    extractTimestampFromText(row.message || row.summary || row.event || "");
+  const date = new Date(raw);
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
@@ -886,10 +967,11 @@ function warningNotificationPanel(alerts) {
 function resourcesPanel() {
   const resources = state.resources || {};
   const agents = resources.agents || [];
+  const logicalCpus = resources.logical_cpus || "";
   return `
     <section class="panel resourcesPanel hudPanel">
       <div class="panelHeader">
-        <div><h2>Consommation par agent</h2><p>${escapeHtml(resources.message || "Mesure agents Ariel Logminer")}</p></div>
+        <div><h2>Consommation par agent</h2><p>${escapeHtml(resources.message || "CPU equiv. coeur et CPU machine normalise")}${logicalCpus ? ` · ${escapeHtml(logicalCpus)} coeurs logiques` : ""}</p></div>
         <span class="icon">◷</span>
       </div>
       ${
@@ -906,7 +988,8 @@ function resourcesPanel() {
                           <small>PID ${escapeHtml(agent.pids || agent.pid || "")} · ${escapeHtml(agent.status || "unknown")}</small>
                         </div>
                         <div class="agentResourceMetrics">
-                          <span><b>${escapeHtml(agent.cpu_percent ?? 0)}</b>% CPU</span>
+                          <span><b>${escapeHtml(agent.cpu_percent ?? 0)}</b>% equiv. coeur</span>
+                          <span><b>${escapeHtml(agent.cpu_machine_percent ?? 0)}</b>% machine</span>
                           <span><b>${escapeHtml(agent.memory_mb ?? 0)}</b> MB RAM</span>
                         </div>
                       </article>
@@ -1004,6 +1087,189 @@ function quickFindingsPanel() {
             </div>`
           : `<div class="emptyState">Aucun signal prioritaire dans les résultats chargés.</div>`
       }
+    </section>
+  `;
+}
+
+function sparkline(points, key, options = {}) {
+  const width = 420;
+  const height = 124;
+  const padX = 14;
+  const padY = 16;
+  const values = points.map((point) => numeric(point[key])).filter((value) => Number.isFinite(value));
+  const max = Math.max(...values, options.minMax || 1);
+  const min = options.forceZero ? 0 : Math.min(...values, 0);
+  const range = Math.max(max - min, 1);
+  const coords = points.map((point, index) => {
+    const x = padX + (index / Math.max(1, points.length - 1)) * (width - padX * 2);
+    const y = height - padY - ((numeric(point[key]) - min) / range) * (height - padY * 2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+  const last = values.length ? values[values.length - 1] : 0;
+
+  return `
+    <svg class="realtimeSvg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(options.label || key)}">
+      <line x1="${padX}" y1="${height - padY}" x2="${width - padX}" y2="${height - padY}" class="chartAxis"></line>
+      <line x1="${padX}" y1="${padY}" x2="${padX}" y2="${height - padY}" class="chartAxis"></line>
+      <polyline points="${coords.join(" ")}" class="chartLine ${options.tone || ""}"></polyline>
+      ${coords
+        .slice(-8)
+        .map((coord) => {
+          const [x, y] = coord.split(",");
+          return `<circle cx="${x}" cy="${y}" r="3.4" class="chartPoint"></circle>`;
+        })
+        .join("")}
+      <text x="${width - 16}" y="24" text-anchor="end" class="chartValue">${escapeHtml(options.format ? options.format(last) : last.toFixed(1))}</text>
+      <text x="16" y="24" class="chartLabel">${escapeHtml(options.label || key)}</text>
+    </svg>
+  `;
+}
+
+function realtimeBars(points, key, options = {}) {
+  const values = points.map((point) => numeric(point[key]));
+  const max = Math.max(...values, 1);
+  return `
+    <div class="realtimeBars" title="${escapeHtml(options.label || key)}">
+      ${points
+        .map((point) => {
+          const value = numeric(point[key]);
+          const height = Math.max(6, (value / max) * 100);
+          return `<span style="height:${height}%" title="${escapeHtml(formatTime(point.timestamp))}: ${escapeHtml(value)}"></span>`;
+        })
+        .join("")}
+    </div>
+  `;
+}
+
+function severityChart(rows) {
+  const groups = rows.reduce((acc, row) => {
+    const label = String(row.severity || "N/A").toUpperCase() || "N/A";
+    acc[label] = (acc[label] || 0) + 1;
+    return acc;
+  }, {});
+  const entries = Object.entries(groups).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const max = Math.max(...entries.map(([, count]) => count), 1);
+
+  return `
+    <div class="severityChart">
+      ${
+        entries.length
+          ? entries
+              .map(
+                ([label, count]) => `
+                  <div class="severityRow">
+                    <span class="pill ${severityClass(label)}">${escapeHtml(label)}</span>
+                    <div class="meter"><span style="width:${Math.max(4, (count / max) * 100)}%"></span></div>
+                    <strong>${count.toLocaleString("fr-FR")}</strong>
+                  </div>
+                `,
+              )
+              .join("")
+          : `<div class="emptyState">Aucune severite disponible.</div>`
+      }
+    </div>
+  `;
+}
+
+function realtimeResourcesChart(resources) {
+  const agents = resources?.agents || [];
+  const maxMemory = Math.max(...agents.map((agent) => numeric(agent.memory_mb)), 1);
+  return `
+    <div class="agentLoadChart">
+      ${
+        agents.length
+          ? agents
+              .map((agent) => {
+                const cpuMachine = clamp(numeric(agent.cpu_machine_percent), 0, 100);
+                const cpuCore = numeric(agent.cpu_percent);
+                const mem = clamp((numeric(agent.memory_mb) / maxMemory) * 100, 0, 100);
+                return `
+                  <article class="agentLoadRow">
+                    <div>
+                      <strong>${escapeHtml(agent.agent || "Agent")}</strong>
+                      <small>${escapeHtml(agent.status || "unknown")} · PID ${escapeHtml(agent.pids || "")}</small>
+                    </div>
+                    <div class="agentLoadMeters">
+                      <label><span>CPU</span><div class="meter cpuMeter"><span style="width:${cpuMachine}%"></span></div><b>${cpuMachine.toFixed(1)}% machine</b></label>
+                      <label><span>Core</span><div class="meter coreMeter"><span style="width:${clamp(cpuCore, 0, 100)}%"></span></div><b>${cpuCore.toFixed(1)}% eq.</b></label>
+                      <label><span>RAM</span><div class="meter ramMeter"><span style="width:${mem}%"></span></div><b>${numeric(agent.memory_mb).toFixed(1)} MB</b></label>
+                    </div>
+                  </article>
+                `;
+              })
+              .join("")
+          : `<div class="emptyState">Aucun agent mesure pour le moment.</div>`
+      }
+    </div>
+  `;
+}
+
+function realtimeChartsPanel(events, anomalies, incidents) {
+  const history = state.realtimeHistory.length ? state.realtimeHistory : [createRealtimeSample(state)];
+  const last = history[history.length - 1] || {};
+  const recentMessages = [...state.messages, ...state.redisMessages].slice(-12);
+  const okMessages = recentMessages.filter((message) => message.status !== "error").length;
+  const errorMessages = recentMessages.length - okMessages;
+  const totalEvents = state.meta.events || state.events.length;
+  const loadedEvents = state.events.length;
+  const visibleEvents = events.length;
+  const eventDelta = numeric(last.eventDelta);
+  const eventLimitLabel = loadedEvents < totalEvents ? ` · limite ${DATA_LIMIT.toLocaleString("fr-FR")}` : "";
+
+  return `
+    <section class="panel realtimePanel">
+      <div class="panelHeader">
+        <div>
+          <h2>Graphiques temps réel</h2>
+          <p>Auto-refresh 5 s · ${history.length} points en memoire · dernier ${escapeHtml(formatTime(last.timestamp))}</p>
+        </div>
+        <span class="icon">⌁</span>
+      </div>
+      <div class="realtimeGrid">
+        <article class="realtimeCard wideRealtime">
+          <div class="cardCaption">
+            <strong>Latence workflow</strong>
+            <span>${last.workflowSec ? `${numeric(last.workflowSec).toFixed(2)} s` : "en attente d'analyse"}</span>
+          </div>
+          ${sparkline(history, "workflowSec", { label: "workflow_sec", forceZero: true, format: (value) => `${value.toFixed(2)} s`, tone: "latencyLine" })}
+        </article>
+        <article class="realtimeCard">
+          <div class="cardCaption">
+            <strong>Activité événements</strong>
+            <span>${visibleEvents.toLocaleString("fr-FR")} visibles · ${loadedEvents.toLocaleString("fr-FR")} chargés · ${totalEvents.toLocaleString("fr-FR")} total${eventLimitLabel}</span>
+          </div>
+          ${realtimeBars(history, "events", { label: "total evenements" })}
+          <small class="chartHint">${eventDelta >= 0 ? "+" : ""}${eventDelta.toLocaleString("fr-FR")} depuis le dernier refresh</small>
+        </article>
+        <article class="realtimeCard">
+          <div class="cardCaption">
+            <strong>Anomalies candidates</strong>
+            <span>${anomalies.length.toLocaleString("fr-FR")} visibles · ${incidents.length.toLocaleString("fr-FR")} incidents</span>
+          </div>
+          ${sparkline(history, "anomalies", { label: "anomalies", forceZero: true, format: (value) => value.toLocaleString("fr-FR") })}
+        </article>
+        <article class="realtimeCard">
+          <div class="cardCaption">
+            <strong>Severites</strong>
+            <span>repartition des anomalies visibles</span>
+          </div>
+          ${severityChart(anomalies)}
+        </article>
+        <article class="realtimeCard wideRealtime">
+          <div class="cardCaption">
+            <strong>Charge agents</strong>
+            <span>${numeric(last.cpuCore).toFixed(1)}% equiv. coeur · ${numeric(last.cpuMachine).toFixed(1)}% machine · ${numeric(last.memory).toFixed(1)} MB RAM</span>
+          </div>
+          ${realtimeResourcesChart(state.resources)}
+        </article>
+        <article class="realtimeCard">
+          <div class="cardCaption">
+            <strong>Flux agents</strong>
+            <span>${okMessages} OK · ${errorMessages} erreur(s)</span>
+          </div>
+          ${sparkline(history, "cpuMachine", { label: "CPU machine", forceZero: true, minMax: 100, format: (value) => `${value.toFixed(1)} %`, tone: "cpuLine" })}
+        </article>
+      </div>
     </section>
   `;
 }
@@ -1358,6 +1624,11 @@ function render() {
   const filteredAnomalies = filterRows(pending);
   const anomalyCount = pending.filter((row) => row.is_anomaly === "1").length;
   const criticalIncidents = state.incidents.filter((row) => ["CRITICAL", "ERROR"].includes(row.severity)).length;
+  const sourceEventCount = Math.max(
+    numeric(state.meta.events),
+    numeric(state.autoRun.result?.input_rows),
+    state.events.length,
+  );
   const alerts = urgentAlerts();
   const selectedIncident = state.incidents.find((incident) => incident.incident_id === state.selectedIncidentId) || state.incidents[0] || null;
   document.title = alerts.length ? `(${alerts.length}) Alertes Ariel Logminer` : "Ariel Logminer";
@@ -1382,7 +1653,7 @@ function render() {
         ${warningNotificationPanel(alerts)}
         ${decisionFeedbackPanel()}
         <div class="statsGrid">
-          ${stat("▣", "Événements", state.meta.events || state.events.length, "blue")}
+          ${stat("▣", "Événements source", sourceEventCount, "blue")}
           ${stat("⚠", "Anomalies", anomalyCount, "amber")}
           ${stat("⇄", "Incidents", state.incidents.length, "green")}
           ${stat("!", "Incidents critiques", criticalIncidents, "rose")}
@@ -1392,6 +1663,7 @@ function render() {
             ? `
               ${operatorSummaryPanel()}
               ${workflowPanel()}
+              ${realtimeChartsPanel(filteredEvents, filteredAnomalies, state.incidents)}
               ${resourcesPanel()}
               <div class="mainGrid compactMain">
                 ${quickFindingsPanel()}
@@ -1411,6 +1683,7 @@ function render() {
               `
               : `
                 ${servicePanel()}
+                ${realtimeChartsPanel(filteredEvents, filteredAnomalies, state.incidents)}
                 ${resourcesPanel()}
                 <div class="mainGrid">
                   ${timeline(filteredEvents)}

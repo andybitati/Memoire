@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="567" viewBox="0 0 980 567" role="img">
+<style>
+text{font-family:Arial,Helvetica,sans-serif;fill:#172026}
+.title{font-size:22px;font-weight:700}
+.subtitle{font-size:13px;fill:#5b6770}
+.axis{font-size:11px;fill:#5b6770}
+.label{font-size:12px}
+.small{font-size:10px;fill:#5b6770}
+</style>
+<text x="36" y="36" class="title">Portefeuille des modeles entraines</text>
+<text x="36" y="59" class="subtitle">Volume d&#x27;entrainement ou d&#x27;evenements, represente en log10 pour lisibilite</text>
+<line x1="260.0" y1="77" x2="260.0" y2="512" stroke="#d9dee3" stroke-width="1"/>
+<text x="260.0" y="535" text-anchor="middle" class="axis">0.00</text>
+<line x1="390.0" y1="77" x2="390.0" y2="512" stroke="#d9dee3" stroke-width="1"/>
+<text x="390.0" y="535" text-anchor="middle" class="axis">1.50</text>
+<line x1="520.0" y1="77" x2="520.0" y2="512" stroke="#d9dee3" stroke-width="1"/>
+<text x="520.0" y="535" text-anchor="middle" class="axis">3.00</text>
+<line x1="650.0" y1="77" x2="650.0" y2="512" stroke="#d9dee3" stroke-width="1"/>
+<text x="650.0" y="535" text-anchor="middle" class="axis">4.50</text>
+<line x1="780.0" y1="77" x2="780.0" y2="512" stroke="#d9dee3" stroke-width="1"/>
+<text x="780.0" y="535" text-anchor="middle" class="axis">6.01</text>
+<line x1="910.0" y1="77" x2="910.0" y2="512" stroke="#d9dee3" stroke-width="1"/>
+<text x="910.0" y="535" text-anchor="middle" class="axis">7.51</text>
+<text x="246" y="111" text-anchor="end" class="label">windows</text>
+<rect x="260" y="92" width="449.4" height="28" rx="3" fill="#8a96a3"/>
+<text x="717.4" y="111" class="label">5.191</text>
+<text x="260" y="132" class="small">isolation_forest - 155252</text>
+<text x="246" y="156" text-anchor="end" class="label">wazuh</text>
+<rect x="260" y="137" width="440.6" height="28" rx="3" fill="#8a96a3"/>
+<text x="708.6" y="156" class="label">5.088</text>
+<text x="260" y="177" class="small">isolation_forest - 122563</text>
+<text x="246" y="201" text-anchor="end" class="label">network_cicids</text>
+<rect x="260" y="182" width="463.2" height="28" rx="3" fill="#6f58a8"/>
+<text x="731.2" y="201" class="label">5.35</text>
+<text x="260" y="222" class="small">random_forest_cicids - 223692 train / 55924 test</text>
+<text x="246" y="246" text-anchor="end" class="label">network</text>
+<rect x="260" y="227" width="422.2" height="28" rx="3" fill="#6f58a8"/>
+<text x="690.2" y="246" class="label">4.876</text>
+<text x="260" y="267" class="small">random_forest - 75182 train sample</text>
+<text x="246" y="291" text-anchor="end" class="label">linux_auth</text>
+<rect x="260" y="272" width="449.6" height="28" rx="3" fill="#6f58a8"/>
+<text x="717.6" y="291" class="label">5.192</text>
+<text x="260" y="312" class="small">random_forest_linux_auth - 155765 train / 38942 test</text>
+<text x="246" y="336" text-anchor="end" class="label">linux</text>
+<rect x="260" y="317" width="288.5" height="28" rx="3" fill="#8a96a3"/>
+<text x="556.5" y="336" class="label">3.332</text>
+<text x="260" y="357" class="small">isolation_forest - 2150</text>
+<text x="246" y="381" text-anchor="end" class="label">hdfs</text>
+<rect x="260" y="362" width="601.9" height="28" rx="3" fill="#8a96a3"/>
+<text x="869.9" y="381" class="label">6.951</text>
+<text x="260" y="402" class="small">isolation_forest - 8941008</text>
+<text x="246" y="426" text-anchor="end" class="label">bgl</text>
+<rect x="260" y="407" width="565.6" height="28" rx="3" fill="#8a96a3"/>
+<text x="833.6" y="426" class="label">6.533</text>
+<text x="260" y="447" class="small">isolation_forest - 3408470</text>
+<text x="246" y="471" text-anchor="end" class="label">fallback</text>
+<rect x="260" y="452" width="472.7" height="28" rx="3" fill="#8a96a3"/>
+<text x="740.7" y="471" class="label">5.459</text>
+<text x="260" y="492" class="small">isolation_forest - 287862</text>
+<text x="585.0" y="559" text-anchor="middle" class="subtitle">log10(volume)</text>
+</svg>

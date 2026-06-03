@@ -23,6 +23,7 @@ class AgentResource:
     role: str
     pids: str
     cpu_percent: float
+    cpu_machine_percent: float
     memory_mb: float
     status: str
     command: str
@@ -81,6 +82,7 @@ def snapshot() -> dict[str, Any]:
         }
 
     current_pid = os.getpid()
+    logical_cpus = psutil.cpu_count(logical=True) or 1
     grouped: dict[str, dict[str, Any]] = {}
     seen: set[int] = set()
     for process in psutil.process_iter(["pid", "name", "status"]):
@@ -129,6 +131,7 @@ def snapshot() -> dict[str, Any]:
             role=str(values["role"]),
             pids=",".join(values["pids"]),
             cpu_percent=round(float(values["cpu_percent"]), 2),
+            cpu_machine_percent=round(float(values["cpu_percent"]) / logical_cpus, 2),
             memory_mb=round(float(values["memory_mb"]), 2),
             status="/".join(sorted(values["statuses"])) if values["statuses"] else "unknown",
             command=" | ".join(values["commands"]),
@@ -136,10 +139,15 @@ def snapshot() -> dict[str, Any]:
         for agent, values in grouped.items()
     ]
     agents.sort(key=lambda item: item.agent)
+    total_cpu_core_percent = round(sum(agent.cpu_percent for agent in agents), 2)
+    total_cpu_machine_percent = round(total_cpu_core_percent / logical_cpus, 2)
     return {
         "available": True,
         "agents": [asdict(agent) for agent in agents],
         "agent_count": len(agents),
+        "logical_cpus": logical_cpus,
+        "cpu_logminer_core_percent": total_cpu_core_percent,
+        "cpu_logminer_machine_percent": total_cpu_machine_percent,
         "timestamp": time.time(),
-        "message": "Mesure par agent Logminer",
+        "message": "Mesure par agent Logminer; CPU equiv. coeur et CPU machine normalise",
     }

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="567" viewBox="0 0 980 567" role="img">
+<style>
+text{font-family:Arial,Helvetica,sans-serif;fill:#172026}
+.title{font-size:22px;font-weight:700}
+.subtitle{font-size:13px;fill:#5b6770}
+.axis{font-size:11px;fill:#5b6770}
+.label{font-size:12px}
+.small{font-size:10px;fill:#5b6770}
+</style>
+<text x="36" y="36" class="title">Comparaison des meilleurs detecteurs par dataset</text>
+<text x="36" y="59" class="subtitle">Score F1 des modeles retenus dans les validations BGL, HDFS et Windows simule</text>
+<line x1="260.0" y1="77" x2="260.0" y2="512" stroke="#d9dee3" stroke-width="1"/>
+<text x="260.0" y="535" text-anchor="middle" class="axis">0.00</text>
+<line x1="390.0" y1="77" x2="390.0" y2="512" stroke="#d9dee3" stroke-width="1"/>
+<text x="390.0" y="535" text-anchor="middle" class="axis">0.20</text>
+<line x1="520.0" y1="77" x2="520.0" y2="512" stroke="#d9dee3" stroke-width="1"/>
+<text x="520.0" y="535" text-anchor="middle" class="axis">0.40</text>
+<line x1="650.0" y1="77" x2="650.0" y2="512" stroke="#d9dee3" stroke-width="1"/>
+<text x="650.0" y="535" text-anchor="middle" class="axis">0.60</text>
+<line x1="780.0" y1="77" x2="780.0" y2="512" stroke="#d9dee3" stroke-width="1"/>
+<text x="780.0" y="535" text-anchor="middle" class="axis">0.80</text>
+<line x1="910.0" y1="77" x2="910.0" y2="512" stroke="#d9dee3" stroke-width="1"/>
+<text x="910.0" y="535" text-anchor="middle" class="axis">1.00</text>
+<text x="246" y="111" text-anchor="end" class="label">bgl / ensemble_selected</text>
+<rect x="260" y="92" width="646.3" height="28" rx="3" fill="#2f6fbb"/>
+<text x="914.3" y="111" class="label">0.9943</text>
+<text x="260" y="132" class="small">duree=0.0068s; memoire=0.0459 MB</text>
+<text x="246" y="156" text-anchor="end" class="label">bgl / ensemble_global</text>
+<rect x="260" y="137" width="646.3" height="28" rx="3" fill="#148f77"/>
+<text x="914.3" y="156" class="label">0.9943</text>
+<text x="260" y="177" class="small">duree=0.0705s; memoire=0.0459 MB</text>
+<text x="246" y="201" text-anchor="end" class="label">bgl / autoencoder_mlp</text>
+<rect x="260" y="182" width="646.3" height="28" rx="3" fill="#d9822b"/>
+<text x="914.3" y="201" class="label">0.9943</text>
+<text x="260" y="222" class="small">duree=1.081s; memoire=2.775 MB</text>
+<text x="246" y="246" text-anchor="end" class="label">hdfs / ensemble_selected</text>
+<rect x="260" y="227" width="389.6" height="28" rx="3" fill="#2f6fbb"/>
+<text x="657.6" y="246" class="label">0.5993</text>
+<text x="260" y="267" class="small">duree=0.0075s; memoire=0.0459 MB</text>
+<text x="246" y="291" text-anchor="end" class="label">hdfs / ensemble_global</text>
+<rect x="260" y="272" width="390.2" height="28" rx="3" fill="#148f77"/>
+<text x="658.2" y="291" class="label">0.6003</text>
+<text x="260" y="312" class="small">duree=0.0728s; memoire=0.0459 MB</text>
+<text x="246" y="336" text-anchor="end" class="label">hdfs / autoencoder_mlp</text>
+<rect x="260" y="317" width="374.2" height="28" rx="3" fill="#d9822b"/>
+<text x="642.2" y="336" class="label">0.5757</text>
+<text x="260" y="357" class="small">duree=2.056s; memoire=3.329 MB</text>
+<text x="246" y="381" text-anchor="end" class="label">simulated_windows / isolation_forest</text>
+<rect x="260" y="362" width="650.0" height="28" rx="3" fill="#2f6fbb"/>
+<text x="918.0" y="381" class="label">1</text>
+<text x="260" y="402" class="small">duree=3.025s; memoire=9.178 MB</text>
+<text x="246" y="426" text-anchor="end" class="label">simulated_windows / rule_baseline</text>
+<rect x="260" y="407" width="650.0" height="28" rx="3" fill="#148f77"/>
+<text x="918.0" y="426" class="label">1</text>
+<text x="260" y="447" class="small">duree=0.9533s; memoire=1.116 MB</text>
+<text x="246" y="471" text-anchor="end" class="label">simulated_windows / histogram</text>
+<rect x="260" y="452" width="630.5" height="28" rx="3" fill="#d9822b"/>
+<text x="898.5" y="471" class="label">0.97</text>
+<text x="260" y="492" class="small">duree=0.3612s; memoire=0.833 MB</text>
+<text x="585.0" y="559" text-anchor="middle" class="subtitle">F1-score</text>
+</svg>

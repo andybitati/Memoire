@@ -1033,6 +1033,208 @@ select {
   margin-bottom: 14px;
 }
 
+.realtimePanel {
+  margin-bottom: 14px;
+}
+
+.realtimeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.realtimeCard {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-height: 190px;
+  min-width: 0;
+  border: 1px solid rgba(212, 161, 72, 0.24);
+  border-radius: 2px;
+  background: rgba(22, 13, 10, 0.68);
+  padding: 11px;
+  box-shadow: inset 0 0 18px rgba(245, 200, 103, 0.06);
+}
+
+.wideRealtime {
+  grid-column: span 2;
+}
+
+.cardCaption {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cardCaption strong,
+.cardCaption span {
+  display: block;
+}
+
+.cardCaption strong {
+  color: #fff1d2;
+}
+
+.cardCaption span {
+  color: #bfa47e;
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: right;
+}
+
+.realtimeSvg {
+  width: 100%;
+  min-height: 124px;
+  overflow: visible;
+}
+
+.chartAxis {
+  stroke: rgba(212, 161, 72, 0.18);
+  stroke-width: 1;
+}
+
+.chartLine {
+  fill: none;
+  stroke: var(--green);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 6px rgba(245, 200, 103, 0.22));
+}
+
+.latencyLine {
+  stroke: var(--amber);
+}
+
+.cpuLine {
+  stroke: #ffb9b9;
+}
+
+.chartPoint {
+  fill: var(--line-strong);
+  stroke: #140c09;
+  stroke-width: 1.5;
+}
+
+.chartValue {
+  fill: #fff1d2;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.chartLabel {
+  fill: #bfa47e;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.chartHint {
+  color: #bfa47e;
+  font-size: 12px;
+}
+
+.realtimeBars {
+  display: grid;
+  grid-template-columns: repeat(36, minmax(4px, 1fr));
+  align-items: end;
+  gap: 4px;
+  height: 124px;
+  border: 1px solid rgba(212, 161, 72, 0.16);
+  background:
+    linear-gradient(rgba(245, 200, 103, 0.06) 1px, transparent 1px),
+    rgba(20, 12, 9, 0.48);
+  background-size: 100% 31px, auto;
+  padding: 8px;
+}
+
+.realtimeBars span {
+  display: block;
+  min-height: 6px;
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(180deg, var(--line-strong), var(--amber));
+  box-shadow: 0 0 10px rgba(245, 200, 103, 0.16);
+}
+
+.severityChart {
+  display: grid;
+  gap: 8px;
+}
+
+.severityRow {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 54px;
+  align-items: center;
+  gap: 8px;
+}
+
+.severityRow strong {
+  color: #fff1d2;
+  font-size: 12px;
+  text-align: right;
+}
+
+.agentLoadChart {
+  display: grid;
+  gap: 8px;
+}
+
+.agentLoadRow {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(220px, 1.2fr);
+  gap: 12px;
+  align-items: center;
+  border-top: 1px solid rgba(212, 161, 72, 0.13);
+  padding-top: 8px;
+}
+
+.agentLoadRow:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.agentLoadRow strong,
+.agentLoadRow small {
+  display: block;
+}
+
+.agentLoadRow small,
+.agentLoadMeters span {
+  color: #bfa47e;
+  font-size: 12px;
+}
+
+.agentLoadMeters {
+  display: grid;
+  gap: 6px;
+}
+
+.agentLoadMeters label {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 76px;
+  align-items: center;
+  gap: 8px;
+}
+
+.agentLoadMeters b {
+  color: #fff1d2;
+  font-size: 12px;
+  text-align: right;
+}
+
+.cpuMeter span {
+  background: linear-gradient(90deg, #ffb9b9, var(--red));
+}
+
+.coreMeter span {
+  background: linear-gradient(90deg, var(--amber), var(--line-strong));
+}
+
+.ramMeter span {
+  background: linear-gradient(90deg, var(--green), var(--line-strong));
+}
+
 .resourcesGrid,
 .agentResources {
   display: grid;
@@ -1672,10 +1874,15 @@ tr.decisionDone .decisionColumn small {
   .starkHero,
   .warningBanner,
   .resourcesGrid,
+  .realtimeGrid,
   .serviceGrid,
   .workflowGrid,
   .statsGrid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .wideRealtime {
+    grid-column: span 2;
   }
 
   .sideStack {
@@ -1694,10 +1901,27 @@ tr.decisionDone .decisionColumn small {
   .starkHero,
   .warningBanner,
   .resourcesGrid,
+  .realtimeGrid,
   .serviceGrid,
   .workflowGrid,
   .statsGrid {
     grid-template-columns: 1fr;
+  }
+
+  .wideRealtime {
+    grid-column: span 1;
+  }
+
+  .agentLoadRow,
+  .agentLoadMeters label,
+  .severityRow {
+    grid-template-columns: 1fr;
+  }
+
+  .cardCaption,
+  .severityRow strong,
+  .agentLoadMeters b {
+    text-align: left;
   }
 
   .topbar {
