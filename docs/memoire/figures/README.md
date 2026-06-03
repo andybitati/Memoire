@@ -11,10 +11,13 @@
 | `fig_false_positive_rates.svg` | Objectif 7: faux positifs par dataset/modele |
 | `fig_wazuh_logminer_overlap.svg` | Comparaison prudente: exports Wazuh et anomalies Logminer |
 | `fig_resource_campaign_multicycle.svg` | Objectif 7: CPU/RAM agents sur campagne multi-cycles |
+| `fig_family_routing_ablation.svg` | Article 1: ablation global model vs family-aware routing |
 
 Tableaux principaux: `docs/memoire/tables/table_resultats_principaux.md`,
 `docs/memoire/tables/table_datasets_scenarios.md`,
 `docs/memoire/tables/table_realtime_benchmark.md`,
 `docs/memoire/tables/table_comparaison_outils_standards.md`,
 `docs/memoire/tables/table_resource_snapshot.md`,
-`docs/memoire/tables/table_resource_campaign_multicycle.md`.
+`docs/memoire/tables/table_resource_campaign_multicycle.md`,
+`docs/memoire/tables/table_family_routing_ablation.md`,
+`docs/memoire/tables/table_family_routing_operational_ablation.md`.

@@ -7,8 +7,8 @@ text{font-family:Arial,Helvetica,sans-serif;fill:#172026}
 .label{font-size:12px}
 .small{font-size:10px;fill:#5b6770}
 </style>
-<text x="36" y="36" class="title">Robustesse du parsing multi-format</text>
-<text x="36" y="59" class="subtitle">Controle sur Apache, CEF/LEEF, CloudTrail, Linux auth et log incomplet</text>
+<text x="36" y="36" class="title">Multi-format parsing robustness</text>
+<text x="36" y="59" class="subtitle">Check on Apache, CEF/LEEF, CloudTrail, Linux auth and incomplete log</text>
 <line x1="260.0" y1="77" x2="260.0" y2="332" stroke="#d9dee3" stroke-width="1"/>
 <text x="260.0" y="355" text-anchor="middle" class="axis">0.00</text>
 <line x1="390.0" y1="77" x2="390.0" y2="332" stroke="#d9dee3" stroke-width="1"/>
@@ -41,5 +41,5 @@ text{font-family:Arial,Helvetica,sans-serif;fill:#172026}
 <rect x="260" y="272" width="300.9" height="28" rx="3" fill="#148f77"/>
 <text x="568.9" y="291" class="label">1</text>
 <text x="260" y="312" class="small">linux_auth.log</text>
-<text x="585.0" y="379" text-anchor="middle" class="subtitle">Lignes normalisees</text>
+<text x="585.0" y="379" text-anchor="middle" class="subtitle">Normalized rows</text>
 </svg>

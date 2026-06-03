@@ -80,6 +80,8 @@ Questions du document directeur, adaptees au prototype:
 - routage multi-modeles selon la famille de logs;
 - dashboard interactif avec validation/rejet et audit trail;
 - evaluation initiale sur logs publics, reels et robustesse multi-format.
+- ablation du routage familial: baseline globale commune vs configurations
+  specialisees.
 
 ### Abstract Recommande
 
@@ -119,6 +121,7 @@ Questions du document directeur, adaptees au prototype:
 5. Case Study and Initial Evaluation
    - datasets utilises;
    - resultats de detection;
+   - ablation global model vs family-aware models;
    - faux positifs;
    - charge CPU/RAM initiale ou multi-cycles courte.
 6. Evaluation and Discussion
@@ -139,6 +142,7 @@ Figures:
 - `fig_robustness_multiformat.svg`;
 - `fig_supervised_models_f1.svg`;
 - `fig_false_positive_rates.svg`.
+- `fig_family_routing_ablation.svg`.
 
 Tableaux:
 
@@ -147,6 +151,8 @@ Tableaux:
 - `table_false_positives.md`;
 - `table_comparaison_outils_standards.md`;
 - `table_operational_tool_comparison.md`.
+- `table_family_routing_ablation.md`;
+- `table_family_routing_operational_ablation.md`.
 
 ### Resultats A Citer
 
@@ -158,6 +164,8 @@ Tableaux:
 | Wazuh | 122 563 evenements, 3 676 anomalies candidates |
 | Robustesse | Apache, CEF/LEEF, CloudTrail, Linux auth, log incomplet conserve |
 | Dashboard | alertes, filtres, timeline/heatmap, decisions, audit, CPU/RAM |
+| Ablation controlee | le modele global commun reste tres competitif sur l'espace minimal |
+| Ablation operationnelle | gain Linux/auth (+0.092 F1), gain UNSW (+0.004 F1), CICIDS deja sature |
 
 ### Prudence Scientifique
 
@@ -167,6 +175,14 @@ Tableaux:
   fail2ban officiel;
 - formuler l'adaptation comme routage multi-modeles et specialisation locale,
   pas comme auto-apprentissage continu complet.
+- ne pas affirmer que le routage familial ameliore toujours le F1; presenter le
+  gain comme une specialisation controlee surtout utile lorsque les familles
+  exigent des espaces de features differents.
+- nuancer HDFS: les features legeres ligne par ligne restent insuffisantes pour
+  les logs fortement sequentiels sans templates ou fenetres temporelles.
+- preciser que le routage est effectue sur un echantillon borne: son cout est
+  approximativement `O(k x c x s)`, avec `k` familles, `c` colonnes inspectees
+  et `s` lignes echantillonnees. Le cout principal reste l'inference.
 
 ## Article 2 - IEEE Access
 
@@ -226,6 +242,7 @@ Questions du document directeur, adaptees aux preuves disponibles:
 - benchmark quasi temps reel;
 - campagne CPU/RAM multi-cycles de 30 cycles;
 - robustesse sur logs incomplets et multi-format;
+- ablation du routage familial et discussion de la baseline monolithique;
 - discussion de la scalabilite et de la resilience.
 
 ### Abstract Recommande
@@ -266,6 +283,7 @@ Questions du document directeur, adaptees aux preuves disponibles:
    - resultats supervises;
    - anomalies candidates non supervisees;
    - faux positifs;
+   - ablation du routage familial;
    - latence;
    - campagne CPU/RAM;
    - recouvrement Wazuh/Logminer.
@@ -297,6 +315,7 @@ Figures:
 - `fig_resource_campaign_multicycle.svg`;
 - `fig_robustness_multiformat.svg`;
 - `fig_wazuh_logminer_overlap.svg`.
+- `fig_family_routing_ablation.svg`.
 
 Tableaux:
 
@@ -310,6 +329,8 @@ Tableaux:
 - `table_fail2ban_like_baseline.md`;
 - `table_wazuh_logminer_summary.md`;
 - `table_wazuh_logminer_overlap.md`.
+- `table_family_routing_ablation.md`;
+- `table_family_routing_operational_ablation.md`.
 
 ### Resultats A Citer
 
@@ -323,6 +344,9 @@ Tableaux:
 | Campagne ressources | 30 cycles, workflow moyen 9.3300 s |
 | API / Orchestrateur | CPU machine moyen 7.45%, RAM moyenne 187.82 MB |
 | Processus Logminer | CPU machine moyen 0.41%, RAM moyenne 495.41 MB |
+| Ablation operationnelle Linux/auth | global F1 0.824368 vs family-aware F1 0.916602 |
+| Ablation operationnelle CICIDS | global F1 0.999667 vs family-aware F1 0.997163 |
+| Ablation operationnelle UNSW | global F1 0.995662 vs family-aware F1 0.999965 |
 
 ### Menaces A La Validite
 
@@ -332,6 +356,13 @@ Tableaux:
 - les anomalies non supervisees ne sont pas des attaques confirmees;
 - la baseline fail2ban-like n'est pas une execution officielle de fail2ban;
 - OSSEC est une reference fonctionnelle, pas une execution directe.
+- le routage familial ne doit pas etre presente comme toujours superieur; les
+  resultats montrent un gain selon les familles et surtout une meilleure
+  compatibilite features/modeles.
+- HDFS/BGL exigent une extension semantique/sequentielle pour rivaliser avec
+  DeepLog, LogAnomaly ou Drain-like parsing.
+- les benchmarks locaux de 8 537 lignes par cycle valident une faisabilite
+  quasi temps reel locale, pas un debit SOC industriel.
 
 ## Elements Transversaux Prets
 
@@ -352,4 +383,3 @@ Tableaux:
 - separer clairement supervise et non supervise;
 - declarer les menaces a la validite;
 - verifier le format IEEE des references.
-

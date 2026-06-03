@@ -13,12 +13,13 @@
 | `fig_false_positive_rates.svg` | pret | 3966 |
 | `fig_wazuh_logminer_overlap.svg` | pret | 3996 |
 | `fig_resource_campaign_multicycle.svg` | pret | 5673 |
+| `fig_family_routing_ablation.svg` | pret | 2350 |
 
 ## Exports Articles
 
 | Dossier | Etat | Contenu |
 | --- | --- | --- |
-| `docs/memoire/figures_exports/` | pret | 9 PNG + 9 PDF |
+| `docs/memoire/figures_exports/` | pret | 10 PNG + 10 PDF |
 | `docs/memoire/captures/` | pret partiel | 2 captures dashboard |
 
 ## Tableaux
@@ -38,6 +39,8 @@
 | `table_wazuh_logminer_summary.md` | pret | 271 |
 | `table_wazuh_logminer_overlap.md` | pret | 1824 |
 | `table_resource_campaign_multicycle.md` | pret | 449 |
+| `table_family_routing_ablation.md` | pret | 661 |
+| `table_family_routing_operational_ablation.md` | pret | 760 |
 
 ## Conclusion
 

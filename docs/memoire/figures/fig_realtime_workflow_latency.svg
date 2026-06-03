@@ -7,8 +7,8 @@ text{font-family:Arial,Helvetica,sans-serif;fill:#172026}
 .label{font-size:12px}
 .small{font-size:10px;fill:#5b6770}
 </style>
-<text x="36" y="36" class="title">Latence du workflow quasi temps reel</text>
-<text x="36" y="59" class="subtitle">Endpoint FastAPI /run/discovered, 5 cycles, max_mb=5, source selectionnee automatiquement</text>
+<text x="36" y="36" class="title">Near-real-time workflow latency</text>
+<text x="36" y="59" class="subtitle">FastAPI /run/discovered endpoint, 5 cycles, max_mb=5, automatically selected source</text>
 <line x1="80" y1="398.0" x2="935" y2="398.0" stroke="#d9dee3" stroke-width="1"/>
 <text x="68" y="402.0" text-anchor="end" class="axis">0.0s</text>
 <line x1="80" y1="334.8" x2="935" y2="334.8" stroke="#d9dee3" stroke-width="1"/>

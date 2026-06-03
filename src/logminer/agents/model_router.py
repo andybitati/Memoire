@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+from time import perf_counter
 from pathlib import Path
 from typing import Optional
 
@@ -52,7 +53,7 @@ MODEL_DEFAULTS = {
     "network_cicids": "models/random_forest_network_cicids.joblib",
     "linux_auth": "models/random_forest_linux_auth.joblib",
     "linux": "models/isolation_forest_linux_colab.joblib",
-    "fallback": "models/isolation_forest_colab.joblib",
+    "fallback": "models/isolation_forest_fallback_colab.joblib",
 }
 
 # Types issus du detecteur de fichiers bruts. Ils servent surtout quand l'entree
@@ -235,6 +236,14 @@ def _sample_profile(df: pd.DataFrame, path: Path | None = None) -> dict[str, obj
     if "dataset" in lower_to_original:
         dataset_values = _series_values(df, lower_to_original["dataset"], 300).str.lower().str.cat(sep=" ")
 
+    subtype_values = ""
+    if "subtype" in lower_to_original:
+        subtype_values = _series_values(df, lower_to_original["subtype"], 300).str.lower().str.cat(sep=" ")
+
+    filepath_values = ""
+    if "filepath" in lower_to_original:
+        filepath_values = _series_values(df, lower_to_original["filepath"], 300).str.lower().str.cat(sep=" ")
+
     proto_values = ""
     if "proto" in lower_to_original:
         proto_values = _series_values(df, lower_to_original["proto"], 300).str.lower().str.cat(sep=" ")
@@ -258,6 +267,8 @@ def _sample_profile(df: pd.DataFrame, path: Path | None = None) -> dict[str, obj
         "lower_to_original": lower_to_original,
         "text": text,
         "dataset_values": dataset_values,
+        "subtype_values": subtype_values,
+        "filepath_values": filepath_values,
         "proto_values": proto_values,
         "event_values": event_values,
         "source_values": source_values,
@@ -281,6 +292,8 @@ def _score_dataframe(df: pd.DataFrame, path: Path | None = None) -> tuple[dict[s
     lower_to_original = profile["lower_to_original"]
     text = str(profile["text"])
     dataset_values = str(profile["dataset_values"])
+    subtype_values = str(profile["subtype_values"])
+    filepath_values = str(profile["filepath_values"])
     proto_values = str(profile["proto_values"])
     event_values = str(profile["event_values"])
     source_values = str(profile["source_values"])
@@ -289,6 +302,21 @@ def _score_dataframe(df: pd.DataFrame, path: Path | None = None) -> tuple[dict[s
 
     scores = {family: 0 for family in MODEL_DEFAULTS}
     scores["fallback"] = 1
+
+    unknown_markers = dataset_values.split() + subtype_values.split()
+    if unknown_markers and all(value == "unknown" for value in unknown_markers):
+        scores["fallback"] += 140
+        reasons.append("dataset/subtype inconnus")
+    if any(token in subtype_values for token in ("apache", "cef_leef", "cloudtrail")):
+        scores["fallback"] += 140
+        reasons.append("format web/SIEM/cloud sans modele specialise")
+    if "syslog" in subtype_values:
+        scores["linux"] += 140
+        scores["windows"] -= 40
+        reasons.append("subtype syslog: modele linux privilegie")
+    if any(token in filepath_values or token in text for token in ("corrupt", "incomplete", "broken")):
+        scores["fallback"] += 120
+        reasons.append("marqueur entree corrompue/incomplete")
 
     # Signal principal: le nom des colonnes. C'est le plus stable pour les CSV
     # deja structures comme UNSW, tcpdump converti ou Windows normalise.
@@ -725,7 +753,9 @@ def run_routed_detection(
 ) -> dict[str, object]:
     """Lance detection + correlation avec le modele choisi par le routeur."""
 
+    route_started = perf_counter()
     route = route_model(input_path, sep=sep, sample_rows=sample_rows, models=models)
+    route_sec = round(perf_counter() - route_started, 4)
     model_path = Path(str(route["model"]))
     if not model_path.exists():
         raise FileNotFoundError(f"Modele choisi introuvable: {model_path}")
@@ -735,24 +765,40 @@ def run_routed_detection(
     incidents_csv = Path(incidents_output) if incidents_output else _default_output(input_file, f"{route['family']}_incidents")
 
     artifact = _load_model_artifact(model_path)
+    detect_started = perf_counter()
     if artifact.get("model_type") == "random_forest_linux_auth":
         _detect_linux_auth_model(input_file, anomalies_output, sep=sep, artifact=artifact)
+        detect_sec = round(perf_counter() - detect_started, 4)
         correlation_sep = _infer_sep(anomalies_output) if sep == "auto" else sep
+        correlate_started = perf_counter()
         correlate_anomalies(anomalies_output, incidents_csv, sep=correlation_sep, window_minutes=window_minutes)
+        correlate_sec = round(perf_counter() - correlate_started, 4)
     elif str(artifact.get("model_type", "")).startswith("random_forest"):
         _detect_supervised_model(input_file, anomalies_output, sep=sep, artifact=artifact)
+        detect_sec = round(perf_counter() - detect_started, 4)
         correlation_sep = _infer_sep(anomalies_output) if sep == "auto" else sep
+        correlate_started = perf_counter()
         correlate_anomalies(anomalies_output, incidents_csv, sep=correlation_sep, window_minutes=window_minutes)
+        correlate_sec = round(perf_counter() - correlate_started, 4)
     else:
         inference_sep = _infer_sep(input_file) if sep == "auto" else sep
         detect_anomalies(input_file, anomalies_output, sep=inference_sep, model_in=model_path)
+        detect_sec = round(perf_counter() - detect_started, 4)
+        correlate_started = perf_counter()
         correlate_anomalies(anomalies_output, incidents_csv, sep=inference_sep, window_minutes=window_minutes)
+        correlate_sec = round(perf_counter() - correlate_started, 4)
 
     return {
         "route": route,
         "model_type": artifact.get("model_type", type(artifact.get("model")).__name__),
         "anomalies_csv": str(anomalies_output),
         "incidents_csv": str(incidents_csv),
+        "timings": {
+            "route_sec": route_sec,
+            "detect_sec": detect_sec,
+            "correlate_sec": correlate_sec,
+            "detect_and_correlate_sec": round(detect_sec + correlate_sec, 4),
+        },
     }
 
 

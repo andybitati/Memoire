@@ -33,6 +33,7 @@ from agents.collector_agent import DEFAULT_ROOTS, discover_logs
 from agents.privilege_agent import request_windows_sensitive_collection
 from agents.resource_monitor import snapshot as resource_snapshot
 from agents.runtime_agent import ensure_runtime, runtime_status
+from agents.supervisor_agent import run_supervisor_campaign, run_supervisor_cycle
 from pipeline import run_pipeline
 
 
@@ -105,6 +106,20 @@ class RunDiscoveredRequest(BaseModel):
     run_id: str | None = None
     use_redis: bool = True
     max_mb: int = 100
+
+
+class SupervisorCycleRequest(BaseModel):
+    roots: list[str] = Field(default_factory=lambda: list(DEFAULT_ROOTS))
+    max_files: int = 20
+    max_mb: int = 100
+    out_dir: str = "data/processed"
+    bus_path: str = "data/processed/supervisor_messages.jsonl"
+    memory_path: str = "data/processed/supervisor_state.json"
+    run_id: str | None = None
+
+
+class SupervisorCampaignRequest(SupervisorCycleRequest):
+    cycles: int = 3
 
 
 class RuntimePrepareRequest(BaseModel):
@@ -262,6 +277,8 @@ def _run_workflow(request: RunRequest, input_path: Path, run_id: str, bus: Redis
             window_minutes=request.window_minutes,
             models=_model_paths(),
         )
+        routed_timings = result.get("timings") if isinstance(result.get("timings"), dict) else {}
+        timings.update({str(key): float(value) for key, value in routed_timings.items()})
         timings["detect_and_correlate_sec"] = round(perf_counter() - detection_started, 4)
     except Exception as exc:
         _publish(bus, "detector", "orchestrator", "workflow.failed", {"error": str(exc)}, status="error")
@@ -595,3 +612,35 @@ def run_discovered(request: RunDiscoveredRequest) -> dict[str, Any]:
     full_response = {"selected": asdict(candidates[0]), **response}
     _audit("workflow.run_discovered", target=str(selected), details=full_response)
     return full_response
+
+
+@app.post("/supervisor/cycle")
+def supervisor_cycle(request: SupervisorCycleRequest) -> dict[str, Any]:
+    """Execute un cycle autonome perception-etat-decision-action."""
+
+    result = run_supervisor_cycle(
+        roots=request.roots,
+        max_files=request.max_files,
+        max_mb=request.max_mb,
+        out_dir=request.out_dir,
+        bus_path=request.bus_path,
+        memory_path=request.memory_path,
+        run_id=request.run_id,
+    )
+    return asdict(result)
+
+
+@app.post("/supervisor/campaign")
+def supervisor_campaign(request: SupervisorCampaignRequest) -> dict[str, Any]:
+    """Execute plusieurs cycles autonomes avec memoire persistante."""
+
+    results = run_supervisor_campaign(
+        cycles=max(1, request.cycles),
+        roots=request.roots,
+        max_files=request.max_files,
+        max_mb=request.max_mb,
+        out_dir=request.out_dir,
+        bus_path=request.bus_path,
+        memory_path=request.memory_path,
+    )
+    return {"cycles": len(results), "results": [asdict(result) for result in results]}
