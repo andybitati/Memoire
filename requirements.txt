@@ -34,3 +34,7 @@ redis>=5.0.0
 
 # Mesure de consommation CPU, memoire, disque et processus pour le dashboard.
 psutil>=5.9.0
+
+# Exports des figures SVG du memoire en PDF/PNG pour articles.
+svglib>=1.6.0
+reportlab>=4.5.0
