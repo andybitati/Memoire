@@ -20,6 +20,7 @@ articles. Les figures vectorielles correspondantes sont dans
 | Faux positifs par famille | `docs/memoire/figures/fig_false_positive_rates.svg` | Chapitre 5, discussion des alertes |
 | Recouvrement Wazuh / Logminer | `docs/memoire/figures/fig_wazuh_logminer_overlap.svg` | Comparaison outils standards |
 | Campagne CPU/RAM multi-cycles | `docs/memoire/figures/fig_resource_campaign_multicycle.svg` | Evaluation ressources, article evaluation |
+| Ablation routage familial | `docs/memoire/figures/fig_family_routing_ablation.svg` | Article 1: contribution scientifique |
 
 Tableaux associes:
 
@@ -32,7 +33,9 @@ Tableaux associes:
 - `docs/memoire/tables/table_fail2ban_like_baseline.md`;
 - `docs/memoire/tables/table_wazuh_logminer_summary.md`;
 - `docs/memoire/tables/table_wazuh_logminer_overlap.md`;
-- `docs/memoire/tables/table_resource_campaign_multicycle.md`.
+- `docs/memoire/tables/table_resource_campaign_multicycle.md`;
+- `docs/memoire/tables/table_family_routing_ablation.md`;
+- `docs/memoire/tables/table_family_routing_operational_ablation.md`.
 
 ## Resultat Global
 
@@ -169,6 +172,40 @@ Phrase defensive pour le memoire:
 > sur des journaux heterogenes, avec des modeles specialises et une
 > visualisation centree analyste.
 
+## Ablation Du Routage Familial
+
+L'article doit integrer l'ablation du routage familial pour soutenir la
+contribution scientifique. Deux niveaux sont disponibles:
+
+- ablation controlee: baseline globale et modeles specialises forces dans le
+  meme espace de features commun minimal;
+- ablation operationnelle: baseline globale commune comparee aux configurations
+  specialisees completes.
+
+Resultat a formuler prudemment:
+
+> Le routage familial ne garantit pas un gain F1 universel sur chaque famille.
+> Il apporte surtout une specialisation controlee, utile lorsque les familles de
+> logs exigent des espaces de features et des modeles differents. L'ablation
+> operationnelle montre un gain net sur Linux/auth, un gain leger sur UNSW, et
+> un resultat comparable sur CICIDS ou la baseline globale est deja proche de
+> la saturation.
+
+Phrase de reponse a ELK:
+
+> Une pile ELK fournit principalement ingestion, indexation, recherche,
+> stockage et visualisation. Logminer se positionne comme une couche analytique:
+> selection dynamique du modele selon la famille de journaux, unification des
+> sorties supervisees/non supervisees en anomalies candidates et correlation en
+> incidents interpretables.
+
+Clarification multi-agent:
+
+> Le terme agent est utilise au sens architectural: agents logiciels
+> specialises, communicants et coordonnes. Le prototype ne revendique pas encore
+> des agents cognitifs autonomes, de negotiation FIPA ou de reinforcement
+> learning cooperatif.
+
 ## Legendes Pretes A Inserer
 
 Figure architecture:
@@ -263,6 +300,10 @@ Scenario de demonstration:
   schemas.
 - La latence quasi temps reel est acceptable pour une demonstration locale,
   mais demande optimisation pour une production SOC.
+- Les resultats HDFS montrent la limite des features legeres ligne par ligne
+  pour les logs de systemes distribues. Une extension Drain-like, templates de
+  logs ou fenetres temporelles est necessaire pour rivaliser avec les approches
+  sequentielles type DeepLog/LogAnomaly.
 
 ## Contribution A Mettre En Avant
 

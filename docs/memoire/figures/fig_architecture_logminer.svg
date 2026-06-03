@@ -7,20 +7,20 @@ text{font-family:Arial,Helvetica,sans-serif;fill:#172026}
 .label{font-size:12px}
 .small{font-size:10px;fill:#5b6770}
 </style>
-<text x="36" y="36" class="title">Architecture logique Logminer</text>
-<text x="36" y="59" class="subtitle">Flux agents: collecte, normalisation, routage, detection, correlation et visualisation</text>
+<text x="36" y="36" class="title">Logminer logical architecture</text>
+<text x="36" y="59" class="subtitle">Agent flow: collection, normalization, routing, detection, correlation and visualization</text>
 <rect x="55" y="130" width="145" height="68" rx="8" fill="#2f6fbb" opacity="0.96"/>
-<text x="127.5" y="171" text-anchor="middle" fill="#fff" style="font-family:Arial;font-size:15px;font-weight:700">Collecteur</text>
+<text x="127.5" y="171" text-anchor="middle" fill="#fff" style="font-family:Arial;font-size:15px;font-weight:700">Collector</text>
 <rect x="230" y="130" width="145" height="68" rx="8" fill="#148f77" opacity="0.96"/>
-<text x="302.5" y="171" text-anchor="middle" fill="#fff" style="font-family:Arial;font-size:15px;font-weight:700">Parseur</text>
+<text x="302.5" y="171" text-anchor="middle" fill="#fff" style="font-family:Arial;font-size:15px;font-weight:700">Parser</text>
 <rect x="405" y="130" width="145" height="68" rx="8" fill="#148f77" opacity="0.96"/>
-<text x="477.5" y="171" text-anchor="middle" fill="#fff" style="font-family:Arial;font-size:15px;font-weight:700">Normaliseur</text>
+<text x="477.5" y="171" text-anchor="middle" fill="#fff" style="font-family:Arial;font-size:15px;font-weight:700">Normalizer</text>
 <rect x="580" y="130" width="145" height="68" rx="8" fill="#6f58a8" opacity="0.96"/>
 <text x="652.5" y="171" text-anchor="middle" fill="#fff" style="font-family:Arial;font-size:15px;font-weight:700">Routeur</text>
 <rect x="755" y="130" width="145" height="68" rx="8" fill="#d9822b" opacity="0.96"/>
 <text x="827.5" y="171" text-anchor="middle" fill="#fff" style="font-family:Arial;font-size:15px;font-weight:700">Detecteur IA</text>
 <rect x="315" y="310" width="145" height="68" rx="8" fill="#c23b38" opacity="0.96"/>
-<text x="387.5" y="351" text-anchor="middle" fill="#fff" style="font-family:Arial;font-size:15px;font-weight:700">Correlateur</text>
+<text x="387.5" y="351" text-anchor="middle" fill="#fff" style="font-family:Arial;font-size:15px;font-weight:700">Correlator</text>
 <rect x="525" y="310" width="145" height="68" rx="8" fill="#2f8f46" opacity="0.96"/>
 <text x="597.5" y="351" text-anchor="middle" fill="#fff" style="font-family:Arial;font-size:15px;font-weight:700">Dashboard</text>
 <rect x="735" y="310" width="145" height="68" rx="8" fill="#8a96a3" opacity="0.96"/>

@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="980" height="652" viewBox="0 0 980 652">
 <style>text{font-family:Arial,Helvetica,sans-serif;fill:#172026}.title{font-size:22px;font-weight:700}.sub{font-size:13px;fill:#5b6770}.axis{font-size:11px;fill:#5b6770}.label{font-size:12px}</style>
-<text x="36" y="36" class="title">Faux positifs par 1000 lignes</text>
-<text x="36" y="58" class="sub">Comparaison des modeles/datasets avec metriques agregees disponibles</text>
+<text x="36" y="36" class="title">False positives per 1000 rows</text>
+<text x="36" y="58" class="sub">Comparison of models/datasets with available aggregate metrics</text>
 <line x1="250.0" y1="72" x2="250.0" y2="606" stroke="#d9dee3"/>
 <text x="250.0" y="628" text-anchor="middle" class="axis">0.0</text>
 <line x1="378.0" y1="72" x2="378.0" y2="606" stroke="#d9dee3"/>
@@ -50,5 +50,5 @@
 <text x="238" y="569" text-anchor="end" class="label">simulated_windows / histogram</text>
 <rect x="250" y="550" width="4.5" height="28" rx="3" fill="#2f8f46"/>
 <text x="262.5" y="569" class="label">1.500</text>
-<text x="570.0" y="648" text-anchor="middle" class="sub">Faux positifs pour 1000 lignes</text>
+<text x="570.0" y="648" text-anchor="middle" class="sub">False positives per 1000 rows</text>
 </svg>

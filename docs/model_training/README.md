@@ -316,7 +316,7 @@ Reseau/CICIDS2017      -> models/random_forest_network_cicids.joblib
 Reseau/tcpdump/UNSW    -> models/random_forest_network_unsw_80_20_sampled.joblib
 Linux/auth tabulaire   -> models/random_forest_linux_auth.joblib
 Linux/syslog           -> models/isolation_forest_linux_colab.joblib
-Inconnu/fallback       -> models/isolation_forest_colab.joblib
+Inconnu/fallback       -> models/isolation_forest_fallback_colab.joblib
 ```
 
 Verifier la route:
