@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="652" viewBox="0 0 980 652">
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#172026}.title{font-size:22px;font-weight:700}.sub{font-size:13px;fill:#5b6770}.axis{font-size:11px;fill:#5b6770}.label{font-size:12px}</style>
+<text x="36" y="36" class="title">Faux positifs par 1000 lignes</text>
+<text x="36" y="58" class="sub">Comparaison des modeles/datasets avec metriques agregees disponibles</text>
+<line x1="250.0" y1="72" x2="250.0" y2="606" stroke="#d9dee3"/>
+<text x="250.0" y="628" text-anchor="middle" class="axis">0.0</text>
+<line x1="378.0" y1="72" x2="378.0" y2="606" stroke="#d9dee3"/>
+<text x="378.0" y="628" text-anchor="middle" class="axis">42.4</text>
+<line x1="506.0" y1="72" x2="506.0" y2="606" stroke="#d9dee3"/>
+<text x="506.0" y="628" text-anchor="middle" class="axis">84.9</text>
+<line x1="634.0" y1="72" x2="634.0" y2="606" stroke="#d9dee3"/>
+<text x="634.0" y="628" text-anchor="middle" class="axis">127.3</text>
+<line x1="762.0" y1="72" x2="762.0" y2="606" stroke="#d9dee3"/>
+<text x="762.0" y="628" text-anchor="middle" class="axis">169.7</text>
+<line x1="890.0" y1="72" x2="890.0" y2="606" stroke="#d9dee3"/>
+<text x="890.0" y="628" text-anchor="middle" class="axis">212.2</text>
+<text x="238" y="107" text-anchor="end" class="label">Linux/auth / random_forest_linux_auth</text>
+<rect x="250" y="88" width="87.8" height="28" rx="3" fill="#d9822b"/>
+<text x="345.8" y="107" class="label">29.120</text>
+<text x="238" y="149" text-anchor="end" class="label">CICIDS2017 / random_forest_cicids</text>
+<rect x="250" y="130" width="3.1" height="28" rx="3" fill="#2f8f46"/>
+<text x="261.1" y="149" class="label">1.037</text>
+<text x="238" y="191" text-anchor="end" class="label">UNSW/CIC-DDoS / random_forest</text>
+<rect x="250" y="172" width="0.0" height="28" rx="3" fill="#2f8f46"/>
+<text x="258.0" y="191" class="label">0.001</text>
+<text x="238" y="233" text-anchor="end" class="label">bgl / ensemble_selected</text>
+<rect x="250" y="214" width="8.5" height="28" rx="3" fill="#2f8f46"/>
+<text x="266.5" y="233" class="label">2.833</text>
+<text x="238" y="275" text-anchor="end" class="label">bgl / ensemble_global</text>
+<rect x="250" y="256" width="8.5" height="28" rx="3" fill="#2f8f46"/>
+<text x="266.5" y="275" class="label">2.833</text>
+<text x="238" y="317" text-anchor="end" class="label">bgl / autoencoder_mlp</text>
+<rect x="250" y="298" width="8.5" height="28" rx="3" fill="#2f8f46"/>
+<text x="266.5" y="317" class="label">2.833</text>
+<text x="238" y="359" text-anchor="end" class="label">hdfs / ensemble_selected</text>
+<rect x="250" y="340" width="604.3" height="28" rx="3" fill="#c23b38"/>
+<text x="862.3" y="359" class="label">200.333</text>
+<text x="238" y="401" text-anchor="end" class="label">hdfs / ensemble_global</text>
+<rect x="250" y="382" width="602.8" height="28" rx="3" fill="#c23b38"/>
+<text x="860.8" y="401" class="label">199.833</text>
+<text x="238" y="443" text-anchor="end" class="label">hdfs / autoencoder_mlp</text>
+<rect x="250" y="424" width="640.0" height="28" rx="3" fill="#c23b38"/>
+<text x="898.0" y="443" class="label">212.167</text>
+<text x="238" y="485" text-anchor="end" class="label">simulated_windows / isolation_forest</text>
+<rect x="250" y="466" width="0.0" height="28" rx="3" fill="#2f8f46"/>
+<text x="258.0" y="485" class="label">0.000</text>
+<text x="238" y="527" text-anchor="end" class="label">simulated_windows / rule_baseline</text>
+<rect x="250" y="508" width="0.0" height="28" rx="3" fill="#2f8f46"/>
+<text x="258.0" y="527" class="label">0.000</text>
+<text x="238" y="569" text-anchor="end" class="label">simulated_windows / histogram</text>
+<rect x="250" y="550" width="4.5" height="28" rx="3" fill="#2f8f46"/>
+<text x="262.5" y="569" class="label">1.500</text>
+<text x="570.0" y="648" text-anchor="middle" class="sub">Faux positifs pour 1000 lignes</text>
+</svg>

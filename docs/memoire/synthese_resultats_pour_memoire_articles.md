@@ -17,6 +17,9 @@ articles. Les figures vectorielles correspondantes sont dans
 | Latence quasi temps reel | `docs/memoire/figures/fig_realtime_workflow_latency.svg` | Objectifs 4 et 7 |
 | Robustesse multi-format | `docs/memoire/figures/fig_robustness_multiformat.svg` | Objectifs 1, 6 et 7 |
 | Portefeuille des modeles | `docs/memoire/figures/fig_model_portfolio_scale.svg` | Methodologie, choix multi-modeles |
+| Faux positifs par famille | `docs/memoire/figures/fig_false_positive_rates.svg` | Chapitre 5, discussion des alertes |
+| Recouvrement Wazuh / Logminer | `docs/memoire/figures/fig_wazuh_logminer_overlap.svg` | Comparaison outils standards |
+| Campagne CPU/RAM multi-cycles | `docs/memoire/figures/fig_resource_campaign_multicycle.svg` | Evaluation ressources, article evaluation |
 
 Tableaux associes:
 
@@ -24,7 +27,12 @@ Tableaux associes:
 - `docs/memoire/tables/table_datasets_scenarios.md`;
 - `docs/memoire/tables/table_realtime_benchmark.md`;
 - `docs/memoire/tables/table_resource_snapshot.md`;
-- `docs/memoire/tables/table_comparaison_outils_standards.md`.
+- `docs/memoire/tables/table_comparaison_outils_standards.md`;
+- `docs/memoire/tables/table_false_positives.md`;
+- `docs/memoire/tables/table_fail2ban_like_baseline.md`;
+- `docs/memoire/tables/table_wazuh_logminer_summary.md`;
+- `docs/memoire/tables/table_wazuh_logminer_overlap.md`;
+- `docs/memoire/tables/table_resource_campaign_multicycle.md`.
 
 ## Resultat Global
 
@@ -105,12 +113,24 @@ Formulation recommandee:
 > boucle interactive, tout en laissant l'optimisation de la latence et la
 > distribution multi-machine comme perspectives d'industrialisation.
 
-Un instantane ressources a aussi ete archive dans
-`data/processed/resource_snapshot_20260603.json` et resume dans
-`docs/memoire/tables/table_resource_snapshot.md`. Il montre que l'API expose
-deja une mesure CPU/RAM des processus Logminer, utile comme preuve de
-monitoring. Pour un tableau scientifique final, il faudra idealement repeter
-la mesure pendant plusieurs cycles et rapporter moyenne, maximum et ecart-type.
+Une campagne CPU/RAM multi-cycles a ete executee via
+`scripts/run_resource_campaign.py` sur l'endpoint FastAPI `/run/discovered`,
+avec 30 cycles, intervalle de 2 secondes et `max_mb=5`.
+
+Resultats:
+
+- 30 cycles termines;
+- 8 537 lignes analysees par cycle;
+- latence moyenne workflow: 9.3300 s;
+- latence maximale workflow: 21.6007 s;
+- API / Orchestrateur: CPU moyen 59.61% equivalent coeur, CPU machine moyen
+  7.45%, RAM moyenne 187.82 MB;
+- Processus Logminer: CPU moyen 3.26% equivalent coeur, CPU machine moyen
+  0.41%, RAM moyenne 495.41 MB.
+
+Le tableau final est dans
+`docs/memoire/tables/table_resource_campaign_multicycle.md` et la figure
+associee dans `docs/memoire/figures/fig_resource_campaign_multicycle.svg`.
 
 ## Robustesse Multi-Format
 
@@ -188,6 +208,25 @@ Figure portefeuille:
 > Portefeuille de modeles Logminer. Les artefacts couvrent plusieurs familles:
 > Windows, Wazuh, Linux/auth, reseau, HDFS, BGL et fallback. L'echelle
 > logarithmique rend comparables les volumes tres differents.
+
+Figure faux positifs:
+
+> Taux de faux positifs observes par famille de donnees et modele. Cette figure
+> permet de discuter la charge analytique produite par les alertes candidates,
+> au-dela des seuls scores globaux de precision, rappel et F1-score.
+
+Figure Wazuh / Logminer:
+
+> Recouvrement entre groupes d'evenements Wazuh exportes et anomalies
+> candidates detectees par Logminer. La figure illustre la complementarite
+> entre une couche SIEM reglee et une analyse non supervisee orientee rarete.
+
+Figure campagne CPU/RAM:
+
+> Evolution de la charge CPU/RAM observee pendant 30 cycles d'analyse via
+> FastAPI. La mesure distingue le CPU equivalent coeur du CPU normalise sur la
+> machine afin d'eviter une interpretation erronee des valeurs superieures a
+> 100% sur les processus multi-coeurs.
 
 ## Captures Dashboard A Produire
 

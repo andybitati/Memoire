@@ -50,6 +50,7 @@ Datasets/Dataset_csv/*.csv
 *.swp
 *~
 .DS_Store
+.tmp-edge*/
 
 # Sorties et résultats temporaires
 *.out
@@ -57,6 +58,7 @@ output/
 results/
 temp/
 tmp/
+pack_redaction_memoire_articles/
 
 # Modeles entraines localement ou sur le cloud
 models/*.joblib
