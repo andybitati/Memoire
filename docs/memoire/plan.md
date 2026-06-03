@@ -54,6 +54,7 @@ Elements disponibles:
 - `docs/references/Deep Learning for Anomaly Detection in Log Data.pdf`;
 - `docs/memoire/References_et_ressources_memoire_ANDY_BITATI.pdf`;
 - `docs/memoire/exploitation_references.md`;
+- `docs/memoire/taxonomie_journaux.md`;
 - `docs/anomaly_detection/README.md`.
 
 Reste a rediger:
@@ -242,8 +243,9 @@ Angles de discussion:
   avec prudence a cause du desequilibre et de la distribution des donnees;
 - Wazuh fournit une couche SIEM riche, mais les alertes non supervisees restent
   des signaux candidats;
-- le prototype V1 est local et modulaire; la V2 doit exposer les agents via
-  FastAPI sans casser la CLI, puis la V3 pourra utiliser Redis ou MQTT pour un
+- le prototype V1 est local et modulaire; une premiere V2 FastAPI expose deja
+  le routage, le parsing, la detection et la correlation sans casser la CLI;
+  Redis est ajoute comme bus evenementiel optionnel pour preparer le
   deploiement distribue.
 
 ## Chapitre 7 - Conclusion Et Perspectives
@@ -256,7 +258,7 @@ Reste a rediger:
 
 - bilan objectif par objectif;
 - contribution principale;
-- perspectives integrees au memoire: V2 FastAPI, V3 Redis/MQTT, temps reel,
+- perspectives integrees au memoire: consolidation V2 FastAPI, bus Redis/MQTT, temps reel,
   enrichissement des features, integration SOC/SIEM.
 
 Message final a faire ressortir:
@@ -273,13 +275,13 @@ Message final a faire ressortir:
 
 | Objectif | Statut | Preuve actuelle | Prochaine action |
 | --- | --- | --- | --- |
-| 1. Collecter, parser et normaliser | Tres avance | Pipeline Logminer, Windows, Wazuh, Linux/auth, reseau | Rediger methodologie |
+| 1. Collecter, parser et normaliser | Tres avance | Pipeline Logminer, taxonomie, Windows, Wazuh, Linux/auth, reseau | Rediger methodologie |
 | 2. Detecter et comparer les anomalies | Tres avance | Modeles joblib, registres, metriques supervisees | Consolider tableaux |
-| 3. Concevoir l'architecture multi-agents | Tres avance | `docs/architecture/README.md`, bus, orchestrateur, routeur | Rediger chapitre 3 |
-| 4. Correler les anomalies en incidents | Avance | `correlator.py`, incidents, priorites | Documenter limites |
-| 5. Visualiser et superviser | Avance | `web/dashboard`, Streamlit, explication locale/LLM | Captures et scenario demo |
-| 6. Evaluer experimentalement | Tres avance | HDFS, BGL, Windows, UNSW, CICIDS, Linux/auth, Wazuh | Tableau final et analyse |
-| 7. Rediger et discuter | A demarrer maintenant | Plan, docs, resultats, references | Redaction chapitre par chapitre |
+| 3. Concevoir l'architecture multi-agents | Conforme prototype | `docs/architecture/README.md`, `docs/architecture/message_contract.md`, bus JSONL, Redis optionnel, orchestrateur, routeur, V2 FastAPI locale | Rediger chapitre 3 et ajouter schemas finaux |
+| 4. Integrer des modeles IA legers adaptatifs | Conforme prototype | Routeur multi-modeles, artefacts `.joblib`, Isolation Forest, RandomForest, API detection, analyse auto 5 s, benchmark quasi temps reel | Executer benchmark final et inserer valeurs |
+| 5. Developper le dashboard visuel interactif | Conforme prototype | `web/dashboard`, Streamlit, timeline/heatmap, auto-refresh 5 s, validation/rejet/reclassement, detail incident, exports, explication locale/LLM | Ajouter captures demo |
+| 6. Tester sur logs simules, reels et datasets publics | Tres avance | HDFS, BGL, Windows, UNSW, CICIDS, Linux/auth, Wazuh, controle logs corrompus/incomplets | Tableau final des scenarios |
+| 7. Evaluer performances, latence et extensibilite | Conforme prototype | Precision, recall, F1, duree, memoire, latence workflow, benchmark temps reel, ressources par agent dashboard/API, robustesse multi-source | Inserer tableaux finaux |
 
 ## Ordre De Redaction A Partir De Maintenant
 
@@ -288,7 +290,7 @@ Message final a faire ressortir:
 3. Chapitre 3 - Methodologie et architecture, car la matiere est deja claire.
 4. Chapitre 4 - Implementation du prototype.
 5. Chapitre 5 - Experimentations et resultats.
-6. Faire evoluer vers V2 FastAPI si la V1 reste stable.
+6. Consolider la V2 FastAPI + Redis locale sans fragiliser la V1.
 7. Chapitre 6 - Discussion, limites et evolution V2/V3.
 8. Chapitre 2 - Etat de l'art, a consolider avec les references.
 9. Chapitre 7 - Conclusion et perspectives.

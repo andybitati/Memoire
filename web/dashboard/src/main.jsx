@@ -108,7 +108,7 @@ function Sidebar({ events, anomalies, filters, setFilters, reload, loading }) {
       <div className="brand">
         <ShieldAlert size={26} />
         <div>
-          <strong>Logminer</strong>
+          <strong>Ariel Logminer</strong>
           <span>Agents IA</span>
         </div>
       </div>
@@ -307,7 +307,7 @@ function App() {
         <header className="topbar">
           <div>
             <span>Surveillance multi-agents</span>
-            <h1>Centre d’analyse Logminer</h1>
+            <h1>Centre d’analyse Ariel Logminer</h1>
           </div>
           <div className="status">
             <span className={error ? "dot errorDot" : "dot"} />

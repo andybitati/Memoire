@@ -25,3 +25,16 @@ joblib>=1.3.0
 
 # Dashboard léger prévu pour la visualisation des alertes/anomalies.
 streamlit>=1.36.0
+
+# API REST V2 pour exposer les agents sans casser la V1 CLI.
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+httpx>=0.27.0
+redis>=5.0.0
+
+# Mesure de consommation CPU, memoire, disque et processus pour le dashboard.
+psutil>=5.9.0
+
+# Exports des figures SVG du memoire en PDF/PNG pour articles.
+svglib>=1.6.0
+reportlab>=4.5.0

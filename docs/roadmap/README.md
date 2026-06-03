@@ -1,276 +1,290 @@
-# Roadmap Des Objectifs 3 A 7
+# Roadmap Alignee Sur Le Document Directeur
 
-Ce document complete les objectifs deja traites ou en cours:
+Ce document suit la numerotation officielle du PDF directeur:
 
-- objectif 1: collecte, parsing et normalisation des journaux;
-- objectif 2: detection d'anomalies et comparaison des approches statistiques/IA;
+`docs/memoire/Detection Autonome et Distribuee d'Anomalies dans les Journaux Systemes et Reseaux a l'aide d'Agents Intelligents Multi-Taches.pdf`
 
-Les objectifs 3 a 7 ci-dessous servent de feuille de route pour terminer le
-prototype et transformer les resultats techniques en memoire defendable.
+La roadmap interne doit rester subordonnee a ce document. La correlation n'est
+donc plus un objectif autonome: elle est traitee comme un role d'agent dans
+l'objectif 3 et comme une fonctionnalite exploitee dans le dashboard.
 
 ## Vue Synthese
 
-| Objectif | Theme | Etat actuel | Priorite |
+| Objectif | Theme directeur | Etat actuel | Priorite |
 | --- | --- | --- | --- |
-| Objectif 3 | Architecture multi-agents | Tres avance | Haute |
-| Objectif 4 | Correlation contextuelle et gestion des incidents | Prototype fonctionnel avance | Haute |
-| Objectif 5 | Visualisation, supervision et exploitation humaine | Prototype fonctionnel | Moyenne |
-| Objectif 6 | Evaluation experimentale complete et entrainement cloud/local | Tres avance | Haute |
-| Objectif 7 | Redaction, discussion et perspectives | Phase de redaction a demarrer | Haute |
+| Objectif 1 | Identifier, categoriser et structurer les journaux systemes et reseaux | Tres avance | Haute |
+| Objectif 2 | Etudier et comparer les approches de detection d'anomalies | Tres avance | Haute |
+| Objectif 3 | Concevoir une architecture distribuee et modulaire d'agents IA specialises | Conforme prototype, distribution multi-machine a discuter | Haute |
+| Objectif 4 | Integrer des modeles IA legers pour une detection adaptative et quasi temps reel | Conforme prototype | Haute |
+| Objectif 5 | Developper un dashboard visuel interactif pour explorer les anomalies | Conforme prototype | Haute |
+| Objectif 6 | Tester sur logs simules, reels et jeux de donnees publics | Tres avance | Haute |
+| Objectif 7 | Evaluer precision, rappel, F1, latence, charge et extensibilite | Conforme prototype, industrialisation a discuter | Haute |
 
-## Etat General Au 01/06/2026
+## Etat General Au 02/06/2026
 
-Le prototype technique est maintenant suffisamment avance pour commencer la
-redaction du memoire sur les parties deja realisees. Le projet dispose:
+Le prototype technique est suffisamment avance pour alimenter les chapitres de
+conception, implementation et evaluation. Le projet dispose deja:
 
 - d'un pipeline de parsing et normalisation multi-sources;
-- d'une architecture multi-agents locale;
+- d'une architecture agents locale avec API FastAPI, bus JSONL et Redis
+  optionnel;
 - d'un routeur multi-modeles par famille de journaux;
-- de modeles sauvegardes pour Windows, Linux/auth, Linux/syslog, Wazuh/SIEM,
-  CICIDS, UNSW, HDFS, BGL et fallback;
-- d'un registre des modeles dans `docs/model_training/model_registry.md`;
-- d'experimentations quantitatives sur plusieurs datasets labellises et non
-  labellises.
+- de modeles sauvegardes pour Windows, Wazuh, Linux/auth, Linux/syslog, CICIDS,
+  UNSW, HDFS, BGL et fallback;
+- d'un dashboard web et d'un dashboard Streamlit;
+- d'experimentations quantitatives sur datasets labellises et non labellises.
 
-La priorite change donc: il faut maintenant transformer les resultats techniques
-en chapitres de memoire, tableaux, figures et discussion critique.
+La priorite devient la mise en conformite avec le document directeur: chaque
+fonctionnalite doit pouvoir etre rattachee a l'un des sept objectifs officiels.
 
 ## Strategie De Stabilisation
 
-Le travail est organise en deux versions:
-
-| Version | Objectif | Etat |
+| Version | Role | Etat |
 | --- | --- | --- |
-| V1 - Prototype CLI stable | Conserver une chaine locale reproductible par commandes: parsing, routage, detection, correlation, dashboard et modeles `.joblib` | Socle de secours et version defendable si les evolutions suivantes echouent |
-| V2 - Services FastAPI | Exposer les agents avec FastAPI tout en reutilisant la logique CLI stable | Evolution a integrer au memoire si elle reste stable |
-| V3 - Bus Redis/MQTT | Ajouter une file d'evenements pour rapprocher le prototype d'un fonctionnement distribue ou temps reel | Extension avancee, a integrer si le temps le permet |
+| V1 - Prototype CLI stable | Chaine reproductible: parsing, detection, correlation, dashboard et modeles `.joblib` | Socle de soutenance |
+| V2 - Services FastAPI | Exposer les agents via REST tout en reutilisant la V1 | Disponible localement |
+| V3 - Bus Redis/MQTT | Rapprocher le prototype d'un fonctionnement distribue/quasi temps reel | Redis Streams amorce, MQTT optionnel |
 
-La V1 ne doit pas etre fragilisee par l'ajout premature d'une API. Elle sert de
-base de repli pour la soutenance et de point stable pour la redaction. Les V2 et
-V3 restent bien dans le perimetre du memoire, mais elles doivent etre developpees
-par-dessus la V1 sans casser la chaine CLI deja validee.
+La V1 reste le filet de securite. FastAPI, Redis et les evolutions temps reel
+doivent renforcer la demonstration sans rendre la chaine CLI instable.
 
-## Objectif 3 - Architecture Multi-Agents
+## Objectif 1 - Logs, Parsing Et Normalisation
 
-But:
+But directeur:
 
-> Concevoir une architecture modulaire ou chaque agent est responsable d'une
-> etape: collecte, parsing, normalisation, detection, correlation et
-> visualisation.
+> Identifier, categoriser et structurer les differents types de journaux
+> systemes et reseaux pertinents pour l'analyse de securite.
 
 Ce qui existe deja:
 
-- `docs/architecture/README.md`;
-- bus local JSONL avec `src/logminer/agents/bus.py`;
-- orchestrateur local `src/logminer/agents/orchestrator.py`;
-- agents parseur, detecteur, correlateur et visualiseur;
-- presentation humaine du flux agents dans le dashboard;
-- explication LLM/local des resultats dans le dashboard.
-- routeur multi-modeles `src/logminer/agents/model_router.py`;
-- registre des modeles entraines et reutilisables;
-- separation des familles `windows`, `wazuh`, `network_cicids`, `network`,
-  `linux_auth`, `linux`, `hdfs`, `bgl` et `fallback`.
-
-Ce qui manque encore pour la V1:
-
-- formaliser les messages agents comme contrat stable.
-- formaliser l'agent explicateur et l'agent superviseur comme roles
-  architecturaux inspires des architectures IDS multi-agents.
-
-Ce qui passe en V2/V3:
-
-- exposer les agents comme services FastAPI;
-- remplacer ou completer le bus JSONL local par Redis/MQTT;
-- definir un deploiement distribue cloud/local.
-
-Livrables attendus:
-
-- architecture cible dans le memoire;
-- diagrammes logique et sequence;
-- specification des messages agents;
-- choix justifie entre prototype local et services distribues.
-
-## Objectif 4 - Correlation Contextuelle
-
-But:
-
-> Regrouper les anomalies isolees en incidents exploitables a partir du temps,
-> de la source, de la machine, de l'utilisateur, de la categorie et de la
-> severite.
-
-Ce qui existe deja:
-
-- `src/logminer/agents/correlator.py`;
-- production de `data/processed/incidents.csv`;
-- regroupement par fenetre temporelle;
-- resume humain court par incident;
-- priorite d'incident (`priority`), score explicable (`priority_score`) et
-  justification (`rationale`);
-- regroupement plus lisible des incidents reseau avec `proto` et `dst_port`;
-- affichage des incidents dans le dashboard.
+- parseurs Windows Event, syslog, Apache, HDFS, BGL, CEF/LEEF, CloudTrail,
+  JSONL, tcpdump texte et pcap;
+- detection de format dans `src/logminer/detectors/file_detector.py`;
+- pipeline de normalisation dans `src/logminer/pipeline.py`;
+- schema commun dans `src/logminer/schema/columns.py`;
+- collecte Windows via `scripts/collect_windows_events.ps1`;
+- normalisation Wazuh, Linux/auth et reseau;
+- taxonomie prete a integrer dans `docs/memoire/taxonomie_journaux.md`.
 
 Ce qui manque encore:
 
-- enrichir les regles de correlation;
-- relier un incident a ses anomalies sources;
-- documenter les limites de la correlation actuelle.
+- documenter les limites des formats incomplets ou corrompus;
+- ajouter quelques exemples bruts -> normalises en annexe.
 
 Livrables attendus:
 
-- `incidents.csv` enrichi avec priorite et justification;
-- section memoire sur la correlation;
-- exemples d'incidents interpretes.
+- tableau de typologie des journaux;
+- schema de normalisation;
+- exemples de parsing multi-format.
 
-## Objectif 5 - Visualisation Et Supervision
+## Objectif 2 - Comparaison Des Techniques D'Anomalie
 
-But:
+But directeur:
 
-> Fournir une interface permettant a un analyste de comprendre les evenements,
-> les anomalies, les incidents et la communication entre agents.
+> Etudier, comparer et choisir des approches classiques et intelligentes pour la
+> detection d'anomalies dans les journaux.
 
 Ce qui existe deja:
 
-- dashboard Streamlit;
-- dashboard web responsive dans `web/dashboard`;
-- statistiques globales;
-- tableaux evenements/anomalies;
-- incidents correles;
-- flux agents lisible;
-- synthese des validations ML.
-- panneau d'explication analyste avec LLM optionnel et repli local.
+- documentation comparative dans `docs/anomaly_detection/README.md`;
+- methodes statistiques et heuristiques: z-score, histogramme, entropie;
+- methodes IA legeres: Isolation Forest, k-Means, One-Class SVM, LOF,
+  Autoencoder MLP, LSTM TensorFlow/PyTorch experimental;
+- metriques precision, recall, F1, accuracy, specificity, temps et memoire;
+- synthese `data/processed/validation_summary.csv`.
 
 Ce qui manque encore:
 
-- ajouter une vue detail incident;
-- afficher les anomalies sources d'un incident;
-- ajouter des filtres temporels;
-- exposer les performances des modeles sous forme de tableau dedie;
-- relier l'explication aux incidents, aux scores et aux agents contributeurs;
-- verifier l'ergonomie sur plusieurs tailles d'ecran.
+- consolider une grille comparative finale;
+- distinguer clairement modeles supervises, non supervises et deep learning
+  experimental;
+- justifier pourquoi les modeles legers sont privilegies pour les machines non
+  specialisees.
 
 Livrables attendus:
 
-- captures d'ecran pour le memoire;
+- tableau comparatif des approches;
+- justification des modeles retenus;
+- definition des metriques utilisees.
+
+## Objectif 3 - Architecture Multi-Agents Distribuee
+
+But directeur:
+
+> Concevoir une architecture distribuee et modulaire basee sur des agents IA
+> specialises pour la surveillance et l'analyse des logs.
+
+Ce qui existe deja:
+
+- agents collecteur, parseur, detecteur, correlateur, visualiseur,
+  orchestrateur, routeur, runtime et privilege;
+- bus local JSONL dans `src/logminer/agents/bus.py`;
+- Redis Streams optionnel pour les evenements agents;
+- contrat formel de messages agents dans `docs/architecture/message_contract.md`;
+- API FastAPI V2 dans `src/logminer/api.py`;
+- dashboard affichant flux agents, audit et etat des services;
+- correlation contextuelle dans `src/logminer/agents/correlator.py`.
+
+Ce qui manque encore:
+
+- produire des captures ou schemas finaux de composants et de sequence pour le
+  document imprime;
+- expliciter dans la redaction ce qui est distribue localement aujourd'hui et
+  ce qui reste une perspective multi-machine.
+
+Livrables attendus:
+
+- diagrammes UML ou schemas equivalents;
+- specification des agents et de leurs entrees/sorties;
+- protocole d'interaction REST, JSONL et Redis.
+
+## Objectif 4 - IA Legere, Adaptative Et Quasi Temps Reel
+
+But directeur:
+
+> Integrer des modeles d'intelligence artificielle legers pour la detection
+> d'anomalies dans les flux de logs en temps quasi reel.
+
+Ce qui existe deja:
+
+- Isolation Forest pour Windows, Wazuh, HDFS, BGL, Linux/syslog et fallback;
+- RandomForest supervise pour Linux/auth, CICIDS et UNSW/CIC-DDoS;
+- routeur multi-modeles dans `src/logminer/agents/model_router.py`;
+- artefacts `.joblib` dans `models/`;
+- registre dans `docs/model_training/model_registry.md`;
+- workflow autonome via FastAPI et dashboard;
+- rafraichissement dashboard toutes les 5 secondes avec relance automatique du
+  workflow lorsqu'aucune analyse n'est deja en cours;
+- benchmark `scripts/benchmark_realtime_workflow.py` pour mesurer la latence de
+  cycles quasi temps reel et produire
+  `data/processed/realtime_workflow_benchmark.csv`.
+
+Ce qui manque encore:
+
+- integrer les valeurs du benchmark final dans le chapitre d'evaluation;
+- eviter de presenter les modeles non supervises comme preuves d'attaque:
+  ce sont des anomalies candidates.
+
+Livrables attendus:
+
+- tableau des modeles par famille de logs;
+- benchmark de detection locale;
+- explication des limites de l'adaptation automatique.
+
+## Objectif 5 - Dashboard Visuel Interactif
+
+But directeur:
+
+> Developper une interface utilisateur visuelle permettant d'explorer les
+> anomalies detectees de facon comprehensible.
+
+Ce qui existe deja:
+
+- dashboard Streamlit dans `src/logminer/agents/dashboard.py`;
+- dashboard web dans `web/dashboard`;
+- vues globale, resultats et technique;
+- statistiques evenements, anomalies et incidents;
+- tableaux incidents, anomalies candidates et evenements normalises;
+- filtres par hote, severite, categorie, source et recherche texte;
+- section d'analyse temporelle avec timeline et heatmap;
+- auto-refresh temps reel toutes les 5 secondes au plus, couple a l'analyse
+  automatique;
+- flux agents, Redis, audit, ressources et validation modeles;
+- explication analyste locale/LLM optionnelle;
+- validation, rejet et reclassement d'alertes avec journal d'audit;
+- vue detail incident reliant fenetre, contexte, justification et anomalies
+  sources probables;
+- export CSV des anomalies, evenements et details incident depuis l'interface.
+
+Ce qui manque encore:
+
+- verifier l'ergonomie sur captures desktop et mobile.
+
+Livrables attendus:
+
+- captures dashboard;
 - scenario de demonstration;
-- section memoire sur l'exploitation humaine du prototype.
+- description des interactions utilisateur.
 
-## Objectif 6 - Evaluation Experimentale
+## Objectif 6 - Tests Sur Donnees Variees
 
-But:
+But directeur:
 
-> Evaluer le systeme sur plusieurs sources de journaux et mesurer la qualite de
-> detection avec des indicateurs quantitatifs.
-
-Ce qui existe deja:
-
-- validation HDFS;
-- validation BGL;
-- validation Windows simule;
-- `precision`, `recall`, `f1`;
-- `accuracy`, `specificity`;
-- matrice de confusion `tp/fp/fn/tn`;
-- synthese `data/processed/validation_summary.csv`;
-- sauvegarde de modele `joblib` via `src/logminer/agents/detector.py`.
-- entrainement cloud Google Colab sur donnees Drive;
-- modele `models/isolation_forest_colab.joblib` recupere localement;
-- inference locale validee sur `data/processed/windows_copies_pipeline.csv`;
-- correlation des anomalies Colab en `data/processed/incidents_from_colab_model.csv`.
-- inference administrateur sur `Security.evtx`: `32583` evenements, `203`
-  anomalies candidates, `87` incidents correles;
-- test reseau initial sur `outside_tcp_dump_part001.csv`: `100000` evenements,
-  `0` anomalie avec le modele Colab generaliste, puis `1998` anomalies et `22`
-  incidents avec un Isolation Forest local dedie.
-- modele RandomForest reseau UNSW/CIC-DDoS avec split 80/20:
-  F1-score `0.999965`;
-- modele RandomForest CICIDS/MachineLearningCVE:
-  F1-score `0.997163`;
-- modele RandomForest Linux/auth:
-  F1-score interne `0.916602`;
-- modele Isolation Forest Wazuh/SIEM:
-  `122563` evenements normalises et `3676` anomalies candidates;
-- registre des artefacts et modeles dans
-  `docs/model_training/model_registry.md`;
-- sauvegarde des nouveaux modeles dans GitHub, avec Git LFS pour le modele
-  Linux/auth.
-
-Ce qui manque encore:
-
-- consolider les resultats dans un tableau final unique;
-- distinguer clairement les evaluations supervisees et non supervisees;
-- documenter les limites du transfert entre datasets, par exemple UNSW vers
-  CICIDS;
-- comparer les temps d'execution et la complexite;
-- ajouter une mesure operationnelle de faux positifs par periode lorsque les
-  timestamps le permettent;
-- interpreter les ecarts entre HDFS et BGL.
-
-Resultat cloud principal du 29/05/2026:
-
-```text
-Environnement: Google Colab + Google Drive
-Modele: Isolation Forest
-Evenements d'entrainement: 287862
-Colonnes: 79
-Contamination: 0.02
-Anomalies cloud: 5754
-Inference locale Windows: 61313 evenements, 81 anomalies
-Correlation locale: 71 incidents
-```
-
-Livrables attendus:
-
-- tableaux de resultats;
-- artefacts modeles reutilisables;
-- interpretation des meilleurs modeles;
-- discussion sur les limites experimentales.
-
-## Objectif 7 - Redaction, Discussion Et Perspectives
-
-But:
-
-> Transformer le prototype, les resultats et les limites en memoire complet:
-> methodologie, implementation, experimentations, discussion et perspectives.
+> Tester le systeme sur des jeux de donnees varies: logs simules, journaux
+> reels et attaques connues.
 
 Ce qui existe deja:
 
-- documentation objectif 2;
-- documentation objectif 3;
-- references bibliographiques dans `docs/references`;
-- exploitation du document de cadrage dans `docs/memoire/exploitation_references.md`;
-- resultats experimentaux dans `data/processed`.
-- plan de memoire dans `docs/memoire/plan.md`;
-- registre des modeles dans `docs/model_training/model_registry.md`;
-- documentation des entrainements dans `docs/model_training/README.md`.
+- journaux Windows locaux et Security.evtx admin;
+- Wazuh/SIEM;
+- HDFS et BGL;
+- CICIDS2017 / MachineLearningCVE;
+- UNSW / CIC-DDoS;
+- Linux/auth;
+- scripts de preparation et injection d'anomalies;
+- resultats non supervises et supervises;
+- controle `scripts/run_robustness_scalability_checks.py` sur plusieurs formats
+  synthetiques et sur un log corrompu/incomplet.
 
 Ce qui manque encore:
 
-- chapitre d'etat de l'art;
-- chapitre methodologie;
-- chapitre implementation;
-- chapitre resultats;
-- chapitre discussion;
-- conclusion et perspectives;
-- integration propre des references.
-- discussion critique sur les limites des datasets, des LLMs et du deploiement
-  distribue.
+- documenter clairement les scenarios testes;
+- ajouter ou cadrer la comparaison avec fail2ban, OSSEC ou Wazuh;
+- distinguer tests reels, simules, injectes et datasets publics.
 
 Livrables attendus:
 
-- `docs/memoire/plan.md`;
-- tableaux et figures prets a inserer;
-- sections redigees progressivement.
+- tableau des datasets;
+- protocole experimental;
+- comparaison qualitative avec outils standards.
+
+## Objectif 7 - Evaluation Globale
+
+But directeur:
+
+> Evaluer globalement les performances, la latence, la precision et la capacite
+> d'extension du systeme multi-agents IA developpe.
+
+Ce qui existe deja:
+
+- precision, recall, F1, accuracy, specificity et matrices de confusion;
+- duree et pic memoire dans les validations;
+- latence par workflow dans les reponses FastAPI et le dashboard;
+- monitoring CPU/RAM par agent Logminer via l'API et le dashboard;
+- benchmark quasi temps reel exportable par
+  `scripts/benchmark_realtime_workflow.py`;
+- controle robustesse/scalabilite exportable par
+  `scripts/run_robustness_scalability_checks.py`;
+- resultats principaux:
+  - Linux/auth: F1 `0.916602`;
+  - CICIDS: F1 `0.997163`;
+  - UNSW/CIC-DDoS: F1 `0.999965`;
+  - Wazuh: `122563` evenements, `3676` anomalies candidates.
+
+Ce qui manque encore:
+
+- consolider les mesures de latence par agent et par workflow dans le tableau
+  final du memoire;
+- ajouter faux positifs par periode lorsque les timestamps/labels le permettent;
+- cadrer l'arret volontaire d'un agent comme limite/perspective
+  d'industrialisation.
+
+Livrables attendus:
+
+- tableau complet de performances;
+- analyse CPU/RAM par agent et latence;
+- discussion des limites et recommandations d'industrialisation.
 
 ## Ordre De Travail Recommande
 
-1. Stabiliser et documenter la V1 CLI existante comme point de sauvegarde.
-2. Rediger le chapitre 1: introduction, contexte, problematique, objectifs.
-3. Rediger le chapitre 3: methodologie et architecture multi-agents.
-4. Rediger le chapitre 4: implementation du prototype Logminer V1.
-5. Rediger le chapitre 5: experimentations et resultats, avec les tableaux de
-   modeles.
-6. Faire evoluer prudemment vers V2 FastAPI, en conservant la compatibilite CLI.
-7. Completer le chapitre 2: etat de l'art, en l'appuyant sur les references
-   deja rassemblees.
-8. Rediger le chapitre 6: discussion critique, limites et evolution V2/V3.
-9. Finaliser le chapitre 7: conclusion et perspectives.
-10. En parallele: capturer le dashboard et produire les figures/tableaux finaux.
+1. Harmoniser `docs/memoire/plan.md` avec les sept objectifs directeurs.
+2. Regenerer les incidents avec le correlateur actuel pour inclure priorite et
+   justification.
+3. Produire les captures du dashboard objectif 5: timeline/heatmap,
+   auto-refresh 5 secondes, decisions analyste, details et exports.
+4. Executer le benchmark de latence par workflow pour l'objectif 7.
+5. Rediger chapitre 3: architecture agents, communication et correlation.
+6. Rediger chapitre 4: implementation technique et dashboard.
+7. Rediger chapitre 5: evaluation, datasets, metriques et limites.
+8. Completer chapitre 2 avec la grille comparative des techniques.
+9. Finaliser discussion, conclusion et perspectives.

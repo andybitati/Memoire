@@ -120,7 +120,9 @@ V3: Redis ou MQTT si le flux temps reel devient necessaire
 La V1 est la version stable du memoire et doit rester fonctionnelle. La
 trajectoire V2/V3 fait aussi partie du memoire, mais elle est construite
 au-dessus de la V1 pour ne pas perdre les avancees deja validees. Elle est
-documentee dans `docs/architecture/v1_cli_v2_services.md`.
+documentee dans `docs/architecture/v1_cli_v2_services.md`. Le premier service
+FastAPI V2 et le bus Redis optionnel sont documentes dans
+`docs/architecture/v2_fastapi.md`.
 
 ## Entrainement Cloud Et Artefacts Modeles
 
@@ -171,6 +173,9 @@ changer entre entrainement et inference. Au chargement, le detecteur realigne
 automatiquement les features sur le schema appris.
 
 La phase 2 est implementee avec `src/logminer/agents/bus.py`. Chaque agent publie des messages dans `data/processed/agent_messages.jsonl`.
+Le contrat complet des messages agents est formalise dans
+`docs/architecture/message_contract.md`; il s'applique au bus JSONL local et au
+bus Redis Streams.
 
 Exemple de sequence de messages:
 
@@ -208,6 +213,22 @@ Cette presentation evite d'exposer directement du JSON a l'utilisateur final.
 Le JSON reste disponible dans le journal brut, mais l'ecran principal privilegie
 un fil chronologique comprehensible.
 
+## Verification Quasi Temps Reel Et Robustesse
+
+Deux scripts donnent des preuves reproductibles pour les objectifs 4, 6 et 7:
+
+```powershell
+python scripts\benchmark_realtime_workflow.py --cycles 5 --interval-sec 5
+python scripts\run_robustness_scalability_checks.py
+```
+
+Le premier mesure la latence d'un workflow autonome appele toutes les cinq
+secondes au plus. Le second verifie la detection multi-source et le maintien des
+lignes inconnues/corrompues au lieu de les perdre. Les rapports produits sont:
+
+- `data/processed/realtime_workflow_benchmark.csv`;
+- `data/processed/robustness_scalability_report.csv`.
+
 ## Presentation Des Incidents
 
 Un incident doit etre plus lisible qu'un groupe technique de lignes CSV. Le
@@ -222,18 +243,22 @@ dashboard affiche maintenant:
 Cette presentation sert de pont entre l'objectif 2, qui produit des anomalies,
 et l'objectif 3, qui les rend exploitables dans une architecture multi-agents.
 
-## Endpoints Cibles
+## Endpoints De La V2
 
-Ces endpoints ne sont pas encore implementes; ils servent de specification pour la suite.
+Les endpoints FastAPI exposent les agents principaux tout en gardant la V1 CLI
+comme socle stable.
 
 | Agent | Endpoint | Methode | Description |
 | --- | --- | --- | --- |
-| Collecteur | `/collect/windows` | `POST` | Lance une collecte Windows recente |
+| Collecteur | `/collect/discover` | `POST` | Decouvre automatiquement les journaux candidats |
+| Collecteur privilegie | `/collect/windows/privileged` | `POST` | Demande une collecte Windows sensible via UAC |
 | Parseur | `/parse` | `POST` | Parse un fichier ou dossier brut |
-| Normaliseur | `/normalize` | `POST` | Normalise un lot d'evenements |
 | Detecteur | `/detect` | `POST` | Retourne les anomalies candidates |
 | Correlateur | `/correlate` | `POST` | Regroupe les alertes en incidents |
-| Visualiseur | `/alerts` | `GET` | Liste les alertes et incidents |
+| Orchestrateur | `/run` | `POST` | Lance parsing optionnel, detection et correlation |
+| Orchestrateur autonome | `/run/discovered` | `POST` | Decouvre une source puis lance l'analyse |
+| Analyste | `/alerts/decision` | `POST` | Valide, rejette ou reclasse une alerte avec audit |
+| Visualiseur | `/audit`, `/events`, `/resources`, `/models` | `GET` | Alimente le dashboard |
 
 ## Etat Actuel
 
