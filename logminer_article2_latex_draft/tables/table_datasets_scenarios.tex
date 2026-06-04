@@ -1,0 +1,21 @@
+\begin{table*}[t]
+\caption{Datasets and experimental scenarios}
+\label{tab:datasets_scenarios}
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.2cm}p{3.0cm}p{2.7cm}X p{3.0cm}}
+\toprule
+\textbf{Category} & \textbf{Source} & \textbf{Nature} & \textbf{Test objective} & \textbf{Local evidence} \\
+\midrule
+Local real & Windows Event/Application/System/Security & Windows system logs & EVTX/XML collection, parsing and local detection & windows\_collection\_summary.txt; windows\_*\_pipeline.csv \\
+Real/SIEM & Wazuh exports & SIEM/HIDS alerts and events & Non-supervised detection on security signals & wazuh\_months\_logminer.csv; wazuh\_months\_anomalies.csv \\
+Real tabular & Linux/auth & Labeled Linux authentication logs & Supervised evaluation and false positives & random\_forest\_linux\_auth\_metrics.csv \\
+Public system & HDFS & Labeled distributed-system logs & Validation on sequential logs & validation\_hdfs\_metrics.csv \\
+Public system & BGL & BlueGene/L logs & Validation on HPC logs & validation\_bgl\_metrics.csv \\
+Public network & CICIDS2017/MachineLearningCVE & Labeled network flows & Supervised attack detection & random\_forest\_network\_cicids\_metrics.csv \\
+Public network & UNSW/CIC-DDoS & Network/DDoS flows & Chunk-based 80/20 evaluation & random\_forest\_unsw\_80\_20\_metrics.csv \\
+Controlled & Simulated Windows & Injected anomalous events & Compare rule, statistical and AI baselines & validation\_simulated\_windows\_metrics.csv \\
+Robustness & Apache, CEF/LEEF, CloudTrail, Linux auth, incomplete log & Multi-format and corrupted input & Parser tolerance and unknown-record preservation & robustness\_scalability\_report.csv \\
+\bottomrule
+\end{tabularx}
+\end{table*}

@@ -1,0 +1,13 @@
+\begin{table}[t]
+\caption{Controlled rule-based baseline inspired by fail2ban}
+\label{tab:fail2ban_like}
+\centering
+\scriptsize
+\begin{tabularx}{\linewidth}{p{2.2cm}p{2.0cm}r r r r r r X}
+\toprule
+\textbf{Dataset} & \textbf{Baseline} & \textbf{Lines} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{FP} & \textbf{FN} & \textbf{Note} \\
+\midrule
+linux\_auth\_logs\_labeled & fail2ban\_like\_rules & 200,000 & 0.070451 & 0.536444 & 0.124545 & 70,695 & 4,630 & Controlled baseline inspired by fail2ban; not an official fail2ban execution. \\
+\bottomrule
+\end{tabularx}
+\end{table}

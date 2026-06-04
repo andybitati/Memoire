@@ -1,0 +1,22 @@
+\begin{table*}[t]
+\caption{Top Wazuh groups and Logminer overlap}
+\label{tab:wazuh_overlap_top}
+\centering
+\scriptsize
+\begin{tabular}{r l l r r r}
+\toprule
+\textbf{Level} & \textbf{Decoder} & \textbf{Category} & \textbf{Events} & \textbf{Anomalies} & \textbf{Overlap} \\
+\midrule
+3 & auditd & linux\_audit & 83,226 & 0 & 0.000000 \\
+6 & web-accesslog & web\_attack & 15,816 & 0 & 0.000000 \\
+5 & web-accesslog & web\_attack & 8,271 & 0 & 0.000000 \\
+3 & pam & authentication & 2,834 & 4 & 0.001411 \\
+10 & web-accesslog & web\_attack & 1,643 & 41 & 0.024954 \\
+7 & syscheck\_integrity\_changed & file\_integrity & 1,612 & 962 & 0.596774 \\
+5 & syscheck\_new\_entry & file\_integrity & 1,258 & 1,088 & 0.864865 \\
+7 & syscheck\_deleted & file\_integrity & 1,225 & 622 & 0.507755 \\
+3 & sudo & authentication & 1,181 & 0 & 0.000000 \\
+7 & dpkg-decoder & package & 1,126 & 641 & 0.569272 \\
+\bottomrule
+\end{tabular}
+\end{table*}
