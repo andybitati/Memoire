@@ -1,0 +1,19 @@
+\begin{table}[t]
+\caption{Principal detection results}
+\label{tab:main_results_full}
+\centering
+\scriptsize
+\begin{tabularx}{\linewidth}{p{1.5cm}p{2.1cm}p{2.0cm}p{1.6cm}X}
+\toprule
+\textbf{Family} & \textbf{Dataset} & \textbf{Model} & \textbf{Type} & \textbf{Main result} \\
+\midrule
+Windows & Security/Application/System & Isolation Forest & Non-supervised & Anomaly candidates and correlated incidents \\
+Wazuh & January/October/December exports & Isolation Forest & Non-supervised & 122,563 events; 3,676 anomaly candidates \\
+Linux/auth & linux\_auth\_logs\_* & Random Forest & Supervised & F1 = 0.916602 \\
+CICIDS & MachineLearningCVE & Random Forest & Supervised & F1 = 0.997163 \\
+UNSW/CIC-DDoS & UNSWNB15/CIC-DDoS & Random Forest & Supervised & F1 = 0.999965 \\
+HDFS & HDFS logs & Ensemble / Isolation Forest & Non-supervised & Best selection around F1 = 0.599333 \\
+BGL & BlueGene/L & Ensemble / Autoencoder / IForest & Non-supervised & Best selection around F1 = 0.994333 \\
+\bottomrule
+\end{tabularx}
+\end{table}

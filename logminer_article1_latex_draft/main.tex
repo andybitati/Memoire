@@ -19,7 +19,7 @@
 
 \begin{document}
 
-\title{Logminer: A Family-Aware Multi-Model Routing Architecture for Heterogeneous Log Anomaly Detection}
+\title{Logminer: Auditable Family-Aware Routing for Heterogeneous Log Anomaly Detection}
 
 \author{
 \IEEEauthorblockN{
@@ -31,14 +31,18 @@ Jean-Pierre Mugisha Muhire\IEEEauthorrefmark{1}
 Josu\'e Lungi Selemani\IEEEauthorrefmark{1},
 Christian Kutabuna Kubakisa\IEEEauthorrefmark{1},
 Jeff Mugaruka Chihyoka\IEEEauthorrefmark{1},
-Kyandoghere Kyamakya\IEEEauthorrefmark{2}
+Witesyavwirwa Vianney Kambale\IEEEauthorrefmark{2},
+Kyandoghere Kyamakya\IEEEauthorrefmark{3}
 }
 
 \IEEEauthorblockA{\IEEEauthorrefmark{1}
-Faculty of Engineering (Polytechnic), Department of Electrical and Computer Engineering, University of Kinshasa, Kinshasa, DR Congo.
+Faculty of Information and Communication Technology, Tshwane University of Technology (TUT), Pretoria, South Africa.
 }
 
 \IEEEauthorblockA{\IEEEauthorrefmark{2}
+Faculty of Engineering (Polytechnic), Department of Electrical and Computer Engineering, University of Kinshasa, Kinshasa, DR Congo.
+}
+\IEEEauthorblockA{\IEEEauthorrefmark{3}
 Institute for Smart Systems Technologies, University of Klagenfurt, Klagenfurt, Austria.
 }
 
@@ -51,15 +55,15 @@ Emails: aolivier.marhegane@unikin.ac.cd, gedeon.nkishi@unikin.ac.cd, tomsmugisha
 }
 
 \IEEEauthorblockA{
-josue.lungi@unikin.ac.cd, christian.kutabuna@unikin.ac.cd, Mugarukachihyoka@gmail.com, kyandoghere.kyamakya@aau.at
+josue.lungi@unikin.ac.cd, christian.kutabuna@unikin.ac.cd, Mugarukachihyoka@gmail.com, kambalevw@tut.ac.za, kyandoghere.kyamakya@aau.at
 }
 }
 \maketitle
 
 \begin{abstract}
-Security monitoring environments generate heterogeneous logs whose formats, semantics and statistical distributions differ across operating systems, network flows, SIEM exports and distributed systems. Applying a single monolithic detector to all sources may increase confusion between log families and reduce the interpretability of alerts. This paper presents \logminer, a lightweight software-agent architecture for anomaly detection in heterogeneous system and network logs.
+Security monitoring environments generate heterogeneous logs whose formats, semantics and statistical distributions differ across operating systems, network flows, SIEM exports and distributed systems. Applying a single monolithic detector to all sources may increase confusion between log families and reduce the interpretability of alerts. This paper presents \logminer, an auditable family-aware routing architecture for anomaly detection in heterogeneous system and network logs.
 
-The prototype decomposes the workflow into specialized cooperating modules for collection, parsing, normalization, family-aware routing, anomaly detection, correlation, dashboard visualization and audit. The main contribution is not a new detector, but a family-aware multi-model routing strategy: events are normalized into a common schema, assigned to a log family with an explicit confidence score, processed by a compatible lightweight model, then unified as anomaly candidates before being correlated into analyst-readable incidents.
+The prototype decomposes the workflow into specialized cooperating modules for collection, parsing, normalization, family-aware routing, anomaly detection, correlation, dashboard visualization and audit. The contribution is not a new standalone detector, but an auditable specialization layer: events are normalized into a common schema, assigned to a log family with explicit evidence and confidence, processed by a compatible lightweight model, then unified as anomaly candidates before being correlated into analyst-readable incidents.
 
 Experiments cover Windows logs, Wazuh exports, Linux/auth logs, HDFS, BGL, CICIDS2017 and UNSW/CIC-DDoS data. The evaluation includes a controlled common-space ablation and an operational specialization ablation. The results support the feasibility of a local lightweight implementation, while showing that routing should be interpreted as controlled specialization rather than a universal F1 improvement on every dataset.
 
@@ -77,11 +81,14 @@ Classical intrusion detection and log management research has long emphasized au
 
 This paper introduces \logminer, a lightweight prototype designed to evaluate a family-aware multi-model strategy for heterogeneous log anomaly detection. The term agent is used here in a software architectural sense: \logminer{} is composed of specialized cooperating modules with distinct functional roles, message exchange and workflow coordination. The prototype does not claim to implement fully autonomous cognitive agents, FIPA-style negotiation, reinforcement-learning cooperation or LLM-agent autonomy. It includes a bounded supervisor agent that performs a perception-state-decision-action cycle for local workflow adaptation, but this supervisor is treated as an implementation control layer rather than as the main scientific contribution.
 
-The contribution of this paper is threefold:
+The central research question is: when and why can auditable family-aware routing improve heterogeneous log anomaly detection compared with monolithic alternatives? The answer is not expected to be universal. Routing is evaluated as a mechanism that enables compatible feature spaces, explicit fallback behavior, interpretable routing reasons and family-specific operational policies.
+
+The contribution of this paper is fourfold:
 \begin{enumerate}
-    \item A lightweight software-agent architecture for log analysis, including collector, parser, normalizer, router, detector, correlator, dashboard, audit and bounded supervisor roles.
-    \item A family-aware multi-model routing strategy in which normalized logs are assigned to a log family through explicit scoring and processed by a compatible specialized model rather than by a single monolithic detector.
+    \item An auditable family-aware software-agent architecture for log analysis, including collector, parser, normalizer, router, detector, correlator, dashboard, audit and bounded supervisor roles.
+    \item A formal routing and fallback mechanism in which normalized logs are assigned to a log family through explicit evidence, confidence scoring and route explanations before being processed by a compatible detector.
     \item A multi-source evaluation covering system logs, SIEM exports and network datasets, including controlled and operational ablations, false positives, quasi-real-time workflow latency, resource consumption, supervisor stability and operational limits.
+    \item A cautious empirical positioning showing that family-aware routing is controlled specialization rather than a guaranteed F1 improvement on every dataset.
 \end{enumerate}
 
 The paper deliberately uses cautious claims. Non-supervised outputs are treated as anomaly candidates, not confirmed intrusions. The validated distribution is mainly logical and modular, while large-scale multi-machine distribution remains future work. The remainder of the paper is organized as follows: Section II reviews related work, Sections III and IV present the methodology and routing mechanism, Section V details the implementation, Section VI describes the experimental setup, Section VII reports and discusses the results, Section VIII states the operational positioning and validity limits, and Section IX concludes the paper.
@@ -93,21 +100,26 @@ Denning's intrusion detection model introduced the idea of detecting deviations 
 Machine learning has been widely investigated for cyber intrusion detection. Buczak and Guven review data mining and machine learning methods for cybersecurity, while Khraisat et al. discuss IDS datasets, challenges and evaluation issues \cite{buczak2016survey,khraisat2019survey}. Sommer and Paxson warn against overinterpreting machine learning results in intrusion detection, especially when training and testing assumptions do not reflect operational environments \cite{sommer2010outside}. This warning motivates the cautious positioning adopted in this work.
 
 \subsection{Log Parsing and Log-Based Detection}
-Before machine learning can be applied, raw logs must be parsed and transformed into usable representations. Template-based approaches such as Drain organize log messages into event templates and enable downstream sequence or statistical modeling \cite{he2016drain}. DeepLog and related approaches model log sequences with deep learning to detect deviations from normal execution patterns \cite{du2017deeplog}. These methods are powerful for homogeneous sequential logs, but applying the same sequence model indiscriminately to all enterprise sources is technically and economically difficult: Windows events, Linux authentication lines, SIEM exports, cloud JSON records and network flows do not share a single event grammar, sequence length, sampling rhythm or feature contract. A monolithic deep sequence model would therefore require costly global preprocessing, padding or template alignment, and would still risk learning dominant families while weakening minority sources. \logminer{} takes a different route: it first normalizes enough information for audit and routing, then selects a compatible family-specific branch. Lightweight parsing is used in this first version, while template-based parsing is retained as a natural extension for Linux, HDFS and BGL-style logs.
+Before machine learning can be applied, raw logs must be parsed and transformed into usable representations. Template-based approaches such as Drain organize log messages into event templates and enable downstream sequence or statistical modeling \cite{he2016drain}. Public benchmark resources such as LogHub have also helped structure evaluation around reusable system-log datasets and parsing tasks \cite{zhu2023loghub}. DeepLog and related approaches model log sequences with deep learning to detect deviations from normal execution patterns \cite{du2017deeplog}. LogAnomaly extends this line by combining sequential and quantitative anomaly signals, LogRobust addresses unstable log events with semantic vectors and attention-based sequence modeling, and LogBERT uses self-supervised Transformer-style modeling for log sequences \cite{meng2019loganomaly,zhang2019logrobust,guo2021logbert}. These methods are powerful for homogeneous sequential logs, but applying the same sequence model indiscriminately to all enterprise sources is technically and economically difficult: Windows events, Linux authentication lines, SIEM exports, cloud JSON records and network flows do not share a single event grammar, sequence length, sampling rhythm or feature contract. A monolithic deep sequence model would therefore require costly global preprocessing, padding or template alignment, and would still risk learning dominant families while weakening minority sources. \logminer{} takes a different route: it first normalizes enough information for audit and routing, then selects a compatible family-specific branch. Lightweight parsing is used in this first version, while template-based parsing is retained as a natural extension for Linux, HDFS and BGL-style logs.
 
 \subsection{Agent-Based Security Monitoring}
 Agent-based security monitoring has historical roots in distributed intrusion detection. AAFID proposed an architecture using autonomous agents to collect and analyze host-level events before aggregation \cite{balasubramaniyan1998aafid}. \logminer{} follows this lineage in a more modest way: agents are software modules and services with clear responsibilities and exchange contracts. The goal is not full cognitive autonomy, but controlled specialization, modular replacement and future deployability.
+
+\subsection{Routing, Expert Selection and Network Anomaly Detection}
+The proposed router is related in spirit to mixture-of-experts systems, where a gating mechanism assigns inputs to specialized experts \cite{jacobs1991moe}. However, \logminer{} deliberately avoids presenting the current router as a learned probabilistic gate. Its routing rules are auditable policy evidence, designed to expose why a family and detector were selected and when fallback was triggered. This makes the mechanism closer to operational model selection than to end-to-end expert learning.
+
+For network-flow anomaly detection, lightweight tabular models and online neural approaches both exist. Kitsune, for example, uses an ensemble of autoencoders for online network intrusion detection \cite{mirsky2018kitsune}. \logminer{} does not claim to replace specialized NIDS algorithms; its contribution is the routing layer that can decide when network-flow records should be processed by a network-compatible detector rather than by a system-log branch.
 
 \section{Methodology}
 \subsection{Architectural Scope}
 The proposed architecture follows a log processing chain from raw sources to analyst-readable incidents. Fig.~\ref{fig:architecture} summarizes the logical workflow. Each agent has a restricted responsibility: the collector retrieves or receives raw logs; the parser detects formats and extracts fields; the normalizer maps extracted fields to a common schema; the router assigns events to a log family; the detector applies a family-specialized model; the correlator groups anomaly candidates into incidents; and the dashboard exposes results for human validation and audit.
 
-\begin{figure}[t]
+\begin{figure*}[t]
     \centering
-    \includegraphics[width=\linewidth]{figures/fig_architecture_logminer.pdf}
+    \includegraphics[height=0.6\textheight,keepaspectratio]{figures/fig_architecture_logminer_readable.png}
     \caption{Logical architecture of \logminer. The contribution is the controlled path from heterogeneous inputs to family-aware model selection and analyst-readable incident candidates, not a new standalone detector.}
     \label{fig:architecture}
-\end{figure}
+\end{figure*}
 
 The distribution validated in this work is primarily logical and modular. The service-level implementation is partially supported through FastAPI endpoints, a local JSONL bus and an optional Redis-based evolution. A large-scale multi-machine deployment is not claimed as a completed result.
 
@@ -154,7 +166,7 @@ The central hypothesis of this work is that log families exhibit sufficiently di
 \end{figure}
 
 \subsection{Scientific Claim}
-The novelty is not the isolated use of parsing, machine learning or a dashboard. The novelty is a strategy of controlled specialization: heterogeneous logs are normalized, routed according to family, scored by specialized lightweight models and correlated into incidents. This strategy aims to improve robustness and analyst usability in the presence of heterogeneous formats and distributions; this hypothesis must be evaluated experimentally against monolithic baselines. The claim is therefore architectural and experimental rather than algorithmically theoretical.
+The novelty is not the isolated use of parsing, machine learning or a dashboard. The novelty is an auditable specialization layer: heterogeneous logs are normalized, routed according to family, scored by compatible lightweight models and correlated into incidents while preserving the route evidence that led to model selection. This strategy aims to improve robustness and analyst usability in the presence of heterogeneous formats and distributions; this hypothesis must be evaluated experimentally against monolithic baselines. The claim is therefore architectural and experimental rather than algorithmically theoretical. A negative or neutral result on one dataset does not invalidate the claim if the architecture still exposes route reasons, fallback behavior and feature/model compatibility boundaries.
 
 \subsection{Router Formalization}
 Let $x$ be a normalized event batch, $\mathcal{F}$ the set of supported log families, and $M_f$ the detector associated with family $f \in \mathcal{F}$. The router computes a compatibility score:
@@ -181,6 +193,8 @@ The different magnitudes in Table~\ref{tab:router_weights} should be read as rul
 
 A full sensitivity analysis over these weights is not claimed in this paper; it is included in future work together with the factorial ablation of routing, feature spaces and model choice.
 
+Because the router is a distinct architectural component, detector-level F1 is not sufficient to evaluate it. A complete router evaluation should also report route accuracy when family labels are known, fallback precision on unsupported sources, low-confidence rate, route stability under perturbed weights, and misroute severity when an event is sent to an incompatible detector. The current paper reports routing behavior through ablations, fallback tests and audit traces, but these router-specific metrics remain a target for a stricter artifact evaluation.
+
 \begin{table}[t]
 \caption{Numerical routing policy constants used in the prototype}
 \label{tab:router_weights}
@@ -206,6 +220,8 @@ Syslog subtype & $+140$ linux, $-40$ windows & Prevents syslog batches from bein
 \subsection{Ablation Protocol}
 To make the claim testable, the experimental protocol includes an ablation study. Table~\ref{tab:ablation} defines the comparisons. Two levels are reported. First, a controlled common-space ablation forces both the global model and the family-aware models to use the same minimal feature representation. Second, an operational ablation compares the same global common-feature baseline with the full specialized configurations, where each family can use its native feature space and trained detector. A complete factorial isolation of routing, features and model family is identified as future work; the present evaluation separates a constrained routing effect from the complete specialization package.
 
+A stricter future factorial design should independently vary the router type, feature representation, detector family, correlation policy and fallback policy. Such a design would separate the effect of selecting the right family from the effect of using richer native features or stronger downstream models.
+
 \begin{table}[t]
 \caption{Ablation protocol used to evaluate family-aware specialization}
 \label{tab:ablation}
@@ -225,6 +241,26 @@ Factorial routing/features/models & Future Work: planned extension to isolate th
 \end{tabularx}
 \end{table}
 
+Table~\ref{tab:claim_boundaries} maps the main hypotheses to the level of evidence available in this paper. This table is included to make the contribution falsifiable and to separate demonstrated behavior from future work.
+
+\begin{table}[t]
+\caption{Hypotheses and evidence boundaries}
+\label{tab:claim_boundaries}
+\centering
+\scriptsize
+\begin{tabularx}{\linewidth}{p{1.7cm}X X}
+\toprule
+\textbf{Hypothesis} & \textbf{Expected behavior} & \textbf{Evidence boundary} \\
+\midrule
+H1 & A monolithic common model can remain competitive when all families use the same minimal features & Confirmed by the controlled ablation; routing alone is not claimed as universally superior \\
+H2 & Family-aware routing helps when it enables native feature spaces and compatible detectors & Supported for Linux/auth and UNSW in the operational ablation; CICIDS is already near saturation \\
+H3 & Sequential system logs require sequence-aware branches & Supported as a limitation by HDFS false positives; Drain-like and temporal detectors remain future work \\
+H4 & Fallback routing prevents unknown or corrupted inputs from breaking the workflow & Supported as graceful degradation; fallback outputs are not confirmed intrusions \\
+H5 & The prototype is feasible on a local workstation or gateway & Supported by local latency and memory results; SOC-scale throughput is not claimed \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
 \subsection{Fallback Routing}
 The fallback model is selected when the router cannot assign a source to a known family with sufficient evidence from file type, column names, marker tokens or sampled values. It is also selected for records explicitly normalized as unknown or marked as corrupted/incomplete. It is not intended to maximize detection performance. Its role is graceful degradation: unknown formats still produce low-confidence anomaly candidates instead of silently breaking the pipeline. Fallback outputs therefore require correlation or analyst validation before interpretation.
 
@@ -233,11 +269,11 @@ The fallback model is selected when the router cannot assign a source to a known
 \label{tab:fallback}
 \centering
 \scriptsize
-\begin{tabular}{l r r r}
+\begin{tabular}{l r l r r r}
 \toprule
-\textbf{Input} & \textbf{Rows kept} & \textbf{Candidates} & \textbf{Incidents} \\
+\textbf{Input} & \textbf{Rows} & \textbf{Route} & \textbf{Score} & \textbf{Cand.} & \textbf{Inc.} \\
 \midrule
-corrupt\_incomplete.log & 2 & 0 & 0 \\
+corrupt\_incomplete.log & 2 & fallback & 141 & 0 & 0 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -252,7 +288,7 @@ The detector portfolio includes supervised Random Forest models for labeled fami
 A web dashboard supports exploration of anomalies, incidents, counters, filters, timeline-style views and analyst decisions. This dashboard is an exploitation layer: it does not prove the anomaly by itself, but helps analysts validate, reject or reinterpret candidate incidents.
 
 \subsection{Correlation Logic}
-The correlator is intentionally explainable rather than opaque. It groups anomaly candidates by a configurable temporal window, host, user, source, category, subcategory, protocol and destination port. Incident priority combines event volume, maximum severity, diversity of event identifiers, security category weight and anomaly-score depth. For a candidate set $A$, the correlator emits an incident $I$ when candidates share a context key and fall within the window $\Delta t$. The priority score is a weighted combination of candidate count, severity, source diversity and anomaly-score depth. This correlation step improves analyst readability, but it is treated as a pipeline component rather than as the main algorithmic contribution of the paper. The present evaluation reports the resulting incidents and timing overhead; a dedicated correlation-quality evaluation with analyst labels remains future work.
+The correlator is intentionally explainable rather than opaque. It groups anomaly candidates by a configurable temporal window, host, user, source, category, subcategory, protocol and destination port. Incident priority combines event volume, maximum severity, diversity of event identifiers, security category weight and anomaly-score depth. For a candidate set $A$, the correlator emits an incident $I$ when candidates share a context key and fall within the window $\Delta t$. The priority score is a weighted combination of candidate count, severity, source diversity and anomaly-score depth. This correlation step improves analyst readability, but it is treated as a pipeline component rather than as the main algorithmic contribution of the paper. The present evaluation reports the resulting incidents and timing overhead; it does not prove that every merged incident is analytically correct. A dedicated correlation-quality evaluation with analyst labels, window-size sensitivity and incorrect-merge analysis remains future work.
 
 \subsection{Policy-Based Workflow Orchestration and Control}
 The current implementation uses software agents with specialized roles, explicit message exchange and workflow coordination. To move beyond a purely static script, a bounded SupervisorAgent was added. It performs a perception-state-decision-action cycle: it observes available log candidates and local CPU/RAM state, builds a persistent memory, chooses a source and workflow parameters, then launches parsing, routing, detection, correlation and audit. Its policy favors unexplored sources, reduces sampling under uncertainty or repeated errors, increases correlation windows when fallback routing becomes frequent, and records each decision in audit and bus traces. The current decisions are policy-based and explainable rather than learned; therefore, the supervisor is evaluated as bounded workflow control, not as adaptive artificial intelligence. Table~\ref{tab:supervisor} summarizes a 30-cycle SupervisorAgent campaign.
@@ -311,6 +347,8 @@ The evaluation follows a validation-based protocol adapted to the heterogeneous 
 
 The routing ablation is split into two complementary views. The controlled common-space comparison constrains all families to the same minimal representation, whereas the operational comparison evaluates the full specialization package composed of family identification, native feature compatibility and specialized model selection. This protocol is designed to reduce overclaiming: the controlled ablation tests whether routing alone dominates under shared features, while the operational ablation tests whether routing enables compatible feature spaces and models. All results should therefore be read as evidence for a lightweight family-aware analytical architecture, not as a universal benchmark victory over all monolithic or sequence-aware detectors.
 
+The experimental artifacts were organized to support manuscript-level traceability: routed outputs, anomaly candidates, incidents, timing profiles, resource snapshots, figures and LaTeX tables are preserved as local files before being summarized in the paper. The present manuscript does not yet claim a public reproducibility package with fixed random seeds, containerized execution and model cards. Such an artifact release is planned before broader external replication.
+
 \section{Results and Discussion}
 \subsection{Detection Results}
 Table~\ref{tab:results} summarizes the principal results available in the current prototype. The supervised Random Forest models obtain strong F1 scores on CICIDS2017 and UNSW/CIC-DDoS, and a lower but still usable score on Linux/auth. HDFS remains more difficult with the current lightweight features, whereas BGL obtains high validation scores.
@@ -343,6 +381,26 @@ BGL & BlueGene/L HPC logs & Ensemble / Autoencoder / Isolation Forest & Best sel
 \end{figure}
 
 These results should not be interpreted as universal superiority. They show that the prototype can integrate several families and that family-specific models are operationally feasible. The routing effect is therefore isolated through the ablations below.
+
+\subsection{Routing Audit Evidence}
+Since the paper now centers on auditable routing, the evaluation must expose what is actually audited. In the current prototype, each routed execution records the selected family, route reason, route score or confidence signal, selected model branch and downstream candidate/incidence counts. Table~\ref{tab:routing_audit} summarizes the evidence that is already available from the current artifacts. These results do not constitute a complete route-accuracy benchmark, but they show that route decisions are inspectable rather than hidden inside the detector.
+
+\begin{table}[t]
+\caption{Routing audit evidence available in the prototype}
+\label{tab:routing_audit}
+\centering
+\scriptsize
+\begin{tabularx}{\linewidth}{p{2.0cm}X X}
+\toprule
+\textbf{Evidence} & \textbf{Observed behavior} & \textbf{Interpretation} \\
+\midrule
+Corrupted input & 2 rows preserved, routed to fallback with route score 141 & Unknown records are not silently discarded or forced into a specialized family \\
+Supervisor trace & 30/30 cycles recorded selected source, routed family, sample size, window size and status & Routing decisions are replayable through audit and bus traces \\
+Fallback stress & Unsupported CEF, CloudTrail and Apache-style sources route to fallback in the supervisor campaign & The fallback branch is used as graceful degradation, not as a high-confidence intrusion claim \\
+Timing profile & Router accounts for 0.9\% of routing-detection-correlation time on 8,537 Windows events & The routing layer is not the dominant local bottleneck in the measured workflow \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \subsection{Routing Ablation}
 Table~\ref{tab:ablation_controlled} reports the controlled ablation. In this setting, both the global model and the family-aware models use the same minimal common feature space. This isolates routing under a constrained representation. The global model remains highly competitive and even slightly outperforms the per-family models on Linux/auth and UNSW in this specific setting. This result is important: it prevents overclaiming and shows that routing alone does not guarantee higher F1 when all families are forced into the same representation.
@@ -498,10 +556,14 @@ Unsupervised results & Anomaly candidates, not confirmed intrusions \\
 \end{table}
 
 \subsection{Threats to Validity}
-The main internal validity threat is that results combine multiple datasets, feature representations and model families. The controlled ablation mitigates this risk, but also shows that routing alone is not always superior under a common minimal feature space. The operational ablation evaluates routing, specialized feature spaces and specialized detectors together; it does not isolate the independent contribution of each factor. Therefore, the claim is limited to controlled specialization and feature/model compatibility, not universal dominance over monolithic classifiers. A stricter factorial design would require at least three independent axes: router choice, feature representation and detector family. External validity is limited by the selected datasets and local execution environment. Operational validity is limited because non-supervised anomalies require analyst confirmation, correlation quality is not yet evaluated against analyst-labeled incidents, and a real SOC deployment would require stronger ingestion guarantees, access control, retention policies and response workflows.
+The main internal validity threat is that results combine multiple datasets, feature representations and model families. The controlled ablation mitigates this risk, but also shows that routing alone is not always superior under a common minimal feature space. The operational ablation evaluates routing, specialized feature spaces and specialized detectors together; it does not isolate the independent contribution of each factor. Therefore, the claim is limited to controlled specialization and feature/model compatibility, not universal dominance over monolithic classifiers. A stricter factorial design would require at least three independent axes: router choice, feature representation and detector family.
+
+Statistical validity is limited because repeated-seed confidence intervals and routing-weight sensitivity sweeps are not yet reported. The current router constants are auditable policy parameters, but they are not calibrated probabilities. Dataset validity is also limited: very high F1 scores on network datasets require careful interpretation because class imbalance, duplicate flows, temporal splitting and train-test leakage can distort intrusion-detection benchmarks. HDFS demonstrates an explicit negative boundary of the current lightweight row-level representation and should be compared against sequence-aware parsers and detectors before any stronger claim is made for distributed-system logs.
+
+External validity is limited by the selected datasets and local execution environment. Operational validity is limited because non-supervised anomalies require analyst confirmation, correlation quality is not yet evaluated against analyst-labeled incidents, and a real SOC deployment would require stronger ingestion guarantees, access control, retention policies, back-pressure handling, response workflows and stress tests over longer campaigns.
 
 \section{Conclusion and Future Work}
-This paper presented \logminer, a lightweight family-aware routing architecture for heterogeneous log anomaly detection. Its main contribution is a multi-model specialization strategy orchestrated by specialized software modules and completed by common normalization, anomaly candidate unification and interpretable correlation. Results across Windows, Wazuh, Linux/auth, HDFS, BGL, CICIDS2017 and UNSW/CIC-DDoS support the feasibility of the approach on a local infrastructure.
+This paper presented \logminer, a lightweight auditable family-aware routing architecture for heterogeneous log anomaly detection. Its main contribution is a specialization layer that makes model selection explicit, preserves routing reasons and fallback behavior, and connects common normalization with compatible family-specific detectors and interpretable correlation. Results across Windows, Wazuh, Linux/auth, HDFS, BGL, CICIDS2017 and UNSW/CIC-DDoS support the feasibility of the approach on a local infrastructure.
 
 The ablation study refines the contribution: the family-aware strategy should be understood as controlled specialization rather than a guarantee of better F1 on every source. Further work includes a factorial ablation separating routing, features and model choice; stronger template-based parsing; routing HDFS/BGL-style logs toward a Drain-like semantic parsing agent followed by temporal or LSTM-style sequence detection; multi-machine deployment; active learning from analyst decisions; learned supervisor policies; longer supervisor stability campaigns; richer incident explanations; and integration with mature SIEM/HIDS platforms.
 
@@ -517,8 +579,14 @@ The authors used AI-assisted writing tools to improve language clarity, structur
 \bibitem{buczak2016survey} A. L. Buczak and E. Guven, ``A survey of data mining and machine learning methods for cyber security intrusion detection,'' \emph{IEEE Communications Surveys and Tutorials}, vol. 18, no. 2, pp. 1153--1176, 2016, \doiurl{10.1109/COMST.2015.2494502}.
 \bibitem{khraisat2019survey} A. Khraisat, I. Gondal, P. Vamplew, and J. Kamruzzaman, ``Survey of intrusion detection systems: Techniques, datasets and challenges,'' \emph{Cybersecurity}, vol. 2, no. 20, 2019, \doiurl{10.1186/s42400-019-0038-7}.
 \bibitem{he2016drain} P. He, J. Zhu, Z. Zheng, and M. R. Lyu, ``Drain: An online log parsing approach with fixed depth tree,'' in \emph{IEEE International Conference on Web Services}, 2017, pp. 33--40, \doiurl{10.1109/ICWS.2017.13}. Available: \url{https://jiemingzhu.github.io/pub/pjhe_icws2017.pdf}.
+\bibitem{zhu2023loghub} J. Zhu, S. He, P. He, J. Liu, and M. R. Lyu, ``Loghub: A large collection of system log datasets for AI-driven log analytics,'' in \emph{IEEE International Symposium on Software Reliability Engineering}, 2023, pp. 355--366, \doiurl{10.1109/ISSRE59848.2023.00071}. Available: \url{https://github.com/logpai/loghub}.
 \bibitem{du2017deeplog} M. Du, F. Li, G. Zheng, and V. Srikumar, ``DeepLog: Anomaly detection and diagnosis from system logs through deep learning,'' in \emph{ACM CCS}, 2017, pp. 1285--1298, \doiurl{10.1145/3133956.3134015}.
+\bibitem{meng2019loganomaly} W. Meng, Y. Liu, Y. Zhu, S. Zhang, D. Pei, Y. Liu, Y. Chen, R. Zhang, S. Tao, P. Sun, and R. Zhou, ``LogAnomaly: Unsupervised detection of sequential and quantitative anomalies in unstructured logs,'' in \emph{International Joint Conference on Artificial Intelligence}, 2019, pp. 4739--4745, \doiurl{10.24963/ijcai.2019/658}.
+\bibitem{zhang2019logrobust} X. Zhang, Y. Xu, Q. Lin, B. Qiao, H. Zhang, Y. Dang, C. Xie, X. Yang, Q. Cheng, Z. Li, J. Chen, X. He, R. Yao, J.-G. Lou, M. Chintalapati, F. Shen, and D. Zhang, ``Robust log-based anomaly detection on unstable log data,'' in \emph{ACM Joint Meeting on European Software Engineering Conference and Symposium on the Foundations of Software Engineering}, 2019, pp. 807--817, \doiurl{10.1145/3338906.3338931}.
+\bibitem{guo2021logbert} H. Guo, S. Yuan, and X. Wu, ``LogBERT: Log anomaly detection via BERT,'' in \emph{International Joint Conference on Neural Networks}, 2021, pp. 1--8, \doiurl{10.1109/IJCNN52387.2021.9534113}.
 \bibitem{balasubramaniyan1998aafid} J. S. Balasubramaniyan, J. O. Garcia-Fernandez, D. Isacoff, E. Spafford, and D. Zamboni, ``An architecture for intrusion detection using autonomous agents,'' in \emph{Annual Computer Security Applications Conference}, 1998, pp. 13--24. Available: \url{https://zzamboni.org/files/pubs/aafid-acsac98.pdf}.
+\bibitem{jacobs1991moe} R. A. Jacobs, M. I. Jordan, S. J. Nowlan, and G. E. Hinton, ``Adaptive mixtures of local experts,'' \emph{Neural Computation}, vol. 3, no. 1, pp. 79--87, 1991, \doiurl{10.1162/neco.1991.3.1.79}.
+\bibitem{mirsky2018kitsune} Y. Mirsky, T. Doitshman, Y. Elovici, and A. Shabtai, ``Kitsune: An ensemble of autoencoders for online network intrusion detection,'' in \emph{Network and Distributed System Security Symposium}, 2018, \doiurl{10.14722/ndss.2018.23204}.
 \bibitem{nist80092} National Institute of Standards and Technology, ``Guide to computer security log management,'' NIST Special Publication 800-92, 2006, \doiurl{10.6028/NIST.SP.800-92}.
 \bibitem{rfc5424} R. Gerhards, ``The Syslog Protocol,'' RFC 5424, 2009, \doiurl{10.17487/RFC5424}.
 \end{thebibliography}
