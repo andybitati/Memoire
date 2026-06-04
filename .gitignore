@@ -98,6 +98,22 @@ archive/recovery_artifacts/
 !docs/**/*.pdf
 *.zip
 
+# Sources des articles et drafts LaTeX a conserver
+!logminer_article1_latex_draft/
+!logminer_article1_latex_draft/main.tex
+!logminer_article1_latex_draft/references.bib
+!logminer_article1_latex_draft/figures/
+!logminer_article1_latex_draft/figures/*.pdf
+!logminer_article1_latex_draft/tables/
+!logminer_article1_latex_draft/tables/*.md
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
+
 # Virtualenv local
 .env
 .venv
