@@ -27,7 +27,7 @@ if str(BASE_DIR) not in sys.path:
 
 from agents.model_router import MODEL_DEFAULTS, route_model, run_routed_detection
 from agents.correlator import correlate_anomalies
-from agents.bus import RedisMessageBus
+from agents.bus import MqttMessageBus, RedisMessageBus
 from agents.audit import read_audit, write_audit
 from agents.collector_agent import DEFAULT_ROOTS, discover_logs
 from agents.privilege_agent import request_windows_sensitive_collection
@@ -108,6 +108,11 @@ class RunDiscoveredRequest(BaseModel):
     max_mb: int = 100
 
 
+class QueueRunRequest(RunRequest):
+    job_stream: str | None = None
+    job_type: str = "workflow.run"
+
+
 class SupervisorCycleRequest(BaseModel):
     roots: list[str] = Field(default_factory=lambda: list(DEFAULT_ROOTS))
     max_files: int = 20
@@ -141,6 +146,15 @@ class PrivilegedWindowsCollectRequest(BaseModel):
 class EventsRequest(BaseModel):
     run_id: str | None = None
     count: int = 100
+
+
+class MqttPublishRequest(BaseModel):
+    source: str = "api"
+    target: str = "mqtt"
+    message_type: str = "mqtt.test"
+    payload: dict[str, Any] = Field(default_factory=dict)
+    status: str = "ok"
+    run_id: str | None = None
 
 
 class AlertDecisionRequest(BaseModel):
@@ -202,6 +216,19 @@ def _redis_settings() -> dict[str, Any]:
     return {
         "url": os.getenv("LOGMINER_REDIS_URL", "redis://localhost:6379/0"),
         "stream": os.getenv("LOGMINER_REDIS_STREAM", "logminer:events"),
+        "job_stream": os.getenv("LOGMINER_REDIS_JOB_STREAM", "logminer:jobs"),
+        "job_group": os.getenv("LOGMINER_REDIS_JOB_GROUP", "logminer-workers"),
+    }
+
+
+def _mqtt_settings() -> dict[str, Any]:
+    return {
+        "host": os.getenv("LOGMINER_MQTT_HOST", "localhost"),
+        "port": int(os.getenv("LOGMINER_MQTT_PORT", "1883")),
+        "topic_prefix": os.getenv("LOGMINER_MQTT_TOPIC_PREFIX", "logminer/events"),
+        "qos": int(os.getenv("LOGMINER_MQTT_QOS", "1")),
+        "username": os.getenv("LOGMINER_MQTT_USERNAME") or None,
+        "password": os.getenv("LOGMINER_MQTT_PASSWORD") or None,
     }
 
 
@@ -215,8 +242,18 @@ def _redis_bus(run_id: str | None = None) -> RedisMessageBus:
         raise HTTPException(status_code=503, detail=f"Redis indisponible: {exc}") from exc
 
 
+def _mqtt_bus(run_id: str | None = None) -> MqttMessageBus:
+    settings = _mqtt_settings()
+    try:
+        bus = MqttMessageBus(run_id=run_id, **settings)
+        bus.ping()
+        return bus
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail=f"MQTT indisponible: {exc}") from exc
+
+
 def _publish(
-    bus: RedisMessageBus | None,
+    bus: Any | None,
     source: str,
     target: str,
     message_type: str,
@@ -315,8 +352,56 @@ def redis_health() -> dict[str, Any]:
         "status": "ok",
         "url": settings["url"],
         "stream": settings["stream"],
+        "job_stream": settings["job_stream"],
         "ping": bus.ping(),
+        "events": bus.stream_info(settings["stream"]),
+        "jobs": bus.stream_info(settings["job_stream"]),
     }
+
+
+@app.get("/redis/pending")
+def redis_pending() -> dict[str, Any]:
+    settings = _redis_settings()
+    bus = _redis_bus()
+    return {
+        "job_stream": settings["job_stream"],
+        "job_group": settings["job_group"],
+        "pending": bus.pending_jobs(stream=settings["job_stream"], group=settings["job_group"]),
+    }
+
+
+@app.get("/mqtt/health")
+def mqtt_health() -> dict[str, Any]:
+    settings = _mqtt_settings()
+    bus = _mqtt_bus()
+    try:
+        ping = bus.ping()
+    finally:
+        bus.close()
+    return {
+        "status": "ok",
+        "host": settings["host"],
+        "port": settings["port"],
+        "topic_prefix": settings["topic_prefix"],
+        "qos": settings["qos"],
+        "ping_publish": ping,
+    }
+
+
+@app.post("/mqtt/publish")
+def mqtt_publish(request: MqttPublishRequest) -> dict[str, Any]:
+    bus = _mqtt_bus(request.run_id)
+    try:
+        message = bus.publish(
+            source=request.source,
+            target=request.target,
+            message_type=request.message_type,
+            payload=request.payload,
+            status=request.status,
+        )
+    finally:
+        bus.close()
+    return {"published": True, "message": asdict(message)}
 
 
 @app.get("/events")
@@ -574,6 +659,40 @@ def run(request: RunRequest) -> dict[str, Any]:
     response = _run_workflow(request, input_path, run_id, bus)
     _audit("workflow.run", target=str(input_path), details=response)
     return response
+
+
+@app.post("/run/queued")
+def run_queued(request: QueueRunRequest) -> dict[str, Any]:
+    input_path = _existing_path(request.input_path)
+    settings = _redis_settings()
+    run_id = request.run_id or datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
+    bus = _redis_bus(run_id)
+    job_stream = request.job_stream or settings["job_stream"]
+    payload = {
+        "input_path": str(input_path),
+        "parse_if_needed": request.parse_if_needed,
+        "out_dir": request.out_dir,
+        "sep": request.sep,
+        "sample_rows": request.sample_rows,
+        "window_minutes": request.window_minutes,
+        "run_id": run_id,
+    }
+    job_id = bus.enqueue_job(payload, stream=job_stream, job_type=request.job_type)
+    _publish(
+        bus,
+        source="api",
+        target="worker",
+        message_type="workflow.queued",
+        payload={"job_id": job_id, "job_stream": job_stream, **payload},
+    )
+    _audit("workflow.queued", target=str(input_path), details={"job_id": job_id, "job_stream": job_stream, **payload})
+    return {
+        "status": "queued",
+        "run_id": run_id,
+        "job_id": job_id,
+        "job_stream": job_stream,
+        "worker_command": "python scripts\\logminer_redis_worker.py --once",
+    }
 
 
 @app.post("/run/discovered")

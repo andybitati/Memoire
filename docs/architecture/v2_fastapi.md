@@ -25,8 +25,9 @@ http://127.0.0.1:8000/docs
 
 ## Lancer Redis
 
-Redis est optionnel: sans Redis, les endpoints FastAPI classiques continuent de
-fonctionner. Pour activer le bus evenementiel:
+Redis Streams est optionnel: sans Redis, les endpoints FastAPI classiques
+continuent de fonctionner avec les artefacts CSV/JSONL. Pour activer le bus
+evenementiel:
 
 ```powershell
 docker compose -f docker-compose.redis.yml up -d
@@ -47,6 +48,25 @@ Variables disponibles:
 ```powershell
 $env:LOGMINER_REDIS_URL="redis://localhost:6379/0"
 $env:LOGMINER_REDIS_STREAM="logminer:events"
+```
+
+## Lancer MQTT
+
+MQTT est optionnel et complementaire de Redis Streams. Il sert surtout aux
+collecteurs legers, notifications temps reel et essais pub/sub. Redis Streams
+reste le choix privilegie pour les jobs persistants et les workers.
+
+```powershell
+docker compose -f docker-compose.mqtt.yml up -d
+```
+
+Variables disponibles:
+
+```powershell
+$env:LOGMINER_MQTT_HOST="localhost"
+$env:LOGMINER_MQTT_PORT="1883"
+$env:LOGMINER_MQTT_TOPIC_PREFIX="logminer/events"
+$env:LOGMINER_MQTT_QOS="1"
 ```
 
 ## Agent Runtime Docker
@@ -118,6 +138,9 @@ laissant le controle final a l'administrateur systeme et reseau.
 | `GET /runtime/status` | Verifier Docker sans lancer de service |
 | `POST /runtime/prepare` | Demarrer Docker/Compose lorsque c'est possible |
 | `GET /redis/health` | Verifier la connexion au serveur Redis |
+| `GET /redis/pending` | Lire le resume des jobs Redis non acquittes |
+| `GET /mqtt/health` | Verifier la connexion au broker MQTT |
+| `POST /mqtt/publish` | Publier un message `AgentMessage` sur MQTT |
 | `GET /events` | Lire les evenements publies dans Redis |
 | `GET /models` | Lister les familles de modeles et leurs artefacts |
 | `POST /collect/discover` | Decouvrir automatiquement les journaux candidats |
@@ -127,6 +150,7 @@ laissant le controle final a l'administrateur systeme et reseau.
 | `POST /detect` | Lancer detection + correlation sur un CSV/Parquet |
 | `POST /correlate` | Rejouer uniquement la correlation sur un CSV d'anomalies |
 | `POST /run` | Lancer parsing optionnel, routage, detection et correlation |
+| `POST /run/queued` | Enqueuer un workflow dans Redis Streams pour traitement par worker |
 | `POST /run/discovered` | Lancer collecte locale, routage, detection et correlation |
 | `POST /alerts/decision` | Enregistrer validation, rejet ou reclassement d'une alerte |
 
@@ -168,6 +192,57 @@ Invoke-RestMethod `
   -Uri "http://127.0.0.1:8000/events?run_id=demo-linux-auth"
 ```
 
+## Exemple Avec MQTT
+
+Verifier le broker:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8000/mqtt/health
+```
+
+Publier un message:
+
+```powershell
+Invoke-RestMethod `
+  -Method Post `
+  -Uri http://127.0.0.1:8000/mqtt/publish `
+  -ContentType "application/json" `
+  -Body '{"run_id":"mqtt-demo","source":"api","target":"collector","message_type":"mqtt.demo","payload":{"ok":true}}'
+```
+
+## Execution Queuee Avec Workers
+
+Pour augmenter la scalabilite locale, l'API peut deposer un workflow dans le
+Stream Redis `logminer:jobs` au lieu de l'executer dans la requete HTTP:
+
+```powershell
+Invoke-RestMethod `
+  -Method Post `
+  -Uri http://127.0.0.1:8000/run/queued `
+  -ContentType "application/json" `
+  -Body '{"input_path":"data/raw/Datasets/linux_auth_logs_labeled.csv","sep":"auto","parse_if_needed":false,"run_id":"queued-linux-auth"}'
+```
+
+Un ou plusieurs workers consomment ensuite les jobs via consumer group:
+
+```powershell
+python scripts\logminer_redis_worker.py --consumer worker-1
+python scripts\logminer_redis_worker.py --consumer worker-2 --claim-idle-ms 300000
+```
+
+Verifier les jobs non acquittes:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8000/redis/pending
+```
+
+Ce mode decouple l'acceptation des requetes et l'inference. Il permet de lancer
+plusieurs workers sur la meme machine ou sur des machines differentes partageant
+le meme Redis, a condition de configurer les chemins de donnees de maniere
+coherente. L'option `--claim-idle-ms` permet a un worker de reprendre des jobs
+pending restes trop longtemps sans acquittement, par exemple apres l'arret d'un
+autre worker.
+
 ## Exemple De Correlation Seule
 
 ```powershell
@@ -206,10 +281,12 @@ RedisMessageBus()
 La logique metier reste donc partagee avec la V1. Si l'API devient instable, la
 chaine CLI reste utilisable pour la soutenance et les experimentations.
 
-## Role De Redis Dans Le Memoire
+## Role De Redis Streams Dans Le Memoire
 
-Redis sert de bus evenementiel entre les agents. Dans cette implementation, les
-evenements sont publies dans un Stream Redis (`logminer:events` par defaut):
+Redis Streams sert de bus evenementiel optionnel entre les agents. Dans cette
+implementation, les evenements sont publies dans un Stream Redis
+(`logminer:events` par defaut) avec le meme contrat fonctionnel que le bus
+JSONL local:
 
 ```text
 workflow.started
@@ -223,4 +300,12 @@ workflow.completed
 ```
 
 Ce choix permet de montrer le passage d'un prototype local vers une architecture
-plus distribuee, sans retirer la version CLI stable.
+plus distribuee, sans retirer la version CLI stable. Dans le memoire, Redis
+Streams doit donc etre presente comme une brique integree de la V2/V3 locale:
+elle apporte une file evenementielle persistante, inspectable et consommable par
+consumer group. Elle prepare la scalabilite operationnelle en decouplant API et
+workers, mais ne constitue pas encore une preuve de debit SOC industriel. Les
+mesures queuees, tests multi-workers, reprise pending et stress prolonges sont
+a reserver a l'article 2. Les points a declarer comme travaux futurs sont la
+politique de retry avancee, la dead-letter queue, le back-pressure applicatif,
+la securisation du serveur Redis et les tests de charge prolonges.

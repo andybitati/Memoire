@@ -12,6 +12,7 @@ preparer des articles a partir du prototype Logminer.
 | Plan detaille du memoire | pret | `docs/memoire/plan.md` |
 | Pack redaction memoire | pret | `docs/memoire/pack_redaction_memoire.md` |
 | Pack articles scientifiques | pret | Aligne sur Article 1 IEEE conference et Article 2 IEEE Access |
+| Frontiere Article 1/2 scalabilite | pret | `docs/memoire/frontiere_article1_article2_scalabilite.md` |
 | Etat des exigences techniques | pret | `docs/memoire/etat_lieu_exigences_techniques.md` |
 | Comparaison au document directeur | pret | `docs/memoire/comparaison_avancement_document_directeur.md` |
 | Synthese resultats | pret | `docs/memoire/synthese_resultats_pour_memoire_articles.md` |
@@ -48,6 +49,9 @@ preparer des articles a partir du prototype Logminer.
 | `table_resource_snapshot.md` | pret | Monitoring API |
 | `table_resource_campaign.md` | pret | Historique ressources |
 | `table_resilience_agent.md` | pret | Robustesse/resilience |
+| `table_redis_streams_integration.md` | pret | Bus evenementiel optionnel |
+| `table_mqtt_integration.md` | pret | Pub/sub MQTT optionnel |
+| `table_scalability_redis_smoke.md` | pret | Memoire / Article 2, pas resultat central Article 1 |
 | `table_comparaison_outils_standards.md` | pret | Outils standards |
 | `table_operational_tool_comparison.md` | pret | Positionnement SOC |
 | `table_fail2ban_like_baseline.md` | pret | Baseline rule-based |

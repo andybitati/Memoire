@@ -31,6 +31,7 @@ fastapi>=0.115.0
 uvicorn[standard]>=0.30.0
 httpx>=0.27.0
 redis>=5.0.0
+paho-mqtt>=2.1.0
 
 # Mesure de consommation CPU, memoire, disque et processus pour le dashboard.
 psutil>=5.9.0

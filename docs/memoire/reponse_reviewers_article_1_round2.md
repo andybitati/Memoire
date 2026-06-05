@@ -33,7 +33,7 @@ Resultat local sur 8 537 lignes Windows normalisees:
 
 Texte a ajouter:
 
-> A direct profiling run on 8,537 normalized Windows events shows that the router accounts for 0.9% of the measured routing-detection-correlation time, while model inference accounts for 91.3% and correlation for 7.7%. This supports the claim that the router is not the dominant local bottleneck. However, the current FastAPI/JSONL implementation remains synchronous and local; a production deployment would require an asynchronous distributed bus such as Kafka, MQTT or Redis Streams with back-pressure and worker parallelism.
+> A direct profiling run on 8,537 normalized Windows events shows that the router accounts for 0.9% of the measured routing-detection-correlation time, while model inference accounts for 91.3% and correlation for 7.7%. This supports the claim that the router is not the dominant local bottleneck. The revised prototype now adds Redis Streams queued execution: FastAPI can enqueue workflows into `logminer:jobs`, and external workers consume them through Redis consumer groups. This decouples request handling from inference at prototype level. A production SOC deployment would still require tested back-pressure, retry policies, dead-letter handling, security hardening and longer stress campaigns.
 
 ### HDFS Et Logs Sequentiels
 

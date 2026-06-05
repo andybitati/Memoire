@@ -7,9 +7,9 @@ role de risque:
 - **V1**: prototype local stable, pilote par CLI et fichiers CSV; c'est le
   socle de secours si les evolutions suivantes deviennent instables;
 - **V2**: exposition progressive des agents par FastAPI, compatible avec la V1;
-- **V3**: orchestration evenementielle avec Redis/MQTT. Redis est maintenant
-  amorce comme bus optionnel de la V2, afin de preparer le fonctionnement
-  distribue.
+- **V3**: orchestration evenementielle. Redis Streams est maintenant integre
+  comme bus optionnel de la V2 pour les jobs persistants; MQTT est ajoute comme
+  bus pub/sub optionnel pour collecteurs et notifications temps reel.
 
 ## V1 - Prototype CLI Stable
 
@@ -127,17 +127,17 @@ Dashboard / client
   -> orchestrateur
   -> parseur / routeur / detecteur / correlateur
   -> stockage CSV ou base locale
-  -> Redis Streams si use_redis=true
+  -> Redis Streams si `use_redis=true`
 ```
 
 La V2 devra conserver la compatibilite avec les commandes CLI: l'API ne doit
 pas dupliquer la logique, mais appeler les fonctions deja testees.
 
-## V3 Possible - Redis Ou MQTT
+## V3 Possible - Redis Streams Et MQTT
 
-Redis est introduit progressivement comme bus optionnel. MQTT reste une option
-si le prototype evolue vers des collecteurs plus proches de l'IoT ou du temps
-reel. Ces bus deviennent utiles pour:
+Redis Streams est introduit comme bus optionnel deja disponible dans le
+prototype. MQTT est aussi disponible pour des collecteurs plus proches de l'IoT
+ou du temps reel. Ces bus deviennent utiles pour:
 
 - plusieurs collecteurs en parallele;
 - traitement quasi temps reel;
@@ -145,8 +145,9 @@ reel. Ces bus deviennent utiles pour:
 - agents deployes sur plusieurs machines;
 - reprise apres incident.
 
-Dans cette version, le bus JSONL local de la V1 devient un bus evenementiel.
-Le prototype Redis publie deja ces familles d'evenements dans un Stream:
+Dans cette version, le bus JSONL local de la V1 peut devenir un bus
+evenementiel persistant. Le prototype Redis Streams publie deja ces familles
+d'evenements dans un Stream:
 
 ```text
 collector.events
@@ -164,10 +165,20 @@ $env:LOGMINER_REDIS_URL="redis://localhost:6379/0"
 $env:LOGMINER_REDIS_STREAM="logminer:events"
 ```
 
+Configuration MQTT locale:
+
+```powershell
+docker compose -f docker-compose.mqtt.yml up -d
+$env:LOGMINER_MQTT_HOST="localhost"
+$env:LOGMINER_MQTT_TOPIC_PREFIX="logminer/events"
+```
+
 ## Decision Actuelle
 
-La redaction commence sur la V1 stable, pendant que FastAPI et Redis deviennent
-des extensions concretes du memoire. La regle est de ne jamais casser la V1:
-chaque evolution V2/V3 doit etre ajoutee par-dessus la chaine CLI deja validee,
-ou rester documentee comme prototype partiel si elle n'est pas suffisamment
-stable.
+La redaction conserve la V1 stable comme socle, mais Redis Streams peut etre
+integre au memoire maintenant comme extension concrete et testable de la V2.
+La regle est de ne jamais casser la V1: chaque evolution V2/V3 doit etre
+ajoutee par-dessus la chaine CLI deja validee. La file `logminer:jobs`, les
+consumer groups et le worker Redis augmentent deja la scalabilite du prototype.
+La scalabilite multi-machine, les retries avances, la dead-letter queue et le
+back-pressure restent des evaluations operationnelles a mener separement.

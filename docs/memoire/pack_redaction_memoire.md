@@ -111,7 +111,8 @@ Sections conseillees:
 5. Contrat de messages.
 6. Routage multi-modeles.
 7. Correlation des anomalies en incidents.
-8. V1 CLI, V2 FastAPI, V3 Redis/MQTT comme trajectoire.
+8. V1 CLI, V2 FastAPI et Redis Streams optionnel comme trajectoire
+   concrete d'orchestration evenementielle; MQTT reste une perspective.
 
 Figures a inserer:
 
@@ -122,6 +123,7 @@ Tableaux a inserer:
 
 - `docs/memoire/tables/table_datasets_scenarios.md`;
 - `docs/memoire/taxonomie_journaux.md`.
+- `docs/memoire/tables/table_redis_streams_integration.md`.
 
 Preuves code:
 
@@ -139,6 +141,38 @@ Phrase de transition:
 > La separation en agents permet d'isoler les responsabilites: collecte,
 > parsing, detection, correlation et visualisation peuvent evoluer separement,
 > tout en partageant un schema commun et un contrat de messages.
+
+Paragraphe Redis Streams a integrer:
+
+> Le prototype conserve un bus JSONL local comme socle reproductible, mais il
+> integre aussi Redis Streams comme bus evenementiel optionnel dans la V2
+> FastAPI. Le meme contrat `AgentMessage` est publie en JSONL ou dans le Stream
+> `logminer:events`, ce qui permet de tracer les etapes du workflow sans
+> modifier la logique metier. Une file `logminer:jobs` et un worker Redis
+> permettent aussi de decoupler l'API de l'inference: plusieurs workers peuvent
+> consommer les jobs via consumer group et acquitter les traitements termines.
+> Cette integration prepare la scalabilite operationnelle du prototype, mais
+> elle ne doit pas etre interpretee comme une validation de debit SOC industriel.
+> Les mesures queuees et multi-workers sont reservees a l'article 2, avec les
+> retries avances, la dead-letter queue, le back-pressure applicatif, la
+> securisation et les tests de charge prolonges.
+
+Paragraphe MQTT a integrer:
+
+> MQTT est ajoute comme bus pub/sub optionnel et complementaire a Redis Streams.
+> Il reutilise le contrat `AgentMessage` et publie les evenements sur des topics
+> de type `logminer/events/<target>/<message_type>`. Son role est de soutenir
+> des collecteurs legers, des notifications temps reel et des scenarios IoT ou
+> reseau local. Contrairement a Redis Streams, MQTT n'est pas utilise ici comme
+> file de jobs persistante pour workers; les mesures de debit MQTT et la
+> comparaison Redis/MQTT sont reservees a l'article 2.
+
+Attention article 1 / article 2:
+
+> Dans l'article 1, Redis Streams doit rester un detail d'implementation et un
+> chemin d'evolution non bloquant. Les mesures queuees, workers, reprise pending,
+> resilience et stress appartiennent a l'article 2. Voir
+> `docs/memoire/frontiere_article1_article2_scalabilite.md`.
 
 ## Chapitre 4 - Implementation Du Prototype
 
@@ -286,7 +320,8 @@ Bilan par objectif:
 
 Perspectives:
 
-- deploiement multi-machine avec Redis/MQTT;
+- extension multi-machine a partir de Redis Streams, files de jobs et workers;
+  MQTT reste une piste complementaire pour collecteurs temps reel;
 - integration SOC/SIEM plus stricte;
 - templates de logs type Drain;
 - reduction des faux positifs par apprentissage actif;
@@ -325,4 +360,3 @@ Nom de fichiers recommande:
 - `docs/memoire/captures/dashboard_resultats_filtres.png`;
 - `docs/memoire/captures/dashboard_detail_incident.png`;
 - `docs/memoire/captures/dashboard_ressources_agents.png`.
-

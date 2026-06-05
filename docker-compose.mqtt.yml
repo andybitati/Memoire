@@ -1,0 +1,19 @@
+services:
+  mqtt:
+    image: eclipse-mosquitto:2
+    container_name: logminer-mqtt
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./docker/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - logminer_mqtt_data:/mosquitto/data
+      - logminer_mqtt_log:/mosquitto/log
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_pub -h localhost -t logminer/healthcheck -m ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  logminer_mqtt_data:
+  logminer_mqtt_log:

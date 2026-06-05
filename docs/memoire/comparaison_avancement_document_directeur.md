@@ -139,7 +139,8 @@ Avancement constate:
 - bus local JSONL dans `src/logminer/agents/bus.py`;
 - contrat de message dans `docs/architecture/message_contract.md`;
 - API FastAPI dans `src/logminer/api.py`;
-- Redis Streams optionnel via `docker-compose.redis.yml`;
+- Redis Streams optionnel via `docker-compose.redis.yml`, `RedisMessageBus`,
+  `/redis/health`, `/events` et `use_redis=true`;
 - documentation d'architecture dans `docs/architecture/README.md` et
   `docs/architecture/v1_cli_v2_services.md`.
 
@@ -147,8 +148,9 @@ Conclusion:
 
 - conforme pour un prototype local modulaire;
 - il faut cadrer la formulation "distribuee": aujourd'hui la distribution est
-  surtout logique et locale, avec Redis/FastAPI comme preparation a une vraie
-  distribution multi-machine.
+  surtout logique et locale. Redis Streams est cependant integre comme bus
+  evenementiel optionnel pour traces inter-agents; la distribution
+  multi-machine avec back-pressure et workers paralleles reste a valider.
 
 ## Objectif 4 - IA legere adaptative et quasi temps reel
 

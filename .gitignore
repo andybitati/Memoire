@@ -51,6 +51,12 @@ Datasets/Dataset_csv/*.csv
 *~
 .DS_Store
 .tmp-edge*/
+*.bak
+*.backup
+*.orig
+*.rej
+*.old
+*.save
 
 # Sorties et résultats temporaires
 *.out
@@ -97,13 +103,17 @@ archive/recovery_artifacts/
 *.pdf
 !docs/**/*.pdf
 *.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+*.tgz
 
 # Sources des articles et drafts LaTeX a conserver
 !logminer_article1_latex_draft/
 !logminer_article1_latex_draft/main.tex
 !logminer_article1_latex_draft/references.bib
 !logminer_article1_latex_draft/*.txt
-!logminer_article1_latex_draft/*.pdf
 !logminer_article1_latex_draft/figures/
 !logminer_article1_latex_draft/figures/*.pdf
 !logminer_article1_latex_draft/figures/*.png
@@ -115,12 +125,12 @@ archive/recovery_artifacts/
 !logminer_article1_latex_draft/tables/
 !logminer_article1_latex_draft/tables/*.md
 !logminer_article1_latex_draft/tables/*.tex
+!logminer_article1_latex_draft/Logminer__Auditable_Family_Aware_Routing_for_Heterogeneous_Log_Anomaly_Detection.pdf
 !logminer_article2_latex_draft/
 !logminer_article2_latex_draft/main.tex
 !logminer_article2_latex_draft/references.bib
 !logminer_article2_latex_draft/*.md
 !logminer_article2_latex_draft/*.txt
-!logminer_article2_latex_draft/*.pdf
 !logminer_article2_latex_draft/figures/
 !logminer_article2_latex_draft/figures/*.pdf
 !logminer_article2_latex_draft/figures/*.png
@@ -132,6 +142,11 @@ archive/recovery_artifacts/
 !logminer_article2_latex_draft/tables/
 !logminer_article2_latex_draft/tables/*.md
 !logminer_article2_latex_draft/tables/*.tex
+!logminer_article2_latex_draft/*.pdf
+logminer_article1_latex_draft/main.pdf
+logminer_article1_latex_draft/*__*.pdf
+logminer_article1_latex_draft/Evaluation_Amelioration_Logminer.pdf
+logminer_article1_latex_draft/Logminer_Scientific_Value_Improvement_Report_BastionLab.pdf
 *.aux
 *.bbl
 *.blg
@@ -139,6 +154,18 @@ archive/recovery_artifacts/
 *.fls
 *.log
 *.synctex.gz
+*.run.xml
+*.bcf
+*.nav
+*.snm
+*.vrb
+*.xdv
+
+# Donnees runtime Docker locales
+docker/**/data/
+docker/**/log/
+docker/**/*.db
+docker/**/*.pid
 
 # Virtualenv local
 .env

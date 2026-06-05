@@ -49,8 +49,22 @@ multi-format.
 
 Le systeme doit etre presente comme un prototype local avance et extensible:
 la V1 CLI constitue le socle stable, la V2 FastAPI apporte l'interaction par
-services REST, et Redis/MQTT restent une trajectoire d'industrialisation vers
-une distribution multi-machine.
+services REST, et Redis Streams est deja integre comme bus evenementiel
+optionnel pour tracer les workflows agents. Cette brique prepare une
+distribution multi-machine, mais elle ne prouve pas encore une scalabilite SOC.
+MQTT reste une perspective pour des collecteurs plus proches de l'IoT ou du
+temps reel.
+
+Tableau a reprendre pour le chapitre architecture:
+
+- `docs/memoire/tables/table_redis_streams_integration.md`.
+- `docs/memoire/tables/table_mqtt_integration.md`.
+- `docs/memoire/tables/table_scalability_redis_smoke.md` pour le memoire ou
+  l'article 2, pas comme resultat central de l'article 1.
+
+Regle de frontiere:
+
+- `docs/memoire/frontiere_article1_article2_scalabilite.md`.
 
 ## Protocole Experimental
 

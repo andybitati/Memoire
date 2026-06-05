@@ -70,7 +70,7 @@ Fig.~\ref{fig:architecture} summarizes the current \logminer{} workflow. The col
     \label{fig:architecture}
 \end{figure}
 
-The implementation uses Python, scikit-learn models, local file artifacts, JSONL bus traces and FastAPI endpoints. Redis is documented as an optional evolution, but durable asynchronous scaling with back-pressure remains future work.
+The implementation uses Python, scikit-learn models, local file artifacts, JSONL bus traces and FastAPI endpoints. Redis Streams is now available as an optional queued-execution layer: FastAPI can enqueue workflows into a persistent job stream, and external workers can consume them through Redis consumer groups. MQTT is also available as an optional pub/sub channel for lightweight collectors and real-time notifications. This article is therefore the appropriate venue for operational discussion of Redis/MQTT behavior, worker execution, pending jobs, resilience and the remaining back-pressure limits; durable SOC-scale asynchronous scaling still requires longer stress campaigns and production policies.
 
 \subsection{Model Portfolio}
 The model portfolio combines supervised Random Forest models for labeled tabular families and non-supervised Isolation Forest or ensemble-style detectors for unlabeled or partially labeled sources. Fig.~\ref{fig:portfolio} shows the family-aware model portfolio.
