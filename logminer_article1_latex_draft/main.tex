@@ -191,7 +191,25 @@ The weights $w_n$, $w_c$ and $w_m$ are fixed policy parameters in the current pr
 
 The different magnitudes in Table~\ref{tab:router_weights} should be read as rule-specific additive evidence rather than as globally comparable learned coefficients. Heavy constants are attached to highly discriminative markers or to fallback-only conditions, and they are applied only when the corresponding evidence is present for the candidate family. A sparse family such as Linux/auth is therefore not penalized merely because another family has a larger possible maximum score; unsupported or absent descriptors do not contribute to competing families. The confidence $\gamma(x)$ is used as an audit and fallback signal together with mandatory evidence checks, not as the only routing criterion. A softmax or MinMax normalization could make scores numerically comparable, but it could also inflate weak noisy evidence when all families have low support. For this first prototype, explicit evidence thresholds and fallback routing were preferred for interpretability; calibrated score normalization remains future work.
 
-A full sensitivity analysis over these weights is not claimed in this paper; it is included in future work together with the factorial ablation of routing, feature spaces and model choice.
+As a limited local sensitivity check, the five distinct sources used in the SupervisorAgent campaign were replayed after normalization while applying a uniform $\pm 10\%$ perturbation to the additive evidence constants. The selected families remained unchanged: CEF, CloudTrail, Apache and corrupted inputs were routed to fallback, while Linux/auth was routed to the Linux branch. This check does not replace a complete factorial sensitivity analysis, but it indicates that the reported supervisor routes do not depend on a single marginal weight change.
+
+\begin{table}[t]
+\caption{Local routing sensitivity on SupervisorAgent sources}
+\label{tab:router_sensitivity}
+\centering
+\scriptsize
+\begin{tabularx}{\linewidth}{p{2.4cm}p{1.5cm}p{1.5cm}X}
+\toprule
+\textbf{Source type} & \textbf{Expected} & \textbf{$\pm10\%$ route} & \textbf{Interpretation} \\
+\midrule
+CEF/LEEF & fallback & stable & Unsupported SIEM-like format is preserved without claiming a specialized detector \\
+CloudTrail & fallback & stable & Cloud JSON records are retained as fallback in this article \\
+Apache access & fallback & stable & Web logs are not forced into the network-flow detector after normalization \\
+Linux/auth syslog & linux & stable & Syslog evidence dominates generic Windows-like normalized columns \\
+Corrupted input & fallback & stable & Unknown/corrupted markers trigger graceful degradation \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 Because the router is a distinct architectural component, detector-level F1 is not sufficient to evaluate it. A complete router evaluation should also report route accuracy when family labels are known, fallback precision on unsupported sources, low-confidence rate, route stability under perturbed weights, and misroute severity when an event is sent to an incompatible detector. The current paper reports routing behavior through ablations, fallback tests and audit traces, but these router-specific metrics remain a target for a stricter artifact evaluation.
 
@@ -292,7 +310,7 @@ The detector portfolio includes supervised Random Forest models for labeled fami
 A web dashboard supports exploration of anomalies, incidents, counters, filters, timeline-style views and analyst decisions. This dashboard is an exploitation layer: it does not prove the anomaly by itself, but helps analysts validate, reject or reinterpret candidate incidents.
 
 \subsection{Correlation Logic}
-The correlator is intentionally explainable rather than opaque. It groups anomaly candidates by a configurable temporal window, host, user, source, category, subcategory, protocol and destination port. Incident priority combines event volume, maximum severity, diversity of event identifiers, security category weight and anomaly-score depth. For a candidate set $A$, the correlator emits an incident $I$ when candidates share a context key and fall within the window $\Delta t$. The priority score is a weighted combination of candidate count, severity, source diversity and anomaly-score depth. This correlation step improves analyst readability, but it is treated as a pipeline component rather than as the main algorithmic contribution of the paper. The present evaluation reports the resulting incidents and timing overhead; it does not prove that every merged incident is analytically correct. A dedicated correlation-quality evaluation with analyst labels, window-size sensitivity and incorrect-merge analysis remains future work.
+The correlator is intentionally explainable rather than opaque. It groups anomaly candidates by a configurable temporal window, host, user, source, category, subcategory, protocol and destination port. Incident priority combines event volume, maximum severity, diversity of event identifiers, security category weight and anomaly-score depth. For a candidate set $A$, the correlator emits an incident $I$ when candidates share a context key and fall within the window $\Delta t$. The default $\Delta t=15$ minutes was chosen as a conservative analyst-triage window for local workstation experiments; the SupervisorAgent can raise it to 20 minutes when fallback routes dominate and to 30 minutes for sequential system-log families such as HDFS/BGL. These values are policy parameters, not optimized thresholds. The priority score is a weighted combination of candidate count, severity, source diversity and anomaly-score depth. This correlation step improves analyst readability, but it is treated as a pipeline component rather than as the main algorithmic contribution of the paper. The present evaluation reports the resulting incidents and timing overhead; it does not prove that every merged incident is analytically correct. A dedicated correlation-quality evaluation with analyst labels, window-size sensitivity and incorrect-merge analysis remains future work.
 
 \subsection{Policy-Based Workflow Orchestration and Control}
 The current implementation uses software agents with specialized roles, explicit message exchange and workflow coordination. A bounded SupervisorAgent was added only to coordinate local workflow execution and to preserve route-level audit evidence. It observes available log candidates, chooses a source and workflow parameters, launches parsing, routing, detection and correlation, then records each decision in audit and bus traces. The current decisions are policy-based and explainable rather than learned; therefore, the supervisor is treated here as an implementation control layer, not as the main adaptive-AI contribution. Table~\ref{tab:supervisor} summarizes a controlled 30-cycle trace used to verify that routing decisions remain replayable.
@@ -319,6 +337,23 @@ Audit trace recorded & yes \\
 \end{table}
 
 In this controlled campaign, unsupported web/SIEM/cloud formats were routed to fallback, syslog-like records were routed to the Linux branch, and every decision recorded the selected source, family, sample size, window size and status. The correlation window remained bounded at 15--20 minutes and no sampling oscillation was observed. Broader stress behavior, source quarantine, degradation budgets and long-running resource control are deliberately left outside the main contribution of this article and are better suited to a separate operational evaluation.
+
+For the five distinct SupervisorAgent sources, the route-level confusion matrix is reported in Table~\ref{tab:router_confusion}. The matrix evaluates the routing decision after parsing/normalization, which is the actual input stage used by the supervisor workflow. It should not be confused with detector-level intrusion classification: unsupported CEF/LEEF, CloudTrail, Apache and corrupted inputs are expected to fall back, whereas Linux/auth syslog is expected to use the Linux branch. Under this protocol, the route accuracy is $5/5$ at distinct-source level and $30/30$ across the repeated supervisor cycles.
+
+\begin{table}[t]
+\caption{Route-level confusion matrix for SupervisorAgent sources}
+\label{tab:router_confusion}
+\centering
+\scriptsize
+\begin{tabular}{lcc}
+\toprule
+\textbf{Expected route} & \textbf{Predicted fallback} & \textbf{Predicted linux} \\
+\midrule
+fallback & 4 & 0 \\
+linux & 0 & 1 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Experimental Setup}
 Table~\ref{tab:datasets} lists the families used in the initial evaluation. The selection mixes local logs, SIEM-style exports, public system logs and public network datasets.
@@ -349,7 +384,7 @@ The evaluation follows a validation-based protocol adapted to the heterogeneous 
 
 The routing ablation is split into two complementary views. The controlled common-space comparison constrains all families to the same minimal representation, whereas the operational comparison evaluates the full specialization package composed of family identification, native feature compatibility and specialized model selection. This protocol is designed to reduce overclaiming: the controlled ablation tests whether routing alone dominates under shared features, while the operational ablation tests whether routing enables compatible feature spaces and models. All results should therefore be read as evidence for a lightweight family-aware analytical architecture, not as a universal benchmark victory over all monolithic or sequence-aware detectors.
 
-The experimental artifacts were organized to support manuscript-level traceability: routed outputs, anomaly candidates, incidents, timing profiles, resource snapshots, figures and LaTeX tables are preserved as local files before being summarized in the paper. The present manuscript does not yet claim a public reproducibility package with fixed random seeds, containerized execution and model cards. Such an artifact release is planned before broader external replication.
+The experimental artifacts were organized to support manuscript-level traceability: routed outputs, anomaly candidates, incidents, timing profiles, resource snapshots, figures and LaTeX tables are preserved as local files before being summarized in the paper. The GitHub repository mentioned in the introduction includes the executable source tree together with the development requirements, a pinned container requirements file, a Dockerfile for the FastAPI runtime, and Redis/MQTT Docker Compose descriptors. Large datasets, local exports and trained model binaries may remain external when size, licensing or privacy constraints apply.
 
 \section{Results and Discussion}
 \subsection{Detection Results}
@@ -562,7 +597,7 @@ Unsupervised results & Anomaly candidates, not confirmed intrusions \\
 \subsection{Threats to Validity}
 The main internal validity threat is that results combine multiple datasets, feature representations and model families. The controlled ablation mitigates this risk, but also shows that routing alone is not always superior under a common minimal feature space. The operational ablation evaluates routing, specialized feature spaces and specialized detectors together; it does not isolate the independent contribution of each factor. Therefore, the claim is limited to controlled specialization and feature/model compatibility, not universal dominance over monolithic classifiers. A stricter factorial design would require at least three independent axes: router choice, feature representation and detector family.
 
-Statistical validity is limited because repeated-seed confidence intervals and routing-weight sensitivity sweeps are not yet reported. The current router constants are auditable policy parameters, but they are not calibrated probabilities. Dataset validity is also limited: very high F1 scores on network datasets require careful interpretation because class imbalance, duplicate flows, temporal splitting and train-test leakage can distort intrusion-detection benchmarks. HDFS demonstrates an explicit negative boundary of the current lightweight row-level representation and should be compared against sequence-aware parsers and detectors before any stronger claim is made for distributed-system logs. Model-persistence validity is also relevant: the June 2026 benchmark environment loaded several scikit-learn model artifacts trained under earlier library versions, which generated compatibility warnings. The results are still useful as local prototype measurements, but a reproducible release should retrain or freeze model artifacts under a pinned environment. Long-running stress, resource and supervisor-degradation results are not used as central evidence in this article.
+Statistical validity is limited because repeated-seed confidence intervals and broad routing-weight sensitivity sweeps are not yet reported. The current router constants are auditable policy parameters, but they are not calibrated probabilities; the added $\pm10\%$ replay only covers the five SupervisorAgent sources and should be interpreted as a local stability check. Dataset validity is also limited: very high F1 scores on network datasets require careful interpretation because class imbalance, duplicate flows, temporal splitting and train-test leakage can distort intrusion-detection benchmarks. HDFS demonstrates an explicit negative boundary of the current lightweight row-level representation and should be compared against sequence-aware parsers and detectors before any stronger claim is made for distributed-system logs. Model-persistence validity is also relevant: the June 2026 benchmark environment loaded several scikit-learn model artifacts trained under earlier library versions, which generated compatibility warnings. The results are still useful as local prototype measurements. The repository now includes a Dockerfile and a pinned \texttt{requirements-container.txt} file to document the runtime environment, but exact external replication of the reported F1 scores still requires retraining or republishing model artifacts under that pinned environment. Long-running stress, resource and supervisor-degradation results are not used as central evidence in this article.
 
 External validity is limited by the selected datasets and local execution environment. Operational validity is limited because non-supervised anomalies require analyst confirmation, correlation quality is not yet evaluated against analyst-labeled incidents, and a real SOC deployment would require stronger ingestion guarantees, access control, retention policies, back-pressure handling, response workflows and stress tests over longer campaigns.
 
