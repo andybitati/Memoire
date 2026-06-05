@@ -96,7 +96,8 @@ Reste a rediger:
 - schema general du systeme;
 - role de chaque agent;
 - contrat de donnees normalisees;
-- choix du bus JSONL pour le prototype;
+- choix du bus JSONL comme socle stable et de Redis Streams comme bus
+  evenementiel optionnel deja integre;
 - justification de la modularite.
 
 Elements a presenter:
@@ -109,7 +110,8 @@ Elements a presenter:
   `user`, `src_ip`, `dst_ip`, `category`, `message`;
 - strategie multi-modeles par famille de logs;
 - choix de stabiliser une V1 locale en CLI comme socle de secours, avant une
-  V2 FastAPI et une V3 Redis/MQTT egalement destinees au memoire.
+  V2 FastAPI avec Redis Streams optionnel. MQTT reste une perspective si des
+  collecteurs plus proches de l'IoT ou du temps reel sont ajoutes.
 
 ## Chapitre 4 - Implementation Du Prototype
 
@@ -245,8 +247,8 @@ Angles de discussion:
   des signaux candidats;
 - le prototype V1 est local et modulaire; une premiere V2 FastAPI expose deja
   le routage, le parsing, la detection et la correlation sans casser la CLI;
-  Redis est ajoute comme bus evenementiel optionnel pour preparer le
-  deploiement distribue.
+  Redis Streams ajoute un bus evenementiel optionnel et une file de jobs
+  consommable par workers pour decoupler API et inference.
 
 ## Chapitre 7 - Conclusion Et Perspectives
 
@@ -258,8 +260,9 @@ Reste a rediger:
 
 - bilan objectif par objectif;
 - contribution principale;
-- perspectives integrees au memoire: consolidation V2 FastAPI, bus Redis/MQTT, temps reel,
-  enrichissement des features, integration SOC/SIEM.
+- perspectives integrees au memoire: consolidation V2 FastAPI, Redis Streams
+  optionnel deja integre, MQTT en perspective, temps reel, enrichissement des
+  features, integration SOC/SIEM.
 
 Message final a faire ressortir:
 
@@ -277,7 +280,7 @@ Message final a faire ressortir:
 | --- | --- | --- | --- |
 | 1. Collecter, parser et normaliser | Tres avance | Pipeline Logminer, taxonomie, Windows, Wazuh, Linux/auth, reseau | Rediger methodologie |
 | 2. Detecter et comparer les anomalies | Tres avance | Modeles joblib, registres, metriques supervisees | Consolider tableaux |
-| 3. Concevoir l'architecture multi-agents | Conforme prototype | `docs/architecture/README.md`, `docs/architecture/message_contract.md`, bus JSONL, Redis optionnel, orchestrateur, routeur, V2 FastAPI locale | Rediger chapitre 3 et ajouter schemas finaux |
+| 3. Concevoir l'architecture multi-agents | Conforme prototype | `docs/architecture/README.md`, `docs/architecture/message_contract.md`, bus JSONL, Redis Streams, file de jobs, worker, orchestrateur, routeur, V2 FastAPI locale | Rediger chapitre 3 et ajouter schemas finaux |
 | 4. Integrer des modeles IA legers adaptatifs | Conforme prototype | Routeur multi-modeles, artefacts `.joblib`, Isolation Forest, RandomForest, API detection, analyse auto 5 s, benchmark quasi temps reel | Executer benchmark final et inserer valeurs |
 | 5. Developper le dashboard visuel interactif | Conforme prototype | `web/dashboard`, Streamlit, timeline/heatmap, auto-refresh 5 s, validation/rejet/reclassement, detail incident, exports, explication locale/LLM | Ajouter captures demo |
 | 6. Tester sur logs simules, reels et datasets publics | Tres avance | HDFS, BGL, Windows, UNSW, CICIDS, Linux/auth, Wazuh, controle logs corrompus/incomplets | Tableau final des scenarios |

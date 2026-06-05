@@ -67,7 +67,7 @@ The prototype decomposes the workflow into specialized cooperating modules for c
 
 Experiments cover Windows logs, Wazuh exports, Linux/auth logs, HDFS, BGL, CICIDS2017 and UNSW/CIC-DDoS data. The evaluation includes a controlled common-space ablation and an operational specialization ablation. The results support the feasibility of a local lightweight implementation, while showing that routing should be interpreted as controlled specialization rather than a universal F1 improvement on every dataset.
 
-The prototype is positioned as an analytical complement to mature log management and HIDS/SIEM tools rather than as a replacement for production SOC platforms.
+The prototype is positioned as an analytical complement to mature log management and HIDS/SIEM tools rather than as a replacement for production SOC platforms or large-enterprise SOC infrastructures.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -91,7 +91,7 @@ The contribution of this paper is fourfold:
     \item A cautious empirical positioning showing that family-aware routing is controlled specialization rather than a guaranteed F1 improvement on every dataset.
 \end{enumerate}
 
-The paper deliberately uses cautious claims. Non-supervised outputs are treated as anomaly candidates, not confirmed intrusions. The validated distribution is mainly logical and modular, while large-scale multi-machine distribution remains future work. The remainder of the paper is organized as follows: Section II reviews related work, Sections III and IV present the methodology and routing mechanism, Section V details the implementation, Section VI describes the experimental setup, Section VII reports and discusses the results, Section VIII states the operational positioning and validity limits, and Section IX concludes the paper.
+The paper deliberately uses cautious claims. Non-supervised outputs are treated as anomaly candidates, not confirmed intrusions. The validated distribution is mainly logical and modular, while large-scale multi-machine distribution remains future work. The source code of the prototype is available at \url{https://github.com/andybitati/Memoire}; large raw datasets and local operational exports are excluded from the repository when size, licensing or privacy constraints apply. The remainder of the paper is organized as follows: Section II reviews related work, Sections III and IV present the methodology and routing mechanism, Section V details the implementation, Section VI describes the experimental setup, Section VII reports and discusses the results, Section VIII states the operational positioning and validity limits, and Section IX concludes the paper.
 
 \section{Related Work}
 \subsection{Anomaly Detection and Intrusion Detection}
@@ -121,7 +121,7 @@ The proposed architecture follows a log processing chain from raw sources to ana
     \label{fig:architecture}
 \end{figure*}
 
-The distribution validated in this work is primarily logical and modular. The service-level implementation is partially supported through FastAPI endpoints, a local JSONL bus and an optional Redis-based evolution. A large-scale multi-machine deployment is not claimed as a completed result.
+The distribution validated in this work is primarily logical and modular. The service-level implementation is partially supported through FastAPI endpoints, a local JSONL bus and an optional Redis Streams evolution. Redis Streams supports service traces and a queued workflow mode in which API requests can enqueue jobs consumed by external workers through consumer groups. In this first article, this is reported only as an implementation boundary that prevents the architecture from being tied to synchronous calls; no Redis throughput, worker-scaling or fault-recovery result is used as core evidence. Large-scale multi-machine deployment and operational scalability evaluation are reserved for the companion operational article.
 
 \subsection{Agent Roles and Interaction}
 Table~\ref{tab:agents} summarizes the main agents. This decomposition is important because it prevents the detector from becoming an opaque monolithic block. It also allows future replacement of one agent without redesigning the entire pipeline.
@@ -147,7 +147,7 @@ Supervisor & Observes sources/resources and adapts workflow parameters & Policy-
 \end{tabularx}
 \end{table}
 
-Communication is implemented through file-based artifacts, JSONL messages, FastAPI endpoints and optional Redis evolution. Coordination is handled by an orchestrated workflow, including discovered-source execution and route-based processing.
+Communication is implemented through file-based artifacts, JSONL messages, FastAPI endpoints and optional Redis Streams evolution. Coordination is handled by an orchestrated workflow, including discovered-source execution and route-based processing.
 
 \subsection{Normalized Event Contract}
 The common schema contains fields such as timestamp, severity, event identifier, source, host, user, source and destination IP, ports, category, subcategory and message. This common representation does not erase family-specific information; it provides the minimal interface required for model routing, scoring, correlation and visualization. The design follows log management principles in which normalization and retention of raw context are both necessary for auditability \cite{nist80092,rfc5424}.
@@ -195,27 +195,31 @@ A full sensitivity analysis over these weights is not claimed in this paper; it 
 
 Because the router is a distinct architectural component, detector-level F1 is not sufficient to evaluate it. A complete router evaluation should also report route accuracy when family labels are known, fallback precision on unsupported sources, low-confidence rate, route stability under perturbed weights, and misroute severity when an event is sent to an incompatible detector. The current paper reports routing behavior through ablations, fallback tests and audit traces, but these router-specific metrics remain a target for a stricter artifact evaluation.
 
-\begin{table}[t]
+\begin{table*}[t]
 \caption{Numerical routing policy constants used in the prototype}
 \label{tab:router_weights}
 \centering
 \scriptsize
-\begin{tabularx}{\linewidth}{p{2.1cm}r X}
+\begin{tabularx}{\textwidth}{p{2.7cm}r p{4.7cm}X}
 \toprule
-\textbf{Evidence} & \textbf{Weight} & \textbf{Use in current router} \\
+\textbf{Evidence} & \textbf{Weight} & \textbf{Activation condition} & \textbf{Purpose in current router} \\
 \midrule
-Matched family column & $+8$ each & Generic column evidence for supported families \\
-Generic family marker & $+35$ & Marker token found in sampled values or dataset fields \\
-Family-specific feature hit & $+10$ to $+12$ each & Windows, Linux, HDFS, BGL and network evidence bundles \\
-Dense network profile & $+20$ & Numeric tabular profile typical of network-flow data \\
-Filename hint & $+45$ & CICIDS or Linux/auth source-name evidence \\
-Specialized dataset bundle & $+70$ to $+120$ & Linux/auth, Wazuh and normalized SIEM evidence \\
-Known unsupported subtype & $+140$ fallback & Apache, CEF/LEEF, CloudTrail or unknown subtype \\
-Corrupted input marker & $+120$ fallback & Corrupt, incomplete or broken input indicators \\
-Syslog subtype & $+140$ linux, $-40$ windows & Prevents syslog batches from being routed to Windows \\
+Matched family column & $+8$ each & Column name belongs to the candidate family's allow-list & Low-cost structural evidence; several columns must usually accumulate before a family dominates \\
+Generic family marker & $+35$ & Family token appears in sampled values or dataset/subtype fields & Supporting lexical evidence; never used alone as a production claim \\
+Network feature bundle & $+12$ per hit & Active source/destination IPs, ports, protocol, packet/byte counters, attack labels or visible IP values & Separates tabular network-flow files from operating-system event logs \\
+CICIDS feature bundle & $+80 + 8h$ & At least five CICIDS columns are present; $h$ is the number of matched CICIDS columns & Routes MachineLearningCVE-style flows to the CICIDS-compatible model \\
+Windows feature bundle & $+10h$ & Microsoft provider tokens, numeric EventID density, EVTX source markers, or Windows host/user/session fields & Routes normalized Windows event logs without relying only on filenames \\
+HDFS/BGL feature bundle & $+12h$ & HDFS block/NameNode/DataNode markers or BGL/RAS/BlueGene markers; $h$ is the matched feature count & Detects sequential system-log families while exposing their current detector limits \\
+Wazuh/SIEM bundle & $+90+8h$ or $+120+12h$ & Wazuh raw columns or normalized Wazuh fields are present; subtype and OSSEC/Wazuh markers add supporting evidence & Prevents SIEM exports from being treated as ordinary Linux or Windows logs \\
+Linux/auth bundle & $+70+8h$ & At least three authentication columns plus source IP and port are present & Keeps authentication datasets out of the generic network branch despite shared IP/port fields \\
+Filename hint & $+45$ & Path contains known CICIDS/MachineLearningCVE or Linux/auth identifiers & Tie-breaker for curated benchmark files, not a substitute for structural evidence \\
+Dense network profile & $+20$ & At least 15 numeric columns and at least 25 total columns & Weak transverse signal for network-like tabular data \\
+Known unsupported subtype & $+140$ fallback & Apache, CEF/LEEF, CloudTrail or all-unknown dataset/subtype markers & Forces graceful fallback when no specialized model is claimed in this article \\
+Corrupted input marker & $+120$ fallback & Path or sampled text contains corrupt, incomplete or broken markers & Preserves malformed inputs without forcing them into a specialized detector \\
+Syslog subtype & $+140$ linux, $-40$ windows & Normalized subtype contains syslog & Prevents syslog batches from being routed to Windows when fields overlap \\
 \bottomrule
 \end{tabularx}
-\end{table}
+\end{table*}
 
 \subsection{Ablation Protocol}
 To make the claim testable, the experimental protocol includes an ablation study. Table~\ref{tab:ablation} defines the comparisons. Two levels are reported. First, a controlled common-space ablation forces both the global model and the family-aware models to use the same minimal feature representation. Second, an operational ablation compares the same global common-feature baseline with the full specialized configurations, where each family can use its native feature space and trained detector. A complete factorial isolation of routing, features and model family is identified as future work; the present evaluation separates a constrained routing effect from the complete specialization package.
@@ -279,9 +283,9 @@ corrupt\_incomplete.log & 2 & fallback & 141 & 0 & 0 \\
 \end{table}
 
 \section{Implementation}
-The prototype is implemented in Python with a modular source tree. The stable version uses command-line execution, CSV artifacts and local folders. The service-oriented version exposes core workflow actions through FastAPI, including source discovery, detection and correlation. A local JSONL bus supports message-oriented traces, while Redis is documented as an optional extension.
+The prototype is implemented in Python with a modular source tree. The stable version uses command-line execution, CSV artifacts and local folders. The service-oriented version exposes core workflow actions through FastAPI, including source discovery, detection and correlation. A local JSONL bus supports message-oriented traces, while Redis Streams is implemented as an optional extension for service-level experiments, queued workflow execution and worker-based processing. The present article does not evaluate this queue as a scalability result; it only documents that the architecture has a non-blocking evolution path.
 
-The current local buffering strategy is intentionally simple. Collectors and parsers persist raw files, manifests, normalized records and bus messages as local file artifacts before detection. The detector then processes bounded samples or prepared batches rather than keeping an unbounded in-memory queue. If detection lags behind collection, the backlog remains visible in files and JSONL traces, but the prototype does not yet implement production-grade queue admission, back-pressure, retry policies or priority scheduling. This design is acceptable for a local analytical prototype, but it is not sufficient for sustained SOC ingestion under bursty or adversarial traffic; Kafka, MQTT, Redis Streams or an equivalent broker would be needed for durable asynchronous scaling.
+The current local buffering strategy is intentionally simple. Collectors and parsers persist raw files, manifests, normalized records and bus messages as local file artifacts before detection. The detector then processes bounded samples or prepared batches rather than keeping an unbounded in-memory queue. To reduce API blocking, the Redis extension adds a persistent job stream, consumer-group reading, acknowledgement of completed jobs and a standalone worker script. These mechanisms are mentioned here to clarify deployability, not to claim a measured scalability contribution. If detection lags behind collection, the backlog remains visible in files, JSONL traces and Redis pending-job summaries. However, the prototype does not yet implement production-grade admission control, adaptive back-pressure, retry policies, dead-letter handling or priority scheduling. This design is acceptable for a local analytical prototype or intermediate gateway, but it is not sufficient for large-enterprise ingestion under bursty or adversarial traffic; Kafka, MQTT, Redis Streams with fully tested worker policies, or an equivalent broker would be needed for durable asynchronous scaling. Detailed queue, worker and resource behavior is outside this article and belongs to the operational evaluation.
 
 The detector portfolio includes supervised Random Forest models for labeled families such as Linux/auth, CICIDS2017 and UNSW/CIC-DDoS, as well as non-supervised Isolation Forest or ensemble-style detectors for sources where labels are incomplete or absent. Non-supervised outputs are explicitly called anomaly candidates.
 
@@ -530,6 +534,8 @@ Positioning & Lightweight analytical complement & Immediate operational protecti
 \subsection{Scope and Limitations}
 Table~\ref{tab:limits} states the defensible scope of the prototype. This scope is necessary to avoid overclaiming.
 
+Consistent with the project steering document, the intended deployment context is a lightweight analysis workstation, laboratory environment, small or medium organization, or intermediate gateway that complements existing log-management tools. \logminer{} is not presented as a large-enterprise SIEM replacement, a full SOC ingestion platform, or a detector to be installed heavily on every endpoint.
+
 The high HDFS false positive rate is an important example of this scope boundary. It does not invalidate the family-aware architecture, but it shows that sequential distributed-system logs require a different downstream detector family than lightweight row-level scoring. Because \logminer{} separates normalization, routing and detection, a future HDFS/BGL branch can route normalized events toward a Drain-like template parser followed by sequence-aware detection, while simpler tabular branches such as Linux/auth, CICIDS2017 and UNSW/CIC-DDoS continue to use lighter supervised models. This modularity is central to the proposed architecture: heavier algorithms can be attached only where the log family requires them.
 
 \begin{table}[t]
@@ -545,8 +551,8 @@ Software agents & Specialized cooperating software modules plus bounded supervis
 Distribution & Logical and local service distribution; multi-machine deployment remains future work \\
 Adaptive AI & Policy-based routing and workflow parameter adaptation, not continuous self-learning or optimized planning \\
 Real time & Local quasi-real-time workflow, not strict industrial SOC real time \\
-Asynchronism & Current FastAPI/JSONL workflow is mostly synchronous; Kafka, MQTT or Redis Streams would be required for back-pressure and worker parallelism \\
-Deployment & Current prototype targets an analysis workstation or intermediate gateway, not a heavy detector installed on every endpoint \\
+Asynchronism & Redis Streams queue and workers exist as an implementation path; measured queue scaling, back-pressure, retries and dead-letter handling are reserved for the operational article \\
+Deployment & Current prototype targets an analysis workstation, laboratory setup, small/medium organization or intermediate gateway, not a large-enterprise SOC platform or a heavy detector installed on every endpoint \\
 Tool comparison & Analytical complement to Wazuh/fail2ban/OSSEC, not replacement \\
 Unsupervised results & Anomaly candidates, not confirmed intrusions \\
 \bottomrule

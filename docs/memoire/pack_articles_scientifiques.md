@@ -113,7 +113,7 @@ Questions du document directeur, adaptees au prototype:
    - definition des agents;
    - architecture logique et technique;
    - flux de donnees et coordination agentique;
-   - V1 CLI, V2 FastAPI, Redis optionnel.
+   - V1 CLI, V2 FastAPI, Redis Streams optionnel.
 4. Implementation
    - Python, FastAPI, scikit-learn, dashboard web;
    - role des scripts et modules;
@@ -271,7 +271,7 @@ Questions du document directeur, adaptees aux preuves disponibles:
    - architecture complete;
    - agents et responsabilites;
    - logique d'adaptation locale;
-   - synchronisation, message passing, FastAPI, bus JSONL, Redis optionnel.
+   - synchronisation, message passing, FastAPI, bus JSONL, Redis Streams optionnel.
 3. Evaluation Methodology
    - datasets: Windows, Wazuh, Linux/auth, HDFS, BGL, CICIDS, UNSW/CIC-DDoS;
    - metriques: precision, rappel, F1-score, faux positifs, latence, CPU/RAM;
