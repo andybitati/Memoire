@@ -25,11 +25,18 @@ Interpretation: precision de routage distinct-source = 5/5. Sur les 30 cycles re
 
 Nous devons repondre positivement, mais prudemment. Les avertissements de compatibilite `scikit-learn` montrent une menace de reproductibilite. La bonne reponse est de dire que les scores actuels restent des mesures locales du prototype, et que la diffusion reproductible devra republisher les artefacts entraines dans un environnement epingle.
 
-Mise a jour a signaler explicitement: le depot GitHub mentionne dans l'article contient maintenant `Dockerfile`, `requirements-container.txt`, `requirements.txt`, `requirements-ai.txt`, `docker-compose.redis.yml` et `docker-compose.mqtt.yml`. Les grands datasets, exports locaux et binaires de modeles peuvent rester externes selon les contraintes de taille, licence ou confidentialite.
+Mise a jour a signaler explicitement: le depot GitHub mentionne dans l'article contient maintenant `Dockerfile`, `requirements-container.txt`, `requirements.txt`, `requirements-ai.txt`, `docker-compose.redis.yml` et `docker-compose.mqtt.yml`. Le conteneur a ete teste localement avec Docker 27.4.0:
+
+```powershell
+docker build -t logminer-article1-runtime:test .
+docker run --rm logminer-article1-runtime:test python -c "import sys; sys.path.insert(0,'src/logminer'); import api, sklearn, pandas, numpy, joblib"
+```
+
+Le build est passe apres ajout des dependances systeme Cairo necessaires a `pycairo`, et le smoke test confirme l'import de l'API et du socle `scikit-learn/pandas/numpy/joblib`. Les grands datasets, exports locaux et binaires de modeles peuvent rester externes selon les contraintes de taille, licence ou confidentialite.
 
 Formulation courte possible:
 
-> Yes. The GitHub repository now includes the Dockerfile, pinned container requirements and Redis/MQTT Compose descriptors. The compatibility warnings are treated as a model-persistence validity threat: the current scores are local prototype measurements, and exact replication still requires retraining or republishing the model artifacts under the pinned container environment.
+> Yes. The GitHub repository now includes the Dockerfile, pinned container requirements and Redis/MQTT Compose descriptors. The container was build-tested with Docker 27.4.0 and smoke-tested by importing the FastAPI application and the pinned scientific stack. The compatibility warnings are treated as a model-persistence validity threat: the current scores are local prototype measurements, and exact replication still requires retraining or republishing the model artifacts under the pinned container environment.
 
 Cela reste article 1: reproductibilite experimentale. Ce n'est pas encore une revendication de deploiement scalable, donc cela n'empiete pas sur l'article 2.
 
