@@ -379,6 +379,11 @@ select {
   box-shadow: 0 0 14px rgba(165, 22, 36, 0.82);
 }
 
+.warnDot {
+  background: var(--amber);
+  box-shadow: 0 0 14px rgba(255, 211, 107, 0.82);
+}
+
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(160px, 1fr));
@@ -864,6 +869,19 @@ select {
   grid-template-columns: repeat(4, minmax(150px, 1fr));
   gap: 10px;
   margin-bottom: 12px;
+}
+
+.serviceActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.serviceActions small {
+  color: #bfa47e;
+  font-size: 12px;
 }
 
 .serviceItem {

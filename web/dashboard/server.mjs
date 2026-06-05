@@ -307,9 +307,11 @@ async function handleApi(req, res) {
 
 async function handleServices(req, res) {
   try {
-    const [health, redisHealth, models, runtime] = await Promise.allSettled([
+    const [health, redisHealth, redisPending, mqttHealth, models, runtime] = await Promise.allSettled([
       fetchJson(`${fastApiBase}/health`),
       fetchJson(`${fastApiBase}/redis/health`),
+      fetchJson(`${fastApiBase}/redis/pending`),
+      fetchJson(`${fastApiBase}/mqtt/health`),
       fetchJson(`${fastApiBase}/models`),
       fetchJson(`${fastApiBase}/runtime/status`),
     ]);
@@ -321,11 +323,19 @@ async function handleServices(req, res) {
         redisHealth.status === "fulfilled"
           ? redisHealth.value
           : { status: "down", error: redisHealth.reason.message },
+      redisPending:
+        redisPending.status === "fulfilled"
+          ? redisPending.value
+          : { pending: { pending: 0 }, error: redisPending.reason.message },
+      mqtt:
+        mqttHealth.status === "fulfilled"
+          ? mqttHealth.value
+          : { status: "down", error: mqttHealth.reason.message },
       models: models.status === "fulfilled" ? models.value.models || [] : [],
       runtime: runtime.status === "fulfilled" ? runtime.value : { docker_cli: false, docker_engine: false, message: runtime.reason.message },
     });
   } catch (error) {
-    sendJson(res, 200, { apiBase: fastApiBase, api: { status: "down", error: error.message }, redis: { status: "down" }, models: [], runtime: {} });
+    sendJson(res, 200, { apiBase: fastApiBase, api: { status: "down", error: error.message }, redis: { status: "down" }, redisPending: {}, mqtt: { status: "down" }, models: [], runtime: {} });
   }
 }
 
@@ -357,6 +367,34 @@ async function handleRedisEvents(req, res) {
     sendJson(res, 200, await fetchJson(target));
   } catch (error) {
     sendJson(res, 200, { stream: "", count: 0, events: [], error: error.message });
+  }
+}
+
+async function handleMqttPublish(req, res) {
+  if (req.method !== "POST") {
+    sendJson(res, 405, { error: "method not allowed" });
+    return;
+  }
+
+  try {
+    const body = await readJsonBody(req);
+    sendJson(
+      res,
+      200,
+      await fetchJson(`${fastApiBase}/mqtt/publish`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          run_id: `dashboard-mqtt-${Date.now()}`,
+          source: "dashboard",
+          target: "collector",
+          message_type: "dashboard.mqtt.test",
+          payload: { source: "web-dashboard", ...body },
+        }),
+      }),
+    );
+  } catch (error) {
+    sendJson(res, 502, { error: error.message });
   }
 }
 
@@ -485,6 +523,8 @@ const server = http.createServer((req, res) => {
     handleRuntimePrepare(req, res);
   } else if (req.url?.startsWith("/api/redis-events")) {
     handleRedisEvents(req, res);
+  } else if (req.url?.startsWith("/api/mqtt-publish")) {
+    handleMqttPublish(req, res);
   } else if (req.url?.startsWith("/api/audit")) {
     handleAudit(req, res);
   } else if (req.url?.startsWith("/api/resources")) {
