@@ -1,0 +1,2 @@
+﻿dataset;baseline;rows;tp;fp;fn;tn;precision;recall;f1;accuracy;fpr;note
+linux_auth_logs_labeled;fail2ban_like_rules;200000;5358;70695;4630;119317;0.070451;0.536444;0.124545;0.623375;0.372055;"Baseline controlee inspiree de fail2ban; ce n'est pas une execution de fail2ban."

@@ -1,0 +1,90 @@
+\chapter{Implementation}
+
+\section{Organisation generale du prototype}
+Le prototype \logminer{} est organise autour d'un noyau Python et d'un dashboard web. Les modules principaux sont situes dans le paquet \texttt{src/logminer}. Les scripts experimentaux sont regroupes dans \texttt{scripts}. Les resultats consolides sont exportes vers \texttt{data/processed}, puis transformes en tableaux, figures et captures pour le memoire.
+
+\section{Outils et environnement}
+L'implementation repose principalement sur Python pour le pipeline, scikit-learn pour les modeles legers, FastAPI pour l'exposition des services locaux et une interface web pour le dashboard. Les donnees et resultats sont manipules sous forme de fichiers CSV, JSONL et artefacts graphiques. Cette pile technique a ete choisie pour sa simplicite de reproduction, sa disponibilite locale et sa compatibilite avec une experimentation rapide.
+
+\section{Pipeline de traitement}
+Le pipeline effectue les etapes suivantes :
+\begin{enumerate}
+  \item lecture ou decouverte des sources de journaux ;
+  \item parsing des formats connus ou conservation en format inconnu ;
+  \item normalisation dans un schema commun ;
+  \item routage vers une famille de logs ;
+  \item detection ou classification ;
+  \item correlation des anomalies candidates ;
+  \item export CSV et audit.
+\end{enumerate}
+
+Le module \texttt{pipeline.py} coordonne la chaine locale. Le module \texttt{api.py} expose les fonctions principales via FastAPI. Les modules \texttt{model\_router.py} et \texttt{model\_compare.py} gerent la selection des familles et la comparaison des modeles.
+
+\section{Parsing multi-format}
+Le prototype prend en charge plusieurs formats : CSV, JSONL, syslog, Apache, CloudTrail, HDFS, BGL, Windows XML/EVTX exporte, CEF/LEEF, tcpdump texte et pcap selon les dependances disponibles. Lorsqu'une entree est incomplete ou corrompue, elle est conservee plutot que supprimee. Cette strategie est importante pour l'audit, car une ligne non reconnue peut elle-meme etre un signal utile.
+
+\section{Registre des modeles}
+Les modeles sont stockes dans le dossier \texttt{models}. Le registre documente les familles, types de modeles et volumes associes. Le systeme distingue les modeles supervises, lorsqu'un label est disponible, et les modeles non supervises, lorsqu'il s'agit de signaler des comportements rares.
+
+\section{API FastAPI}
+La V2 du prototype expose une API locale permettant de lancer des analyses, consulter l'etat des services, interroger les modeles, lire les ressources et recuperer les evenements d'audit. L'API permet aussi au dashboard de fonctionner sans manipuler directement les fichiers internes.
+
+L'API joue un role de separation entre le moteur d'analyse et l'interface. Elle evite que le dashboard depende directement de l'organisation interne des fichiers. Cette separation facilite aussi l'ajout futur de workers, de files d'attente ou de connecteurs vers d'autres plateformes.
+
+\section{Dashboard Ariel Logminer}
+Le dashboard web constitue l'interface de consultation et d'interaction. Il affiche les indicateurs globaux, les alertes prioritaires, les anomalies candidates, les incidents, les graphes temps reel, les ressources agents, les services V2 et le journal d'audit.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{dashboard_vue_ensemble.png}
+  \caption{Vue d'ensemble du dashboard Ariel \logminer.}
+  \label{fig:dashboard-overview}
+\end{figure}
+
+La vue resultats permet d'inspecter les anomalies candidates, le detail incident et les decisions analyste.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{dashboard_resultats_detail_incident.png}
+  \caption{Vue resultats, detail incident et decisions analyste.}
+  \label{fig:dashboard-results}
+\end{figure}
+
+La vue technique expose les services, les ressources et l'audit.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{dashboard_ressources_audit.png}
+  \caption{Vue technique, ressources, services et audit.}
+  \label{fig:dashboard-technical}
+\end{figure}
+
+\section{Audit et decisions analyste}
+Le dashboard permet de valider, rejeter ou reclasser une anomalie candidate. Ces decisions sont enregistrees dans l'audit. Cette fonctionnalite prepare une boucle d'amelioration future, dans laquelle les validations humaines pourraient servir a reduire les faux positifs.
+
+\section{Problemes rencontres}
+Plusieurs difficultes ont marque l'implementation. La premiere concerne l'heterogeneite des formats : certaines sources sont tabulaires, d'autres textuelles, et d'autres deja enrichies par un outil externe. La deuxieme concerne l'interpretation des sorties non supervisees : sans labels, un score d'anomalie doit rester une indication et non une conclusion. La troisieme concerne la coherence du dashboard : il faut afficher assez de details pour l'analyse sans transformer l'interface en simple dump technique.
+
+\section{Reproductibilite}
+Les experimentations principales sont documentees par des CSV et scripts. Les scripts \texttt{benchmark\_realtime\_workflow.py}, \texttt{run\_resource\_campaign.py}, \texttt{run\_family\_routing\_ablation.py}, \texttt{generate\_memoire\_assets.py} et \texttt{export\_memoire\_figures.py} permettent de regenerer les mesures, figures et tableaux principaux.
+
+\section{Organisation des modules}
+Le paquet \texttt{src/logminer} regroupe les composants applicatifs. Le pipeline coordonne les traitements principaux. Le parseur reconnait les formats et produit des objets intermediaires. Le routeur associe les evenements a une famille de logs. Le detecteur applique les modeles disponibles. Le correlateur regroupe les anomalies candidates. L'audit conserve les traces d'execution et les decisions. Cette organisation correspond directement au modele multi-agents presente au chapitre precedent.
+
+Le fichier \texttt{model\_compare.py}, ouvert dans l'environnement de developpement, participe a la comparaison des modeles et a la consolidation des resultats. Il s'inscrit dans une logique plus large de registre de modeles : chaque detecteur doit etre associe a une famille, a un type d'apprentissage et a des metriques connues. Cette discipline de nommage et de comparaison evite de melanger des resultats produits dans des contextes differents.
+
+\section{Preparation des donnees}
+La preparation des donnees constitue une etape importante de l'implementation. Les journaux doivent etre nettoyes, convertis ou harmonises avant l'application des modeles. Pour les datasets tabulaires, il faut verifier les colonnes, isoler les labels, encoder les variables si necessaire et separer les ensembles d'entrainement et de test. Pour les journaux textuels, il faut extraire les timestamps, messages, sources et severites lorsque ces informations sont presentes.
+
+La preparation n'a pas ete traitee comme une operation invisible. Les scripts conserves dans le dossier de reproductibilite documentent les transformations principales. Cette approche permet de justifier les tableaux et figures du memoire et de relier les valeurs citees aux fichiers qui les ont produites.
+
+\section{Implementation du dashboard}
+Le dashboard a ete concu comme une interface de travail. Il regroupe les indicateurs principaux, les resultats, les details d'incident, les ressources, les services et l'audit. Les captures inserees dans le memoire montrent plusieurs vues afin d'eviter de reduire l'interface a une seule image de presentation. La vue d'ensemble montre l'etat global du prototype. La vue resultats donne acces aux anomalies candidates et aux decisions analyste. La vue technique expose les ressources et les services.
+
+L'interet de cette interface est de rendre les sorties du pipeline lisibles. Un fichier CSV peut suffire a un test automatique, mais il ne suffit pas a une analyse humaine. Le dashboard joue donc le role de couche d'interpretation. Il met en forme les evenements et permet de passer d'un signal technique a une decision.
+
+\section{Choix de legerete}
+Le prototype privilegie des technologies legeres et accessibles. Python et FastAPI permettent un developpement rapide. Les fichiers CSV et JSONL facilitent l'audit et l'export. Les modeles scikit-learn sont plus simples a entrainer et a deployer localement que des architectures profondes lourdes. Ce choix ne signifie pas que les methodes avancees sont inutiles ; il signifie que le memoire cherche d'abord a valider une chaine complete et reproductible.
+
+\section{Validation fonctionnelle}
+La validation fonctionnelle repose sur plusieurs verifications : execution des scripts experimentaux, production des CSV, generation des figures, consultation du dashboard, verification des captures et coherence des tableaux. Cette validation complete l'evaluation quantitative. Elle montre que le prototype ne produit pas seulement des scores, mais aussi des artefacts exploitables pour la redaction et pour l'analyse technique.

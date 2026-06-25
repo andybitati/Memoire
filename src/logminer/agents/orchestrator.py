@@ -35,6 +35,7 @@ def run_local_pipeline(
     bus_path: str | Path = "data/processed/agent_messages.jsonl",
     run_id: str | None = None,
     debug: bool = False,
+    parser_parallel_workers: int = 1,
 ) -> dict[str, str]:
     """Execute parseur puis detecteur en partageant le meme bus."""
 
@@ -53,6 +54,7 @@ def run_local_pipeline(
         sep=sep,
         bus=bus,
         debug=debug,
+        parallel_workers=parser_parallel_workers,
     )
     if not produced:
         bus.publish(
@@ -111,6 +113,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument("--bus", default="data/processed/agent_messages.jsonl", help="Journal de messages JSONL")
     parser.add_argument("--run-id", default=None, help="Identifiant de run partage")
     parser.add_argument("--debug", action="store_true", help="Mode debug")
+    parser.add_argument("--parser-parallel-workers", type=int, default=1, help="Nombre de fichiers parses en parallele")
     args = parser.parse_args(argv)
 
     result = run_local_pipeline(
@@ -125,6 +128,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         bus_path=args.bus,
         run_id=args.run_id,
         debug=args.debug,
+        parser_parallel_workers=args.parser_parallel_workers,
     )
 
     print(f"Run ID: {result['run_id']}")

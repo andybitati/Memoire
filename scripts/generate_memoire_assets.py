@@ -64,6 +64,13 @@ def write_text(path: Path, text: str) -> None:
     path.write_text(text, encoding="utf-8")
 
 
+def latest_existing(*paths: Path) -> Path:
+    existing = [path for path in paths if path.exists()]
+    if not existing:
+        return paths[0]
+    return max(existing, key=lambda path: path.stat().st_mtime)
+
+
 def svg_header(width: int, height: int) -> list[str]:
     return [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img">',
@@ -243,11 +250,16 @@ def generate() -> None:
         "F1-score",
     )
 
-    benchmark = read_csv(PROCESSED / "realtime_workflow_benchmark.csv", sep=";")
+    benchmark_path = latest_existing(
+        PROCESSED / "realtime_workflow_benchmark.csv",
+        PROCESSED / "realtime_workflow_benchmark_20260604.csv",
+    )
+    benchmark = read_csv(benchmark_path, sep=";")
+    benchmark_ok = [row for row in benchmark if row.get("status") == "ok"]
     line_chart(
         FIGURES / "fig_realtime_workflow_latency.svg",
         "Latence du workflow quasi temps reel",
-        "Endpoint FastAPI /run/discovered, 5 cycles, max_mb=5, source selectionnee automatiquement",
+        f"Endpoint FastAPI /run/discovered, {len(benchmark_ok)} cycles, max_mb=5, source selectionnee automatiquement",
         benchmark,
     )
 
@@ -289,7 +301,7 @@ def generate() -> None:
 
     matrix_diagram(FIGURES / "fig_architecture_logminer.svg")
 
-    latency_values = [as_float(row["workflow_sec"]) for row in benchmark if row.get("status") == "ok"]
+    latency_values = [as_float(row["workflow_sec"]) for row in benchmark_ok]
     write_markdown_table(
         TABLES / "table_realtime_benchmark.md",
         "Benchmark Quasi Temps Reel",
@@ -379,12 +391,14 @@ def generate() -> None:
         "| `fig_realtime_workflow_latency.svg` | Objectifs 4 et 7: temps quasi reel, latence |",
         "| `fig_robustness_multiformat.svg` | Objectifs 1, 6 et 7: robustesse multi-format |",
         "| `fig_model_portfolio_scale.svg` | Methodologie: portefeuille de modeles specialises |",
+        "| `fig_parallel_resource_campaign.svg` | Scalabilite locale: execution parallele de detecteurs et consommation CPU/RAM |",
         "",
         "Tableaux principaux: `docs/memoire/tables/table_resultats_principaux.md`,",
         "`docs/memoire/tables/table_datasets_scenarios.md`,",
         "`docs/memoire/tables/table_realtime_benchmark.md`,",
         "`docs/memoire/tables/table_comparaison_outils_standards.md`,",
-        "`docs/memoire/tables/table_resource_snapshot.md`.",
+        "`docs/memoire/tables/table_resource_snapshot.md`,",
+        "`docs/memoire/tables/table_parallel_resource_campaign.md`.",
         "",
     ]
     write_text(FIGURES / "README.md", "\n".join(figure_index))

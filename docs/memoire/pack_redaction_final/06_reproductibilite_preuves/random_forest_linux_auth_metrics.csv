@@ -1,0 +1,2 @@
+﻿dataset,model,train_rows,test_rows,normal_rows_used,anomaly_rows_used,accuracy,precision,recall,f1,tn,fp,fn,tp
+data\raw\Datasets\linux_auth_logs_labeled.csv + data\raw\Datasets\linux_auth_logs_full(new_unbalanced).csv,random_forest_linux_auth,155765,38942,120000,74707,0.9364439422731241,0.923040380047506,0.9102529781823049,0.9166020824207298,22866,1134,1341,13601

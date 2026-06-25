@@ -1,5 +1,11 @@
 const DATA_LIMIT = 8000;
 const AUTO_REFRESH_MS = 5 * 1000;
+const VALID_VIEWS = new Set(["overview", "results", "technical"]);
+
+function initialView() {
+  const view = new URLSearchParams(window.location.search).get("view");
+  return VALID_VIEWS.has(view) ? view : "overview";
+}
 
 let state = {
   loading: true,
@@ -21,7 +27,7 @@ let state = {
   explanation: { loading: false, provider: "", text: "", error: "" },
   meta: {},
   filters: { query: "", host: "", severity: "", category: "", source: "" },
-  view: "overview",
+  view: initialView(),
   selectedIncidentId: "",
   alertDecisions: {},
   decisionAnimations: {},
@@ -232,11 +238,18 @@ function setFilter(key, value) {
 }
 
 function setView(view) {
+  if (!VALID_VIEWS.has(view)) return;
+  const url = new URL(window.location.href);
+  url.searchParams.set("view", view);
+  window.history.replaceState({}, "", url);
   state = { ...state, view };
   render();
 }
 
 function selectIncident(incidentId) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("view", "results");
+  window.history.replaceState({}, "", url);
   state = { ...state, selectedIncidentId: incidentId, view: "results" };
   render();
 }

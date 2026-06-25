@@ -25,9 +25,10 @@ def main(argv = None):
     p.add_argument('--progress-every', type = int, default = 0, help = 'Affiche une progression toutes N lignes (si supporté)')
     p.add_argument('--tqdm', action = 'store_true', help = 'Barre de progression (si supporté)')
     p.add_argument('--debug', action = 'store_true', help = 'Mode debug')
+    p.add_argument('--parallel-workers', type = int, default = 1, help = 'Nombre de fichiers parses en parallele pour un dossier')
     args = p.parse_args(argv)
     os.makedirs(args.out_dir, exist_ok = True)
-    produced = run_pipeline(input_path = args.input, out_dir = args.out_dir, out_name = args.name, sep = args.sep, split_rows = args.split_rows, progress_every = args.progress_every, use_tqdm = args.tqdm, debug = args.debug)
+    produced = run_pipeline(input_path = args.input, out_dir = args.out_dir, out_name = args.name, sep = args.sep, split_rows = args.split_rows, progress_every = args.progress_every, use_tqdm = args.tqdm, debug = args.debug, parallel_workers = args.parallel_workers)
     print('\n'.join(produced))
     return 0
 

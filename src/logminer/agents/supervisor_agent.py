@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -25,7 +26,7 @@ if str(BASE_DIR) not in sys.path:
 
 from agents.audit import write_audit
 from agents.bus import LocalMessageBus, MessageBus
-from agents.collector_agent import DEFAULT_ROOTS, LogCandidate, discover_logs
+from agents.collector_agent import DEFAULT_ROOTS, LogCandidate, deployment_roots, discover_logs
 from agents.model_router import route_model, run_routed_detection
 from agents.resource_monitor import snapshot as resource_snapshot
 from pipeline import run_pipeline
@@ -162,14 +163,22 @@ def perceive(
     max_files: int = 20,
     max_mb: int = 100,
     bus: MessageBus | None = None,
+    collector_parallel_workers: int = 1,
+    use_deployment_roots: bool = False,
 ) -> SupervisorPerception:
     """Observe les sources disponibles et la charge locale."""
 
+    selected_roots = (
+        deployment_roots(include_project=True, extra_roots=roots)
+        if use_deployment_roots
+        else roots or list(DEFAULT_ROOTS)
+    )
     candidates = discover_logs(
-        roots=roots or list(DEFAULT_ROOTS),
+        roots=selected_roots,
         max_files=max_files,
         max_bytes=max(1, max_mb) * 1024 * 1024,
         bus=bus,
+        parallel_workers=collector_parallel_workers,
     )
     resources = resource_snapshot()
     run_id = bus.run_id if bus is not None else datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
@@ -285,6 +294,9 @@ def act(
     *,
     out_dir: str | Path = "data/processed",
     bus: MessageBus | None = None,
+    parser_parallel_workers: int = 1,
+    chunk_workers: int = 1,
+    correlator_parallel_workers: int = 1,
 ) -> dict[str, Any]:
     """Execute l'action decidee par le superviseur."""
 
@@ -310,7 +322,13 @@ def act(
     if decision.parse_if_needed:
         parse_started = perf_counter()
         parsed_name = f"supervisor_{run_id}_parsed.csv"
-        produced = run_pipeline(str(input_path), str(output_dir), parsed_name, sep=";")
+        produced = run_pipeline(
+            str(input_path),
+            str(output_dir),
+            parsed_name,
+            sep=";",
+            parallel_workers=parser_parallel_workers,
+        )
         if not produced:
             raise RuntimeError(f"Parsing sans sortie pour {input_path}")
         source_for_detection = _project_path(produced[0])
@@ -326,6 +344,8 @@ def act(
         output=anomalies_csv,
         incidents_output=incidents_csv,
         window_minutes=decision.window_minutes,
+        chunk_workers=chunk_workers,
+        correlator_parallel_workers=correlator_parallel_workers,
     )
     timings.update(result.get("timings") or {})
     workflow = {
@@ -361,13 +381,25 @@ def run_supervisor_cycle(
     bus_path: str | Path = "data/processed/supervisor_messages.jsonl",
     memory_path: str | Path = "data/processed/supervisor_state.json",
     run_id: str | None = None,
+    parser_parallel_workers: int = 1,
+    chunk_workers: int = 1,
+    correlator_parallel_workers: int = 1,
+    collector_parallel_workers: int = 1,
+    use_deployment_roots: bool = False,
 ) -> SupervisorCycleResult:
     """Execute un cycle autonome complet."""
 
     started = perf_counter()
     bus = LocalMessageBus(bus_path, run_id=run_id)
     memory = load_memory(memory_path)
-    perception = perceive(roots=roots, max_files=max_files, max_mb=max_mb, bus=bus)
+    perception = perceive(
+        roots=roots,
+        max_files=max_files,
+        max_mb=max_mb,
+        bus=bus,
+        collector_parallel_workers=collector_parallel_workers,
+        use_deployment_roots=use_deployment_roots,
+    )
     selected, selection_reasons = select_candidate(perception, memory)
     state = update_state(perception, memory)
     if selected:
@@ -376,7 +408,14 @@ def run_supervisor_cycle(
     decision = decide(state, default_max_mb=max_mb, selection_reasons=selection_reasons)
     status = "ok"
     try:
-        workflow = act(decision, out_dir=out_dir, bus=bus)
+        workflow = act(
+            decision,
+            out_dir=out_dir,
+            bus=bus,
+            parser_parallel_workers=parser_parallel_workers,
+            chunk_workers=chunk_workers,
+            correlator_parallel_workers=correlator_parallel_workers,
+        )
     except Exception as exc:
         status = "error"
         workflow = {"error": str(exc)}
@@ -430,10 +469,44 @@ def run_supervisor_campaign(
     out_dir: str | Path = "data/processed",
     bus_path: str | Path = "data/processed/supervisor_messages.jsonl",
     memory_path: str | Path = "data/processed/supervisor_state.json",
+    parallel_workers: int = 1,
+    parser_parallel_workers: int = 1,
+    chunk_workers: int = 1,
+    correlator_parallel_workers: int = 1,
+    collector_parallel_workers: int = 1,
+    use_deployment_roots: bool = False,
 ) -> list[SupervisorCycleResult]:
     """Execute plusieurs cycles autonomes en conservant la memoire."""
 
     results: list[SupervisorCycleResult] = []
+    workers = min(max(1, int(parallel_workers)), max(1, cycles))
+    if workers > 1:
+        bus_base = Path(bus_path)
+        memory_base = Path(memory_path)
+        with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="logminer-supervisor") as executor:
+            futures = {
+                executor.submit(
+                    run_supervisor_cycle,
+                    roots=roots,
+                    max_files=max_files,
+                    max_mb=max_mb,
+                    out_dir=out_dir,
+                    bus_path=bus_base.with_name(f"{bus_base.stem}_{index}{bus_base.suffix}"),
+                    memory_path=memory_base.with_name(f"{memory_base.stem}_{index}{memory_base.suffix}"),
+                    run_id=f"supervisor-campaign-parallel-{index}",
+                    parser_parallel_workers=parser_parallel_workers,
+                    chunk_workers=chunk_workers,
+                    correlator_parallel_workers=correlator_parallel_workers,
+                    collector_parallel_workers=collector_parallel_workers,
+                    use_deployment_roots=use_deployment_roots,
+                ): index
+                for index in range(1, max(1, cycles) + 1)
+            }
+            ordered: dict[int, SupervisorCycleResult] = {}
+            for future in as_completed(futures):
+                ordered[futures[future]] = future.result()
+        return [ordered[index] for index in sorted(ordered)]
+
     for index in range(1, max(1, cycles) + 1):
         result = run_supervisor_cycle(
             roots=roots,
@@ -443,6 +516,11 @@ def run_supervisor_campaign(
             bus_path=bus_path,
             memory_path=memory_path,
             run_id=f"supervisor-campaign-{index}",
+            parser_parallel_workers=parser_parallel_workers,
+            chunk_workers=chunk_workers,
+            correlator_parallel_workers=correlator_parallel_workers,
+            collector_parallel_workers=collector_parallel_workers,
+            use_deployment_roots=use_deployment_roots,
         )
         results.append(result)
     return results
@@ -458,6 +536,12 @@ def main() -> int:
     parser.add_argument("--memory", default="data/processed/supervisor_state.json")
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--cycles", type=int, default=1)
+    parser.add_argument("--parallel-workers", type=int, default=1, help="Nombre de cycles superviseur executes en parallele")
+    parser.add_argument("--parser-parallel-workers", type=int, default=1, help="Nombre de fichiers parses en parallele par cycle")
+    parser.add_argument("--chunk-workers", type=int, default=1, help="Nombre de chunks d'inference en parallele par cycle")
+    parser.add_argument("--correlator-parallel-workers", type=int, default=1, help="Nombre de groupes correles en parallele par cycle")
+    parser.add_argument("--collector-parallel-workers", type=int, default=1, help="Nombre de racines/fichiers decouverts en parallele")
+    parser.add_argument("--deployment-roots", action="store_true", help="Ajoute les chemins de logs standards de l'OS courant")
     args = parser.parse_args()
 
     if args.cycles > 1:
@@ -469,6 +553,12 @@ def main() -> int:
             out_dir=args.out_dir,
             bus_path=args.bus,
             memory_path=args.memory,
+            parallel_workers=args.parallel_workers,
+            parser_parallel_workers=args.parser_parallel_workers,
+            chunk_workers=args.chunk_workers,
+            correlator_parallel_workers=args.correlator_parallel_workers,
+            collector_parallel_workers=args.collector_parallel_workers,
+            use_deployment_roots=args.deployment_roots,
         )
         print(json.dumps([asdict(result) for result in results], ensure_ascii=False, indent=2))
         return 0 if all(result.status == "ok" for result in results) else 1
@@ -481,6 +571,11 @@ def main() -> int:
         bus_path=args.bus,
         memory_path=args.memory,
         run_id=args.run_id,
+        parser_parallel_workers=args.parser_parallel_workers,
+        chunk_workers=args.chunk_workers,
+        correlator_parallel_workers=args.correlator_parallel_workers,
+        collector_parallel_workers=args.collector_parallel_workers,
+        use_deployment_roots=args.deployment_roots,
     )
     print(json.dumps(asdict(result), ensure_ascii=False, indent=2))
     return 0 if result.status == "ok" else 1

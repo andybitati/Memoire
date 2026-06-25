@@ -1,0 +1,50 @@
+# Source Generated with Decompyle++
+# File: columns.cpython-311.pyc (Python 3.11)
+
+"""Schéma unifié des colonnes CSV produites par Logminer.
+
+Ce schéma sert de contrat de données entre parseurs/normaliseurs et les outils d'exploitation (SIEM/ML/agents).
+"""
+COLUMNS = [
+    'dataset',
+    'subtype',
+    'filepath',
+    'lineno',
+    'recno',
+    'timestamp_iso',
+    'severity',
+    'event',
+    'source',
+    'component',
+    'host',
+    'pid',
+    'tid',
+    'session',
+    'user',
+    'uid',
+    'gid',
+    'auid',
+    'euid',
+    'egid',
+    'exe',
+    'path',
+    'path_all',
+    'exec_args',
+    'exec_args_all',
+    'exec_env_all',
+    'src_ip',
+    'src_port',
+    'dst_ip',
+    'dst_port',
+    'proto',
+    'length',
+    'flags',
+    'http_method',
+    'http_url',
+    'http_status',
+    'bytes_sent',
+    'user_agent',
+    'referrer',
+    'category',
+    'subcategory',
+    'message']
