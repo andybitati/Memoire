@@ -48,6 +48,78 @@ fonctionnalite doit pouvoir etre rattachee a l'un des sept objectifs officiels.
 La V1 reste le filet de securite. FastAPI, Redis et les evolutions temps reel
 doivent renforcer la demonstration sans rendre la chaine CLI instable.
 
+## Industrialisation Post-Coding - Installateurs Windows Et Linux
+
+A faire une fois que le travail de coding, les tests et les resultats de
+redaction sont stabilises:
+
+Reference transversale: `docs/deployment_requirements.md`.
+
+- produire pour Windows un executable `.exe` installable et lancable depuis le
+  bureau, avec une installation offline autonome adaptee aux environnements
+  isoles;
+- produire pour Linux une installation conforme aux normes Linux plutot qu'un
+  simple executable: paquet `.deb` et/ou `.rpm` selon la distribution cible,
+  integration systemd, chemins standards (`/opt`, `/etc`, `/var/lib`,
+  `/var/log`), droits d'acces explicites, fichiers de configuration separes et
+  commandes d'installation/desinstallation propres;
+- pour Windows offline, fournir une archive contenant l'application, les
+  dependances Python ou binaires, les modeles `.joblib`, les assets du
+  dashboard, les fichiers de configuration par defaut et la documentation
+  minimale;
+- pour Linux, prevoir aussi un depot local ou un paquet offline signe si le
+  serveur n'a pas acces Internet, tout en respectant les pratiques Linux
+  d'installation, de service et de journalisation;
+- fournir un mode offline pour Redis/Docker: image Docker Redis exportee
+  (`docker save`) ou binaire/service Redis local selon l'OS, avec procedure
+  d'importation sans acces Internet;
+- inclure une verification d'integrite offline: checksums des binaires,
+  modeles, images Docker et fichiers critiques avant lancement;
+- integrer un demarrage sans configuration manuelle: a l'ouverture du programme,
+  les agents collecteur, parseur, routeur, detecteur, correlateur, audit et
+  dashboard doivent commencer a travailler automatiquement;
+- ajouter une decouverte automatique des sources de logs selon l'OS:
+  - Windows: journaux Evenements Windows, exports EVTX/XML accessibles,
+    logs applicatifs lisibles par les agents, sous-dossiers `Logs`/`LogFiles`,
+    IIS, Docker containers, chemins Wazuh/agents et racines applicatives
+    declarees par profil ou par l'administrateur;
+  - Linux: `/var/log`, journaux syslog/auth, journald si accessible, logs web
+    usuels, dossiers applicatifs et chemins Wazuh/agents si presents;
+- etendre cette decouverte a tout emplacement pertinent du systeme de
+  deploiement: dossiers standards de l'OS, chemins applicatifs declares,
+  chemins SIEM/HIDS/agents, repertoires ajoutes par l'administrateur, volumes
+  montes et emplacements prevus par les profils de deploiement;
+- maintenir des profils de decouverte par OS et par famille de logs afin que le
+  systeme trouve automatiquement tous les logs pour lesquels il est concu, sans
+  limiter la recherche aux exemples de laboratoire;
+- prevoir les permissions: mode standard pour logs accessibles, demande claire
+  d'elevation/admin uniquement pour les journaux sensibles;
+- conserver un mode zero-configuration pour l'administrateur, avec profils par
+  defaut prudents, limites CPU/RAM et fallback si une source n'est pas
+  accessible;
+- ajouter un etat visuel simple au lancement: services actifs, sources
+  detectees, derniere analyse, erreurs de permissions et chemin des rapports;
+- au demarrage, verifier Docker et Redis: si Docker/Redis n'est pas actif,
+  demander explicitement a l'administrateur de lancer Docker Desktop ou le
+  service Docker afin que Redis puisse demarrer correctement;
+- pendant l'installation Windows, verifier que Docker et Redis sont deja
+  installes; sinon demander a l'administrateur de les installer avant de
+  poursuivre l'installation Logminer, afin de garantir les performances visees;
+- bloquer ou degrader clairement le mode performance/distribue si Redis est
+  indisponible, car les workers paralleles, la file de jobs et les bonnes
+  performances multi-agents dependent du bus Redis;
+- documenter les contraintes de securite: signature de l'executable si possible,
+  stockage local des donnees, rotation des fichiers produits et protection des
+  logs sensibles.
+- preparer et maintenir le guide de prise en main Windows:
+  `docs/installation_windows.md`.
+- preparer et maintenir le guide de prise en main Linux conforme aux pratiques
+  systeme:
+  `docs/installation_linux.md`.
+
+Ce point doit etre presente comme perspective d'industrialisation tant que les
+installateurs n'ont pas ete construits et testes sur Windows et Linux propres.
+
 ## Objectif 1 - Logs, Parsing Et Normalisation
 
 But directeur:

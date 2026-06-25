@@ -40,6 +40,9 @@ def _run_job(job: dict[str, Any], *, job_stream: str, group: str, ack_failed: bo
             window_minutes=int(payload.get("window_minutes", 15)),
             run_id=run_id,
             use_redis=True,
+            parser_parallel_workers=int(payload.get("parser_parallel_workers", 1)),
+            chunk_workers=int(payload.get("chunk_workers", 1)),
+            correlator_parallel_workers=int(payload.get("correlator_parallel_workers", 1)),
         )
         bus.publish(
             source="worker",

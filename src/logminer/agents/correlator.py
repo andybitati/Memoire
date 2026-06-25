@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Optional
 
@@ -125,12 +126,43 @@ def _priority_details(
     return priority_score, priority, "; ".join(reasons)
 
 
+def _incident_row(group: pd.DataFrame) -> dict[str, object]:
+    valid_times = group["timestamp_dt"].dropna()
+    event_ids = sorted(set(value for value in group.get("event", pd.Series(dtype=str)).astype(str) if value))
+    anomaly_scores = pd.to_numeric(group.get("anomaly_score", pd.Series(dtype=str)), errors="coerce")
+    anomaly_ranks = pd.to_numeric(group.get("anomaly_rank", pd.Series(dtype=str)), errors="coerce")
+    severity = _severity_max(group.get("severity", pd.Series(dtype=str)))
+    priority_score, priority, rationale = _priority_details(group, severity, event_ids, anomaly_scores)
+
+    return {
+        "start_time": valid_times.min().isoformat() if not valid_times.empty else "",
+        "end_time": valid_times.max().isoformat() if not valid_times.empty else "",
+        "host": _value_or_unknown(group["host"]),
+        "user": _first_non_empty(group["user"]),
+        "source": _value_or_unknown(group["source"]),
+        "category": _value_or_unknown(group["category"]),
+        "subcategory": _value_or_unknown(group["subcategory"]),
+        "proto": _first_non_empty(group["proto"]),
+        "dst_port": _first_non_empty(group["dst_port"]),
+        "severity": severity,
+        "priority": priority,
+        "priority_score": priority_score,
+        "event_count": len(group),
+        "min_anomaly_score": anomaly_scores.min() if not anomaly_scores.dropna().empty else "",
+        "max_anomaly_rank": int(anomaly_ranks.max()) if not anomaly_ranks.dropna().empty else "",
+        "events": ",".join(event_ids[:20]),
+        "rationale": rationale,
+        "summary": _summary(group),
+    }
+
+
 def correlate_anomalies(
     input_csv: str | Path,
     output_csv: str | Path,
     sep: str = ";",
     window_minutes: int = 15,
     bus: LocalMessageBus | None = None,
+    parallel_workers: int = 1,
 ) -> str:
     """Regroupe les anomalies candidates en incidents."""
 
@@ -192,40 +224,39 @@ def correlate_anomalies(
             anomalies[column] = ""
         anomalies[column] = anomalies[column].fillna("").astype(str)
 
-    rows = []
-    for incident_no, (_, group) in enumerate(anomalies.groupby(GROUP_COLUMNS, dropna=False), start=1):
-        valid_times = group["timestamp_dt"].dropna()
-        event_ids = sorted(set(value for value in group.get("event", pd.Series(dtype=str)).astype(str) if value))
-        anomaly_scores = pd.to_numeric(group.get("anomaly_score", pd.Series(dtype=str)), errors="coerce")
-        anomaly_ranks = pd.to_numeric(group.get("anomaly_rank", pd.Series(dtype=str)), errors="coerce")
-        severity = _severity_max(group.get("severity", pd.Series(dtype=str)))
-        priority_score, priority, rationale = _priority_details(group, severity, event_ids, anomaly_scores)
+    groups = [group.copy() for _, group in anomalies.groupby(GROUP_COLUMNS, dropna=False)]
+    workers = min(max(1, int(parallel_workers)), max(len(groups), 1))
+    if workers > 1 and len(groups) > 1:
+        with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="logminer-correlator") as executor:
+            rows = list(executor.map(_incident_row, groups))
+    else:
+        rows = [_incident_row(group) for group in groups]
 
-        rows.append(
-            {
-                "incident_id": f"INC-{incident_no:06d}",
-                "start_time": valid_times.min().isoformat() if not valid_times.empty else "",
-                "end_time": valid_times.max().isoformat() if not valid_times.empty else "",
-                "host": _value_or_unknown(group["host"]),
-                "user": _first_non_empty(group["user"]),
-                "source": _value_or_unknown(group["source"]),
-                "category": _value_or_unknown(group["category"]),
-                "subcategory": _value_or_unknown(group["subcategory"]),
-                "proto": _first_non_empty(group["proto"]),
-                "dst_port": _first_non_empty(group["dst_port"]),
-                "severity": severity,
-                "priority": priority,
-                "priority_score": priority_score,
-                "event_count": len(group),
-                "min_anomaly_score": anomaly_scores.min() if not anomaly_scores.dropna().empty else "",
-                "max_anomaly_rank": int(anomaly_ranks.max()) if not anomaly_ranks.dropna().empty else "",
-                "events": ",".join(event_ids[:20]),
-                "rationale": rationale,
-                "summary": _summary(group),
-            }
-        )
+    for incident_no, row in enumerate(rows, start=1):
+        row["incident_id"] = f"INC-{incident_no:06d}"
 
-    incidents = pd.DataFrame(rows)
+    incident_columns = [
+        "incident_id",
+        "start_time",
+        "end_time",
+        "host",
+        "user",
+        "source",
+        "category",
+        "subcategory",
+        "proto",
+        "dst_port",
+        "severity",
+        "priority",
+        "priority_score",
+        "event_count",
+        "min_anomaly_score",
+        "max_anomaly_rank",
+        "events",
+        "rationale",
+        "summary",
+    ]
+    incidents = pd.DataFrame(rows).reindex(columns=incident_columns)
     incidents = incidents.sort_values(["priority_score", "event_count", "start_time"], ascending=[False, False, True])
     incidents.to_csv(output_path, sep=sep, index=False, encoding="utf-8-sig")
 
@@ -248,10 +279,18 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument("--window-minutes", type=int, default=15, help="Fenetre temporelle de correlation")
     parser.add_argument("--bus", default="", help="Journal de messages JSONL")
     parser.add_argument("--run-id", default=None, help="Identifiant de run partage entre agents")
+    parser.add_argument("--parallel-workers", type=int, default=1, help="Nombre de groupes correles en parallele")
     args = parser.parse_args(argv)
 
     bus = LocalMessageBus(args.bus, run_id=args.run_id) if args.bus else None
-    output = correlate_anomalies(args.input, args.output, args.sep, args.window_minutes, bus=bus)
+    output = correlate_anomalies(
+        args.input,
+        args.output,
+        args.sep,
+        args.window_minutes,
+        bus=bus,
+        parallel_workers=args.parallel_workers,
+    )
     incidents = pd.read_csv(output, sep=args.sep, dtype=str, keep_default_na=False)
     print(f"CSV incidents: {output}")
     print(f"Incidents correles: {len(incidents)}")

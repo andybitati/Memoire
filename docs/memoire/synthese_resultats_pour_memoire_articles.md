@@ -110,16 +110,16 @@ Interpretation:
 ## Benchmark Quasi Temps Reel
 
 Benchmark execute via `scripts/benchmark_realtime_workflow.py` sur l'endpoint
-FastAPI `/run/discovered`, avec 5 cycles, intervalle de 2 secondes et
+FastAPI `/run/discovered`, avec 10 cycles, intervalle de 2 secondes et
 `max_mb=5`.
 
 Resultats:
 
-- 5 cycles termines avec statut `ok`;
+- 10 cycles termines avec statut `ok`;
 - 8 537 lignes analysees par cycle;
-- latence workflow minimale: 3.0865 s;
-- latence workflow moyenne: 10.6473 s;
-- latence workflow maximale: 19.8163 s.
+- latence workflow minimale: 3.1672 s;
+- latence workflow moyenne: 8.2012 s;
+- latence workflow maximale: 15.3289 s.
 
 Formulation recommandee:
 
@@ -148,6 +148,29 @@ Resultats:
 Le tableau final est dans
 `docs/memoire/tables/table_resource_campaign_multicycle.md` et la figure
 associee dans `docs/memoire/figures/fig_resource_campaign_multicycle.svg`.
+
+## Campagne Parallele CPU/RAM
+
+Une campagne complementaire a ete executee via
+`scripts/run_parallel_resource_campaign.py` sans serveur FastAPI. Elle mesure
+le mode parallele de `model_compare` avec 3 workers sur 500 evenements
+synthetiques labelises par cycle.
+
+Resultats:
+
+- 5 cycles termines;
+- 500 evenements analyses par cycle;
+- 3 workers paralleles;
+- duree moyenne workflow: 3.6232 s;
+- duree maximale workflow: 6.0172 s;
+- CPU machine maximal moyen: 17.1725%;
+- RAM maximale moyenne: 176.89 MB.
+
+Le tableau est dans
+`docs/memoire/tables/table_parallel_resource_campaign.md` et la figure
+associee dans `docs/memoire/figures/fig_parallel_resource_campaign.svg`.
+Ces mesures doivent etre presentees comme une validation locale du mode
+multi-worker, et non comme une preuve de debit SOC industriel.
 
 ## Robustesse Multi-Format
 

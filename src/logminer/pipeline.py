@@ -15,6 +15,10 @@ from __future__ import annotations
 import importlib
 import os
 import sys
+import csv
+import shutil
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Type
 
 
@@ -34,6 +38,7 @@ if IO_DIR not in sys.path:
     sys.path.insert(0, IO_DIR)
 
 from csv_writer import open_writer
+from schema.columns import COLUMNS
 
 
 class UnknownParser:
@@ -234,6 +239,86 @@ def _default_output_name(input_path: str, out_name: str) -> str:
     return out_name or f"{os.path.basename(os.path.abspath(input_path))}.csv"
 
 
+def _safe_stem(path: str, index: int) -> str:
+    stem = Path(path).stem or "log"
+    cleaned = "".join(char if char.isalnum() or char in ("-", "_") else "_" for char in stem)
+    return f"{index:04d}_{cleaned}"
+
+
+def _merge_csv_files(inputs: list[str], output_csv: str, sep: str) -> str:
+    """Fusionne des CSV normalises en conservant un seul en-tete."""
+
+    Path(output_csv).parent.mkdir(parents=True, exist_ok=True)
+    with open(output_csv, "w", newline="", encoding="utf-8-sig") as f_out:
+        writer = csv.DictWriter(f_out, fieldnames=COLUMNS, delimiter=sep, extrasaction="ignore")
+        writer.writeheader()
+        for input_csv in inputs:
+            if not os.path.exists(input_csv):
+                continue
+            with open(input_csv, "r", newline="", encoding="utf-8-sig", errors="ignore") as f_in:
+                reader = csv.DictReader(f_in, delimiter=sep)
+                for row in reader:
+                    writer.writerow({column: row.get(column, "") for column in COLUMNS})
+    return output_csv
+
+
+def _run_pipeline_parallel(
+    input_path: str,
+    out_dir: str,
+    out_name: str,
+    sep: str,
+    split_rows: int,
+    progress_every: int,
+    use_tqdm: bool,
+    debug: bool,
+    parallel_workers: int,
+) -> List[str]:
+    """Parse les fichiers d'un dossier en parallele puis fusionne les sorties."""
+
+    files = list(iter_files(input_path))
+    if len(files) <= 1:
+        return []
+
+    output_csv = os.path.join(out_dir, _default_output_name(input_path, out_name))
+    temp_dir = os.path.join(out_dir, f".parallel_{Path(output_csv).stem}")
+    if os.path.exists(temp_dir):
+        shutil.rmtree(temp_dir)
+    _ensure_dir(temp_dir)
+
+    produced_by_index: dict[int, list[str]] = {}
+    max_workers = min(max(1, int(parallel_workers)), len(files))
+    try:
+        with ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="logminer-parser") as executor:
+            futures = {
+                executor.submit(
+                    run_pipeline,
+                    path,
+                    temp_dir,
+                    f"{_safe_stem(path, index)}.csv",
+                    sep,
+                    split_rows,
+                    progress_every,
+                    use_tqdm,
+                    debug,
+                    1,
+                ): index
+                for index, path in enumerate(files)
+            }
+            for future in as_completed(futures):
+                produced_by_index[futures[future]] = future.result()
+
+        ordered_parts: list[str] = []
+        for index in sorted(produced_by_index):
+            ordered_parts.extend(produced_by_index[index])
+        _merge_csv_files(ordered_parts, output_csv, sep)
+        return [output_csv]
+    finally:
+        try:
+            shutil.rmtree(temp_dir)
+        except OSError:
+            pass
+
+
 def run_pipeline(
     input_path: str,
     out_dir: str = "Dataset_csv",
@@ -243,6 +328,7 @@ def run_pipeline(
     progress_every: int = 0,
     use_tqdm: bool = False,
     debug: bool = False,
+    parallel_workers: int = 1,
 ) -> List[str]:
     """Traite un fichier ou dossier de logs et produit un ou plusieurs CSV.
 
@@ -261,6 +347,21 @@ def run_pipeline(
     """
 
     _ensure_dir(out_dir)
+
+    if parallel_workers > 1 and os.path.isdir(input_path):
+        produced = _run_pipeline_parallel(
+            input_path,
+            out_dir,
+            out_name,
+            sep,
+            split_rows,
+            progress_every,
+            use_tqdm,
+            debug,
+            parallel_workers,
+        )
+        if produced:
+            return produced
 
     output_csv = os.path.join(out_dir, _default_output_name(input_path, out_name))
     produced: List[str] = []

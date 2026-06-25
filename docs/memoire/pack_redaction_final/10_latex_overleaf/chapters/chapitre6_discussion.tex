@@ -1,0 +1,57 @@
+\chapter{Discussion generale}
+
+\section{Lecture globale des resultats}
+Les resultats obtenus doivent etre lus comme la validation d'une chaine complete plutot que comme la demonstration d'un detecteur unique et universel. Le prototype \logminer{} ne se limite pas a appliquer un algorithme sur un fichier de donnees. Il met en relation plusieurs operations successives : acquisition de journaux, reconnaissance de formats, normalisation, routage, choix du modele, detection, correlation, affichage dans un tableau de bord et conservation des traces d'audit. Cette organisation est importante car, dans un contexte reel, la qualite de la detection depend rarement d'un seul modele. Elle depend aussi de la qualite des donnees d'entree, de la coherence du schema intermediaire, de la capacite a isoler les familles de journaux et de la possibilite pour l'analyste de comprendre ce qui a ete signale.
+
+Les scores obtenus sur les datasets supervises montrent que des modeles classiques, lorsqu'ils sont appliques a des donnees structurees et labelisees, peuvent atteindre de tres bonnes performances. Les resultats sur CICIDS2017 et UNSW/CIC-DDoS illustrent cette capacite. Toutefois, ces valeurs ne doivent pas etre transformees en promesse operationnelle generale. Les datasets publics possedent souvent une structure propre, des labels explicites et une distribution relativement stable. Une infrastructure reelle produit des journaux plus bruyants, plus incomplets et parfois contradictoires. La conclusion raisonnable est donc que le routage vers des modeles specialises est pertinent, mais qu'une validation locale reste indispensable avant tout deploiement critique.
+
+Les resultats non supervises apportent une autre lecture. Ils montrent la capacite du systeme a signaler des comportements rares, mais ils rappellent aussi la difference entre anomalie et attaque. Une anomalie candidate peut correspondre a une erreur de configuration, a un pic d'activite legitime, a une operation administrative inhabituelle ou a un incident de securite. Le role du dashboard et de la correlation est donc central : ils transforment une liste de scores en objets analysables, en contexte, avec une possibilite de validation humaine.
+
+\section{Apport de l'architecture multi-agents}
+L'architecture multi-agents apporte une separation claire des responsabilites. Le collecteur n'a pas a connaitre les details du modele de detection. Le parseur se concentre sur la structure des journaux. Le normaliseur produit une representation commune. Le routeur choisit la famille de traitement. Le detecteur applique le modele adapte. Le correlateur regroupe les signaux. Le dashboard expose les resultats. L'audit conserve les decisions et les evenements techniques importants.
+
+Cette decomposition presente plusieurs avantages. Elle facilite d'abord la maintenance : un parseur peut etre ameliore sans modifier toute la chaine. Elle facilite ensuite les tests : chaque module peut etre verifie sur des entrees connues. Elle facilite enfin l'evolution : il devient possible d'ajouter un nouveau format de journal, un nouveau modele ou une nouvelle vue dashboard sans reecrire l'ensemble du prototype.
+
+Le terme distribue doit cependant etre interprete avec precision. Dans le cadre de ce memoire, la distribution est principalement logique et architecturale. Le systeme est concu sous forme d'agents specialises qui cooperent, et certaines extensions comme FastAPI, Redis Streams et MQTT preparent une orchestration plus evenementielle. Toutefois, la preuve d'un deploiement multi-machine industriel, resilient a grande echelle, reste une perspective. Cette distinction est importante pour eviter de sur-vendre la portee experimentale du travail.
+
+\section{Importance du routage par famille}
+Le routage par famille constitue l'un des choix les plus structurants du prototype. Les journaux Windows, Wazuh, Linux/auth, HDFS, BGL ou les flux reseau tabulaires ne portent pas les memes informations. Un modele entraine sur des flux reseau ne peut pas etre applique sans precaution a des evenements Windows textuels. De meme, une alerte Wazuh possede deja un niveau d'enrichissement qui n'existe pas dans un log brut Apache ou syslog.
+
+En separant les familles de donnees, le systeme evite une erreur frequente : chercher un modele unique capable de tout traiter. Cette approche unique peut sembler elegante, mais elle masque l'heterogeneite semantique des sources. Le routage permet de conserver une coherence entre les variables disponibles, le type de modele et l'interpretation du resultat. Il permet aussi de definir une route de fallback lorsque le format n'est pas reconnu. Cette route de fallback est importante car elle evite la suppression silencieuse d'informations potentiellement utiles.
+
+\section{Role du dashboard dans la validation humaine}
+Le dashboard Ariel \logminer{} ne doit pas etre vu comme un simple element esthetique. Il fait partie de la contribution operationnelle du travail. La detection d'anomalies produit souvent trop de signaux pour etre exploitee directement. L'interface permet de filtrer, prioriser, consulter un detail incident, visualiser les ressources, suivre les services et enregistrer les decisions analyste.
+
+Cette fonction de validation humaine est essentielle pour deux raisons. La premiere est scientifique : elle evite de confondre automatiquement anomalie candidate et intrusion confirmee. La deuxieme est pratique : elle prepare une boucle d'amelioration future. Les decisions de validation, rejet ou reclassement peuvent devenir, dans une version ulterieure, une source d'apprentissage actif permettant de reduire les faux positifs.
+
+Un bon tableau de bord de securite ne doit pas seulement afficher des graphes. Il doit aider a repondre a des questions simples : que s'est-il passe ? sur quelle source ? avec quelle severite ? depuis quand ? quel modele a signale l'evenement ? une decision humaine a-t-elle deja ete prise ? Le prototype avance dans cette direction en reliant les resultats techniques aux informations utiles a l'analyse.
+
+\section{Interpretation des faux positifs}
+Les faux positifs constituent l'une des difficultes majeures des systemes de detection. Un systeme trop sensible surcharge l'analyste. Un systeme trop permissif manque des signaux importants. Dans le contexte de \logminer, l'analyse des faux positifs est compliquee par la diversite des sources. Certains datasets disposent de labels exploitables, d'autres non. Pour les donnees non supervisees, il est plus prudent de parler de signaux candidats que de faux positifs au sens strict.
+
+La reduction des faux positifs ne peut pas dependre seulement d'un seuil global. Elle doit tenir compte de la famille de logs, du contexte temporel, de l'utilisateur, de l'hote, du type d'evenement et de l'historique. Une perspective importante consiste donc a calibrer les seuils par famille et a enrichir la correlation temporelle. Par exemple, une erreur isolee peut etre normale, tandis qu'une repetition rapide d'erreurs sur plusieurs sources peut devenir significative.
+
+\section{Reproductibilite et tracabilite}
+Un memoire d'ingenieur doit pouvoir etre verifie. C'est pourquoi le travail ne se limite pas aux captures finales. Les scripts de generation, les CSV, les tableaux et les figures constituent une base de reproductibilite. Ils permettent de retrouver l'origine des valeurs citees : F1-score, latence moyenne, nombre d'evenements Wazuh, anomalies candidates, mesures CPU/RAM et resultats de robustesse multi-format.
+
+Cette tracabilite est aussi un garde-fou redactionnel. Elle empeche d'ajouter dans le memoire des resultats qui ne sont pas disponibles dans les preuves. Elle permet egalement a un lecteur technique de distinguer ce qui a ete implemente, ce qui a ete mesure et ce qui reste une perspective. Dans un domaine comme la cybersecurite, cette distinction est fondamentale car un prototype peut etre prometteur sans etre encore un produit durci pour la production.
+
+\section{Limites scientifiques}
+Les limites scientifiques concernent principalement la generalisation, les labels et l'evaluation en conditions reelles. La generalisation reste limitee car les datasets publics ne couvrent pas toute la diversite des infrastructures. Les labels sont parfois absents, incomplets ou construits dans des conditions experimentales. L'evaluation en conditions reelles reste partielle car elle depend des journaux disponibles localement et des exports exploites.
+
+Une autre limite porte sur la profondeur semantique de l'analyse. Le prototype normalise et route les evenements, mais il ne reconstruit pas encore completement des chaines d'attaque. Il ne produit pas non plus une cartographie systematique vers MITRE ATT\&CK. Ces extensions renforceraient la valeur operationnelle du systeme, notamment pour relier les incidents a des tactiques et techniques connues.
+
+\section{Limites techniques}
+Sur le plan technique, la distribution multi-machine reste a consolider. L'architecture est modulaire, mais un deploiement a grande echelle exigerait des files persistantes, des mecanismes de reprise apres panne, une supervision des agents, une authentification des communications et une gestion fine des droits. La robustesse aux logs corrompus est abordee, mais elle pourrait etre completee par des campagnes de tests plus longues et plus agressives.
+
+La gestion des performances constitue egalement un axe de progression. Les mesures de latence et de ressources montrent une faisabilite locale, mais elles ne suffisent pas a caracteriser une charge continue de plusieurs jours ou plusieurs semaines. Des tests prolonges permettraient d'observer la stabilite memoire, les accumulations de fichiers temporaires, les effets de pic de charge et le comportement du dashboard sous un volume eleve d'incidents.
+
+\section{Valeur pratique du prototype}
+Malgre ces limites, le prototype presente une valeur pratique reelle. Il peut servir de base pedagogique pour comprendre la chaine d'analyse des journaux. Il peut aussi aider une petite structure a experimenter une detection locale sans disposer d'un SOC complet. Il fournit enfin un cadre pour comparer plusieurs familles de modeles et plusieurs sources de logs dans une interface unique.
+
+La valeur du travail reside donc dans l'integration. De nombreux projets se concentrent sur un modele, un dataset ou une interface isolee. \logminer{} relie ces elements dans une chaine coherente. Cette coherence est utile pour un travail de fin d'etudes car elle montre la capacite a passer d'un besoin de cybersecurite a une architecture, puis a une implementation et a une evaluation.
+
+\section{Synthese de la discussion}
+La discussion montre que \logminer{} atteint un equilibre entre ambition et prudence. Le prototype traite des sources heterogenes, applique des modeles adaptes, expose les resultats dans un dashboard et conserve les preuves experimentales. En meme temps, il reconnait clairement ses limites : validation multi-machine, reduction des faux positifs, apprentissage continu, integration SOC et tests de charge prolonges.
+
+Cette position est scientifiquement saine. Elle permet de defendre le travail comme une contribution complete et utile, sans lui attribuer des capacites qui n'ont pas encore ete demontrees. Le chapitre suivant precise les conditions de reproductibilite, le depot GitHub, les scenarios de deploiement et les precautions d'exploitation avant la conclusion generale.

@@ -179,9 +179,17 @@ def resource_campaign_rows() -> list[list[object]]:
 
 
 def benchmark_rows() -> list[list[object]]:
-    path = PROCESSED / "realtime_workflow_benchmark.csv"
-    if not path.exists():
+    paths = [
+        path
+        for path in [
+            PROCESSED / "realtime_workflow_benchmark.csv",
+            PROCESSED / "realtime_workflow_benchmark_20260604.csv",
+        ]
+        if path.exists()
+    ]
+    if not paths:
         return []
+    path = max(paths, key=lambda item: item.stat().st_mtime)
     rows = read_csv(path, sep=";")
     ok = [row for row in rows if row.get("status") == "ok"]
     values = [number(row.get("workflow_sec")) for row in ok]

@@ -37,7 +37,7 @@ and Kyandoghere Kyamakya%
 \begin{abstract}
 This article presents an extended experimental evaluation of \logminer, a lightweight multi-agent framework for real-time anomaly detection in heterogeneous system, network and distributed-system logs. The system decomposes the workflow into specialized software agents for collection, parsing, normalization, family-aware routing, anomaly detection, correlation, dashboard exploration and audit. In accordance with the second article trajectory defined in the project plan, the focus is distributed architecture, resilience, scalability-oriented evaluation and operational behavior under heterogeneous data, robustness constraints, local quasi-real-time execution and resource monitoring.
 
-The evaluation covers Windows logs, Wazuh exports, Linux/auth logs, HDFS, BGL, CICIDS2017 and UNSW/CIC-DDoS data. Supervised Random Forest models reach F1-scores of 0.916602 on Linux/auth, 0.997163 on CICIDS2017 and 0.999965 on UNSW/CIC-DDoS. Wazuh exports contain 122,563 events and produce 3,676 non-supervised anomaly candidates. A quasi-real-time benchmark reports a mean workflow latency of 10.6473 seconds over five cycles of 8,537 lines, while a 30-cycle resource campaign reports a mean workflow duration of 9.3300 seconds. The discussion explicitly addresses false positives, HDFS limitations, synchronous buffering, bounded supervisor policies and the difference between anomaly candidates and confirmed attacks.
+The evaluation covers Windows logs, Wazuh exports, Linux/auth logs, HDFS, BGL, CICIDS2017 and UNSW/CIC-DDoS data. Supervised Random Forest models reach F1-scores of 0.916602 on Linux/auth, 0.997163 on CICIDS2017 and 0.999965 on UNSW/CIC-DDoS. Wazuh exports contain 122,563 events and produce 3,676 non-supervised anomaly candidates. A quasi-real-time benchmark reports a mean workflow latency of 10.6473 seconds over five cycles of 8,537 lines, while a 30-cycle resource campaign reports a mean workflow duration of 9.3300 seconds. A new local parallel campaign, using three detector workers on 500 labeled events per cycle, completes five cycles with a mean duration of 3.6232 seconds, a mean maximum machine CPU load of 17.1725\% and a mean maximum RAM footprint of 176.89 MB. The discussion explicitly addresses false positives, HDFS limitations, synchronous buffering, bounded supervisor policies, local parallel execution and the difference between anomaly candidates and confirmed attacks.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -53,7 +53,7 @@ The contributions of this article are:
 \begin{enumerate}
     \item an extended evaluation of lightweight supervised and non-supervised models across heterogeneous log families;
     \item a robustness and resilience analysis covering unknown, incomplete and multi-format logs;
-    \item a quasi-real-time and 30-cycle resource evaluation of the FastAPI/JSONL workflow;
+    \item a quasi-real-time, 30-cycle resource and local parallel-execution evaluation of the workflow;
     \item an operational discussion of buffering, back-pressure, supervisor stability, false positives and complementarity with standard tools such as Wazuh, OSSEC and fail2ban.
 \end{enumerate}
 
@@ -259,6 +259,36 @@ Logminer maximum RAM & 655.39 MB \\
     \label{fig:resources}
 \end{figure}
 
+\subsection{Local Parallel Execution Campaign}
+The implementation now exposes parallelism at several levels: independent detector comparison tasks, parser execution over multiple files, chunk-based supervised inference, grouped correlation and parallel supervisor campaigns with isolated per-cycle memory files. To separate this mode from the previous synchronous resource campaign, a dedicated local experiment executed \texttt{model\_compare} with three detector workers on a synthetic labeled CSV of 500 events. Five cycles completed successfully. The mean workflow duration was 3.6232 seconds, with a maximum of 6.0172 seconds. The mean maximum machine CPU load was 17.1725\%, and the mean maximum RAM footprint was 176.89 MB.
+
+\begin{table}[t]
+\caption{Local parallel resource campaign}
+\label{tab:parallel_resources}
+\centering
+\scriptsize
+\begin{tabular}{l r}
+\toprule
+\textbf{Indicator} & \textbf{Value} \\
+\midrule
+Completed cycles & 5/5 \\
+Events per cycle & 500 \\
+Parallel detector workers & 3 \\
+Mean workflow duration & 3.6232 s \\
+Maximum workflow duration & 6.0172 s \\
+Mean maximum machine CPU & 17.1725\% \\
+Mean maximum RAM & 176.89 MB \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figures/fig_parallel_resource_campaign.pdf}
+    \caption{CPU peaks observed during the local parallel detector campaign. The experiment validates local multi-worker execution, while broader queue throughput and multi-machine back-pressure remain future work.}
+    \label{fig:parallel_resources}
+\end{figure}
+
 \subsection{Buffering and Back-Pressure}
 The current buffering strategy is local and conservative. Collectors and parsers persist raw files, manifests, normalized records and JSONL bus messages before detection. The detector processes bounded samples or prepared batches rather than an unbounded memory queue. If detection lags behind collection, the backlog remains visible in files and traces, but the prototype does not yet implement production-grade admission control, retry policies, priority scheduling or durable back-pressure. A Kafka, MQTT, Redis Streams or equivalent broker is required for sustained asynchronous SOC ingestion.
 
@@ -278,10 +308,10 @@ The Wazuh export contains 122,563 events and 3,676 \logminer{} anomaly candidate
 \end{figure}
 
 \section{Threats to Validity}
-Internal validity is limited because datasets, feature spaces and model families differ. The ablation mitigates this risk but also shows that family-aware routing is not universally superior under a common minimal representation. External validity is limited by local execution and selected datasets. Operational validity is limited because non-supervised outputs require analyst validation, correlation quality is not yet measured against analyst-labeled incidents and the current workflow is mostly synchronous. HDFS results show that sequence-oriented logs need Drain-like templates and temporal detectors. The resource campaign supports local feasibility, not production SOC throughput.
+Internal validity is limited because datasets, feature spaces and model families differ. The ablation mitigates this risk but also shows that family-aware routing is not universally superior under a common minimal representation. External validity is limited by local execution and selected datasets. Operational validity is limited because non-supervised outputs require analyst validation, correlation quality is not yet measured against analyst-labeled incidents and the current workflow is only partially parallelized. HDFS results show that sequence-oriented logs need Drain-like templates and temporal detectors. The sequential and parallel resource campaigns support local feasibility, not production SOC throughput.
 
 \section{Conclusion}
-This article prepared an extended evaluation-oriented view of \logminer. Results show strong supervised performance on Linux/auth, CICIDS2017 and UNSW/CIC-DDoS, useful Wazuh anomaly-candidate generation, robust preservation of unknown records and feasible local quasi-real-time operation. The main limitations are also explicit: high HDFS false positives, synchronous buffering, local-only resource measurements, bounded but non-learning supervisor control and the need for durable asynchronous scaling. Future work includes semantic parsing for sequential logs, calibrated routing confidence, distributed message buses, active analyst feedback, automatic degradation watchdogs and integration with mature SIEM/HIDS platforms.
+This article prepared an extended evaluation-oriented view of \logminer. Results show strong supervised performance on Linux/auth, CICIDS2017 and UNSW/CIC-DDoS, useful Wazuh anomaly-candidate generation, robust preservation of unknown records and feasible local quasi-real-time operation. The added parallel campaign shows that independent detector execution can be exploited locally with measurable CPU/RAM behavior. The main limitations are also explicit: high HDFS false positives, partial synchronous buffering, local-only resource measurements, bounded but non-learning supervisor control and the need for durable asynchronous scaling. Future work includes semantic parsing for sequential logs, calibrated routing confidence, distributed message buses, active analyst feedback, automatic degradation watchdogs and integration with mature SIEM/HIDS platforms.
 
 \section*{Declaration of Generative AI and AI-Assisted Technologies}
 The authors used AI-assisted writing tools to improve language clarity, structure and readability during manuscript preparation. The authors reviewed, edited and validated the technical content and take full responsibility for the final manuscript.

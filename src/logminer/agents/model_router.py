@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from time import perf_counter
 from pathlib import Path
 from typing import Optional
@@ -585,6 +586,48 @@ def _positive_class_probability(model: object, features: pd.DataFrame, labels: n
     return labels.astype(float)
 
 
+def _score_supervised_chunk(
+    index: int,
+    offset: int,
+    events: pd.DataFrame,
+    *,
+    artifact: dict[str, object],
+) -> tuple[int, pd.DataFrame, int, int]:
+    model = artifact["model"]
+    feature_columns = list(artifact["feature_columns"])
+    features = _supervised_features(events, feature_columns)
+    labels = model.predict(features).astype(int)
+    probabilities = _positive_class_probability(model, features, labels)
+
+    result = events.copy()
+    result["anomaly_score"] = -probabilities
+    result["is_anomaly"] = (labels == 1).astype(int)
+    result["anomaly_rank"] = pd.Series(result["anomaly_score"]).rank(method="first", ascending=True).astype(int) + offset
+    result = result.sort_values(["is_anomaly", "anomaly_score"], ascending=[False, True])
+    return index, result, len(result), int(result["is_anomaly"].sum())
+
+
+def _score_linux_auth_chunk(
+    index: int,
+    offset: int,
+    events: pd.DataFrame,
+    *,
+    artifact: dict[str, object],
+) -> tuple[int, pd.DataFrame, int, int]:
+    model = artifact["model"]
+    feature_columns = list(artifact["feature_columns"])
+    features = _linux_auth_features(events, feature_columns)
+    labels = model.predict(features).astype(int)
+    probabilities = _positive_class_probability(model, features, labels)
+
+    result = events.copy()
+    result["anomaly_score"] = -probabilities
+    result["is_anomaly"] = (labels == 1).astype(int)
+    result["anomaly_rank"] = pd.Series(result["anomaly_score"]).rank(method="first", ascending=True).astype(int) + offset
+    result = result.sort_values(["is_anomaly", "anomaly_score"], ascending=[False, True])
+    return index, result, len(result), int(result["is_anomaly"].sum())
+
+
 def _detect_supervised_model(
     input_csv: str | Path,
     output_csv: str | Path,
@@ -592,6 +635,7 @@ def _detect_supervised_model(
     sep: str,
     artifact: dict[str, object],
     chunksize: int = 100000,
+    chunk_workers: int = 1,
 ) -> str:
     """Score un CSV avec un artefact supervise sauvegarde au format Logminer."""
 
@@ -614,21 +658,29 @@ def _detect_supervised_model(
     else:
         chunks = pd.read_csv(input_path, sep=csv_sep, dtype=str, keep_default_na=False, chunksize=chunksize)
 
+    workers = max(1, int(chunk_workers))
+    scored_chunks: list[tuple[int, pd.DataFrame, int, int]] = []
+    offset = 0
+    if workers > 1:
+        with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="logminer-supervised") as executor:
+            futures = []
+            for index, events in enumerate(chunks):
+                futures.append(executor.submit(_score_supervised_chunk, index, offset, events, artifact=artifact))
+                offset += len(events)
+            for future in as_completed(futures):
+                scored_chunks.append(future.result())
+        scored_chunks.sort(key=lambda item: item[0])
+    else:
+        for index, events in enumerate(chunks):
+            scored = _score_supervised_chunk(index, offset, events, artifact=artifact)
+            offset += scored[2]
+            scored_chunks.append(scored)
+
     write_header = True
     total = 0
     anomaly_count = 0
-    for events in chunks:
-        features = _supervised_features(events, feature_columns)
-        labels = model.predict(features).astype(int)
-        probabilities = _positive_class_probability(model, features, labels)
-
-        result = events.copy()
-        # Convention Logminer: les scores les plus bas sont les plus anormaux.
-        result["anomaly_score"] = -probabilities
-        result["is_anomaly"] = (labels == 1).astype(int)
-        result["anomaly_rank"] = pd.Series(result["anomaly_score"]).rank(method="first", ascending=True).astype(int) + total
-
-        result.sort_values(["is_anomaly", "anomaly_score"], ascending=[False, True]).to_csv(
+    for _, result, rows, anomalies in scored_chunks:
+        result.to_csv(
             output_path,
             sep=csv_sep,
             index=False,
@@ -637,8 +689,8 @@ def _detect_supervised_model(
             header=write_header,
         )
         write_header = False
-        total += len(result)
-        anomaly_count += int(result["is_anomaly"].sum())
+        total += rows
+        anomaly_count += anomalies
 
     print(f"CSV anomalies: {output_path}")
     print(f"Evenements analyses: {total}")
@@ -691,6 +743,7 @@ def _detect_linux_auth_model(
     sep: str,
     artifact: dict[str, object],
     chunksize: int = 100000,
+    chunk_workers: int = 1,
 ) -> str:
     """Score un CSV Linux/auth avec son modele supervise dedie."""
 
@@ -703,19 +756,29 @@ def _detect_linux_auth_model(
     csv_sep = _infer_sep(input_path) if sep.lower() == "auto" else sep
     chunks = pd.read_csv(input_path, sep=csv_sep, dtype=str, keep_default_na=False, chunksize=chunksize)
 
+    workers = max(1, int(chunk_workers))
+    scored_chunks: list[tuple[int, pd.DataFrame, int, int]] = []
+    offset = 0
+    if workers > 1:
+        with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="logminer-linux-auth") as executor:
+            futures = []
+            for index, events in enumerate(chunks):
+                futures.append(executor.submit(_score_linux_auth_chunk, index, offset, events, artifact=artifact))
+                offset += len(events)
+            for future in as_completed(futures):
+                scored_chunks.append(future.result())
+        scored_chunks.sort(key=lambda item: item[0])
+    else:
+        for index, events in enumerate(chunks):
+            scored = _score_linux_auth_chunk(index, offset, events, artifact=artifact)
+            offset += scored[2]
+            scored_chunks.append(scored)
+
     write_header = True
     total = 0
     anomaly_count = 0
-    for events in chunks:
-        features = _linux_auth_features(events, feature_columns)
-        labels = model.predict(features).astype(int)
-        probabilities = _positive_class_probability(model, features, labels)
-
-        result = events.copy()
-        result["anomaly_score"] = -probabilities
-        result["is_anomaly"] = (labels == 1).astype(int)
-        result["anomaly_rank"] = pd.Series(result["anomaly_score"]).rank(method="first", ascending=True).astype(int) + total
-        result.sort_values(["is_anomaly", "anomaly_score"], ascending=[False, True]).to_csv(
+    for _, result, rows, anomalies in scored_chunks:
+        result.to_csv(
             output_path,
             sep=csv_sep,
             index=False,
@@ -724,8 +787,8 @@ def _detect_linux_auth_model(
             header=write_header,
         )
         write_header = False
-        total += len(result)
-        anomaly_count += int(result["is_anomaly"].sum())
+        total += rows
+        anomaly_count += anomalies
 
     print(f"CSV anomalies: {output_path}")
     print(f"Evenements analyses: {total}")
@@ -750,6 +813,8 @@ def run_routed_detection(
     incidents_output: str | Path | None = None,
     window_minutes: int = 15,
     models: dict[str, str | Path] | None = None,
+    chunk_workers: int = 1,
+    correlator_parallel_workers: int = 1,
 ) -> dict[str, object]:
     """Lance detection + correlation avec le modele choisi par le routeur."""
 
@@ -767,25 +832,43 @@ def run_routed_detection(
     artifact = _load_model_artifact(model_path)
     detect_started = perf_counter()
     if artifact.get("model_type") == "random_forest_linux_auth":
-        _detect_linux_auth_model(input_file, anomalies_output, sep=sep, artifact=artifact)
+        _detect_linux_auth_model(input_file, anomalies_output, sep=sep, artifact=artifact, chunk_workers=chunk_workers)
         detect_sec = round(perf_counter() - detect_started, 4)
         correlation_sep = _infer_sep(anomalies_output) if sep == "auto" else sep
         correlate_started = perf_counter()
-        correlate_anomalies(anomalies_output, incidents_csv, sep=correlation_sep, window_minutes=window_minutes)
+        correlate_anomalies(
+            anomalies_output,
+            incidents_csv,
+            sep=correlation_sep,
+            window_minutes=window_minutes,
+            parallel_workers=correlator_parallel_workers,
+        )
         correlate_sec = round(perf_counter() - correlate_started, 4)
     elif str(artifact.get("model_type", "")).startswith("random_forest"):
-        _detect_supervised_model(input_file, anomalies_output, sep=sep, artifact=artifact)
+        _detect_supervised_model(input_file, anomalies_output, sep=sep, artifact=artifact, chunk_workers=chunk_workers)
         detect_sec = round(perf_counter() - detect_started, 4)
         correlation_sep = _infer_sep(anomalies_output) if sep == "auto" else sep
         correlate_started = perf_counter()
-        correlate_anomalies(anomalies_output, incidents_csv, sep=correlation_sep, window_minutes=window_minutes)
+        correlate_anomalies(
+            anomalies_output,
+            incidents_csv,
+            sep=correlation_sep,
+            window_minutes=window_minutes,
+            parallel_workers=correlator_parallel_workers,
+        )
         correlate_sec = round(perf_counter() - correlate_started, 4)
     else:
         inference_sep = _infer_sep(input_file) if sep == "auto" else sep
         detect_anomalies(input_file, anomalies_output, sep=inference_sep, model_in=model_path)
         detect_sec = round(perf_counter() - detect_started, 4)
         correlate_started = perf_counter()
-        correlate_anomalies(anomalies_output, incidents_csv, sep=inference_sep, window_minutes=window_minutes)
+        correlate_anomalies(
+            anomalies_output,
+            incidents_csv,
+            sep=inference_sep,
+            window_minutes=window_minutes,
+            parallel_workers=correlator_parallel_workers,
+        )
         correlate_sec = round(perf_counter() - correlate_started, 4)
 
     return {
@@ -820,6 +903,8 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument("-o", "--output", default="", help="CSV anomalies si --detect")
     parser.add_argument("--incidents-output", default="", help="CSV incidents si --detect")
     parser.add_argument("--window-minutes", type=int, default=15, help="Fenetre de correlation")
+    parser.add_argument("--chunk-workers", type=int, default=1, help="Nombre de chunks d'inference supervises en parallele")
+    parser.add_argument("--correlator-parallel-workers", type=int, default=1, help="Nombre de groupes correles en parallele")
     args = parser.parse_args(argv)
 
     # Etape 1: expliquer quelle famille de logs a ete detectee.
@@ -871,6 +956,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         output=anomalies_output,
         incidents_output=incidents_output,
         window_minutes=args.window_minutes,
+        chunk_workers=args.chunk_workers,
+        correlator_parallel_workers=args.correlator_parallel_workers,
         models={
             "windows": args.windows_model,
             "hdfs": args.hdfs_model,
