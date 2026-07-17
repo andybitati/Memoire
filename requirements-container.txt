@@ -1,0 +1,46 @@
+# Reproducible runtime used for the Logminer article-1 artifact checks.
+# Generated from the local Python 3.12.3 virtual environment on 2026-06-05.
+#
+# Install:
+#   python -m pip install -r requirements-container.txt
+#
+# The broader requirements.txt keeps flexible lower bounds for development.
+# This file pins the container/runtime stack used to replay the article checks.
+
+fastapi==0.136.3
+uvicorn==0.47.0
+httpx==0.28.1
+redis==8.0.0
+paho-mqtt==2.1.0
+
+numpy==2.4.5
+pandas==3.0.3
+scikit-learn==1.8.0
+scipy==1.17.1
+joblib==1.5.3
+threadpoolctl==3.6.0
+pyarrow==24.0.0
+
+PyPDF2==3.0.1
+tqdm==4.67.3
+python-evtx==0.8.1
+streamlit==1.57.0
+psutil==7.2.2
+svglib==1.6.0
+reportlab==4.5.1
+
+pydantic==2.13.4
+pydantic_core==2.46.4
+starlette==1.0.0
+anyio==4.13.0
+typing_extensions==4.15.0
+typing-inspection==0.4.2
+python-dateutil==2.9.0.post0
+tzdata==2026.2
+packaging==26.2
+PyYAML==6.0.3
+requests==2.34.2
+urllib3==2.7.0
+certifi==2026.4.22
+charset-normalizer==3.4.7
+idna==3.15

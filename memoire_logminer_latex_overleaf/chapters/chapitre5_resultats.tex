@@ -1,0 +1,300 @@
+\chapter{Resultats et evaluation}
+
+\section{Protocole experimental}
+L'evaluation combine plusieurs types de donnees afin de tester la robustesse du prototype face a l'heterogeneite des journaux. Les sources incluent des journaux locaux, des exports SIEM/HIDS, des datasets systemes publics, des datasets reseau labelises et des entrees de robustesse.
+
+\begin{table}[H]
+\centering
+\caption{Datasets et scenarios experimentaux}
+\label{tab:datasets}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.4cm}p{3.2cm}p{3cm}X}
+\toprule
+\textbf{Categorie} & \textbf{Source} & \textbf{Nature} & \textbf{Objectif} \\
+\midrule
+Reel local & Windows Event/Application/System & Journaux Windows & Collecte, parsing et detection locale. \\
+Reel/SIEM & Wazuh exports & Alertes et evenements SIEM/HIDS & Detection non supervisee sur signaux securite. \\
+Reel tabulaire & Linux/auth & Authentification labelisee & Evaluation supervisee et faux positifs. \\
+Public systeme & HDFS, BGL & Logs distribues/HPC & Evaluation exploratoire sur logs sequentiels. \\
+Public reseau & CICIDS2017, CIC-DDoS2019 & Flux reseau labelises & Detection supervisee d'attaques connues avec protocole 80/20 a interpreter prudemment. \\
+Controle & Windows simule & Evenements avec anomalies injectees & Comparaison baseline et IA. \\
+Robustesse & Apache, CEF/LEEF, CloudTrail, Linux auth & Multi-format & Tolerance aux formats heterogenes. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Resultats principaux}
+Le tableau \ref{tab:main-results} resume les principaux resultats.
+
+\begin{table}[H]
+\centering
+\caption{Resultats principaux}
+\label{tab:main-results}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.5cm}p{3cm}p{2.6cm}p{2.2cm}X}
+\toprule
+\textbf{Famille} & \textbf{Dataset} & \textbf{Modele} & \textbf{Type} & \textbf{Resultat} \\
+\midrule
+Windows & Security/Application/System & Isolation Forest & Non supervise & Anomalies candidates et incidents correles. \\
+Wazuh & Exports Jan./Oct./Dec. & Isolation Forest & Non supervise & 122 563 evenements, 3 676 anomalies candidates. \\
+Linux/auth & linux\_auth\_logs & RandomForest & Supervise & F1 = 0,916602. \\
+CICIDS2017 & MachineLearningCVE & RandomForest & Supervise & F1 = 0,997163. \\
+CIC-DDoS2019 & DrDoS/UDPLag/SYN & RandomForest & Supervise & F1 = 0,999965, protocole 80/20 exploratoire. \\
+HDFS & HDFS logs & Ensemble/IForest & Non supervise & Resultat exploratoire autour de F1 = 0,599333, non presente comme generalisation independante. \\
+BGL & BlueGene/L & Ensemble/Autoencoder/IForest & Non supervise & Resultat exploratoire autour de F1 = 0,994333, sensible au protocole in-sample. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Evaluation des modeles supervises}
+Les modeles supervises sont evalues sur des datasets labelises. Les scores eleves obtenus sur CICIDS2017 et CIC-DDoS2019 doivent etre interpretes dans le cadre experimental considere. Ils montrent que des modeles specialises peuvent bien capturer des distributions connues, mais ils ne garantissent pas une generalisation universelle. En particulier, les splits aleatoires 80/20 par lignes ou par echantillons peuvent surestimer la performance lorsque des flux proches, issus d'une meme capture ou d'un meme scenario, se retrouvent simultanement dans l'entrainement et le test.
+
+Le score de 0,999965 est donc attribue dans ce memoire a un jeu de donnees DDoS compatible CIC-DDoS2019, et non a une validation stricte UNSW-NB15. Cette correction de provenance est importante pour la tracabilite scientifique. Une experience UNSW-NB15 officielle devrait utiliser les fichiers UNSW-NB15 documentes, separer clairement entrainement et test, et rapporter les resultats sous une entree distincte.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth]{fig_supervised_models_f1.png}
+  \caption{Performances F1 des modeles supervises.}
+  \label{fig:supervised}
+\end{figure}
+
+\section{Evaluation non supervisee}
+Les sorties non supervisees sont traitees comme des anomalies candidates. Cela concerne notamment Windows, Wazuh, HDFS et BGL. Une anomalie candidate indique un comportement rare ou atypique, mais sa qualification comme attaque necessite une correlation ou une validation analyste.
+
+Les resultats HDFS et BGL doivent etre lus avec une prudence supplementaire. Lorsque les modeles non supervises sont ajustes et evalues sur le meme echantillon, ou lorsque le parametre de contamination est deduit du taux reel d'anomalies, le score obtenu mesure surtout une separation exploratoire dans l'echantillon disponible. Il ne mesure pas une generalisation independante. Pour une validation stricte, il faudrait separer les blocs HDFS ou les periodes BGL en ensembles d'entrainement, validation et test, entrainer seulement sur le train, fixer le seuil sur validation, puis evaluer une seule fois sur test.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth]{fig_validation_selection_f1.png}
+  \caption{Comparaison des meilleurs detecteurs par dataset de validation.}
+  \label{fig:validation}
+\end{figure}
+
+\section{Comparaison avec Wazuh}
+Les exports Wazuh permettent de tester \logminer{} sur des signaux deja enrichis par un outil SIEM/HIDS. Le prototype ne remplace pas Wazuh. Il explore plutot une couche analytique supplementaire, capable de produire des anomalies candidates sur les exports.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth]{fig_wazuh_logminer_overlap.png}
+  \caption{Recouvrement entre signaux Wazuh et anomalies candidates \logminer.}
+  \label{fig:wazuh}
+\end{figure}
+
+\section{Faux positifs}
+Les faux positifs constituent une limite majeure des systemes de detection. Le prototype calcule des taux par dataset lorsque les metriques agregees sont disponibles. Les datasets non supervises ne permettent pas toujours une interpretation directe en faux positifs, faute de labels fiables.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth]{fig_false_positive_rates.png}
+  \caption{Faux positifs par 1000 lignes selon les metriques disponibles.}
+  \label{fig:false-positive}
+\end{figure}
+
+\section{Benchmark local par micro-lots}
+Le benchmark local par micro-lots utilise l'endpoint FastAPI \texttt{/run/discovered}. Il couvre 10 cycles, chacun portant sur 8 537 lignes. La duree moyenne du workflow est de 8,2012 secondes, avec un minimum de 3,1672 secondes et un maximum de 15,3289 secondes. Cette mesure ne doit pas etre interpretee comme une preuve de temps reel strict. Elle decrit un traitement periodique par lots de taille moderee dans un environnement local.
+
+\begin{table}[H]
+\centering
+\caption{Benchmark local par micro-lots}
+\label{tab:realtime}
+\begin{tabular}{lr}
+\toprule
+\textbf{Indicateur} & \textbf{Valeur} \\
+\midrule
+Cycles OK & 10 \\
+Lignes par cycle & 8 537 \\
+Duree moyenne workflow & 8,2012 s \\
+Duree minimale workflow & 3,1672 s \\
+Duree maximale workflow & 15,3289 s \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth]{fig_realtime_workflow_latency.png}
+  \caption{Duree du workflow local par micro-lots sur 10 cycles.}
+  \label{fig:latency}
+\end{figure}
+
+\section{Campagne CPU/RAM}
+La campagne principale CPU/RAM couvre 30 cycles. Elle mesure le workflow, le CPU equivalent coeur, le CPU machine et la RAM pour l'API/orchestrateur et le processus \logminer.
+
+\begin{table}[H]
+\centering
+\caption{Campagne ressources multi-cycles}
+\label{tab:resources}
+\scriptsize
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Agent} & \textbf{Cycles} & \textbf{Workflow moy.} & \textbf{CPU machine moy.} & \textbf{RAM moy.} \\
+\midrule
+API / Orchestrateur & 30 & 9,3300 s & 7,45\% & 187,82 MB \\
+Processus \logminer & 30 & 9,3300 s & 0,41\% & 495,41 MB \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth]{fig_resource_campaign_multicycle.png}
+  \caption{Evolution CPU/RAM observee pendant la campagne multi-cycles.}
+  \label{fig:resources}
+\end{figure}
+
+\section{Campagne d'execution parallele}
+Une campagne complementaire a ete ajoutee pour mesurer le mode parallele. Elle execute la comparaison de detecteurs avec trois workers sur un CSV synthetique labelise de 500 evenements par cycle. Les cinq cycles se terminent correctement. La duree moyenne du workflow est de 3,6232 secondes, avec un maximum de 6,0172 secondes. Le pic CPU machine moyen est de 17,1725\%, et la RAM maximale moyenne est de 176,89 MB.
+
+\begin{table}[H]
+\centering
+\caption{Campagne ressources en mode parallele}
+\label{tab:parallel-resources}
+\scriptsize
+\begin{tabular}{lr}
+\toprule
+\textbf{Indicateur} & \textbf{Valeur} \\
+\midrule
+Cycles OK & 5/5 \\
+Evenements par cycle & 500 \\
+Workers paralleles & 3 \\
+Duree moyenne workflow & 3,6232 s \\
+Duree maximale workflow & 6,0172 s \\
+CPU machine max moyen & 17,1725\% \\
+RAM maximale moyenne & 176,89 MB \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth]{fig_parallel_resource_campaign.png}
+  \caption{Pics CPU observes pendant la campagne parallele locale.}
+  \label{fig:parallel-resources}
+\end{figure}
+
+\section{Campagne Redis des agents intelligents}
+Une campagne Redis longue a ete executee pour verifier la repartition de taches heterogenes entre agents intelligents multi-taches. Le run \texttt{redis-campaign-20260717161257} utilise trois workers principaux, un worker de reprise et une panne volontaire avant acquittement. Les resultats confirment que les taches non acquittees peuvent etre recuperees sans perte observee.
+
+\begin{table}[H]
+\centering
+\caption{Campagne Redis longue des agents intelligents}
+\label{tab:intelligent-redis-long}
+\scriptsize
+\begin{tabular}{lr}
+\toprule
+\textbf{Indicateur} & \textbf{Valeur} \\
+\midrule
+Taches enfilees & 150 \\
+Taches uniques terminees & 150 \\
+Echecs & 0 \\
+Panne simulee avant acquittement & 1 \\
+Pending final & 0 \\
+Perte estimee & 0 \\
+Duree observee & 102,4202 s \\
+Debit observe & 1,4646 taches/s \\
+Latence p95 & 5,3567 s \\
+Latence p99 & 8,2873 s \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La repartition par agent montre une execution effectivement partagee : \texttt{redis-agent-1} termine 46 taches, \texttt{redis-agent-2} 62, \texttt{redis-agent-3} 41 et \texttt{redis-recovery-agent} recupere la tache abandonnee par le worker de panne. Les trois types de taches sont equilibres : 50 \texttt{parse.logs}, 50 \texttt{route.model} et 50 \texttt{discover.logs}.
+
+\section{Ablation de l'architecture agents}
+L'ablation compare la progression architecturale du prototype : pipeline centralise, agent unique multi-taches, agents locaux multiples, puis agents Redis avec panne et reprise.
+
+\begin{table}[H]
+\centering
+\caption{Ablation agents intelligents}
+\label{tab:intelligent-agents-ablation}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3.2cm}rrrrX}
+\toprule
+\textbf{Scenario} & \textbf{Taches} & \textbf{Echecs} & \textbf{Duree} & \textbf{Debit} & \textbf{Conclusion} \\
+\midrule
+Pipeline centralise & 2 & 0 & n/a & n/a & Reference non distribuee. \\
+Agent unique multi-taches & 3 & 0 & n/a & n/a & Un agent execute discovery, parsing et routage. \\
+Agents locaux multiples & 9 & 0 & 6,0688 s & 1,483 & Partage d'une file locale entre agents. \\
+Agents Redis panne/reprise & 150 & 0 & 102,4202 s & 1,4646 & Distribution locale multi-processus et reprise validees. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Robustesse multi-format}
+Les tests de robustesse verifient la capacite du systeme a traiter des formats differents et a conserver les lignes incompletes. Le resultat important est la conservation des entrees inconnues ou corrompues, afin d'eviter une perte silencieuse d'information.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth]{fig_robustness_multiformat.png}
+  \caption{Robustesse du parsing multi-format.}
+  \label{fig:robustness}
+\end{figure}
+
+\section{Comparaison operationnelle}
+\logminer{} doit etre compris comme un complement analytique. Fail2ban est oriente reaction operationnelle par regles. OSSEC/Wazuh constituent des plateformes HIDS/SIEM plus matures. \logminer{} apporte une chaine legere de normalisation, routage, detection et visualisation, mais ne pretend pas remplacer ces outils en production.
+
+\section{Evaluation qualitative du dashboard}
+L'evaluation ne se limite pas aux scores. Les captures du dashboard montrent que le prototype permet de parcourir les anomalies candidates, d'inspecter un incident, de suivre les ressources, de verifier l'etat des services et de consulter l'audit. Cette dimension est importante car un systeme de detection inutilisable par un analyste reste difficile a valoriser, meme lorsque ses metriques sont favorables.
+
+Le dashboard joue donc trois roles : synthese, investigation et tracabilite. La synthese regroupe les indicateurs essentiels. L'investigation permet d'ouvrir les details d'un incident ou d'une anomalie candidate. La tracabilite conserve les decisions analyste et les messages utiles a la reproduction.
+
+\section{Menaces sur la validite}
+Les resultats doivent etre interpretes avec prudence. Les datasets publics ne representent pas toutes les infrastructures reelles. Les labels peuvent etre incomplets ou produire des distributions artificiellement favorables. Les mesures de latence dependent de la machine locale, du volume traite et de l'etat du systeme au moment des tests. Enfin, les sorties non supervisees ne peuvent etre assimilees a des intrusions sans validation supplementaire.
+
+\section{Synthese}
+Les resultats montrent que le prototype atteint les objectifs d'ingenierie principaux : traitement multi-format, detection supervisee et non supervisee, architecture multi-agents, dashboard, evaluation par metriques et mesures de ressources. Les objectifs scientifiques sont atteints de maniere partielle et prudente : la distribution locale multi-processus est validee par Redis, mais la generalisation supervisee, l'analyse sequentielle HDFS, la scalabilite multi-machine et la reduction des faux positifs restent des limites ouvertes.
+
+\section{Interpretation par objectif}
+Le premier objectif concernait l'identification et la structuration des journaux. Les tests multi-format et la taxonomie des sources montrent que le prototype distingue plusieurs familles de donnees et conserve les entrees inconnues. Le deuxieme objectif concernait l'analyse des methodes de detection. Le memoire compare les approches par regles, les methodes statistiques, les modeles supervises, les methodes non supervisees et les approches profondes.
+
+Le troisieme objectif portait sur l'architecture d'agents specialises. Le prototype valide une distribution logique par composants et une distribution locale multi-processus par Redis Streams : collecte, parsing, normalisation, routage, detection, correlation, dashboard et audit. Le quatrieme objectif concernait l'apprentissage. Les resultats supervises et non supervises montrent l'integration de plusieurs modeles, avec une interpretation prudente selon la disponibilite des labels et les risques de fuite de donnees.
+
+Le cinquieme objectif etait la conception d'un tableau de bord. Les captures montrent que cette partie est realisee et qu'elle couvre les alertes, les details, les ressources et l'audit. Le sixieme objectif concernait les tests sur logs simules et reels. Les sources utilisees combinent journaux locaux, exports Wazuh et datasets publics. Le septieme objectif portait sur l'evaluation des performances. Les tableaux et figures documentent les F1-scores, la latence, les ressources, les faux positifs disponibles et la comparaison operationnelle.
+
+\section{Analyse des resultats supervises}
+Les resultats supervises sont les plus simples a interpreter car ils reposent sur des labels. Le score F1 de 0,916602 sur Linux/auth montre une performance correcte dans un contexte d'authentification. Les scores de 0,997163 sur CICIDS2017 et 0,999965 sur CIC-DDoS2019 indiquent une tres forte separation dans les conditions experimentales considerees. Ces resultats confirment l'interet de modeles specialises par famille, mais ils restent dependants du protocole de split.
+
+Il faut cependant garder une lecture critique. Un score eleve sur un dataset public peut refleter la qualite du modele, mais aussi la structure du dataset, la separabilite des classes, une fuite indirecte entre train et test, ou la stabilite artificielle des distributions. Le memoire ne presente donc pas ces scores comme une garantie absolue de detection en production. Ils valident plutot la capacite du prototype a integrer, entrainer et exploiter des modeles supervises dans une chaine complete. Une validation plus forte devrait separer les donnees par jour, fichier, scenario ou type d'attaque, puis rapporter plusieurs graines, intervalles de confiance, PR-AUC, MCC et matrices de confusion.
+
+\section{Analyse des resultats non supervises}
+Les resultats non supervises sont plus delicats. Sur Wazuh, le systeme traite 122 563 evenements et produit 3 676 anomalies candidates. Cette valeur donne un ordre de grandeur de la selectivite du detecteur, mais elle ne suffit pas a conclure que toutes ces anomalies sont des attaques. Elle indique que certains evenements se distinguent du comportement global observe.
+
+Pour HDFS, BGL et les journaux Windows, la logique est similaire. Le modele signale des points atypiques, puis le correlateur et le dashboard fournissent le contexte. Cette separation entre detection algorithmique et validation humaine est l'un des principes importants du travail. Elle evite de transformer la sortie d'un modele non supervise en verdict de securite.
+
+\section{Analyse de la latence}
+Le benchmark local par micro-lots indique une duree moyenne de 8,2012 secondes pour 10 cycles de 8 537 lignes. Cette mesure montre que le workflow local peut traiter des volumes moderes dans des delais compatibles avec une analyse interactive periodique. Elle ne demontre pas une capacite SOC temps reel a haut debit. Le minimum et le maximum rappellent que la duree varie selon l'etat du systeme, le volume traite et les operations effectuees.
+
+Dans une perspective de deploiement, cette mesure doit etre completee par des tests plus longs. Un systeme operationnel doit rester stable sur des heures ou des jours. Il doit aussi absorber des pics de logs sans bloquer le dashboard ni perdre les informations importantes. Le resultat obtenu est donc encourageant, mais il constitue une base experimentale plutot qu'une certification de performance industrielle. Les goulots d'etranglement potentiels a isoler sont le parsing, les operations disque, l'inference des modeles et la serialisation des resultats via l'API.
+
+\section{Analyse des ressources}
+La campagne CPU/RAM sur 30 cycles montre une consommation raisonnable pour le prototype local. L'API/orchestrateur et le processus \logminer{} restent dans des ordres de grandeur compatibles avec une machine de developpement. Cette observation soutient le choix de modeles legers et d'une architecture locale reproductible.
+
+La mesure des ressources est importante car un detecteur trop lourd peut devenir lui-meme un probleme operationnel. Dans un environnement de securite, l'outil d'observation ne doit pas perturber excessivement le systeme observe. Les resultats actuels sont favorables pour un prototype, mais une evaluation plus stricte serait necessaire avec davantage de sources, des volumes plus eleves et une duree plus longue.
+
+\section{Lecture detaillee par famille de donnees}
+Les resultats peuvent etre relus famille par famille afin de mieux comprendre la portee du prototype. La famille Windows sert principalement a valider la collecte locale, le parsing et la conservation des evenements systemes. Elle est representative d'un environnement poste de travail ou serveur Windows, mais elle depend fortement des droits disponibles. Certains journaux, notamment Security, peuvent exiger une execution administrateur. Cette contrainte n'est pas un detail technique : elle conditionne la qualite des donnees collectees.
+
+La famille Wazuh joue un role particulier car elle ne correspond pas a des logs bruts. Les evenements sont deja enrichis par une plateforme HIDS/SIEM. L'analyse par \logminer{} ne doit donc pas etre interpretee comme une detection a partir de zero, mais comme une couche supplementaire sur des signaux pretraites. L'interet est d'observer si une detection non supervisee peut faire emerger des sous-ensembles atypiques dans un flux deja qualifie.
+
+La famille Linux/auth est importante pour l'authentification. Les echecs de connexion, changements d'utilisateur, ouvertures de session et messages de services sont des indicateurs classiques de securite. Le F1-score obtenu montre que le modele supervise capture correctement les patterns disponibles dans le dataset. Il faudrait cependant tester davantage de distributions Linux reelles pour mesurer la robustesse hors dataset.
+
+Les familles CICIDS2017 et CIC-DDoS2019 representent plutot des flux reseau numeriques. Elles sont adaptees aux modeles supervises et expliquent les scores tres eleves. Toutefois, leur structure differe fortement des logs textuels. Leur presence dans le memoire ne signifie donc pas que le meme modele traite tous les journaux. Elle montre que l'architecture peut router vers une famille reseau et utiliser un modele specialise.
+
+Les familles HDFS et BGL rappellent enfin la difficulte des journaux systemes sequentiels. Le resultat BGL est favorable, tandis que HDFS reste plus difficile. Cette difference est instructive car elle montre que la performance depend fortement de la structure des donnees et du type de representation utilise. Une extension par templates et sequences serait particulierement utile pour ces familles.
+
+\section{Analyse de sensibilite qualitative}
+L'analyse de sensibilite consiste a se demander comment les resultats changeraient si certains choix etaient modifies. Pour les modeles non supervises, le parametre de contamination ou le seuil de decision influence directement le nombre d'anomalies candidates. Un seuil plus strict reduit la charge analyste mais peut manquer des signaux. Un seuil plus permissif augmente le rappel potentiel mais produit plus de bruit.
+
+Pour le routage, la sensibilite porte sur les criteres de famille. Si un fichier est mal route, le modele applique peut etre incompatible. Le fallback limite ce risque en conservant les donnees lorsque la famille n'est pas suffisamment claire. Cette strategie est preferable a une classification forcee, car une mauvaise certitude peut produire des resultats trompeurs.
+
+Pour les mesures de latence, la sensibilite depend du volume, du type de source, du modele et de l'etat de la machine. La moyenne de 8,2012 secondes est donc une valeur observee dans une campagne precise. Une charge plus importante, un disque plus lent ou plusieurs utilisateurs simultanes pourraient modifier cette valeur. Les resultats actuels montrent une faisabilite, pas une garantie universelle.
+
+\section{Analyse des erreurs attendues}
+Les erreurs attendues peuvent etre classees en quatre categories. La premiere categorie concerne les erreurs de parsing. Elles surviennent lorsqu'un format varie par rapport aux hypotheses du parseur. La deuxieme concerne les erreurs de routage. Elles surviennent lorsqu'une source ressemble a une autre ou lorsque les colonnes disponibles sont insuffisantes. La troisieme concerne les erreurs de detection. Elles incluent les faux positifs et les faux negatifs. La quatrieme concerne les erreurs d'interpretation humaine, par exemple lorsqu'un signal legitime est considere comme suspect ou inversement.
+
+Le prototype reduit ces erreurs par plusieurs mecanismes : conservation des lignes inconnues, audit des traitements, distinction supervise/non supervise, dashboard de validation et documentation des limites. Ces mecanismes ne suppriment pas le risque, mais ils le rendent observable. Dans un systeme de securite, rendre le risque observable est deja un progres important.
+
+\section{Comparaison entre evaluation algorithmique et evaluation systeme}
+L'evaluation algorithmique mesure la performance des modeles. L'evaluation systeme mesure la capacite de la chaine complete a fonctionner. Les deux sont necessaires. Un modele performant mais mal integre ne produit pas un outil exploitable. A l'inverse, un pipeline robuste mais sans detection pertinente n'apporte pas assez de valeur analytique.
+
+Dans ce memoire, l'evaluation algorithmique est representee par les F1-scores, les resultats non supervises et les comparaisons de familles. L'evaluation systeme est representee par la robustesse multi-format, la latence, les ressources, le dashboard et l'audit. La contribution de \logminer{} reside dans la combinaison de ces deux niveaux. Le prototype ne se contente pas de calculer des scores ; il montre comment ces scores entrent dans une chaine d'analyse.

@@ -1,0 +1,140 @@
+\documentclass[12pt,a4paper,oneside]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{fancyhdr}
+\usepackage{tocbibind}
+\usepackage{ragged2e}
+
+\geometry{margin=2.5cm}
+\onehalfspacing
+\raggedbottom
+\setlength{\emergencystretch}{4em}
+\Urlmuskip=0mu plus 2mu
+\setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{3}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=blue
+}
+
+\graphicspath{{figures/}{captures/}}
+\newcommand{\logminer}{Logminer}
+\newcommand{\universite}{UNIVERSITE DE KINSHASA}
+\newcommand{\faculte}{FACULTE POLYTECHNIQUE}
+\newcommand{\departement}{DEPARTEMENT DE GENIE ELECTRIQUE ET INFORMATIQUE}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Memoire Logminer}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{15pt}
+
+\begin{document}
+\sloppy
+
+\begin{titlepage}
+  \centering
+  {\Large\bfseries \universite\par}
+  \vspace{0.2cm}
+  
+  \IfFileExists{captures/unikin_logo.png}{\includegraphics[width=3cm]{unikin_logo.png}\par\vspace{0.8cm}}{}
+  {\large\bfseries \faculte\par}
+  \vspace{0.2cm}
+  {\large\bfseries \departement\par}
+  \vspace{0.8cm}
+  {\Large Memoire presente et defendu en vue de l'obtention du titre d'Ingenieur Civil Electricien\par}
+  \vspace{0.4cm}
+  {\large Orientation : Informatique\par}
+  \vspace{1.0cm}
+  {\huge\bfseries Detection Autonome et Distribuee d'Anomalies dans les Journaux Systemes et Reseaux a l'aide d'Agents Intelligents Multi-Taches\par}
+  \vspace{0.35cm}
+  {\Large Conception et evaluation locale du prototype Ariel \logminer\par}
+  \vfill
+  {\small
+  \begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}X>{\RaggedRight\arraybackslash}X}
+  \textbf{Par :} MARHEGANE BITATI André Olivier &
+  \textbf{Directeur :} Prof.Dr.Ir. KYANDOGHERE KYAMAKYA Jean Vianney \\
+  \textbf{Promotion :} 2ICE-IN &
+  \textbf{Co-Directeurs :} Dr. KAMBALE WITESYAVWIRWA Vianney \newline
+  Ir.civ. MUGISHA MUHIRE Jean-Pierre \\
+  \end{tabularx}}
+  \vspace{0.4cm}
+  \vfill
+  {\large ANNEE ACADEMIQUE : 2025--2026\par}
+\end{titlepage}
+
+\pagenumbering{roman}
+
+\include{frontmatter/epigraphe}
+\include{frontmatter/dedicace}
+\include{frontmatter/remerciements}
+
+\chapter*{Resume}
+\addcontentsline{toc}{chapter}{Resume}
+Ce memoire presente \logminer, un prototype local multi-agents de detection d'anomalies dans des journaux systemes et reseaux heterogenes. Le systeme suit une architecture modulaire composee d'agents logiciels specialises pour la collecte, le parsing, la normalisation, le routage multi-modeles, la detection, la correlation, l'audit et la visualisation. Dans ce travail, le terme autonome designe une selection de taches et de traitements par politique explicite, le terme distribue designe une repartition locale multi-processus via Redis Streams, et les agents intelligents multi-taches designent des agents logiciels dotes de capacites, d'une memoire locale, d'un heartbeat et de plusieurs types de taches. L'objectif n'est pas de proposer un detecteur universel ni un deploiement SOC industriel, mais de valider une chaine complete permettant de transformer des journaux heterogenes en evenements normalises, puis en anomalies candidates et en incidents exploitables par un analyste.
+
+L'evaluation combine des journaux Windows locaux, des exports Wazuh, des logs Linux/auth, des datasets systemes publics HDFS et BGL, ainsi que des jeux de donnees reseau CICIDS2017 et CIC-DDoS2019. Les modeles supervises RandomForest obtiennent des scores F1 de 0,916602 sur Linux/auth, 0,997163 sur CICIDS2017 et 0,999965 sur CIC-DDoS2019 dans des protocoles 80/20 exploratoires. Les traitements non supervises sont presentes comme des anomalies candidates, notamment sur 122 563 evenements Wazuh produisant 3 676 anomalies candidates. Les resultats HDFS/BGL sont presentes comme exploratoires lorsque l'evaluation est faite sur des echantillons non independants. Le benchmark local par micro-lots rapporte 10 cycles de 8 537 lignes avec une duree moyenne de workflow de 8,2012 secondes, tandis que la campagne CPU/RAM principale couvre 30 cycles avec un workflow moyen de 9,3300 secondes. Une campagne Redis locale complete l'evaluation avec 150 taches uniques terminees, aucun echec et aucune tache pending finale apres une panne simulee avant acquittement.
+
+Les resultats montrent la faisabilite d'une approche locale, legere et interpretable pour l'analyse de journaux heterogenes. Les limites concernent notamment la validation multi-machine, la reduction des faux positifs, l'apprentissage continu et l'industrialisation en environnement SOC.
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+This thesis presents \logminer, a modular prototype for anomaly detection in heterogeneous system and network logs. The system follows a software architecture composed of specialized modules for collection, parsing, normalization, family-aware routing, detection, correlation, audit and visualization. The objective is not to propose a universal detector or an industrial distributed system, but to validate a local end-to-end chain that transforms heterogeneous logs into normalized events, anomaly candidates and analyst-readable incidents.
+
+The evaluation combines local Windows logs, Wazuh exports, Linux/auth logs, public HDFS and BGL system-log datasets, and network datasets such as CICIDS2017 and CIC-DDoS2019. Supervised RandomForest models reach F1-scores of 0.916602 on Linux/auth, 0.997163 on CICIDS2017 and 0.999965 on CIC-DDoS2019 under exploratory 80/20 protocols. Non-supervised outputs are reported as anomaly candidates, including 122,563 Wazuh events producing 3,676 candidate anomalies. HDFS/BGL results are reported as exploratory when evaluated on non-independent samples. The local micro-batch benchmark reports 10 cycles of 8,537 lines with a mean workflow duration of 8.2012 seconds, while the main CPU/RAM campaign covers 30 cycles with a mean workflow duration of 9.3300 seconds. A local Redis campaign further validates multi-process task distribution with 150 unique tasks completed, no failure and no final pending task after a simulated pre-acknowledgement failure.
+
+The results support the feasibility of a local, lightweight and interpretable approach to heterogeneous log analysis. Remaining limitations include strict multi-machine validation, false-positive reduction, continuous learning and industrial-scale SOC deployment.
+
+\chapter*{Depot GitHub du projet}
+\addcontentsline{toc}{chapter}{Depot GitHub du projet}
+Le code source, les scripts et les ressources techniques du projet sont associes au depot GitHub suivant :
+
+\begin{center}
+\url{https://github.com/andybitati/Memoire/tree/version_3}
+\end{center}
+
+Ce lien est fourni pour faciliter la verification, la consultation du code et la poursuite du travail apres la redaction du memoire. Les articles scientifiques lies au projet seront ajoutes ulterieurement lorsqu'ils seront finalises.
+
+\tableofcontents
+\listoffigures
+\listoftables
+\include{frontmatter/acronymes}
+\clearpage
+\pagenumbering{arabic}
+
+\include{chapters/chapitre1_introduction}
+\include{chapters/chapitre2_etat_art}
+\include{chapters/chapitre3_modele_propose}
+\include{chapters/chapitre4_implementation}
+\include{chapters/chapitre5_resultats}
+\include{chapters/chapitre6_approfondissements_scientifiques}
+\include{chapters/chapitre6_discussion}
+\include{chapters/chapitre7_reproductibilite_deploiement}
+\include{chapters/chapitre6_conclusion}
+\include{chapters/annexes}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

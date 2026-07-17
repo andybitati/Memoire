@@ -27,12 +27,13 @@ if str(BASE_DIR) not in sys.path:
 
 from agents.model_router import MODEL_DEFAULTS, route_model, run_routed_detection
 from agents.correlator import correlate_anomalies
-from agents.bus import RedisMessageBus
+from agents.bus import MqttMessageBus, RedisMessageBus
 from agents.audit import read_audit, write_audit
-from agents.collector_agent import DEFAULT_ROOTS, discover_logs
+from agents.collector_agent import DEFAULT_ROOTS, deployment_roots, discover_logs
 from agents.privilege_agent import request_windows_sensitive_collection
 from agents.resource_monitor import snapshot as resource_snapshot
-from agents.runtime_agent import ensure_runtime, runtime_status
+from agents.runtime_agent import ensure_runtime, install_preflight, runtime_status
+from agents.supervisor_agent import run_supervisor_campaign, run_supervisor_cycle
 from pipeline import run_pipeline
 
 
@@ -55,6 +56,7 @@ class ParseRequest(BaseModel):
     out_name: str = "api_parsed.csv"
     sep: str = ";"
     debug: bool = False
+    parallel_workers: int = 1
 
 
 class DetectRequest(BaseModel):
@@ -66,6 +68,8 @@ class DetectRequest(BaseModel):
     window_minutes: int = 15
     run_id: str | None = None
     use_redis: bool = False
+    chunk_workers: int = 1
+    correlator_parallel_workers: int = 1
 
 
 class CorrelateRequest(BaseModel):
@@ -75,6 +79,7 @@ class CorrelateRequest(BaseModel):
     window_minutes: int = 15
     run_id: str | None = None
     use_redis: bool = False
+    parallel_workers: int = 1
 
 
 class RunRequest(BaseModel):
@@ -86,6 +91,9 @@ class RunRequest(BaseModel):
     window_minutes: int = 15
     run_id: str | None = None
     use_redis: bool = False
+    parser_parallel_workers: int = 1
+    chunk_workers: int = 1
+    correlator_parallel_workers: int = 1
 
 
 class DiscoverRequest(BaseModel):
@@ -94,6 +102,9 @@ class DiscoverRequest(BaseModel):
     max_mb: int = 100
     run_id: str | None = None
     use_redis: bool = False
+    collector_parallel_workers: int = 1
+    use_deployment_roots: bool = False
+    include_project_roots: bool = True
 
 
 class RunDiscoveredRequest(BaseModel):
@@ -105,6 +116,37 @@ class RunDiscoveredRequest(BaseModel):
     run_id: str | None = None
     use_redis: bool = True
     max_mb: int = 100
+    parser_parallel_workers: int = 1
+    chunk_workers: int = 1
+    correlator_parallel_workers: int = 1
+    collector_parallel_workers: int = 1
+    use_deployment_roots: bool = False
+    include_project_roots: bool = True
+
+
+class QueueRunRequest(RunRequest):
+    job_stream: str | None = None
+    job_type: str = "workflow.run"
+
+
+class SupervisorCycleRequest(BaseModel):
+    roots: list[str] = Field(default_factory=lambda: list(DEFAULT_ROOTS))
+    max_files: int = 20
+    max_mb: int = 100
+    out_dir: str = "data/processed"
+    bus_path: str = "data/processed/supervisor_messages.jsonl"
+    memory_path: str = "data/processed/supervisor_state.json"
+    run_id: str | None = None
+    parser_parallel_workers: int = 1
+    chunk_workers: int = 1
+    correlator_parallel_workers: int = 1
+    collector_parallel_workers: int = 1
+    use_deployment_roots: bool = False
+
+
+class SupervisorCampaignRequest(SupervisorCycleRequest):
+    cycles: int = 3
+    parallel_workers: int = 1
 
 
 class RuntimePrepareRequest(BaseModel):
@@ -112,6 +154,11 @@ class RuntimePrepareRequest(BaseModel):
     start_desktop: bool = True
     wait_seconds: int = 45
     run_id: str | None = None
+
+
+class RuntimePreflightRequest(BaseModel):
+    compose_file: str = "docker-compose.redis.yml"
+    redis_required: bool = True
 
 
 class PrivilegedWindowsCollectRequest(BaseModel):
@@ -126,6 +173,15 @@ class PrivilegedWindowsCollectRequest(BaseModel):
 class EventsRequest(BaseModel):
     run_id: str | None = None
     count: int = 100
+
+
+class MqttPublishRequest(BaseModel):
+    source: str = "api"
+    target: str = "mqtt"
+    message_type: str = "mqtt.test"
+    payload: dict[str, Any] = Field(default_factory=dict)
+    status: str = "ok"
+    run_id: str | None = None
 
 
 class AlertDecisionRequest(BaseModel):
@@ -187,6 +243,19 @@ def _redis_settings() -> dict[str, Any]:
     return {
         "url": os.getenv("LOGMINER_REDIS_URL", "redis://localhost:6379/0"),
         "stream": os.getenv("LOGMINER_REDIS_STREAM", "logminer:events"),
+        "job_stream": os.getenv("LOGMINER_REDIS_JOB_STREAM", "logminer:jobs"),
+        "job_group": os.getenv("LOGMINER_REDIS_JOB_GROUP", "logminer-workers"),
+    }
+
+
+def _mqtt_settings() -> dict[str, Any]:
+    return {
+        "host": os.getenv("LOGMINER_MQTT_HOST", "localhost"),
+        "port": int(os.getenv("LOGMINER_MQTT_PORT", "1883")),
+        "topic_prefix": os.getenv("LOGMINER_MQTT_TOPIC_PREFIX", "logminer/events"),
+        "qos": int(os.getenv("LOGMINER_MQTT_QOS", "1")),
+        "username": os.getenv("LOGMINER_MQTT_USERNAME") or None,
+        "password": os.getenv("LOGMINER_MQTT_PASSWORD") or None,
     }
 
 
@@ -200,8 +269,18 @@ def _redis_bus(run_id: str | None = None) -> RedisMessageBus:
         raise HTTPException(status_code=503, detail=f"Redis indisponible: {exc}") from exc
 
 
+def _mqtt_bus(run_id: str | None = None) -> MqttMessageBus:
+    settings = _mqtt_settings()
+    try:
+        bus = MqttMessageBus(run_id=run_id, **settings)
+        bus.ping()
+        return bus
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail=f"MQTT indisponible: {exc}") from exc
+
+
 def _publish(
-    bus: RedisMessageBus | None,
+    bus: Any | None,
     source: str,
     target: str,
     message_type: str,
@@ -239,7 +318,13 @@ def _run_workflow(request: RunRequest, input_path: Path, run_id: str, bus: Redis
         parsed_name = f"api_{run_id}_parsed.csv"
         parse_sep = ";" if request.sep == "auto" else request.sep
         _publish(bus, "orchestrator", "parser", "parsing.started", {"input_path": str(input_path)})
-        produced = run_pipeline(str(input_path), str(out_dir), parsed_name, sep=parse_sep)
+        produced = run_pipeline(
+            str(input_path),
+            str(out_dir),
+            parsed_name,
+            sep=parse_sep,
+            parallel_workers=request.parser_parallel_workers,
+        )
         if not produced:
             _publish(bus, "parser", "orchestrator", "parsing.failed", {"reason": "no parsed csv produced"}, status="error")
             raise HTTPException(status_code=400, detail="Aucun CSV produit par le parsing")
@@ -260,8 +345,12 @@ def _run_workflow(request: RunRequest, input_path: Path, run_id: str, bus: Redis
             output=anomalies_csv,
             incidents_output=incidents_csv,
             window_minutes=request.window_minutes,
+            chunk_workers=request.chunk_workers,
+            correlator_parallel_workers=request.correlator_parallel_workers,
             models=_model_paths(),
         )
+        routed_timings = result.get("timings") if isinstance(result.get("timings"), dict) else {}
+        timings.update({str(key): float(value) for key, value in routed_timings.items()})
         timings["detect_and_correlate_sec"] = round(perf_counter() - detection_started, 4)
     except Exception as exc:
         _publish(bus, "detector", "orchestrator", "workflow.failed", {"error": str(exc)}, status="error")
@@ -298,8 +387,56 @@ def redis_health() -> dict[str, Any]:
         "status": "ok",
         "url": settings["url"],
         "stream": settings["stream"],
+        "job_stream": settings["job_stream"],
         "ping": bus.ping(),
+        "events": bus.stream_info(settings["stream"]),
+        "jobs": bus.stream_info(settings["job_stream"]),
     }
+
+
+@app.get("/redis/pending")
+def redis_pending() -> dict[str, Any]:
+    settings = _redis_settings()
+    bus = _redis_bus()
+    return {
+        "job_stream": settings["job_stream"],
+        "job_group": settings["job_group"],
+        "pending": bus.pending_jobs(stream=settings["job_stream"], group=settings["job_group"]),
+    }
+
+
+@app.get("/mqtt/health")
+def mqtt_health() -> dict[str, Any]:
+    settings = _mqtt_settings()
+    bus = _mqtt_bus()
+    try:
+        ping = bus.ping()
+    finally:
+        bus.close()
+    return {
+        "status": "ok",
+        "host": settings["host"],
+        "port": settings["port"],
+        "topic_prefix": settings["topic_prefix"],
+        "qos": settings["qos"],
+        "ping_publish": ping,
+    }
+
+
+@app.post("/mqtt/publish")
+def mqtt_publish(request: MqttPublishRequest) -> dict[str, Any]:
+    bus = _mqtt_bus(request.run_id)
+    try:
+        message = bus.publish(
+            source=request.source,
+            target=request.target,
+            message_type=request.message_type,
+            payload=request.payload,
+            status=request.status,
+        )
+    finally:
+        bus.close()
+    return {"published": True, "message": asdict(message)}
 
 
 @app.get("/events")
@@ -311,6 +448,60 @@ def events(run_id: str | None = None, count: int = 100) -> dict[str, Any]:
         "run_id": run_id,
         "count": len(messages),
         "events": [asdict(message) for message in messages],
+    }
+
+
+@app.get("/agents/status")
+def agents_status(run_id: str | None = None, count: int = 500) -> dict[str, Any]:
+    """Retourne les derniers heartbeats et resultats des agents intelligents."""
+
+    bus = _redis_bus(run_id=run_id)
+    messages = bus.read(run_id=run_id, count=max(1, min(count, 5000)))
+    agents: dict[str, dict[str, Any]] = {}
+    task_events = 0
+    for message in messages:
+        payload = message.payload or {}
+        agent_id = str(payload.get("agent_id") or message.source or "")
+        if not agent_id:
+            continue
+        state = agents.setdefault(
+            agent_id,
+            {
+                "agent_id": agent_id,
+                "last_seen": "",
+                "capabilities": [],
+                "heartbeat_count": 0,
+                "tasks_started": 0,
+                "tasks_ok": 0,
+                "tasks_failed": 0,
+                "last_result": None,
+                "last_error": "",
+            },
+        )
+        state["last_seen"] = message.timestamp or state["last_seen"]
+        if payload.get("capabilities"):
+            state["capabilities"] = payload.get("capabilities")
+        if message.message_type == "agent.heartbeat":
+            state["heartbeat_count"] += 1
+            state["memory"] = payload.get("memory", {})
+        elif message.message_type == "agent.task.started":
+            state["tasks_started"] += 1
+            task_events += 1
+        elif message.message_type == "agent.task.completed":
+            state["tasks_ok"] += 1
+            state["last_result"] = payload.get("result")
+            task_events += 1
+        elif message.message_type == "agent.task.failed":
+            state["tasks_failed"] += 1
+            result = payload.get("result") or {}
+            state["last_result"] = result
+            state["last_error"] = result.get("error", "")
+            task_events += 1
+    return {
+        "run_id": run_id,
+        "count": len(agents),
+        "task_events": task_events,
+        "agents": sorted(agents.values(), key=lambda item: item.get("agent_id", "")),
     }
 
 
@@ -356,6 +547,12 @@ def get_runtime_status() -> dict[str, Any]:
     return asdict(runtime_status())
 
 
+@app.post("/runtime/preflight")
+def runtime_preflight(request: RuntimePreflightRequest) -> dict[str, Any]:
+    status = install_preflight(request.compose_file, redis_required=request.redis_required)
+    return asdict(status)
+
+
 @app.post("/runtime/prepare")
 def prepare_runtime(request: RuntimePrepareRequest) -> dict[str, Any]:
     bus = None
@@ -396,24 +593,30 @@ def prepare_runtime(request: RuntimePrepareRequest) -> dict[str, Any]:
 @app.post("/collect/discover")
 def collect_discover(request: DiscoverRequest) -> dict[str, Any]:
     bus = _redis_bus(request.run_id) if request.use_redis else None
+    roots = (
+        deployment_roots(include_project=request.include_project_roots, extra_roots=request.roots)
+        if request.use_deployment_roots
+        else request.roots
+    )
     _publish(
         bus,
         source="api",
         target="collector",
         message_type="collector.discovery.started",
-        payload={"roots": request.roots, "max_mb": request.max_mb},
+        payload={"roots": roots, "max_mb": request.max_mb},
     )
     candidates = discover_logs(
-        roots=request.roots,
+        roots=roots,
         max_files=request.max_files,
         max_bytes=max(1, request.max_mb) * 1024 * 1024,
         bus=bus,
+        parallel_workers=request.collector_parallel_workers,
     )
     _audit(
         "collector.discover",
         status="ok" if candidates else "warning",
         target="local_logs",
-        details={"count": len(candidates), "selected": candidates[0].path if candidates else "", "roots": request.roots},
+        details={"count": len(candidates), "selected": candidates[0].path if candidates else "", "roots": roots},
     )
     return {
         "run_id": bus.run_id if bus is not None else request.run_id,
@@ -475,6 +678,7 @@ def parse(request: ParseRequest) -> dict[str, Any]:
             request.out_name,
             sep=request.sep,
             debug=request.debug,
+            parallel_workers=request.parallel_workers,
         )
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -500,6 +704,8 @@ def detect(request: DetectRequest) -> dict[str, Any]:
             output=request.output,
             incidents_output=request.incidents_output,
             window_minutes=request.window_minutes,
+            chunk_workers=request.chunk_workers,
+            correlator_parallel_workers=request.correlator_parallel_workers,
             models=_model_paths(),
         )
     except Exception as exc:
@@ -535,6 +741,7 @@ def correlate(request: CorrelateRequest) -> dict[str, Any]:
             output_path,
             sep=sep,
             window_minutes=request.window_minutes,
+            parallel_workers=request.parallel_workers,
         )
     except Exception as exc:
         _publish(bus, "correlator", "api", "correlation.failed", {"error": str(exc)}, status="error")
@@ -559,22 +766,65 @@ def run(request: RunRequest) -> dict[str, Any]:
     return response
 
 
+@app.post("/run/queued")
+def run_queued(request: QueueRunRequest) -> dict[str, Any]:
+    input_path = _existing_path(request.input_path)
+    settings = _redis_settings()
+    run_id = request.run_id or datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")
+    bus = _redis_bus(run_id)
+    job_stream = request.job_stream or settings["job_stream"]
+    payload = {
+        "input_path": str(input_path),
+        "parse_if_needed": request.parse_if_needed,
+        "out_dir": request.out_dir,
+        "sep": request.sep,
+        "sample_rows": request.sample_rows,
+        "window_minutes": request.window_minutes,
+        "run_id": run_id,
+        "parser_parallel_workers": request.parser_parallel_workers,
+        "chunk_workers": request.chunk_workers,
+        "correlator_parallel_workers": request.correlator_parallel_workers,
+    }
+    job_id = bus.enqueue_job(payload, stream=job_stream, job_type=request.job_type)
+    _publish(
+        bus,
+        source="api",
+        target="worker",
+        message_type="workflow.queued",
+        payload={"job_id": job_id, "job_stream": job_stream, **payload},
+    )
+    _audit("workflow.queued", target=str(input_path), details={"job_id": job_id, "job_stream": job_stream, **payload})
+    return {
+        "status": "queued",
+        "run_id": run_id,
+        "job_id": job_id,
+        "job_stream": job_stream,
+        "worker_command": "python scripts\\logminer_redis_worker.py --once",
+    }
+
+
 @app.post("/run/discovered")
 def run_discovered(request: RunDiscoveredRequest) -> dict[str, Any]:
     run_id = request.run_id or datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     bus = _redis_bus(run_id) if request.use_redis else None
+    roots = (
+        deployment_roots(include_project=request.include_project_roots, extra_roots=request.roots)
+        if request.use_deployment_roots
+        else request.roots
+    )
     _publish(
         bus,
         source="orchestrator",
         target="collector",
         message_type="collector.discovery.started",
-        payload={"roots": request.roots, "max_mb": request.max_mb},
+        payload={"roots": roots, "max_mb": request.max_mb},
     )
     candidates = discover_logs(
-        roots=request.roots,
+        roots=roots,
         max_files=1,
         max_bytes=max(1, request.max_mb) * 1024 * 1024,
         bus=bus,
+        parallel_workers=request.collector_parallel_workers,
     )
     if not candidates:
         _publish(bus, "collector", "orchestrator", "workflow.failed", {"reason": "no log candidate found"}, status="error")
@@ -590,8 +840,54 @@ def run_discovered(request: RunDiscoveredRequest) -> dict[str, Any]:
         window_minutes=request.window_minutes,
         run_id=run_id,
         use_redis=request.use_redis,
+        parser_parallel_workers=request.parser_parallel_workers,
+        chunk_workers=request.chunk_workers,
+        correlator_parallel_workers=request.correlator_parallel_workers,
+        collector_parallel_workers=request.collector_parallel_workers,
+        use_deployment_roots=request.use_deployment_roots,
     )
     response = _run_workflow(workflow, selected, run_id, bus)
     full_response = {"selected": asdict(candidates[0]), **response}
     _audit("workflow.run_discovered", target=str(selected), details=full_response)
     return full_response
+
+
+@app.post("/supervisor/cycle")
+def supervisor_cycle(request: SupervisorCycleRequest) -> dict[str, Any]:
+    """Execute un cycle autonome perception-etat-decision-action."""
+
+    result = run_supervisor_cycle(
+        roots=request.roots,
+        max_files=request.max_files,
+        max_mb=request.max_mb,
+        out_dir=request.out_dir,
+        bus_path=request.bus_path,
+        memory_path=request.memory_path,
+        run_id=request.run_id,
+        parser_parallel_workers=request.parser_parallel_workers,
+        chunk_workers=request.chunk_workers,
+        correlator_parallel_workers=request.correlator_parallel_workers,
+        collector_parallel_workers=request.collector_parallel_workers,
+        use_deployment_roots=request.use_deployment_roots,
+    )
+    return asdict(result)
+
+
+@app.post("/supervisor/campaign")
+def supervisor_campaign(request: SupervisorCampaignRequest) -> dict[str, Any]:
+    """Execute plusieurs cycles autonomes avec memoire persistante."""
+
+    results = run_supervisor_campaign(
+        cycles=max(1, request.cycles),
+        roots=request.roots,
+        max_files=request.max_files,
+        max_mb=request.max_mb,
+        out_dir=request.out_dir,
+        bus_path=request.bus_path,
+        memory_path=request.memory_path,
+        parallel_workers=request.parallel_workers,
+        parser_parallel_workers=request.parser_parallel_workers,
+        chunk_workers=request.chunk_workers,
+        correlator_parallel_workers=request.correlator_parallel_workers,
+    )
+    return {"cycles": len(results), "results": [asdict(result) for result in results]}

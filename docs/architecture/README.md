@@ -106,7 +106,7 @@ Le prototype peut evoluer en trois niveaux.
 | --- | --- | --- | --- |
 | Local simple | Fichiers CSV + dossiers `data/` | Prototype, tests de datasets, memoire | Maintenant |
 | Services REST | FastAPI | Agents executables separement avec endpoints clairs | Quand le detecteur IA est ajoute |
-| Bus d'evenements | Redis, MQTT ou sockets | Flux quasi temps reel et agents distribues | Quand plusieurs sources tournent en parallele |
+| Bus d'evenements | Redis Streams, MQTT ou sockets | Flux quasi temps reel et agents distribues | Redis Streams pour jobs/workers; MQTT maintenant pour pub/sub leger |
 
 Le choix retenu pour stabiliser le prototype et organiser les evolutions du
 memoire est:
@@ -114,14 +114,14 @@ memoire est:
 ```text
 V1: fichiers CSV + CLI + bus local JSONL, version de secours defendable
 V2: FastAPI pour exposer parseur/detecteur/correlateur/dashboard
-V3: Redis ou MQTT si le flux temps reel devient necessaire
+V3: Redis Streams optionnel deja integre, file de jobs et workers; MQTT optionnel pour pub/sub temps reel leger
 ```
 
 La V1 est la version stable du memoire et doit rester fonctionnelle. La
 trajectoire V2/V3 fait aussi partie du memoire, mais elle est construite
 au-dessus de la V1 pour ne pas perdre les avancees deja validees. Elle est
 documentee dans `docs/architecture/v1_cli_v2_services.md`. Le premier service
-FastAPI V2 et le bus Redis optionnel sont documentes dans
+FastAPI V2 et le bus Redis Streams optionnel sont documentes dans
 `docs/architecture/v2_fastapi.md`.
 
 ## Entrainement Cloud Et Artefacts Modeles

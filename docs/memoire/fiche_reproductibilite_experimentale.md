@@ -20,6 +20,7 @@ dans un article pour permettre l'interpretation des benchmarks Logminer.
 | Chemin environnement | `.venv` |
 | API benchmarkee | FastAPI Logminer, `http://127.0.0.1:8000` |
 | Dashboard | `http://127.0.0.1:5173` |
+| Depot GitHub | `https://github.com/andybitati/Memoire/tree/version_3` |
 
 Note: les informations WMI detaillees ont retourne `Acces refuse` dans
 l'environnement courant. Les valeurs ci-dessus proviennent de Python, `platform`
@@ -75,13 +76,49 @@ Interpretation:
 ## Commande Benchmark Temps Reel
 
 Le benchmark temps reel deja consolide dans les tableaux du memoire repose sur
-5 cycles de `/run/discovered`, avec 8 537 lignes par cycle.
+10 cycles de `/run/discovered`, avec 8 537 lignes par cycle.
 
 Resultats:
 
-- latence moyenne workflow: 10.6473 s;
-- latence minimale workflow: 3.0865 s;
-- latence maximale workflow: 19.8163 s.
+- latence moyenne workflow: 8.2012 s;
+- latence minimale workflow: 3.1672 s;
+- latence maximale workflow: 15.3289 s.
+
+## Commande Campagne Redis Agents Intelligents
+
+```powershell
+python scripts\run_intelligent_redis_campaign.py --workers 3 --repetitions 50 --cycles 60 --max-parallel-tasks 2
+```
+
+Run retenu: `redis-campaign-20260717161257`.
+
+Resultats:
+
+- 150 taches enfilees;
+- 150 taches uniques terminees;
+- 0 echec;
+- 0 pending final;
+- 0 perte estimee;
+- 1 panne simulee avant acquittement et reprise par `redis-recovery-agent`;
+- duree observee depuis Redis: 102.4202 s;
+- debit observe: 1.4646 taches/s;
+- latence p95/p99: 5.3567 s / 8.2873 s.
+
+Sorties:
+
+- `data/processed/intelligent_redis_long_campaign_summary.json`;
+- `docs/memoire/tables/table_intelligent_redis_long_campaign.md`;
+- `docs/architecture/intelligent_agents_redis_campaign_summary.md`.
+
+## Note De Tracabilite Des Scores Supervisees
+
+Les scores CICIDS2017 et UNSW-NB15 sont conserves comme resultats
+exploratoires du prototype. Ils ne doivent pas etre presentes comme preuve de
+generalisation SOC tant qu'un split temporel, par fichier, par hote ou par
+scenario d'attaque n'a pas ete execute. Le fichier historique
+`random_forest_unsw_80_20_metrics.csv` contient le champ
+`dataset=unsw_nb15_80_20`; la redaction finale utilise donc la designation
+UNSW-NB15 plutot qu'un intitule mixte ou ambigu.
 
 ## Informations A Completer Avant Soumission Externe
 

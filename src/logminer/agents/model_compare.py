@@ -14,8 +14,9 @@ import sys
 import time
 import tracemalloc
 import warnings
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Callable, Dict, Optional
 
 import pandas as pd
 import numpy as np
@@ -51,6 +52,7 @@ from features.event_features import build_feature_frame, load_events
 
 
 ModelResult = Dict[str, object]
+DetectorTask = tuple[Callable[..., ModelResult], tuple[object, ...]]
 
 AUTO_LABEL_COLUMNS = [
     "label",
@@ -129,6 +131,42 @@ def _run_with_resource_tracking(runner, *args) -> ModelResult:
 
     result["memory_peak_mb"] = round(peak / (1024 * 1024), 4)
     return result
+
+
+def _run_without_tracemalloc_tracking(runner, *args) -> ModelResult:
+    """Execute un detecteur dans un lot parallele.
+
+    `tracemalloc` est global au processus Python: si plusieurs detecteurs
+    tournent en meme temps, son pic memoire n'est plus attribuable proprement a
+    un modele. En mode parallele, on conserve donc une estimation locale basee
+    sur les objets de sortie, suffisante pour comparer sans bloquer les threads.
+    """
+
+    result = runner(*args)
+    labels = pd.Series(result.get("labels", []))
+    scores = pd.Series(result.get("scores", []))
+    result["memory_peak_mb"] = round((labels.memory_usage(deep=True) + scores.memory_usage(deep=True)) / (1024 * 1024), 4)
+    return result
+
+
+def _run_detector_tasks(tasks: list[DetectorTask], parallel_workers: int) -> list[ModelResult]:
+    """Execute les detecteurs independants en conservant leur ordre logique."""
+
+    workers = max(1, int(parallel_workers))
+    if workers == 1 or len(tasks) <= 1:
+        return [_run_with_resource_tracking(runner, *args) for runner, args in tasks]
+
+    ordered: list[ModelResult | None] = [None] * len(tasks)
+    max_workers = min(workers, len(tasks))
+    with ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="logminer-model") as executor:
+        futures = {
+            executor.submit(_run_without_tracemalloc_tracking, runner, *args): index
+            for index, (runner, args) in enumerate(tasks)
+        }
+        for future in as_completed(futures):
+            ordered[futures[future]] = future.result()
+
+    return [result for result in ordered if result is not None]
 
 
 def _score_direction(result: ModelResult) -> str:
@@ -844,6 +882,7 @@ def compare_models(
     random_state: int = 42,
     label_column: str = "",
     max_categorical_unique: int = 100,
+    parallel_workers: int = 1,
 ) -> str:
     """Execute les modeles retenus pour l'objectif 2 et ecrit un tableau CSV."""
 
@@ -870,20 +909,22 @@ def compare_models(
     # Methodes traditionnelles et statistiques. Elles servent de repere
     # explicable avant les modeles IA: seuils, entropie, rarete, distance a la
     # moyenne ou sortie des quartiles.
-    results.append(_run_with_resource_tracking(run_static_thresholds, events, features, effective_contamination, random_state))
-    results.append(_run_with_resource_tracking(run_z_score, features, effective_contamination, random_state))
-    results.append(_run_with_resource_tracking(run_iqr, features, effective_contamination, random_state))
-    results.append(_run_with_resource_tracking(run_histogram, events, effective_contamination, random_state))
-    results.append(_run_with_resource_tracking(run_entropy, events, effective_contamination, random_state))
-
-    # Modeles IA non supervises. Ils exploitent la meme matrice numerique pour
-    # rendre la comparaison reproductible entre approches.
-    results.append(_run_with_resource_tracking(run_isolation_forest, features, effective_contamination, random_state))
-    results.append(_run_with_resource_tracking(run_kmeans, features, effective_contamination, random_state))
-    results.append(_run_with_resource_tracking(run_one_class_svm, features, effective_contamination, random_state))
-    results.append(_run_with_resource_tracking(run_lof, features, effective_contamination, random_state))
-    results.append(_run_with_resource_tracking(run_autoencoder, features, effective_contamination, random_state))
-    results.append(_run_with_resource_tracking(run_lstm, events, effective_contamination, random_state))
+    independent_tasks: list[DetectorTask] = [
+        (run_static_thresholds, (events, features, effective_contamination, random_state)),
+        (run_z_score, (features, effective_contamination, random_state)),
+        (run_iqr, (features, effective_contamination, random_state)),
+        (run_histogram, (events, effective_contamination, random_state)),
+        (run_entropy, (events, effective_contamination, random_state)),
+        # Modeles IA non supervises. Ils exploitent la meme matrice numerique
+        # pour rendre la comparaison reproductible entre approches.
+        (run_isolation_forest, (features, effective_contamination, random_state)),
+        (run_kmeans, (features, effective_contamination, random_state)),
+        (run_one_class_svm, (features, effective_contamination, random_state)),
+        (run_lof, (features, effective_contamination, random_state)),
+        (run_autoencoder, (features, effective_contamination, random_state)),
+        (run_lstm, (events, effective_contamination, random_state)),
+    ]
+    results.extend(_run_detector_tasks(independent_tasks, parallel_workers))
 
     # Pipeline global: agrege les signaux des detecteurs precedents pour tester
     # si la combinaison ameliore la precision globale.
@@ -920,6 +961,12 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument("--random-state", type=int, default=42, help="Graine aleatoire")
     parser.add_argument("--label-column", default="", help="Colonne optionnelle de verite terrain")
     parser.add_argument("--max-categorical-unique", type=int, default=100, help="Limite one-hot par colonne")
+    parser.add_argument(
+        "--parallel-workers",
+        type=int,
+        default=1,
+        help="Nombre de detecteurs independants executes en parallele (1 = sequentiel)",
+    )
     args = parser.parse_args(argv)
 
     output = compare_models(
@@ -930,6 +977,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         random_state=args.random_state,
         label_column=args.label_column,
         max_categorical_unique=args.max_categorical_unique,
+        parallel_workers=args.parallel_workers,
     )
     print(f"Comparaison modeles: {output}")
     print(pd.read_csv(output, sep=args.sep).to_string(index=False))

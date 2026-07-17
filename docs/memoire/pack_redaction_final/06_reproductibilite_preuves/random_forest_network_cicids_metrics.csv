@@ -1,0 +1,2 @@
+﻿dataset,model,train_rows,test_rows,benign_rows_used,attack_rows_used,accuracy,precision,recall,f1,tn,fp,fn,tp
+data\raw\Datasets\MachineLearningCSV\MachineLearningCVE,random_forest_cicids,223692,55924,150000,129616,0.9973714326586081,0.9977600123585525,0.9965668878259528,0.9971630931933535,29942,58,89,25835

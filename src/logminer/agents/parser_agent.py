@@ -28,6 +28,7 @@ def parse_logs(
     sep: str = ";",
     bus: LocalMessageBus | None = None,
     debug: bool = False,
+    parallel_workers: int = 1,
 ) -> list[str]:
     """Parse un fichier/dossier et publie les messages de cycle de vie."""
 
@@ -48,6 +49,7 @@ def parse_logs(
         out_name=out_name,
         sep=sep,
         debug=debug,
+        parallel_workers=parallel_workers,
     )
 
     bus.publish(
@@ -68,10 +70,19 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument("--bus", default="data/processed/agent_messages.jsonl", help="Journal de messages JSONL")
     parser.add_argument("--run-id", default=None, help="Identifiant de run partage entre agents")
     parser.add_argument("--debug", action="store_true", help="Mode debug")
+    parser.add_argument("--parallel-workers", type=int, default=1, help="Nombre de fichiers parses en parallele")
     args = parser.parse_args(argv)
 
     bus = LocalMessageBus(args.bus, run_id=args.run_id)
-    produced = parse_logs(args.input, args.out_dir, args.name, args.sep, bus=bus, debug=args.debug)
+    produced = parse_logs(
+        args.input,
+        args.out_dir,
+        args.name,
+        args.sep,
+        bus=bus,
+        debug=args.debug,
+        parallel_workers=args.parallel_workers,
+    )
     print("\n".join(produced))
     print(f"Bus: {bus.path}")
     print(f"Run ID: {bus.run_id}")

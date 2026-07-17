@@ -1,0 +1,101 @@
+\chapter{Modele propose}
+
+\section{Vue generale}
+Le modele propose repose sur une architecture multi-agents modulaire. Chaque agent possede un role limite et produit une sortie exploitable par l'agent suivant. Cette separation reduit le couplage entre les etapes et facilite l'audit du traitement.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=0.78\textheight,keepaspectratio]{fig_architecture_logminer_mermaid.png}
+  \caption{Vue generale de l'architecture logique de \logminer{} sous forme de diagramme Mermaid.}
+  \label{fig:architecture}
+\end{figure}
+
+La chaine generale est la suivante : collecte des journaux, parsing, normalisation, routage vers une famille, detection par modele compatible, correlation des anomalies candidates, affichage dans le dashboard et journalisation d'audit.
+
+\section{Agents fonctionnels}
+Le tableau \ref{tab:agents} resume les agents principaux.
+
+\begin{table}[H]
+\centering
+\caption{Agents fonctionnels de \logminer}
+\label{tab:agents}
+\begin{tabularx}{\textwidth}{p{3cm}X}
+\toprule
+\textbf{Agent} & \textbf{Responsabilite} \\
+\midrule
+Collecteur & Recupere les journaux locaux, exports ou fichiers de datasets. \\
+Parseur & Detecte le format et extrait les champs pertinents. \\
+Normaliseur & Convertit les champs vers un schema commun. \\
+Routeur & Identifie la famille de journaux et choisit le modele compatible. \\
+Detecteur & Applique le modele de detection ou de classification. \\
+Correlateur & Regroupe les anomalies candidates en incidents lisibles. \\
+Dashboard & Affiche les resultats, filtres, graphes, ressources et decisions. \\
+Audit & Trace les executions, decisions analyste et messages agents. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Schema commun}
+Le schema commun retient les champs necessaires a l'analyse transversale : horodatage, severite, hote, source, categorie, utilisateur, message, indicateur d'anomalie, score et metadonnees. Ce schema n'elimine pas la richesse des sources originales, mais fournit un noyau stable pour la detection et la visualisation.
+
+\subsection{Principes de normalisation}
+La normalisation suit trois principes. Le premier est la conservation : une information inconnue n'est pas supprimee, mais placee dans les metadonnees ou dans le message original. Le deuxieme est la comparabilite : les champs communs doivent permettre de filtrer plusieurs sources avec les memes criteres. Le troisieme est la tracabilite : chaque evenement normalise doit rester rattachable a sa source et a sa ligne d'origine lorsque cette information existe.
+
+\subsection{Familles de journaux}
+Les familles de journaux representent des contextes d'analyse distincts. Un journal Windows ne se traite pas comme un flux CICIDS2017, et une alerte Wazuh ne porte pas le meme sens qu'une ligne Apache brute. Le modele propose separe donc les familles pour adapter les extracteurs, les variables numeriques et les detecteurs.
+
+\section{Routage multi-modeles}
+Le routage est un element central de l'architecture. Plutot que d'appliquer un modele unique a tous les journaux, \logminer{} selectionne une famille de traitement. Les familles considerees incluent notamment Windows, Wazuh, Linux/auth, reseau, HDFS, BGL et fallback.
+
+Le routage s'appuie sur des indices explicites : noms de colonnes, structure des messages, champs caracteristiques, type de fichier et distribution des valeurs. Lorsqu'aucune famille n'est suffisamment probable, le systeme utilise une route de fallback afin de conserver les donnees sans les perdre silencieusement.
+
+L'ablation disponible ne prouve pas une superiorite predictive universelle du routage par famille. Elle soutient plutot son interet architectural : compatibilite des schemas, separation des modeles, maintenance, interpretation et extension vers de nouvelles familles de journaux. Cette distinction evite de transformer un choix de conception robuste en affirmation statistique non demontree.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_family_routing_ablation.png}
+  \caption{Ablation operationnelle du routage par famille.}
+  \label{fig:routing}
+\end{figure}
+
+\section{Modeles de detection}
+Deux categories de modeles sont utilisees. Les modeles supervises RandomForest sont entraines sur des datasets labelises tels que Linux/auth, CICIDS2017 et UNSW-NB15. Les modeles non supervises, notamment Isolation Forest, sont utilises lorsque les labels fiables ne sont pas disponibles. Dans ce cas, les sorties sont des anomalies candidates.
+
+\subsection{Decision et interpretation}
+La sortie d'un modele est convertie en objet d'analyse comprenant au minimum la famille, le score, la decision, la severite estimee et les champs ayant motive l'affichage dans le dashboard. Cette representation evite de presenter un score isole. Elle favorise une lecture par incident, dans laquelle l'analyste peut comparer le message original, le contexte temporel et l'historique des decisions.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_model_portfolio_scale.png}
+  \caption{Portefeuille de modeles et volumes associes.}
+  \label{fig:portfolio}
+\end{figure}
+
+\section{Correlation et incidents}
+Une anomalie candidate isolee n'est pas forcement une intrusion. Le correlateur regroupe donc les signaux selon la severite, la proximite temporelle, la source, la categorie et les messages. L'objectif est de produire des incidents plus exploitables qu'une liste brute de scores.
+
+\section{Bus, audit et extensions}
+La version locale s'appuie sur des fichiers JSONL et CSV reproductibles. La V2 FastAPI expose des endpoints de traitement et un dashboard web. Redis Streams est ajoute comme bus operationnel local pour l'orchestration evenementielle et la repartition de taches entre workers. MQTT reste une extension de communication legere. Ces extensions ne sont pas presentees comme une preuve de scalabilite industrielle, mais comme une validation locale de l'architecture et une trajectoire d'evolution.
+
+\section{Positionnement du modele}
+Le modele propose est un complement aux outils SOC/SIEM existants. Il ne remplace pas Wazuh, OSSEC ou fail2ban. Il ajoute une couche analytique permettant de tester des detecteurs legers, de router les familles de journaux et de fournir un dashboard d'aide a l'analyse.
+
+\section{Contraintes de conception}
+La conception est guidee par quatre contraintes. La premiere est la reproductibilite : les resultats doivent pouvoir etre regeneres par scripts. La deuxieme est la legerete : le prototype doit fonctionner localement sans infrastructure SOC complete. La troisieme est l'auditabilite : les decisions et les messages agents doivent etre consultables. La quatrieme est la prudence scientifique : le systeme distingue les anomalies candidates, les alertes issues d'outils externes et les intrusions confirmees.
+
+\section{Flot de traitement detaille}
+Le flot de traitement commence par l'identification de la source. Le systeme peut recevoir un fichier local, un export de plateforme, un dataset public ou une sortie produite par un script de collecte. La premiere operation consiste a associer cette entree a un type probable. Cette etape ne depend pas d'un seul indice ; elle peut utiliser l'extension du fichier, les noms de colonnes, la structure des lignes, la presence de champs caracteristiques ou la distribution de certaines valeurs.
+
+La deuxieme operation est le parsing. Le parseur transforme les lignes brutes en objets intermediaires. Lorsque le format est reconnu, les champs importants sont extraits. Lorsque le format est partiellement reconnu, les champs disponibles sont conserves et le message brut reste accessible. Lorsque le format est inconnu ou corrompu, le systeme conserve l'entree dans une route de fallback. Cette decision evite de supprimer des evenements qui pourraient signaler un probleme de format, une tentative d'evasion ou une erreur de collecte.
+
+La troisieme operation est la normalisation. Les objets issus du parsing sont convertis dans un schema commun. Ce schema sert ensuite au routage et a l'affichage. La quatrieme operation est la detection. Le routeur determine la famille de logs, puis le detecteur applique le modele disponible. La cinquieme operation est la correlation. Elle regroupe les signaux proches par temps, source, severite ou categorie afin de produire des incidents plus comprehensibles qu'une liste brute d'anomalies.
+
+\section{Modele logique des interactions}
+Les agents cooperent selon un modele de messages. Chaque message transporte un identifiant, une source, un horodatage, une famille probable, un contenu normalise et des metadonnees. Cette logique permet de separer la production, la transformation et la consommation des informations. Dans la version locale, cette cooperation peut etre materialisee par des appels de fonctions, des fichiers, des endpoints FastAPI ou Redis Streams. Dans une version distribuee plus avancee, cette logique pourrait etre etendue a plusieurs machines avec files persistantes securisees.
+
+La logique de message presente un avantage important : elle rend l'architecture observable. Lorsqu'un resultat semble incoherent, il devient possible de remonter a l'etape de parsing, au choix du routeur ou au modele utilise. Cette observabilite interne est aussi importante que la detection elle-meme, car un systeme de securite doit pouvoir expliquer ses propres decisions.
+
+\section{Gestion des erreurs et cas limites}
+Le modele prevoit plusieurs cas limites. Si un fichier ne contient pas les colonnes attendues, le systeme ne doit pas s'arreter brutalement. Si une ligne est corrompue, elle doit etre isolee et conservee. Si aucun modele n'est disponible pour une famille, le systeme doit produire un statut explicite plutot qu'un resultat trompeur. Si le dashboard ne peut pas charger une ressource, l'erreur doit etre visible dans l'audit.
+
+Ces choix peuvent sembler secondaires, mais ils sont essentiels pour une application de cybersecurite. Les donnees reelles sont rarement propres. Les logs peuvent contenir des caracteres inattendus, des timestamps manquants, des champs vides ou des volumes tres variables. La robustesse consiste donc a degrader proprement le traitement, pas a supposer que toutes les entrees seront parfaites.

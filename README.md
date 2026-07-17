@@ -2,9 +2,9 @@
 
 Ce dépôt accompagne le mémoire:
 
-**Détection Autonome et Distribuée d'Anomalies dans les Journaux Systèmes et Réseaux à l'aide d'Agents Intelligents Multi-Tâches**.
+**Conception et Évaluation d'un Prototype Modulaire Multi-Modèles pour la Détection d'Anomalies dans les Journaux Systèmes et Réseaux Hétérogènes**.
 
-Le but est de construire progressivement un système capable de collecter des journaux hétérogènes, les parser, les normaliser, puis les préparer pour des agents IA de détection d'anomalies.
+Le but est de construire progressivement un prototype local capable de collecter des journaux hétérogènes, les parser, les normaliser, puis les préparer pour des modules de détection d'anomalies et un dashboard d'analyse.
 
 ## Structure Du Projet
 
@@ -74,6 +74,55 @@ TensorFlow/Keras est privilégié pour le LSTM. PyTorch est aussi intégré comm
 
 - Agent 1: collecte et parsing des logs.
 - Agent 2: prétraitement et normalisation.
+
+### Branche Agents Intelligents Multi-Tâches
+
+La branche `intelligent-multitask-distributed-agents` ajoute un noyau d'agents
+plus conforme à l'objectif initial du mémoire:
+
+- capacités déclarées par agent (`perception`, `parser`, `router`, `detector`,
+  `correlator`);
+- sélection autonome des tâches selon priorité, confiance, coût et mémoire;
+- exécution concurrente de plusieurs types de tâches;
+- mémoire locale des succès/erreurs;
+- heartbeat et traces de décision sur bus JSONL ou Redis Streams;
+- worker Redis permettant plusieurs agents/processus consommateurs.
+
+Démo locale sans Redis:
+
+```powershell
+python scripts\run_intelligent_agents_demo.py --json
+```
+
+Worker distribué Redis:
+
+```powershell
+python scripts\logminer_intelligent_agent_worker.py --enqueue-demo --cycles 1
+python scripts\logminer_intelligent_agent_worker.py --consumer worker-2 --cycles 1 --claim-idle-ms 30000
+```
+
+Campagne Redis avec plusieurs workers et panne volontaire avant acquittement:
+
+```powershell
+python scripts\run_intelligent_redis_campaign.py --workers 3 --repetitions 4
+```
+
+Campagne longue retenue pour le mémoire:
+
+```powershell
+python scripts\run_intelligent_redis_campaign.py --workers 3 --repetitions 50 --cycles 60 --max-parallel-tasks 2
+```
+
+Résultat observé le 17/07/2026: `150/150` tâches uniques terminées, `0`
+échec, `0` pending final, `1` panne simulée récupérée, débit observé `1.4646`
+tâche/s, latence p95/p99 `5.3567 s / 8.2873 s`.
+
+Cette campagne produit:
+
+- `data/processed/intelligent_redis_campaign_summary.json`;
+- `data/processed/intelligent_redis_long_campaign_summary.json`;
+- `docs/architecture/intelligent_agents_redis_campaign_summary.md`.
+- `docs/memoire/tables/table_intelligent_redis_long_campaign.md`.
 
 La conception globale des agents est documentée dans `docs/architecture/README.md`.
 
@@ -424,11 +473,11 @@ Avancées du 29/05/2026:
 
 - certains parseurs récupérés dans `src/logminer/parsers/`;
 - tests plus larges sur HDFS, BGL, Apache, Syslog et EVTX réel.
-- exploitation de UNSW-NB15 lorsque le téléchargement sera terminé.
+- exploitation future de UNSW-NB15 officiel dans une expérience séparée.
 
 ## Prochaines Étapes
 
-- Exploiter UNSW-NB15 lorsque le téléchargement sera terminé.
+- Exploiter UNSW-NB15 officiel dans une expérience séparée et traçable.
 - Élargir le test réseau au-delà de l'échantillon `outside_tcp_dump`.
 - Stabiliser tous les parseurs.
 - Améliorer la catégorisation sécurité avec plus de règles.

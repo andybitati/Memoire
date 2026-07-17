@@ -1,0 +1,112 @@
+\chapter{Reproductibilite, deploiement et exploitation}
+
+\section{Objectif du chapitre}
+Un prototype de detection d'anomalies ne peut pas etre juge uniquement par ses resultats numeriques. Il doit aussi pouvoir etre relance, controle, inspecte et adapte. Ce chapitre precise les elements qui permettent de reproduire le travail, de comprendre l'organisation technique du depot, de preparer un deploiement local et d'identifier les precautions necessaires avant une utilisation operationnelle.
+
+Cette partie complete les chapitres precedents. Le chapitre sur l'implementation explique les composants du prototype. Le chapitre sur les resultats presente les mesures obtenues. La discussion analyse les limites et les apports. Le present chapitre se place du point de vue d'un lecteur qui veut verifier le travail, relancer les scripts, consulter le code ou transformer le prototype en base d'evolution.
+
+\section{Depot GitHub du projet}
+Le projet est associe au depot GitHub suivant :
+
+\begin{center}
+\url{https://github.com/andybitati/Memoire/tree/version_3}
+\end{center}
+
+Ce depot sert de point d'acces principal au code source et aux ressources techniques. Il doit etre considere comme un complement au memoire, pas comme un remplacement de celui-ci. Le memoire explique la demarche scientifique, les choix d'architecture, les resultats et les limites. Le depot permet de consulter les fichiers, scripts et modules qui soutiennent cette demarche.
+
+L'ajout du lien GitHub presente plusieurs interets. Il facilite d'abord la verification du travail par un lecteur technique. Il permet ensuite de poursuivre le developpement du prototype apres la soutenance. Il donne enfin un point de reference stable pour les versions futures, notamment lorsque les articles scientifiques seront rediges et ajoutes au projet.
+
+\section{Organisation attendue du depot}
+L'organisation du depot suit une logique de separation entre code, donnees, documentation et livrables. Le dossier \texttt{src/logminer} contient le coeur applicatif du prototype. Il regroupe les agents, le pipeline, les modules de parsing, le routage, la detection, la correlation, l'audit et les elements lies a l'API. Le dossier \texttt{scripts} contient les programmes d'experimentation, de preparation de donnees, de benchmark et de generation des figures.
+
+Les dossiers de documentation regroupent les elements utiles a la redaction : plan directeur, synthese des resultats, tableaux, figures, captures, fiches de reproductibilite et comparaisons. Cette separation est importante car elle permet de distinguer trois niveaux : le systeme implemente, les preuves produites par ce systeme et le texte academique qui interprete ces preuves.
+
+Le projet LaTeX du memoire est conserve dans un dossier specifique afin d'etre charge directement sur Overleaf. Les images et captures utilisees dans le document sont locales. Cette decision evite la dependance a des images externes et renforce la coherence entre le prototype, les resultats et la redaction.
+
+\section{Environnement logiciel}
+Le prototype repose principalement sur Python. Les dependances exactes peuvent evoluer avec le depot, mais les familles de bibliotheques attendues concernent le traitement de donnees, le machine learning, l'API web et la generation d'artefacts. Les modules de detection s'appuient sur des modeles legers, notamment des modeles supervises et non supervises compatibles avec une execution locale.
+
+FastAPI est utilise pour exposer les fonctions du prototype sous forme de services locaux. Cette couche API evite de lier directement le dashboard aux fichiers internes. Elle facilite aussi une evolution future vers des workers separes, des files de messages ou des services deployes sur plusieurs machines.
+
+Les fichiers CSV et JSONL sont privilegies pour les exports et les preuves. Ces formats sont simples, lisibles, faciles a versionner et compatibles avec de nombreux outils. Ils permettent aussi de conserver une trace claire entre une experience, un resultat et une figure inseree dans le memoire.
+
+\section{Preparation d'un environnement local}
+Pour reproduire le travail dans un environnement local, la premiere etape consiste a cloner le depot, puis a installer les dependances Python dans un environnement isole. L'usage d'un environnement virtuel est recommande afin d'eviter les conflits avec d'autres projets. Les donnees necessaires doivent ensuite etre placees dans les dossiers prevus ou referencees par les scripts.
+
+La preparation doit etre faite avec prudence car certaines donnees de securite peuvent contenir des informations sensibles : noms d'utilisateurs, adresses IP, chemins de fichiers, noms d'hotes ou messages applicatifs. Avant tout partage public, il faut verifier que les donnees ne revelent pas d'informations confidentielles. Dans ce memoire, les resultats sont presentes sous forme agregee, de figures, de tableaux et de captures selectionnees.
+
+L'environnement local doit egalement tenir compte des ressources disponibles. Les experiences presentees dans le memoire ont ete realisees dans un contexte de prototype. Une machine plus faible peut produire des latences differentes. Une machine plus puissante peut reduire les temps de traitement. C'est pourquoi les mesures de latence et de ressources sont interpretees comme des observations experimentales, non comme des garanties universelles.
+
+\section{Chaine de reproduction des resultats}
+La reproduction des resultats suit une chaine logique. Les donnees sont d'abord preparees ou collectees. Les scripts de traitement produisent ensuite des sorties intermediaires : fichiers normalises, resultats de detection, metriques, exports CSV et journaux d'audit. Les scripts de generation transforment ces resultats en figures et tableaux. Enfin, les figures et tableaux sont integres dans le projet LaTeX.
+
+Cette chaine evite une redaction deconnectee des preuves. Lorsqu'une valeur est citee dans le memoire, elle doit pouvoir etre rattachee a un fichier de resultat. Par exemple, les F1-scores des modeles supervises, les anomalies candidates Wazuh, les mesures de latence et les campagnes CPU/RAM sont associes a des fichiers de preuve. Cette discipline est essentielle pour un travail technique.
+
+La reproduction exacte peut toutefois dependamment varier selon l'environnement. Les modeles aleatoires peuvent necessiter des graines fixes. Les temps de traitement dependent de la charge de la machine. Les versions de bibliotheques peuvent influencer certains details. Ces limites ne remettent pas en cause la valeur des resultats, mais elles imposent de documenter autant que possible les conditions experimentales.
+
+\section{Verification des figures et captures}
+Les figures du memoire jouent deux roles. Certaines representent l'architecture ou le fonctionnement du systeme. D'autres synthetisent des resultats numeriques. Les captures du dashboard montrent quant a elles l'existence de l'interface et la nature des informations presentees a l'analyste.
+
+La vue generale de l'architecture utilise un diagramme Mermaid afin de rendre la chaine de traitement lisible : collecteur, parseur, normaliseur, routeur, detecteur, correlateur, dashboard, audit et bus. Les autres figures representent les performances, la robustesse, les ressources, la latence et le recouvrement avec des signaux Wazuh.
+
+Avant depot final, il faut verifier que chaque figure est lisible apres compilation PDF. Une image peut etre correcte dans le dossier mais trop petite, trop grande ou mal cadree dans le document. C'est pour cette raison que les figures sont inserees avec des contraintes de largeur ou de hauteur et que les longues captures sont placees en annexe lorsque leur format s'y prete mieux.
+
+\section{Controle des debordements visuels}
+Les debordements dans un document LaTeX peuvent provenir de plusieurs sources : noms propres tres longs, chemins de fichiers, URLs, tableaux larges, commandes en verbatim ou images mal dimensionnees. Le memoire tient compte de ces risques par plusieurs choix de mise en page. Les en-tetes sont courts afin de ne pas deborder dans la marge. Les URLs sont inserees avec la commande \verb|\url| afin de permettre les coupures. Les commandes longues sont presentees en listes plutot qu'en lignes verbatim trop larges. Les figures sont dimensionnees avec des contraintes de hauteur ou de largeur.
+
+Les tableaux utilisent autant que possible des colonnes de type \texttt{tabularx} ou des tailles reduites lorsque les contenus sont nombreux. La page de garde utilise une mise en page capable de revenir a la ligne pour les noms longs des encadreurs. Ces decisions ne modifient pas le fond du memoire, mais elles ameliorent la lisibilite du PDF final.
+
+Il reste necessaire de faire une verification visuelle apres compilation Overleaf. LaTeX peut produire des resultats legerement differents selon la version du moteur, les polices et les packages disponibles. Une relecture du PDF final permet d'identifier les derniers ajustements de largeur, de hauteur ou de retour a la ligne.
+
+\section{Scenario de deploiement local}
+Le scenario de deploiement local correspond a une utilisation sur une machine unique ou sur un petit environnement de test. Dans ce scenario, les logs sont fournis sous forme de fichiers ou d'exports. Le pipeline les traite localement. L'API expose les fonctions principales. Le dashboard permet la consultation des resultats. Les decisions analyste sont conservees dans l'audit.
+
+Ce scenario est adapte a un cadre academique et a une premiere validation. Il permet de tester les formats, les modeles, la latence et l'ergonomie sans mettre en place une infrastructure lourde. Il convient aussi a des organisations qui veulent experimenter une detection locale avant d'investir dans une architecture plus complete.
+
+Les limites de ce scenario sont claires. Il ne prouve pas la resilience a grande echelle. Il ne garantit pas la haute disponibilite. Il ne remplace pas un SIEM industriel. Il constitue cependant une base raisonnable pour etudier la faisabilite et identifier les besoins d'evolution.
+
+\section{Scenario d'extension distribuee}
+Dans une extension distribuee, les agents pourraient etre deployes sur plusieurs machines. Les collecteurs locaux recueilleraient les journaux au plus pres des sources. Les messages seraient transmis vers une file persistante ou un bus evenementiel. Les detecteurs pourraient fonctionner comme workers separes. Le dashboard consulterait les resultats consolides via une API centralisee.
+
+Redis Streams et MQTT ont ete explores comme extensions operationnelles locales. Redis Streams a ete valide sur une campagne locale multi-processus : 150 taches uniques terminees, aucun echec, aucun pending final et une panne volontaire avant acquittement recuperee par un worker de reprise. MQTT reste une piste de communication legere entre composants. Ces extensions demandent encore des tests multi-machine, des mecanismes de securisation et une supervision plus stricte avant tout usage operationnel.
+
+Une extension distribuee devrait aussi traiter les questions d'authentification, de chiffrement, de controle d'acces et de journalisation des actions administratives. Un systeme de securite ne peut pas transmettre des evenements sensibles sans proteger les communications. Ces aspects depassent le prototype actuel, mais ils constituent une feuille de route naturelle.
+
+\section{Securite des donnees et confidentialite}
+Les journaux peuvent contenir des informations sensibles. Une ligne de log peut reveler un identifiant utilisateur, une adresse IP, un nom de machine, une application interne, un chemin de fichier ou une erreur contenant des informations techniques. Avant toute diffusion, il faut donc appliquer des regles de minimisation et d'anonymisation.
+
+Dans le cadre d'un memoire, il est preferable de presenter des resultats agreges plutot que des journaux bruts lorsque ceux-ci proviennent d'environnements reels. Les captures doivent etre relues pour eviter l'affichage d'informations confidentielles. Les exports publics ou datasets academiques sont plus faciles a partager, mais ils doivent tout de meme etre references et interpretes correctement.
+
+Le prototype pourrait integrer ulterieurement un module d'anonymisation. Ce module remplacerait certains champs sensibles par des identifiants pseudonymises. Il permettrait de conserver les relations utiles a l'analyse sans exposer directement les valeurs originales. Cette extension serait particulierement utile pour un deploiement dans un cadre universitaire, administratif ou professionnel.
+
+\section{Exploitation par un analyste}
+L'exploitation du prototype par un analyste suit une logique en plusieurs temps. L'analyste consulte d'abord la synthese generale pour comprendre le volume d'evenements et le nombre d'anomalies candidates. Il examine ensuite les incidents ou signaux prioritaires. Il ouvre les details pour consulter le message original, la source, la severite, le score et la famille de traitement. Il peut enfin valider, rejeter ou reclasser l'anomalie.
+
+Cette interaction est importante car elle transforme le systeme en outil d'aide a la decision. Le modele ne remplace pas l'analyste. Il filtre, structure et signale. L'analyste conserve le role de qualification. Cette repartition est realiste dans un contexte de cybersecurite, ou une alerte doit souvent etre interpretee a la lumiere du contexte metier, de l'historique et des operations legitimes en cours.
+
+Les decisions analyste constituent aussi une source de valeur pour l'avenir. Si elles sont conservees proprement, elles peuvent alimenter une boucle d'apprentissage actif. Le systeme pourrait progressivement ajuster ses seuils, reduire les faux positifs ou proposer des priorites plus pertinentes selon l'historique des validations.
+
+\section{Maintenance du prototype}
+La maintenance d'un systeme comme \logminer{} concerne plusieurs aspects. Les parseurs doivent etre mis a jour lorsque de nouveaux formats de logs apparaissent. Les modeles doivent etre reentraines lorsque les distributions changent. Le dashboard doit rester coherent avec les champs disponibles. Les scripts de reproduction doivent etre conserves et documentes.
+
+Une bonne pratique consiste a associer chaque changement important a une verification. Si un parseur est modifie, il faut tester plusieurs formats. Si un modele est remplace, il faut comparer les metriques avant et apres. Si une figure est regeneree, il faut verifier que les valeurs du memoire restent coherentes. Cette discipline limite les regressions et renforce la confiance dans le prototype.
+
+Le depot GitHub facilite cette maintenance en conservant l'historique des modifications. Il permet aussi de separer les branches de developpement, les versions stables et les ajouts futurs comme les articles scientifiques. Les articles seront integres plus tard, lorsque leur redaction sera finalisee, afin de ne pas melanger des contenus provisoires avec le memoire courant.
+
+\section{Tests complementaires recommandes}
+Plusieurs tests complementaires sont recommandes pour prolonger le travail. Le premier est un test de charge prolonge, sur plusieurs heures ou plusieurs jours, afin de mesurer la stabilite de l'API, du pipeline et du dashboard. Le deuxieme est un test multi-machine, avec plusieurs collecteurs et un bus central. Le troisieme est un test de panne plus large, au-dela du scenario Redis deja valide avant acquittement, pour observer la reprise sur des taches plus longues et des volumes plus importants.
+
+Un autre test utile concerne la robustesse aux formats inattendus. Il s'agirait d'injecter des lignes incompletes, corrompues ou melangees afin de verifier que le systeme conserve les entrees et signale les erreurs sans interrompre tout le pipeline. Ce type de test est important car les logs reels sont rarement parfaitement propres.
+
+Enfin, un test d'ergonomie pourrait etre mene avec des utilisateurs. Les analystes ou etudiants testeurs pourraient evaluer la clarte des vues, la comprehension des alertes, la pertinence des filtres et la facilite de validation. Ce retour serait utile pour ameliorer le dashboard et reduire l'effort d'interpretation.
+
+\section{Place des articles scientifiques}
+Les articles scientifiques lies au projet ne sont pas encore integres dans cette version du memoire. Ils seront ajoutes plus tard lorsqu'ils seront rediges et stabilises. Cette decision est volontaire. Un memoire doit rester coherent et ne pas inclure des textes provisoires qui risqueraient de changer apres relecture ou soumission.
+
+Lorsque les articles seront disponibles, ils pourront etre ajoutes en annexe ou references dans une section dediee. Ils permettront de valoriser certains aspects du travail, par exemple l'architecture multi-agents, les resultats experimentaux, la scalabilite ou la comparaison avec des outils standards. Pour l'instant, le memoire se concentre sur le prototype, les resultats disponibles et les preuves locales.
+
+\section{Synthese}
+La reproductibilite et le deploiement sont des dimensions essentielles du travail. Le depot GitHub fournit un point d'acces au code. Les scripts et CSV soutiennent les resultats. Le projet LaTeX regroupe les figures et captures locales. Les precautions de mise en page reduisent les debordements et rendent le document plus lisible. Les scenarios de deploiement montrent comment le prototype peut evoluer d'une execution locale vers une architecture plus distribuee.
+
+Ce chapitre renforce donc la valeur pratique du memoire. Il montre que \logminer{} n'est pas seulement une idee ou une serie de scores, mais un prototype organise, verifiable et perfectible. Il prepare aussi les prochaines etapes : articles scientifiques, tests prolonges, securisation des communications, anonymisation des donnees et integration plus stricte avec un environnement SOC.
+

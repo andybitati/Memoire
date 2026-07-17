@@ -20,6 +20,7 @@ articles. Les figures vectorielles correspondantes sont dans
 | Faux positifs par famille | `docs/memoire/figures/fig_false_positive_rates.svg` | Chapitre 5, discussion des alertes |
 | Recouvrement Wazuh / Logminer | `docs/memoire/figures/fig_wazuh_logminer_overlap.svg` | Comparaison outils standards |
 | Campagne CPU/RAM multi-cycles | `docs/memoire/figures/fig_resource_campaign_multicycle.svg` | Evaluation ressources, article evaluation |
+| Ablation routage familial | `docs/memoire/figures/fig_family_routing_ablation.svg` | Article 1: contribution scientifique |
 
 Tableaux associes:
 
@@ -32,7 +33,12 @@ Tableaux associes:
 - `docs/memoire/tables/table_fail2ban_like_baseline.md`;
 - `docs/memoire/tables/table_wazuh_logminer_summary.md`;
 - `docs/memoire/tables/table_wazuh_logminer_overlap.md`;
-- `docs/memoire/tables/table_resource_campaign_multicycle.md`.
+- `docs/memoire/tables/table_resource_campaign_multicycle.md`;
+- `docs/memoire/tables/table_intelligent_redis_long_campaign.md`;
+- `docs/memoire/tables/table_intelligent_agents_ablation.md`;
+- `docs/memoire/tables/table_intelligent_agents_resources.md`;
+- `docs/memoire/tables/table_family_routing_ablation.md`;
+- `docs/memoire/tables/table_family_routing_operational_ablation.md`.
 
 ## Resultat Global
 
@@ -40,14 +46,31 @@ Le prototype Logminer valide une architecture multi-agents modulaire capable de
 traiter des journaux heterogenes, de les normaliser dans un schema commun, de
 router chaque source vers un modele adapte, puis de produire des anomalies
 candidates et des incidents correles exploitables dans un dashboard. Les
-resultats les plus solides concernent les familles de donnees supervisees
-Linux/auth, CICIDS et UNSW/CIC-DDoS, ainsi que la robustesse du pipeline
-multi-format.
+resultats les plus directement mesurables concernent les familles de donnees
+supervisees Linux/auth, CICIDS et UNSW-NB15, mais ces scores restent
+exploratoires tant qu'ils ne sont pas reproduits avec un split temporel ou par
+scenario. Les preuves les plus solides pour le prototype concernent la
+robustesse du pipeline multi-format, la tracabilite, la campagne Redis locale
+et la reproductibilite des artefacts.
 
 Le systeme doit etre presente comme un prototype local avance et extensible:
 la V1 CLI constitue le socle stable, la V2 FastAPI apporte l'interaction par
-services REST, et Redis/MQTT restent une trajectoire d'industrialisation vers
-une distribution multi-machine.
+services REST, et Redis Streams est deja integre comme bus evenementiel
+optionnel pour tracer les workflows agents. Cette brique prepare une
+distribution multi-machine, mais elle ne prouve pas encore une scalabilite SOC.
+MQTT reste une perspective pour des collecteurs plus proches de l'IoT ou du
+temps reel.
+
+Tableau a reprendre pour le chapitre architecture:
+
+- `docs/memoire/tables/table_redis_streams_integration.md`.
+- `docs/memoire/tables/table_mqtt_integration.md`.
+- `docs/memoire/tables/table_scalability_redis_smoke.md` pour le memoire ou
+  l'article 2, pas comme resultat central de l'article 1.
+
+Regle de frontiere:
+
+- `docs/memoire/frontiere_article1_article2_scalabilite.md`.
 
 ## Protocole Experimental
 
@@ -56,7 +79,7 @@ Les experiences sont organisees autour de quatre familles de donnees:
 1. Journaux reels locaux: Windows Event/Security, Wazuh, Linux/auth.
 2. Datasets publics de logs systemes: HDFS et BGL.
 3. Datasets reseau labellises: CICIDS2017/MachineLearningCVE et
-   UNSW/CIC-DDoS.
+   UNSW-NB15.
 4. Scenarios synthetiques ou controles: Windows simule, logs corrompus et
    multi-formats Apache/CEF/CloudTrail/Linux auth.
 
@@ -72,7 +95,7 @@ analyste ou par l'agent correlateur.
 | --- | --- | --- |
 | Linux/auth | RandomForest supervise | F1 = 0.916602 |
 | CICIDS2017 | RandomForest supervise | F1 = 0.997163 |
-| UNSW/CIC-DDoS | RandomForest supervise | F1 = 0.999965 |
+| UNSW-NB15 | RandomForest supervise | F1 = 0.999965, resultat exploratoire a revalider |
 | Wazuh | Isolation Forest | 122 563 evenements, 3 676 anomalies candidates |
 | BGL | Selection validation | F1 autour de 0.994333 |
 | HDFS | Selection validation | F1 autour de 0.599333 a 0.600333 |
@@ -93,16 +116,16 @@ Interpretation:
 ## Benchmark Quasi Temps Reel
 
 Benchmark execute via `scripts/benchmark_realtime_workflow.py` sur l'endpoint
-FastAPI `/run/discovered`, avec 5 cycles, intervalle de 2 secondes et
+FastAPI `/run/discovered`, avec 10 cycles, intervalle de 2 secondes et
 `max_mb=5`.
 
 Resultats:
 
-- 5 cycles termines avec statut `ok`;
+- 10 cycles termines avec statut `ok`;
 - 8 537 lignes analysees par cycle;
-- latence workflow minimale: 3.0865 s;
-- latence workflow moyenne: 10.6473 s;
-- latence workflow maximale: 19.8163 s.
+- latence workflow minimale: 3.1672 s;
+- latence workflow moyenne: 8.2012 s;
+- latence workflow maximale: 15.3289 s.
 
 Formulation recommandee:
 
@@ -131,6 +154,59 @@ Resultats:
 Le tableau final est dans
 `docs/memoire/tables/table_resource_campaign_multicycle.md` et la figure
 associee dans `docs/memoire/figures/fig_resource_campaign_multicycle.svg`.
+
+## Campagne Parallele CPU/RAM
+
+Une campagne complementaire a ete executee via
+`scripts/run_parallel_resource_campaign.py` sans serveur FastAPI. Elle mesure
+le mode parallele de `model_compare` avec 3 workers sur 500 evenements
+synthetiques labelises par cycle.
+
+Resultats:
+
+- 5 cycles termines;
+- 500 evenements analyses par cycle;
+- 3 workers paralleles;
+- duree moyenne workflow: 3.6232 s;
+- duree maximale workflow: 6.0172 s;
+- CPU machine maximal moyen: 17.1725%;
+- RAM maximale moyenne: 176.89 MB.
+
+Le tableau est dans
+`docs/memoire/tables/table_parallel_resource_campaign.md` et la figure
+associee dans `docs/memoire/figures/fig_parallel_resource_campaign.svg`.
+Ces mesures doivent etre presentees comme une validation locale du mode
+multi-worker, et non comme une preuve de debit SOC industriel.
+
+## Campagne Redis Agents Intelligents
+
+Une campagne longue Redis a ete executee avec trois workers principaux, un
+worker de reprise et une panne volontaire avant acquittement. Le run retenu
+pour le memoire est `redis-campaign-20260717161257`.
+
+Resultats:
+
+- 150 taches enfilees;
+- 150 taches uniques terminees;
+- 0 echec;
+- 0 tache pending en fin de campagne;
+- 0 perte estimee;
+- 1 panne simulee avant `ack`, reprise par `redis-recovery-agent`;
+- duree observee depuis les evenements Redis: 102.4202 s;
+- debit observe: 1.4646 taches/s;
+- latence p95/p99 par tache: 5.3567 s / 8.2873 s.
+
+Le tableau final est dans
+`docs/memoire/tables/table_intelligent_redis_long_campaign.md`.
+
+Formulation recommandee:
+
+> La campagne Redis longue montre que les agents intelligents Logminer peuvent
+> se repartir des taches heterogenes dans plusieurs processus, publier leurs
+> decisions et recuperer une tache abandonnee avant acquittement. Dans le run
+> retenu, les 150 taches ont ete terminees sans echec ni pending final. La
+> preuve reste locale et multi-processus; le deploiement multi-machine est une
+> perspective experimentale distincte.
 
 ## Robustesse Multi-Format
 
@@ -169,6 +245,40 @@ Phrase defensive pour le memoire:
 > sur des journaux heterogenes, avec des modeles specialises et une
 > visualisation centree analyste.
 
+## Ablation Du Routage Familial
+
+L'article doit integrer l'ablation du routage familial pour soutenir la
+contribution scientifique. Deux niveaux sont disponibles:
+
+- ablation controlee: baseline globale et modeles specialises forces dans le
+  meme espace de features commun minimal;
+- ablation operationnelle: baseline globale commune comparee aux configurations
+  specialisees completes.
+
+Resultat a formuler prudemment:
+
+> Le routage familial ne garantit pas un gain F1 universel sur chaque famille.
+> Il apporte surtout une specialisation controlee, utile lorsque les familles de
+> logs exigent des espaces de features et des modeles differents. L'ablation
+> operationnelle montre un gain net sur Linux/auth, un gain leger sur UNSW, et
+> un resultat comparable sur CICIDS ou la baseline globale est deja proche de
+> la saturation.
+
+Phrase de reponse a ELK:
+
+> Une pile ELK fournit principalement ingestion, indexation, recherche,
+> stockage et visualisation. Logminer se positionne comme une couche analytique:
+> selection dynamique du modele selon la famille de journaux, unification des
+> sorties supervisees/non supervisees en anomalies candidates et correlation en
+> incidents interpretables.
+
+Clarification multi-agent:
+
+> Le terme agent est utilise au sens architectural: agents logiciels
+> specialises, communicants et coordonnes. Le prototype ne revendique pas encore
+> des agents cognitifs autonomes, de negotiation FIPA ou de reinforcement
+> learning cooperatif.
+
 ## Legendes Pretes A Inserer
 
 Figure architecture:
@@ -188,8 +298,9 @@ Figure validation F1:
 Figure modeles supervises:
 
 > Performances des modeles supervises RandomForest sur Linux/auth, CICIDS2017
-> et UNSW/CIC-DDoS. Les scores eleves valident l'interet de modeles specialises
-> par famille, sous reserve de compatibilite des schemas.
+> et UNSW-NB15. Les scores eleves valident surtout l'integration de modeles
+> supervises par famille dans le prototype. Leur generalisation doit etre
+> revalidee avec des partitions temporelles ou par scenarios d'attaque.
 
 Figure latence:
 
@@ -263,6 +374,10 @@ Scenario de demonstration:
   schemas.
 - La latence quasi temps reel est acceptable pour une demonstration locale,
   mais demande optimisation pour une production SOC.
+- Les resultats HDFS montrent la limite des features legeres ligne par ligne
+  pour les logs de systemes distribues. Une extension Drain-like, templates de
+  logs ou fenetres temporelles est necessaire pour rivaliser avec les approches
+  sequentielles type DeepLog/LogAnomaly.
 
 ## Contribution A Mettre En Avant
 

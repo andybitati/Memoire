@@ -1,0 +1,16 @@
+\begin{table}[t]
+\caption{Resilience and robustness evidence}
+\label{tab:resilience_agent}
+\centering
+\scriptsize
+\begin{tabularx}{\linewidth}{p{2.4cm}p{1.6cm}X X}
+\toprule
+\textbf{Scenario} & \textbf{Status} & \textbf{Evidence} & \textbf{Interpretation} \\
+\midrule
+Corrupted or incomplete log & Supported & robustness\_scalability\_report.csv: kept\_unknown status & No silent loss; input preserved \\
+Unsupported formats & Supported with fallback & Apache, CEF/LEEF and CloudTrail parsed or preserved & Graceful degradation instead of pipeline breakage \\
+Repeated fallback & Bounded & Supervisor caps windows and sampling policy & Protects resources, but requires analyst visibility \\
+Multi-cycle workflow & Supported locally & 30 completed cycles & Functional stability check, not industrial SOC proof \\
+\bottomrule
+\end{tabularx}
+\end{table}
