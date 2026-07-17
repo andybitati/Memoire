@@ -2,9 +2,9 @@
 
 Ce dépôt accompagne le mémoire:
 
-**Détection Autonome et Distribuée d'Anomalies dans les Journaux Systèmes et Réseaux à l'aide d'Agents Intelligents Multi-Tâches**.
+**Conception et Évaluation d'un Prototype Modulaire Multi-Modèles pour la Détection d'Anomalies dans les Journaux Systèmes et Réseaux Hétérogènes**.
 
-Le but est de construire progressivement un système capable de collecter des journaux hétérogènes, les parser, les normaliser, puis les préparer pour des agents IA de détection d'anomalies.
+Le but est de construire progressivement un prototype local capable de collecter des journaux hétérogènes, les parser, les normaliser, puis les préparer pour des modules de détection d'anomalies et un dashboard d'analyse.
 
 ## Structure Du Projet
 
@@ -424,11 +424,11 @@ Avancées du 29/05/2026:
 
 - certains parseurs récupérés dans `src/logminer/parsers/`;
 - tests plus larges sur HDFS, BGL, Apache, Syslog et EVTX réel.
-- exploitation de UNSW-NB15 lorsque le téléchargement sera terminé.
+- exploitation future de UNSW-NB15 officiel dans une expérience séparée.
 
 ## Prochaines Étapes
 
-- Exploiter UNSW-NB15 lorsque le téléchargement sera terminé.
+- Exploiter UNSW-NB15 officiel dans une expérience séparée et traçable.
 - Élargir le test réseau au-delà de l'échantillon `outside_tcp_dump`.
 - Stabiliser tous les parseurs.
 - Améliorer la catégorisation sécurité avec plus de règles.

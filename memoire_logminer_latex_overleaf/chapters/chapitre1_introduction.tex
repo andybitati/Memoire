@@ -11,7 +11,7 @@ La litterature en detection d'intrusion insiste depuis longtemps sur le role des
 La problematique centrale du memoire peut etre formulee ainsi :
 
 \begin{quote}
-Comment concevoir un systeme intelligent, distribue et exploitable par un analyste, capable de detecter de maniere autonome des anomalies dans des journaux systemes et reseaux heterogenes en temps quasi reel ?
+Comment concevoir un prototype local, modulaire et exploitable par un analyste, capable de detecter et de prioriser des anomalies candidates dans des journaux systemes et reseaux heterogenes par traitements periodiques ou par micro-lots ?
 \end{quote}
 
 Cette question recouvre plusieurs difficultes. Il faut d'abord reconnaitre et structurer des formats de journaux tres differents. Il faut ensuite choisir des modeles adaptes aux familles de donnees disponibles. Il faut aussi transformer les scores techniques en informations exploitables par un humain. Enfin, il faut evaluer la solution de maniere prudente, sans confondre anomalie candidate et attaque confirmee.
@@ -31,7 +31,7 @@ La problematique generale est declinee en questions de recherche operationnelles
 Le memoire repose sur quatre hypotheses prudentes. Premierement, les journaux heterogenes peuvent etre rapproches par un noyau commun de champs sans perdre les donnees originales. Deuxiemement, un routage par famille de logs est plus coherent qu'un modele unique applique indistinctement a toutes les sources. Troisiemement, les modeles legers restent utiles lorsqu'ils sont associes a une normalisation correcte, a une correlation et a une validation humaine. Quatriemement, une anomalie non supervisee doit etre consideree comme une piste d'analyse et non comme une preuve directe d'intrusion.
 
 \section{Objectif general}
-L'objectif general de ce travail est de concevoir et d'evaluer un prototype multi-agents, appele \logminer, pour la detection autonome d'anomalies dans des journaux systemes et reseaux heterogenes. Le systeme doit couvrir la chaine allant de la collecte des journaux a la visualisation des alertes, en passant par la normalisation, le routage multi-modeles, la detection et la correlation.
+L'objectif general de ce travail est de concevoir et d'evaluer un prototype modulaire, appele \logminer, pour la detection et la priorisation d'anomalies candidates dans des journaux systemes et reseaux heterogenes. Le systeme doit couvrir la chaine allant de la collecte des journaux a la visualisation des alertes, en passant par la normalisation, le routage multi-modeles, la detection et la correlation.
 
 \section{Objectifs specifiques}
 Conformement au document directeur, les objectifs specifiques sont les suivants :
@@ -39,7 +39,7 @@ Conformement au document directeur, les objectifs specifiques sont les suivants 
 \begin{enumerate}
   \item Identifier, categoriser et structurer les differents types de journaux systemes et reseaux pertinents pour l'analyse de securite.
   \item Analyser les techniques classiques et modernes de detection d'anomalies.
-  \item Concevoir une architecture distribuee d'agents specialises.
+  \item Concevoir une architecture locale de modules specialises, extensible vers une orchestration distribuee.
   \item Integrer des mecanismes d'apprentissage pour la detection adaptative.
   \item Concevoir un tableau de bord pour visualiser les alertes et anomalies.
   \item Tester le systeme sur des journaux simules et reels.
@@ -50,7 +50,7 @@ Conformement au document directeur, les objectifs specifiques sont les suivants 
 Les contributions de ce memoire sont les suivantes :
 
 \begin{itemize}
-  \item une architecture logicielle multi-agents pour l'analyse de journaux heterogenes ;
+  \item une architecture logicielle modulaire pour l'analyse de journaux heterogenes ;
   \item un schema commun de normalisation permettant de rapprocher des sources de logs differentes ;
   \item un routage multi-modeles par famille de journaux afin d'eviter l'application indiscriminee d'un modele unique ;
   \item une evaluation multi-datasets combinant journaux locaux, exports Wazuh, datasets publics et scenarios de robustesse ;
@@ -59,7 +59,7 @@ Les contributions de ce memoire sont les suivantes :
 \end{itemize}
 
 \section{Delimitation du travail}
-Le travail est centre sur la conception, l'implementation et l'evaluation d'un prototype local reproductible. La distribution est traitee comme une architecture logique multi-agents et comme une trajectoire technique preparee par FastAPI, Redis Streams et MQTT. Elle n'est pas revendiquee comme un deploiement industriel multi-site complet. De meme, les resultats supervises mesurent la performance sur les datasets utilises ; ils ne prouvent pas une generalisation automatique a toutes les infrastructures reelles.
+Le travail est centre sur la conception, l'implementation et l'evaluation d'un prototype local reproductible. La distribution est traitee comme une decomposition logique en modules cooperants et comme une trajectoire technique preparee par FastAPI, Redis Streams et MQTT. Elle n'est pas revendiquee comme un deploiement industriel multi-site complet. De meme, les resultats supervises mesurent la performance sur les datasets utilises ; ils ne prouvent pas une generalisation automatique a toutes les infrastructures reelles.
 
 \section{Methodologie generale}
 La demarche adoptee est iterative et experimentale. Elle commence par l'etude des formats de journaux et des methodes de detection d'anomalies. Elle se poursuit par la conception d'une architecture modulaire, puis par l'implementation du prototype \logminer. Les modeles sont ensuite evalues sur plusieurs familles de donnees, et les resultats sont synthetises sous forme de tableaux, figures et captures dashboard.
@@ -69,4 +69,25 @@ La solution privilegie des modeles legers et localement deployables. Les approch
 La validation combine plusieurs formes de preuves : mesures numeriques, tableaux synthetiques, figures exportees, captures du dashboard, scripts de reproduction et comparaison prudente avec des outils de reference. Cette combinaison evite de limiter l'evaluation a un score unique et permet de juger a la fois la performance, l'exploitabilite et la reproductibilite.
 
 \section{Organisation du memoire}
-Le memoire suit la structure du document directeur, enrichie par un chapitre de reproductibilite utile a la verification du travail. Le chapitre 2 presente l'etat de l'art. Le chapitre 3 decrit le modele propose et l'architecture multi-agents. Le chapitre 4 presente l'implementation du prototype. Le chapitre 5 analyse les resultats experimentaux. Le chapitre 6 discute les resultats, les limites et la valeur pratique du prototype. Le chapitre 7 presente la reproductibilite, le depot GitHub, les scenarios de deploiement et les precautions d'exploitation. Le dernier chapitre conclut le travail et propose les perspectives. Les annexes regroupent les tableaux, captures, figures et elements de reproductibilite.
+Le memoire suit la structure du document directeur, enrichie par un chapitre de reproductibilite utile a la verification du travail. Le chapitre 2 presente l'etat de l'art. Le chapitre 3 decrit le modele propose et l'architecture modulaire. Le chapitre 4 presente l'implementation du prototype. Le chapitre 5 analyse les resultats experimentaux. Le chapitre 6 approfondit les limites scientifiques, les risques de validite et les corrections methodologiques. Le chapitre 7 discute la valeur pratique du prototype. Le chapitre 8 presente la reproductibilite, le depot GitHub, les scenarios de deploiement et les precautions d'exploitation. Le dernier chapitre conclut le travail et propose les perspectives. Les annexes regroupent les tableaux, captures, figures et elements de reproductibilite.
+
+\section{Motivation du choix du sujet}
+Le choix du sujet provient d'un constat simple : les journaux systemes et reseaux sont disponibles dans presque toutes les infrastructures, mais ils sont rarement exploites a leur plein potentiel. Une machine Windows produit des evenements de securite, d'application et de systeme. Un serveur Linux conserve des traces d'authentification et d'activite des services. Un serveur web enregistre les requetes et erreurs. Un outil HIDS/SIEM comme Wazuh ajoute des alertes, regles et metadonnees de securite. Pourtant, ces sources restent souvent separees, consultees ponctuellement ou analysees seulement apres incident.
+
+Cette situation cree une opportunite scientifique et pratique. Les journaux contiennent des signaux faibles, mais leur volume et leur heterogeneite rendent l'analyse manuelle difficile. Les outils standards apportent une aide importante, mais ils reposent souvent sur des regles, des signatures ou des pipelines propres a chaque plateforme. Les methodes d'apprentissage automatique peuvent completer ces approches, a condition d'etre integrees dans une chaine explicable et reproductible. Le memoire explore donc cet espace intermediaire : une solution plus analytique qu'un simple filtrage manuel, mais plus legere et plus verifiable qu'une plateforme SOC industrielle.
+
+La motivation est egalement locale. Dans un contexte universitaire ou dans une petite organisation, il n'est pas toujours possible de deployer immediatement une infrastructure complete de supervision. Il reste pourtant possible de construire un prototype capable de collecter, structurer, analyser et visualiser les journaux disponibles. Cette approche progressive permet de comprendre les besoins, d'identifier les sources utiles, de mesurer les performances et de preparer une evolution future.
+
+\section{Interet scientifique et interet d'ingenierie}
+L'interet scientifique du travail reside dans la combinaison de plusieurs dimensions. La premiere est la normalisation multi-format. Sans representation commune, les journaux restent difficiles a comparer et a router. La deuxieme est le routage par famille. Au lieu de supposer qu'un modele unique peut traiter tous les logs, le prototype selectionne un traitement adapte a la nature de la source. La troisieme est l'association de modeles supervises et non supervises. Les donnees labelisees permettent de mesurer des scores classiques, tandis que les donnees non labelisees produisent des anomalies candidates a analyser. La quatrieme est l'integration d'un dashboard et d'un audit afin de relier les resultats a une decision humaine.
+
+L'interet d'ingenierie se trouve dans la realisation concrete. Le travail ne se limite pas a une revue bibliographique ni a un notebook isole. Il produit un depot structure, des modules Python, des scripts de collecte et de benchmark, des modeles sauvegardes, des figures, des tableaux et une interface web. Cette materialisation est importante pour un memoire d'ingenieur civil, car elle montre la capacite a passer d'un probleme a une architecture, puis a une implementation mesurable.
+
+Le memoire cherche donc un equilibre. Il ne revendique pas un produit fini ni un detecteur universel. Il revendique une chaine prototypee, testee et documentee, capable de traiter plusieurs familles de journaux et de produire des resultats discutables scientifiquement. Cette position permet de defendre le travail sans exagerer sa portee.
+
+\section{Contraintes et choix initiaux}
+Plusieurs contraintes ont oriente le projet. La premiere est la contrainte de legerete. Le prototype devait rester executable localement, sans infrastructure lourde. Cette contrainte explique le choix de Python, scikit-learn, FastAPI, CSV, JSONL et d'un dashboard web. La deuxieme est la contrainte de reproductibilite. Les resultats devaient etre rattaches a des scripts et fichiers de preuve, afin d'eviter une redaction purement declarative.
+
+La troisieme contrainte est la disponibilite des donnees. Les journaux reels ne sont pas toujours complets, partageables ou labelises. Le projet combine donc des journaux locaux, des exports Wazuh, des datasets publics et des scenarios controles. Cette combinaison ne remplace pas une evaluation SOC industrielle, mais elle donne une base experimentale diversifiee. La quatrieme contrainte est la prudence scientifique. Les anomalies non supervisees sont presentees comme candidates, la distribution multi-machine comme perspective, et l'apprentissage continu comme extension future.
+
+Ces choix initiaux structurent tout le memoire. Ils expliquent pourquoi le prototype privilegie des modeles legers, pourquoi le dashboard est integre a la contribution, pourquoi les annexes contiennent des preuves de reproduction et pourquoi les limites sont discutees explicitement.

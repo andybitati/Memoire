@@ -1,0 +1,206 @@
+\chapter{Approfondissements scientifiques}
+
+\section{Objectif du chapitre}
+Les chapitres precedents ont presente le contexte, le modele propose, l'implementation et les resultats experimentaux du prototype. Le present chapitre complete cette presentation par une analyse scientifique plus approfondie. Il ne remplace pas l'etat de l'art ni la discussion generale ; il sert plutot de pont entre les resultats bruts et leur interpretation. L'objectif est de rendre explicites les choix methodologiques, les hypotheses, les risques de validite et la contribution exacte du travail.
+
+Cette clarification est necessaire pour trois raisons. La premiere est liee a la nature des journaux. Les logs systemes et reseaux ne sont pas des donnees experimentales parfaitement controlees. Ils sont produits par des logiciels, des equipements, des utilisateurs, des politiques de journalisation et des configurations locales. Leur contenu peut donc varier fortement d'une machine a une autre. La deuxieme raison concerne les modeles. Un modele de detection peut obtenir un score eleve sur un dataset et rester fragile dans un autre contexte. La troisieme raison concerne l'exploitation. En securite, un resultat algorithmique n'a de valeur que s'il peut etre compris, verifie et transforme en action par un analyste.
+
+Le chapitre examine donc six dimensions : la justification du positionnement scientifique, la formalisation de la chaine de traitement, la nature des donnees et des labels, le protocole d'evaluation, les menaces sur la validite, et les conditions minimales d'une exploitation responsable. Cette demarche permet de defendre le memoire comme un travail d'ingenierie scientifique : un prototype a ete realise, mesure et documente, mais ses limites sont explicitees avec precision.
+
+\section{Positionnement scientifique du travail}
+Le travail se situe a l'intersection de quatre domaines : la journalisation de securite, la detection d'anomalies, les architectures logicielles multi-composants et la visualisation pour l'aide a la decision. La contribution ne consiste pas a proposer un nouvel algorithme mathematique d'anomaly detection. Elle consiste plutot a integrer plusieurs briques connues dans une chaine coherente adaptee aux journaux heterogenes. Cette precision est importante, car beaucoup de travaux de recherche en detection se concentrent sur un modele et un dataset, alors que les difficultes pratiques apparaissent souvent avant et apres le modele.
+
+Avant le modele, il faut collecter les journaux, reconnaitre leur format, extraire les champs utiles et produire une representation commune. Ces etapes sont rarement triviales. Un journal Windows, une ligne syslog, une alerte Wazuh et un flux reseau tabulaire n'ont pas la meme structure. Ils n'ont pas non plus la meme signification. Apres le modele, il faut transformer les scores en informations lisibles, regrouper les signaux, presenter le contexte et permettre une decision humaine. Un F1-score favorable ne suffit donc pas a prouver l'utilite operationnelle d'un systeme.
+
+\logminer{} se positionne comme une architecture d'integration. Le systeme associe une normalisation multi-format, un routage par famille de journaux, des modeles legers, une correlation d'anomalies candidates, un dashboard et un audit. La valeur scientifique se trouve dans la coherence de cette chaine. Cette coherence repond a un probleme concret : comment passer de journaux heterogenes a des incidents analysables, sans supposer qu'un modele unique puisse absorber toute la diversite des sources.
+
+Ce positionnement rejoint les mises en garde formulees dans la litterature sur l'usage du machine learning pour la detection d'intrusion. Sommer et Paxson insistent sur le decalage entre les evaluations en monde ferme et les conditions ouvertes d'un reseau reel \cite{sommer2010outside}. Chandola et al. rappellent que la notion d'anomalie depend du contexte et du type de donnees \cite{chandola2009anomaly}. Dans le present travail, ces avertissements conduisent a adopter une formulation prudente : les sorties non supervisees sont des anomalies candidates, les resultats supervises sont limites aux distributions evaluees, et la distribution multi-machine stricte reste une perspective.
+
+\section{Hypotheses de recherche consolidees}
+Le memoire repose sur plusieurs hypotheses qui peuvent etre formulees explicitement. La premiere hypothese est qu'une architecture modulaire par agents logiciels facilite le traitement de journaux heterogenes. Cette hypothese est verifiee par la decomposition du prototype en collecte, parsing, normalisation, routage, detection, correlation, dashboard et audit. Chaque composant peut evoluer sans imposer une reecriture globale.
+
+La deuxieme hypothese est que le routage par famille de journaux est preferable a l'application d'un modele global unique. Les logs ne partagent pas tous les memes variables ni les memes distributions. Les flux reseau tabulaires contiennent de nombreuses caracteristiques numeriques. Les journaux textuels contiennent surtout des messages et des metadonnees. Les exports Wazuh contiennent deja une interpretation par regles. Le routage preserve donc la coherence entre source, features et modele.
+
+La troisieme hypothese est que des modeles legers peuvent etre utiles dans une chaine locale reproductible. Les resultats obtenus avec RandomForest et Isolation Forest montrent que des modeles classiques peuvent fournir des signaux exploitables sans infrastructure lourde. Ce choix est adapte a un contexte academique, a une petite organisation ou a une phase de prototypage. Il ne nie pas l'interet des approches profondes, mais il privilegie la reproductibilite, l'interpretabilite et la facilite de deploiement.
+
+La quatrieme hypothese est que l'analyse humaine reste indispensable. Le dashboard et l'audit ne sont pas des accessoires. Ils repondent au besoin de verification, de priorisation et de tracabilite. En particulier, un modele non supervise ne peut pas confirmer seul une intrusion. Il peut signaler un comportement rare, mais la qualification de l'evenement depend du contexte et de la validation.
+
+\section{Formalisation de la chaine de traitement}
+La chaine de traitement peut etre formalisee comme une suite de transformations. Soit une source de journaux $S$ contenant un ensemble d'entrees brutes $E = \{e_1, e_2, ..., e_n\}$. Chaque entree brute peut etre une ligne textuelle, un objet JSON, un enregistrement CSV, un evenement Windows exporte ou un flux tabulaire. La premiere transformation consiste a associer chaque entree a un type probable $t(e_i)$, lorsque ce type peut etre determine.
+
+La deuxieme transformation est le parsing. Elle produit une representation intermediaire $p(e_i)$ contenant les champs detectes : horodatage, hote, source, severite, utilisateur, message, categorie et metadonnees. Lorsque le parsing est incomplet, la representation conserve le message original afin d'eviter une perte d'information. Ce choix est essentiel en securite, car une ligne mal formee peut etre un simple bruit, mais aussi un indice d'evasion, de corruption ou de mauvaise configuration.
+
+La troisieme transformation est la normalisation. Elle convertit les representations intermediaires vers un schema commun $N$. Ce schema ne pretend pas decrire toute la richesse de toutes les sources. Il constitue un noyau transversal permettant le filtrage, le routage et l'affichage. Les champs specifiques restent disponibles dans les metadonnees lorsque cela est possible.
+
+La quatrieme transformation est le routage. Le routeur associe chaque evenement normalise a une famille $F$ : Windows, Wazuh, Linux/auth, reseau, HDFS, BGL ou fallback. Cette association depend des colonnes, des champs presents, du contexte de fichier et de la structure des donnees. La famille determine ensuite les features et le modele compatibles.
+
+La cinquieme transformation est la detection ou classification. Un modele $M_F$ est applique a la famille $F$. Si le modele est supervise, la sortie correspond a une prediction de classe ou de risque fondee sur des labels appris. Si le modele est non supervise, la sortie correspond a un score de rarete ou d'isolement. Dans ce second cas, le resultat est etiquete comme anomalie candidate.
+
+La sixieme transformation est la correlation. Elle regroupe des signaux proches dans le temps, par source, severite, categorie ou similarite de message. L'objectif est de passer d'une liste de lignes a un ensemble d'incidents lisibles. Enfin, la septieme transformation est l'exploitation : visualisation, decision analyste, audit et export.
+
+\section{Nature des donnees et consequences methodologiques}
+Les donnees exploitees dans ce travail ne sont pas toutes de meme nature. Les journaux locaux Windows et les exports Wazuh representent des environnements proches de l'exploitation. Ils sont utiles pour tester la collecte, l'heterogeneite et la lecture operationnelle. En revanche, ils ne fournissent pas toujours des labels exhaustifs permettant de calculer precision, rappel et F1-score de maniere stricte.
+
+Les datasets systemes publics, comme HDFS et BGL, offrent un cadre de comparaison plus controle. Ils permettent de tester des methodes connues sur des logs techniques. Toutefois, ces datasets sont issus de contextes particuliers. Leur structure peut favoriser certains traitements et penaliser d'autres. HDFS, par exemple, est souvent analyse par sequences ou par templates ; une approche ligne par ligne avec features legeres peut donc rencontrer des limites.
+
+Les datasets reseau labelises, comme CICIDS2017, UNSW-NB15 ou CIC-DDoS2019, sont adaptes aux modeles supervises. Ils contiennent des variables numeriques et des labels qui permettent une evaluation quantitative directe. Les scores eleves obtenus dans ce memoire doivent cependant etre lus comme des performances sur ces distributions et selon le protocole utilise. Ils ne garantissent pas une detection equivalente sur un reseau reel non observe, avec d'autres services, d'autres protocoles ou d'autres attaques.
+
+Cette diversite impose de ne pas utiliser une seule grille de lecture. Pour les donnees labelisees, les metriques supervisees sont pertinentes. Pour les donnees non labelisees, il faut parler d'anomalies candidates, de selectivite et de capacite d'exploration. Pour les tests de robustesse, le critere principal n'est pas le F1-score mais la capacite a traiter ou conserver les entrees sans interrompre la chaine.
+
+\section{Labels, verite terrain et interpretation}
+La question de la verite terrain est centrale. Dans un dataset supervise, le label est considere comme reference. Pourtant, meme dans ce cas, le label n'est pas une verite absolue. Il peut resulter d'une generation experimentale, d'une capture labellisee, d'une convention de nettoyage ou d'une annotation automatique. En cybersecurite, les labels peuvent etre incomplets, desynchronises ou trop generaux.
+
+Dans les journaux reels, la situation est encore plus complexe. Un evenement peut etre anormal sans etre malveillant. Un administrateur peut effectuer une operation rare mais legitime. Une application peut generer une erreur inhabituelle sans attaque. A l'inverse, une activite malveillante peut ressembler a un comportement courant si elle reste lente et discrete. C'est pourquoi le memoire separe clairement les notions de rarete, anomalie candidate, alerte et intrusion confirmee.
+
+La rarete correspond a une observation eloignee du comportement majoritaire. L'anomalie candidate correspond a une rarete suffisamment importante pour etre affichee et analysee. L'alerte correspond a un signal qui merite une attention de securite. L'intrusion confirmee suppose une validation par contexte, correlation, preuve externe ou analyse humaine. Cette distinction protege le travail contre une interpretation excessive des modeles non supervises.
+
+\section{Choix des metriques}
+Les metriques utilisees dependent du type d'experience. Pour les donnees supervisees, la precision, le rappel et le F1-score sont essentiels. La precision indique la proportion de predictions positives qui sont correctes. Le rappel indique la proportion d'evenements positifs retrouves. Le F1-score combine precision et rappel. Dans un contexte de detection, le F1-score est utile lorsque les classes sont desequilibrees, mais il ne suffit pas toujours. Une precision elevee avec un rappel faible peut manquer des attaques. Un rappel eleve avec une precision faible peut saturer l'analyste.
+
+L'accuracy est moins centrale lorsque les classes sont desequilibrees. Un modele peut obtenir une accuracy elevee en predisant majoritairement la classe normale. C'est pourquoi les resultats doivent etre lus avec precision, rappel, F1-score et, lorsque disponibles, matrices de confusion. Les faux positifs sont egalement importants car ils mesurent la charge imposee a l'analyste.
+
+Pour les donnees non supervisees, les metriques classiques ne sont valides que si un label de reference existe. Sinon, le nombre d'anomalies candidates, le taux de signalement, la stabilite des scores et la qualite de la correlation deviennent plus pertinents. Dans ce memoire, les anomalies Wazuh produites par Isolation Forest sont donc interpretees comme une mesure de selectivite et non comme un taux d'attaques.
+
+Pour les performances systeme, les metriques de duree de workflow et de ressources completent les scores de detection. Une chaine de detection trop lente peut etre inutilisable pour une analyse interactive. Une chaine trop consommatrice en RAM ou CPU peut perturber la machine observee. Les benchmarks FastAPI et CPU/RAM documentent donc la faisabilite locale du prototype par micro-lots, sans prouver un temps reel strict.
+
+\section{Justification du routage par famille}
+Le routage par famille est defendu par un argument semantique et un argument experimental. L'argument semantique est simple : les sources ne decrivent pas les memes phenomenes. Un evenement Windows peut porter un identifiant d'evenement, un fournisseur, un canal et un utilisateur. Un log Apache porte une methode HTTP, un chemin, un code de reponse et une adresse IP. Un export Wazuh porte des champs de regle, agent, groupe et severite. Un flux CICIDS porte des statistiques de communication. La fusion brute de ces espaces risque de produire des features vides, incoherentes ou peu explicables.
+
+L'argument experimental est lie aux resultats d'ablation. Le routage familial ne garantit pas un gain universel sur chaque dataset, mais il apporte une specialisation controlee. Il permet d'utiliser un modele et un espace de features adaptes a chaque famille. Il rend aussi le systeme extensible : ajouter une famille ne necessite pas de reentrainer un modele global sur toutes les sources.
+
+Cette approche correspond a une logique d'ingenierie. Dans un systeme operationnel, les journaux ne sont pas seulement des lignes abstraites. Ils appartiennent a des contextes : authentification, application web, systeme distribue, alerte SIEM, flux reseau. Le routage respecte ces contextes et evite de masquer les differences sous une representation unique trop pauvre.
+
+\section{Role scientifique du dashboard}
+Le dashboard peut sembler relever uniquement de l'interface utilisateur. Dans ce travail, il joue aussi un role scientifique. Il materialise l'exigence d'exploitabilite. Un systeme de detection doit produire des informations interpretables, consultables et verifiables. Le dashboard permet d'observer les anomalies candidates, de filtrer les evenements, d'inspecter les incidents, de consulter l'audit et de suivre les ressources.
+
+Cette dimension repond a un probleme frequent dans les travaux experimentaux : les resultats sont souvent reduits a des metriques globales. Or un analyste ne travaille pas avec un F1-score. Il travaille avec des evenements, des sources, des priorites, des timestamps, des messages et des decisions. Le dashboard montre comment les sorties du modele deviennent des objets d'analyse.
+
+Le dashboard soutient aussi la reproductibilite. Les captures inserees dans le memoire prouvent que les resultats ne sont pas seulement produits en ligne de commande, mais integres dans une interface. Les journaux d'audit et les decisions analyste preparent une future boucle d'apprentissage actif. Cette boucle n'est pas encore une preuve d'auto-apprentissage continu, mais elle constitue une base pour collecter des retours humains.
+
+\section{Comparaison avec outils operationnels}
+\logminer{} doit etre compare aux outils operationnels avec prudence. Fail2ban, OSSEC et Wazuh ne poursuivent pas exactement le meme objectif. Fail2ban applique principalement des reactions fondees sur des regles simples, par exemple bloquer une adresse IP apres plusieurs echecs d'authentification. OSSEC et Wazuh fournissent des fonctions HIDS/SIEM plus larges : decodage, regles, correlation, agents, alertes et integration operationnelle.
+
+\logminer{} ne remplace pas ces solutions. Il ajoute une couche de recherche et d'analyse. Son interet est d'experimenter un routage multi-familles, des modeles legers, une normalisation transversale et une visualisation centree analyste. Cette position complementaire est importante pour eviter une comparaison injuste. Un prototype academique local ne peut pas revendiquer la maturite operationnelle d'un SIEM maintenu depuis plusieurs annees.
+
+La comparaison pertinente porte donc sur les fonctions. Wazuh excelle dans l'ecosysteme HIDS/SIEM, les regles et les agents. Fail2ban excelle dans une reaction simple a des motifs connus. \logminer{} explore la transformation de journaux heterogenes en anomalies candidates et incidents interpretables. Dans un deploiement futur, il pourrait consommer des exports Wazuh, enrichir des alertes existantes ou fournir une couche experimentale de detection adaptative.
+
+\section{Analyse des performances supervisees}
+Les performances supervisees constituent les resultats quantitativement les plus forts. Le modele RandomForest atteint un F1-score de 0,916602 sur Linux/auth, 0,997163 sur CICIDS2017 et 0,999965 sur CIC-DDoS2019. Ces valeurs montrent que les features extraites et les modeles choisis peuvent separer efficacement les classes dans les conditions experimentales. Le dernier resultat est donc rattache a une famille DDoS et non presente comme une validation officielle UNSW-NB15.
+
+Le choix de RandomForest est coherent avec l'objectif de legerete. Ce modele est robuste, relativement interpretable, performant sur des donnees tabulaires et moins exigeant qu'un reseau profond. Il gere bien des relations non lineaires et des interactions entre variables sans demander une normalisation aussi stricte que certains modeles lineaires. Il est egalement facile a sauvegarder sous forme d'artefact \texttt{joblib}.
+
+La lecture scientifique impose toutefois deux precautions. La premiere concerne la separabilite des datasets. Certains jeux de donnees reseau peuvent contenir des patterns tres discriminants ou des distributions stables qui favorisent les scores eleves. La seconde concerne le transfert. Un modele entraine sur un dataset donne peut perdre en performance si les caracteristiques d'un autre environnement changent. Les scores supervises valident donc l'integration et la pertinence locale du modele, mais pas une generalisation universelle.
+
+\section{Analyse des sorties non supervisees}
+Les modeles non supervises sont utiles lorsque les labels sont absents ou insuffisants. Isolation Forest isole les observations rares en construisant des partitions aleatoires. L'intuition est qu'une observation atypique demande moins de divisions pour etre separee du reste. Cette approche est adaptee a une exploration initiale, mais elle ne connait pas la difference entre attaque, maintenance rare, erreur applicative ou evenement exceptionnel legitime.
+
+Dans le cas Wazuh, le systeme traite 122 563 evenements et produit 3 676 anomalies candidates. Ce resultat indique que le detecteur selectionne une fraction des evenements comme atypique. Il ne dit pas que 3 676 intrusions ont eu lieu. Pour devenir exploitables, ces anomalies doivent etre triees, regroupees et interpretees. Le correlateur et le dashboard repondent a ce besoin.
+
+La detection non supervisee est donc surtout un mecanisme de reduction et de priorisation. Elle aide a attirer l'attention sur des evenements moins ordinaires. Elle ne remplace ni l'expertise humaine, ni les regles de securite, ni la correlation avec d'autres sources. Cette position prudente est fondamentale pour la credibilite scientifique du memoire.
+
+\section{Analyse des logs sequentiels}
+Les logs HDFS et BGL illustrent une difficulte particuliere : certains journaux sont fortement sequentiels. Leur signification depend moins d'une ligne isolee que d'un ordre d'evenements. Dans ce cas, une approche fondee uniquement sur des features ligne par ligne peut manquer une partie de l'information. Un message peut etre normal seul, mais anormal dans une sequence donnee.
+
+Les approches comme DeepLog exploitent justement cette dimension sequentielle \cite{du2017deeplog}. Elles apprennent les transitions attendues entre templates de logs et signalent des deviations. Cette famille de methodes est prometteuse pour HDFS, BGL et d'autres systemes distribues. Toutefois, elle exige une preparation plus lourde : extraction de templates, fenetrage, apprentissage de sequences et gestion de volumes importants.
+
+Dans \logminer{}, ces approches sont discutees comme perspectives. Le prototype actuel privilegie une chaine generale, multi-format et legere. Le resultat HDFS plus faible est donc instructif : il montre que les features legeres ne suffisent pas toujours. Ce constat ne fragilise pas le travail ; il precise son domaine de validite et justifie les ameliorations futures.
+
+\section{Reponse aux reserves methodologiques principales}
+Les remarques critiques sur le protocole experimental conduisent a expliciter quatre corrections d'interpretation. La premiere concerne la portee du titre et du vocabulaire. Le prototype est local, modulaire et multi-modeles. Les agents sont des modules logiciels fonctionnels, pas des agents cognitifs autonomes. La distribution physique multi-machine, la tolerance aux pannes reseau et la reprise automatique restent des perspectives.
+
+La deuxieme correction concerne la provenance du resultat reseau a F1 = 0,999965. Les fichiers utilises correspondent a une famille DDoS de type CIC-DDoS2019, et non a une validation stricte UNSW-NB15. Le memoire attribue donc ce resultat a CIC-DDoS2019. Une evaluation UNSW-NB15 devrait etre separee et conduite avec les fichiers officiels du dataset.
+
+La troisieme correction concerne HDFS et BGL. Les resultats issus d'une evaluation in-sample ou d'un seuil deduit des labels ne doivent pas etre presentes comme une validation independante. Ils restent utiles pour explorer la separabilite d'un echantillon et pour tester l'integration du pipeline, mais ils ne prouvent pas la generalisation. La validation correcte devrait separer les blocs HDFS ou les periodes BGL, fixer les seuils sur validation et evaluer une seule fois sur un test independant.
+
+La quatrieme correction concerne le terme temps reel. Les mesures rapportees correspondent a un workflow local par micro-lots. Elles indiquent une duree moyenne observee sur un lot de 8 537 lignes, pas un debit maximal soutenable ni une latence de bout en bout entre apparition de l'evenement et alerte. Le memoire evite donc de presenter ces mesures comme une certification temps reel SOC.
+
+\begin{table}[H]
+\centering
+\caption{Corrections d'interpretation apres revue critique}
+\label{tab:corrections-methodologiques}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3.2cm}p{4cm}X}
+\toprule
+\textbf{Point critique} & \textbf{Risque initial} & \textbf{Formulation retenue} \\
+\midrule
+Autonomie/distribution & Sur-promesse par rapport aux preuves locales. & Prototype local modulaire, extensible vers une orchestration distribuee. \\
+Agents intelligents & Confusion avec agents cognitifs autonomes. & Agents fonctionnels, c'est-a-dire modules logiciels specialises. \\
+CIC-DDoS/UNSW & Attribution dataset ambiguë. & Resultat 0,999965 rattache a CIC-DDoS2019 ; UNSW-NB15 reste a evaluer separement. \\
+HDFS/BGL & Evaluation potentiellement in-sample. & Resultats exploratoires, non presentes comme generalisation independante. \\
+CICIDS2017 & Split aleatoire pouvant etre optimiste. & Score conserve comme resultat 80/20, avec appel a splits par fichier, jour ou scenario. \\
+Temps reel & Confusion entre micro-lots et flux SOC haut debit. & Benchmark local par micro-lots, duree moyenne observee de workflow. \\
+Dashboard & Captures prises comme evaluation utilisateur. & Validation fonctionnelle ; l'utilisabilite requiert une etude avec utilisateurs. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Menaces sur la validite interne}
+La validite interne concerne la coherence entre les experiences realisees et les conclusions tirees. Une premiere menace vient de la preparation des donnees. Si les transformations introduisent une fuite d'information, les scores peuvent etre surestimes. Il faut donc veiller a separer clairement les donnees d'entrainement et de test, a ne pas utiliser le label comme feature et a documenter les colonnes retenues.
+
+Une deuxieme menace concerne les parametres des modeles. Un modele peut etre favorise par un choix de seuil ou de contamination. Dans le cas non supervise, le taux d'anomalies attendu influence fortement le nombre de signaux produits. Les resultats doivent donc etre presentes avec les parametres principaux et interpretes comme dependants du protocole.
+
+Une troisieme menace concerne les executions locales. Les mesures de latence et de ressources peuvent varier selon la machine, les processus en cours, le cache disque et l'etat du serveur FastAPI. Les valeurs mesurees sont donc des observations experimentales, pas des constantes. La campagne multi-cycles reduit ce risque, mais ne le supprime pas.
+
+\section{Menaces sur la validite externe}
+La validite externe concerne la generalisation. Les resultats obtenus sur les datasets et journaux disponibles ne couvrent pas toutes les infrastructures. Une universite, une banque, un fournisseur cloud ou une PME n'ont pas les memes journaux, les memes politiques de securite ni les memes volumes. Un modele performant localement doit etre revalide avant usage critique.
+
+La diversite des formats est egalement ouverte. Le prototype prend en charge plusieurs sources, mais il existe de nombreux autres formats : journaux de pare-feu, EDR, proxy, DNS, Active Directory enrichi, Kubernetes, cloud providers, bases de donnees, applications metier. L'ajout de ces sources demanderait de nouveaux parseurs et parfois de nouvelles familles.
+
+Enfin, les comportements adverses ne sont pas completement couverts. Un attaquant peut chercher a rester sous les seuils, a imiter un comportement normal ou a manipuler les logs. Le prototype n'est pas encore evalue contre des strategies d'evasion avancees. Cette limite doit rester explicite.
+
+\section{Menaces sur la validite de construction}
+La validite de construction concerne l'adequation entre les concepts mesures et les concepts annonces. Par exemple, mesurer un F1-score sur CICIDS2017 ne mesure pas directement la capacite generale a detecter toutes les attaques reseau. Cela mesure la capacite du modele a predire les labels de ce dataset selon le protocole choisi. De meme, compter les anomalies candidates Wazuh ne mesure pas le nombre d'intrusions ; cela mesure le nombre d'evenements juges atypiques par le detecteur.
+
+Cette distinction est particulierement importante dans un memoire de cybersecurite. Les mots ``attaque'', ``anomalie'', ``alerte'' et ``incident'' ne doivent pas etre utilises comme synonymes. Le present travail reserve le terme anomalie candidate aux sorties non supervisees, et le terme incident aux regroupements produits pour l'analyse. Le terme intrusion confirmee exige une preuve supplementaire.
+
+\section{Menaces sur la validite de conclusion}
+La validite de conclusion concerne la solidite des interpretations. Les resultats favorables soutiennent l'interet du prototype, mais ne prouvent pas toutes les extensions possibles. En particulier, la presence de Redis Streams ou MQTT comme briques optionnelles ne prouve pas encore une scalabilite industrielle. Elle montre une trajectoire vers une architecture plus distribuee.
+
+De meme, les decisions analyste dans le dashboard preparent une boucle d'apprentissage, mais ne constituent pas encore un systeme d'auto-apprentissage continu. Pour revendiquer cette capacite, il faudrait montrer comment les decisions sont reintegrees dans l'entrainement, comment les seuils evoluent, comment le drift est detecte et comment les regressions sont evitees.
+
+Ces precautions ne diminuent pas la contribution. Elles la rendent defendable. Le memoire montre ce qui a ete construit, ce qui a ete mesure et ce qui reste ouvert.
+
+\section{Reproductibilite experimentale}
+La reproductibilite repose sur plusieurs artefacts. Les scripts permettent de relancer les benchmarks et de generer les figures. Les CSV conservent les resultats. Les tableaux Markdown et LaTeX rendent les valeurs consultables. Les captures dashboard documentent l'interface. Les modeles sauvegardes permettent de rejouer certaines detections sans reentrainement complet.
+
+Une bonne pratique consiste a associer chaque resultat cite a un fichier de preuve. Par exemple, les durees de workflow proviennent du benchmark local par micro-lots, les consommations CPU/RAM de la campagne multi-cycles, les scores RandomForest des fichiers de metriques, et les figures des scripts d'export. Cette discipline permet a un lecteur technique de verifier les valeurs et de repeter une partie de l'experience.
+
+La reproductibilite n'est toutefois pas absolue. Les datasets bruts volumineux peuvent ne pas etre versionnes. Certains journaux locaux dependent de la machine. Les chemins Windows et les droits administrateur peuvent varier. Le memoire doit donc distinguer les elements versionnes, les elements regenerables et les elements dependants de l'environnement.
+
+\section{Robustesse et degradation controlee}
+La robustesse d'un systeme de logs ne signifie pas qu'il comprend parfaitement toutes les entrees. Elle signifie qu'il se comporte correctement face aux cas imparfaits. Dans \logminer{}, un log inconnu ou incomplet n'est pas simplement ignore. Il est conserve avec un statut explicite. Cette strategie est importante car la suppression silencieuse d'information peut produire un faux sentiment de securite.
+
+La degradation controlee suit plusieurs principes. D'abord, l'erreur doit etre visible. Ensuite, les donnees originales doivent etre conservees lorsque cela est possible. Enfin, le pipeline doit poursuivre le traitement des autres entrees. Un seul fichier ou une seule ligne corrompue ne doit pas bloquer toute la chaine.
+
+Cette approche est adaptee a la cybersecurite. Les donnees reelles contiennent souvent des encodages inattendus, des champs vides, des timestamps absents, des separateurs non standards ou des formats melanges. Un prototype qui ne fonctionne que sur des fichiers propres serait peu credible. Les tests multi-format renforcent donc la valeur pratique du travail.
+
+\section{Ethique, confidentialite et donnees sensibles}
+Les journaux systemes et reseaux peuvent contenir des informations sensibles : noms d'utilisateurs, adresses IP, chemins de fichiers, identifiants de machines, noms d'applications, traces d'erreurs et parfois fragments de donnees metier. Leur exploitation doit donc respecter des principes de confidentialite. Dans un cadre academique, il est preferable de ne pas publier des journaux bruts contenant des informations personnelles ou organisationnelles.
+
+Le memoire doit maintenir une separation entre preuves reproductibles et donnees sensibles. Les scripts, schemas, tableaux agreges et figures peuvent etre partages plus facilement que les journaux originaux. Lorsque des exemples sont necessaires, ils doivent etre anonymises ou synthetiques. Les captures dashboard doivent eviter d'exposer des informations privees non necessaires.
+
+Une perspective utile serait l'ajout d'un module d'anonymisation. Ce module pourrait remplacer les utilisateurs, hotes, adresses IP et chemins sensibles par des identifiants pseudonymises. Il faudrait toutefois conserver les relations utiles a l'analyse : le meme utilisateur doit garder le meme pseudonyme dans une campagne, sinon la correlation perd de sa valeur.
+
+\section{Exploitation dans une organisation locale}
+Un des interets du prototype est son adequation a une organisation qui ne dispose pas d'un SOC complet. Une universite, une administration locale ou une PME peut avoir besoin d'analyser des journaux sans deployer immediatement une infrastructure SIEM complexe. \logminer{} offre alors un environnement d'experimentation : ingestion de fichiers, normalisation, detection legere, dashboard et audit.
+
+Dans ce scenario, le prototype ne doit pas etre place directement comme barriere de defense critique. Il peut servir de couche d'observation, de laboratoire local ou d'outil d'aide a la sensibilisation. Les analystes peuvent l'utiliser pour comprendre les familles de journaux, tester des modeles, observer les faux positifs et construire progressivement une politique de journalisation plus mature.
+
+Pour passer a un usage plus operationnel, plusieurs conditions seraient necessaires : durcissement de l'API, authentification du dashboard, gestion des droits, supervision des agents, chiffrement des communications, tests prolonges, sauvegarde des audits et procedures de reaction. Ces extensions depassent le prototype actuel, mais elles sont compatibles avec l'architecture proposee.
+
+\section{Lien avec les objectifs du document directeur}
+Le document directeur fixait plusieurs objectifs : identifier et structurer les logs, comparer les techniques de detection, proposer une architecture a composants specialises, integrer une IA legere, construire un dashboard, tester sur donnees variees et evaluer les performances. Les resultats montrent que chaque objectif possede une correspondance technique dans le depot.
+
+L'identification et la structuration sont couvertes par les parseurs, le schema commun et la taxonomie des journaux. La comparaison des techniques est couverte par les resultats supervises, non supervises et les references de l'etat de l'art. L'architecture modulaire est couverte par la decomposition en modules et par l'API. L'IA legere est couverte par les modeles scikit-learn et le routage. Le dashboard est realise. Les tests couvrent des journaux locaux, Wazuh, HDFS, BGL, CICIDS2017, CIC-DDoS2019 et des cas multi-format. L'evaluation couvre les scores, les durees de workflow, les ressources et la robustesse.
+
+La principale nuance concerne la portee du mot ``distribuee''. Le prototype valide une distribution logique et une preparation a l'orchestration evenementielle. Il ne prouve pas encore un deploiement multi-machine industriel. Cette nuance doit rester visible dans la soutenance comme dans le manuscrit.
+
+\section{Contribution synthetique}
+La contribution peut etre formulee en quatre points. Premierement, le travail propose une chaine multi-format capable de convertir des journaux heterogenes en representation commune. Deuxiemement, il propose un routage par famille qui associe chaque source a un traitement adapte. Troisiemement, il integre des modeles supervises et non supervises dans une architecture legere et reproductible. Quatriemement, il relie les resultats a un dashboard et a un audit, afin de soutenir l'exploitation humaine.
+
+Cette contribution est modeste au sens algorithmique, mais substantielle au sens systeme. Elle montre comment assembler des composants pour repondre a un besoin reel. Elle fournit aussi des preuves experimentales : scores, benchmarks, mesures de ressources, figures, tableaux et captures.
+
+\section{Synthese du chapitre}
+Ce chapitre a precise les fondements scientifiques du travail. Il a montre que le prototype doit etre compris comme une architecture d'integration pour l'analyse de journaux heterogenes. Il a clarifie les hypotheses, les transformations, les types de donnees, les metriques et les menaces sur la validite. Il a egalement insiste sur la difference entre anomalie candidate et intrusion confirmee.
+
+La conclusion principale est que \logminer{} constitue une base solide et defendable pour un memoire d'ingenieur, a condition de maintenir une formulation rigoureuse. Les resultats obtenus sont encourageants, mais ils doivent etre accompagnes des limites exposees ici : generalisation, labels, distribution multi-machine, apprentissage continu, confidentialite et industrialisation. Cette prudence donne de la credibilite au travail et prepare naturellement la discussion generale.

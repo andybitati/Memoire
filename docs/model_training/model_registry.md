@@ -22,7 +22,7 @@ Le routeur choisit automatiquement la famille et charge le modele adapte.
 | `windows` | `models/isolation_forest_windows_local.joblib` | Isolation Forest | Journaux Windows Event/Security normalises |
 | `wazuh` | `models/isolation_forest_wazuh.joblib` | Isolation Forest | Exports Wazuh/Elastic, auditd, syscheck, SCA, web-accesslog |
 | `network_cicids` | `models/random_forest_network_cicids.joblib` | RandomForest supervise | CICIDS2017 / MachineLearningCVE |
-| `network` | `models/random_forest_network_unsw_80_20_sampled.joblib` | RandomForest supervise | UNSW/CIC-DDoS, flux reseau tabulaires compatibles |
+| `network` | `models/random_forest_network_unsw_80_20_sampled.joblib` | RandomForest supervise | CIC-DDoS2019 / flux reseau tabulaires compatibles; nom de fichier historique a renommer lors d'une prochaine regeneration |
 | `linux_auth` | `models/random_forest_linux_auth.joblib` | RandomForest supervise | Datasets Linux/auth tabulaires `linux_auth_logs_*` |
 | `linux` | `models/isolation_forest_linux_colab.joblib` | Isolation Forest | Linux/syslog structure, Linux_2k et petits logs systeme |
 | `hdfs` | `models/isolation_forest_hdfs_colab.joblib` | Isolation Forest | Journaux HDFS |

@@ -74,3 +74,60 @@ Avant le depot final, les elements suivants doivent etre verifies :
 Les fichiers de preuve a conserver avec le memoire sont les CSV de benchmark, les tableaux Markdown, les captures du dashboard, les figures exportees et les scripts de generation. Ils permettent de justifier les valeurs reprises dans le texte et de montrer que les resultats ne sont pas seulement descriptifs, mais rattaches a des artefacts reproductibles.
 
 Les scripts les plus importants sont ceux qui generent les assets du memoire, executent les benchmarks de latence, lancent la campagne CPU/RAM, testent le routage par famille et consolident les metriques supervisees. Les fichiers sources du pipeline, de l'API, du routeur, du detecteur, du correlateur et de l'audit completent ces preuves.
+
+\section{Matrice de tracabilite resultats-preuves}
+Le tableau suivant donne une matrice de tracabilite simplifiee. Il doit etre conserve avec le memoire afin de faciliter la verification par un lecteur technique.
+
+\begin{longtable}{p{3.2cm}p{4.2cm}p{5.5cm}}
+\caption{Matrice de tracabilite des resultats principaux}\\
+\toprule
+\textbf{Resultat cite} & \textbf{Preuve attendue} & \textbf{Usage dans le memoire} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Resultat cite} & \textbf{Preuve attendue} & \textbf{Usage dans le memoire} \\
+\midrule
+\endhead
+F1 Linux/auth & \texttt{random\_forest\_linux\_auth\_metrics.csv} & Evaluation supervisee et discussion sur les journaux d'authentification. \\
+F1 CICIDS2017 & \texttt{random\_forest\_network\_cicids\_metrics.csv} & Evaluation supervisee reseau et limites des datasets publics. \\
+F1 CIC-DDoS2019 & \texttt{random\_forest\_unsw\_80\_20\_metrics.csv} & Evaluation supervisee reseau exploratoire ; le nom historique du fichier est conserve, mais le resultat n'est pas presente comme validation UNSW-NB15 officielle. \\
+Anomalies Wazuh & \texttt{table\_wazuh\_logminer\_summary.md} & Evaluation non supervisee et recouvrement avec signaux HIDS/SIEM. \\
+Duree moyenne micro-lots & \texttt{realtime\_workflow\_benchmark\_20260604.csv} & Mesure du workflow local par micro-lots, sans revendication de temps reel strict. \\
+Campagne CPU/RAM & \texttt{resource\_campaign.csv} & Evaluation des ressources sur 30 cycles. \\
+Ablation routage & \texttt{family\_routing\_ablation.csv} & Justification du routage par famille. \\
+Robustesse multi-format & Rapport de robustesse et figure associee & Validation de la conservation des formats inconnus ou incomplets. \\
+\bottomrule
+\end{longtable}
+
+\section{Exemple de lecture scientifique des resultats}
+Une lecture rigoureuse des resultats doit suivre quatre etapes. La premiere consiste a identifier le type de donnees : labelisees, non labelisees, synthetiques ou issues d'un outil externe. La deuxieme consiste a choisir la metrique adaptee. Un F1-score est pertinent pour une source labelisee, mais il ne l'est pas toujours pour un export non supervise. La troisieme consiste a relier la valeur a une preuve. La quatrieme consiste a formuler une conclusion proportionnee.
+
+Par exemple, le resultat Wazuh ne doit pas etre formule comme une detection de 3 676 attaques. La formulation correcte est que le prototype a traite 122 563 evenements et produit 3 676 anomalies candidates selon le detecteur non supervise applique. Cette nuance est importante car elle distingue le signal algorithmique de la validation securite.
+
+\section{Guide de soutenance technique}
+Pour presenter le travail oralement, il est recommande de suivre une progression simple. D'abord, rappeler le probleme : les journaux sont heterogenes, volumineux et difficiles a exploiter manuellement. Ensuite, presenter l'idee centrale : une architecture modulaire qui normalise, route, detecte, correle et affiche. Puis montrer les preuves : figures d'architecture, resultats supervises, Wazuh, duree de workflow, CPU/RAM et dashboard. Enfin, conclure par les limites : anomalies candidates, distribution multi-machine, apprentissage continu et industrialisation.
+
+Cette progression evite deux risques. Le premier serait de presenter uniquement les scores, ce qui masquerait la contribution systeme. Le second serait de presenter uniquement l'interface, ce qui masquerait l'evaluation scientifique. Le bon equilibre consiste a montrer que le prototype fonctionne, qu'il est mesure et que ses limites sont comprises.
+
+\section{Questions probables du jury et reponses courtes}
+Les questions suivantes doivent etre preparees avant la soutenance.
+
+\begin{longtable}{p{5.5cm}p{7.5cm}}
+\caption{Questions probables du jury}\\
+\toprule
+\textbf{Question} & \textbf{Reponse defendable} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Question} & \textbf{Reponse defendable} \\
+\midrule
+\endhead
+Pourquoi parler d'agents ? & Le terme est utilise au sens architectural : modules logiciels specialises, pas agents cognitifs autonomes. \\
+Le systeme est-il distribue ? & Non au sens industriel multi-machine valide. La distribution actuelle est logique ; Redis/MQTT preparent une extension. \\
+Le systeme est-il autonome ? & Il automatise le traitement, mais la validation humaine reste necessaire. L'apprentissage continu est une perspective. \\
+Pourquoi le score CIC-DDoS2019 est-il si eleve ? & Le protocole 80/20 et la forte separabilite du dataset peuvent etre optimistes ; le resultat valide l'integration, pas une generalisation universelle. \\
+HDFS/BGL prouvent-ils la generalisation ? & Non. Ils sont presentes comme resultats exploratoires lorsque l'evaluation n'est pas independante. \\
+Le benchmark est-il temps reel ? & Non au sens SOC haut debit. Il s'agit d'un traitement local par micro-lots avec duree moyenne observee. \\
+Le dashboard est-il valide par utilisateurs ? & Les captures prouvent la validation fonctionnelle. Une vraie evaluation d'utilisabilite demanderait des utilisateurs, des taches et un questionnaire. \\
+\bottomrule
+\end{longtable}

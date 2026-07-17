@@ -67,7 +67,7 @@
   \vspace{0.4cm}
   {\large Orientation : Informatique\par}
   \vspace{1.0cm}
-  {\huge\bfseries Detection Autonome et Distribuee d'Anomalies dans les Journaux Systemes et Reseaux a l'aide d'Agents Intelligents Multi-Taches\par}
+  {\huge\bfseries Conception et Evaluation d'un Prototype Modulaire Multi-Modeles pour la Detection d'Anomalies dans les Journaux Systemes et Reseaux Heterogenes\par}
   \vspace{0.8cm}
   {\Large Prototype Ariel \logminer\par}
   \vfill
@@ -92,17 +92,17 @@
 
 \chapter*{Resume}
 \addcontentsline{toc}{chapter}{Resume}
-Ce memoire presente \logminer, un prototype modulaire de detection d'anomalies dans des journaux systemes et reseaux heterogenes. Le systeme suit une architecture multi-agents composee de modules specialises pour la collecte, le parsing, la normalisation, le routage multi-modeles, la detection, la correlation, l'audit et la visualisation. L'objectif n'est pas de proposer un detecteur universel, mais de valider une chaine complete permettant de transformer des journaux heterogenes en evenements normalises, puis en anomalies candidates et en incidents exploitables par un analyste.
+Ce memoire presente \logminer, un prototype modulaire de detection d'anomalies dans des journaux systemes et reseaux heterogenes. Le systeme suit une architecture de modules logiciels specialises pour la collecte, le parsing, la normalisation, le routage multi-modeles, la detection, la correlation, l'audit et la visualisation. L'objectif n'est pas de proposer un detecteur universel ni un systeme distribue industriel, mais de valider une chaine locale complete permettant de transformer des journaux heterogenes en evenements normalises, puis en anomalies candidates et en incidents exploitables par un analyste.
 
-L'evaluation combine des journaux Windows locaux, des exports Wazuh, des logs Linux/auth, des datasets systemes publics HDFS et BGL, ainsi que des jeux de donnees reseau CICIDS2017 et UNSW/CIC-DDoS. Les modeles supervises RandomForest obtiennent des scores F1 de 0,916602 sur Linux/auth, 0,997163 sur CICIDS2017 et 0,999965 sur UNSW/CIC-DDoS. Les traitements non supervises sont presentes comme des anomalies candidates, notamment sur 122 563 evenements Wazuh produisant 3 676 anomalies candidates. Le benchmark quasi temps reel rapporte 10 cycles de 8 537 lignes avec une latence moyenne de 8,2012 secondes, tandis que la campagne CPU/RAM principale couvre 30 cycles avec un workflow moyen de 9,3300 secondes.
+L'evaluation combine des journaux Windows locaux, des exports Wazuh, des logs Linux/auth, des datasets systemes publics HDFS et BGL, ainsi que des jeux de donnees reseau CICIDS2017 et CIC-DDoS2019. Les modeles supervises RandomForest obtiennent des scores F1 de 0,916602 sur Linux/auth, 0,997163 sur CICIDS2017 et 0,999965 sur CIC-DDoS2019 dans des protocoles 80/20 exploratoires. Les traitements non supervises sont presentes comme des anomalies candidates, notamment sur 122 563 evenements Wazuh produisant 3 676 anomalies candidates. Les resultats HDFS/BGL sont presentes comme exploratoires lorsque l'evaluation est faite sur des echantillons non independants. Le benchmark local par micro-lots rapporte 10 cycles de 8 537 lignes avec une duree moyenne de workflow de 8,2012 secondes, tandis que la campagne CPU/RAM principale couvre 30 cycles avec un workflow moyen de 9,3300 secondes.
 
 Les resultats montrent la faisabilite d'une approche locale, legere et interpretable pour l'analyse de journaux heterogenes. Les limites concernent notamment la validation multi-machine, la reduction des faux positifs, l'apprentissage continu et l'industrialisation en environnement SOC.
 
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
-This thesis presents \logminer, a modular prototype for anomaly detection in heterogeneous system and network logs. The system follows a multi-agent software architecture composed of specialized modules for collection, parsing, normalization, family-aware routing, detection, correlation, audit and visualization. The objective is not to propose a universal detector, but to validate an end-to-end chain that transforms heterogeneous logs into normalized events, anomaly candidates and analyst-readable incidents.
+This thesis presents \logminer, a modular prototype for anomaly detection in heterogeneous system and network logs. The system follows a software architecture composed of specialized modules for collection, parsing, normalization, family-aware routing, detection, correlation, audit and visualization. The objective is not to propose a universal detector or an industrial distributed system, but to validate a local end-to-end chain that transforms heterogeneous logs into normalized events, anomaly candidates and analyst-readable incidents.
 
-The evaluation combines local Windows logs, Wazuh exports, Linux/auth logs, public HDFS and BGL system-log datasets, and network datasets such as CICIDS2017 and UNSW/CIC-DDoS. Supervised RandomForest models reach F1-scores of 0.916602 on Linux/auth, 0.997163 on CICIDS2017 and 0.999965 on UNSW/CIC-DDoS. Non-supervised outputs are reported as anomaly candidates, including 122,563 Wazuh events producing 3,676 candidate anomalies. The quasi-real-time benchmark reports 10 cycles of 8,537 lines with a mean workflow latency of 8.2012 seconds, while the main CPU/RAM campaign covers 30 cycles with a mean workflow duration of 9.3300 seconds.
+The evaluation combines local Windows logs, Wazuh exports, Linux/auth logs, public HDFS and BGL system-log datasets, and network datasets such as CICIDS2017 and CIC-DDoS2019. Supervised RandomForest models reach F1-scores of 0.916602 on Linux/auth, 0.997163 on CICIDS2017 and 0.999965 on CIC-DDoS2019 under exploratory 80/20 protocols. Non-supervised outputs are reported as anomaly candidates, including 122,563 Wazuh events producing 3,676 candidate anomalies. HDFS/BGL results are reported as exploratory when evaluated on non-independent samples. The local micro-batch benchmark reports 10 cycles of 8,537 lines with a mean workflow duration of 8.2012 seconds, while the main CPU/RAM campaign covers 30 cycles with a mean workflow duration of 9.3300 seconds.
 
 The results support the feasibility of a local, lightweight and interpretable approach to heterogeneous log analysis. Remaining limitations include strict multi-machine validation, false-positive reduction, continuous learning and industrial-scale SOC deployment.
 
@@ -128,6 +128,7 @@ Ce lien est fourni pour faciliter la verification, la consultation du code et la
 \include{chapters/chapitre3_modele_propose}
 \include{chapters/chapitre4_implementation}
 \include{chapters/chapitre5_resultats}
+\include{chapters/chapitre6_approfondissements_scientifiques}
 \include{chapters/chapitre6_discussion}
 \include{chapters/chapitre7_reproductibilite_deploiement}
 \include{chapters/chapitre6_conclusion}
