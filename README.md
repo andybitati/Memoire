@@ -75,6 +75,53 @@ TensorFlow/Keras est privilégié pour le LSTM. PyTorch est aussi intégré comm
 - Agent 1: collecte et parsing des logs.
 - Agent 2: prétraitement et normalisation.
 
+### Branche Agents Intelligents Multi-Tâches
+
+La branche `intelligent-multitask-distributed-agents` ajoute un noyau d'agents
+plus conforme à l'objectif initial du mémoire:
+
+- capacités déclarées par agent (`perception`, `parser`, `router`, `detector`,
+  `correlator`);
+- sélection autonome des tâches selon priorité, confiance, coût et mémoire;
+- exécution concurrente de plusieurs types de tâches;
+- mémoire locale des succès/erreurs;
+- heartbeat et traces de décision sur bus JSONL ou Redis Streams;
+- worker Redis permettant plusieurs agents/processus consommateurs.
+
+Démo locale sans Redis:
+
+```powershell
+python scripts\run_intelligent_agents_demo.py --json
+```
+
+Worker distribué Redis:
+
+```powershell
+python scripts\logminer_intelligent_agent_worker.py --enqueue-demo --cycles 1
+python scripts\logminer_intelligent_agent_worker.py --consumer worker-2 --cycles 1 --claim-idle-ms 30000
+```
+
+Campagne Redis avec plusieurs workers et panne volontaire avant acquittement:
+
+```powershell
+python scripts\run_intelligent_redis_campaign.py --workers 3 --repetitions 4
+```
+
+Cette campagne produit:
+
+- `data/processed/intelligent_redis_campaign_summary.json`;
+- `docs/architecture/intelligent_agents_redis_campaign_summary.md`.
+
+Lancement Bureau d'Ariel Logminer:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\create_ariel_logminer_desktop_shortcut.ps1
+```
+
+Le raccourci demarre l'API, le dashboard, Redis via Docker si disponible, puis
+deux workers `ariel-desktop-agent-*` capables de reprendre les taches Redis
+abandonnees.
+
 La conception globale des agents est documentée dans `docs/architecture/README.md`.
 
 Flux général:

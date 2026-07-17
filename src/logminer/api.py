@@ -451,6 +451,60 @@ def events(run_id: str | None = None, count: int = 100) -> dict[str, Any]:
     }
 
 
+@app.get("/agents/status")
+def agents_status(run_id: str | None = None, count: int = 500) -> dict[str, Any]:
+    """Retourne les derniers heartbeats et resultats des agents intelligents."""
+
+    bus = _redis_bus(run_id=run_id)
+    messages = bus.read(run_id=run_id, count=max(1, min(count, 5000)))
+    agents: dict[str, dict[str, Any]] = {}
+    task_events = 0
+    for message in messages:
+        payload = message.payload or {}
+        agent_id = str(payload.get("agent_id") or message.source or "")
+        if not agent_id:
+            continue
+        state = agents.setdefault(
+            agent_id,
+            {
+                "agent_id": agent_id,
+                "last_seen": "",
+                "capabilities": [],
+                "heartbeat_count": 0,
+                "tasks_started": 0,
+                "tasks_ok": 0,
+                "tasks_failed": 0,
+                "last_result": None,
+                "last_error": "",
+            },
+        )
+        state["last_seen"] = message.timestamp or state["last_seen"]
+        if payload.get("capabilities"):
+            state["capabilities"] = payload.get("capabilities")
+        if message.message_type == "agent.heartbeat":
+            state["heartbeat_count"] += 1
+            state["memory"] = payload.get("memory", {})
+        elif message.message_type == "agent.task.started":
+            state["tasks_started"] += 1
+            task_events += 1
+        elif message.message_type == "agent.task.completed":
+            state["tasks_ok"] += 1
+            state["last_result"] = payload.get("result")
+            task_events += 1
+        elif message.message_type == "agent.task.failed":
+            state["tasks_failed"] += 1
+            result = payload.get("result") or {}
+            state["last_result"] = result
+            state["last_error"] = result.get("error", "")
+            task_events += 1
+    return {
+        "run_id": run_id,
+        "count": len(agents),
+        "task_events": task_events,
+        "agents": sorted(agents.values(), key=lambda item: item.get("agent_id", "")),
+    }
+
+
 @app.get("/models")
 def models() -> dict[str, Any]:
     return {"models": [_model_summary(family, artifact) for family, artifact in MODEL_DEFAULTS.items()]}

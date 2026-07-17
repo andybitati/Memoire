@@ -57,6 +57,8 @@ def _classify_process(process: Any, current_pid: int) -> tuple[str, str] | None:
         return ("Dashboard Web", "visualisation, decisions analyste et proxy API")
     if "redis-server" in name or "redis-server" in command:
         return ("Bus Redis", "messages evenementiels inter-agents")
+    if "logminer_intelligent_agent_worker.py" in command:
+        return ("Agents intelligents Redis", "workers multi-taches distribues et reprise des taches pending")
     if not in_repo:
         return None
     if "collect_windows_events.ps1" in command or "collector_agent" in command:

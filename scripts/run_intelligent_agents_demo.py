@@ -62,8 +62,8 @@ def parse_handler(task: AgentTask, context: AgentContext) -> dict[str, Any]:
     out_dir = _project_path(task.payload.get("out_dir", "data/processed/intelligent_demo"))
     out_name = task.payload.get("out_name", f"{task.task_id}_parsed.csv")
     produced = run_pipeline(
-        input_path,
-        out_dir,
+        str(input_path),
+        str(out_dir),
         out_name,
         sep=task.payload.get("sep", ";"),
         parallel_workers=int(task.payload.get("parallel_workers", 2)),

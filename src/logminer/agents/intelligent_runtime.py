@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import socket
+from threading import Lock
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
@@ -144,17 +145,19 @@ class InMemoryTaskSource:
 
     def __init__(self, tasks: Iterable[AgentTask]):
         self._tasks = list(tasks)
+        self._lock = Lock()
 
     def fetch(self, agent: "MultiTaskIntelligentAgent", limit: int) -> list[AgentTask]:
-        selected: list[AgentTask] = []
-        remaining: list[AgentTask] = []
-        for task in self._tasks:
-            if len(selected) < limit and agent.can_handle(task):
-                selected.append(task)
-            else:
-                remaining.append(task)
-        self._tasks = remaining
-        return selected
+        with self._lock:
+            selected: list[AgentTask] = []
+            remaining: list[AgentTask] = []
+            for task in self._tasks:
+                if len(selected) < limit and agent.can_handle(task):
+                    selected.append(task)
+                else:
+                    remaining.append(task)
+            self._tasks = remaining
+            return selected
 
     def acknowledge(self, task: AgentTask, result: TaskResult) -> None:
         return None
@@ -175,12 +178,14 @@ class RedisTaskSource:
         group: str = "logminer-intelligent-agents",
         consumer: str | None = None,
         block_ms: int = 1000,
+        claim_idle_ms: int = 0,
     ):
         self.bus = bus
         self.stream = stream
         self.group = group
         self.consumer = consumer or f"{socket.gethostname()}-agent"
         self.block_ms = int(block_ms)
+        self.claim_idle_ms = int(claim_idle_ms)
         self._message_ids: dict[str, str] = {}
 
     def enqueue(self, task: AgentTask) -> str:
@@ -202,8 +207,53 @@ class RedisTaskSource:
             )
         )
 
+    def _entries_to_tasks(self, agent: "MultiTaskIntelligentAgent", entries: Iterable[tuple[str, dict[str, str]]]) -> list[AgentTask]:
+        tasks: list[AgentTask] = []
+        for message_id, fields in entries:
+            payload_raw = fields.get("payload") or "{}"
+            try:
+                payload = json.loads(payload_raw)
+            except json.JSONDecodeError:
+                payload = {"raw": payload_raw}
+            deadline_raw = fields.get("deadline_sec") or ""
+            task = AgentTask(
+                task_id=fields.get("task_id") or uuid4().hex,
+                task_type=fields.get("task_type") or "",
+                payload=payload,
+                priority=int(fields.get("priority") or 50),
+                created_at=fields.get("created_at") or datetime.now(timezone.utc).isoformat(),
+                deadline_sec=float(deadline_raw) if deadline_raw else None,
+                required_capability=fields.get("required_capability") or None,
+                attempts=int(fields.get("attempts") or 0),
+            )
+            self._message_ids[task.task_id] = message_id
+            if agent.can_handle(task):
+                tasks.append(task)
+        return tasks
+
+    def _claim_stale(self, agent: "MultiTaskIntelligentAgent", limit: int) -> list[AgentTask]:
+        if self.claim_idle_ms <= 0:
+            return []
+        try:
+            response = self.bus.client.xautoclaim(
+                self.stream,
+                self.group,
+                self.consumer,
+                min_idle_time=max(1, self.claim_idle_ms),
+                start_id="0-0",
+                count=max(1, limit),
+            )
+        except Exception:
+            return []
+        entries = response[1] if isinstance(response, (list, tuple)) and len(response) > 1 else []
+        return self._entries_to_tasks(agent, entries)
+
     def fetch(self, agent: "MultiTaskIntelligentAgent", limit: int) -> list[AgentTask]:
         self.bus.ensure_group(self.group, stream=self.stream, start_id="0")
+        claimed = self._claim_stale(agent, limit)
+        if claimed:
+            return claimed[:limit]
+
         responses = self.bus.client.xreadgroup(
             groupname=self.group,
             consumername=self.consumer,
@@ -213,26 +263,7 @@ class RedisTaskSource:
         )
         tasks: list[AgentTask] = []
         for _, entries in responses:
-            for message_id, fields in entries:
-                payload_raw = fields.get("payload") or "{}"
-                try:
-                    payload = json.loads(payload_raw)
-                except json.JSONDecodeError:
-                    payload = {"raw": payload_raw}
-                deadline_raw = fields.get("deadline_sec") or ""
-                task = AgentTask(
-                    task_id=fields.get("task_id") or uuid4().hex,
-                    task_type=fields.get("task_type") or "",
-                    payload=payload,
-                    priority=int(fields.get("priority") or 50),
-                    created_at=fields.get("created_at") or datetime.now(timezone.utc).isoformat(),
-                    deadline_sec=float(deadline_raw) if deadline_raw else None,
-                    required_capability=fields.get("required_capability") or None,
-                    attempts=int(fields.get("attempts") or 0),
-                )
-                self._message_ids[task.task_id] = message_id
-                if agent.can_handle(task):
-                    tasks.append(task)
+            tasks.extend(self._entries_to_tasks(agent, entries))
         return tasks
 
     def acknowledge(self, task: AgentTask, result: TaskResult) -> None:
@@ -394,7 +425,7 @@ class MultiTaskIntelligentAgent:
 
     def run_once(self, source: TaskSource, *, fetch_limit: int | None = None) -> list[TaskResult]:
         self.heartbeat()
-        tasks = source.fetch(self, limit=fetch_limit or self.max_parallel_tasks * 2)
+        tasks = source.fetch(self, limit=fetch_limit or self.max_parallel_tasks)
         selected = self.choose_tasks(tasks, limit=self.max_parallel_tasks)
         if not selected:
             self.publish_state("agent.idle", {"fetched": len(tasks)})

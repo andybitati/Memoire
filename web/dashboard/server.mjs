@@ -370,6 +370,20 @@ async function handleRedisEvents(req, res) {
   }
 }
 
+async function handleAgentsStatus(req, res) {
+  try {
+    const url = new URL(req.url, `http://127.0.0.1:${activePort}`);
+    const count = url.searchParams.get("count") || "500";
+    const runId = url.searchParams.get("run_id");
+    const target = new URL(`${fastApiBase}/agents/status`);
+    target.searchParams.set("count", count);
+    if (runId) target.searchParams.set("run_id", runId);
+    sendJson(res, 200, await fetchJson(target));
+  } catch (error) {
+    sendJson(res, 200, { agents: {}, totals: {}, error: error.message });
+  }
+}
+
 async function handleMqttPublish(req, res) {
   if (req.method !== "POST") {
     sendJson(res, 405, { error: "method not allowed" });
@@ -523,6 +537,8 @@ const server = http.createServer((req, res) => {
     handleRuntimePrepare(req, res);
   } else if (req.url?.startsWith("/api/redis-events")) {
     handleRedisEvents(req, res);
+  } else if (req.url?.startsWith("/api/agents-status")) {
+    handleAgentsStatus(req, res);
   } else if (req.url?.startsWith("/api/mqtt-publish")) {
     handleMqttPublish(req, res);
   } else if (req.url?.startsWith("/api/audit")) {
