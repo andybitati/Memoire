@@ -3,7 +3,7 @@
 \section{Journalisation systeme et reseau}
 La journalisation consiste a enregistrer les evenements produits par un systeme, une application ou un equipement reseau. Les journaux peuvent documenter des authentifications, erreurs, acces aux fichiers, requetes web, changements de configuration ou alertes de securite. Le guide NIST SP 800-92 souligne l'importance de la collecte, de la conservation, de l'analyse et de la protection des journaux dans une strategie de securite \cite{nist80092}.
 
-Les formats sont nombreux. Le protocole syslog structure les messages systemes selon une logique d'horodatage, d'hote, de severite et de contenu \cite{rfc5424}. Windows Event Log encode les evenements dans un format propre aux systemes Microsoft. Apache produit des lignes textuelles d'acces et d'erreur. Les outils SIEM/HIDS comme Wazuh enrichissent les evenements avec des regles, niveaux de severite, agents et groupes. Les datasets reseau comme CICIDS2017 ou UNSW/CIC-DDoS fournissent plutot des flux tabulaires avec des caracteristiques numeriques.
+Les formats sont nombreux. Le protocole syslog structure les messages systemes selon une logique d'horodatage, d'hote, de severite et de contenu \cite{rfc5424}. Windows Event Log encode les evenements dans un format propre aux systemes Microsoft. Apache produit des lignes textuelles d'acces et d'erreur. Les outils SIEM/HIDS comme Wazuh enrichissent les evenements avec des regles, niveaux de severite, agents et groupes. Les datasets reseau comme CICIDS2017 ou UNSW-NB15 fournissent plutot des flux tabulaires avec des caracteristiques numeriques.
 
 Cette heterogeneite rend difficile une detection unifiee. Avant toute detection, il faut donc parser les journaux, extraire les champs utiles et les normaliser dans un schema commun.
 
@@ -51,7 +51,7 @@ La litterature montre que la detection d'anomalies dans les logs necessite un eq
 \midrule
 Regles et signatures & Interpretables, rapides, bien adaptees aux attaques connues. & Dependent de regles maintenues et detectent mal l'inconnu. & Complement analytique, sans remplacer Wazuh ou OSSEC. \\
 Seuils statistiques & Simples a comprendre et faciles a deployer. & Sensibles au contexte et aux changements de charge. & Utilises comme repere, mais enrichis par correlation et routage. \\
-Machine learning supervise & Bons scores sur donnees labelisees et distributions stables. & Besoin de labels fiables et risque de surapprentissage aux datasets. & Utilise pour Linux/auth, CICIDS2017 et UNSW/CIC-DDoS. \\
+Machine learning supervise & Bons scores sur donnees labelisees et distributions stables. & Besoin de labels fiables et risque de surapprentissage aux datasets. & Utilise pour Linux/auth, CICIDS2017 et UNSW-NB15. \\
 Machine learning non supervise & Utile sans labels et capable de signaler des comportements rares. & Produit des anomalies candidates, pas des preuves d'intrusion. & Utilise avec interpretation prudente et validation analyste. \\
 Deep learning & Puissant pour sequences complexes et grands volumes. & Plus couteux, plus difficile a expliquer et a deployer localement. & Discute comme perspective, non comme coeur du prototype. \\
 \bottomrule
@@ -70,7 +70,7 @@ Un deuxieme groupe concerne les journaux applicatifs. Les acces Apache, les erre
 
 Un troisieme groupe concerne les plateformes de securite. Wazuh, OSSEC ou d'autres outils de type HIDS/SIEM ne produisent pas seulement des journaux bruts ; ils enrichissent les evenements par des regles, niveaux de severite, identifiants d'agents et categories. Ces donnees sont interessantes car elles combinent deja une interpretation securite avec des metadonnees operationnelles. Elles permettent aussi de comparer une detection analytique avec des signaux produits par un outil etabli.
 
-Un quatrieme groupe concerne les flux reseau et datasets tabulaires. CICIDS2017 et UNSW/CIC-DDoS ne ressemblent pas a des logs textuels classiques. Ils representent des flux par des caracteristiques numeriques. Ces donnees sont bien adaptees aux modeles supervises, mais elles demandent une interpretation differente de celle des journaux textuels. Elles sont utiles pour mesurer des performances, mais elles ne remplacent pas l'analyse des journaux systemes reels.
+Un quatrieme groupe concerne les flux reseau et datasets tabulaires. CICIDS2017 et UNSW-NB15 ne ressemblent pas a des logs textuels classiques. Ils representent des flux par des caracteristiques numeriques. Ces donnees sont bien adaptees aux modeles supervises, mais elles demandent une interpretation differente de celle des journaux textuels. Elles sont utiles pour mesurer des performances, mais elles ne remplacent pas l'analyse des journaux systemes reels.
 
 \section{Enjeux de normalisation}
 La normalisation est un probleme central car elle permet de rendre comparables des sources qui ne le sont pas naturellement. Sans normalisation, chaque format impose son propre traitement, son propre affichage et ses propres filtres. Avec un schema commun, le systeme peut manipuler les notions de temps, source, severite, categorie, utilisateur, message, score et decision de maniere transversale.

@@ -68,7 +68,7 @@ experimentales locales.
 
 La version courante ajoute aussi un chapitre de reproductibilite, deploiement
 et exploitation, avec le depot GitHub du projet:
-`https://github.com/andybitati/Memoire`. Les articles scientifiques seront
+`https://github.com/andybitati/Memoire/tree/version_3`. Les articles scientifiques seront
 ajoutes plus tard lorsqu'ils seront rediges.
 
 ## Resultats A Citer

@@ -1,0 +1,209 @@
+Jury 1
+
+RAPPORT D'ÉVALUATION DE MÉMOIRE DE FIN D'ÉTUDES
+
+Intitulé du projet : Implémentation du prototype "Ariel Logminer"Cadre : Mémoire de la Faculté Polytechnique (Université de Kinshasa)Rôle : Membre du Jury (Rapporteur)1. Appréciation générale du travailLe travail présenté aborde un sujet pertinent et d'actualité : l'application du Machine Learning à la détection d'anomalies dans les journaux d'audit (logs) au sein d'une architecture locale et légère. L'effort d'ingénierie pour concevoir un pipeline complet (de la collecte via FastAPI jusqu'à la visualisation sur un dashboard) est indéniable et répond formellement à plusieurs objectifs du cahier des charges (O1, O3, O5, O7).  Cependant, le manuscrit souffre de faiblesses méthodologiques majeures et de biais expérimentaux critiques qui limitent fortement la portée des conclusions scientifiques avancées. En l'état, plusieurs sections oscillent entre le rapport technique d'intégration et le travail de recherche, sans que les exigences de rigueur d'une formulation scientifique ne soient pleinement satisfaites.2. Critique scientifique et méthodologique (Points critiques)A. Une complaisance coupable face au Data Leakage (Section 6.11)Le candidat admet de manière explicite que le protocole de partitionnement des données ($80/20$ aléatoire) appliqué aux datasets CICIDS2017 et CIC-DDoS2019 provoque un phénomène de fuite de données temporelle (data leakage). Obtenir des scores $F1$ de $0,997$ ou $0,999$ dans ces conditions n'a aucune valeur scientifique.  Critique du jury : Il est scientifiquement inacceptable de présenter ces scores comme une "classification solide" ou de valider une "capacité d'apprentissage mémoriel". Le surapprentissage (overfitting) induit par le mélange de paquets d'une même session d'attaque fausse les métriques. Un modèle qui mémorise des identifiants de session réseau n'apprend pas à détecter une attaque.  B. Manque de rigueur statistique et benchmarks tronqués (Section 6.18)Pour l'évaluation des performances en mode parallèle, le candidat indique n'avoir réalisé que 5 cycles de tests.  Critique du jury : Un échantillon de 5 cycles est statistiquement non significatif pour valider la robustesse d'un outil de cybersécurité censé tourner en production continue (24/7). Affirmer l'absence de fuite de mémoire ou de goulot d'étranglement sur une base aussi faible relève de la spéculation, d'autant que la latence mesurée est élevée (8,20 secondes par micro-lot).  C. Contradiction structurelle et aveuglement du modèle (Section 6.13)L'analyse des logs séquentiels révèle un problème conceptuel fondamental dans l'architecture. Le candidat évalue un modèle conçu "ligne par ligne" sur des jeux de données de systèmes distribués (HDFS) où, par définition, l'anomalie est contextuelle et séquentielle.  Critique du jury : Le score $F1$ médiocre de $0,599$ sur HDFS démontre que l'outil est structurellement inadapté à ce type de logs au moment de l'évaluation. Quant au score sur BGL ($0,994$), le candidat confesse avoir ajusté le taux de contamination du modèle directement sur le taux réel connu à l'avance (in-sample testing). C'est un biais méthodologique lourd : en conditions réelles, un SOC ne connaît jamais à l'avance le taux exact d'attaques dans son flux de données.  D. Faiblesse des indicateurs face aux menaces persistantes (Section 6.17)Le schéma de données a été simplifié à l'extrême (indicateurs textuels et statistiques basiques) pour garantir la légèreté du système. Le candidat reconnaît que le modèle est "aveugle" face aux mouvements latéraux lents ou aux exfiltrations discrètes.  Critique du jury : Si l'outil ne peut détecter ni les attaques furtives (par manque de contexte temporel) ni les attaques avancées (par manque de profondeur des features), sa plus-value par rapport à un simple moteur de règles statiques (regex) ou à un outil comme Fail2ban reste à prouver empiriquement.  3. Forme et structure du texteVocabulaire trop descriptif ou défensif : Les sections 6.14 à 6.18 ressemblent davantage à une plaidoirie visant à excuser les faiblesses du prototype qu'à une analyse scientifique objective. Des termes comme "prudence scientifique impose", "verrous méthodologiques soulevés lors de la revue critique" indiquent que le manuscrit a été corrigé à la hâte pour répondre à des objections précédentes, sans que les expériences n'aient été refaites proprement.  Tableau 6.23 (Objectifs) : Le candidat s'auto-attribue la mention "Rempli" pour l'évaluation complète des performances (O7). Au vu des biais mentionnés ci-dessus (5 cycles, data leakage, in-sample testing), le jury considère cet objectif comme partiellement rempli.  4. Recommandations et améliorations requises (À intégrer avant soutenance)Le jury exige que les corrections suivantes soient apportées ou, a minima, défendues rigoureusement lors de la présentation orale :Refaire le protocole de validation supervisée : Pour CICIDS2017, abandonner le split aléatoire $80/20$. Mettre en place un partitionnement chronologique ou par scénarios d'attaque (entraîner sur les attaques du jour 1, tester sur les attaques du jour 2). Présenter les vrais scores au jury, même s'ils tombent à 0,70. C'est la seule manière de prouver la capacité de généralisation réelle du modèle.  Amender les conclusions sur l'analyse séquentielle (HDFS) : Soit retirer la section HDFS qui invalide l'approche ligne par ligne, soit proposer dès maintenant une implémentation (même simplifiée) d'un agent de fenêtrage glissant pour démontrer que le candidat maîtrise la remédiation technique de ce problème.  Étendre le benchmark de charge : Pousser le test de performance parallèle de 5 cycles à 100 cycles minimum ou sur une durée continue de 6 heures. Générer une courbe d'évolution de la RAM pour prouver mathématiquement l'absence de fuites de mémoire (Memory Leaks), au lieu d'afficher une simple moyenne statique de 176,89 MB.  Clarifier la latence opérationnelle : Expliquer pourquoi le traitement d'un micro-lot prend en moyenne 8,20 secondes. Dans un environnement de production à haut débit, une telle latence peut saturer les files d'attente (buffers) FastAPI. Une analyse de la complexité algorithmique temporelle ($O(n)$) du parseur est requise.  5. Conclusion du rapporteurLe travail contient une base technique intéressante et un effort d'implémentation locale louable, particulièrement adapté au contexte de l'Université de Kinshasa (sobriété matérielle, traitement local, respect des données sensibles).  Cependant, le niveau de rigueur scientifique de l'analyse statistique actuelle est insuffisant pour une validation sans réserve. Le manuscrit recevra un avis favorable sous réserve de corrections majeures, la note finale dépendant fortement de la capacité du candidat à reconnaître ces biais lors de la soutenance et à proposer des axes de correction précis.
+
+Jury 2 
+
+Donc, avis de jury : mémoire recevable, mais sous réserve de corrections majeures.
+Note indicative actuelle : 12/20.
+
+Le travail présente une réalisation technique réelle et relativement complète. En revanche, la validation scientifique reste trop fragile pour soutenir le titre actuel et certaines conclusions. Le principal problème n’est pas l’absence de travail : c’est l’écart entre ce que le titre promet et ce que les expérimentations démontrent effectivement. J’ai examiné le manuscrit, ses figures, tableaux et annexes, ainsi que la structure publique du dépôt associé.
+
+2. Ce que le mémoire démontre réellement
+
+Le mémoire démontre correctement :
+
+la faisabilité d’un pipeline local et modulaire de traitement de journaux hétérogènes ;
+l’intégration de parseurs, d’un schéma normalisé, de modèles de détection, d’une API, d’un mécanisme de corrélation, d’un dashboard et d’un audit ;
+la capacité à traiter plusieurs familles de données ;
+la production d’anomalies candidates destinées à une validation humaine ;
+une réalisation d’ingénierie plus substantielle qu’un simple notebook de machine learning.
+
+Il ne démontre pas encore :
+
+un véritable système distribué ;
+l’autonomie des agents ;
+une intelligence multi-agents au sens scientifique ;
+un apprentissage multi-tâches ;
+une supériorité statistique du routage par famille ;
+une généralisation à des environnements SOC réels ;
+une détection fiable d’attaques inconnues en production.
+
+Cette distinction doit devenir centrale dans la version finale.
+
+3. Réserves majeures du jury
+3.1 Le titre est scientifiquement surdimensionné
+
+Le titre annonce :
+
+« Détection autonome et distribuée [...] à l’aide d’agents intelligents multi-tâches »
+
+Or, le manuscrit précise lui-même que :
+
+les agents sont essentiellement des modules logiciels spécialisés ;
+ils ne sont pas des agents cognitifs autonomes ;
+la distribution est surtout une décomposition logique ;
+la validation multi-machine n’a pas été réalisée ;
+Redis et MQTT sont principalement présentés comme des extensions ;
+le système travaille localement et par micro-lots.
+
+Ce n’est pas une nuance secondaire. C’est probablement la première attaque d’un jury rigoureux.
+
+Problème conceptuel
+
+Un ensemble de classes Python appelées « agents » ne constitue pas automatiquement un système multi-agents. Pour justifier ce terme, il faudrait au minimum démontrer :
+
+une autonomie décisionnelle locale ;
+des objectifs propres ;
+une communication inter-agents ;
+une coordination ou négociation ;
+une allocation dynamique des tâches ;
+une tolérance aux pannes ;
+un fonctionnement sur plusieurs nœuds ;
+une mesure de l’apport de cette organisation.
+
+Le terme « multi-tâches » est également ambigu. Il semble désigner plusieurs fonctions différentes, et non un apprentissage multi-tâches au sens du machine learning.
+
+Recommandation
+
+Changer le titre en quelque chose de plus exact, par exemple :
+
+Architecture modulaire multi-modèles pour la détection d’anomalies dans des journaux systèmes et réseaux hétérogènes : prototype Ariel Logminer
+
+Ou :
+
+Conception et évaluation d’un prototype local extensible pour la détection d’anomalies dans des journaux systèmes et réseaux hétérogènes
+
+Un titre plus prudent ne diminue pas le travail. Il le rend défendable.
+
+3.2 Les hypothèses ne sont pas suffisamment falsifiables
+
+Les hypothèses proposées sont raisonnables, mais elles sont formulées comme des convictions architecturales :
+
+la normalisation est possible ;
+le routage par famille serait plus cohérent ;
+les modèles légers restent utiles ;
+la validation humaine est nécessaire.
+
+Le problème : les critères permettant d’accepter ou de rejeter ces hypothèses ne sont pas définis.
+
+Par exemple, pour tester le routage par famille, il aurait fallu annoncer :
+
+une amélioration minimale attendue du macro-F1 ;
+une réduction du taux d’échec de parsing ;
+une diminution du nombre de modèles incompatibles ;
+une amélioration du temps d’inférence ;
+une réduction des faux positifs ;
+un intervalle de confiance ou un test statistique.
+
+Dans la forme actuelle, les hypothèses sont presque toujours « vraies » par construction.
+
+3.3 L’ablation du routage ne soutient pas la conclusion annoncée
+
+La figure 3.2 est particulièrement problématique.
+
+Elle compare apparemment un modèle global et le routage par famille. Or, les résultats sont :
+
+égaux sur certains datasets ;
+légèrement inférieurs avec le routage par famille sur d’autres.
+
+Le mémoire affirme pourtant que cette expérience soutient le routage spécialisé.
+
+Ce n’est pas ce que la figure démontre.
+
+Interprétation scientifiquement acceptable
+
+Les résultats actuels permettent seulement de dire :
+
+Le routage par famille n’améliore pas clairement les scores prédictifs dans les expériences réalisées, mais il peut présenter un intérêt architectural pour la compatibilité des données, la maintenance, l’interprétation et l’extension du système.
+
+Cette formulation est défendable. Affirmer une supériorité expérimentale ne l’est pas.
+
+Expérience à refaire
+
+Comparer au minimum :
+
+un modèle global ;
+des modèles spécialisés avec routage ;
+un routage oracle basé sur la vraie famille ;
+un routage appris ;
+un scénario avec erreurs volontaires de routage.
+
+Mesurer :
+
+macro-F1 ;
+précision et rappel ;
+temps d’entraînement ;
+temps d’inférence ;
+taux d’échec ;
+consommation mémoire ;
+effet d’une mauvaise classification de famille.
+3.4 Le protocole 80/20 est trop exploratoire
+
+Les scores annoncés sont élevés :
+
+environ 0,9166 sur Linux/auth ;
+environ 0,9972 sur CICIDS2017 ;
+environ 0,99997 sur CIC-DDoS2019.
+
+De tels scores ne sont pas impossibles. Mais ils doivent déclencher une vérification sévère.
+
+Un découpage aléatoire ligne par ligne peut placer dans l’entraînement et le test :
+
+des flux issus du même scénario ;
+des événements très proches temporellement ;
+des variantes presque identiques d’une même attaque ;
+des informations propres au jour ou à l’environnement de capture.
+
+Le modèle peut alors apprendre la signature du dataset plutôt qu’une capacité générale de détection.
+
+Il manque notamment
+un découpage par jour, fichier, hôte ou scénario ;
+plusieurs graines aléatoires ;
+des intervalles de confiance ;
+une validation séparée pour le choix des hyperparamètres ;
+les effectifs par classe ;
+les matrices de confusion ;
+une analyse par catégorie d’attaque ;
+une comparaison contre des baselines simples ;
+une vérification explicite des colonnes susceptibles de révéler le label.
+
+Le mémoire reconnaît que les expériences sont exploratoires. C’est honnête, mais cela ne remplace pas une expérimentation indépendante.
+
+3.5 La provenance UNSW/CIC-DDoS est préoccupante
+
+Le manuscrit explique qu’une métrique initialement associée à UNSW doit en réalité être attribuée à CIC-DDoS2019.
+
+Pourtant :
+
+certaines figures conservent une désignation ambiguë « UNSW/CIC-DDoS » ;
+les annexes mentionnent encore un fichier portant le nom random_forest_unsw_80_20_metrics.csv ;
+le dépôt public contient également un modèle dont le nom fait référence à UNSW.
+
+Le dépôt contient actuellement un fichier nommé random_forest_network_unsw_80_20_sampled.joblib, alors que le manuscrit cherche à attribuer le résultat correspondant à CIC-DDoS2019.
+
+C’est une faiblesse de traçabilité majeure. Un jury peut raisonnablement demander :
+
+Comment garantir que les résultats, le modèle et le dataset correspondent réellement les uns aux autres ?
+
+La réponse « le nom historique du fichier est resté inchangé » n’est pas suffisante dans une version finale.
+
+Correction obligatoire
+réentraîner ou au minimum régénérer les résultats ;
+renommer tous les artefacts ;
+indiquer le dataset exact ;
+fournir le nombre de lignes ;
+fournir les classes ;
+fournir les empreintes SHA-256 des données ;
+indiquer la graine ;
+indiquer le commit Git ;
+faire correspondre exactement tableaux, figures, modèles et scripts.
+
+
+
+
+
+Il faut mettre à jour le lien GitHub.
+Rassure toi que tout le contenu rédigé est conforme au travail réalisé et qu'il n'y a plus ces écarts. 

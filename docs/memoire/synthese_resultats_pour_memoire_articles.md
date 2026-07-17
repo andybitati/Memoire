@@ -46,9 +46,12 @@ Le prototype Logminer valide une architecture multi-agents modulaire capable de
 traiter des journaux heterogenes, de les normaliser dans un schema commun, de
 router chaque source vers un modele adapte, puis de produire des anomalies
 candidates et des incidents correles exploitables dans un dashboard. Les
-resultats les plus solides concernent les familles de donnees supervisees
-Linux/auth, CICIDS et UNSW/CIC-DDoS, ainsi que la robustesse du pipeline
-multi-format.
+resultats les plus directement mesurables concernent les familles de donnees
+supervisees Linux/auth, CICIDS et UNSW-NB15, mais ces scores restent
+exploratoires tant qu'ils ne sont pas reproduits avec un split temporel ou par
+scenario. Les preuves les plus solides pour le prototype concernent la
+robustesse du pipeline multi-format, la tracabilite, la campagne Redis locale
+et la reproductibilite des artefacts.
 
 Le systeme doit etre presente comme un prototype local avance et extensible:
 la V1 CLI constitue le socle stable, la V2 FastAPI apporte l'interaction par
@@ -76,7 +79,7 @@ Les experiences sont organisees autour de quatre familles de donnees:
 1. Journaux reels locaux: Windows Event/Security, Wazuh, Linux/auth.
 2. Datasets publics de logs systemes: HDFS et BGL.
 3. Datasets reseau labellises: CICIDS2017/MachineLearningCVE et
-   UNSW/CIC-DDoS.
+   UNSW-NB15.
 4. Scenarios synthetiques ou controles: Windows simule, logs corrompus et
    multi-formats Apache/CEF/CloudTrail/Linux auth.
 
@@ -92,7 +95,7 @@ analyste ou par l'agent correlateur.
 | --- | --- | --- |
 | Linux/auth | RandomForest supervise | F1 = 0.916602 |
 | CICIDS2017 | RandomForest supervise | F1 = 0.997163 |
-| UNSW/CIC-DDoS | RandomForest supervise | F1 = 0.999965 |
+| UNSW-NB15 | RandomForest supervise | F1 = 0.999965, resultat exploratoire a revalider |
 | Wazuh | Isolation Forest | 122 563 evenements, 3 676 anomalies candidates |
 | BGL | Selection validation | F1 autour de 0.994333 |
 | HDFS | Selection validation | F1 autour de 0.599333 a 0.600333 |
@@ -295,8 +298,9 @@ Figure validation F1:
 Figure modeles supervises:
 
 > Performances des modeles supervises RandomForest sur Linux/auth, CICIDS2017
-> et UNSW/CIC-DDoS. Les scores eleves valident l'interet de modeles specialises
-> par famille, sous reserve de compatibilite des schemas.
+> et UNSW-NB15. Les scores eleves valident surtout l'integration de modeles
+> supervises par famille dans le prototype. Leur generalisation doit etre
+> revalidee avec des partitions temporelles ou par scenarios d'attaque.
 
 Figure latence:
 

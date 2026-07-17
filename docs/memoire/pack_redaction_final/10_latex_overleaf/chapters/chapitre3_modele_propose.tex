@@ -49,6 +49,8 @@ Le routage est un element central de l'architecture. Plutot que d'appliquer un m
 
 Le routage s'appuie sur des indices explicites : noms de colonnes, structure des messages, champs caracteristiques, type de fichier et distribution des valeurs. Lorsqu'aucune famille n'est suffisamment probable, le systeme utilise une route de fallback afin de conserver les donnees sans les perdre silencieusement.
 
+L'ablation disponible ne prouve pas une superiorite predictive universelle du routage par famille. Elle soutient plutot son interet architectural : compatibilite des schemas, separation des modeles, maintenance, interpretation et extension vers de nouvelles familles de journaux. Cette distinction evite de transformer un choix de conception robuste en affirmation statistique non demontree.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.9\textwidth]{fig_family_routing_ablation.png}
@@ -57,7 +59,7 @@ Le routage s'appuie sur des indices explicites : noms de colonnes, structure des
 \end{figure}
 
 \section{Modeles de detection}
-Deux categories de modeles sont utilisees. Les modeles supervises RandomForest sont entraines sur des datasets labelises tels que Linux/auth, CICIDS2017 et UNSW/CIC-DDoS. Les modeles non supervises, notamment Isolation Forest, sont utilises lorsque les labels fiables ne sont pas disponibles. Dans ce cas, les sorties sont des anomalies candidates.
+Deux categories de modeles sont utilisees. Les modeles supervises RandomForest sont entraines sur des datasets labelises tels que Linux/auth, CICIDS2017 et UNSW-NB15. Les modeles non supervises, notamment Isolation Forest, sont utilises lorsque les labels fiables ne sont pas disponibles. Dans ce cas, les sorties sont des anomalies candidates.
 
 \subsection{Decision et interpretation}
 La sortie d'un modele est convertie en objet d'analyse comprenant au minimum la famille, le score, la decision, la severite estimee et les champs ayant motive l'affichage dans le dashboard. Cette representation evite de presenter un score isole. Elle favorise une lecture par incident, dans laquelle l'analyste peut comparer le message original, le contexte temporel et l'historique des decisions.

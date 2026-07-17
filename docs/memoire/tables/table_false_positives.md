@@ -4,7 +4,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Linux/auth | random_forest_linux_auth | 38942 | 1134 | 22866 | 0.047250 | 29.120 | Periode non calculable: metriques agregees sans horodatage ligne par ligne |
 | CICIDS2017 | random_forest_cicids | 55924 | 58 | 29942 | 0.001933 | 1.037 | Periode non calculable: metriques agregees sans horodatage ligne par ligne |
-| UNSW/CIC-DDoS | random_forest | 1474193 | 2 | 1168 | 0.001709 | 0.001 | Periode non calculable: metriques agregees sans horodatage ligne par ligne |
+| UNSW-NB15 | random_forest | 1474193 | 2 | 1168 | 0.001709 | 0.001 | Metrique exploratoire; periode non calculable et split a revalider |
 | bgl | ensemble_selected | 6000 | 17 | 2983 | 0.005667 | 2.833 | Validation controlee; periode non conservee dans le CSV de metriques |
 | bgl | ensemble_global | 6000 | 17 | 2983 | 0.005667 | 2.833 | Validation controlee; periode non conservee dans le CSV de metriques |
 | bgl | autoencoder_mlp | 6000 | 17 | 2983 | 0.005667 | 2.833 | Validation controlee; periode non conservee dans le CSV de metriques |

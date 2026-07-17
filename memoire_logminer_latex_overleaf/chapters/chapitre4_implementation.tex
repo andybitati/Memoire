@@ -56,6 +56,13 @@ Le registre evite une ambiguite frequente dans les prototypes de detection : le 
 
 Les artefacts \texttt{joblib} permettent de reutiliser les modeles sans relancer l'entrainement a chaque execution. Cela accelere les tests et rend les demonstrations plus stables. En contrepartie, chaque artefact doit etre documente : dataset d'origine, date de generation, type de features, score de validation et limites connues. Sans cette documentation, un artefact performant peut devenir difficile a interpreter.
 
+\section{Agents intelligents multi-taches}
+La version avancee ajoute un runtime d'agents intelligents dans \texttt{agents/intelligent\_runtime.py}. Chaque agent declare ses capacites, conserve une memoire locale des succes et erreurs, publie un heartbeat et choisit ses taches selon une politique explicite combinant priorite, confiance, cout et historique. Les taches supportees couvrent notamment la decouverte de sources, le parsing, le routage de modele, la detection et la correlation.
+
+Deux modes d'execution sont disponibles. Le premier utilise une file locale en memoire pour les demonstrations reproductibles. Le second utilise Redis Streams avec des consumer groups, ce qui permet a plusieurs processus agents de consommer le meme flux de taches. Le worker \texttt{scripts/logminer\_intelligent\_agent\_worker.py} supporte aussi la reprise de taches non acquittees par \texttt{XAUTOCLAIM}, ce qui rend testable un scenario de panne avant acquittement.
+
+Cette implementation donne un sens concret aux termes agents, multi-taches et distribue. Les agents ne sont pas de simples fonctions appelees sequentiellement : ils disposent d'un profil de capacites, d'un etat observable, d'une file de taches et d'une logique de reprise. La distribution reste locale dans les experiences du memoire, mais elle est executee par plusieurs processus independants relies par un bus Redis persistant.
+
 \section{API FastAPI}
 La V2 du prototype expose une API locale permettant de lancer des analyses, consulter l'etat des services, interroger les modeles, lire les ressources et recuperer les evenements d'audit. L'API permet aussi au dashboard de fonctionner sans manipuler directement les fichiers internes.
 

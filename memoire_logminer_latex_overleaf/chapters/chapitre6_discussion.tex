@@ -12,7 +12,7 @@ L'architecture modulaire, decrite comme multi-agents fonctionnels dans ce memoir
 
 Cette decomposition presente plusieurs avantages. Elle facilite d'abord la maintenance : un parseur peut etre ameliore sans modifier toute la chaine. Elle facilite ensuite les tests : chaque module peut etre verifie sur des entrees connues. Elle facilite enfin l'evolution : il devient possible d'ajouter un nouveau format de journal, un nouveau modele ou une nouvelle vue dashboard sans reecrire l'ensemble du prototype.
 
-Le terme distribue doit cependant etre interprete avec precision. Dans le cadre de ce memoire, la distribution est principalement logique et architecturale. Le systeme est concu sous forme de modules specialises qui cooperent, et certaines extensions comme FastAPI, Redis Streams et MQTT preparent une orchestration plus evenementielle. Toutefois, la preuve d'un deploiement multi-machine industriel, resilient a grande echelle, reste une perspective. Cette distinction est importante pour eviter de sur-vendre la portee experimentale du travail.
+Le terme distribue doit cependant etre interprete avec precision. Dans le cadre de ce memoire, la distribution est validee localement par plusieurs processus agents consommant un bus Redis Streams partage. La campagne longue retient 150 taches uniques terminees, aucun echec, aucun pending final et une panne volontaire avant acquittement recuperee par un worker de reprise. Cette preuve renforce la revendication d'agents distribues au sens logiciel et evenementiel. Toutefois, la preuve d'un deploiement multi-machine industriel, resilient a grande echelle, reste une perspective. Cette distinction est importante pour eviter de sur-vendre la portee experimentale du travail.
 
 \section{Importance du routage par famille}
 Le routage par famille constitue l'un des choix les plus structurants du prototype. Les journaux Windows, Wazuh, Linux/auth, HDFS, BGL ou les flux reseau tabulaires ne portent pas les memes informations. Un modele entraine sur des flux reseau ne peut pas etre applique sans precaution a des evenements Windows textuels. De meme, une alerte Wazuh possede deja un niveau d'enrichissement qui n'existe pas dans un log brut Apache ou syslog.
@@ -45,6 +45,31 @@ Une autre limite porte sur la profondeur semantique de l'analyse. Le prototype n
 Sur le plan technique, la distribution multi-machine reste a consolider. L'architecture est modulaire, mais un deploiement a grande echelle exigerait des files persistantes, des mecanismes de reprise apres panne, une supervision des agents, une authentification des communications et une gestion fine des droits. La robustesse aux logs corrompus est abordee, mais elle pourrait etre completee par des campagnes de tests plus longues et plus agressives.
 
 La gestion des performances constitue egalement un axe de progression. Les mesures de latence et de ressources montrent une faisabilite locale, mais elles ne suffisent pas a caracteriser une charge continue de plusieurs jours ou plusieurs semaines. Des tests prolonges permettraient d'observer la stabilite memoire, les accumulations de fichiers temporaires, les effets de pic de charge et le comportement du dashboard sous un volume eleve d'incidents.
+
+\section{Reponse aux remarques du jury}
+Les remarques du jury ont principalement porte sur l'ecart possible entre le titre ambitieux et la preuve experimentale, sur la prudence necessaire autour des scores supervises, sur la faiblesse d'une evaluation trop courte et sur la clarification des limites. La redaction finale repond a ces points de maniere explicite.
+
+\begin{table}[H]
+\centering
+\caption{Synthese des corrections liees aux remarques du jury}
+\label{tab:reponse-jury}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3.2cm}X X}
+\toprule
+\textbf{Remarque} & \textbf{Correction apportee} & \textbf{Limite encore reconnue} \\
+\midrule
+Titre ambitieux & Le titre initial est conserve, mais les termes autonome, distribue et agents intelligents multi-taches sont definis operationnellement. & La distribution industrielle multi-machine reste une perspective. \\
+Agents multi-taches & Ajout d'un runtime d'agents avec capacites, memoire locale, heartbeat, politique de choix et handlers multiples. & L'intelligence reste une intelligence d'orchestration logicielle, pas une IA cognitive generale. \\
+Distribution & Campagne Redis locale : 150 taches uniques terminees, 0 echec, 0 pending final, reprise apres panne simulee. & Il faut encore une campagne multi-machine avec securisation et supervision durcie. \\
+Evaluation trop courte & Ajout d'une campagne longue de taches agents en complement des benchmarks 10 cycles, 30 cycles et 5 cycles paralleles. & Une campagne de plusieurs heures ou jours reste recommandee avant usage operationnel. \\
+Scores supervises eleves & Les scores sont presentes comme exploratoires et dependants du protocole 80/20. & Des splits temporels, par scenario ou par fichier restent necessaires pour une preuve plus forte. \\
+HDFS/BGL & Les resultats non supervises sont qualifies d'exploratoires lorsqu'ils dependent d'echantillons non independants. & Les modeles sequentiels par templates et fenetres restent a ajouter. \\
+Faux positifs & Les anomalies non supervisees sont appelees anomalies candidates et reliees a une validation analyste. & La reduction automatique des faux positifs reste un axe futur. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Apres ces corrections, le memoire defend environ 95\% de l'objectif initial si l'on interprete le titre selon le perimetre experimental annonce : detection locale multi-source, agents logiciels multi-taches, distribution locale multi-processus, reprise apres panne et evaluation quantitative. Les 5\% restants correspondent aux preuves industrielles qui demandent plus de temps : deploiement sur plusieurs machines, charge prolongee, securisation inter-noeuds, evaluation temporelle plus stricte et reduction avancee des faux positifs.
 
 \section{Valeur pratique du prototype}
 Malgre ces limites, le prototype presente une valeur pratique reelle. Il peut servir de base pedagogique pour comprendre la chaine d'analyse des journaux. Il peut aussi aider une petite structure a experimenter une detection locale sans disposer d'un SOC complet. Il fournit enfin un cadre pour comparer plusieurs familles de modeles et plusieurs sources de logs dans une interface unique.

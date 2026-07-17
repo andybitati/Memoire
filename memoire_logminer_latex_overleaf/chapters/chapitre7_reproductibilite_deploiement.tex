@@ -9,7 +9,7 @@ Cette partie complete les chapitres precedents. Le chapitre sur l'implementation
 Le projet est associe au depot GitHub suivant :
 
 \begin{center}
-\url{https://github.com/andybitati/Memoire}
+\url{https://github.com/andybitati/Memoire/tree/version_3}
 \end{center}
 
 Ce depot sert de point d'acces principal au code source et aux ressources techniques. Il doit etre considere comme un complement au memoire, pas comme un remplacement de celui-ci. Le memoire explique la demarche scientifique, les choix d'architecture, les resultats et les limites. Le depot permet de consulter les fichiers, scripts et modules qui soutiennent cette demarche.
@@ -68,7 +68,7 @@ Les limites de ce scenario sont claires. Il ne prouve pas la resilience a grande
 \section{Scenario d'extension distribuee}
 Dans une extension distribuee, les agents pourraient etre deployes sur plusieurs machines. Les collecteurs locaux recueilleraient les journaux au plus pres des sources. Les messages seraient transmis vers une file persistante ou un bus evenementiel. Les detecteurs pourraient fonctionner comme workers separes. Le dashboard consulterait les resultats consolides via une API centralisee.
 
-Redis Streams et MQTT ont ete explores comme extensions operationnelles locales. Redis Streams peut servir a conserver des flux d'evenements ordonnes et consommables par plusieurs workers. MQTT peut faciliter une communication legere entre composants. Ces pistes sont interessantes, mais elles demandent encore des tests de charge, des mecanismes de securisation, une gestion des erreurs et une strategie de reprise apres panne.
+Redis Streams et MQTT ont ete explores comme extensions operationnelles locales. Redis Streams a ete valide sur une campagne locale multi-processus : 150 taches uniques terminees, aucun echec, aucun pending final et une panne volontaire avant acquittement recuperee par un worker de reprise. MQTT reste une piste de communication legere entre composants. Ces extensions demandent encore des tests multi-machine, des mecanismes de securisation et une supervision plus stricte avant tout usage operationnel.
 
 Une extension distribuee devrait aussi traiter les questions d'authentification, de chiffrement, de controle d'acces et de journalisation des actions administratives. Un systeme de securite ne peut pas transmettre des evenements sensibles sans proteger les communications. Ces aspects depassent le prototype actuel, mais ils constituent une feuille de route naturelle.
 

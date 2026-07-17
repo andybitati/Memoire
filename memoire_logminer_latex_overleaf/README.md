@@ -36,7 +36,7 @@ cadrees prudemment:
 
 - les sorties non supervisees sont des anomalies candidates;
 - la baseline fail2ban-like n'est pas fail2ban officiel;
-- Redis/MQTT sont presentes comme extensions locales et perspectives;
+- Redis est presente comme preuve locale multi-processus pour les agents, tandis que MQTT reste une extension locale et une perspective;
 - la distribution multi-machine stricte reste une perspective.
 
 La version courante contient aussi un chapitre de discussion generale ajoute
@@ -45,7 +45,7 @@ limites scientifiques et techniques, la valeur pratique du prototype et les
 perspectives de deploiement.
 
 Elle contient egalement un chapitre de reproductibilite et de deploiement avec
-le lien GitHub du projet: `https://github.com/andybitati/Memoire`.
+le lien GitHub du projet: `https://github.com/andybitati/Memoire/tree/version_3`.
 
 ## Images
 

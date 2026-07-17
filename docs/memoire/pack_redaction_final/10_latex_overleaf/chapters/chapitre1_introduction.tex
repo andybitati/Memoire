@@ -11,7 +11,7 @@ La litterature en detection d'intrusion insiste depuis longtemps sur le role des
 La problematique centrale du memoire peut etre formulee ainsi :
 
 \begin{quote}
-Comment concevoir un systeme intelligent, distribue et exploitable par un analyste, capable de detecter de maniere autonome des anomalies dans des journaux systemes et reseaux heterogenes en temps quasi reel ?
+Comment concevoir un prototype local multi-agents, exploitable par un analyste, capable de traiter des journaux systemes et reseaux heterogenes, de produire des anomalies candidates et de documenter ses limites experimentales ?
 \end{quote}
 
 Cette question recouvre plusieurs difficultes. Il faut d'abord reconnaitre et structurer des formats de journaux tres differents. Il faut ensuite choisir des modeles adaptes aux familles de donnees disponibles. Il faut aussi transformer les scores techniques en informations exploitables par un humain. Enfin, il faut evaluer la solution de maniere prudente, sans confondre anomalie candidate et attaque confirmee.
@@ -28,10 +28,12 @@ La problematique generale est declinee en questions de recherche operationnelles
 \end{enumerate}
 
 \section{Hypotheses de travail}
-Le memoire repose sur quatre hypotheses prudentes. Premierement, les journaux heterogenes peuvent etre rapproches par un noyau commun de champs sans perdre les donnees originales. Deuxiemement, un routage par famille de logs est plus coherent qu'un modele unique applique indistinctement a toutes les sources. Troisiemement, les modeles legers restent utiles lorsqu'ils sont associes a une normalisation correcte, a une correlation et a une validation humaine. Quatriemement, une anomalie non supervisee doit etre consideree comme une piste d'analyse et non comme une preuve directe d'intrusion.
+Le memoire repose sur quatre hypotheses prudentes. Premierement, les journaux heterogenes peuvent etre rapproches par un noyau commun de champs sans perdre les donnees originales. Deuxiemement, un routage par famille de logs est plus coherent architecturalement qu'un modele unique applique indistinctement a toutes les sources. Troisiemement, les modeles legers restent utiles lorsqu'ils sont associes a une normalisation correcte, a une correlation et a une validation humaine. Quatriemement, une anomalie non supervisee doit etre consideree comme une piste d'analyse et non comme une preuve directe d'intrusion.
+
+Ces hypotheses sont evaluees par des criteres observables : taux de parsing et conservation des entrees inconnues, compatibilite entre familles de donnees et modeles, metriques supervisees lorsque des labels sont disponibles, latence, consommation de ressources, absence de perte observee dans la campagne Redis et qualite de la tracabilite produite. Lorsque les donnees ou le protocole ne permettent pas une conclusion forte, le resultat est presente comme exploratoire.
 
 \section{Objectif general}
-L'objectif general de ce travail est de concevoir et d'evaluer un prototype multi-agents, appele \logminer, pour la detection autonome d'anomalies dans des journaux systemes et reseaux heterogenes. Le systeme doit couvrir la chaine allant de la collecte des journaux a la visualisation des alertes, en passant par la normalisation, le routage multi-modeles, la detection et la correlation.
+L'objectif general de ce travail est de concevoir et d'evaluer un prototype local multi-agents, appele \logminer, pour la detection d'anomalies candidates dans des journaux systemes et reseaux heterogenes. Le systeme doit couvrir la chaine allant de la collecte des journaux a la visualisation des alertes, en passant par la normalisation, le routage multi-modeles, la detection et la correlation.
 
 \section{Objectifs specifiques}
 Conformement au document directeur, les objectifs specifiques sont les suivants :
@@ -39,8 +41,8 @@ Conformement au document directeur, les objectifs specifiques sont les suivants 
 \begin{enumerate}
   \item Identifier, categoriser et structurer les differents types de journaux systemes et reseaux pertinents pour l'analyse de securite.
   \item Analyser les techniques classiques et modernes de detection d'anomalies.
-  \item Concevoir une architecture distribuee d'agents specialises.
-  \item Integrer des mecanismes d'apprentissage pour la detection adaptative.
+  \item Concevoir une architecture multi-agents extensible et valider localement une repartition de taches via Redis Streams.
+  \item Integrer des mecanismes de detection supervises et non supervises, en distinguant resultats confirmes, exploratoires et anomalies candidates.
   \item Concevoir un tableau de bord pour visualiser les alertes et anomalies.
   \item Tester le systeme sur des journaux simules et reels.
   \item Evaluer les performances du systeme en precision, rappel, F1-score, latence et consommation de ressources.
@@ -54,6 +56,7 @@ Les contributions de ce memoire sont les suivantes :
   \item un schema commun de normalisation permettant de rapprocher des sources de logs differentes ;
   \item un routage multi-modeles par famille de journaux afin d'eviter l'application indiscriminee d'un modele unique ;
   \item une evaluation multi-datasets combinant journaux locaux, exports Wazuh, datasets publics et scenarios de robustesse ;
+  \item une preuve locale Redis de repartition de taches et de reprise apres panne avant acquittement ;
   \item un tableau de bord web permettant la visualisation, le filtrage, la validation analyste et l'audit des decisions ;
   \item un pack de resultats reproductibles comprenant figures, tableaux, captures et preuves experimentales.
 \end{itemize}

@@ -16,7 +16,7 @@ Reel local & Windows Event/Application/System & Journaux Windows & Collecte, par
 Reel/SIEM & Wazuh exports & Alertes et evenements SIEM/HIDS & Detection non supervisee sur signaux securite. \\
 Reel tabulaire & Linux/auth & Authentification labelisee & Evaluation supervisee et faux positifs. \\
 Public systeme & HDFS, BGL & Logs distribues/HPC & Validation sur logs sequentiels. \\
-Public reseau & CICIDS2017, UNSW/CIC-DDoS & Flux reseau labelises & Detection supervisee d'attaques connues. \\
+Public reseau & CICIDS2017, UNSW-NB15 & Flux reseau labelises & Evaluation supervisee exploratoire d'attaques connues. \\
 Controle & Windows simule & Evenements avec anomalies injectees & Comparaison baseline et IA. \\
 Robustesse & Apache, CEF/LEEF, CloudTrail, Linux auth & Multi-format & Tolerance aux formats heterogenes. \\
 \bottomrule
@@ -39,7 +39,7 @@ Windows & Security/Application/System & Isolation Forest & Non supervise & Anoma
 Wazuh & Exports Jan./Oct./Dec. & Isolation Forest & Non supervise & 122 563 evenements, 3 676 anomalies candidates. \\
 Linux/auth & linux\_auth\_logs & RandomForest & Supervise & F1 = 0,916602. \\
 CICIDS2017 & MachineLearningCVE & RandomForest & Supervise & F1 = 0,997163. \\
-UNSW/CIC-DDoS & UNSWNB15/CIC-DDoS & RandomForest & Supervise & F1 = 0,999965. \\
+UNSW-NB15 & unsw\_nb15\_80\_20 & RandomForest & Supervise exploratoire & F1 = 0,999965. \\
 HDFS & HDFS logs & Ensemble/IForest & Non supervise & Meilleure selection autour de F1 = 0,599333. \\
 BGL & BlueGene/L & Ensemble/Autoencoder/IForest & Non supervise & Meilleure selection autour de F1 = 0,994333. \\
 \bottomrule
@@ -47,7 +47,7 @@ BGL & BlueGene/L & Ensemble/Autoencoder/IForest & Non supervise & Meilleure sele
 \end{table}
 
 \section{Evaluation des modeles supervises}
-Les modeles supervises sont evalues sur des datasets labelises. Les scores eleves obtenus sur CICIDS2017 et UNSW/CIC-DDoS doivent etre interpretes dans le cadre experimental considere. Ils montrent que des modeles specialises peuvent bien capturer des distributions connues, mais ils ne garantissent pas une generalisation universelle.
+Les modeles supervises sont evalues sur des datasets labelises. Les scores eleves obtenus sur CICIDS2017 et UNSW-NB15 sont presentes comme des resultats exploratoires du protocole disponible. Ils montrent que des modeles specialises peuvent bien capturer des distributions connues, mais ils ne prouvent pas une generalisation temporelle ou inter-scenario. Un protocole plus strict devrait separer les donnees par jour, fichier, hote ou scenario d'attaque, puis rapporter plusieurs graines, matrices de confusion et intervalles de confiance.
 
 \begin{figure}[H]
   \centering
@@ -57,7 +57,7 @@ Les modeles supervises sont evalues sur des datasets labelises. Les scores eleve
 \end{figure}
 
 \section{Evaluation non supervisee}
-Les sorties non supervisees sont traitees comme des anomalies candidates. Cela concerne notamment Windows, Wazuh, HDFS et BGL. Une anomalie candidate indique un comportement rare ou atypique, mais sa qualification comme attaque necessite une correlation ou une validation analyste.
+Les sorties non supervisees sont traitees comme des anomalies candidates. Cela concerne notamment Windows, Wazuh, HDFS et BGL. Une anomalie candidate indique un comportement rare ou atypique, mais sa qualification comme attaque necessite une correlation ou une validation analyste. Les resultats HDFS soulignent une limite importante de l'approche ligne par ligne : certaines anomalies de systemes distribues sont sequentielles et demandent un fenetrage temporel ou des templates de logs. Les resultats BGL doivent egalement etre interpretes prudemment lorsque le taux de contamination est calibre a partir d'une information connue a l'avance.
 
 \begin{figure}[H]
   \centering
@@ -238,24 +238,24 @@ Le dashboard joue donc trois roles : synthese, investigation et tracabilite. La 
 Les resultats doivent etre interpretes avec prudence. Les datasets publics ne representent pas toutes les infrastructures reelles. Les labels peuvent etre incomplets ou produire des distributions artificiellement favorables. Les mesures de latence dependent de la machine locale, du volume traite et de l'etat du systeme au moment des tests. Enfin, les sorties non supervisees ne peuvent etre assimilees a des intrusions sans validation supplementaire.
 
 \section{Synthese}
-Les resultats montrent que le prototype atteint les objectifs principaux du document directeur : traitement multi-format, detection supervisee et non supervisee, architecture multi-agents, dashboard, evaluation par metriques et mesures de ressources. Les limites restent claires : validation multi-machine stricte, generalisation entre environnements, reduction des faux positifs et apprentissage continu.
+Les resultats montrent que le prototype atteint les objectifs d'ingenierie principaux : traitement multi-format, detection supervisee et non supervisee, architecture multi-agents, dashboard, evaluation par metriques et mesures de ressources. Les objectifs scientifiques sont atteints de maniere partielle et prudente : la distribution locale multi-processus est validee par Redis, mais la generalisation supervisee, l'analyse sequentielle HDFS, la scalabilite multi-machine et la reduction des faux positifs restent des limites ouvertes.
 
 \section{Interpretation par objectif}
 Le premier objectif concernait l'identification et la structuration des journaux. Les tests multi-format et la taxonomie des sources montrent que le prototype distingue plusieurs familles de donnees et conserve les entrees inconnues. Le deuxieme objectif concernait l'analyse des methodes de detection. Le memoire compare les approches par regles, les methodes statistiques, les modeles supervises, les methodes non supervisees et les approches profondes.
 
-Le troisieme objectif portait sur l'architecture distribuee d'agents specialises. Le prototype valide une distribution logique par composants : collecte, parsing, normalisation, routage, detection, correlation, dashboard et audit. Le quatrieme objectif concernait l'apprentissage. Les resultats supervises et non supervises montrent l'integration de plusieurs modeles, avec une interpretation prudente selon la disponibilite des labels.
+Le troisieme objectif portait sur l'architecture d'agents specialises. Le prototype valide une distribution logique par composants et une distribution locale multi-processus par Redis Streams : collecte, parsing, normalisation, routage, detection, correlation, dashboard et audit. Le quatrieme objectif concernait l'apprentissage. Les resultats supervises et non supervises montrent l'integration de plusieurs modeles, avec une interpretation prudente selon la disponibilite des labels et les risques de fuite de donnees.
 
 Le cinquieme objectif etait la conception d'un tableau de bord. Les captures montrent que cette partie est realisee et qu'elle couvre les alertes, les details, les ressources et l'audit. Le sixieme objectif concernait les tests sur logs simules et reels. Les sources utilisees combinent journaux locaux, exports Wazuh et datasets publics. Le septieme objectif portait sur l'evaluation des performances. Les tableaux et figures documentent les F1-scores, la latence, les ressources, les faux positifs disponibles et la comparaison operationnelle.
 
 \section{Analyse des resultats supervises}
-Les resultats supervises sont les plus simples a interpreter car ils reposent sur des labels. Le score F1 de 0,916602 sur Linux/auth montre une performance correcte dans un contexte d'authentification. Les scores de 0,997163 sur CICIDS2017 et 0,999965 sur UNSW/CIC-DDoS indiquent une tres forte separation dans les conditions experimentales considerees. Ces resultats confirment l'interet de modeles specialises par famille.
+Les resultats supervises sont les plus simples a calculer car ils reposent sur des labels, mais ils ne sont pas automatiquement les plus simples a generaliser. Le score F1 de 0,916602 sur Linux/auth montre une performance correcte dans un contexte d'authentification. Les scores de 0,997163 sur CICIDS2017 et 0,999965 sur UNSW-NB15 indiquent une tres forte separation dans les conditions experimentales considerees. Ils doivent etre lus comme une verification d'integration des modeles supervises et non comme une preuve de detection generalisable en production.
 
-Il faut cependant garder une lecture critique. Un score eleve sur un dataset public peut refleter la qualite du modele, mais aussi la structure du dataset, la separabilite des classes ou la stabilite des distributions. Le memoire ne presente donc pas ces scores comme une garantie absolue de detection en production. Ils valident plutot la capacite du prototype a integrer, entrainer et exploiter des modeles supervises dans une chaine complete.
+Il faut cependant garder une lecture critique. Un score eleve sur un dataset public peut refleter la qualite du modele, mais aussi la structure du dataset, la separabilite des classes, une fuite temporelle ou la stabilite des distributions. Le memoire ne presente donc pas ces scores comme une garantie absolue de detection en production. Ils valident plutot la capacite du prototype a integrer, entrainer et exploiter des modeles supervises dans une chaine complete. Une validation finale devrait refaire les partitions par temps, fichier, hote ou scenario d'attaque.
 
 \section{Analyse des resultats non supervises}
 Les resultats non supervises sont plus delicats. Sur Wazuh, le systeme traite 122 563 evenements et produit 3 676 anomalies candidates. Cette valeur donne un ordre de grandeur de la selectivite du detecteur, mais elle ne suffit pas a conclure que toutes ces anomalies sont des attaques. Elle indique que certains evenements se distinguent du comportement global observe.
 
-Pour HDFS, BGL et les journaux Windows, la logique est similaire. Le modele signale des points atypiques, puis le correlateur et le dashboard fournissent le contexte. Cette separation entre detection algorithmique et validation humaine est l'un des principes importants du travail. Elle evite de transformer la sortie d'un modele non supervise en verdict de securite.
+Pour HDFS, BGL et les journaux Windows, la logique est similaire. Le modele signale des points atypiques, puis le correlateur et le dashboard fournissent le contexte. Le score HDFS plus faible indique que la version actuelle reste limitee pour les anomalies sequentielles ligne par ligne. Cette separation entre detection algorithmique et validation humaine est l'un des principes importants du travail. Elle evite de transformer la sortie d'un modele non supervise en verdict de securite.
 
 \section{Analyse de la latence}
 Le benchmark quasi temps reel indique une latence moyenne de 8,2012 secondes pour 10 cycles de 8 537 lignes. Cette mesure montre que le workflow local peut traiter des volumes moderes dans des delais compatibles avec une analyse quasi temps reel. Le minimum et le maximum rappellent toutefois que la latence varie selon l'etat du systeme, le volume traite et les operations effectuees.
