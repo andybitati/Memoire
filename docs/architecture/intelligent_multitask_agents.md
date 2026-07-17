@@ -19,7 +19,7 @@ executables, et non seulement par une formulation redactionnelle.
 | Autonomie faible | Cycle heartbeat -> perception des taches -> choix -> action -> memoire | En place localement |
 | Distribution | Plusieurs processus agents consomment un bus partage | Valide localement via Redis Streams, voir `intelligent_agents_redis_proof.md` |
 | Tolerance aux pannes | Jobs non acquittes recuperables, erreurs tracees | En place: reprise via `XAUTOCLAIM` et panne simulee avant `ack` |
-| Preuve experimentale | Scripts reproductibles et sorties auditables | En place: demos locales, Redis distribue, campagne panne/reprise |
+| Preuve experimentale | Scripts reproductibles et sorties auditables | En place: demos locales, Redis distribue, campagne longue 150 taches panne/reprise |
 
 ## Nouveaux Composants
 
@@ -75,14 +75,24 @@ python scripts\run_intelligent_redis_campaign.py --workers 3 --repetitions 4
 
 ## Ce Qui Reste Pour Atteindre 95%
 
-1. Executer une campagne Redis longue sur un volume plus grand que la preuve locale.
-2. Ajouter une ablation:
+1. Ajouter une ablation:
    - pipeline centralise;
    - agent unique multi-taches;
    - plusieurs agents Redis;
    - panne/reprise.
-3. Integrer ces preuves dans le chapitre resultats du memoire.
-4. Tester deux machines physiques ou deux VM pour remplacer la distribution locale multi-processus.
+2. Integrer ces preuves dans le chapitre resultats du memoire.
+3. Tester deux machines physiques ou deux VM pour remplacer la distribution locale multi-processus.
+
+## Preuve Longue Redis Du 17/07/2026
+
+Le run `redis-campaign-20260717161257` a execute 150 taches Redis avec trois
+workers principaux, une panne volontaire avant acquittement et un worker de
+reprise. Resultat: 150 taches uniques terminees, 0 echec, 0 pending final,
+debit observe 1.4646 taches/s et latence p95/p99 de 5.3567 s / 8.2873 s.
+
+Cette preuve suffit pour le memoire sur le point "distribution locale
+multi-processus + reprise". Elle ne remplace pas un deploiement multi-machine,
+qui reste une perspective separee.
 
 ## Position Scientifique
 

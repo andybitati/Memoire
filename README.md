@@ -107,20 +107,22 @@ Campagne Redis avec plusieurs workers et panne volontaire avant acquittement:
 python scripts\run_intelligent_redis_campaign.py --workers 3 --repetitions 4
 ```
 
+Campagne longue retenue pour le mémoire:
+
+```powershell
+python scripts\run_intelligent_redis_campaign.py --workers 3 --repetitions 50 --cycles 60 --max-parallel-tasks 2
+```
+
+Résultat observé le 17/07/2026: `150/150` tâches uniques terminées, `0`
+échec, `0` pending final, `1` panne simulée récupérée, débit observé `1.4646`
+tâche/s, latence p95/p99 `5.3567 s / 8.2873 s`.
+
 Cette campagne produit:
 
 - `data/processed/intelligent_redis_campaign_summary.json`;
+- `data/processed/intelligent_redis_long_campaign_summary.json`;
 - `docs/architecture/intelligent_agents_redis_campaign_summary.md`.
-
-Lancement Bureau d'Ariel Logminer:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\create_ariel_logminer_desktop_shortcut.ps1
-```
-
-Le raccourci demarre l'API, le dashboard, Redis via Docker si disponible, puis
-deux workers `ariel-desktop-agent-*` capables de reprendre les taches Redis
-abandonnees.
+- `docs/memoire/tables/table_intelligent_redis_long_campaign.md`.
 
 La conception globale des agents est documentée dans `docs/architecture/README.md`.
 

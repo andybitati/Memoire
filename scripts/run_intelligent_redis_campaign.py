@@ -222,6 +222,7 @@ def main() -> int:
     parser.add_argument("--max-parallel-tasks", type=int, default=2)
     parser.add_argument("--cycles", type=int, default=4)
     parser.add_argument("--block-ms", type=int, default=1000)
+    parser.add_argument("--worker-timeout-sec", type=int, default=0)
     parser.add_argument("--claim-idle-ms", type=int, default=1)
     parser.add_argument("--normal-claim-idle-ms", type=int, default=30000)
     parser.add_argument("--input", default="examples/windows_event_sample.xml")
@@ -250,7 +251,8 @@ def main() -> int:
         1,
         args.claim_idle_ms,
     )
-    recovery_stdout, recovery_stderr = recovery.communicate(timeout=120)
+    worker_timeout = args.worker_timeout_sec or max(120, args.cycles * max(1, args.block_ms) // 1000 + args.repetitions * 5)
+    recovery_stdout, recovery_stderr = recovery.communicate(timeout=worker_timeout)
 
     workers = [
         run_worker(
@@ -267,7 +269,7 @@ def main() -> int:
     ]
     worker_outputs = []
     for process in workers:
-        stdout, stderr = process.communicate(timeout=120)
+        stdout, stderr = process.communicate(timeout=worker_timeout)
         worker_outputs.append({"returncode": process.returncode, "stdout": stdout, "stderr": stderr})
 
     elapsed = round(time.perf_counter() - started, 4)

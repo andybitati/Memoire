@@ -1,10 +1,10 @@
 # Campagne Redis Agents Intelligents
 
-Date: 2026-07-17T14:56:23.569586+00:00
+Date: 2026-07-17
 
 ## Resultat
 
-- Run: `redis-campaign-20260717145602`
+- Run court valide: `redis-campaign-20260717145602`
 - Workers: `3`
 - Taches enfilees: `12`
 - Taches terminees: `12`
@@ -42,3 +42,29 @@ Par type de tache:
 ## Interpretation
 
 Cette campagne apporte une preuve executable que les agents Logminer peuvent fonctionner comme workers distribues: ils partagent un stream Redis, publient leurs decisions et recuperent une tache abandonnee avant acquittement.
+
+## Campagne Longue Retenue Pour Le Memoire
+
+Run: `redis-campaign-20260717161257`
+
+| Indicateur | Valeur |
+| --- | ---: |
+| Taches enfilees | 150 |
+| Taches uniques terminees | 150 |
+| Echecs | 0 |
+| Panne simulee avant ack | 1 |
+| Pending final | 0 |
+| Perte estimee | 0 |
+| Duree observee depuis Redis | 102.4202 s |
+| Debit observe | 1.4646 taches/s |
+| Latence p95 | 5.3567 s |
+| Latence p99 | 8.2873 s |
+
+Repartition: `redis-agent-1` a termine 46 taches, `redis-agent-2` 62,
+`redis-agent-3` 41 et `redis-recovery-agent` 1 tache abandonnee par le worker
+de panne. Les trois types de taches sont equilibres: 50 `parse.logs`, 50
+`route.model` et 50 `discover.logs`.
+
+Cette campagne longue est suffisante pour soutenir la revendication du memoire
+sur la distribution locale multi-processus, la tolerance a une panne avant
+acquittement et la conservation des taches sans perte observee.

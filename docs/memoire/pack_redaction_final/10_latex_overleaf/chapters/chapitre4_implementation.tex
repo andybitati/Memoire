@@ -31,6 +31,11 @@ La V2 du prototype expose une API locale permettant de lancer des analyses, cons
 
 L'API joue un role de separation entre le moteur d'analyse et l'interface. Elle evite que le dashboard depende directement de l'organisation interne des fichiers. Cette separation facilite aussi l'ajout futur de workers, de files d'attente ou de connecteurs vers d'autres plateformes.
 
+\section{Agents intelligents multi-taches}
+La version avancee ajoute un runtime d'agents intelligents dans \texttt{agents/intelligent\_runtime.py}. Chaque agent declare ses capacites, conserve une memoire locale des succes et erreurs, publie un heartbeat et choisit ses taches selon une politique explicite combinant priorite, confiance, cout et historique. Les taches supportees couvrent notamment la decouverte de sources, le parsing, le routage de modele, la detection et la correlation.
+
+Deux modes d'execution sont disponibles. Le premier utilise une file locale en memoire pour les demonstrations reproductibles. Le second utilise Redis Streams avec des consumer groups, ce qui permet a plusieurs processus agents de consommer le meme flux de taches. Le worker \texttt{scripts/logminer\_intelligent\_agent\_worker.py} supporte aussi la reprise de taches non acquittees par \texttt{XAUTOCLAIM}, ce qui rend testable un scenario de panne avant acquittement.
+
 \section{Dashboard Ariel Logminer}
 Le dashboard web constitue l'interface de consultation et d'interaction. Il affiche les indicateurs globaux, les alertes prioritaires, les anomalies candidates, les incidents, les graphes temps reel, les ressources agents, les services V2 et le journal d'audit.
 

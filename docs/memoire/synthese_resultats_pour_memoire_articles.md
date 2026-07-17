@@ -34,6 +34,9 @@ Tableaux associes:
 - `docs/memoire/tables/table_wazuh_logminer_summary.md`;
 - `docs/memoire/tables/table_wazuh_logminer_overlap.md`;
 - `docs/memoire/tables/table_resource_campaign_multicycle.md`;
+- `docs/memoire/tables/table_intelligent_redis_long_campaign.md`;
+- `docs/memoire/tables/table_intelligent_agents_ablation.md`;
+- `docs/memoire/tables/table_intelligent_agents_resources.md`;
 - `docs/memoire/tables/table_family_routing_ablation.md`;
 - `docs/memoire/tables/table_family_routing_operational_ablation.md`.
 
@@ -171,6 +174,36 @@ Le tableau est dans
 associee dans `docs/memoire/figures/fig_parallel_resource_campaign.svg`.
 Ces mesures doivent etre presentees comme une validation locale du mode
 multi-worker, et non comme une preuve de debit SOC industriel.
+
+## Campagne Redis Agents Intelligents
+
+Une campagne longue Redis a ete executee avec trois workers principaux, un
+worker de reprise et une panne volontaire avant acquittement. Le run retenu
+pour le memoire est `redis-campaign-20260717161257`.
+
+Resultats:
+
+- 150 taches enfilees;
+- 150 taches uniques terminees;
+- 0 echec;
+- 0 tache pending en fin de campagne;
+- 0 perte estimee;
+- 1 panne simulee avant `ack`, reprise par `redis-recovery-agent`;
+- duree observee depuis les evenements Redis: 102.4202 s;
+- debit observe: 1.4646 taches/s;
+- latence p95/p99 par tache: 5.3567 s / 8.2873 s.
+
+Le tableau final est dans
+`docs/memoire/tables/table_intelligent_redis_long_campaign.md`.
+
+Formulation recommandee:
+
+> La campagne Redis longue montre que les agents intelligents Logminer peuvent
+> se repartir des taches heterogenes dans plusieurs processus, publier leurs
+> decisions et recuperer une tache abandonnee avant acquittement. Dans le run
+> retenu, les 150 taches ont ete terminees sans echec ni pending final. La
+> preuve reste locale et multi-processus; le deploiement multi-machine est une
+> perspective experimentale distincte.
 
 ## Robustesse Multi-Format
 

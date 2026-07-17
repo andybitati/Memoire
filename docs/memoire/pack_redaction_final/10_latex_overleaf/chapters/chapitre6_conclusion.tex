@@ -14,13 +14,14 @@ Les apports principaux sont :
   \item une architecture multi-agents claire et extensible ;
   \item une normalisation commune pour des journaux heterogenes ;
   \item un routage multi-modeles auditable ;
+  \item une preuve locale d'agents distribues via Redis Streams, avec reprise d'une tache non acquittee ;
   \item une evaluation multi-source combinant logs systemes, SIEM, reseau et scenarios de robustesse ;
   \item un dashboard permettant l'analyse, les filtres, les decisions et l'audit ;
   \item un pack de reproduction comprenant figures, tableaux, captures et CSV.
 \end{itemize}
 
 \section{Limites}
-Plusieurs limites doivent etre reconnues. D'abord, la distribution validee est principalement logique et locale. Redis Streams et MQTT montrent une trajectoire d'evolution, mais ne constituent pas encore une preuve de scalabilite industrielle. Ensuite, les anomalies non supervisees restent des signaux candidats. Elles doivent etre interpretees par correlation, contexte et validation humaine.
+Plusieurs limites doivent etre reconnues. D'abord, la distribution validee reste locale et multi-processus : Redis Streams prouve la repartition de taches et la reprise apres panne dans l'environnement experimental, mais ne constitue pas encore une preuve de scalabilite industrielle multi-machine. Ensuite, les anomalies non supervisees restent des signaux candidats. Elles doivent etre interpretees par correlation, contexte et validation humaine.
 
 Les scores tres eleves obtenus sur certains datasets supervises doivent aussi etre lus avec prudence. Ils valident le comportement du modele dans le cadre experimental, mais ne prouvent pas une generalisation automatique a toutes les infrastructures. Enfin, la reduction des faux positifs et l'apprentissage continu restent des axes ouverts.
 
@@ -28,7 +29,7 @@ Les scores tres eleves obtenus sur certains datasets supervises doivent aussi et
 Les perspectives principales sont les suivantes :
 \begin{enumerate}
   \item deployer le systeme sur plusieurs machines avec workers Redis et files persistantes ;
-  \item ajouter des tests de charge prolonges et des scenarios de panne volontaire d'agents ;
+  \item ajouter des tests de charge prolonges, au-dela de la campagne locale de 150 taches ;
   \item integrer un apprentissage actif a partir des decisions analyste ;
   \item enrichir le parsing par des templates de logs de type Drain ;
   \item reduire les faux positifs par calibration des seuils et contexte temporel ;

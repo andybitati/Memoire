@@ -83,6 +83,32 @@ Resultats:
 - latence minimale workflow: 3.1672 s;
 - latence maximale workflow: 15.3289 s.
 
+## Commande Campagne Redis Agents Intelligents
+
+```powershell
+python scripts\run_intelligent_redis_campaign.py --workers 3 --repetitions 50 --cycles 60 --max-parallel-tasks 2
+```
+
+Run retenu: `redis-campaign-20260717161257`.
+
+Resultats:
+
+- 150 taches enfilees;
+- 150 taches uniques terminees;
+- 0 echec;
+- 0 pending final;
+- 0 perte estimee;
+- 1 panne simulee avant acquittement et reprise par `redis-recovery-agent`;
+- duree observee depuis Redis: 102.4202 s;
+- debit observe: 1.4646 taches/s;
+- latence p95/p99: 5.3567 s / 8.2873 s.
+
+Sorties:
+
+- `data/processed/intelligent_redis_long_campaign_summary.json`;
+- `docs/memoire/tables/table_intelligent_redis_long_campaign.md`;
+- `docs/architecture/intelligent_agents_redis_campaign_summary.md`.
+
 ## Informations A Completer Avant Soumission Externe
 
 - nom commercial exact du CPU, si exige;
