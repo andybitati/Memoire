@@ -90,7 +90,7 @@ Resultats:
 python scripts\run_intelligent_redis_campaign.py --workers 3 --repetitions 50 --cycles 60 --max-parallel-tasks 2
 ```
 
-Run retenu: `redis-campaign-20260717161257`.
+Run de prevalidation: `redis-campaign-20260717161257`.
 
 Resultats:
 
@@ -109,6 +109,47 @@ Sorties:
 - `data/processed/intelligent_redis_long_campaign_summary.json`;
 - `docs/memoire/tables/table_intelligent_redis_long_campaign.md`;
 - `docs/architecture/intelligent_agents_redis_campaign_summary.md`.
+
+## Commande Campagne Redis Endurance 6h
+
+```powershell
+python scripts\run_intelligent_redis_endurance_campaign.py --duration-sec 21600 --workers 3 --repetitions 4 --cycles 8 --max-parallel-tasks 2 --iteration-timeout-sec 900 --output-json data/processed/intelligent_redis_6h_campaign_summary.json --output-table docs/memoire/tables/table_intelligent_redis_6h_campaign.md
+```
+
+Conditions experimentales observees:
+
+- machine hote Windows, execution PowerShell depuis `E:\Cours\TFE`;
+- environnement Python local `.venv`;
+- Redis lance par Docker avec `docker-compose.redis.yml`, conteneur
+  `logminer-redis`, image `redis:7-alpine`, port expose `localhost:6379`;
+- URL Redis utilisee par defaut: `redis://localhost:6379/0`;
+- deux VM VirtualBox etaient lancees pendant l'experience: `Debian` et
+  `Ubuntu`;
+- les VM etaient configurees en NAT simple; elles documentent le contexte de
+  validation distribuee et les travaux de preparation multi-machine, mais le
+  bus Redis effectivement utilise par ce run etait le Redis Docker local de
+  l'hote;
+- la preuve revendiquee est donc une distribution locale multi-processus avec
+  endurance et reprise, pas encore une preuve SOC multi-machine securisee.
+
+Resultats retenus pour renforcer le memoire:
+
+- duree observee: 21613.8566 s;
+- 709 iterations terminees;
+- 8508 taches enfilees;
+- 8508 taches uniques terminees;
+- 0 echec;
+- 0 pending final cumule;
+- 0 perte estimee;
+- 709 pannes simulees avant acquittement et reprises par `redis-recovery-agent`;
+- debit observe: 0.3936 taches/s;
+- latence p95/p99: 5.9879 s / 8.7987 s.
+
+Sorties:
+
+- `data/processed/intelligent_redis_6h_campaign_summary.json`;
+- `docs/memoire/tables/table_intelligent_redis_6h_campaign.md`;
+- `data/processed/intelligent_redis_endurance_runs/`.
 
 ## Note De Tracabilite Des Scores Supervisees
 

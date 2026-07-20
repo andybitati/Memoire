@@ -36,7 +36,12 @@ cadrees prudemment:
 
 - les sorties non supervisees sont des anomalies candidates;
 - la baseline fail2ban-like n'est pas fail2ban officiel;
-- Redis est presente comme preuve locale multi-processus pour les agents, tandis que MQTT reste une extension locale et une perspective;
+- Redis est presente comme preuve locale multi-processus pour les agents: la
+  campagne de six heures retient 8 508 taches terminees, 0 echec, 0 pending
+  final et 709 reprises apres panne simulee;
+- les VM VirtualBox Debian et Ubuntu etaient lancees pendant l'experience et
+  documentent la preparation multi-machine, mais le bus Redis mesure etait le
+  conteneur Docker local `logminer-redis` expose sur `localhost:6379`;
 - la distribution multi-machine stricte reste une perspective.
 
 La version courante contient aussi un chapitre de discussion generale ajoute

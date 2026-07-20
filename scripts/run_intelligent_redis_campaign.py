@@ -112,6 +112,16 @@ def run_worker(
     )
 
 
+def compact_process_output(returncode: int | None, stdout: str, stderr: str, *, keep_chars: int = 4000) -> dict[str, object]:
+    return {
+        "returncode": returncode,
+        "stdout_chars": len(stdout),
+        "stderr_chars": len(stderr),
+        "stdout_tail": stdout[-keep_chars:] if stdout else "",
+        "stderr_tail": stderr[-keep_chars:] if stderr else "",
+    }
+
+
 def run_crash_worker(args: argparse.Namespace, run_id: str, group: str, task_stream: str) -> dict[str, str | int]:
     env = os.environ.copy()
     env["PYTHONDONTWRITEBYTECODE"] = "1"
@@ -226,6 +236,14 @@ def main() -> int:
     parser.add_argument("--claim-idle-ms", type=int, default=1)
     parser.add_argument("--normal-claim-idle-ms", type=int, default=30000)
     parser.add_argument("--input", default="examples/windows_event_sample.xml")
+    parser.add_argument("--output-json", type=Path, default=Path("data/processed/intelligent_redis_campaign_summary.json"))
+    parser.add_argument(
+        "--output-markdown",
+        type=Path,
+        default=Path("docs/architecture/intelligent_agents_redis_campaign_summary.md"),
+    )
+    parser.add_argument("--summary-read-count", type=int, default=0)
+    parser.add_argument("--compact-worker-output", action="store_true")
     args = parser.parse_args()
 
     started = time.perf_counter()
@@ -270,10 +288,14 @@ def main() -> int:
     worker_outputs = []
     for process in workers:
         stdout, stderr = process.communicate(timeout=worker_timeout)
-        worker_outputs.append({"returncode": process.returncode, "stdout": stdout, "stderr": stderr})
+        if args.compact_worker_output:
+            worker_outputs.append(compact_process_output(process.returncode, stdout, stderr))
+        else:
+            worker_outputs.append({"returncode": process.returncode, "stdout": stdout, "stderr": stderr})
 
     elapsed = round(time.perf_counter() - started, 4)
-    message_summary = summarize_messages(bus, run_id, count=5000)
+    summary_read_count = args.summary_read_count or max(5000, len(task_ids) * 4 + 100)
+    message_summary = summarize_messages(bus, run_id, count=summary_read_count)
     pending = bus.client.xpending(task_stream, group)
     pending_after = int(pending.get("pending", 0)) if isinstance(pending, dict) else 0
     completed = int(message_summary["completed"])
@@ -305,10 +327,11 @@ def main() -> int:
         "worker_outputs": worker_outputs,
     }
 
-    output_json = REPO_ROOT / "data" / "processed" / "intelligent_redis_campaign_summary.json"
+    output_json = args.output_json if args.output_json.is_absolute() else REPO_ROOT / args.output_json
     output_json.parent.mkdir(parents=True, exist_ok=True)
     output_json.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
-    write_markdown(REPO_ROOT / "docs" / "architecture" / "intelligent_agents_redis_campaign_summary.md", summary)
+    output_markdown = args.output_markdown if args.output_markdown.is_absolute() else REPO_ROOT / args.output_markdown
+    write_markdown(output_markdown, summary)
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0 if summary["estimated_loss"] == 0 and failed == 0 and unique_completed == len(task_ids) else 1
 

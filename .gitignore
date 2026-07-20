@@ -167,6 +167,16 @@ docker/**/log/
 docker/**/*.db
 docker/**/*.pid
 
+# Machines virtuelles locales VirtualBox
+Debian/
+Ubuntu/
+*.vdi
+*.vbox
+*.vbox-prev
+*.vbox-tmp
+*.nvram
+*.viso
+
 # Virtualenv local
 .env
 .venv

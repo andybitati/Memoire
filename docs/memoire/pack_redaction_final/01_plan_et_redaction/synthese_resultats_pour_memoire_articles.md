@@ -34,6 +34,10 @@ Tableaux associes:
 - `docs/memoire/tables/table_wazuh_logminer_summary.md`;
 - `docs/memoire/tables/table_wazuh_logminer_overlap.md`;
 - `docs/memoire/tables/table_resource_campaign_multicycle.md`;
+- `docs/memoire/tables/table_intelligent_redis_long_campaign.md`;
+- `docs/memoire/tables/table_intelligent_redis_6h_campaign.md`;
+- `docs/memoire/tables/table_intelligent_agents_ablation.md`;
+- `docs/memoire/tables/table_intelligent_agents_resources.md`;
 - `docs/memoire/tables/table_family_routing_ablation.md`;
 - `docs/memoire/tables/table_family_routing_operational_ablation.md`.
 
@@ -43,15 +47,20 @@ Le prototype Logminer valide une architecture multi-agents modulaire capable de
 traiter des journaux heterogenes, de les normaliser dans un schema commun, de
 router chaque source vers un modele adapte, puis de produire des anomalies
 candidates et des incidents correles exploitables dans un dashboard. Les
-resultats les plus solides concernent les familles de donnees supervisees
-Linux/auth, CICIDS et UNSW/CIC-DDoS, ainsi que la robustesse du pipeline
-multi-format.
+resultats les plus directement mesurables concernent les familles de donnees
+supervisees Linux/auth, CICIDS et UNSW-NB15, mais ces scores restent
+exploratoires tant qu'ils ne sont pas reproduits avec un split temporel ou par
+scenario. Les preuves les plus solides pour le prototype concernent la
+robustesse du pipeline multi-format, la tracabilite, la campagne Redis locale
+de six heures et la reproductibilite des artefacts.
 
 Le systeme doit etre presente comme un prototype local avance et extensible:
 la V1 CLI constitue le socle stable, la V2 FastAPI apporte l'interaction par
 services REST, et Redis Streams est deja integre comme bus evenementiel
-optionnel pour tracer les workflows agents. Cette brique prepare une
-distribution multi-machine, mais elle ne prouve pas encore une scalabilite SOC.
+optionnel pour tracer et repartir les workflows agents. La campagne d'endurance
+de six heures valide une distribution locale multi-processus avec reprise
+systematique des taches non acquittees. Cette brique prepare une distribution
+multi-machine, mais elle ne prouve pas encore une scalabilite SOC industrielle.
 MQTT reste une perspective pour des collecteurs plus proches de l'IoT ou du
 temps reel.
 
@@ -73,7 +82,7 @@ Les experiences sont organisees autour de quatre familles de donnees:
 1. Journaux reels locaux: Windows Event/Security, Wazuh, Linux/auth.
 2. Datasets publics de logs systemes: HDFS et BGL.
 3. Datasets reseau labellises: CICIDS2017/MachineLearningCVE et
-   UNSW/CIC-DDoS.
+   UNSW-NB15.
 4. Scenarios synthetiques ou controles: Windows simule, logs corrompus et
    multi-formats Apache/CEF/CloudTrail/Linux auth.
 
@@ -89,7 +98,7 @@ analyste ou par l'agent correlateur.
 | --- | --- | --- |
 | Linux/auth | RandomForest supervise | F1 = 0.916602 |
 | CICIDS2017 | RandomForest supervise | F1 = 0.997163 |
-| UNSW/CIC-DDoS | RandomForest supervise | F1 = 0.999965 |
+| UNSW-NB15 | RandomForest supervise | F1 = 0.999965, resultat exploratoire a revalider |
 | Wazuh | Isolation Forest | 122 563 evenements, 3 676 anomalies candidates |
 | BGL | Selection validation | F1 autour de 0.994333 |
 | HDFS | Selection validation | F1 autour de 0.599333 a 0.600333 |
@@ -148,6 +157,62 @@ Resultats:
 Le tableau final est dans
 `docs/memoire/tables/table_resource_campaign_multicycle.md` et la figure
 associee dans `docs/memoire/figures/fig_resource_campaign_multicycle.svg`.
+
+## Campagne Parallele CPU/RAM
+
+Une campagne complementaire a ete executee via
+`scripts/run_parallel_resource_campaign.py` sans serveur FastAPI. Elle mesure
+le mode parallele de `model_compare` avec 3 workers sur 500 evenements
+synthetiques labelises par cycle.
+
+Resultats:
+
+- 5 cycles termines;
+- 500 evenements analyses par cycle;
+- 3 workers paralleles;
+- duree moyenne workflow: 3.6232 s;
+- duree maximale workflow: 6.0172 s;
+- CPU machine maximal moyen: 17.1725%;
+- RAM maximale moyenne: 176.89 MB.
+
+Le tableau est dans
+`docs/memoire/tables/table_parallel_resource_campaign.md` et la figure
+associee dans `docs/memoire/figures/fig_parallel_resource_campaign.svg`.
+Ces mesures doivent etre presentees comme une validation locale du mode
+multi-worker, et non comme une preuve de debit SOC industriel.
+
+## Campagne Redis Agents Intelligents
+
+Une campagne d'endurance Redis de six heures a ete executee avec trois workers
+principaux, un worker de reprise et une panne volontaire avant acquittement a
+chaque iteration. Elle complete le run court `redis-campaign-20260717161257`
+qui servait de preuve initiale.
+
+Resultats:
+
+- duree observee: 21613.8566 s, soit environ 6 h 00 min 14 s;
+- 709 iterations terminees;
+- 8508 taches enfilees;
+- 8508 taches uniques terminees;
+- 0 echec;
+- 0 tache pending en fin de campagne;
+- 0 perte estimee;
+- 709 pannes simulees avant `ack`, reprises par `redis-recovery-agent`;
+- debit observe: 0.3936 taches/s;
+- latence p95/p99 par tache: 5.9879 s / 8.7987 s.
+
+Le tableau final est dans
+`docs/memoire/tables/table_intelligent_redis_6h_campaign.md`.
+
+Formulation recommandee:
+
+> La campagne Redis de six heures montre que les agents intelligents Logminer
+> peuvent se repartir des taches heterogenes dans plusieurs processus, publier
+> leurs decisions et recuperer des taches abandonnees avant acquittement. Sur
+> 709 iterations, les 8508 taches ont ete terminees sans echec, sans pending
+> final et sans perte observee. Cette preuve soutient la dimension distribuee
+> du titre au niveau local multi-processus; le deploiement multi-machine reste
+> une perspective experimentale distincte.
 
 ## Robustesse Multi-Format
 
@@ -239,8 +304,9 @@ Figure validation F1:
 Figure modeles supervises:
 
 > Performances des modeles supervises RandomForest sur Linux/auth, CICIDS2017
-> et UNSW/CIC-DDoS. Les scores eleves valident l'interet de modeles specialises
-> par famille, sous reserve de compatibilite des schemas.
+> et UNSW-NB15. Les scores eleves valident surtout l'integration de modeles
+> supervises par famille dans le prototype. Leur generalisation doit etre
+> revalidee avec des partitions temporelles ou par scenarios d'attaque.
 
 Figure latence:
 

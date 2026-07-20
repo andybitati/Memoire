@@ -14,7 +14,7 @@ Les apports principaux sont :
   \item une architecture modulaire claire et extensible ;
   \item une normalisation commune pour des journaux heterogenes ;
   \item un routage multi-modeles auditable ;
-  \item une preuve locale d'agents distribues via Redis Streams, avec reprise d'une tache non acquittee ;
+  \item une preuve locale d'agents distribues via Redis Streams, avec 8 508 taches terminees et 709 reprises de taches non acquittees pendant six heures ;
   \item une evaluation multi-source combinant logs systemes, SIEM, reseau et scenarios de robustesse ;
   \item un dashboard permettant l'analyse, les filtres, les decisions et l'audit ;
   \item un pack de reproduction comprenant figures, tableaux, captures et CSV.
@@ -29,7 +29,7 @@ Les scores tres eleves obtenus sur certains datasets supervises doivent aussi et
 Les perspectives principales sont les suivantes :
 \begin{enumerate}
   \item deployer le systeme sur plusieurs machines avec workers Redis et files persistantes ;
-  \item ajouter des tests de charge prolonges, au-dela de la campagne locale de 150 taches ;
+  \item ajouter des tests multi-machine et des tests de charge sur plusieurs jours, au-dela de la campagne locale de six heures ;
   \item integrer un apprentissage actif a partir des decisions analyste ;
   \item enrichir le parsing par des templates de logs de type Drain ;
   \item reduire les faux positifs par calibration des seuils et contexte temporel ;

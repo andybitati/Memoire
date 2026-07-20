@@ -173,32 +173,33 @@ RAM maximale moyenne & 176,89 MB \\
 \end{figure}
 
 \section{Campagne Redis des agents intelligents}
-Une campagne Redis longue a ete executee pour verifier la repartition de taches heterogenes entre agents intelligents multi-taches. Le run \texttt{redis-campaign-20260717161257} utilise trois workers principaux, un worker de reprise et une panne volontaire avant acquittement. Les resultats confirment que les taches non acquittees peuvent etre recuperees sans perte observee.
+Une campagne Redis d'endurance de six heures a ete executee pour verifier la repartition de taches heterogenes entre agents intelligents multi-taches. Elle utilise trois workers principaux, un worker de reprise et une panne volontaire avant acquittement a chaque iteration. Le run court \texttt{redis-campaign-20260717161257}, avec 150 taches terminees, sert de prevalidation; le resultat retenu pour renforcer le memoire est la campagne de six heures. Les resultats confirment que les taches non acquittees peuvent etre recuperees de maniere repetee sans perte observee.
 
 \begin{table}[H]
 \centering
-\caption{Campagne Redis longue des agents intelligents}
+\caption{Campagne Redis d'endurance des agents intelligents}
 \label{tab:intelligent-redis-long}
 \scriptsize
 \begin{tabular}{lr}
 \toprule
 \textbf{Indicateur} & \textbf{Valeur} \\
 \midrule
-Taches enfilees & 150 \\
-Taches uniques terminees & 150 \\
+Iterations terminees & 709 \\
+Taches enfilees & 8 508 \\
+Taches uniques terminees & 8 508 \\
 Echecs & 0 \\
-Panne simulee avant acquittement & 1 \\
+Pannes simulees avant acquittement & 709 \\
 Pending final & 0 \\
 Perte estimee & 0 \\
-Duree observee & 102,4202 s \\
-Debit observe & 1,4646 taches/s \\
-Latence p95 & 5,3567 s \\
-Latence p99 & 8,2873 s \\
+Duree observee & 21 613,8566 s \\
+Debit observe & 0,3936 taches/s \\
+Latence p95 & 5,9879 s \\
+Latence p99 & 8,7987 s \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-La repartition par agent montre une execution effectivement partagee : \texttt{redis-agent-1} termine 46 taches, \texttt{redis-agent-2} 62, \texttt{redis-agent-3} 41 et \texttt{redis-recovery-agent} recupere la tache abandonnee par le worker de panne. Les trois types de taches sont equilibres : 50 \texttt{parse.logs}, 50 \texttt{route.model} et 50 \texttt{discover.logs}.
+La repartition par agent montre une execution effectivement partagee : \texttt{redis-agent-1} termine 2 654 taches, \texttt{redis-agent-2} 2 602, \texttt{redis-agent-3} 2 543 et \texttt{redis-recovery-agent} recupere 709 taches abandonnees par le worker de panne. Les trois types de taches restent equilibres : 2 836 \texttt{parse.logs}, 2 836 \texttt{route.model} et 2 836 \texttt{discover.logs}. Cette campagne soutient la dimension distribuee du titre au niveau local multi-processus. Elle ne remplace pas un deploiement multi-machine securise, mais elle montre que l'architecture n'est pas seulement monolithique.
 
 \section{Ablation de l'architecture agents}
 L'ablation compare la progression architecturale du prototype : pipeline centralise, agent unique multi-taches, agents locaux multiples, puis agents Redis avec panne et reprise.
@@ -215,7 +216,8 @@ L'ablation compare la progression architecturale du prototype : pipeline central
 Pipeline centralise & 2 & 0 & n/a & n/a & Reference non distribuee. \\
 Agent unique multi-taches & 3 & 0 & n/a & n/a & Un agent execute discovery, parsing et routage. \\
 Agents locaux multiples & 9 & 0 & 6,0688 s & 1,483 & Partage d'une file locale entre agents. \\
-Agents Redis panne/reprise & 150 & 0 & 102,4202 s & 1,4646 & Distribution locale multi-processus et reprise validees. \\
+Agents Redis prevalidation & 150 & 0 & 102,4202 s & 1,4646 & Distribution locale multi-processus validee. \\
+Agents Redis endurance 6h & 8 508 & 0 & 21 613,8566 s & 0,3936 & Distribution locale multi-processus et reprise repetee validees. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -242,12 +244,12 @@ Le dashboard joue donc trois roles : synthese, investigation et tracabilite. La 
 Les resultats doivent etre interpretes avec prudence. Les datasets publics ne representent pas toutes les infrastructures reelles. Les labels peuvent etre incomplets ou produire des distributions artificiellement favorables. Les mesures de latence dependent de la machine locale, du volume traite et de l'etat du systeme au moment des tests. Enfin, les sorties non supervisees ne peuvent etre assimilees a des intrusions sans validation supplementaire.
 
 \section{Synthese}
-Les resultats montrent que le prototype atteint les objectifs d'ingenierie principaux : traitement multi-format, detection supervisee et non supervisee, architecture multi-agents, dashboard, evaluation par metriques et mesures de ressources. Les objectifs scientifiques sont atteints de maniere partielle et prudente : la distribution locale multi-processus est validee par Redis, mais la generalisation supervisee, l'analyse sequentielle HDFS, la scalabilite multi-machine et la reduction des faux positifs restent des limites ouvertes.
+Les resultats montrent que le prototype atteint les objectifs d'ingenierie principaux : traitement multi-format, detection supervisee et non supervisee, architecture multi-agents, dashboard, evaluation par metriques et mesures de ressources. Les objectifs scientifiques sont atteints de maniere partielle et prudente : la distribution locale multi-processus est validee par Redis sur une campagne de six heures, mais la generalisation supervisee, l'analyse sequentielle HDFS, la scalabilite multi-machine et la reduction des faux positifs restent des limites ouvertes.
 
 \section{Interpretation par objectif}
 Le premier objectif concernait l'identification et la structuration des journaux. Les tests multi-format et la taxonomie des sources montrent que le prototype distingue plusieurs familles de donnees et conserve les entrees inconnues. Le deuxieme objectif concernait l'analyse des methodes de detection. Le memoire compare les approches par regles, les methodes statistiques, les modeles supervises, les methodes non supervisees et les approches profondes.
 
-Le troisieme objectif portait sur l'architecture d'agents specialises. Le prototype valide une distribution logique par composants et une distribution locale multi-processus par Redis Streams : collecte, parsing, normalisation, routage, detection, correlation, dashboard et audit. Le quatrieme objectif concernait l'apprentissage. Les resultats supervises et non supervises montrent l'integration de plusieurs modeles, avec une interpretation prudente selon la disponibilite des labels et les risques de fuite de donnees.
+Le troisieme objectif portait sur l'architecture d'agents specialises. Le prototype valide une distribution logique par composants et une distribution locale multi-processus par Redis Streams : collecte, parsing, normalisation, routage, detection, correlation, dashboard et audit. La campagne de six heures, sans echec ni pending final, renforce la coherence avec le titre du memoire en montrant une repartition durable des taches et une reprise repetee apres panne simulee. Le quatrieme objectif concernait l'apprentissage. Les resultats supervises et non supervises montrent l'integration de plusieurs modeles, avec une interpretation prudente selon la disponibilite des labels et les risques de fuite de donnees.
 
 Le cinquieme objectif etait la conception d'un tableau de bord. Les captures montrent que cette partie est realisee et qu'elle couvre les alertes, les details, les ressources et l'audit. Le sixieme objectif concernait les tests sur logs simules et reels. Les sources utilisees combinent journaux locaux, exports Wazuh et datasets publics. Le septieme objectif portait sur l'evaluation des performances. Les tableaux et figures documentent les F1-scores, la latence, les ressources, les faux positifs disponibles et la comparaison operationnelle.
 

@@ -1,7 +1,7 @@
 \chapter{Conclusion et perspectives}
 
 \section{Bilan du travail}
-Ce memoire a presente \logminer, un prototype multi-agents pour la detection d'anomalies dans des journaux systemes et reseaux heterogenes. Le travail a couvert l'analyse des formats de logs, la conception d'une architecture modulaire, l'implementation d'un pipeline complet, la mise en place d'un dashboard et l'evaluation sur plusieurs familles de donnees.
+Ce memoire a presente \logminer, un prototype d'agents intelligents multi-taches pour la detection d'anomalies candidates dans des journaux systemes et reseaux heterogenes. Le travail a couvert l'analyse des formats de logs, la conception d'une architecture modulaire et multi-agents, l'implementation d'un pipeline complet, la mise en place d'un dashboard et l'evaluation sur plusieurs familles de donnees.
 
 Le prototype valide une chaine complete allant de la collecte a la visualisation. Les journaux sont parses, normalises, routes vers une famille, traites par un modele compatible, puis transformes en anomalies candidates et incidents. Cette approche evite de reduire le probleme a un simple score de detection.
 
@@ -11,10 +11,10 @@ Les objectifs definis dans le document directeur sont couverts. Les types de jou
 \section{Apports}
 Les apports principaux sont :
 \begin{itemize}
-  \item une architecture multi-agents claire et extensible ;
+  \item une architecture modulaire claire et extensible ;
   \item une normalisation commune pour des journaux heterogenes ;
   \item un routage multi-modeles auditable ;
-  \item une preuve locale d'agents distribues via Redis Streams, avec reprise d'une tache non acquittee ;
+  \item une preuve locale d'agents distribues via Redis Streams, avec 8 508 taches terminees et 709 reprises de taches non acquittees pendant six heures ;
   \item une evaluation multi-source combinant logs systemes, SIEM, reseau et scenarios de robustesse ;
   \item un dashboard permettant l'analyse, les filtres, les decisions et l'audit ;
   \item un pack de reproduction comprenant figures, tableaux, captures et CSV.
@@ -29,7 +29,7 @@ Les scores tres eleves obtenus sur certains datasets supervises doivent aussi et
 Les perspectives principales sont les suivantes :
 \begin{enumerate}
   \item deployer le systeme sur plusieurs machines avec workers Redis et files persistantes ;
-  \item ajouter des tests de charge prolonges, au-dela de la campagne locale de 150 taches ;
+  \item ajouter des tests multi-machine et des tests de charge sur plusieurs jours, au-dela de la campagne locale de six heures ;
   \item integrer un apprentissage actif a partir des decisions analyste ;
   \item enrichir le parsing par des templates de logs de type Drain ;
   \item reduire les faux positifs par calibration des seuils et contexte temporel ;
@@ -41,3 +41,11 @@ Les perspectives principales sont les suivantes :
 \logminer{} montre qu'une architecture locale, modulaire et interpretable peut soutenir la detection d'anomalies dans des journaux heterogenes. Sa force principale n'est pas de remplacer les outils existants, mais d'organiser une chaine coherentement auditable entre logs bruts, modeles specialises, anomalies candidates, incidents et decisions analyste.
 
 Le prototype constitue ainsi une base solide pour un systeme de cyber-audit leger adapte aux environnements disposant de ressources limitees. Les resultats obtenus justifient une poursuite vers la scalabilite, l'integration SOC et l'apprentissage continu, tout en conservant une interpretation prudente des alertes produites.
+
+Le travail realise montre aussi l'importance d'une demarche equilibree. Dans le domaine de la cybersecurite, il serait tentant de reduire la valeur d'un systeme a un score de detection. Le memoire montre au contraire que la detection depend d'une chaine complete : collecte, parsing, normalisation, routage, modele, correlation, visualisation et audit. Chacune de ces etapes peut renforcer ou affaiblir le resultat final. L'apport de \logminer{} est donc de rendre cette chaine visible et experimentable.
+
+Les resultats supervises confirment l'interet des modeles specialises lorsque des labels sont disponibles. Les resultats non supervises montrent l'utilite d'une exploration par anomalies candidates lorsque les labels manquent. Les benchmarks de duree et de ressources indiquent qu'un traitement local par micro-lots est possible sur des volumes moderes. Les captures du dashboard montrent que les sorties ne restent pas limitees a des fichiers techniques, mais deviennent consultables par un analyste.
+
+La contribution principale reste l'integration rigoureuse de ces elements. Le prototype ne remplace pas Wazuh, OSSEC, fail2ban ou une pile SIEM complete. Il propose une couche analytique complementaire, adaptee a l'experimentation, a la pedagogie et a une organisation souhaitant progresser vers une meilleure exploitation de ses journaux. Cette couche pourra etre renforcee par des parseurs supplementaires, des modeles sequentiels, une reduction des faux positifs, une anonymisation des donnees et une validation distribuee.
+
+Ainsi, le memoire atteint son objectif principal : demontrer la faisabilite d'une detection d'anomalies modulaire, interpretable et reproductible sur des journaux heterogenes. Les limites identifiees ne constituent pas un echec du prototype ; elles definissent le programme logique des travaux futurs.

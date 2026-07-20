@@ -35,6 +35,7 @@ Tableaux associes:
 - `docs/memoire/tables/table_wazuh_logminer_overlap.md`;
 - `docs/memoire/tables/table_resource_campaign_multicycle.md`;
 - `docs/memoire/tables/table_intelligent_redis_long_campaign.md`;
+- `docs/memoire/tables/table_intelligent_redis_6h_campaign.md`;
 - `docs/memoire/tables/table_intelligent_agents_ablation.md`;
 - `docs/memoire/tables/table_intelligent_agents_resources.md`;
 - `docs/memoire/tables/table_family_routing_ablation.md`;
@@ -51,13 +52,15 @@ supervisees Linux/auth, CICIDS et UNSW-NB15, mais ces scores restent
 exploratoires tant qu'ils ne sont pas reproduits avec un split temporel ou par
 scenario. Les preuves les plus solides pour le prototype concernent la
 robustesse du pipeline multi-format, la tracabilite, la campagne Redis locale
-et la reproductibilite des artefacts.
+de six heures et la reproductibilite des artefacts.
 
 Le systeme doit etre presente comme un prototype local avance et extensible:
 la V1 CLI constitue le socle stable, la V2 FastAPI apporte l'interaction par
 services REST, et Redis Streams est deja integre comme bus evenementiel
-optionnel pour tracer les workflows agents. Cette brique prepare une
-distribution multi-machine, mais elle ne prouve pas encore une scalabilite SOC.
+optionnel pour tracer et repartir les workflows agents. La campagne d'endurance
+de six heures valide une distribution locale multi-processus avec reprise
+systematique des taches non acquittees. Cette brique prepare une distribution
+multi-machine, mais elle ne prouve pas encore une scalabilite SOC industrielle.
 MQTT reste une perspective pour des collecteurs plus proches de l'IoT ou du
 temps reel.
 
@@ -180,33 +183,36 @@ multi-worker, et non comme une preuve de debit SOC industriel.
 
 ## Campagne Redis Agents Intelligents
 
-Une campagne longue Redis a ete executee avec trois workers principaux, un
-worker de reprise et une panne volontaire avant acquittement. Le run retenu
-pour le memoire est `redis-campaign-20260717161257`.
+Une campagne d'endurance Redis de six heures a ete executee avec trois workers
+principaux, un worker de reprise et une panne volontaire avant acquittement a
+chaque iteration. Elle complete le run court `redis-campaign-20260717161257`
+qui servait de preuve initiale.
 
 Resultats:
 
-- 150 taches enfilees;
-- 150 taches uniques terminees;
+- duree observee: 21613.8566 s, soit environ 6 h 00 min 14 s;
+- 709 iterations terminees;
+- 8508 taches enfilees;
+- 8508 taches uniques terminees;
 - 0 echec;
 - 0 tache pending en fin de campagne;
 - 0 perte estimee;
-- 1 panne simulee avant `ack`, reprise par `redis-recovery-agent`;
-- duree observee depuis les evenements Redis: 102.4202 s;
-- debit observe: 1.4646 taches/s;
-- latence p95/p99 par tache: 5.3567 s / 8.2873 s.
+- 709 pannes simulees avant `ack`, reprises par `redis-recovery-agent`;
+- debit observe: 0.3936 taches/s;
+- latence p95/p99 par tache: 5.9879 s / 8.7987 s.
 
 Le tableau final est dans
-`docs/memoire/tables/table_intelligent_redis_long_campaign.md`.
+`docs/memoire/tables/table_intelligent_redis_6h_campaign.md`.
 
 Formulation recommandee:
 
-> La campagne Redis longue montre que les agents intelligents Logminer peuvent
-> se repartir des taches heterogenes dans plusieurs processus, publier leurs
-> decisions et recuperer une tache abandonnee avant acquittement. Dans le run
-> retenu, les 150 taches ont ete terminees sans echec ni pending final. La
-> preuve reste locale et multi-processus; le deploiement multi-machine est une
-> perspective experimentale distincte.
+> La campagne Redis de six heures montre que les agents intelligents Logminer
+> peuvent se repartir des taches heterogenes dans plusieurs processus, publier
+> leurs decisions et recuperer des taches abandonnees avant acquittement. Sur
+> 709 iterations, les 8508 taches ont ete terminees sans echec, sans pending
+> final et sans perte observee. Cette preuve soutient la dimension distribuee
+> du titre au niveau local multi-processus; le deploiement multi-machine reste
+> une perspective experimentale distincte.
 
 ## Robustesse Multi-Format
 
