@@ -28,6 +28,7 @@ Les scores tres eleves obtenus sur certains datasets supervises doivent aussi et
 \section{Perspectives}
 Les perspectives principales sont les suivantes :
 \begin{enumerate}
+  \item executer un protocole controle comparant un modele global unique au routage familial specialise, avec memes donnees, memes splits, plusieurs graines, PR-AUC, MCC, latence et memoire ;
   \item deployer le systeme sur plusieurs machines avec workers Redis et files persistantes ;
   \item ajouter des tests multi-machine et des tests de charge sur plusieurs jours, au-dela de la campagne locale de six heures ;
   \item integrer un apprentissage actif a partir des decisions analyste ;
@@ -46,6 +47,6 @@ Le travail realise montre aussi l'importance d'une demarche equilibree. Dans le 
 
 Les resultats supervises confirment l'interet des modeles specialises lorsque des labels sont disponibles. Les resultats non supervises montrent l'utilite d'une exploration par anomalies candidates lorsque les labels manquent. Les benchmarks de duree et de ressources indiquent qu'un traitement local par micro-lots est possible sur des volumes moderes. Les captures du dashboard montrent que les sorties ne restent pas limitees a des fichiers techniques, mais deviennent consultables par un analyste.
 
-La contribution principale reste l'integration rigoureuse de ces elements. Le prototype ne remplace pas Wazuh, OSSEC, fail2ban ou une pile SIEM complete. Il propose une couche analytique complementaire, adaptee a l'experimentation, a la pedagogie et a une organisation souhaitant progresser vers une meilleure exploitation de ses journaux. Cette couche pourra etre renforcee par des parseurs supplementaires, des modeles sequentiels, une reduction des faux positifs, une anonymisation des donnees et une validation distribuee.
+La contribution principale reste l'integration architecturale rigoureuse de ces elements. Le prototype ne remplace pas Wazuh, OSSEC, fail2ban ou une pile SIEM complete. Il propose une couche analytique complementaire, adaptee a l'experimentation, a la pedagogie et a une organisation souhaitant progresser vers une meilleure exploitation de ses journaux. Cette couche pourra etre renforcee par un protocole comparatif controle, des parseurs supplementaires, des modeles sequentiels, une reduction des faux positifs, une anonymisation des donnees et une validation distribuee.
 
 Ainsi, le memoire atteint son objectif principal : demontrer la faisabilite d'une detection d'anomalies modulaire, interpretable et reproductible sur des journaux heterogenes. Les limites identifiees ne constituent pas un echec du prototype ; elles definissent le programme logique des travaux futurs.

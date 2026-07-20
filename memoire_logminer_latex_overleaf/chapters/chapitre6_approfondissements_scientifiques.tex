@@ -19,7 +19,7 @@ Ce positionnement rejoint les mises en garde formulees dans la litterature sur l
 \section{Hypotheses de recherche consolidees}
 Le memoire repose sur plusieurs hypotheses qui peuvent etre formulees explicitement. La premiere hypothese est qu'une architecture modulaire par agents logiciels facilite le traitement de journaux heterogenes. Cette hypothese est verifiee par la decomposition du prototype en collecte, parsing, normalisation, routage, detection, correlation, dashboard et audit. Chaque composant peut evoluer sans imposer une reecriture globale.
 
-La deuxieme hypothese est que le routage par famille de journaux est preferable a l'application d'un modele global unique. Les logs ne partagent pas tous les memes variables ni les memes distributions. Les flux reseau tabulaires contiennent de nombreuses caracteristiques numeriques. Les journaux textuels contiennent surtout des messages et des metadonnees. Les exports Wazuh contiennent deja une interpretation par regles. Le routage preserve donc la coherence entre source, features et modele.
+La deuxieme hypothese est que le routage par famille de journaux preserve mieux la coherence entre source, features et modele qu'une application indistincte d'un modele global unique. Les logs ne partagent pas tous les memes variables ni les memes distributions. Les flux reseau tabulaires contiennent de nombreuses caracteristiques numeriques. Les journaux textuels contiennent surtout des messages et des metadonnees. Les exports Wazuh contiennent deja une interpretation par regles. Dans ce memoire, cette hypothese est defendue comme hypothese de conception et d'architecture. Sa validation quantitative stricte exige une experience controlee global-versus-familles, presentee comme une exploitation complementaire des resultats.
 
 La troisieme hypothese est que des modeles legers peuvent etre utiles dans une chaine locale reproductible. Les resultats obtenus avec RandomForest et Isolation Forest montrent que des modeles classiques peuvent fournir des signaux exploitables sans infrastructure lourde. Ce choix est adapte a un contexte academique, a une petite organisation ou a une phase de prototypage. Il ne nie pas l'interet des approches profondes, mais il privilegie la reproductibilite, l'interpretabilite et la facilite de deploiement.
 
@@ -66,7 +66,7 @@ Pour les performances systeme, les metriques de duree de workflow et de ressourc
 \section{Justification du routage par famille}
 Le routage par famille est defendu par un argument semantique et un argument experimental. L'argument semantique est simple : les sources ne decrivent pas les memes phenomenes. Un evenement Windows peut porter un identifiant d'evenement, un fournisseur, un canal et un utilisateur. Un log Apache porte une methode HTTP, un chemin, un code de reponse et une adresse IP. Un export Wazuh porte des champs de regle, agent, groupe et severite. Un flux CICIDS porte des statistiques de communication. La fusion brute de ces espaces risque de produire des features vides, incoherentes ou peu explicables.
 
-L'argument experimental est lie aux resultats d'ablation. Le routage familial ne garantit pas un gain universel sur chaque dataset, mais il apporte une specialisation controlee. Il permet d'utiliser un modele et un espace de features adaptes a chaque famille. Il rend aussi le systeme extensible : ajouter une famille ne necessite pas de reentrainer un modele global sur toutes les sources.
+L'argument experimental est lie aux resultats de validation progressive de l'architecture. Le routage familial ne garantit pas un gain universel sur chaque dataset, mais il apporte une specialisation controlee. Il permet d'utiliser un modele et un espace de features adaptes a chaque famille. Il rend aussi le systeme extensible : ajouter une famille ne necessite pas de reentrainer immediatement un modele global sur toutes les sources. La comparaison quantitative stricte reste a realiser avec les memes donnees, les memes splits et plusieurs repetitions.
 
 Cette approche correspond a une logique d'ingenierie. Dans un systeme operationnel, les journaux ne sont pas seulement des lignes abstraites. Ils appartiennent a des contextes : authentification, application web, systeme distribue, alerte SIEM, flux reseau. Le routage respecte ces contextes et evite de masquer les differences sous une representation unique trop pauvre.
 
@@ -134,6 +134,34 @@ Dashboard & Captures prises comme evaluation utilisateur. & Validation fonctionn
 \end{tabularx}
 \end{table}
 
+\section{Plan d'exploitation scientifique des resultats}
+Les resultats du memoire ouvrent naturellement une exploitation scientifique plus stricte, sans changer l'esprit du travail. L'objectif est de prolonger la contribution architecturale par des comparaisons controlees, une meilleure validation des logs sequentiels, des mesures de scalabilite et des tests de resilience plus exigeants.
+
+Le premier run comparatif opposera deux pipelines sur exactement les memes donnees. Le pipeline A utilisera un modele global unique, entraine sur une representation commune fusionnant les familles disponibles. Le pipeline B utilisera le routage familial de \logminer{}, avec un modele specialise par famille lorsque les features le justifient. Les deux pipelines devront utiliser les memes fichiers, les memes operations de nettoyage autorisees, les memes splits et les memes graines aleatoires.
+
+\begin{table}[H]
+\centering
+\caption{Plan de comparaison controlee pour l'exploitation des resultats}
+\label{tab:plan-exploitation-comparaison}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3.1cm}p{4cm}X}
+\toprule
+\textbf{Axe} & \textbf{Execution prevue} & \textbf{Mesures attendues} \\
+\midrule
+Global vs familles & Pipeline A modele global unique ; Pipeline B routage familial et modeles specialises. & Precision, rappel, F1, faux positifs, PR-AUC, MCC, matrices de confusion, latence et RAM. \\
+Robustesse des splits & Splits par fichier, jour, scenario ou type d'attaque selon les datasets ; plusieurs graines aleatoires. & Moyenne, ecart-type et intervalle de confiance des scores. \\
+Logs sequentiels & HDFS/BGL avec extraction de templates, fenetres temporelles, seuil fixe sur validation et test independant. & F1, precision, rappel, taux de faux positifs et analyse des erreurs par sequence. \\
+Scalabilite agents & Centralise, agents locaux, Redis local, puis Redis multi-VM ou multi-machine si l'environnement le permet. & Debit, latence p95/p99, RAM, CPU, pending, taches perdues et reprises. \\
+Resilience & Panne d'agent avant acquittement, surcharge de taches, bruit syntaxique et sources incompletes. & Taux de reprise, pertes estimees, temps de recuperation, stabilite du dashboard. \\
+Comparaison operationnelle & Scenarios fail2ban-like, Wazuh/OSSEC exports et \logminer{} en couche analytique. & Couverture fonctionnelle, faux positifs, lisibilite analyste et charge operationnelle. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Les jeux de donnees prioritaires seront Linux/auth, CICIDS2017, CIC-DDoS2019 et des journaux Windows simules ou collectes localement lorsque les labels sont disponibles. HDFS et BGL seront traites dans un protocole sequentiel distinct afin d'eviter de melanger exploration in-sample et validation independante. Les sorties attendues de ce run sont des fichiers de preuves comparables : \texttt{model\_comparison\_controlled.csv}, \texttt{architecture\_scalability\_controlled.csv}, \texttt{resilience\_controlled.csv}, les matrices de confusion, les courbes PR et les tableaux LaTeX associes.
+
+Ce plan repond directement a la critique sur les hypotheses non testees. Le memoire actuel etablit la faisabilite architecturale et l'integration multi-format ; l'exploitation ulterieure des resultats devra mesurer si cette architecture apporte un gain quantifiable face a une baseline globale, sous protocole controle.
+
 \section{Menaces sur la validite interne}
 La validite interne concerne la coherence entre les experiences realisees et les conclusions tirees. Une premiere menace vient de la preparation des donnees. Si les transformations introduisent une fuite d'information, les scores peuvent etre surestimes. Il faut donc veiller a separer clairement les donnees d'entrainement et de test, a ne pas utiliser le label comme feature et a documenter les colonnes retenues.
 
@@ -193,12 +221,12 @@ Le document directeur fixait plusieurs objectifs : identifier et structurer les 
 
 L'identification et la structuration sont couvertes par les parseurs, le schema commun et la taxonomie des journaux. La comparaison des techniques est couverte par les resultats supervises, non supervises et les references de l'etat de l'art. L'architecture modulaire est couverte par la decomposition en modules et par l'API. L'IA legere est couverte par les modeles scikit-learn et le routage. Le dashboard est realise. Les tests couvrent des journaux locaux, Wazuh, HDFS, BGL, CICIDS2017, CIC-DDoS2019 et des cas multi-format. L'evaluation couvre les scores, les durees de workflow, les ressources et la robustesse.
 
-La principale nuance concerne la portee du mot ``distribuee''. Le prototype valide une distribution logique et une preparation a l'orchestration evenementielle. Il ne prouve pas encore un deploiement multi-machine industriel. Cette nuance doit rester visible dans la soutenance comme dans le manuscrit.
+La principale nuance concerne la portee du mot ``distribuee''. Le prototype valide une distribution logique et une distribution locale multi-processus par Redis Streams, avec une campagne de six heures, 8 508 taches terminees et 709 reprises apres panne simulee. Il ne prouve pas encore un deploiement multi-machine industriel. Cette nuance doit rester visible dans la soutenance comme dans le manuscrit.
 
 \section{Contribution synthetique}
 La contribution peut etre formulee en quatre points. Premierement, le travail propose une chaine multi-format capable de convertir des journaux heterogenes en representation commune. Deuxiemement, il propose un routage par famille qui associe chaque source a un traitement adapte. Troisiemement, il integre des modeles supervises et non supervises dans une architecture legere et reproductible. Quatriemement, il relie les resultats a un dashboard et a un audit, afin de soutenir l'exploitation humaine.
 
-Cette contribution est modeste au sens algorithmique, mais substantielle au sens systeme. Elle montre comment assembler des composants pour repondre a un besoin reel. Elle fournit aussi des preuves experimentales : scores, benchmarks, mesures de ressources, figures, tableaux et captures.
+Cette contribution est modeste au sens algorithmique, mais substantielle au sens systeme. Elle montre comment assembler des composants pour repondre a un besoin reel. Elle fournit aussi des preuves experimentales : scores, benchmarks, mesures de ressources, campagne Redis d'endurance, figures, tableaux et captures.
 
 \section{Synthese du chapitre}
 Ce chapitre a precise les fondements scientifiques du travail. Il a montre que le prototype doit etre compris comme une architecture d'integration pour l'analyse de journaux heterogenes. Il a clarifie les hypotheses, les transformations, les types de donnees, les metriques et les menaces sur la validite. Il a egalement insiste sur la difference entre anomalie candidate et intrusion confirmee.

@@ -35,7 +35,7 @@ La problematique generale est declinee en questions de recherche operationnelles
 \end{enumerate}
 
 \section{Hypotheses de travail}
-Le memoire repose sur quatre hypotheses prudentes. Premierement, les journaux heterogenes peuvent etre rapproches par un noyau commun de champs sans perdre les donnees originales. Deuxiemement, un routage par famille de logs est plus coherent qu'un modele unique applique indistinctement a toutes les sources. Troisiemement, les modeles legers restent utiles lorsqu'ils sont associes a une normalisation correcte, a une correlation et a une validation humaine. Quatriemement, une anomalie non supervisee doit etre consideree comme une piste d'analyse et non comme une preuve directe d'intrusion.
+Le memoire repose sur quatre hypotheses prudentes, formulees de maniere operationnelle. Premierement, les journaux heterogenes peuvent etre rapproches par un noyau commun de champs tout en conservant les donnees originales utiles a l'audit. Deuxiemement, une architecture par agents logiciels specialises peut ameliorer la modularite, la tracabilite et la robustesse d'execution par rapport a une chaine monolithique. Cette hypothese est verifiee par la progression fonctionnelle du prototype et par la campagne Redis locale de six heures. Troisiemement, le routage par famille de logs constitue une hypothese de conception : il doit reduire l'incompatibilite entre source, features et modele, mais sa superiorite quantitative sur un modele global unique demande une experience controlee complementaire. Quatriemement, les modeles legers restent utiles dans une chaine locale reproductible lorsqu'ils sont mesures avec des metriques explicites, associes a une correlation et soumis a une validation humaine.
 
 \section{Objectif general}
 L'objectif general de ce travail est de concevoir et d'evaluer un prototype modulaire, appele \logminer, pour la detection et la priorisation d'anomalies candidates dans des journaux systemes et reseaux heterogenes. Le systeme doit couvrir la chaine allant de la collecte des journaux a la visualisation des alertes, en passant par la normalisation, le routage multi-modeles, la detection et la correlation.
@@ -54,6 +54,8 @@ Conformement au document directeur, les objectifs specifiques sont les suivants 
 \end{enumerate}
 
 \section{Contributions}
+La contribution scientifique principale du memoire se situe d'abord au niveau architectural. Le travail ne propose ni nouvel algorithme de detection, ni nouvelle fonction objectif, ni theorie generale de l'apprentissage d'anomalies. Il propose une architecture d'integration modulaire et reproductible pour orchestrer des traitements specialises sur des journaux heterogenes, en coherence avec le titre et avec le document directeur. Les comparaisons quantitatives plus strictes entre modele global et routage familial sont presentees comme une exploitation future naturelle des resultats du memoire.
+
 Les contributions de ce memoire sont les suivantes :
 
 \begin{itemize}

@@ -40,8 +40,6 @@ Wazuh & Exports Jan./Oct./Dec. & Isolation Forest & Non supervise & 122 563 even
 Linux/auth & linux\_auth\_logs & RandomForest & Supervise & F1 = 0,916602. \\
 CICIDS2017 & MachineLearningCVE & RandomForest & Supervise & F1 = 0,997163. \\
 CIC-DDoS2019 & DrDoS/UDPLag/SYN & RandomForest & Supervise & F1 = 0,999965, protocole 80/20 exploratoire. \\
-HDFS & HDFS logs & Ensemble/IForest & Non supervise & Resultat exploratoire autour de F1 = 0,599333, non presente comme generalisation independante. \\
-BGL & BlueGene/L & Ensemble/Autoencoder/IForest & Non supervise & Resultat exploratoire autour de F1 = 0,994333, sensible au protocole in-sample. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -59,7 +57,7 @@ Le score de 0,999965 est donc attribue dans ce memoire a un jeu de donnees DDoS 
 \end{figure}
 
 \section{Evaluation non supervisee}
-Les sorties non supervisees sont traitees comme des anomalies candidates. Cela concerne notamment Windows, Wazuh, HDFS et BGL. Une anomalie candidate indique un comportement rare ou atypique, mais sa qualification comme attaque necessite une correlation ou une validation analyste.
+Les sorties non supervisees sont traitees comme des anomalies candidates. Cela concerne notamment Windows et Wazuh dans les resultats principaux. Une anomalie candidate indique un comportement rare ou atypique, mais sa qualification comme attaque necessite une correlation ou une validation analyste.
 
 Les resultats HDFS et BGL doivent etre lus avec une prudence supplementaire. Lorsque les modeles non supervises sont ajustes et evalues sur le meme echantillon, ou lorsque le parametre de contamination est deduit du taux reel d'anomalies, le score obtenu mesure surtout une separation exploratoire dans l'echantillon disponible. Il ne mesure pas une generalisation independante. Pour une validation stricte, il faudrait separer les blocs HDFS ou les periodes BGL en ensembles d'entrainement, validation et test, entrainer seulement sur le train, fixer le seuil sur validation, puis evaluer une seule fois sur test.
 
@@ -172,6 +170,26 @@ RAM maximale moyenne & 176,89 MB \\
   \label{fig:parallel-resources}
 \end{figure}
 
+\section{Experimentations exploratoires HDFS et BGL}
+Les familles HDFS et BGL sont conservees dans le memoire, mais elles sont separees des resultats principaux. Cette separation evite de presenter un score eleve comme une preuve de generalisation lorsque le protocole ne garantit pas une independance stricte entre apprentissage, parametrage de seuil et evaluation.
+
+\begin{table}[H]
+\centering
+\caption{Resultats exploratoires sur HDFS et BGL}
+\label{tab:hdfs-bgl-exploratoires}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.5cm}p{3.4cm}p{3.3cm}X}
+\toprule
+\textbf{Famille} & \textbf{Resultat observe} & \textbf{Interpretation retenue} & \textbf{Limite principale} \\
+\midrule
+HDFS & F1 autour de 0,599333--0,600333 & Separabilite partielle avec features legeres ligne par ligne. & Les anomalies HDFS dependent souvent de sequences ou de templates ; le protocole actuel ne prouve pas une generalisation independante. \\
+BGL & F1 autour de 0,994333 & Separabilite forte dans l'echantillon traite et integration pipeline validee. & Score sensible au protocole in-sample et au choix du seuil ; il ne doit pas etre lu comme validation robuste hors echantillon. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Ces resultats ont donc une valeur d'exploration et d'integration. Ils montrent que \logminer{} peut ingerer et traiter des logs systemes publics, mais ils appellent une etape scientifique plus forte : extraction de templates, fenetres temporelles, split par bloc ou periode, seuil fixe sur validation et evaluation unique sur test independant.
+
 \section{Campagne Redis des agents intelligents}
 Une campagne Redis d'endurance de six heures a ete executee pour verifier la repartition de taches heterogenes entre agents intelligents multi-taches. Elle utilise trois workers principaux, un worker de reprise et une panne volontaire avant acquittement a chaque iteration. Le run court \texttt{redis-campaign-20260717161257}, avec 150 taches terminees, sert de prevalidation; le resultat retenu pour renforcer le memoire est la campagne de six heures. Les resultats confirment que les taches non acquittees peuvent etre recuperees de maniere repetee sans perte observee.
 
@@ -201,12 +219,12 @@ Latence p99 & 8,7987 s \\
 
 La repartition par agent montre une execution effectivement partagee : \texttt{redis-agent-1} termine 2 654 taches, \texttt{redis-agent-2} 2 602, \texttt{redis-agent-3} 2 543 et \texttt{redis-recovery-agent} recupere 709 taches abandonnees par le worker de panne. Les trois types de taches restent equilibres : 2 836 \texttt{parse.logs}, 2 836 \texttt{route.model} et 2 836 \texttt{discover.logs}. Cette campagne soutient la dimension distribuee du titre au niveau local multi-processus. Elle ne remplace pas un deploiement multi-machine securise, mais elle montre que l'architecture n'est pas seulement monolithique.
 
-\section{Ablation de l'architecture agents}
-L'ablation compare la progression architecturale du prototype : pipeline centralise, agent unique multi-taches, agents locaux multiples, puis agents Redis avec panne et reprise.
+\section{Validation progressive de l'architecture d'execution}
+Cette section ne constitue pas une ablation scientifique stricte au sens d'une comparaison controlee entre deux pipelines soumis aux memes donnees, aux memes splits et aux memes repetitions. Elle valide plutot une progression d'execution : pipeline centralise, agent unique multi-taches, agents locaux multiples, puis agents Redis avec panne et reprise. Les charges ne sont donc pas identiques. La conclusion porte sur la faisabilite architecturale, la distribution locale des taches et la reprise apres panne simulee, non sur une superiorite quantitative definitive de l'approche multi-agents.
 
 \begin{table}[H]
 \centering
-\caption{Ablation agents intelligents}
+\caption{Validation progressive des agents intelligents}
 \label{tab:intelligent-agents-ablation}
 \scriptsize
 \begin{tabularx}{\textwidth}{p{3.2cm}rrrrX}
@@ -244,7 +262,7 @@ Le dashboard joue donc trois roles : synthese, investigation et tracabilite. La 
 Les resultats doivent etre interpretes avec prudence. Les datasets publics ne representent pas toutes les infrastructures reelles. Les labels peuvent etre incomplets ou produire des distributions artificiellement favorables. Les mesures de latence dependent de la machine locale, du volume traite et de l'etat du systeme au moment des tests. Enfin, les sorties non supervisees ne peuvent etre assimilees a des intrusions sans validation supplementaire.
 
 \section{Synthese}
-Les resultats montrent que le prototype atteint les objectifs d'ingenierie principaux : traitement multi-format, detection supervisee et non supervisee, architecture multi-agents, dashboard, evaluation par metriques et mesures de ressources. Les objectifs scientifiques sont atteints de maniere partielle et prudente : la distribution locale multi-processus est validee par Redis sur une campagne de six heures, mais la generalisation supervisee, l'analyse sequentielle HDFS, la scalabilite multi-machine et la reduction des faux positifs restent des limites ouvertes.
+Les resultats montrent que le prototype atteint les objectifs d'ingenierie principaux : traitement multi-format, detection supervisee et non supervisee, architecture multi-agents, dashboard, evaluation par metriques et mesures de ressources. Les objectifs scientifiques sont atteints de maniere partielle et prudente : la contribution principale est une architecture d'integration modulaire et reproductible, la distribution locale multi-processus est validee par Redis sur une campagne de six heures, mais la comparaison controlee modele global versus routage familial, la generalisation supervisee, l'analyse sequentielle HDFS, la scalabilite multi-machine et la reduction des faux positifs restent des limites ouvertes pour l'exploitation ulterieure des resultats.
 
 \section{Interpretation par objectif}
 Le premier objectif concernait l'identification et la structuration des journaux. Les tests multi-format et la taxonomie des sources montrent que le prototype distingue plusieurs familles de donnees et conserve les entrees inconnues. Le deuxieme objectif concernait l'analyse des methodes de detection. Le memoire compare les approches par regles, les methodes statistiques, les modeles supervises, les methodes non supervisees et les approches profondes.
@@ -254,7 +272,7 @@ Le troisieme objectif portait sur l'architecture d'agents specialises. Le protot
 Le cinquieme objectif etait la conception d'un tableau de bord. Les captures montrent que cette partie est realisee et qu'elle couvre les alertes, les details, les ressources et l'audit. Le sixieme objectif concernait les tests sur logs simules et reels. Les sources utilisees combinent journaux locaux, exports Wazuh et datasets publics. Le septieme objectif portait sur l'evaluation des performances. Les tableaux et figures documentent les F1-scores, la latence, les ressources, les faux positifs disponibles et la comparaison operationnelle.
 
 \section{Analyse des resultats supervises}
-Les resultats supervises sont les plus simples a interpreter car ils reposent sur des labels. Le score F1 de 0,916602 sur Linux/auth montre une performance correcte dans un contexte d'authentification. Les scores de 0,997163 sur CICIDS2017 et 0,999965 sur CIC-DDoS2019 indiquent une tres forte separation dans les conditions experimentales considerees. Ces resultats confirment l'interet de modeles specialises par famille, mais ils restent dependants du protocole de split.
+Les resultats supervises sont les plus simples a interpreter car ils reposent sur des labels. Le score F1 de 0,916602 sur Linux/auth montre une performance correcte dans un contexte d'authentification. Les scores de 0,997163 sur CICIDS2017 et 0,999965 sur CIC-DDoS2019 indiquent une tres forte separation dans les conditions experimentales considerees. Ces resultats confirment l'integration de modeles specialises par famille dans le prototype, mais ils ne prouvent pas encore que le routage familial est objectivement superieur a un modele global unique.
 
 Il faut cependant garder une lecture critique. Un score eleve sur un dataset public peut refleter la qualite du modele, mais aussi la structure du dataset, la separabilite des classes, une fuite indirecte entre train et test, ou la stabilite artificielle des distributions. Le memoire ne presente donc pas ces scores comme une garantie absolue de detection en production. Ils valident plutot la capacite du prototype a integrer, entrainer et exploiter des modeles supervises dans une chaine complete. Une validation plus forte devrait separer les donnees par jour, fichier, scenario ou type d'attaque, puis rapporter plusieurs graines, intervalles de confiance, PR-AUC, MCC et matrices de confusion.
 

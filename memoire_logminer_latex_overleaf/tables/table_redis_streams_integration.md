@@ -7,4 +7,4 @@
 | Reprise pending | Integree pour recuperer des jobs non acquittes apres panne worker | `claim_stale_jobs`, `--claim-idle-ms`, `redis-recovery-agent` | Validee localement par 709 reprises; le seuil d'inactivite doit etre calibre selon la duree normale d'inference |
 | Contrat de message | Commun entre JSONL et Redis Streams | `docs/architecture/message_contract.md` | Schema a versionner si plusieurs machines publient en parallele |
 | Degradation | Le workflow reste utilisable sans Redis | bus JSONL/CSV, endpoints FastAPI sans `use_redis` | Redis indisponible reduit l'observabilite evenementielle, pas la chaine CLI |
-| Perspective | Retries avances, dead-letter queue, back-pressure et tests de charge | cite en limites et travaux futurs | A evaluer dans l'article 2 ou une campagne operationnelle |
+| Perspective | Retries avances, dead-letter queue, back-pressure et tests de charge | cite en limites et travaux futurs | A evaluer dans une campagne operationnelle complementaire |
