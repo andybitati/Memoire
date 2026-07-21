@@ -1,0 +1,14 @@
+# Optional HDFS/BGL sequence-log experiment dependencies.
+#
+# Install this in a dedicated environment when reproducing the Drain3 branch:
+#   python -m pip install -r requirements-hdfs-bgl.txt
+#
+# Drain3 0.9.11 pins cachetools==4.2.1. Keep it out of the main prototype
+# environment so Streamlit/API dependencies can stay modern.
+
+drain3==0.9.11
+logparser==0.8.4
+cachetools==4.2.1
+jsonpickle==1.5.1
+pexpect==4.9.0
+ptyprocess==0.7.0

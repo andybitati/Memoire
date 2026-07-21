@@ -7,6 +7,16 @@ function initialView() {
   return VALID_VIEWS.has(view) ? view : "overview";
 }
 
+function captureFocusSelector() {
+  const focus = new URLSearchParams(window.location.search).get("capture");
+  return {
+    resources: ".resourcesPanel",
+    audit: ".auditPanel",
+    validation: ".validationPanel",
+    results: ".detailPanel",
+  }[focus] || "";
+}
+
 let state = {
   loading: true,
   error: "",
@@ -1780,6 +1790,10 @@ function render() {
       await decideAlert(String(alertId), event.currentTarget.dataset.alertAction, row);
     });
   });
+  const focusSelector = captureFocusSelector();
+  if (focusSelector) {
+    window.setTimeout(() => document.querySelector(focusSelector)?.scrollIntoView({ block: "start" }), 250);
+  }
   updateRefreshClock();
 }
 

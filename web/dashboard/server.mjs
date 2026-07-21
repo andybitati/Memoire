@@ -124,6 +124,20 @@ async function readJsonBody(req) {
   return JSON.parse(body);
 }
 
+async function readLocalJsonLines(filename, limit = 100) {
+  const raw = await fs.readFile(path.join(processedDir, filename), "utf8");
+  const lines = raw.split(/\r?\n/).filter(Boolean);
+  return lines
+    .slice(Math.max(0, lines.length - Number(limit || 100)))
+    .flatMap((line) => {
+      try {
+        return [JSON.parse(line)];
+      } catch {
+        return [];
+      }
+    });
+}
+
 function formatMetric(value) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed.toFixed(3) : "n/a";
@@ -366,7 +380,12 @@ async function handleRedisEvents(req, res) {
     if (runId) target.searchParams.set("run_id", runId);
     sendJson(res, 200, await fetchJson(target));
   } catch (error) {
-    sendJson(res, 200, { stream: "", count: 0, events: [], error: error.message });
+    try {
+      const events = await readLocalJsonLines("agent_messages.jsonl", 100);
+      sendJson(res, 200, { stream: "local", count: events.length, events, warning: error.message });
+    } catch {
+      sendJson(res, 200, { stream: "", count: 0, events: [], error: error.message });
+    }
   }
 }
 
@@ -418,7 +437,14 @@ async function handleAudit(req, res) {
     const limit = url.searchParams.get("limit") || "100";
     sendJson(res, 200, await fetchJson(`${fastApiBase}/audit?limit=${encodeURIComponent(limit)}`));
   } catch (error) {
-    sendJson(res, 200, { count: 0, events: [], error: error.message });
+    try {
+      const url = new URL(req.url, `http://127.0.0.1:${activePort}`);
+      const limit = Number(url.searchParams.get("limit") || "100");
+      const events = await readLocalJsonLines("dashboard_audit.jsonl", limit);
+      sendJson(res, 200, { count: events.length, events, source: "local", warning: error.message });
+    } catch {
+      sendJson(res, 200, { count: 0, events: [], error: error.message });
+    }
   }
 }
 
@@ -426,7 +452,12 @@ async function handleResources(req, res) {
   try {
     sendJson(res, 200, await fetchJson(`${fastApiBase}/resources`));
   } catch (error) {
-    sendJson(res, 200, { available: false, message: error.message });
+    try {
+      const raw = await fs.readFile(path.join(processedDir, "dashboard_resources.json"), "utf8");
+      sendJson(res, 200, { ...JSON.parse(raw), source: "local", warning: error.message });
+    } catch {
+      sendJson(res, 200, { available: false, message: error.message });
+    }
   }
 }
 

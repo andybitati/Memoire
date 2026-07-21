@@ -358,6 +358,45 @@ python scripts\summarize_validation_metrics.py data\processed\validation_hdfs_me
 
 Ces sorties ajoutent `precision`, `recall`, `f1`, `accuracy`, `specificity` et la matrice de confusion `tp/fp/fn/tn`.
 
+Variante de remédiation pour les logs séquentiels HDFS/BGL:
+
+À lancer de préférence dans un environnement dédié:
+
+```powershell
+python -m venv .venv-hdfs-bgl
+.\.venv-hdfs-bgl\Scripts\python -m pip install -r requirements-hdfs-bgl-container.txt
+```
+
+```powershell
+python src\logminer\agents\sequence_window.py -i data\processed\validation_hdfs.csv -o data\processed\validation_hdfs_sequence.csv --family hdfs --window-minutes 30 --template-method drain3 --drain-similarity 0.5
+python src\logminer\agents\sequence_window.py -i data\processed\validation_bgl.csv -o data\processed\validation_bgl_sequence.csv --family bgl --window-minutes 30 --template-method drain3 --drain-similarity 0.5
+python src\logminer\agents\model_compare.py -i data\processed\validation_hdfs.csv -o data\processed\validation_hdfs_sequence_metrics.csv --contamination auto --label-column label --sequence-window-minutes 30 --sequence-template-method drain3 --drain-similarity 0.5
+python src\logminer\agents\model_compare.py -i data\processed\validation_bgl.csv -o data\processed\validation_bgl_sequence_metrics.csv --contamination auto --label-column label --sequence-window-minutes 30 --sequence-template-method drain3 --drain-similarity 0.5
+```
+
+Cette branche ajoute des variables `seq_*` (volume dans la fenêtre, rafales d'erreurs, rareté de template, délai depuis l'événement précédent, contexte HDFS/BGL) afin de ne plus scorer uniquement chaque ligne isolée. Le templateur `--template-method drain3` utilise la librairie Drain3 si elle est installée et expose `seq_drain_event_id` / `seq_drain_template`. Si Drain3 manque dans l'environnement principal, le script bascule vers un fallback Drain-like et renseigne `seq_template_method=drain_like_fallback`; ajouter `--strict-template-library` force au contraire un échec explicite. Drain3 reste dans `requirements-hdfs-bgl*.txt`, pas dans `requirements.txt`, afin de ne pas réduire la qualité du dashboard principal.
+
+Split expérimental plus propre pour éviter le mélange aléatoire:
+
+```powershell
+python scripts\split_validation_dataset.py -i data\processed\validation_hdfs.csv --train-out data\processed\validation_hdfs_train.csv --test-out data\processed\validation_hdfs_test.csv --summary-out data\processed\validation_hdfs_split_summary.csv --strategy stratified_group_chronological --group-column block_id --test-size 0.2
+python scripts\split_validation_dataset.py -i data\processed\validation_bgl.csv --train-out data\processed\validation_bgl_train.csv --test-out data\processed\validation_bgl_test.csv --summary-out data\processed\validation_bgl_split_summary.csv --strategy stratified_chronological --test-size 0.2
+python src\logminer\agents\sequence_window.py -i data\processed\validation_hdfs_train.csv -o data\processed\validation_hdfs_train_sequence_drain.csv --family hdfs --window-minutes 30 --template-method drain3
+python src\logminer\agents\sequence_window.py -i data\processed\validation_hdfs_test.csv -o data\processed\validation_hdfs_test_sequence_drain.csv --family hdfs --window-minutes 30 --template-method drain3
+```
+
+Pour HDFS, `stratified_group_chronological` garde un même `block_id` dans un seul côté du split. Pour BGL, `stratified_chronological` conserve un test équilibré tout en évitant un simple tirage aléatoire global.
+
+Evaluation stricte train -> test après enrichissement Drain3:
+
+```powershell
+python scripts\evaluate_sequence_split.py --train data\processed\validation_hdfs_train_sequence_drain3.csv --test data\processed\validation_hdfs_test_sequence_drain3.csv -o data\processed\validation_hdfs_drain3_train_test_metrics.csv --contamination train
+python scripts\evaluate_sequence_split.py --train data\processed\validation_bgl_train_sequence_drain3.csv --test data\processed\validation_bgl_test_sequence_drain3.csv -o data\processed\validation_bgl_drain3_train_test_metrics.csv --contamination train
+python scripts\summarize_validation_metrics.py data\processed\validation_hdfs_drain3_train_test_metrics.csv data\processed\validation_bgl_drain3_train_test_metrics.csv -o data\processed\validation_hdfs_bgl_drain3_train_test_summary.csv
+```
+
+Cette derniere evaluation est la plus prudente a citer: les detecteurs sont ajustes sur `train` puis scores sur `test`. Sur le split local genere, HDFS atteint F1 = 0.652789 avec la rarete de templates/champs apprise sur train et F1 = 0.637802 avec Isolation Forest train->test. BGL reste tres separable, avec F1 = 1.000000 pour Isolation Forest train->test et F1 = 0.973333 pour les methodes statistiques.
+
 ## Communication Entre Agents
 
 Les agents disponibles communiquent avec un bus local JSONL. Chaque étape publie un message dans `data/processed/agent_messages.jsonl`: lancement du workflow, parsing terminé, détection lancée, détection terminée, etc.

@@ -170,8 +170,8 @@ RAM maximale moyenne & 176,89 MB \\
   \label{fig:parallel-resources}
 \end{figure}
 
-\section{Experimentations exploratoires HDFS et BGL}
-Les familles HDFS et BGL sont conservees dans le memoire, mais elles sont separees des resultats principaux. Cette separation evite de presenter un score eleve comme une preuve de generalisation lorsque le protocole ne garantit pas une independance stricte entre apprentissage, parametrage de seuil et evaluation.
+\section{Experimentations HDFS et BGL}
+Les familles HDFS et BGL sont conservees dans le memoire, mais elles sont separees des resultats principaux. Cette separation evite de presenter un score eleve comme une preuve de generalisation lorsque le protocole ne garantit pas une independance stricte entre apprentissage, parametrage de seuil et evaluation. Deux niveaux de lecture sont donc distingues : les premiers essais ligne par ligne, utiles comme baseline d'integration, puis une validation plus stricte avec extraction de templates Drain3, fenetres temporelles et split train--test.
 
 \begin{table}[H]
 \centering
@@ -188,7 +188,28 @@ BGL & F1 autour de 0,994333 & Separabilite forte dans l'echantillon traite et in
 \end{tabularx}
 \end{table}
 
-Ces resultats ont donc une valeur d'exploration et d'integration. Ils montrent que \logminer{} peut ingerer et traiter des logs systemes publics, mais ils appellent une etape scientifique plus forte : extraction de templates, fenetres temporelles, split par bloc ou periode, seuil fixe sur validation et evaluation unique sur test independant.
+Ces resultats ont donc une valeur d'exploration et d'integration. Ils montrent que \logminer{} peut ingerer et traiter des logs systemes publics, mais ils ne suffisent pas a qualifier la robustesse du comportement hors echantillon.
+
+Une seconde passe a ete ajoutee pour repondre a cette limite. Les journaux sont d'abord separes en train et test. Pour HDFS, le split respecte les identifiants de blocs afin d'eviter qu'un meme bloc apparaisse dans les deux ensembles. Pour BGL, le split conserve une logique chronologique stratifiee. Les lignes sont ensuite enrichies par templates Drain3, frequences de templates, rarete, fenetres temporelles et contexte de source. Les modeles sont ajustes sur train puis scores sur test.
+
+\begin{table}[H]
+\centering
+\caption{Validation Drain3 train--test sur HDFS et BGL}
+\label{tab:hdfs-bgl-drain3-train-test}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.6cm}p{3.4cm}rrrrX}
+\toprule
+\textbf{Famille} & \textbf{Modele} & \textbf{Precision} & \textbf{Rappel} & \textbf{F1} & \textbf{Exact.} & \textbf{Lecture prudente} \\
+\midrule
+HDFS & Histogramme train--test & 0,653333 & 0,652246 & 0,652789 & 0,652789 & Gain modere par rapport aux features ligne par ligne ; la famille reste difficile. \\
+HDFS & Isolation Forest train--test & 0,638333 & 0,637271 & 0,637802 & 0,637802 & Resultat proche du meilleur histogramme, mais faux positifs et faux negatifs restent importants. \\
+BGL & Isolation Forest train--test & 1,000000 & 1,000000 & 1,000000 & 1,000000 & Separation parfaite observee sur ce split local ; ce score ne doit pas etre generalise sans repetitions. \\
+BGL & Z-score / IQR / histogramme / autoencodeur & 0,973333 & 0,973333 & 0,973333 & 0,973333 & Forte separabilite confirmee, avec quelques erreurs residuelles selon le detecteur. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Cette seconde validation rend l'etude HDFS/BGL plus coherente avec la litterature sur les logs sequentiels, sans transformer le prototype en modele profond de type DeepLog. L'apport est limite mais utile : Drain3 et les fenetres rendent l'experimentation plus credible, HDFS progresse legerement, et BGL reste tres separable dans les conditions locales. Les scores directs obtenus sur CSV de test sans protocole train--test strict sont conserves uniquement comme essais secondaires, non comme preuve principale.
 
 \section{Campagne Redis des agents intelligents}
 Une campagne Redis d'endurance de six heures a ete executee pour verifier la repartition de taches heterogenes entre agents intelligents multi-taches. Elle utilise trois workers principaux, un worker de reprise et une panne volontaire avant acquittement a chaque iteration. Le run court \texttt{redis-campaign-20260717161257}, avec 150 taches terminees, sert de prevalidation; le resultat retenu pour renforcer le memoire est la campagne de six heures. Les resultats confirment que les taches non acquittees peuvent etre recuperees de maniere repetee sans perte observee.

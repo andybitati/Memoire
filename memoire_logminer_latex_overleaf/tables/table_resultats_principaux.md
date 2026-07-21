@@ -7,5 +7,5 @@
 | Linux/auth | linux_auth_logs_* | RandomForest | Supervise | F1=0.916602 |
 | CICIDS | MachineLearningCVE | RandomForest | Supervise | F1=0.997163 |
 | CIC-DDoS2019 | DrDoS/UDPLag/SYN | RandomForest | Supervise | F1=0.999965, protocole 80/20 exploratoire |
-| HDFS | HDFS logs | Ensemble/Isolation Forest | Non supervise | Resultat exploratoire autour de F1=0.599333, non independant |
-| BGL | BlueGene/L | Ensemble/Autoencoder/IForest | Non supervise | Resultat exploratoire autour de F1=0.994333, sensible au protocole |
+| HDFS | HDFS logs | Drain3 + fenetres + histogramme/IF | Non supervise train-test | F1=0.652789 au mieux; progression moderee, faux positifs/faux negatifs encore presents |
+| BGL | BlueGene/L | Drain3 + fenetres + IForest | Non supervise train-test | F1=1.000000 sur split local; separabilite forte mais a confirmer par repetitions |

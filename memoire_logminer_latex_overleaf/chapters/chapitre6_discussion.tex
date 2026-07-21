@@ -63,7 +63,7 @@ Agents multi-taches & Ajout d'un runtime d'agents avec capacites, memoire locale
 Distribution & Campagne Redis locale de six heures : 8 508 taches uniques terminees, 0 echec, 0 pending final, 709 reprises apres panne simulee. & Il faut encore une campagne multi-machine avec securisation et supervision durcie. \\
 Evaluation trop courte & Ajout d'une campagne d'endurance de six heures en complement des benchmarks 10 cycles, 30 cycles et 5 cycles paralleles. & Une campagne de plusieurs jours et multi-machine reste recommandee avant usage operationnel. \\
 Scores supervises eleves & Les scores sont presentes comme exploratoires et dependants du protocole 80/20. & Des splits temporels, par scenario ou par fichier restent necessaires pour une preuve plus forte. \\
-HDFS/BGL & Les resultats non supervises sont qualifies d'exploratoires lorsqu'ils dependent d'echantillons non independants. & Les modeles sequentiels par templates et fenetres restent a ajouter. \\
+HDFS/BGL & Ajout d'une branche Drain3 avec templates, fenetres temporelles et evaluation train--test. Les anciens scores restent presentes comme baseline exploratoire. & HDFS reste partiellement difficile et BGL tres favorable sur le split local ; un modele sequentiel profond et des repetitions de split restent necessaires. \\
 Faux positifs & Les anomalies non supervisees sont appelees anomalies candidates et reliees a une validation analyste. & La reduction automatique des faux positifs reste un axe futur. \\
 \bottomrule
 \end{tabularx}
@@ -105,7 +105,7 @@ Cette prudence est une force. Elle rend le travail plus credible et plus diffici
 \section{Perspectives scientifiques prioritaires}
 Les perspectives peuvent etre organisees par priorite scientifique. La premiere priorite est la comparaison controlee entre pipeline global unique et routage familial avec modeles specialises, sur les memes jeux de donnees, les memes splits et plusieurs graines. Cette experience devra rapporter F1, precision, rappel, faux positifs, PR-AUC, MCC, matrices de confusion, latence et consommation memoire.
 
-La deuxieme priorite est l'amelioration de la representation des logs sequentiels. Les resultats HDFS montrent qu'une approche ligne par ligne reste limitee pour certains systemes. L'ajout de templates, de fenetres temporelles et de modeles sequentiels permettrait de mieux capturer les comportements collectifs.
+La deuxieme priorite est l'amelioration de la representation des logs sequentiels. Une premiere branche Drain3 avec templates et fenetres temporelles a ete ajoutee pour HDFS/BGL, ce qui ameliore la coherence du protocole. Elle ne remplace pas une evaluation sequentielle complete : il reste a tester plusieurs splits, a fixer les seuils sur validation, puis a comparer avec des modeles de sequences plus specialises.
 
 La troisieme priorite est la reduction des faux positifs. Elle peut passer par un calibrage par famille, une meilleure correlation, des seuils adaptatifs et l'utilisation des decisions analyste. Cette perspective est importante car la valeur operationnelle d'un systeme depend de la charge qu'il impose aux humains.
 

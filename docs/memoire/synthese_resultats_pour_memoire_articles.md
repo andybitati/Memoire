@@ -100,8 +100,8 @@ analyste ou par l'agent correlateur.
 | CICIDS2017 | RandomForest supervise | F1 = 0.997163 |
 | UNSW-NB15 | RandomForest supervise | F1 = 0.999965, resultat exploratoire a revalider |
 | Wazuh | Isolation Forest | 122 563 evenements, 3 676 anomalies candidates |
-| BGL | Selection validation | F1 autour de 0.994333 |
-| HDFS | Selection validation | F1 autour de 0.599333 a 0.600333 |
+| BGL | Drain3 + fenetres train-test | F1 = 1.000000 avec Isolation Forest sur split local |
+| HDFS | Drain3 + fenetres train-test | Meilleur F1 = 0.652789 avec histogramme train-test |
 | Windows simule | Isolation Forest / baseline | F1 = 1.0 en scenario controle |
 
 Interpretation:
@@ -110,9 +110,10 @@ Interpretation:
   du schema et de la distribution d'entrainement.
 - Les tres hauts scores reseau doivent etre discutes avec prudence, car les
   datasets peuvent etre desequilibres ou separer fortement les classes.
-- HDFS montre que certains logs sequentiels restent difficiles avec des
-  features legeres; c'est un bon argument pour presenter le deep learning comme
-  perspective ou comparaison experimentale.
+- HDFS montre que certains logs sequentiels restent difficiles meme apres ajout
+  de templates Drain3 et de fenetres; c'est un bon argument pour presenter les
+  modeles sequentiels profonds comme perspective ou comparaison experimentale,
+  sans pretendre que le probleme est resolu.
 - Les anomalies non supervisees ne prouvent pas une intrusion: elles signalent
   des evenements rares ou atypiques a analyser.
 
@@ -381,9 +382,9 @@ Scenario de demonstration:
 - La latence quasi temps reel est acceptable pour une demonstration locale,
   mais demande optimisation pour une production SOC.
 - Les resultats HDFS montrent la limite des features legeres ligne par ligne
-  pour les logs de systemes distribues. Une extension Drain-like, templates de
-  logs ou fenetres temporelles est necessaire pour rivaliser avec les approches
-  sequentielles type DeepLog/LogAnomaly.
+  pour les logs de systemes distribues. L'extension Drain3 et fenetres ameliore
+  le protocole, mais une comparaison avec des approches sequentielles type
+  DeepLog/LogAnomaly reste necessaire.
 
 ## Contribution A Mettre En Avant
 

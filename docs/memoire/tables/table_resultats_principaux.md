@@ -7,5 +7,5 @@
 | Linux/auth | linux_auth_logs_* | RandomForest | Supervise | F1=0.916602 |
 | CICIDS | MachineLearningCVE | RandomForest | Supervise | F1=0.997163 |
 | UNSW-NB15 | unsw_nb15_80_20 | RandomForest | Supervise exploratoire | F1=0.999965, protocole a revalider par split temporel/scenario |
-| HDFS | HDFS logs | Ensemble/Isolation Forest | Non supervise | Meilleure selection autour de F1=0.599333 |
-| BGL | BlueGene/L | Ensemble/Autoencoder/IForest | Non supervise | Meilleure selection autour de F1=0.994333 |
+| HDFS | HDFS logs | Drain3 + fenetres + histogramme/IF | Non supervise train-test | F1=0.652789 au mieux, amelioration moderee; HDFS reste difficile |
+| BGL | BlueGene/L | Drain3 + fenetres + IForest | Non supervise train-test | F1=1.000000 sur split local; resultat favorable a ne pas generaliser seul |
