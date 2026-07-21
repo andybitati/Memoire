@@ -2,7 +2,7 @@
 
 Le projet manipule deux types de donnees:
     - le schema Logminer normalise (`src_port`, `dst_port`, `severity`, etc.);
-    - des datasets reseau deja structures comme UNSW/CIC-DDoS, avec des
+    - des datasets reseau deja structures comme UNSW-NB15 ou CIC-DDoS2019, avec des
       colonnes numeriques riches (`Flow Duration`, `Total Fwd Packets`, etc.).
 
 Le constructeur de features doit donc rester compatible avec le schema commun,
@@ -80,7 +80,7 @@ def _safe_feature_name(column: str) -> str:
 def _generic_numeric_features(events: pd.DataFrame, existing: set[str]) -> pd.DataFrame:
     """Recupere les colonnes numeriques utiles hors schema Logminer.
 
-    C'est indispensable pour UNSWNB15/CIC-DDoS: leurs variables reseau sont
+    C'est indispensable pour UNSW-NB15 ou CIC-DDoS2019: leurs variables reseau sont
     deja calculees mais ne portent pas les noms normalises de Logminer.
     """
 

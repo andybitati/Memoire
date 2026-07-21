@@ -27,7 +27,10 @@ from time import perf_counter
 from typing import Any, Callable, Iterable, Protocol
 from uuid import uuid4
 
-from agents.bus import MessageBus
+try:
+    from .bus import MessageBus
+except ImportError:  # pragma: no cover - compatibility with direct script execution
+    from agents.bus import MessageBus
 
 
 TaskHandler = Callable[["AgentTask", "AgentContext"], dict[str, Any]]
@@ -104,19 +107,53 @@ class AgentMemory:
 
     successes_by_type: dict[str, int] = field(default_factory=dict)
     errors_by_type: dict[str, int] = field(default_factory=dict)
+    durations_by_type: dict[str, list[float]] = field(default_factory=dict)
     last_errors: list[str] = field(default_factory=list)
     completed_tasks: list[str] = field(default_factory=list)
+    recent_task_types: list[str] = field(default_factory=list)
+    last_decisions: list[dict[str, Any]] = field(default_factory=list)
     updated_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     def record(self, result: TaskResult) -> None:
         target = self.successes_by_type if result.status == "ok" else self.errors_by_type
         target[result.task_type] = int(target.get(result.task_type, 0)) + 1
+        durations = self.durations_by_type.setdefault(result.task_type, [])
+        durations.append(float(result.elapsed_sec))
+        self.durations_by_type[result.task_type] = durations[-50:]
         self.completed_tasks.append(result.task_id)
         self.completed_tasks = self.completed_tasks[-200:]
+        self.recent_task_types.append(result.task_type)
+        self.recent_task_types = self.recent_task_types[-50:]
+        self.last_decisions.append(
+            {
+                "task_id": result.task_id,
+                "task_type": result.task_type,
+                "status": result.status,
+                "score": result.decision_score,
+                "reasons": result.decision_reasons,
+                "elapsed_sec": result.elapsed_sec,
+                "completed_at": result.completed_at,
+            }
+        )
+        self.last_decisions = self.last_decisions[-50:]
         if result.error:
             self.last_errors.append(result.error[:300])
             self.last_errors = self.last_errors[-20:]
         self.updated_at = datetime.now(timezone.utc).isoformat()
+
+    def reliability(self, task_type: str) -> float:
+        successes = float(self.successes_by_type.get(task_type, 0))
+        errors = float(self.errors_by_type.get(task_type, 0))
+        total = successes + errors
+        if total == 0:
+            return 0.5
+        return successes / total
+
+    def average_duration(self, task_type: str) -> float | None:
+        durations = self.durations_by_type.get(task_type) or []
+        if not durations:
+            return None
+        return sum(durations) / len(durations)
 
 
 @dataclass
@@ -330,9 +367,26 @@ class MultiTaskIntelligentAgent:
             "agent.heartbeat",
             {
                 "memory": asdict(self.memory),
+                "policy_snapshot": self.policy_snapshot(),
                 "max_parallel_tasks": self.max_parallel_tasks,
             },
         )
+
+    def policy_snapshot(self) -> dict[str, Any]:
+        task_types = set(self.memory.successes_by_type) | set(self.memory.errors_by_type) | set(self.memory.durations_by_type)
+        return {
+            task_type: {
+                "reliability": round(self.memory.reliability(task_type), 4),
+                "successes": self.memory.successes_by_type.get(task_type, 0),
+                "errors": self.memory.errors_by_type.get(task_type, 0),
+                "average_duration_sec": (
+                    round(avg_duration, 4)
+                    if (avg_duration := self.memory.average_duration(task_type)) is not None
+                    else None
+                ),
+            }
+            for task_type in sorted(task_types)
+        }
 
     def can_handle(self, task: AgentTask) -> bool:
         if task.required_capability:
@@ -357,15 +411,29 @@ class MultiTaskIntelligentAgent:
         reasons.append(f"confidence={best.confidence}")
         errors = self.memory.errors_by_type.get(task.task_type, 0)
         successes = self.memory.successes_by_type.get(task.task_type, 0)
-        score += min(successes, 10) * 0.5
-        score -= min(errors, 10) * 2.0
+        reliability = self.memory.reliability(task.task_type)
+        score += (reliability - 0.5) * 20.0
+        score += min(successes, 10) * 0.25
+        score -= min(errors, 10) * 1.5
         if errors:
             reasons.append(f"historical_errors={errors}")
         if successes:
             reasons.append(f"historical_successes={successes}")
+        reasons.append(f"reliability={reliability:.2f}")
+        avg_duration = self.memory.average_duration(task.task_type)
+        if avg_duration is not None:
+            score -= min(avg_duration, 30.0) * 0.05
+            reasons.append(f"avg_duration_sec={avg_duration:.2f}")
+        recent_same_type = sum(1 for task_type in self.memory.recent_task_types[-8:] if task_type == task.task_type)
+        if recent_same_type >= 4:
+            score -= recent_same_type * 1.5
+            reasons.append(f"diversity_penalty={recent_same_type}")
         if task.deadline_sec is not None and task.deadline_sec < 5:
-            score += 10.0
+            score += 10.0 + max(0.0, 5.0 - task.deadline_sec)
             reasons.append("short deadline")
+        if task.attempts:
+            score -= min(task.attempts, 5) * 2.0
+            reasons.append(f"attempts={task.attempts}")
         return score, reasons
 
     def choose_tasks(self, tasks: Iterable[AgentTask], limit: int | None = None) -> list[tuple[AgentTask, float, list[str]]]:

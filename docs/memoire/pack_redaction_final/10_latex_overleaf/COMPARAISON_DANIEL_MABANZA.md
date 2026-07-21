@@ -4,11 +4,11 @@ Source locale comparee: `TFE_Daniel_MABANZA_2025-2026-1.pdf`.
 
 ## Constats principaux
 
-- Le document de Daniel compte 70 pages, contre 37 pages pour la version compilee initiale du memoire Logminer.
+- Le document de Daniel compte 70 pages, contre 37 pages pour la version compilee de travail du memoire Logminer.
 - Daniel utilise une page de garde institutionnelle complete: Universite de Kinshasa, Faculte Polytechnique, Departement, sujet, auteur, orientation, directeur, co-directeur, annee academique.
 - Daniel contient des pages liminaires academiques: epigraphe, dedicace, remerciements, table des matieres, liste des figures, liste des tableaux, liste des acronymes et liste des abreviations.
 - La table des matieres de Daniel descend jusqu'aux sous-sections, avec un developpement plus progressif des chapitres.
-- Le memoire Logminer initial etait correct sur le fond technique, mais trop court et trop proche d'un rapport synthetique.
+- Le memoire Logminer etait correct sur le fond technique, mais trop court et trop proche d'un rapport synthetique.
 
 ## Corrections appliquees
 

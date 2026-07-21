@@ -6,7 +6,7 @@ Ce memoire a presente \logminer, un prototype d'agents intelligents multi-taches
 Le prototype valide une chaine complete allant de la collecte a la visualisation. Les journaux sont parses, normalises, routes vers une famille, traites par un modele compatible, puis transformes en anomalies candidates et incidents. Cette approche evite de reduire le probleme a un simple score de detection.
 
 \section{Verification des objectifs}
-Les objectifs definis dans le document directeur sont couverts. Les types de journaux ont ete identifies et categorises. Les techniques classiques et modernes ont ete analysees. Une architecture d'agents specialises a ete proposee et implementee. Des mecanismes d'apprentissage supervises et non supervises ont ete integres. Un dashboard a ete realise. Le systeme a ete teste sur des journaux locaux, des exports Wazuh et plusieurs datasets publics. Enfin, les performances ont ete evaluees par F1-score, latence, ressources et comparaison operationnelle prudente.
+Les objectifs definis dans le document directeur sont couverts. Les types de journaux ont ete identifies et categorises. Les techniques classiques et modernes ont ete analysees. Une architecture d'agents specialises a ete proposee et implementee. Des mecanismes d'apprentissage supervises et non supervises ont ete integres. Un dashboard a ete realise. Le systeme a ete teste sur des journaux locaux, des exports Wazuh et plusieurs datasets publics. Enfin, les performances ont ete evaluees par F1-score, latence, ressources, ablation global-versus-familles et comparaison operationnelle prudente.
 
 \section{Apports}
 Les apports principaux sont :
@@ -28,11 +28,11 @@ Les scores tres eleves obtenus sur certains datasets supervises doivent aussi et
 \section{Perspectives}
 Les perspectives principales sont les suivantes :
 \begin{enumerate}
-  \item executer un protocole controle comparant un modele global unique au routage familial specialise, avec memes donnees, memes splits, plusieurs graines, PR-AUC, MCC, latence et memoire ;
+  \item prolonger le protocole controle global-versus-familles par des splits temporels, par fichier ou par scenario, avec latence et memoire ;
   \item deployer le systeme sur plusieurs machines avec workers Redis et files persistantes ;
   \item ajouter des tests multi-machine et des tests de charge sur plusieurs jours, au-dela de la campagne locale de six heures ;
   \item integrer un apprentissage actif a partir des decisions analyste ;
-  \item enrichir le parsing par des templates de logs de type Drain ;
+  \item consolider l'usage de Drain3 sur HDFS/BGL, repeter les splits et comparer avec des modeles sequentiels plus specialises ;
   \item reduire les faux positifs par calibration des seuils et contexte temporel ;
   \item relier les incidents a des tactiques MITRE ATT\&CK ;
   \item produire une integration plus stricte avec un SIEM existant.
@@ -47,6 +47,6 @@ Le travail realise montre aussi l'importance d'une demarche equilibree. Dans le 
 
 Les resultats supervises confirment l'interet des modeles specialises lorsque des labels sont disponibles. Les resultats non supervises montrent l'utilite d'une exploration par anomalies candidates lorsque les labels manquent. Les benchmarks de duree et de ressources indiquent qu'un traitement local par micro-lots est possible sur des volumes moderes. Les captures du dashboard montrent que les sorties ne restent pas limitees a des fichiers techniques, mais deviennent consultables par un analyste.
 
-La contribution principale reste l'integration architecturale rigoureuse de ces elements. Le prototype ne remplace pas Wazuh, OSSEC, fail2ban ou une pile SIEM complete. Il propose une couche analytique complementaire, adaptee a l'experimentation, a la pedagogie et a une organisation souhaitant progresser vers une meilleure exploitation de ses journaux. Cette couche pourra etre renforcee par un protocole comparatif controle, des parseurs supplementaires, des modeles sequentiels, une reduction des faux positifs, une anonymisation des donnees et une validation distribuee.
+La contribution principale reste l'integration architecturale rigoureuse de ces elements. Le prototype ne remplace pas Wazuh, OSSEC, fail2ban ou une pile SIEM complete. Il propose une couche analytique complementaire, adaptee a l'experimentation, a la pedagogie et a une organisation souhaitant progresser vers une meilleure exploitation de ses journaux. Cette couche pourra etre renforcee par des splits comparatifs plus stricts, des parseurs supplementaires, des modeles sequentiels, une reduction des faux positifs, une anonymisation des donnees et une validation distribuee.
 
 Ainsi, le memoire atteint son objectif principal : demontrer la faisabilite d'une detection d'anomalies modulaire, interpretable et reproductible sur des journaux heterogenes. Les limites identifiees ne constituent pas un echec du prototype ; elles definissent le programme logique des travaux futurs.

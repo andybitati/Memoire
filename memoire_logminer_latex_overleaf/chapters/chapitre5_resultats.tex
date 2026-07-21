@@ -1,4 +1,5 @@
 \chapter{Resultats et evaluation}
+\label{chap:resultats}
 
 \section{Protocole experimental}
 L'evaluation combine plusieurs types de donnees afin de tester la robustesse du prototype face a l'heterogeneite des journaux. Les sources incluent des journaux locaux, des exports SIEM/HIDS, des datasets systemes publics, des datasets reseau labelises et des entrees de robustesse.
@@ -16,9 +17,32 @@ Reel local & Windows Event/Application/System & Journaux Windows & Collecte, par
 Reel/SIEM & Wazuh exports & Alertes et evenements SIEM/HIDS & Detection non supervisee sur signaux securite. \\
 Reel tabulaire & Linux/auth & Authentification labelisee & Evaluation supervisee et faux positifs. \\
 Public systeme & HDFS, BGL & Logs distribues/HPC & Evaluation exploratoire sur logs sequentiels. \\
-Public reseau & CICIDS2017, CIC-DDoS2019 & Flux reseau labelises & Detection supervisee d'attaques connues avec protocole 80/20 a interpreter prudemment. \\
+Public reseau & CICIDS2017, CIC-DDoS2019 & Flux reseau labelises & Detection supervisee d'attaques connues avec protocoles exploratoires et splits stricts complementaires. \\
 Controle & Windows simule & Evenements avec anomalies injectees & Comparaison baseline et IA. \\
 Robustesse & Apache, CEF/LEEF, CloudTrail, Linux auth & Multi-format & Tolerance aux formats heterogenes. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Configuration experimentale des modeles}
+Le tableau \ref{tab:model-config} centralise les principaux hyperparametres utilises pour les modeles supervises et non supervises. Il ne remplace pas les scripts, mais fournit une lecture rapide du protocole sans renvoyer le lecteur au depot.
+
+\begin{table}[H]
+\centering
+\caption{Configuration compacte des modeles}
+\label{tab:model-config}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.4cm}p{2.4cm}p{2.2cm}p{2.2cm}p{2cm}X}
+\toprule
+\textbf{Famille} & \textbf{Modele} & \textbf{n\_estimators} & \textbf{max\_depth} & \textbf{seed} & \textbf{Split / parametres cles} \\
+\midrule
+Linux/auth & RandomForest & 120 & 24 & 42 & Split stratifie exploratoire ; \texttt{class\_weight=balanced}, \texttt{min\_samples\_leaf=2}. \\
+CICIDS2017 & RandomForest & 100 & 28 & 42 & Split stratifie exploratoire ; \texttt{class\_weight=balanced}, \texttt{min\_samples\_leaf=2}. \\
+CIC-DDoS2019 & RandomForest & non documente dans le CSV historique & non documente & non documente & Evaluation exploratoire par chunks issue du fichier historique \texttt{random\_forest\_unsw\_80\_20\_metrics.csv}; resultat rattache a CIC-DDoS2019, pas a UNSW-NB15. \\
+Ablation global/familles & RandomForest & 120 & 22 & 42,43,44 & Espace commun strict, split 75/25 par famille, \texttt{class\_weight=balanced}, PR-AUC et MCC rapportes. \\
+Validation stricte complementaire & RandomForest & 20--40 & 24--28 & 42,43,44 & Holdout par serveurs, fichiers ou scenarios ; echantillons plafonnes pour bornage calculatoire. \\
+Windows/Wazuh & Isolation Forest & 200 & n/a & 42 & \texttt{contamination=0,05} par defaut, bornee dans $[0,001;0,5]$ ; anomalies candidates, pas intrusions confirmees. \\
+HDFS/BGL Drain3 & Isolation Forest & 200 & n/a & 42 & Contamination fixee sur le train pour la validation train--test ; templates Drain3 et fenetres temporelles. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -39,15 +63,33 @@ Windows & Security/Application/System & Isolation Forest & Non supervise & Anoma
 Wazuh & Exports Jan./Oct./Dec. & Isolation Forest & Non supervise & 122 563 evenements, 3 676 anomalies candidates. \\
 Linux/auth & linux\_auth\_logs & RandomForest & Supervise & F1 = 0,916602. \\
 CICIDS2017 & MachineLearningCVE & RandomForest & Supervise & F1 = 0,997163. \\
-CIC-DDoS2019 & DrDoS/UDPLag/SYN & RandomForest & Supervise & F1 = 0,999965, protocole 80/20 exploratoire. \\
+CIC-DDoS2019 & DrDoS/UDPLag/SYN & RandomForest & Supervise & F1 = 0,999965, protocole exploratoire. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \section{Evaluation des modeles supervises}
-Les modeles supervises sont evalues sur des datasets labelises. Les scores eleves obtenus sur CICIDS2017 et CIC-DDoS2019 doivent etre interpretes dans le cadre experimental considere. Ils montrent que des modeles specialises peuvent bien capturer des distributions connues, mais ils ne garantissent pas une generalisation universelle. En particulier, les splits aleatoires 80/20 par lignes ou par echantillons peuvent surestimer la performance lorsque des flux proches, issus d'une meme capture ou d'un meme scenario, se retrouvent simultanement dans l'entrainement et le test.
+Les modeles supervises sont evalues sur des datasets labelises. Les scores eleves obtenus sur CICIDS2017 et CIC-DDoS2019 doivent etre interpretes dans le cadre experimental considere. Ils montrent que des modeles specialises peuvent bien capturer des distributions connues, mais ils ne garantissent pas une generalisation universelle. En particulier, les splits aleatoires par lignes ou par echantillons peuvent surestimer la performance lorsque des flux proches, issus d'une meme capture ou d'un meme scenario, se retrouvent simultanement dans l'entrainement et le test.
 
 Le score de 0,999965 est donc attribue dans ce memoire a un jeu de donnees DDoS compatible CIC-DDoS2019, et non a une validation stricte UNSW-NB15. Cette correction de provenance est importante pour la tracabilite scientifique. Une experience UNSW-NB15 officielle devrait utiliser les fichiers UNSW-NB15 documentes, separer clairement entrainement et test, et rapporter les resultats sous une entree distincte.
+
+\begin{table}[H]
+\centering
+\caption{Evaluation supervisee stricte complementaire}
+\label{tab:supervised-strict-splits}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.7cm}p{3.1cm}p{1.2cm}p{1.6cm}p{1.6cm}p{1.5cm}p{1.4cm}X}
+\toprule
+\textbf{Dataset} & \textbf{Split} & \textbf{Seeds} & \textbf{Precision} & \textbf{Rappel} & \textbf{F1} & \textbf{MCC} & \textbf{Interpretation} \\
+\midrule
+Linux/auth & Holdout par serveurs & 3 & 0,885681 & 0,784667 & 0,831046 & 0,689281 & Baisse par rapport au protocole exploratoire ; modele encore utile, mais estimation optimiste. \\
+CICIDS2017 & Holdout fichier/scenario & 3 & 0,650794 & 0,213417 & 0,262298 & 0,239864 & Forte chute lorsque des scenarios entiers sont tenus hors entrainement. \\
+CIC-DDoS2019 & Holdout fichier/famille DDoS & 3 & 0,999500 & 0,992000 & 0,995702 & 0,991042 & Score encore tres eleve, mais resultat limite a la famille DDoS evaluee. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Cette evaluation stricte ne remplace pas les scores principaux, car elle utilise des echantillons plafonnes et un nombre d'arbres reduit pour garantir un calcul reproductible sur les gros fichiers. Elle repond cependant au risque de fuite indirecte : lorsque le split se fait par serveur, fichier ou scenario, Linux/auth et surtout CICIDS2017 baissent nettement. Le score DDoS reste tres eleve, mais il doit rester attribue a CIC-DDoS2019 et non a UNSW-NB15.
 
 \begin{figure}[H]
   \centering
@@ -283,7 +325,7 @@ Le dashboard joue donc trois roles : synthese, investigation et tracabilite. La 
 Les resultats doivent etre interpretes avec prudence. Les datasets publics ne representent pas toutes les infrastructures reelles. Les labels peuvent etre incomplets ou produire des distributions artificiellement favorables. Les mesures de latence dependent de la machine locale, du volume traite et de l'etat du systeme au moment des tests. Enfin, les sorties non supervisees ne peuvent etre assimilees a des intrusions sans validation supplementaire.
 
 \section{Synthese}
-Les resultats montrent que le prototype atteint les objectifs d'ingenierie principaux : traitement multi-format, detection supervisee et non supervisee, architecture multi-agents, dashboard, evaluation par metriques et mesures de ressources. Les objectifs scientifiques sont atteints de maniere partielle et prudente : la contribution principale est une architecture d'integration modulaire et reproductible, la distribution locale multi-processus est validee par Redis sur une campagne de six heures, mais la comparaison controlee modele global versus routage familial, la generalisation supervisee, l'analyse sequentielle HDFS, la scalabilite multi-machine et la reduction des faux positifs restent des limites ouvertes pour l'exploitation ulterieure des resultats.
+Les resultats montrent que le prototype atteint les objectifs d'ingenierie principaux : traitement multi-format, detection supervisee et non supervisee, architecture multi-agents, dashboard, evaluation par metriques et mesures de ressources. Les objectifs scientifiques sont atteints de maniere partielle et prudente : la contribution principale est une architecture d'integration modulaire et reproductible, la distribution locale multi-processus est validee par Redis sur une campagne de six heures, et une ablation controlee du routage familial a ete ajoutee. Cette ablation ne demontre pas une superiorite universelle du routage specialise en espace commun ; elle montre plutot que l'interet principal du routage est de preserver des espaces de features natifs et des modeles compatibles avec chaque famille.
 
 \section{Interpretation par objectif}
 Le premier objectif concernait l'identification et la structuration des journaux. Les tests multi-format et la taxonomie des sources montrent que le prototype distingue plusieurs familles de donnees et conserve les entrees inconnues. Le deuxieme objectif concernait l'analyse des methodes de detection. Le memoire compare les approches par regles, les methodes statistiques, les modeles supervises, les methodes non supervisees et les approches profondes.
@@ -293,7 +335,16 @@ Le troisieme objectif portait sur l'architecture d'agents specialises. Le protot
 Le cinquieme objectif etait la conception d'un tableau de bord. Les captures montrent que cette partie est realisee et qu'elle couvre les alertes, les details, les ressources et l'audit. Le sixieme objectif concernait les tests sur logs simules et reels. Les sources utilisees combinent journaux locaux, exports Wazuh et datasets publics. Le septieme objectif portait sur l'evaluation des performances. Les tableaux et figures documentent les F1-scores, la latence, les ressources, les faux positifs disponibles et la comparaison operationnelle.
 
 \section{Analyse des resultats supervises}
-Les resultats supervises sont les plus simples a interpreter car ils reposent sur des labels. Le score F1 de 0,916602 sur Linux/auth montre une performance correcte dans un contexte d'authentification. Les scores de 0,997163 sur CICIDS2017 et 0,999965 sur CIC-DDoS2019 indiquent une tres forte separation dans les conditions experimentales considerees. Ces resultats confirment l'integration de modeles specialises par famille dans le prototype, mais ils ne prouvent pas encore que le routage familial est objectivement superieur a un modele global unique.
+Les resultats supervises sont les plus simples a interpreter car ils reposent sur des labels. Le score F1 de 0,916602 sur Linux/auth montre une performance correcte dans un contexte d'authentification. Les scores de 0,997163 sur CICIDS2017 et 0,999965 sur CIC-DDoS2019 indiquent une tres forte separation dans les conditions experimentales considerees.
+
+Le reentrainement cible global-versus-familles apporte une nuance importante. Sur trois graines et dans un espace de features commun strict, les deux variantes sont proches : F1 moyen de 0,998887 pour le modele global et 0,999333 pour le routage familial sur CICIDS2017 ; 0,819388 contre 0,818254 sur Linux/auth ; 0,991904 contre 0,992020 sur UNSW-NB15 officiel. Ces ecarts sont faibles et ne suffisent pas a conclure que le routage familial est superieur par simple separation des familles. La comparaison operationnelle est donc limitee aux datasets disposant d'artefacts specialises correspondants : elle montre un gain net sur Linux/auth (F1 de 0,916602 contre 0,819388), tandis que CICIDS2017 reste quasiment equivalent. Le score 0,999965 reste traite separement comme resultat CIC-DDoS2019, sans etre fusionne avec l'ablation UNSW-NB15.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_family_routing_ablation.png}
+  \caption{Ablation controlee du routage par famille sur trois graines.}
+  \label{fig:routing}
+\end{figure}
 
 Il faut cependant garder une lecture critique. Un score eleve sur un dataset public peut refleter la qualite du modele, mais aussi la structure du dataset, la separabilite des classes, une fuite indirecte entre train et test, ou la stabilite artificielle des distributions. Le memoire ne presente donc pas ces scores comme une garantie absolue de detection en production. Ils valident plutot la capacite du prototype a integrer, entrainer et exploiter des modeles supervises dans une chaine complete. Une validation plus forte devrait separer les donnees par jour, fichier, scenario ou type d'attaque, puis rapporter plusieurs graines, intervalles de confiance, PR-AUC, MCC et matrices de confusion.
 
@@ -321,7 +372,7 @@ La famille Linux/auth est importante pour l'authentification. Les echecs de conn
 
 Les familles CICIDS2017 et CIC-DDoS2019 representent plutot des flux reseau numeriques. Elles sont adaptees aux modeles supervises et expliquent les scores tres eleves. Toutefois, leur structure differe fortement des logs textuels. Leur presence dans le memoire ne signifie donc pas que le meme modele traite tous les journaux. Elle montre que l'architecture peut router vers une famille reseau et utiliser un modele specialise.
 
-Les familles HDFS et BGL rappellent enfin la difficulte des journaux systemes sequentiels. Le resultat BGL est favorable, tandis que HDFS reste plus difficile. Cette difference est instructive car elle montre que la performance depend fortement de la structure des donnees et du type de representation utilise. Une extension par templates et sequences serait particulierement utile pour ces familles.
+Les familles HDFS et BGL rappellent enfin la difficulte des journaux systemes sequentiels. Le resultat BGL est favorable, tandis que HDFS reste plus difficile. Cette difference est instructive car elle montre que la performance depend fortement de la structure des donnees et du type de representation utilise. La branche Drain3 avec templates et fenetres constitue une premiere amelioration ; les repetitions de splits et les modeles sequentiels plus specialises restent les prolongements necessaires.
 
 \section{Analyse de sensibilite qualitative}
 L'analyse de sensibilite consiste a se demander comment les resultats changeraient si certains choix etaient modifies. Pour les modeles non supervises, le parametre de contamination ou le seuil de decision influence directement le nombre d'anomalies candidates. Un seuil plus strict reduit la charge analyste mais peut manquer des signaux. Un seuil plus permissif augmente le rappel potentiel mais produit plus de bruit.
@@ -339,3 +390,4 @@ Le prototype reduit ces erreurs par plusieurs mecanismes : conservation des lign
 L'evaluation algorithmique mesure la performance des modeles. L'evaluation systeme mesure la capacite de la chaine complete a fonctionner. Les deux sont necessaires. Un modele performant mais mal integre ne produit pas un outil exploitable. A l'inverse, un pipeline robuste mais sans detection pertinente n'apporte pas assez de valeur analytique.
 
 Dans ce memoire, l'evaluation algorithmique est representee par les F1-scores, les resultats non supervises et les comparaisons de familles. L'evaluation systeme est representee par la robustesse multi-format, la latence, les ressources, le dashboard et l'audit. La contribution de \logminer{} reside dans la combinaison de ces deux niveaux. Le prototype ne se contente pas de calculer des scores ; il montre comment ces scores entrent dans une chaine d'analyse.
+

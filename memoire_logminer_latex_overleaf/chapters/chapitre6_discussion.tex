@@ -3,7 +3,7 @@
 \section{Lecture globale des resultats}
 Les resultats obtenus doivent etre lus comme la validation d'une chaine complete plutot que comme la demonstration d'un detecteur unique et universel. Le prototype \logminer{} ne se limite pas a appliquer un algorithme sur un fichier de donnees. Il met en relation plusieurs operations successives : acquisition de journaux, reconnaissance de formats, normalisation, routage, choix du modele, detection, correlation, affichage dans un tableau de bord et conservation des traces d'audit. Cette organisation est importante car, dans un contexte reel, la qualite de la detection depend rarement d'un seul modele. Elle depend aussi de la qualite des donnees d'entree, de la coherence du schema intermediaire, de la capacite a isoler les familles de journaux et de la possibilite pour l'analyste de comprendre ce qui a ete signale.
 
-Les scores obtenus sur les datasets supervises montrent que des modeles classiques, lorsqu'ils sont appliques a des donnees structurees et labelisees, peuvent atteindre de tres bonnes performances. Les resultats sur CICIDS2017 et CIC-DDoS2019 illustrent cette capacite. Toutefois, ces valeurs ne doivent pas etre transformees en promesse operationnelle generale. Les datasets publics possedent souvent une structure propre, des labels explicites et une distribution relativement stable. Une infrastructure reelle produit des journaux plus bruyants, plus incomplets et parfois contradictoires. La conclusion raisonnable est donc que le routage vers des modeles specialises est un choix architectural pertinent, mais que sa superiorite quantitative sur un modele global unique doit etre testee dans un protocole controle complementaire.
+Les scores obtenus sur les datasets supervises montrent que des modeles classiques, lorsqu'ils sont appliques a des donnees structurees et labelisees, peuvent atteindre de tres bonnes performances. Les resultats sur CICIDS2017 et CIC-DDoS2019 illustrent cette capacite. Toutefois, ces valeurs ne doivent pas etre transformees en promesse operationnelle generale. Les datasets publics possedent souvent une structure propre, des labels explicites et une distribution relativement stable. Une infrastructure reelle produit des journaux plus bruyants, plus incomplets et parfois contradictoires. L'ablation controlee ajoutee apres reentrainement cible montre aussi que le routage familial ne domine pas automatiquement un modele global lorsque tous les modeles sont forces dans le meme espace commun. La conclusion raisonnable est donc que le routage est architecturalement pertinent pour maintenir la compatibilite entre source, features et modele, mais que le gain quantitatif depend de la richesse des representations autorisees.
 
 Les resultats non supervises apportent une autre lecture. Ils montrent la capacite du systeme a signaler des comportements rares, mais ils rappellent aussi la difference entre anomalie et attaque. Une anomalie candidate peut correspondre a une erreur de configuration, a un pic d'activite legitime, a une operation administrative inhabituelle ou a un incident de securite. Le role du dashboard et de la correlation est donc central : ils transforment une liste de scores en objets analysables, en contexte, avec une possibilite de validation humaine.
 
@@ -17,7 +17,7 @@ Le terme distribue doit cependant etre interprete avec precision. Dans le cadre 
 \section{Importance du routage par famille}
 Le routage par famille constitue l'un des choix les plus structurants du prototype. Les journaux Windows, Wazuh, Linux/auth, HDFS, BGL ou les flux reseau tabulaires ne portent pas les memes informations. Un modele entraine sur des flux reseau ne peut pas etre applique sans precaution a des evenements Windows textuels. De meme, une alerte Wazuh possede deja un niveau d'enrichissement qui n'existe pas dans un log brut Apache ou syslog.
 
-En separant les familles de donnees, le systeme evite une erreur frequente : chercher un modele unique capable de tout traiter sans tenir compte de l'heterogeneite semantique des sources. Le routage permet de conserver une coherence entre les variables disponibles, le type de modele et l'interpretation du resultat. Il permet aussi de definir une route de fallback lorsque le format n'est pas reconnu. Cette route de fallback est importante car elle evite la suppression silencieuse d'informations potentiellement utiles. Dans le present memoire, cette position reste une justification d'architecture. La preuve comparative stricte devra opposer, sur les memes donnees et les memes splits, un pipeline global unique et un pipeline familial specialise.
+En separant les familles de donnees, le systeme evite une erreur frequente : chercher un modele unique capable de tout traiter sans tenir compte de l'heterogeneite semantique des sources. Le routage permet de conserver une coherence entre les variables disponibles, le type de modele et l'interpretation du resultat. Il permet aussi de definir une route de fallback lorsque le format n'est pas reconnu. Cette route de fallback est importante car elle evite la suppression silencieuse d'informations potentiellement utiles. Le reentrainement cible confirme cependant que la superiorite quantitative ne doit pas etre sur-vendue : en espace commun, les ecarts restent faibles. L'apport le plus defendable du routage est donc la compatibilite et l'extensibilite, puis le gain operationnel lorsque les modeles specialises utilisent leurs features natives.
 
 \section{Role du dashboard dans la validation humaine}
 Le dashboard Ariel \logminer{} ne doit pas etre vu comme un simple element esthetique. Il fait partie de la contribution operationnelle du travail. La detection d'anomalies produit souvent trop de signaux pour etre exploitee directement. L'interface permet de filtrer, prioriser, consulter un detail incident, visualiser les ressources, suivre les services et enregistrer les decisions analyste.
@@ -46,30 +46,28 @@ Sur le plan technique, la distribution multi-machine reste a consolider. L'archi
 
 La gestion des performances constitue egalement un axe de progression. Les mesures de latence et de ressources montrent une faisabilite locale, mais elles ne suffisent pas a caracteriser une charge continue de plusieurs jours ou plusieurs semaines. Des tests prolonges permettraient d'observer la stabilite memoire, les accumulations de fichiers temporaires, les effets de pic de charge et le comportement du dashboard sous un volume eleve d'incidents.
 
-\section{Reponse aux remarques du jury}
-Les remarques du jury ont principalement porte sur l'ecart possible entre le titre ambitieux et la preuve experimentale, sur la prudence necessaire autour des scores supervises, sur la faiblesse d'une evaluation trop courte et sur la clarification des limites. La redaction finale repond a ces points de maniere explicite.
+\section{Synthese des limites et portee des resultats}
+La portee du memoire doit etre formulee a partir des preuves disponibles. Le prototype demontre une chaine locale complete de traitement de logs heterogenes, une architecture d'agents logiciels multi-taches, une repartition locale par Redis Streams, une evaluation quantitative sur plusieurs familles de donnees, une premiere consolidation HDFS/BGL par Drain3, une ablation global-versus-familles sur trois graines et une evaluation supervisee stricte complementaire par serveurs, fichiers ou scenarios. Ces resultats ne prouvent pas encore une generalisation industrielle multi-machine ni une autonomie cognitive.
 
 \begin{table}[H]
 \centering
-\caption{Synthese des corrections liees aux remarques du jury}
-\label{tab:reponse-jury}
+\caption{Synthese des limites et de leur portee}
+\label{tab:limites-portee}
 \scriptsize
 \begin{tabularx}{\textwidth}{p{3.2cm}X X}
 \toprule
-\textbf{Remarque} & \textbf{Correction apportee} & \textbf{Limite encore reconnue} \\
+\textbf{Point analyse} & \textbf{Preuve disponible} & \textbf{Limite encore reconnue} \\
 \midrule
-Titre ambitieux & Le titre initial est conserve, mais les termes autonome, distribue et agents intelligents multi-taches sont definis operationnellement. & La distribution industrielle multi-machine reste une perspective. \\
+Titre ambitieux & Le titre est conserve, mais les termes autonome, distribue et agents intelligents multi-taches sont definis operationnellement. & La distribution industrielle multi-machine reste une perspective. \\
 Agents multi-taches & Ajout d'un runtime d'agents avec capacites, memoire locale, heartbeat, politique de choix et handlers multiples. & L'intelligence reste une intelligence d'orchestration logicielle, pas une IA cognitive generale. \\
 Distribution & Campagne Redis locale de six heures : 8 508 taches uniques terminees, 0 echec, 0 pending final, 709 reprises apres panne simulee. & Il faut encore une campagne multi-machine avec securisation et supervision durcie. \\
 Evaluation trop courte & Ajout d'une campagne d'endurance de six heures en complement des benchmarks 10 cycles, 30 cycles et 5 cycles paralleles. & Une campagne de plusieurs jours et multi-machine reste recommandee avant usage operationnel. \\
-Scores supervises eleves & Les scores sont presentes comme exploratoires et dependants du protocole 80/20. & Des splits temporels, par scenario ou par fichier restent necessaires pour une preuve plus forte. \\
+Scores supervises eleves & Les scores supervises sont presentes comme exploratoires ; des splits stricts complementaires montrent une baisse sur Linux/auth et CICIDS2017, mais CIC-DDoS2019 reste eleve. & Des splits temporels multi-environnements et des repetitions plus larges restent necessaires pour une preuve plus forte. \\
 HDFS/BGL & Ajout d'une branche Drain3 avec templates, fenetres temporelles et evaluation train--test. Les anciens scores restent presentes comme baseline exploratoire. & HDFS reste partiellement difficile et BGL tres favorable sur le split local ; un modele sequentiel profond et des repetitions de split restent necessaires. \\
 Faux positifs & Les anomalies non supervisees sont appelees anomalies candidates et reliees a une validation analyste. & La reduction automatique des faux positifs reste un axe futur. \\
 \bottomrule
 \end{tabularx}
 \end{table}
-
-Apres ces corrections, le memoire defend environ 95\% de l'objectif initial si l'on interprete le titre selon le perimetre experimental annonce : detection locale multi-source, agents logiciels multi-taches, distribution locale multi-processus, endurance de six heures, reprise apres panne et evaluation quantitative. Les 5\% restants correspondent aux preuves industrielles qui demandent plus de temps : deploiement sur plusieurs machines, charge sur plusieurs jours, securisation inter-noeuds, evaluation temporelle plus stricte et reduction avancee des faux positifs.
 
 \section{Valeur pratique du prototype}
 Malgre ces limites, le prototype presente une valeur pratique reelle. Il peut servir de base pedagogique pour comprendre la chaine d'analyse des journaux. Il peut aussi aider une petite structure a experimenter une detection locale sans disposer d'un SOC complet. Il fournit enfin un cadre pour comparer plusieurs familles de modeles et plusieurs sources de logs dans une interface unique.
@@ -81,29 +79,15 @@ La discussion montre que \logminer{} atteint un equilibre entre ambition et prud
 
 Cette position est scientifiquement saine. Elle permet de defendre le travail comme une contribution complete et utile, sans lui attribuer des capacites qui n'ont pas encore ete demontrees. Le chapitre suivant precise les conditions de reproductibilite, le depot GitHub, les scenarios de deploiement et les precautions d'exploitation avant la conclusion generale.
 
-\section{Discussion sur la maturite technologique}
-La maturite technologique du prototype peut etre analysee selon plusieurs niveaux. Au premier niveau, le systeme demontre une faisabilite fonctionnelle : il lit des sources, produit des sorties, applique des modeles et affiche les resultats. Au deuxieme niveau, il demontre une faisabilite experimentale : les valeurs citees dans le memoire sont reliees a des scripts, figures et tableaux. Au troisieme niveau, il commence a demontrer une faisabilite operationnelle locale : l'API et le dashboard permettent une interaction plus proche d'un usage reel par micro-lots.
+\section{Maturite technologique et risques d'interpretation}
+La maturite du prototype peut etre situee a trois niveaux. Il demontre d'abord une faisabilite fonctionnelle : il lit des sources, produit des sorties, applique des modeles et affiche les resultats. Il demontre ensuite une faisabilite experimentale : les valeurs citees sont reliees a des scripts, tableaux, figures et fichiers de preuve. Il commence enfin a demontrer une faisabilite operationnelle locale, car l'API, le dashboard et Redis Streams rapprochent le prototype d'une execution par micro-lots avec agents independants.
 
-En revanche, le prototype n'atteint pas encore une maturite de production. Un produit de securite operationnel devrait inclure une authentification robuste, une gestion fine des droits, des mecanismes de retention, une supervision continue, des alertes temps reel durcies, une haute disponibilite et des procedures de mise a jour. Il devrait aussi etre teste contre des volumes prolonges et des comportements adverses. Cette distinction entre prototype avance et produit durci doit etre assumee.
+Cette maturite reste distincte d'un produit de securite durci. Un deploiement operationnel exigerait authentification robuste, gestion fine des droits, retention, supervision continue, alertes temps reel durcies, haute disponibilite, procedures de mise a jour et tests prolonges contre des comportements adverses. La valeur du prototype reside donc dans l'integration mesurable de la chaine, pas dans la promesse de remplacer un SOC complet.
 
-Cette lecture est utile pour la soutenance. Elle montre que le travail n'est pas une simple maquette, car il contient du code, des modeles, des mesures et des interfaces. Elle montre aussi qu'il ne pretend pas remplacer un SOC complet. Le niveau atteint correspond a un prototype de recherche appliquee et d'ingenierie, suffisamment solide pour soutenir la contribution et suffisamment ouvert pour justifier les perspectives.
-
-\section{Discussion sur la valeur pedagogique}
-Au-dela de sa valeur technique, \logminer{} possede une valeur pedagogique. Il rend visibles les etapes souvent cachees de la detection d'anomalies. Beaucoup d'etudiants ou de jeunes ingenieurs abordent la cybersecurite par les outils finaux : SIEM, alertes, dashboards ou rapports. Le prototype montre ce qui se passe en amont : collecte, parsing, nettoyage, choix des features, routage, selection de modele et interpretation.
-
-Cette valeur pedagogique est renforcee par la diversite des sources. Un meme systeme traite des journaux Windows, Linux, Wazuh, Apache, HDFS, BGL et des datasets reseau. L'utilisateur observe ainsi que le mot ``log'' recouvre des realites tres differentes. Il comprend aussi pourquoi un schema commun est necessaire et pourquoi les modeles doivent etre adaptes aux familles.
-
-Dans un cadre universitaire, cette dimension est importante. Le projet peut servir de base a des travaux futurs : ajout de parseurs, comparaison de modeles, integration de templates, apprentissage actif, anonymisation, deploiement distribue ou cartographie MITRE ATT\&CK. Le memoire ne ferme donc pas le sujet ; il construit une plateforme d'exploration.
-
-\section{Discussion sur les risques d'interpretation excessive}
-Un risque classique des travaux en IA pour la securite est l'interpretation excessive. Un score eleve peut etre presente comme une preuve de securite globale. Une anomalie peut etre appelee attaque. Une architecture modulaire peut etre presentee comme distribuee industriellement. Ce memoire evite ces glissements en formulant les resultats de maniere proportionnee.
-
-Les scores supervises montrent une performance dans des conditions experimentales. Les anomalies non supervisees sont des signaux candidats. La distribution est logique et preparee techniquement, mais pas encore prouvee sur plusieurs machines en charge continue. L'auto-apprentissage est une perspective appuyee par l'audit et les decisions analyste, mais pas une capacite completement realisee.
-
-Cette prudence est une force. Elle rend le travail plus credible et plus difficile a contester. Un jury peut accepter des limites lorsqu'elles sont clairement identifiees et reliees aux preuves disponibles. A l'inverse, une affirmation trop large fragiliserait l'ensemble du memoire.
+Un risque classique des travaux en IA pour la securite est l'interpretation excessive. Dans ce memoire, les scores supervises mesurent une performance dans des protocoles donnes, les anomalies non supervisees restent des signaux candidats, la distribution est locale et l'apprentissage continu reste une perspective. Cette formulation proportionnee preserve la credibilite scientifique du travail.
 
 \section{Perspectives scientifiques prioritaires}
-Les perspectives peuvent etre organisees par priorite scientifique. La premiere priorite est la comparaison controlee entre pipeline global unique et routage familial avec modeles specialises, sur les memes jeux de donnees, les memes splits et plusieurs graines. Cette experience devra rapporter F1, precision, rappel, faux positifs, PR-AUC, MCC, matrices de confusion, latence et consommation memoire.
+Les perspectives peuvent etre organisees par priorite scientifique. La premiere priorite est maintenant d'etendre la comparaison controlee entre pipeline global unique et routage familial. Une premiere version a ete realisee sur trois graines avec F1, PR-AUC et MCC ; elle doit etre prolongee par des splits temporels, par fichier ou par scenario, puis par une mesure systematique de la latence et de la consommation memoire.
 
 La deuxieme priorite est l'amelioration de la representation des logs sequentiels. Une premiere branche Drain3 avec templates et fenetres temporelles a ete ajoutee pour HDFS/BGL, ce qui ameliore la coherence du protocole. Elle ne remplace pas une evaluation sequentielle complete : il reste a tester plusieurs splits, a fixer les seuils sur validation, puis a comparer avec des modeles de sequences plus specialises.
 
@@ -112,3 +96,4 @@ La troisieme priorite est la reduction des faux positifs. Elle peut passer par u
 La quatrieme priorite est l'evaluation multi-machine. Redis Streams et MQTT preparent cette evolution, mais il faut encore tester plusieurs collecteurs, un bus central, des workers separes, des pannes et des reprises. Cette evaluation transformerait la distribution logique en preuve distribuee.
 
 La cinquieme priorite est la confidentialite. L'anonymisation des logs et la gestion des donnees sensibles sont necessaires pour partager des exemples, collaborer avec d'autres organisations et publier des resultats sans exposer d'informations privees.
+

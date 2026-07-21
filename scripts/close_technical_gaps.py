@@ -88,7 +88,7 @@ def false_positive_rows() -> list[list[object]]:
     sources = [
         ("Linux/auth", PROCESSED / "random_forest_linux_auth_metrics.csv", ","),
         ("CICIDS2017", PROCESSED / "random_forest_network_cicids_metrics.csv", ","),
-        ("UNSW/CIC-DDoS", ROOT / "data" / "random_forest_unsw_80_20_metrics.csv", ";"),
+        ("CIC-DDoS2019", ROOT / "data" / "random_forest_unsw_80_20_metrics.csv", ";"),
     ]
     for label, path, sep in sources:
         if not path.exists():

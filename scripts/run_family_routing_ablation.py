@@ -14,10 +14,19 @@ from typing import Iterable
 
 import numpy as np
 import pandas as pd
+from PIL import Image, ImageDraw, ImageFont
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
-from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score
+from sklearn.metrics import (
+    accuracy_score,
+    average_precision_score,
+    confusion_matrix,
+    f1_score,
+    matthews_corrcoef,
+    precision_score,
+    recall_score,
+)
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
@@ -42,9 +51,23 @@ COMMON_CATEGORICAL = ["protocol", "service", "state", "status"]
 COMMON_FEATURES = COMMON_NUMERIC + COMMON_CATEGORICAL
 
 
-def _metric_row(variant: str, family: str, y_true: pd.Series, y_pred: np.ndarray, rows: int) -> dict[str, object]:
+def _display_family(family: str) -> str:
+    return {"unsw": "UNSW-NB15", "cicids": "CICIDS2017", "linux_auth": "Linux/auth"}.get(family, family)
+
+
+def _metric_row(
+    variant: str,
+    family: str,
+    y_true: pd.Series,
+    y_pred: np.ndarray,
+    rows: int,
+    *,
+    seed: int,
+    y_score: np.ndarray | None = None,
+) -> dict[str, object]:
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred, labels=[0, 1]).ravel()
     return {
+        "seed": int(seed),
         "variant": variant,
         "family": family,
         "test_rows": int(rows),
@@ -52,6 +75,8 @@ def _metric_row(variant: str, family: str, y_true: pd.Series, y_pred: np.ndarray
         "precision": float(precision_score(y_true, y_pred, zero_division=0)),
         "recall": float(recall_score(y_true, y_pred, zero_division=0)),
         "f1": float(f1_score(y_true, y_pred, zero_division=0)),
+        "pr_auc": float(average_precision_score(y_true, y_score)) if y_score is not None else math.nan,
+        "mcc": float(matthews_corrcoef(y_true, y_pred)),
         "false_positive_rate": float(fp / (fp + tn)) if (fp + tn) else 0.0,
         "false_positives_per_1000": float(fp / rows * 1000) if rows else 0.0,
         "tn": int(tn),
@@ -241,18 +266,40 @@ def make_model(random_state: int) -> Pipeline:
     )
 
 
+def _positive_scores(model: Pipeline, frame: pd.DataFrame) -> np.ndarray | None:
+    if not hasattr(model, "predict_proba"):
+        return None
+    try:
+        return model.predict_proba(frame)[:, 1]
+    except Exception:
+        return None
+
+
 def write_table(metrics: pd.DataFrame, output: Path) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
+    summary = (
+        metrics.groupby(["variant", "family"], as_index=False)
+        .agg(
+            test_rows=("test_rows", "mean"),
+            precision=("precision", "mean"),
+            recall=("recall", "mean"),
+            f1=("f1", "mean"),
+            pr_auc=("pr_auc", "mean"),
+            mcc=("mcc", "mean"),
+            false_positives_per_1000=("false_positives_per_1000", "mean"),
+        )
+        .sort_values(["family", "variant"])
+    )
     rows = [
         "# Ablation Routage Familial",
         "",
-        "| Variante | Famille | Lignes test | Precision | Rappel | F1 | Faux positifs / 1000 |",
-        "| --- | --- | --- | --- | --- | --- | --- |",
+        "| Variante | Famille | Lignes test moy. | Precision | Rappel | F1 | PR-AUC | MCC | Faux positifs / 1000 |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
-    for _, row in metrics.sort_values(["family", "variant"]).iterrows():
+    for _, row in summary.iterrows():
         rows.append(
-            "| {variant} | {family} | {test_rows} | {precision:.6f} | {recall:.6f} | {f1:.6f} | {false_positives_per_1000:.3f} |".format(
-                **row
+            "| {variant} | {family} | {test_rows:.0f} | {precision:.6f} | {recall:.6f} | {f1:.6f} | {pr_auc:.6f} | {mcc:.6f} | {false_positives_per_1000:.3f} |".format(
+                **{**row, "family": _display_family(str(row["family"]))}
             )
         )
     output.write_text("\n".join(rows) + "\n", encoding="utf-8")
@@ -279,10 +326,13 @@ def write_operational_table(common_metrics: pd.DataFrame, output: Path) -> None:
     to the minimal common feature space required by heterogeneous logs.
     """
 
+    common_summary = (
+        common_metrics.groupby(["variant", "family"], as_index=False)
+        .agg(f1=("f1", "mean"), false_positives_per_1000=("false_positives_per_1000", "mean"))
+    )
     specialized = {
         "linux_auth": _read_metric(Path("data/processed/random_forest_linux_auth_metrics.csv")),
         "cicids": _read_metric(Path("data/processed/random_forest_network_cicids_metrics.csv")),
-        "unsw": _read_metric(Path("data/random_forest_unsw_80_20_metrics.csv"), sep=";"),
     }
     rows = [
         "# Ablation Operationnelle Routage Familial",
@@ -292,15 +342,15 @@ def write_operational_table(common_metrics: pd.DataFrame, output: Path) -> None:
         "| Famille | Global common F1 | Family-aware full F1 | Delta F1 | Global FP/1000 | Family-aware FP/1000 |",
         "| --- | --- | --- | --- | --- | --- |",
     ]
-    for family in ["linux_auth", "cicids", "unsw"]:
-        global_row = common_metrics[
-            (common_metrics["variant"] == "global_common_model") & (common_metrics["family"] == family)
+    for family in ["linux_auth", "cicids"]:
+        global_row = common_summary[
+            (common_summary["variant"] == "global_common_model") & (common_summary["family"] == family)
         ].iloc[0]
         spec = specialized[family]
         spec_fp_per_1000 = spec["fp"] / spec["test_rows"] * 1000 if spec["test_rows"] else 0.0
         rows.append(
             "| {family} | {global_f1:.6f} | {spec_f1:.6f} | {delta:.6f} | {global_fp:.3f} | {spec_fp:.3f} |".format(
-                family=family,
+                family=_display_family(family),
                 global_f1=float(global_row["f1"]),
                 spec_f1=spec["f1"],
                 delta=spec["f1"] - float(global_row["f1"]),
@@ -311,7 +361,7 @@ def write_operational_table(common_metrics: pd.DataFrame, output: Path) -> None:
     rows.extend(
         [
             "",
-            "Interpretation: the controlled common-space ablation isolates routing under the same feature space, while this operational comparison measures the full Logminer contribution: family detection, native feature compatibility and specialized model selection.",
+            "Interpretation: the controlled common-space ablation isolates routing under the same feature space, while this operational comparison measures the full Logminer contribution for datasets with matching specialized artifacts. CIC-DDoS2019 is not merged with the official UNSW-NB15 ablation.",
         ]
     )
     output.write_text("\n".join(rows) + "\n", encoding="utf-8")
@@ -319,6 +369,7 @@ def write_operational_table(common_metrics: pd.DataFrame, output: Path) -> None:
 
 def write_svg(metrics: pd.DataFrame, output: Path) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
+    metrics = metrics.groupby(["variant", "family"], as_index=False).agg(f1=("f1", "mean"))
     families = list(metrics["family"].drop_duplicates())
     variants = ["global_common_model", "family_aware_models"]
     width = 980
@@ -355,63 +406,140 @@ def write_svg(metrics: pd.DataFrame, output: Path) -> None:
     output.write_text("\n".join(lines), encoding="utf-8")
 
 
+def write_png(metrics: pd.DataFrame, output: Path) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    summary = metrics.groupby(["variant", "family"], as_index=False).agg(f1=("f1", "mean"))
+    families = list(summary["family"].drop_duplicates())
+    variants = ["global_common_model", "family_aware_models"]
+    colors = {"global_common_model": "#8aa6c1", "family_aware_models": "#d9822b"}
+    width = 980
+    height = 130 + len(families) * 90
+    left = 180
+    right = 920
+    image = Image.new("RGB", (width, height), "white")
+    draw = ImageDraw.Draw(image)
+    try:
+        title_font = ImageFont.truetype("arial.ttf", 22)
+        label_font = ImageFont.truetype("arial.ttf", 12)
+        axis_font = ImageFont.truetype("arial.ttf", 11)
+    except OSError:
+        title_font = label_font = axis_font = ImageFont.load_default()
+
+    draw.text((36, 28), "Family-aware routing ablation", fill="#172026", font=title_font)
+    draw.text((36, 52), "Global common model vs specialized models on the same supervised splits", fill="#5b6770", font=label_font)
+    for tick in [0, 0.25, 0.5, 0.75, 1.0]:
+        x = left + (right - left) * tick
+        draw.line((x, 76, x, height - 38), fill="#d9dee3", width=1)
+        draw.text((x - 12, height - 28), f"{tick:.2f}", fill="#5b6770", font=axis_font)
+
+    for idx, family in enumerate(families):
+        y = 100 + idx * 90
+        draw.text((left - 92, y + 16), str(family), fill="#172026", font=label_font)
+        for offset, variant in enumerate(variants):
+            found = summary[(summary["family"] == family) & (summary["variant"] == variant)]
+            if found.empty:
+                continue
+            value = float(found.iloc[0]["f1"])
+            bar_w = (right - left) * value
+            yy = y + offset * 28
+            draw.rounded_rectangle((left, yy, left + bar_w, yy + 20), radius=3, fill=colors[variant])
+            draw.text((left + bar_w + 8, yy + 3), f"{value:.3f}", fill="#172026", font=label_font)
+
+    draw.rectangle((650, 28, 666, 44), fill=colors["global_common_model"])
+    draw.text((672, 30), "Global model", fill="#172026", font=label_font)
+    draw.rectangle((780, 28, 796, 44), fill=colors["family_aware_models"])
+    draw.text((802, 30), "Family-aware", fill="#172026", font=label_font)
+    image.save(output)
+
+
 def main(argv: Iterable[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run the Logminer family routing ablation")
     parser.add_argument("--per-class", type=int, default=6000, help="Rows per class and per family")
     parser.add_argument("--random-state", type=int, default=42)
+    parser.add_argument("--seeds", default="", help="Comma-separated seeds for repeated controlled splits, e.g. 42,43,44")
     parser.add_argument("--linux-auth", type=Path, default=Path("data/raw/Datasets/linux_auth_logs_labeled.csv"))
     parser.add_argument("--cicids-dir", type=Path, default=Path("data/raw/Datasets/MachineLearningCSV/MachineLearningCVE"))
     parser.add_argument("--unsw-train", type=Path, default=Path("data/raw/Datasets/UNSW_NB15_training-set.parquet"))
     parser.add_argument("--unsw-test", type=Path, default=Path("data/raw/Datasets/UNSW_NB15_testing-set.parquet"))
     args = parser.parse_args(argv)
 
-    frames = [
-        load_linux_auth(args.linux_auth, normal=args.per_class, anomaly=args.per_class, random_state=args.random_state),
-        load_cicids(args.cicids_dir, normal=args.per_class, anomaly=args.per_class, random_state=args.random_state),
-        load_unsw(args.unsw_train, args.unsw_test, normal=args.per_class, anomaly=args.per_class, random_state=args.random_state),
-    ]
-    dataset = pd.concat(frames, ignore_index=True).sample(frac=1, random_state=args.random_state)
-    dataset = dataset.replace([np.inf, -np.inf], np.nan)
-
-    train_parts = []
-    test_parts = []
-    for family, group in dataset.groupby("family"):
-        stratify = group["target"].astype(str)
-        train, test = train_test_split(group, test_size=0.25, stratify=stratify, random_state=args.random_state)
-        train_parts.append(train)
-        test_parts.append(test)
-    train_df = pd.concat(train_parts, ignore_index=True)
-    test_df = pd.concat(test_parts, ignore_index=True)
+    seeds = [int(seed.strip()) for seed in args.seeds.split(",") if seed.strip()]
+    if not seeds:
+        seeds = [int(args.random_state)]
 
     metrics: list[dict[str, object]] = []
-    global_model = make_model(args.random_state)
-    global_model.fit(train_df[COMMON_FEATURES], train_df["target"])
-    for family, test_group in test_df.groupby("family"):
-        pred = global_model.predict(test_group[COMMON_FEATURES])
-        metrics.append(_metric_row("global_common_model", family, test_group["target"], pred, len(test_group)))
+    for seed in seeds:
+        frames = [
+            load_linux_auth(args.linux_auth, normal=args.per_class, anomaly=args.per_class, random_state=seed),
+            load_cicids(args.cicids_dir, normal=args.per_class, anomaly=args.per_class, random_state=seed),
+            load_unsw(args.unsw_train, args.unsw_test, normal=args.per_class, anomaly=args.per_class, random_state=seed),
+        ]
+        dataset = pd.concat(frames, ignore_index=True).sample(frac=1, random_state=seed)
+        dataset = dataset.replace([np.inf, -np.inf], np.nan)
 
-    for family, train_group in train_df.groupby("family"):
-        model = make_model(args.random_state)
-        model.fit(train_group[COMMON_FEATURES], train_group["target"])
-        test_group = test_df[test_df["family"] == family]
-        pred = model.predict(test_group[COMMON_FEATURES])
-        metrics.append(_metric_row("family_aware_models", family, test_group["target"], pred, len(test_group)))
+        train_parts = []
+        test_parts = []
+        for family, group in dataset.groupby("family"):
+            stratify = group["target"].astype(str)
+            train, test = train_test_split(group, test_size=0.25, stratify=stratify, random_state=seed)
+            train_parts.append(train)
+            test_parts.append(test)
+        train_df = pd.concat(train_parts, ignore_index=True)
+        test_df = pd.concat(test_parts, ignore_index=True)
+
+        global_model = make_model(seed)
+        global_model.fit(train_df[COMMON_FEATURES], train_df["target"])
+        for family, test_group in test_df.groupby("family"):
+            features = test_group[COMMON_FEATURES]
+            pred = global_model.predict(features)
+            metrics.append(
+                _metric_row(
+                    "global_common_model",
+                    family,
+                    test_group["target"],
+                    pred,
+                    len(test_group),
+                    seed=seed,
+                    y_score=_positive_scores(global_model, features),
+                )
+            )
+
+        for family, train_group in train_df.groupby("family"):
+            model = make_model(seed)
+            model.fit(train_group[COMMON_FEATURES], train_group["target"])
+            test_group = test_df[test_df["family"] == family]
+            features = test_group[COMMON_FEATURES]
+            pred = model.predict(features)
+            metrics.append(
+                _metric_row(
+                    "family_aware_models",
+                    family,
+                    test_group["target"],
+                    pred,
+                    len(test_group),
+                    seed=seed,
+                    y_score=_positive_scores(model, features),
+                )
+            )
 
     out_csv = Path("data/processed/family_routing_ablation.csv")
     out_table = Path("docs/memoire/tables/table_family_routing_ablation.md")
     out_operational_table = Path("docs/memoire/tables/table_family_routing_operational_ablation.md")
     out_svg = Path("docs/memoire/figures/fig_family_routing_ablation.svg")
+    out_png = Path("docs/memoire/figures/fig_family_routing_ablation.png")
     metrics_df = pd.DataFrame(metrics)
     out_csv.parent.mkdir(parents=True, exist_ok=True)
     metrics_df.to_csv(out_csv, index=False, encoding="utf-8-sig")
     write_table(metrics_df, out_table)
     write_operational_table(metrics_df, out_operational_table)
     write_svg(metrics_df, out_svg)
+    write_png(metrics_df, out_png)
 
     print(f"Ablation CSV: {out_csv}")
     print(f"Table: {out_table}")
     print(f"Operational table: {out_operational_table}")
     print(f"Figure: {out_svg}")
+    print(f"Figure PNG: {out_png}")
     return 0
 
 
