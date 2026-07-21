@@ -239,7 +239,7 @@ def generate() -> None:
         [
             Bar("Linux/auth RF", as_float(linux["f1"]), COLORS["green"], "dataset Linux/auth tabulaire"),
             Bar("CICIDS RF", as_float(cicids["f1"]), COLORS["blue"], "MachineLearningCVE"),
-            Bar("UNSW/CIC-DDoS RF", as_float(unsw["f1"]), COLORS["orange"], "test 80/20 par chunks"),
+            Bar("CIC-DDoS2019 RF", as_float(unsw["f1"]), COLORS["orange"], "test exploratoire par chunks"),
         ]
     )
     bar_chart(
@@ -324,7 +324,7 @@ def generate() -> None:
             ["Wazuh", "Exports Janvier/Octobre/Decembre", "Isolation Forest", "Non supervise", "122563 evenements, 3676 anomalies candidates"],
             ["Linux/auth", "linux_auth_logs_*", "RandomForest", "Supervise", f"F1={as_float(linux['f1']):.6f}"],
             ["CICIDS", "MachineLearningCVE", "RandomForest", "Supervise", f"F1={as_float(cicids['f1']):.6f}"],
-            ["UNSW/CIC-DDoS", "UNSWNB15/CIC-DDoS", "RandomForest", "Supervise", f"F1={as_float(unsw['f1']):.6f}"],
+            ["CIC-DDoS2019", "DrDoS/UDPLag/SYN", "RandomForest", "Supervise", f"F1={as_float(unsw['f1']):.6f}"],
             ["HDFS", "HDFS logs", "Ensemble/Isolation Forest", "Non supervise", "Meilleure selection autour de F1=0.599333"],
             ["BGL", "BlueGene/L", "Ensemble/Autoencoder/IForest", "Non supervise", "Meilleure selection autour de F1=0.994333"],
         ],
@@ -341,7 +341,7 @@ def generate() -> None:
             ["Public systeme", "HDFS", "Logs distribues avec labels", "Validation detecteurs sur logs sequentiels", "validation_hdfs_metrics.csv"],
             ["Public systeme", "BGL", "Logs BlueGene/L avec labels", "Validation detecteurs sur logs HPC", "validation_bgl_metrics.csv"],
             ["Public reseau", "CICIDS2017/MachineLearningCVE", "Flux reseau labelises", "Detection supervisee attaques connues", "random_forest_network_cicids_metrics.csv"],
-            ["Public reseau", "UNSW/CIC-DDoS", "Flux reseau/DDoS", "Evaluation 80/20 par chunks", "random_forest_unsw_80_20_metrics.csv"],
+            ["Public reseau", "CIC-DDoS2019", "Flux reseau/DDoS", "Evaluation exploratoire par chunks", "random_forest_unsw_80_20_metrics.csv"],
             ["Controle simule", "Windows simule", "Evenements avec anomalies injectees", "Comparer baseline, statistiques et IA", "validation_simulated_windows_metrics.csv"],
             ["Robustesse", "Apache, CEF/LEEF, CloudTrail, Linux auth, log incomplet", "Multi-format et entree corrompue", "Tolerance parser et conservation unknown", "robustness_scalability_report.csv"],
         ],
@@ -387,7 +387,7 @@ def generate() -> None:
         "| --- | --- |",
         "| `fig_architecture_logminer.svg` | Chapitre architecture, article architecture multi-agents |",
         "| `fig_validation_selection_f1.svg` | Etat de l'art experimental et chapitre resultats |",
-        "| `fig_supervised_models_f1.svg` | Resultats supervises Linux/auth, CICIDS, UNSW |",
+        "| `fig_supervised_models_f1.svg` | Resultats supervises Linux/auth, CICIDS, CIC-DDoS2019 |",
         "| `fig_realtime_workflow_latency.svg` | Objectifs 4 et 7: temps quasi reel, latence |",
         "| `fig_robustness_multiformat.svg` | Objectifs 1, 6 et 7: robustesse multi-format |",
         "| `fig_model_portfolio_scale.svg` | Methodologie: portefeuille de modeles specialises |",
@@ -413,3 +413,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

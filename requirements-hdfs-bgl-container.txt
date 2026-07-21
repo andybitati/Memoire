@@ -1,0 +1,54 @@
+# Reproducible runtime for HDFS/BGL Drain3 experiments.
+# Updated on 2026-07-21.
+#
+# Install in a dedicated environment:
+#   python -m pip install -r requirements-hdfs-bgl-container.txt
+#
+# Drain3 0.9.11 requires cachetools==4.2.1. Streamlit is pinned to 1.30.0
+# only in this experimental environment.
+
+fastapi==0.115.2
+uvicorn==0.30.6
+httpx==0.28.1
+redis==8.0.1
+paho-mqtt==2.1.0
+python-multipart==0.0.20
+
+numpy==1.26.4
+pandas==2.3.2
+scikit-learn==1.7.2
+scipy==1.16.1
+joblib==1.5.2
+threadpoolctl==3.6.0
+pyarrow==24.0.0
+
+drain3==0.9.11
+logparser==0.8.4
+cachetools==4.2.1
+jsonpickle==1.5.1
+pexpect==4.9.0
+ptyprocess==0.7.0
+
+PyPDF2==3.0.1
+tqdm==4.67.1
+python-evtx==0.8.1
+streamlit==1.30.0
+psutil==7.2.2
+svglib==1.6.0
+reportlab==4.5.1
+
+pydantic==2.8.0
+pydantic_core==2.20.0
+starlette==0.40.0
+anyio==4.13.0
+typing_extensions==4.15.0
+typing-inspection==0.4.2
+python-dateutil==2.9.0.post0
+tzdata==2025.2
+packaging==23.2
+PyYAML==6.0.2
+requests==2.32.3
+urllib3==2.3.0
+certifi==2025.1.31
+charset-normalizer==3.4.1
+idna==3.10

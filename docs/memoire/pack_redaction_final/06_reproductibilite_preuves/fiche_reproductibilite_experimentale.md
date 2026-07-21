@@ -20,6 +20,7 @@ dans un article pour permettre l'interpretation des benchmarks Logminer.
 | Chemin environnement | `.venv` |
 | API benchmarkee | FastAPI Logminer, `http://127.0.0.1:8000` |
 | Dashboard | `http://127.0.0.1:5173` |
+| Depot GitHub | `https://github.com/andybitati/Memoire/tree/version_3` |
 
 Note: les informations WMI detaillees ont retourne `Acces refuse` dans
 l'environnement courant. Les valeurs ci-dessus proviennent de Python, `platform`
@@ -82,6 +83,83 @@ Resultats:
 - latence moyenne workflow: 8.2012 s;
 - latence minimale workflow: 3.1672 s;
 - latence maximale workflow: 15.3289 s.
+
+## Commande Campagne Redis Agents Intelligents
+
+```powershell
+python scripts\run_intelligent_redis_campaign.py --workers 3 --repetitions 50 --cycles 60 --max-parallel-tasks 2
+```
+
+Run de prevalidation: `redis-campaign-20260717161257`.
+
+Resultats:
+
+- 150 taches enfilees;
+- 150 taches uniques terminees;
+- 0 echec;
+- 0 pending final;
+- 0 perte estimee;
+- 1 panne simulee avant acquittement et reprise par `redis-recovery-agent`;
+- duree observee depuis Redis: 102.4202 s;
+- debit observe: 1.4646 taches/s;
+- latence p95/p99: 5.3567 s / 8.2873 s.
+
+Sorties:
+
+- `data/processed/intelligent_redis_long_campaign_summary.json`;
+- `docs/memoire/tables/table_intelligent_redis_long_campaign.md`;
+- `docs/architecture/intelligent_agents_redis_campaign_summary.md`.
+
+## Commande Campagne Redis Endurance 6h
+
+```powershell
+python scripts\run_intelligent_redis_endurance_campaign.py --duration-sec 21600 --workers 3 --repetitions 4 --cycles 8 --max-parallel-tasks 2 --iteration-timeout-sec 900 --output-json data/processed/intelligent_redis_6h_campaign_summary.json --output-table docs/memoire/tables/table_intelligent_redis_6h_campaign.md
+```
+
+Conditions experimentales observees:
+
+- machine hote Windows, execution PowerShell depuis `E:\Cours\TFE`;
+- environnement Python local `.venv`;
+- Redis lance par Docker avec `docker-compose.redis.yml`, conteneur
+  `logminer-redis`, image `redis:7-alpine`, port expose `localhost:6379`;
+- URL Redis utilisee par defaut: `redis://localhost:6379/0`;
+- deux VM VirtualBox etaient lancees pendant l'experience: `Debian` et
+  `Ubuntu`;
+- les VM etaient configurees en NAT simple; elles documentent le contexte de
+  validation distribuee et les travaux de preparation multi-machine, mais le
+  bus Redis effectivement utilise par ce run etait le Redis Docker local de
+  l'hote;
+- la preuve revendiquee est donc une distribution locale multi-processus avec
+  endurance et reprise, pas encore une preuve SOC multi-machine securisee.
+
+Resultats retenus pour renforcer le memoire:
+
+- duree observee: 21613.8566 s;
+- 709 iterations terminees;
+- 8508 taches enfilees;
+- 8508 taches uniques terminees;
+- 0 echec;
+- 0 pending final cumule;
+- 0 perte estimee;
+- 709 pannes simulees avant acquittement et reprises par `redis-recovery-agent`;
+- debit observe: 0.3936 taches/s;
+- latence p95/p99: 5.9879 s / 8.7987 s.
+
+Sorties:
+
+- `data/processed/intelligent_redis_6h_campaign_summary.json`;
+- `docs/memoire/tables/table_intelligent_redis_6h_campaign.md`;
+- `data/processed/intelligent_redis_endurance_runs/`.
+
+## Note De Tracabilite Des Scores Supervisees
+
+Les scores CICIDS2017 et UNSW-NB15 sont conserves comme resultats
+exploratoires du prototype. Ils ne doivent pas etre presentes comme preuve de
+generalisation SOC tant qu'un split temporel, par fichier, par hote ou par
+scenario d'attaque n'a pas ete execute. Le fichier historique
+`random_forest_unsw_80_20_metrics.csv` contient le champ
+`dataset=unsw_nb15_80_20`; la redaction finale utilise donc la designation
+UNSW-NB15 plutot qu'un intitule mixte ou ambigu.
 
 ## Informations A Completer Avant Soumission Externe
 

@@ -21,6 +21,8 @@ Les commandes principales utilisees pour reproduire les resultats sont les suiva
   \item \path{python scripts/run_resource_campaign.py}
   \item options principales : \path{--cycles 30 --interval-sec 2 --max-mb 5}
   \item \path{python scripts/run_family_routing_ablation.py}
+  \item \path{python scripts/run_intelligent_redis_endurance_campaign.py}
+  \item options Redis 6h : \path{--duration-sec 21600 --workers 3 --repetitions 4 --cycles 8}
   \item \path{python scripts/generate_memoire_assets.py}
   \item \path{python scripts/export_memoire_figures.py}
 \end{itemize}
@@ -43,8 +45,15 @@ Les preuves experimentales principales sont conservees sous forme de CSV :
   \item \texttt{standard\_tools\_wazuh\_logminer\_overlap.csv} ;
   \item \texttt{random\_forest\_linux\_auth\_metrics.csv} ;
   \item \texttt{random\_forest\_network\_cicids\_metrics.csv} ;
-  \item \texttt{random\_forest\_unsw\_80\_20\_metrics.csv} ;
-  \item \texttt{intelligent\_redis\_long\_campaign\_summary.json}.
+  \item \texttt{random\_forest\_linux\_auth\_strict\_metrics.csv} ;
+  \item \texttt{random\_forest\_cicids2017\_controlled\_split\_metrics.csv} ;
+  \item \texttt{random\_forest\_cic\_ddos2019\_metrics.csv} ;
+  \item \texttt{validation\_hdfs\_drain3\_train\_test\_metrics.csv} ;
+  \item \texttt{validation\_bgl\_drain3\_train\_test\_metrics.csv} ;
+  \item \texttt{validation\_hdfs\_bgl\_drain3\_train\_test\_summary.csv} ;
+  \item \texttt{intelligent\_redis\_long\_campaign\_summary.json} ;
+  \item \texttt{intelligent\_redis\_6h\_campaign\_summary.json} ;
+  \item \texttt{table\_intelligent\_redis\_6h\_campaign.md}.
 \end{itemize}
 
 \section{Regles de prudence}
@@ -90,12 +99,16 @@ Le tableau suivant donne une matrice de tracabilite simplifiee. Il doit etre con
 \midrule
 \endhead
 F1 Linux/auth & \texttt{random\_forest\_linux\_auth\_metrics.csv} & Evaluation supervisee et discussion sur les journaux d'authentification. \\
-F1 CICIDS2017 & \texttt{random\_forest\_network\_cicids\_metrics.csv} & Evaluation supervisee reseau et limites des datasets publics. \\
-F1 CIC-DDoS2019 & \texttt{random\_forest\_unsw\_80\_20\_metrics.csv} & Evaluation supervisee reseau exploratoire ; le nom historique du fichier est conserve, mais le resultat n'est pas presente comme validation UNSW-NB15 officielle. \\
+F1 CICIDS2017 & \texttt{random\_forest\_network\_cicids\_metrics.csv} et \texttt{random\_forest\_cicids2017\_controlled\_split\_metrics.csv} & Evaluation supervisee reseau ; le score exploratoire doit etre lu avec le F1 strict de 0,157827. \\
+F1 CIC-DDoS2019 & \texttt{random\_forest\_cic\_ddos2019\_metrics.csv} & Evaluation supervisee stricte par holdout fichier/famille DDoS ; resultat principal retenu pour ce dataset. \\
+Splits supervises stricts & \texttt{supervised\_strict\_split\_metrics.csv} & Evaluation complementaire par serveurs, fichiers ou scenarios ; documente la sensibilite au protocole. \\
+HDFS Drain3 train--test & \texttt{validation\_hdfs\_drain3\_train\_test\_metrics.csv} & Validation complementaire avec templates Drain3 et fenetres ; progression moderee, non interpretee comme generalisation universelle. \\
+BGL Drain3 train--test & \texttt{validation\_bgl\_drain3\_train\_test\_metrics.csv} & Validation complementaire avec templates Drain3 et fenetres ; separabilite forte sur split local, a confirmer par repetitions. \\
+Synthese HDFS/BGL Drain3 & \texttt{validation\_hdfs\_bgl\_drain3\_train\_test\_summary.csv} & Tableau court utilise pour la redaction et le dashboard de capture. \\
 Anomalies Wazuh & \texttt{table\_wazuh\_logminer\_summary.md} & Evaluation non supervisee et recouvrement avec signaux HIDS/SIEM. \\
 Duree moyenne micro-lots & \texttt{realtime\_workflow\_benchmark\_20260604.csv} & Mesure du workflow local par micro-lots, sans revendication de temps reel strict. \\
 Campagne CPU/RAM & \texttt{resource\_campaign.csv} & Evaluation des ressources sur 30 cycles. \\
-Ablation routage & \texttt{family\_routing\_ablation.csv} & Justification du routage par famille. \\
+Ablation routage & \texttt{family\_routing\_ablation.csv} & Comparaison controlee global-versus-familles sur cinq graines ; F1, PR-AUC et MCC rapportes. \\
 Robustesse multi-format & Rapport de robustesse et figure associee & Validation de la conservation des formats inconnus ou incomplets. \\
 \bottomrule
 \end{longtable}
@@ -105,30 +118,4 @@ Une lecture rigoureuse des resultats doit suivre quatre etapes. La premiere cons
 
 Par exemple, le resultat Wazuh ne doit pas etre formule comme une detection de 3 676 attaques. La formulation correcte est que le prototype a traite 122 563 evenements et produit 3 676 anomalies candidates selon le detecteur non supervise applique. Cette nuance est importante car elle distingue le signal algorithmique de la validation securite.
 
-\section{Guide de soutenance technique}
-Pour presenter le travail oralement, il est recommande de suivre une progression simple. D'abord, rappeler le probleme : les journaux sont heterogenes, volumineux et difficiles a exploiter manuellement. Ensuite, presenter l'idee centrale : une architecture modulaire qui normalise, route, detecte, correle et affiche. Puis montrer les preuves : figures d'architecture, resultats supervises, Wazuh, duree de workflow, CPU/RAM et dashboard. Enfin, conclure par les limites : anomalies candidates, distribution multi-machine, apprentissage continu et industrialisation.
 
-Cette progression evite deux risques. Le premier serait de presenter uniquement les scores, ce qui masquerait la contribution systeme. Le second serait de presenter uniquement l'interface, ce qui masquerait l'evaluation scientifique. Le bon equilibre consiste a montrer que le prototype fonctionne, qu'il est mesure et que ses limites sont comprises.
-
-\section{Questions probables du jury et reponses courtes}
-Les questions suivantes doivent etre preparees avant la soutenance.
-
-\begin{longtable}{p{5.5cm}p{7.5cm}}
-\caption{Questions probables du jury}\\
-\toprule
-\textbf{Question} & \textbf{Reponse defendable} \\
-\midrule
-\endfirsthead
-\toprule
-\textbf{Question} & \textbf{Reponse defendable} \\
-\midrule
-\endhead
-Pourquoi parler d'agents ? & Le terme est utilise au sens architectural : modules logiciels specialises, pas agents cognitifs autonomes. \\
-Le systeme est-il distribue ? & Non au sens industriel multi-machine valide. La distribution actuelle est logique ; Redis/MQTT preparent une extension. \\
-Le systeme est-il autonome ? & Il automatise le traitement, mais la validation humaine reste necessaire. L'apprentissage continu est une perspective. \\
-Pourquoi le score CIC-DDoS2019 est-il si eleve ? & Le protocole 80/20 et la forte separabilite du dataset peuvent etre optimistes ; le resultat valide l'integration, pas une generalisation universelle. \\
-HDFS/BGL prouvent-ils la generalisation ? & Non. Ils sont presentes comme resultats exploratoires lorsque l'evaluation n'est pas independante. \\
-Le benchmark est-il temps reel ? & Non au sens SOC haut debit. Il s'agit d'un traitement local par micro-lots avec duree moyenne observee. \\
-Le dashboard est-il valide par utilisateurs ? & Les captures prouvent la validation fonctionnelle. Une vraie evaluation d'utilisabilite demanderait des utilisateurs, des taches et un questionnaire. \\
-\bottomrule
-\end{longtable}

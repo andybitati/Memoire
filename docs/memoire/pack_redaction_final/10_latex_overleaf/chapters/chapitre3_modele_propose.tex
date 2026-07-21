@@ -1,7 +1,7 @@
 \chapter{Modele propose}
 
 \section{Vue generale}
-Le modele propose repose sur une architecture multi-agents modulaire. Chaque agent possede un role limite et produit une sortie exploitable par l'agent suivant. Cette separation reduit le couplage entre les etapes et facilite l'audit du traitement.
+Le modele propose repose sur une architecture modulaire composee de modules logiciels specialises, appeles agents fonctionnels dans ce memoire. Chaque agent possede un role limite et produit une sortie exploitable par l'agent suivant. Cette separation reduit le couplage entre les etapes et facilite l'audit du traitement. Le terme agent est donc utilise au sens architectural et non au sens d'un agent cognitif autonome capable de negocier des objectifs ou de prendre des decisions independantes.
 
 \begin{figure}[H]
   \centering
@@ -48,18 +48,10 @@ Les familles de journaux representent des contextes d'analyse distincts. Un jour
 Le routage est un element central de l'architecture. Plutot que d'appliquer un modele unique a tous les journaux, \logminer{} selectionne une famille de traitement. Les familles considerees incluent notamment Windows, Wazuh, Linux/auth, reseau, HDFS, BGL et fallback.
 
 Le routage s'appuie sur des indices explicites : noms de colonnes, structure des messages, champs caracteristiques, type de fichier et distribution des valeurs. Lorsqu'aucune famille n'est suffisamment probable, le systeme utilise une route de fallback afin de conserver les donnees sans les perdre silencieusement.
-
-L'ablation disponible ne prouve pas une superiorite predictive universelle du routage par famille. Elle soutient plutot son interet architectural : compatibilite des schemas, separation des modeles, maintenance, interpretation et extension vers de nouvelles familles de journaux. Cette distinction evite de transformer un choix de conception robuste en affirmation statistique non demontree.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.9\textwidth]{fig_family_routing_ablation.png}
-  \caption{Ablation operationnelle du routage par famille.}
-  \label{fig:routing}
-\end{figure}
+L'evaluation experimentale de ce choix architectural est presentee au chapitre \ref{chap:resultats}, afin de separer le modele propose des resultats empiriques.
 
 \section{Modeles de detection}
-Deux categories de modeles sont utilisees. Les modeles supervises RandomForest sont entraines sur des datasets labelises tels que Linux/auth, CICIDS2017 et UNSW-NB15. Les modeles non supervises, notamment Isolation Forest, sont utilises lorsque les labels fiables ne sont pas disponibles. Dans ce cas, les sorties sont des anomalies candidates.
+Deux categories de modeles sont utilisees. Les modeles supervises RandomForest sont entraines sur des datasets labelises tels que Linux/auth, CICIDS2017 et CIC-DDoS2019. Les modeles non supervises, notamment Isolation Forest, sont utilises lorsque les labels fiables ne sont pas disponibles. Dans ce cas, les sorties sont des anomalies candidates.
 
 \subsection{Decision et interpretation}
 La sortie d'un modele est convertie en objet d'analyse comprenant au minimum la famille, le score, la decision, la severite estimee et les champs ayant motive l'affichage dans le dashboard. Cette representation evite de presenter un score isole. Elle favorise une lecture par incident, dans laquelle l'analyste peut comparer le message original, le contexte temporel et l'historique des decisions.
@@ -99,3 +91,40 @@ La logique de message presente un avantage important : elle rend l'architecture 
 Le modele prevoit plusieurs cas limites. Si un fichier ne contient pas les colonnes attendues, le systeme ne doit pas s'arreter brutalement. Si une ligne est corrompue, elle doit etre isolee et conservee. Si aucun modele n'est disponible pour une famille, le systeme doit produire un statut explicite plutot qu'un resultat trompeur. Si le dashboard ne peut pas charger une ressource, l'erreur doit etre visible dans l'audit.
 
 Ces choix peuvent sembler secondaires, mais ils sont essentiels pour une application de cybersecurite. Les donnees reelles sont rarement propres. Les logs peuvent contenir des caracteres inattendus, des timestamps manquants, des champs vides ou des volumes tres variables. La robustesse consiste donc a degrader proprement le traitement, pas a supposer que toutes les entrees seront parfaites.
+
+\section{Modele de donnees conceptuel}
+Le modele de donnees conceptuel distingue quatre niveaux. Le premier niveau est l'evenement brut. Il correspond a la ligne, a l'enregistrement ou a l'objet recu depuis une source. A ce niveau, le systeme ne suppose pas encore que les champs sont fiables ou complets. Le deuxieme niveau est l'evenement parse. Il contient les champs extraits par le parseur, mais il reste proche de la source d'origine. Le troisieme niveau est l'evenement normalise. Il respecte le schema commun et peut etre manipule par les agents de detection, de correlation et de visualisation. Le quatrieme niveau est l'incident. Il regroupe une ou plusieurs anomalies candidates avec un contexte lisible.
+
+Cette separation evite de melanger plusieurs notions. Une ligne de log n'est pas automatiquement une anomalie. Une anomalie candidate n'est pas automatiquement un incident. Un incident n'est pas automatiquement une intrusion confirmee. Chaque niveau ajoute une interpretation supplementaire. Cette progression est utile pour l'audit : lorsqu'une decision est contestee, il est possible de revenir au niveau precedent et de verifier si le probleme vient du parsing, du routage, du modele ou de la correlation.
+
+Le schema commun joue un role d'interface entre les niveaux. Il contient les champs indispensables a l'analyse transversale : horodatage, source, hote, famille, categorie, severite, message, score, decision et metadonnees. Les champs absents ne doivent pas bloquer tout le traitement. Ils peuvent rester vides ou etre remplaces par une valeur explicite indiquant l'indisponibilite. Ce choix rend le systeme tolerant aux formats incomplets.
+
+\section{Contrat de message entre modules}
+L'architecture modulaire suppose que les composants echangent des informations sous forme de messages. Un message minimal contient un identifiant, un timestamp de production, une source, un type d'evenement, un payload et des metadonnees. L'identifiant permet de tracer un evenement dans la chaine. Le timestamp permet de reconstruire l'ordre des traitements. La source indique l'origine. Le payload transporte les champs utiles. Les metadonnees documentent les decisions intermediaires.
+
+Ce contrat de message permet de separer les responsabilites. Le collecteur produit des messages bruts ou semi-structures. Le parseur enrichit le payload avec les champs extraits. Le normaliseur aligne les noms de colonnes. Le routeur ajoute la famille probable et le modele selectionne. Le detecteur ajoute le score et la decision. Le correlateur ajoute un identifiant d'incident. L'audit conserve les traces de ces transformations.
+
+Dans la version locale, ces messages peuvent etre materialises par des appels de fonctions, des fichiers JSONL ou des sorties CSV. Dans une version plus distribuee, le meme contrat pourrait circuler dans Redis Streams, MQTT ou une autre file de messages. L'interet de cette abstraction est de preparer l'evolution sans imposer immediatement une infrastructure lourde.
+
+\section{Strategie de correlation}
+La correlation transforme des anomalies candidates isolees en incidents. Elle repose sur une hypothese simple : un evenement rare devient plus significatif lorsqu'il s'inscrit dans un contexte. Ce contexte peut etre temporel, spatial, semantique ou operationnel. Un echec de connexion isole peut etre banal. Plusieurs echecs rapproches sur le meme utilisateur ou la meme source peuvent devenir suspects. Une alerte Wazuh de severite moyenne peut devenir prioritaire si elle coincide avec une anomalie detectee par un modele non supervise.
+
+La strategie retenue reste volontairement simple afin de conserver la lisibilite du prototype. Les anomalies sont regroupees selon la proximite temporelle, la source, la famille, la severite et certaines similarites de message. Cette correlation n'est pas encore un moteur de regles SOC complet. Elle constitue une premiere couche de regroupement qui reduit la fragmentation des resultats.
+
+Une extension future consisterait a introduire des graphes d'evenements. Les noeuds representeraient les utilisateurs, hotes, adresses IP, processus, fichiers ou regles. Les aretes representeraient les relations observees. Une telle approche permettrait de reconstruire des chemins d'attaque ou des campagnes. Elle demanderait toutefois des donnees plus riches et une evaluation specifique.
+
+\section{Modele de decision analyste}
+Le modele propose integre explicitement la decision humaine. Le dashboard permet de valider, rejeter ou reclasser une anomalie candidate. Cette decision n'est pas seulement une annotation visuelle. Elle peut devenir un signal de retour. Dans une version future, les validations pourraient alimenter un apprentissage actif, ajuster les seuils ou enrichir les regles de correlation.
+
+La decision analyste suit une logique prudente. L'analyste consulte d'abord le contexte : source, message, score, severite, famille, horodatage et incident associe. Il compare ensuite l'evenement avec les autres signaux de la meme periode. Il peut enfin choisir une action : confirmer l'interet, rejeter le signal, le reclasser ou le laisser en observation. L'audit conserve cette decision afin de permettre une relecture.
+
+Ce modele reconnait que la detection d'anomalies est rarement totalement automatique. Dans un environnement reel, les alertes doivent etre interpretees. La valeur du systeme depend donc de sa capacite a fournir les bonnes informations au bon moment. L'agent dashboard est ainsi un composant du modele scientifique, pas seulement une interface graphique.
+
+\section{Scenarios d'utilisation}
+Plusieurs scenarios d'utilisation structurent le modele. Le premier est le scenario de traitement hors ligne. Un analyste fournit un fichier ou un dossier de logs. Le pipeline detecte les formats, normalise les evenements, applique les modeles et produit des CSV et tableaux. Ce scenario est utile pour l'analyse post-incident, la preparation de datasets et la redaction scientifique.
+
+Le deuxieme scenario est le scenario de traitement local par micro-lots. Le serveur FastAPI expose un endpoint de decouverte et d'analyse. Le dashboard interroge les resultats et affiche les anomalies candidates. Ce scenario valide une boucle interactive periodique, mais reste limite a une machine ou a un environnement local. Il ne constitue pas une preuve de temps reel strict au sens d'un SOC a tres haut debit.
+
+Le troisieme scenario est le scenario d'extension evenementielle. Les agents peuvent publier ou consommer des messages via Redis Streams ou MQTT. Redis Streams est utilise dans les experiences pour valider une repartition locale multi-processus, avec reprise d'une tache non acquittee. MQTT prepare une communication legere entre composants. Dans le memoire, ce scenario est presente comme une preuve locale d'architecture distribuee, non comme une preuve industrielle multi-machine.
+
+Le quatrieme scenario est le scenario pedagogique. Le prototype sert a comprendre le cycle complet d'analyse des journaux : collecte, parsing, normalisation, detection, interpretation et audit. Ce scenario est important dans un cadre universitaire car il relie les notions theoriques de detection d'anomalies a un systeme concret.

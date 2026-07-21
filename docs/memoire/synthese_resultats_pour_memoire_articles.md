@@ -35,6 +35,7 @@ Tableaux associes:
 - `docs/memoire/tables/table_wazuh_logminer_overlap.md`;
 - `docs/memoire/tables/table_resource_campaign_multicycle.md`;
 - `docs/memoire/tables/table_intelligent_redis_long_campaign.md`;
+- `docs/memoire/tables/table_intelligent_redis_6h_campaign.md`;
 - `docs/memoire/tables/table_intelligent_agents_ablation.md`;
 - `docs/memoire/tables/table_intelligent_agents_resources.md`;
 - `docs/memoire/tables/table_family_routing_ablation.md`;
@@ -51,13 +52,15 @@ supervisees Linux/auth, CICIDS et UNSW-NB15, mais ces scores restent
 exploratoires tant qu'ils ne sont pas reproduits avec un split temporel ou par
 scenario. Les preuves les plus solides pour le prototype concernent la
 robustesse du pipeline multi-format, la tracabilite, la campagne Redis locale
-et la reproductibilite des artefacts.
+de six heures et la reproductibilite des artefacts.
 
 Le systeme doit etre presente comme un prototype local avance et extensible:
 la V1 CLI constitue le socle stable, la V2 FastAPI apporte l'interaction par
 services REST, et Redis Streams est deja integre comme bus evenementiel
-optionnel pour tracer les workflows agents. Cette brique prepare une
-distribution multi-machine, mais elle ne prouve pas encore une scalabilite SOC.
+optionnel pour tracer et repartir les workflows agents. La campagne d'endurance
+de six heures valide une distribution locale multi-processus avec reprise
+systematique des taches non acquittees. Cette brique prepare une distribution
+multi-machine, mais elle ne prouve pas encore une scalabilite SOC industrielle.
 MQTT reste une perspective pour des collecteurs plus proches de l'IoT ou du
 temps reel.
 
@@ -97,8 +100,8 @@ analyste ou par l'agent correlateur.
 | CICIDS2017 | RandomForest supervise | F1 = 0.997163 |
 | UNSW-NB15 | RandomForest supervise | F1 = 0.999965, resultat exploratoire a revalider |
 | Wazuh | Isolation Forest | 122 563 evenements, 3 676 anomalies candidates |
-| BGL | Selection validation | F1 autour de 0.994333 |
-| HDFS | Selection validation | F1 autour de 0.599333 a 0.600333 |
+| BGL | Drain3 + fenetres train-test | F1 = 1.000000 avec Isolation Forest sur split local |
+| HDFS | Drain3 + fenetres train-test | Meilleur F1 = 0.652789 avec histogramme train-test |
 | Windows simule | Isolation Forest / baseline | F1 = 1.0 en scenario controle |
 
 Interpretation:
@@ -107,9 +110,10 @@ Interpretation:
   du schema et de la distribution d'entrainement.
 - Les tres hauts scores reseau doivent etre discutes avec prudence, car les
   datasets peuvent etre desequilibres ou separer fortement les classes.
-- HDFS montre que certains logs sequentiels restent difficiles avec des
-  features legeres; c'est un bon argument pour presenter le deep learning comme
-  perspective ou comparaison experimentale.
+- HDFS montre que certains logs sequentiels restent difficiles meme apres ajout
+  de templates Drain3 et de fenetres; c'est un bon argument pour presenter les
+  modeles sequentiels profonds comme perspective ou comparaison experimentale,
+  sans pretendre que le probleme est resolu.
 - Les anomalies non supervisees ne prouvent pas une intrusion: elles signalent
   des evenements rares ou atypiques a analyser.
 
@@ -180,33 +184,36 @@ multi-worker, et non comme une preuve de debit SOC industriel.
 
 ## Campagne Redis Agents Intelligents
 
-Une campagne longue Redis a ete executee avec trois workers principaux, un
-worker de reprise et une panne volontaire avant acquittement. Le run retenu
-pour le memoire est `redis-campaign-20260717161257`.
+Une campagne d'endurance Redis de six heures a ete executee avec trois workers
+principaux, un worker de reprise et une panne volontaire avant acquittement a
+chaque iteration. Elle complete le run court `redis-campaign-20260717161257`
+qui servait de preuve initiale.
 
 Resultats:
 
-- 150 taches enfilees;
-- 150 taches uniques terminees;
+- duree observee: 21613.8566 s, soit environ 6 h 00 min 14 s;
+- 709 iterations terminees;
+- 8508 taches enfilees;
+- 8508 taches uniques terminees;
 - 0 echec;
 - 0 tache pending en fin de campagne;
 - 0 perte estimee;
-- 1 panne simulee avant `ack`, reprise par `redis-recovery-agent`;
-- duree observee depuis les evenements Redis: 102.4202 s;
-- debit observe: 1.4646 taches/s;
-- latence p95/p99 par tache: 5.3567 s / 8.2873 s.
+- 709 pannes simulees avant `ack`, reprises par `redis-recovery-agent`;
+- debit observe: 0.3936 taches/s;
+- latence p95/p99 par tache: 5.9879 s / 8.7987 s.
 
 Le tableau final est dans
-`docs/memoire/tables/table_intelligent_redis_long_campaign.md`.
+`docs/memoire/tables/table_intelligent_redis_6h_campaign.md`.
 
 Formulation recommandee:
 
-> La campagne Redis longue montre que les agents intelligents Logminer peuvent
-> se repartir des taches heterogenes dans plusieurs processus, publier leurs
-> decisions et recuperer une tache abandonnee avant acquittement. Dans le run
-> retenu, les 150 taches ont ete terminees sans echec ni pending final. La
-> preuve reste locale et multi-processus; le deploiement multi-machine est une
-> perspective experimentale distincte.
+> La campagne Redis de six heures montre que les agents intelligents Logminer
+> peuvent se repartir des taches heterogenes dans plusieurs processus, publier
+> leurs decisions et recuperer des taches abandonnees avant acquittement. Sur
+> 709 iterations, les 8508 taches ont ete terminees sans echec, sans pending
+> final et sans perte observee. Cette preuve soutient la dimension distribuee
+> du titre au niveau local multi-processus; le deploiement multi-machine reste
+> une perspective experimentale distincte.
 
 ## Robustesse Multi-Format
 
@@ -375,9 +382,9 @@ Scenario de demonstration:
 - La latence quasi temps reel est acceptable pour une demonstration locale,
   mais demande optimisation pour une production SOC.
 - Les resultats HDFS montrent la limite des features legeres ligne par ligne
-  pour les logs de systemes distribues. Une extension Drain-like, templates de
-  logs ou fenetres temporelles est necessaire pour rivaliser avec les approches
-  sequentielles type DeepLog/LogAnomaly.
+  pour les logs de systemes distribues. L'extension Drain3 et fenetres ameliore
+  le protocole, mais une comparaison avec des approches sequentielles type
+  DeepLog/LogAnomaly reste necessaire.
 
 ## Contribution A Mettre En Avant
 

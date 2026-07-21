@@ -1,4 +1,5 @@
 \chapter{Resultats et evaluation}
+\label{chap:resultats}
 
 \section{Protocole experimental}
 L'evaluation combine plusieurs types de donnees afin de tester la robustesse du prototype face a l'heterogeneite des journaux. Les sources incluent des journaux locaux, des exports SIEM/HIDS, des datasets systemes publics, des datasets reseau labelises et des entrees de robustesse.
@@ -15,10 +16,33 @@ L'evaluation combine plusieurs types de donnees afin de tester la robustesse du 
 Reel local & Windows Event/Application/System & Journaux Windows & Collecte, parsing et detection locale. \\
 Reel/SIEM & Wazuh exports & Alertes et evenements SIEM/HIDS & Detection non supervisee sur signaux securite. \\
 Reel tabulaire & Linux/auth & Authentification labelisee & Evaluation supervisee et faux positifs. \\
-Public systeme & HDFS, BGL & Logs distribues/HPC & Validation sur logs sequentiels. \\
-Public reseau & CICIDS2017, UNSW-NB15 & Flux reseau labelises & Evaluation supervisee exploratoire d'attaques connues. \\
+Public systeme & HDFS, BGL & Logs distribues/HPC & Evaluation exploratoire sur logs sequentiels. \\
+Public reseau & CICIDS2017, CIC-DDoS2019 & Flux reseau labelises & Detection supervisee d'attaques connues avec protocoles exploratoires et splits stricts complementaires. \\
 Controle & Windows simule & Evenements avec anomalies injectees & Comparaison baseline et IA. \\
 Robustesse & Apache, CEF/LEEF, CloudTrail, Linux auth & Multi-format & Tolerance aux formats heterogenes. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Configuration experimentale des modeles}
+Le tableau \ref{tab:model-config} centralise les principaux hyperparametres utilises pour les modeles supervises et non supervises. Il ne remplace pas les scripts, mais fournit une lecture rapide du protocole sans renvoyer le lecteur au depot.
+
+\begin{table}[H]
+\centering
+\caption{Configuration compacte des modeles}
+\label{tab:model-config}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.4cm}p{2.4cm}p{2.2cm}p{2.2cm}p{2cm}X}
+\toprule
+\textbf{Famille} & \textbf{Modele} & \textbf{n\_estimators} & \textbf{max\_depth} & \textbf{seed} & \textbf{Split / parametres cles} \\
+\midrule
+Linux/auth & RandomForest & 120 & 24 & 42 & Split stratifie exploratoire ; \texttt{class\_weight=balanced}, \texttt{min\_samples\_leaf=2}. \\
+CICIDS2017 & RandomForest & 100 & 28 & 42 & Split stratifie exploratoire ; \texttt{class\_weight=balanced}, \texttt{min\_samples\_leaf=2}. \\
+CIC-DDoS2019 & RandomForest & 100 & 28 & 42--46 & Holdout fichier/famille DDoS ; \texttt{class\_weight=balanced}, \texttt{min\_samples\_leaf=2}, echantillons plafonnes. \\
+Ablation global/familles & RandomForest & 120 & 22 & 42--46 & Espace commun strict, split 75/25 par famille, \texttt{class\_weight=balanced}, PR-AUC et MCC rapportes. \\
+Validation stricte complementaire & RandomForest & 100--120 & 24--28 & 42--46 & Holdout par serveurs, fichiers ou scenarios ; echantillons plafonnes pour bornage calculatoire. \\
+Windows/Wazuh & Isolation Forest & 200 & n/a & 42 & \texttt{contamination=0,05} par defaut, bornee dans $[0,001;0,5]$ ; anomalies candidates, pas intrusions confirmees. \\
+HDFS/BGL Drain3 & Isolation Forest & 200 & n/a & 42 & Contamination fixee sur le train pour la validation train--test ; templates Drain3 et fenetres temporelles. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -38,26 +62,87 @@ Le tableau \ref{tab:main-results} resume les principaux resultats.
 Windows & Security/Application/System & Isolation Forest & Non supervise & Anomalies candidates et incidents correles. \\
 Wazuh & Exports Jan./Oct./Dec. & Isolation Forest & Non supervise & 122 563 evenements, 3 676 anomalies candidates. \\
 Linux/auth & linux\_auth\_logs & RandomForest & Supervise & F1 = 0,916602. \\
-CICIDS2017 & MachineLearningCVE & RandomForest & Supervise & F1 = 0,997163. \\
-UNSW-NB15 & unsw\_nb15\_80\_20 & RandomForest & Supervise exploratoire & F1 = 0,999965. \\
-HDFS & HDFS logs & Ensemble/IForest & Non supervise & Meilleure selection autour de F1 = 0,599333. \\
-BGL & BlueGene/L & Ensemble/Autoencoder/IForest & Non supervise & Meilleure selection autour de F1 = 0,994333. \\
+CICIDS2017 & MachineLearningCVE & RandomForest & Supervise & F1 exploratoire = 0,997163 ; F1 strict = 0,157827. \\
+CIC-DDoS2019 & DrDoS/UDPLag/SYN & RandomForest & Supervise strict & F1 = 0,997577, MCC = 0,994091 sur holdout fichier/famille DDoS. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \section{Evaluation des modeles supervises}
-Les modeles supervises sont evalues sur des datasets labelises. Les scores eleves obtenus sur CICIDS2017 et UNSW-NB15 sont presentes comme des resultats exploratoires du protocole disponible. Ils montrent que des modeles specialises peuvent bien capturer des distributions connues, mais ils ne prouvent pas une generalisation temporelle ou inter-scenario. Un protocole plus strict devrait separer les donnees par jour, fichier, hote ou scenario d'attaque, puis rapporter plusieurs graines, matrices de confusion et intervalles de confiance.
+Les modeles supervises sont evalues sur des datasets labelises. Les scores eleves obtenus dans les protocoles exploratoires doivent etre interpretes dans le cadre experimental considere. Ils montrent que des modeles specialises peuvent bien capturer des distributions connues, mais ils ne garantissent pas une generalisation universelle. En particulier, un split aleatoire par lignes ou par echantillons peut surestimer la performance lorsque des flux proches, issus d'une meme capture ou d'un meme scenario, se retrouvent simultanement dans l'entrainement et le test.
+
+Le score de 0,999965 est attribue a un jeu de donnees DDoS compatible CIC-DDoS2019, et non a une validation stricte UNSW-NB15. Il est conserve comme resultat exploratoire historique, mais il n'est plus utilise comme preuve finale principale. Le resultat principal retenu pour CIC-DDoS2019 est le holdout fichier/famille DDoS sur cinq graines : F1 = 0,997577, PR-AUC = 0,999991 et MCC = 0,994091, documente dans \texttt{random\_forest\_cic\_ddos2019\_metrics.csv}. Une experience UNSW-NB15 officielle devrait utiliser les fichiers UNSW-NB15 documentes, separer clairement entrainement et test, et rapporter les resultats sous une entree distincte.
+
+\begin{table}[H]
+\centering
+\caption{Evaluation supervisee stricte complementaire}
+\label{tab:supervised-strict-splits}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3.0cm}p{4.0cm}p{1.8cm}rrrr}
+\toprule
+\textbf{Dataset} & \textbf{Split} & \textbf{Rep./holdouts} & \textbf{Precision} & \textbf{Rappel} & \textbf{F1} & \textbf{MCC} \\
+\midrule
+Linux/auth & Holdout par serveurs & 5 & 0,887734 & 0,774720 & 0,826251 & 0,683796 \\
+CICIDS2017 & Cinq holdouts fichier/scenario associes aux graines 42--46 & 5 & 0,390476 & 0,128650 & 0,157827 & 0,146206 \\
+CIC-DDoS2019 & Holdout fichier/famille DDoS & 5 & 0,999598 & 0,995600 & 0,997577 & 0,994091 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Cette evaluation stricte complete les protocoles exploratoires. Elle conserve des echantillons plafonnes pour garantir un calcul reproductible sur les gros fichiers, mais les modeles reseau utilisent desormais 100 arbres et Linux/auth 120 arbres. Linux/auth baisse moderement ; CICIDS2017 chute fortement lorsque des fichiers ou scenarios entiers sont tenus hors entrainement ; CIC-DDoS2019 conserve un score eleve, mais ce resultat reste limite a la famille DDoS evaluee. Le rappel de CICIDS2017 atteint seulement 0,128650, ce qui indique que beaucoup d'evenements positifs des scenarios tenus hors entrainement ne sont pas detectes par ce modele. Le score DDoS doit rester attribue a CIC-DDoS2019 et non a UNSW-NB15.
+
+Pour isoler plus directement l'effet du mecanisme de separation sur CICIDS2017, une comparaison controlee supplementaire a ete executee. Les deux variantes utilisent les memes features, le meme RandomForest, les memes hyperparametres, les memes graines et des tailles train--test appariees. La difference porte sur le split : aleatoire stratifie d'un cote, holdout fichier/scenario de l'autre.
+
+\begin{table}[H]
+\centering
+\caption{Comparaison controlee split aleatoire contre holdout sur CICIDS2017}
+\label{tab:controlled-split-cicids}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3.0cm}p{1.2cm}p{2.0cm}p{2.2cm}p{2.2cm}X}
+\toprule
+\textbf{Split} & \textbf{Rep./holdouts} & \textbf{Test moy.} & \textbf{F1 $\mu \pm \sigma$} & \textbf{MCC $\mu \pm \sigma$} & \textbf{Lecture} \\
+\midrule
+Aleatoire stratifie apparie & 5 & 6 436 & 0,999260 $\pm$ 0,000353 & 0,998523 $\pm$ 0,000703 & Performance tres elevee lorsque les echantillons proches peuvent etre repartis entre train et test. \\
+Cinq holdouts fichier/scenario & 5 & 6 436 & 0,157827 $\pm$ 0,347377 & 0,146206 $\pm$ 0,301650 & Dispersion surtout liee aux scenarios tenus hors entrainement. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Cette experience renforce l'interpretation methodologique : pour CICIDS2017, l'ecart principal observe dans cette configuration est lie au changement de protocole de separation, puisque les autres parametres principaux sont controles. Les cinq valeurs de holdout ne doivent toutefois pas etre lues comme cinq repetitions aleatoires independantes du meme benchmark : chaque graine selectionne aussi un fichier ou scenario tenu hors entrainement different. La moyenne et l'ecart-type mesurent donc surtout une dispersion entre problemes de generalisation par scenario. L'experience ne prouve pas que tout modele echouerait sur CICIDS2017, mais elle montre que le RandomForest utilise par \logminer{} apprend fortement des signatures propres aux fichiers ou scenarios vus pendant l'entrainement.
+
+\begin{table}[H]
+\centering
+\caption{Analyse de l'instabilite du holdout CICIDS2017}
+\label{tab:cicids-holdout-instability}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{1cm}p{3.4cm}Xrrrr}
+\toprule
+\textbf{Seed} & \textbf{Fichier tenu hors entrainement} & \textbf{Attaques du fichier} & \textbf{TP} & \textbf{FN} & \textbf{F1} & \textbf{PR-AUC} \\
+\midrule
+42 & Friday Afternoon DDoS & DDoS = 61 194 & 2 553 & 1 447 & 0,779185 & 0,953532 \\
+43 & Friday Afternoon PortScan & PortScan = 12 488 & 20 & 3 980 & 0,009948 & 0,915857 \\
+44 & Friday Morning & Bot = 1 966 & 0 & 1 966 & 0,000000 & 0,315521 \\
+45 & Thursday Afternoon Infiltration & Infiltration = 32 & 0 & 32 & 0,000000 & 0,008821 \\
+46 & Thursday Morning WebAttacks & Brute Force = 1 507 ; XSS = 652 ; SQL Injection = 21 & 0 & 2 180 & 0,000000 & 0,339342 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent\footnotesize\textit{Note : les effectifs de la colonne ``attaques du fichier'' decrivent le fichier source complet ; TP et FN sont calcules sur l'echantillon plafonne utilise pour le benchmark.}\normalsize
+
+Cette table explique pourquoi l'ecart-type du F1 est superieur a la moyenne. Le modele generalise partiellement au scenario DDoS tenu hors entrainement, presque pas au PortScan, et pas aux scenarios Bot, Infiltration et WebAttacks dans les echantillons testes. L'instabilite ne vient donc pas des graines en tant que telles ; elle vient d'abord des familles d'attaques et des fichiers que chaque graine tient hors entrainement.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.92\textwidth]{fig_supervised_models_f1.png}
+  \includegraphics[width=\textwidth]{fig_supervised_models_f1.png}
   \caption{Performances F1 des modeles supervises.}
   \label{fig:supervised}
 \end{figure}
 
 \section{Evaluation non supervisee}
-Les sorties non supervisees sont traitees comme des anomalies candidates. Cela concerne notamment Windows, Wazuh, HDFS et BGL. Une anomalie candidate indique un comportement rare ou atypique, mais sa qualification comme attaque necessite une correlation ou une validation analyste. Les resultats HDFS soulignent une limite importante de l'approche ligne par ligne : certaines anomalies de systemes distribues sont sequentielles et demandent un fenetrage temporel ou des templates de logs. Les resultats BGL doivent egalement etre interpretes prudemment lorsque le taux de contamination est calibre a partir d'une information connue a l'avance.
+Les sorties non supervisees sont traitees comme des anomalies candidates. Cela concerne notamment Windows et Wazuh dans les resultats principaux. Une anomalie candidate indique un comportement rare ou atypique, mais sa qualification comme attaque necessite une correlation ou une validation analyste.
+
+Les resultats HDFS et BGL doivent etre lus avec une prudence supplementaire. Lorsque les modeles non supervises sont ajustes et evalues sur le meme echantillon, ou lorsque le parametre de contamination est deduit du taux reel d'anomalies, le score obtenu mesure surtout une separation exploratoire dans l'echantillon disponible. Il ne mesure pas une generalisation independante. Pour une validation stricte, il faudrait separer les blocs HDFS ou les periodes BGL en ensembles d'entrainement, validation et test, entrainer seulement sur le train, fixer le seuil sur validation, puis evaluer une seule fois sur test.
 
 \begin{figure}[H]
   \centering
@@ -86,12 +171,12 @@ Les faux positifs constituent une limite majeure des systemes de detection. Le p
   \label{fig:false-positive}
 \end{figure}
 
-\section{Benchmark quasi temps reel}
-Le benchmark temps reel utilise l'endpoint FastAPI \texttt{/run/discovered}. Il couvre 10 cycles, chacun portant sur 8 537 lignes. La latence moyenne du workflow est de 8,2012 secondes, avec un minimum de 3,1672 secondes et un maximum de 15,3289 secondes.
+\section{Benchmark local par micro-lots}
+Le benchmark local par micro-lots utilise l'endpoint FastAPI \texttt{/run/discovered}. Il couvre 10 cycles, chacun portant sur 8 537 lignes. La duree moyenne du workflow est de 8,2012 secondes, avec un minimum de 3,1672 secondes et un maximum de 15,3289 secondes. Cette mesure ne doit pas etre interpretee comme une preuve de temps reel strict. Elle decrit un traitement periodique par lots de taille moderee dans un environnement local.
 
 \begin{table}[H]
 \centering
-\caption{Benchmark quasi temps reel}
+\caption{Benchmark local par micro-lots}
 \label{tab:realtime}
 \begin{tabular}{lr}
 \toprule
@@ -99,9 +184,9 @@ Le benchmark temps reel utilise l'endpoint FastAPI \texttt{/run/discovered}. Il 
 \midrule
 Cycles OK & 10 \\
 Lignes par cycle & 8 537 \\
-Latence moyenne workflow & 8,2012 s \\
-Latence minimale workflow & 3,1672 s \\
-Latence maximale workflow & 15,3289 s \\
+Duree moyenne workflow & 8,2012 s \\
+Duree minimale workflow & 3,1672 s \\
+Duree maximale workflow & 15,3289 s \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -109,7 +194,7 @@ Latence maximale workflow & 15,3289 s \\
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.92\textwidth]{fig_realtime_workflow_latency.png}
-  \caption{Latence du workflow quasi temps reel sur 10 cycles.}
+  \caption{Duree du workflow local par micro-lots sur 10 cycles.}
   \label{fig:latency}
 \end{figure}
 
@@ -168,40 +253,100 @@ RAM maximale moyenne & 176,89 MB \\
   \label{fig:parallel-resources}
 \end{figure}
 
-\section{Campagne Redis des agents intelligents}
-Une campagne Redis longue a ete executee pour verifier la repartition de taches heterogenes entre agents intelligents multi-taches. Le run \texttt{redis-campaign-20260717161257} utilise trois workers principaux, un worker de reprise et une panne volontaire avant acquittement. Les resultats confirment que les taches non acquittees peuvent etre recuperees sans perte observee.
+\section{Experimentations HDFS et BGL}
+Les familles HDFS et BGL sont conservees dans le memoire, mais elles sont separees des resultats principaux. Cette separation evite de presenter un score eleve comme une preuve de generalisation lorsque le protocole ne garantit pas une independance stricte entre apprentissage, parametrage de seuil et evaluation. Deux niveaux de lecture sont donc distingues : les premiers essais ligne par ligne, utiles comme baseline d'integration, puis une validation plus stricte avec extraction de templates Drain3, fenetres temporelles et split train--test.
 
 \begin{table}[H]
 \centering
-\caption{Campagne Redis longue des agents intelligents}
+\caption{Resultats exploratoires sur HDFS et BGL}
+\label{tab:hdfs-bgl-exploratoires}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.5cm}p{3.4cm}p{3.3cm}X}
+\toprule
+\textbf{Famille} & \textbf{Resultat observe} & \textbf{Interpretation retenue} & \textbf{Limite principale} \\
+\midrule
+HDFS & F1 autour de 0,599333--0,600333 & Separabilite partielle avec features legeres ligne par ligne. & Les anomalies HDFS dependent souvent de sequences ou de templates ; le protocole actuel ne prouve pas une generalisation independante. \\
+BGL & F1 autour de 0,994333 & Separabilite forte dans l'echantillon traite et integration pipeline validee. & Score sensible au protocole in-sample et au choix du seuil ; il ne doit pas etre lu comme validation robuste hors echantillon. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Ces resultats ont donc une valeur d'exploration et d'integration. Ils montrent que \logminer{} peut ingerer et traiter des logs systemes publics, mais ils ne suffisent pas a qualifier la robustesse du comportement hors echantillon.
+
+Une seconde passe a ete ajoutee pour repondre a cette limite. Les journaux sont d'abord separes en train et test. Pour HDFS, le split respecte les identifiants de blocs afin d'eviter qu'un meme bloc apparaisse dans les deux ensembles. Pour BGL, le split conserve une logique chronologique stratifiee. Les lignes sont ensuite enrichies par templates Drain3, frequences de templates, rarete, fenetres temporelles et contexte de source. Les modeles sont ajustes sur train puis scores sur test.
+
+\begin{table}[H]
+\centering
+\caption{Validation Drain3 train--test sur HDFS et BGL}
+\label{tab:hdfs-bgl-drain3-train-test}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.6cm}p{3.4cm}rrrrX}
+\toprule
+\textbf{Famille} & \textbf{Modele} & \textbf{Precision} & \textbf{Rappel} & \textbf{F1} & \textbf{Exact.} & \textbf{Lecture prudente} \\
+\midrule
+HDFS & Histogramme train--test & 0,653333 & 0,652246 & 0,652789 & 0,652789 & Gain modere par rapport aux features ligne par ligne ; la famille reste difficile. \\
+HDFS & Isolation Forest train--test & 0,638333 & 0,637271 & 0,637802 & 0,637802 & Resultat proche du meilleur histogramme, mais faux positifs et faux negatifs restent importants. \\
+BGL & Isolation Forest train--test & 1,000000 & 1,000000 & 1,000000 & 1,000000 & Separation parfaite observee sur ce split local ; ce score ne doit pas etre generalise sans repetitions. \\
+BGL & Z-score / IQR / histogramme / autoencodeur & 0,973333 & 0,973333 & 0,973333 & 0,973333 & Forte separabilite confirmee, avec quelques erreurs residuelles selon le detecteur. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Cette seconde validation rend l'etude HDFS/BGL plus coherente avec la litterature sur les logs sequentiels, sans transformer le prototype en modele profond de type DeepLog. L'apport est limite mais utile : Drain3 et les fenetres rendent l'experimentation plus credible, HDFS progresse legerement, et BGL reste tres separable dans les conditions locales. Les scores directs obtenus sur CSV de test sans protocole train--test strict sont conserves uniquement comme essais secondaires, non comme preuve principale.
+
+\section{Campagne Redis des agents intelligents}
+Une campagne Redis d'endurance de six heures a ete executee pour verifier la repartition de taches heterogenes entre agents intelligents multi-taches. Elle utilise trois workers principaux, un worker de reprise et une panne volontaire avant acquittement a chaque iteration. Le run court \texttt{redis-campaign-20260717161257}, avec 150 taches terminees, sert de prevalidation; le resultat retenu pour renforcer le memoire est la campagne de six heures. Les resultats confirment que les taches non acquittees peuvent etre recuperees de maniere repetee sans perte observee.
+
+\begin{table}[H]
+\centering
+\caption{Campagne Redis d'endurance des agents intelligents}
 \label{tab:intelligent-redis-long}
 \scriptsize
 \begin{tabular}{lr}
 \toprule
 \textbf{Indicateur} & \textbf{Valeur} \\
 \midrule
-Taches enfilees & 150 \\
-Taches uniques terminees & 150 \\
+Iterations terminees & 709 \\
+Taches enfilees & 8 508 \\
+Taches uniques terminees & 8 508 \\
 Echecs & 0 \\
-Panne simulee avant acquittement & 1 \\
+Pannes simulees avant acquittement & 709 \\
 Pending final & 0 \\
 Perte estimee & 0 \\
-Duree observee & 102,4202 s \\
-Debit observe & 1,4646 taches/s \\
-Latence p95 & 5,3567 s \\
-Latence p99 & 8,2873 s \\
+Duree observee & 21 613,8566 s \\
+Debit observe & 0,3936 taches/s \\
+Latence p95 & 5,9879 s \\
+Latence p99 & 8,7987 s \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-La repartition par agent montre une execution effectivement partagee : \texttt{redis-agent-1} termine 46 taches, \texttt{redis-agent-2} 62, \texttt{redis-agent-3} 41 et \texttt{redis-recovery-agent} recupere la tache abandonnee par le worker de panne. Les trois types de taches sont equilibres : 50 \texttt{parse.logs}, 50 \texttt{route.model} et 50 \texttt{discover.logs}.
-
-\section{Ablation de l'architecture agents}
-L'ablation compare la progression architecturale du prototype : pipeline centralise, agent unique multi-taches, agents locaux multiples, puis agents Redis avec panne et reprise.
+La repartition par agent montre une execution effectivement partagee : \texttt{redis-agent-1} termine 2 654 taches, \texttt{redis-agent-2} 2 602, \texttt{redis-agent-3} 2 543 et \texttt{redis-recovery-agent} recupere 709 taches abandonnees par le worker de panne. Les trois types de taches restent equilibres : 2 836 \texttt{parse.logs}, 2 836 \texttt{route.model} et 2 836 \texttt{discover.logs}. Cette campagne soutient la dimension distribuee du titre au niveau local multi-processus. Elle ne remplace pas un deploiement multi-machine securise, mais elle montre que l'architecture n'est pas seulement monolithique.
 
 \begin{table}[H]
 \centering
-\caption{Ablation agents intelligents}
+\caption{Comparaison controlee monolithique contre agents}
+\label{tab:controlled-monolith-agents}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3cm}rrrrrX}
+\toprule
+\textbf{Mode} & \textbf{Taches} & \textbf{Duree} & \textbf{Debit} & \textbf{CPU moy.} & \textbf{RAM max} & \textbf{Lecture} \\
+\midrule
+Monolithique & 60/60 & 36,6815 s & 1,6357 t/s & 121,339 & 189,074 MB & Reference sequentielle controlee. \\
+Agents & 60/60 & 38,1803 s & 1,5715 t/s & 165,746 & 234,777 MB & Overhead d'orchestration visible sur petit volume. \\
+Agents avec reprise & 60/60 & 39,3000 s & 1,5267 t/s & 117,598 & 189,395 MB & Une panne simulee, une tache reprise, aucun pending final. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Cette comparaison controlee ne montre pas un gain de debit des agents sur petit volume. Elle quantifie directement le cout d'orchestration et la capacite de reprise : le mode agents est legerement plus lent que le mode monolithique, mais la variante avec panne recupere la tache non acquittee sans perte finale. La modularite et la tracabilite sont soutenues par la conception logicielle, la separation des responsabilites et les mecanismes d'audit ; elles ne sont pas mesurees comme un gain quantitatif de performance dans cette campagne locale.
+
+\section{Validation progressive de l'architecture d'execution}
+Cette section ne constitue pas une ablation scientifique stricte au sens d'une comparaison controlee entre deux pipelines soumis aux memes donnees, aux memes splits et aux memes repetitions. Elle valide plutot une progression d'execution : pipeline centralise, agent unique multi-taches, agents locaux multiples, puis agents Redis avec panne et reprise. Les charges ne sont donc pas identiques. La conclusion porte sur la faisabilite architecturale, la distribution locale des taches et la reprise apres panne simulee, non sur une superiorite quantitative definitive de l'approche multi-agents.
+
+\begin{table}[H]
+\centering
+\caption{Validation progressive des agents intelligents}
 \label{tab:intelligent-agents-ablation}
 \scriptsize
 \begin{tabularx}{\textwidth}{p{3.2cm}rrrrX}
@@ -211,7 +356,8 @@ L'ablation compare la progression architecturale du prototype : pipeline central
 Pipeline centralise & 2 & 0 & n/a & n/a & Reference non distribuee. \\
 Agent unique multi-taches & 3 & 0 & n/a & n/a & Un agent execute discovery, parsing et routage. \\
 Agents locaux multiples & 9 & 0 & 6,0688 s & 1,483 & Partage d'une file locale entre agents. \\
-Agents Redis panne/reprise & 150 & 0 & 102,4202 s & 1,4646 & Distribution locale multi-processus et reprise validees. \\
+Agents Redis prevalidation & 150 & 0 & 102,4202 s & 1,4646 & Distribution locale multi-processus validee. \\
+Agents Redis endurance 6h & 8 508 & 0 & 21 613,8566 s & 0,3936 & Distribution locale multi-processus et reprise repetee validees. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -226,43 +372,7 @@ Les tests de robustesse verifient la capacite du systeme a traiter des formats d
   \label{fig:robustness}
 \end{figure}
 
-\section{Comparaison operationnelle}
-\logminer{} doit etre compris comme un complement analytique. Fail2ban est oriente reaction operationnelle par regles. OSSEC/Wazuh constituent des plateformes HIDS/SIEM plus matures. \logminer{} apporte une chaine legere de normalisation, routage, detection et visualisation, mais ne pretend pas remplacer ces outils en production.
+\section{Synthese du chapitre}
+Ce chapitre etablit les resultats experimentaux retenus pour le memoire. Les resultats supervises principaux sont accompagnes de splits plus stricts et d'une comparaison controlee sur CICIDS2017. Les experimentations HDFS/BGL distinguent explicitement les essais exploratoires de la validation Drain3 train--test. Les mesures systeme documentent la latence, les ressources, la robustesse multi-format et la campagne Redis locale de six heures.
 
-\section{Evaluation qualitative du dashboard}
-L'evaluation ne se limite pas aux scores. Les captures du dashboard montrent que le prototype permet de parcourir les anomalies candidates, d'inspecter un incident, de suivre les ressources, de verifier l'etat des services et de consulter l'audit. Cette dimension est importante car un systeme de detection inutilisable par un analyste reste difficile a valoriser, meme lorsque ses metriques sont favorables.
-
-Le dashboard joue donc trois roles : synthese, investigation et tracabilite. La synthese regroupe les indicateurs essentiels. L'investigation permet d'ouvrir les details d'un incident ou d'une anomalie candidate. La tracabilite conserve les decisions analyste et les messages utiles a la reproduction.
-
-\section{Menaces sur la validite}
-Les resultats doivent etre interpretes avec prudence. Les datasets publics ne representent pas toutes les infrastructures reelles. Les labels peuvent etre incomplets ou produire des distributions artificiellement favorables. Les mesures de latence dependent de la machine locale, du volume traite et de l'etat du systeme au moment des tests. Enfin, les sorties non supervisees ne peuvent etre assimilees a des intrusions sans validation supplementaire.
-
-\section{Synthese}
-Les resultats montrent que le prototype atteint les objectifs d'ingenierie principaux : traitement multi-format, detection supervisee et non supervisee, architecture multi-agents, dashboard, evaluation par metriques et mesures de ressources. Les objectifs scientifiques sont atteints de maniere partielle et prudente : la distribution locale multi-processus est validee par Redis, mais la generalisation supervisee, l'analyse sequentielle HDFS, la scalabilite multi-machine et la reduction des faux positifs restent des limites ouvertes.
-
-\section{Interpretation par objectif}
-Le premier objectif concernait l'identification et la structuration des journaux. Les tests multi-format et la taxonomie des sources montrent que le prototype distingue plusieurs familles de donnees et conserve les entrees inconnues. Le deuxieme objectif concernait l'analyse des methodes de detection. Le memoire compare les approches par regles, les methodes statistiques, les modeles supervises, les methodes non supervisees et les approches profondes.
-
-Le troisieme objectif portait sur l'architecture d'agents specialises. Le prototype valide une distribution logique par composants et une distribution locale multi-processus par Redis Streams : collecte, parsing, normalisation, routage, detection, correlation, dashboard et audit. Le quatrieme objectif concernait l'apprentissage. Les resultats supervises et non supervises montrent l'integration de plusieurs modeles, avec une interpretation prudente selon la disponibilite des labels et les risques de fuite de donnees.
-
-Le cinquieme objectif etait la conception d'un tableau de bord. Les captures montrent que cette partie est realisee et qu'elle couvre les alertes, les details, les ressources et l'audit. Le sixieme objectif concernait les tests sur logs simules et reels. Les sources utilisees combinent journaux locaux, exports Wazuh et datasets publics. Le septieme objectif portait sur l'evaluation des performances. Les tableaux et figures documentent les F1-scores, la latence, les ressources, les faux positifs disponibles et la comparaison operationnelle.
-
-\section{Analyse des resultats supervises}
-Les resultats supervises sont les plus simples a calculer car ils reposent sur des labels, mais ils ne sont pas automatiquement les plus simples a generaliser. Le score F1 de 0,916602 sur Linux/auth montre une performance correcte dans un contexte d'authentification. Les scores de 0,997163 sur CICIDS2017 et 0,999965 sur UNSW-NB15 indiquent une tres forte separation dans les conditions experimentales considerees. Ils doivent etre lus comme une verification d'integration des modeles supervises et non comme une preuve de detection generalisable en production.
-
-Il faut cependant garder une lecture critique. Un score eleve sur un dataset public peut refleter la qualite du modele, mais aussi la structure du dataset, la separabilite des classes, une fuite temporelle ou la stabilite des distributions. Le memoire ne presente donc pas ces scores comme une garantie absolue de detection en production. Ils valident plutot la capacite du prototype a integrer, entrainer et exploiter des modeles supervises dans une chaine complete. Une validation finale devrait refaire les partitions par temps, fichier, hote ou scenario d'attaque.
-
-\section{Analyse des resultats non supervises}
-Les resultats non supervises sont plus delicats. Sur Wazuh, le systeme traite 122 563 evenements et produit 3 676 anomalies candidates. Cette valeur donne un ordre de grandeur de la selectivite du detecteur, mais elle ne suffit pas a conclure que toutes ces anomalies sont des attaques. Elle indique que certains evenements se distinguent du comportement global observe.
-
-Pour HDFS, BGL et les journaux Windows, la logique est similaire. Le modele signale des points atypiques, puis le correlateur et le dashboard fournissent le contexte. Le score HDFS plus faible indique que la version actuelle reste limitee pour les anomalies sequentielles ligne par ligne. Cette separation entre detection algorithmique et validation humaine est l'un des principes importants du travail. Elle evite de transformer la sortie d'un modele non supervise en verdict de securite.
-
-\section{Analyse de la latence}
-Le benchmark quasi temps reel indique une latence moyenne de 8,2012 secondes pour 10 cycles de 8 537 lignes. Cette mesure montre que le workflow local peut traiter des volumes moderes dans des delais compatibles avec une analyse quasi temps reel. Le minimum et le maximum rappellent toutefois que la latence varie selon l'etat du systeme, le volume traite et les operations effectuees.
-
-Dans une perspective de deploiement, cette mesure doit etre completee par des tests plus longs. Un systeme operationnel doit rester stable sur des heures ou des jours. Il doit aussi absorber des pics de logs sans bloquer le dashboard ni perdre les informations importantes. Le resultat obtenu est donc encourageant, mais il constitue une base experimentale plutot qu'une certification de performance industrielle.
-
-\section{Analyse des ressources}
-La campagne CPU/RAM sur 30 cycles montre une consommation raisonnable pour le prototype local. L'API/orchestrateur et le processus \logminer{} restent dans des ordres de grandeur compatibles avec une machine de developpement. Cette observation soutient le choix de modeles legers et d'une architecture locale reproductible.
-
-La mesure des ressources est importante car un detecteur trop lourd peut devenir lui-meme un probleme operationnel. Dans un environnement de securite, l'outil d'observation ne doit pas perturber excessivement le systeme observe. Les resultats actuels sont favorables pour un prototype, mais une evaluation plus stricte serait necessaire avec davantage de sources, des volumes plus eleves et une duree plus longue.
+L'interpretation generale, les limites scientifiques et les perspectives sont regroupees dans les chapitres suivants afin d'eviter de repeter les memes precautions dans la section de resultats.

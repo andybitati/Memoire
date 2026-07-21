@@ -44,6 +44,19 @@ Cette chaine evite une redaction deconnectee des preuves. Lorsqu'une valeur est 
 
 La reproduction exacte peut toutefois dependamment varier selon l'environnement. Les modeles aleatoires peuvent necessiter des graines fixes. Les temps de traitement dependent de la charge de la machine. Les versions de bibliotheques peuvent influencer certains details. Ces limites ne remettent pas en cause la valeur des resultats, mais elles imposent de documenter autant que possible les conditions experimentales.
 
+\section{Conditions de reproduction de la campagne Redis}
+La campagne Redis d'endurance de six heures a ete lancee depuis l'hote Windows du projet, dans le dossier \texttt{E:\textbackslash Cours\textbackslash TFE}, avec l'environnement Python local \texttt{.venv}. Le service Redis utilise par le script etait le conteneur Docker \texttt{logminer-redis}, base sur l'image \texttt{redis:7-alpine}, expose sur \texttt{localhost:6379}. L'URL Redis effective etait donc \texttt{redis://localhost:6379/0}.
+
+Deux machines virtuelles VirtualBox etaient lancees pendant l'experience : \texttt{Debian} et \texttt{Ubuntu}. Elles etaient configurees en NAT simple et ont servi a documenter le contexte de preparation d'une extension multi-machine. Toutefois, le bus Redis effectivement utilise par la campagne de six heures etait local a l'hote. La conclusion experimentale doit donc rester precise : le memoire valide une distribution locale multi-processus, une endurance de six heures et une reprise repetee des taches non acquittees ; il ne revendique pas encore une validation SOC multi-machine securisee.
+
+La commande principale de reproduction est la suivante :
+
+\begin{itemize}
+  \item \path{python scripts/run_intelligent_redis_endurance_campaign.py}
+  \item options principales : \path{--duration-sec 21600 --workers 3 --repetitions 4 --cycles 8 --max-parallel-tasks 2 --iteration-timeout-sec 900}
+  \item sorties principales : \path{data/processed/intelligent_redis_6h_campaign_summary.json} et \path{docs/memoire/tables/table_intelligent_redis_6h_campaign.md}
+\end{itemize}
+
 \section{Verification des figures et captures}
 Les figures du memoire jouent deux roles. Certaines representent l'architecture ou le fonctionnement du systeme. D'autres synthetisent des resultats numeriques. Les captures du dashboard montrent quant a elles l'existence de l'interface et la nature des informations presentees a l'analyste.
 
@@ -68,7 +81,7 @@ Les limites de ce scenario sont claires. Il ne prouve pas la resilience a grande
 \section{Scenario d'extension distribuee}
 Dans une extension distribuee, les agents pourraient etre deployes sur plusieurs machines. Les collecteurs locaux recueilleraient les journaux au plus pres des sources. Les messages seraient transmis vers une file persistante ou un bus evenementiel. Les detecteurs pourraient fonctionner comme workers separes. Le dashboard consulterait les resultats consolides via une API centralisee.
 
-Redis Streams et MQTT ont ete explores comme extensions operationnelles locales. Redis Streams a ete valide sur une campagne locale multi-processus : 150 taches uniques terminees, aucun echec, aucun pending final et une panne volontaire avant acquittement recuperee par un worker de reprise. MQTT reste une piste de communication legere entre composants. Ces extensions demandent encore des tests multi-machine, des mecanismes de securisation et une supervision plus stricte avant tout usage operationnel.
+Redis Streams et MQTT ont ete explores comme extensions operationnelles locales. Redis Streams a ete valide sur une campagne locale multi-processus de six heures : 8 508 taches uniques terminees, aucun echec, aucun pending final et 709 pannes volontaires avant acquittement recuperees par un worker de reprise. MQTT reste une piste de communication legere entre composants. Ces extensions demandent encore des tests multi-machine, des mecanismes de securisation et une supervision plus stricte avant tout usage operationnel.
 
 Une extension distribuee devrait aussi traiter les questions d'authentification, de chiffrement, de controle d'acces et de journalisation des actions administratives. Un systeme de securite ne peut pas transmettre des evenements sensibles sans proteger les communications. Ces aspects depassent le prototype actuel, mais ils constituent une feuille de route naturelle.
 
@@ -94,7 +107,7 @@ Une bonne pratique consiste a associer chaque changement important a une verific
 Le depot GitHub facilite cette maintenance en conservant l'historique des modifications. Il permet aussi de separer les branches de developpement, les versions stables et les ajouts futurs comme les articles scientifiques. Les articles seront integres plus tard, lorsque leur redaction sera finalisee, afin de ne pas melanger des contenus provisoires avec le memoire courant.
 
 \section{Tests complementaires recommandes}
-Plusieurs tests complementaires sont recommandes pour prolonger le travail. Le premier est un test de charge prolonge, sur plusieurs heures ou plusieurs jours, afin de mesurer la stabilite de l'API, du pipeline et du dashboard. Le deuxieme est un test multi-machine, avec plusieurs collecteurs et un bus central. Le troisieme est un test de panne, ou un agent est volontairement arrete puis relance pour observer la reprise.
+Plusieurs tests complementaires sont recommandes pour prolonger le travail. Un premier test de charge prolonge a deja ete realise sur Redis Streams pendant six heures, afin de mesurer la stabilite de la repartition locale multi-processus et de la reprise de taches non acquittees. Les prochaines extensions devraient couvrir un test multi-machine, avec plusieurs collecteurs et un bus central, puis des tests de panne plus proches d'un deploiement operationnel, ou un agent est volontairement arrete puis relance sous supervision.
 
 Un autre test utile concerne la robustesse aux formats inattendus. Il s'agirait d'injecter des lignes incompletes, corrompues ou melangees afin de verifier que le systeme conserve les entrees et signale les erreurs sans interrompre tout le pipeline. Ce type de test est important car les logs reels sont rarement parfaitement propres.
 

@@ -20,24 +20,56 @@ Le pipeline effectue les etapes suivantes :
 
 Le module \texttt{pipeline.py} coordonne la chaine locale. Le module \texttt{api.py} expose les fonctions principales via FastAPI. Les modules \texttt{model\_router.py} et \texttt{model\_compare.py} gerent la selection des familles et la comparaison des modeles.
 
+Dans l'implementation, le pipeline joue un role de glue code scientifique. Il ne s'agit pas seulement d'enchainer des fonctions ; il s'agit de garantir que les fichiers produits restent compatibles avec les experimentations et avec le memoire. Les sorties doivent donc conserver les colonnes attendues, les chemins doivent etre reproductibles et les erreurs doivent etre explicites. Cette contrainte explique le choix de formats simples comme CSV et JSONL pour plusieurs etapes. Ces formats sont moins sophistiques qu'une base specialisee, mais ils facilitent l'inspection, la comparaison et l'archivage des preuves.
+
+Une attention particuliere est portee a la separation entre donnees brutes, donnees traitees et artefacts de redaction. Les donnees brutes volumineuses peuvent rester hors versionnement. Les donnees traitees utiles aux experiences sont exportees dans des dossiers dedies. Les figures et tableaux du memoire sont ensuite generes a partir de ces resultats. Cette organisation reduit le risque de citer une valeur qui ne serait plus liee a une preuve technique.
+
 \section{Parsing multi-format}
 Le prototype prend en charge plusieurs formats : CSV, JSONL, syslog, Apache, CloudTrail, HDFS, BGL, Windows XML/EVTX exporte, CEF/LEEF, tcpdump texte et pcap selon les dependances disponibles. Lorsqu'une entree est incomplete ou corrompue, elle est conservee plutot que supprimee. Cette strategie est importante pour l'audit, car une ligne non reconnue peut elle-meme etre un signal utile.
 
+Le parsing est organise autour d'un principe conservateur. Lorsqu'un parseur reconnait un format, il extrait les champs structurants. Lorsqu'il ne reconnait pas completement la ligne, il conserve le message d'origine et produit un statut exploitable. Cette decision est volontaire. Dans une chaine de securite, ignorer silencieusement une entree revient a creer un angle mort. A l'inverse, conserver trop d'informations non structurees peut augmenter le bruit. Le compromis retenu consiste a normaliser ce qui peut l'etre et a garder le reste sous forme de metadonnees.
+
+\begin{table}[H]
+\centering
+\caption{Exemples de formats pris en charge et traitement attendu}
+\label{tab:formats-implementation}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3cm}p{3cm}X}
+\toprule
+\textbf{Format} & \textbf{Type de source} & \textbf{Traitement dans le prototype} \\
+\midrule
+Windows XML/EVTX exporte & Systeme local & Extraction des evenements, canaux, messages et champs de securite disponibles. \\
+Syslog/Linux auth & Systeme Unix/Linux & Extraction timestamp, hote, processus, utilisateur et message d'authentification. \\
+Apache & Application web & Extraction methode, chemin, code HTTP, adresse cliente et volume lorsque disponible. \\
+Wazuh export & HIDS/SIEM & Conservation des champs enrichis : regle, agent, groupe, severite et message. \\
+HDFS/BGL & Logs systemes publics & Normalisation des messages et preparation a l'evaluation experimentale. \\
+CICIDS/CIC-DDoS2019 & Flux reseau tabulaire & Exploitation des features numeriques et des labels pour modeles supervises. \\
+Format inconnu & Cas limite & Conservation en fallback avec message original et statut explicite. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
 \section{Registre des modeles}
 Les modeles sont stockes dans le dossier \texttt{models}. Le registre documente les familles, types de modeles et volumes associes. Le systeme distingue les modeles supervises, lorsqu'un label est disponible, et les modeles non supervises, lorsqu'il s'agit de signaler des comportements rares.
+
+Le registre evite une ambiguite frequente dans les prototypes de detection : le meme mot ``modele'' peut designer un artefact entraine, une methode algorithmique ou une configuration experimentale. Dans \logminer{}, un modele exploitable doit etre associe a une famille de logs, un type d'apprentissage, un fichier d'artefact, des features attendues et des metriques connues lorsque celles-ci existent. Cette discipline facilite le routage et limite le risque d'appliquer un modele a une source incompatible.
+
+Les artefacts \texttt{joblib} permettent de reutiliser les modeles sans relancer l'entrainement a chaque execution. Cela accelere les tests et rend les demonstrations plus stables. En contrepartie, chaque artefact doit etre documente : dataset d'origine, date de generation, type de features, score de validation et limites connues. Sans cette documentation, un artefact performant peut devenir difficile a interpreter.
+
+\section{Agents intelligents multi-taches}
+La version avancee ajoute un runtime d'agents intelligents dans \texttt{agents/intelligent\_runtime.py}. Chaque agent declare ses capacites, conserve une memoire locale des succes, erreurs, durees et decisions recentes, publie un heartbeat enrichi et choisit ses taches selon une politique explicite combinant priorite, confiance, cout, fiabilite observee, urgence, tentatives precedentes et diversite des taches recentes. Les taches supportees couvrent notamment la decouverte de sources, le parsing, le routage de modele, la detection et la correlation.
+
+Deux modes d'execution sont disponibles. Le premier utilise une file locale en memoire pour les demonstrations reproductibles. Le second utilise Redis Streams avec des consumer groups, ce qui permet a plusieurs processus agents de consommer le meme flux de taches. Le worker \texttt{scripts/logminer\_intelligent\_agent\_worker.py} supporte aussi la reprise de taches non acquittees par \texttt{XAUTOCLAIM}, ce qui rend testable un scenario de panne avant acquittement.
+
+Cette implementation donne un sens concret aux termes agents, multi-taches et distribue. Les agents ne sont pas de simples fonctions appelees sequentiellement : ils disposent d'un profil de capacites, d'un etat observable, d'une file de taches et d'une logique de reprise. La distribution reste locale dans les experiences du memoire, mais elle est executee par plusieurs processus independants relies par un bus Redis persistant.
 
 \section{API FastAPI}
 La V2 du prototype expose une API locale permettant de lancer des analyses, consulter l'etat des services, interroger les modeles, lire les ressources et recuperer les evenements d'audit. L'API permet aussi au dashboard de fonctionner sans manipuler directement les fichiers internes.
 
 L'API joue un role de separation entre le moteur d'analyse et l'interface. Elle evite que le dashboard depende directement de l'organisation interne des fichiers. Cette separation facilite aussi l'ajout futur de workers, de files d'attente ou de connecteurs vers d'autres plateformes.
 
-\section{Agents intelligents multi-taches}
-La version avancee ajoute un runtime d'agents intelligents dans \texttt{agents/intelligent\_runtime.py}. Chaque agent declare ses capacites, conserve une memoire locale des succes et erreurs, publie un heartbeat et choisit ses taches selon une politique explicite combinant priorite, confiance, cout et historique. Les taches supportees couvrent notamment la decouverte de sources, le parsing, le routage de modele, la detection et la correlation.
-
-Deux modes d'execution sont disponibles. Le premier utilise une file locale en memoire pour les demonstrations reproductibles. Le second utilise Redis Streams avec des consumer groups, ce qui permet a plusieurs processus agents de consommer le meme flux de taches. Le worker \texttt{scripts/logminer\_intelligent\_agent\_worker.py} supporte aussi la reprise de taches non acquittees par \texttt{XAUTOCLAIM}, ce qui rend testable un scenario de panne avant acquittement.
-
 \section{Dashboard Ariel Logminer}
-Le dashboard web constitue l'interface de consultation et d'interaction. Il affiche les indicateurs globaux, les alertes prioritaires, les anomalies candidates, les incidents, les graphes temps reel, les ressources agents, les services V2 et le journal d'audit.
+Le dashboard web constitue l'interface de consultation et d'interaction. Il affiche les indicateurs globaux, les alertes prioritaires, les anomalies candidates, les incidents, les graphes de suivi periodique, les ressources agents, les services V2 et le journal d'audit.
 
 \begin{figure}[H]
   \centering
@@ -74,7 +106,7 @@ Plusieurs difficultes ont marque l'implementation. La premiere concerne l'hetero
 Les experimentations principales sont documentees par des CSV et scripts. Les scripts \texttt{benchmark\_realtime\_workflow.py}, \texttt{run\_resource\_campaign.py}, \texttt{run\_family\_routing\_ablation.py}, \texttt{generate\_memoire\_assets.py} et \texttt{export\_memoire\_figures.py} permettent de regenerer les mesures, figures et tableaux principaux.
 
 \section{Organisation des modules}
-Le paquet \texttt{src/logminer} regroupe les composants applicatifs. Le pipeline coordonne les traitements principaux. Le parseur reconnait les formats et produit des objets intermediaires. Le routeur associe les evenements a une famille de logs. Le detecteur applique les modeles disponibles. Le correlateur regroupe les anomalies candidates. L'audit conserve les traces d'execution et les decisions. Cette organisation correspond directement au modele multi-agents presente au chapitre precedent.
+Le paquet \texttt{src/logminer} regroupe les composants applicatifs. Le pipeline coordonne les traitements principaux. Le parseur reconnait les formats et produit des objets intermediaires. Le routeur associe les evenements a une famille de logs. Le detecteur applique les modeles disponibles. Le correlateur regroupe les anomalies candidates. L'audit conserve les traces d'execution et les decisions. Cette organisation correspond directement au modele modulaire presente au chapitre precedent.
 
 Le fichier \texttt{model\_compare.py}, ouvert dans l'environnement de developpement, participe a la comparaison des modeles et a la consolidation des resultats. Il s'inscrit dans une logique plus large de registre de modeles : chaque detecteur doit etre associe a une famille, a un type d'apprentissage et a des metriques connues. Cette discipline de nommage et de comparaison evite de melanger des resultats produits dans des contextes differents.
 
@@ -93,3 +125,13 @@ Le prototype privilegie des technologies legeres et accessibles. Python et FastA
 
 \section{Validation fonctionnelle}
 La validation fonctionnelle repose sur plusieurs verifications : execution des scripts experimentaux, production des CSV, generation des figures, consultation du dashboard, verification des captures et coherence des tableaux. Cette validation complete l'evaluation quantitative. Elle montre que le prototype ne produit pas seulement des scores, mais aussi des artefacts exploitables pour la redaction et pour l'analyse technique.
+
+\section{Gestion des dependances et portabilite}
+La portabilite du prototype depend de la maitrise des dependances. Les dependances principales sont separees des dependances plus lourdes ou optionnelles. Cette organisation permet d'installer rapidement le pipeline de base tout en conservant la possibilite d'ajouter des bibliotheques specialisees pour certains formats ou certaines experiences. Par exemple, la lecture directe de fichiers EVTX peut demander une dependance particuliere, alors que les exports XML Windows restent exploitables avec des outils plus standards.
+
+La portabilite concerne aussi les systemes d'exploitation. Le projet est developpe et teste principalement dans un environnement Windows, mais plusieurs composants Python restent compatibles avec d'autres plateformes. Les scripts PowerShell sont utiles pour la collecte Windows locale, tandis que les scripts Python couvrent le traitement, l'evaluation et la generation d'artefacts. Cette separation permet d'adapter progressivement le prototype a un environnement Linux ou serveur.
+
+\section{Lien entre code et redaction}
+Un point important de l'implementation est le lien direct entre code, resultats et manuscrit. Les figures et tableaux ne sont pas seulement dessines manuellement ; ils proviennent de fichiers de donnees et de scripts de generation. Cette pratique reduit les incoherences entre le projet et la redaction. Elle permet aussi de regenerer les assets apres une nouvelle campagne.
+
+Le memoire doit donc etre lu comme un document accompagne d'un depot technique. Les fichiers \texttt{src/logminer} justifient l'architecture, les scripts justifient les experiences, les CSV justifient les valeurs et les captures justifient l'existence du dashboard. Cette relation est un element fort du travail, car elle transforme la redaction en synthese verifiable plutot qu'en description isolee.

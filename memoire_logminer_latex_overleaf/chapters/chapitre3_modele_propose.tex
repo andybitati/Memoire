@@ -48,13 +48,7 @@ Les familles de journaux representent des contextes d'analyse distincts. Un jour
 Le routage est un element central de l'architecture. Plutot que d'appliquer un modele unique a tous les journaux, \logminer{} selectionne une famille de traitement. Les familles considerees incluent notamment Windows, Wazuh, Linux/auth, reseau, HDFS, BGL et fallback.
 
 Le routage s'appuie sur des indices explicites : noms de colonnes, structure des messages, champs caracteristiques, type de fichier et distribution des valeurs. Lorsqu'aucune famille n'est suffisamment probable, le systeme utilise une route de fallback afin de conserver les donnees sans les perdre silencieusement.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.9\textwidth]{fig_family_routing_ablation.png}
-  \caption{Ablation operationnelle du routage par famille.}
-  \label{fig:routing}
-\end{figure}
+L'evaluation experimentale de ce choix architectural est presentee au chapitre \ref{chap:resultats}, afin de separer le modele propose des resultats empiriques.
 
 \section{Modeles de detection}
 Deux categories de modeles sont utilisees. Les modeles supervises RandomForest sont entraines sur des datasets labelises tels que Linux/auth, CICIDS2017 et CIC-DDoS2019. Les modeles non supervises, notamment Isolation Forest, sont utilises lorsque les labels fiables ne sont pas disponibles. Dans ce cas, les sorties sont des anomalies candidates.

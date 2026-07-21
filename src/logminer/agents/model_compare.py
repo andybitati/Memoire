@@ -49,6 +49,7 @@ if str(BASE_DIR) not in sys.path:
 
 from agents.baseline_detector import score_events
 from features.event_features import build_feature_frame, load_events
+from features.sequence_windows import add_sequence_window_features
 
 
 ModelResult = Dict[str, object]
@@ -883,12 +884,24 @@ def compare_models(
     label_column: str = "",
     max_categorical_unique: int = 100,
     parallel_workers: int = 1,
+    sequence_window_minutes: int = 0,
+    sequence_template_method: str = "drain3",
+    drain_similarity: float = 0.5,
+    allow_template_fallback: bool = True,
 ) -> str:
     """Execute les modeles retenus pour l'objectif 2 et ecrit un tableau CSV."""
 
     events = load_events(input_csv, sep=sep)
     if events.empty:
         raise ValueError(f"Aucun evenement a comparer dans {input_csv}")
+    if sequence_window_minutes > 0:
+        events = add_sequence_window_features(
+            events,
+            window_minutes=sequence_window_minutes,
+            template_method=sequence_template_method,
+            drain_similarity=drain_similarity,
+            allow_template_fallback=allow_template_fallback,
+        )
 
     truth = _labels_from_column(events, label_column)
     if isinstance(contamination, str) and contamination.lower() == "auto":
@@ -962,6 +975,24 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument("--label-column", default="", help="Colonne optionnelle de verite terrain")
     parser.add_argument("--max-categorical-unique", type=int, default=100, help="Limite one-hot par colonne")
     parser.add_argument(
+        "--sequence-window-minutes",
+        type=int,
+        default=0,
+        help="Ajoute des features de fenetrage glissant HDFS/BGL avant comparaison (0 = desactive)",
+    )
+    parser.add_argument(
+        "--sequence-template-method",
+        default="drain3",
+        choices=["drain3", "drain_like", "simple"],
+        help="Templateur utilise avec --sequence-window-minutes",
+    )
+    parser.add_argument("--drain-similarity", type=float, default=0.5, help="Seuil de similarite Drain-like")
+    parser.add_argument(
+        "--strict-template-library",
+        action="store_true",
+        help="Echoue si Drain3 est demande mais indisponible",
+    )
+    parser.add_argument(
         "--parallel-workers",
         type=int,
         default=1,
@@ -978,6 +1009,10 @@ def main(argv: Optional[list[str]] = None) -> int:
         label_column=args.label_column,
         max_categorical_unique=args.max_categorical_unique,
         parallel_workers=args.parallel_workers,
+        sequence_window_minutes=args.sequence_window_minutes,
+        sequence_template_method=args.sequence_template_method,
+        drain_similarity=args.drain_similarity,
+        allow_template_fallback=not args.strict_template_library,
     )
     print(f"Comparaison modeles: {output}")
     print(pd.read_csv(output, sep=args.sep).to_string(index=False))

@@ -257,8 +257,8 @@ Resultats cles:
 | CICIDS2017 | RandomForest, F1 = 0.997163 |
 | UNSW/CIC-DDoS | RandomForest, F1 = 0.999965 |
 | Wazuh | 122 563 evenements, 3 676 anomalies candidates |
-| BGL | meilleure selection autour de F1 = 0.994333 |
-| HDFS | meilleure selection autour de F1 = 0.599333 a 0.600333 |
+| BGL | Drain3 train-test: F1 = 1.000000 avec Isolation Forest sur split local, a confirmer par repetitions |
+| HDFS | Drain3 train-test: meilleur F1 = 0.652789, progression moderee mais famille encore difficile |
 | Robustesse | 6 lignes normalisees en 0.1242 s, log incomplet conserve |
 | Temps reel | 10 cycles, latence moyenne 8.2012 s |
 | CPU/RAM | 30 cycles, workflow moyen 9.3300 s |
@@ -324,7 +324,7 @@ Perspectives:
 - extension multi-machine a partir de Redis Streams, files de jobs et workers;
   MQTT reste une piste complementaire pour collecteurs temps reel;
 - integration SOC/SIEM plus stricte;
-- templates de logs type Drain;
+- consolidation des templates Drain3 et comparaison avec des modeles sequentiels specialises;
 - reduction des faux positifs par apprentissage actif;
 - apprentissage federe ou incremental;
 - cartographie MITRE ATT&CK;
