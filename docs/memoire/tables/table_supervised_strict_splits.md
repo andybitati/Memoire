@@ -2,9 +2,8 @@
 
 | Dataset | Split | Seeds | Test moy. | Precision | Rappel | F1 | PR-AUC | MCC | FP moy. | FN moy. |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CIC-DDoS2019 | file_or_scenario_holdout | 3 | 3075 | 0.999500 | 0.992000 | 0.995702 | 0.999971 | 0.991042 | 1.0 | 16.0 |
-| CICIDS2017 | file_or_scenario_holdout | 3 | 7322 | 0.650794 | 0.213417 | 0.262298 | 0.740269 | 0.239864 | 0.7 | 2468.3 |
-| Linux/auth | server_holdout | 3 | 10000 | 0.885681 | 0.784667 | 0.831046 | 0.917604 | 0.689281 | 504.3 | 1076.7 |
+| CIC-DDoS2019 | file_or_scenario_holdout | 5 | 2677 | 0.999598 | 0.995600 | 0.997577 | 0.999991 | 0.994091 | 0.8 | 8.8 |
+| CICIDS2017 | file_or_scenario_holdout | 5 | 6436 | 0.390476 | 0.128650 | 0.157827 | 0.506615 | 0.146206 | 0.2 | 1921.0 |
+| Linux/auth | server_holdout | 5 | 10000 | 0.887734 | 0.774720 | 0.826251 | 0.917113 | 0.683796 | 487.4 | 1126.4 |
 
-Note: ces resultats completent les scores supervises. Les splits par serveur, fichier ou scenario reduisent le risque d'observations quasi identiques entre entrainement et test, mais ne constituent pas encore une validation industrielle multi-environnement.
-
+Note: ces resultats sont calcules sur cinq graines. Les holdouts tiennent hors entrainement des serveurs, fichiers ou scenarios entiers; CICIDS2017 utilise les memes hyperparametres que le modele reseau principal dans la comparaison controlee.

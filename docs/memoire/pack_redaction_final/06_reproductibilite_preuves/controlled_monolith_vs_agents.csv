@@ -1,0 +1,4 @@
+﻿mode,status,tasks_total,tasks_completed,tasks_failed,elapsed_sec,throughput_tasks_sec,task_latency_mean,task_latency_p95,cpu_core_avg,cpu_core_max,ram_mb_avg,ram_mb_max,simulated_crashes,recovered_tasks,pending_final,samples,returncode,stderr_tail
+monolith,ok,60,60,0,36.68153429985978,1.6357,0.6113518983280907,1.844738299958408,121.339,121.339,179.221,189.074,0,0,0,314,0,
+agents,ok,60,60,0,38.18027520016767,1.571492,1.8052933333333332,5.7703,165.746,165.746,213.95,234.777,0,0,0,315,0,
+agents_failure_recovery,ok,60,60,0,39.30002860003151,1.526716,0.6462083333333336,1.9336,117.598,117.598,179.499,189.395,1,1,0,335,0,

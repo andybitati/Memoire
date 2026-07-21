@@ -28,10 +28,11 @@ Les scores tres eleves obtenus sur certains datasets supervises doivent aussi et
 \section{Perspectives}
 Les perspectives principales sont les suivantes :
 \begin{enumerate}
-  \item prolonger le protocole controle global-versus-familles par des splits temporels, par fichier ou par scenario, avec latence et memoire ;
+  \item etendre a d'autres familles la comparaison controlee entre split aleatoire et holdout temporel, fichier ou scenario, deja conduite sur CICIDS2017 avec memes features, memes hyperparametres, memes tailles d'echantillon et memes graines ;
+  \item prolonger le protocole controle global-versus-familles par davantage de graines et des splits temporels, par fichier ou par scenario, avec latence et memoire ;
   \item deployer le systeme sur plusieurs machines avec workers Redis et files persistantes ;
   \item ajouter des tests multi-machine et des tests de charge sur plusieurs jours, au-dela de la campagne locale de six heures ;
-  \item integrer un apprentissage actif a partir des decisions analyste ;
+  \item integrer un apprentissage actif a partir des decisions analyste, avec surveillance du concept drift et promotion controlee des nouveaux modeles ;
   \item consolider l'usage de Drain3 sur HDFS/BGL, repeter les splits et comparer avec des modeles sequentiels plus specialises ;
   \item reduire les faux positifs par calibration des seuils et contexte temporel ;
   \item relier les incidents a des tactiques MITRE ATT\&CK ;

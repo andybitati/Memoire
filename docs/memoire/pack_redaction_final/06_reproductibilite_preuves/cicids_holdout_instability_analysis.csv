@@ -1,0 +1,6 @@
+﻿seed,heldout_file,attack_labels,file_positive_rate,test_rows,test_positive_rate,tp,fn,fp,tn,precision,recall,f1,pr_auc,mcc
+42,Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,DDoS=61194,0.61194,8000,0.5,2553,1447,0,4000,1.0,0.63825,0.7791851060582939,0.9535319698241956,0.684615487754307
+43,Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,PortScan=12488,0.12488,8000,0.5,20,3980,1,3999,0.9523809523809524,0.005,0.0099477741855259,0.9158574655883294,0.0464162147791036
+44,Friday-WorkingHours-Morning.pcap_ISCX.csv,Bot=1966,0.010291415619290908,5966,0.3295340261481729,0,1966,0,4000,0.0,0.0,0.0,0.3155214472702924,0.0
+45,Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Infiltration=32,0.00016,4032,0.0079365079365079,0,32,0,4000,0.0,0.0,0.0,0.0088212984276018,0.0
+46,Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,"Web Attack � Brute Force=1507, Web Attack � XSS=652, Web Attack � Sql Injection=21",0.01279598041862813,6180,0.3527508090614886,0,2180,0,4000,0.0,0.0,0.0,0.3393418902894622,0.0

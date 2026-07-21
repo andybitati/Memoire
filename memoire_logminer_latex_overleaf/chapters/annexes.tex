@@ -45,7 +45,9 @@ Les preuves experimentales principales sont conservees sous forme de CSV :
   \item \texttt{standard\_tools\_wazuh\_logminer\_overlap.csv} ;
   \item \texttt{random\_forest\_linux\_auth\_metrics.csv} ;
   \item \texttt{random\_forest\_network\_cicids\_metrics.csv} ;
-  \item \texttt{random\_forest\_unsw\_80\_20\_metrics.csv} ;
+  \item \texttt{random\_forest\_linux\_auth\_strict\_metrics.csv} ;
+  \item \texttt{random\_forest\_cicids2017\_controlled\_split\_metrics.csv} ;
+  \item \texttt{random\_forest\_cic\_ddos2019\_metrics.csv} ;
   \item \texttt{validation\_hdfs\_drain3\_train\_test\_metrics.csv} ;
   \item \texttt{validation\_bgl\_drain3\_train\_test\_metrics.csv} ;
   \item \texttt{validation\_hdfs\_bgl\_drain3\_train\_test\_summary.csv} ;
@@ -97,16 +99,16 @@ Le tableau suivant donne une matrice de tracabilite simplifiee. Il doit etre con
 \midrule
 \endhead
 F1 Linux/auth & \texttt{random\_forest\_linux\_auth\_metrics.csv} & Evaluation supervisee et discussion sur les journaux d'authentification. \\
-F1 CICIDS2017 & \texttt{random\_forest\_network\_cicids\_metrics.csv} & Evaluation supervisee reseau et limites des datasets publics. \\
-F1 CIC-DDoS2019 & \texttt{random\_forest\_unsw\_80\_20\_metrics.csv} & Evaluation supervisee reseau exploratoire ; le nom historique du fichier est conserve, mais le resultat n'est pas presente comme validation UNSW-NB15 officielle. \\
-Splits supervises stricts & \texttt{supervised\_strict\_split\_metrics.csv} & Evaluation complementaire par serveurs, fichiers ou scenarios ; nuance les scores supervises. \\
+F1 CICIDS2017 & \texttt{random\_forest\_network\_cicids\_metrics.csv} et \texttt{random\_forest\_cicids2017\_controlled\_split\_metrics.csv} & Evaluation supervisee reseau ; le score exploratoire doit etre lu avec le F1 strict de 0,157827. \\
+F1 CIC-DDoS2019 & \texttt{random\_forest\_cic\_ddos2019\_metrics.csv} & Evaluation supervisee stricte par holdout fichier/famille DDoS ; resultat principal retenu pour ce dataset. \\
+Splits supervises stricts & \texttt{supervised\_strict\_split\_metrics.csv} & Evaluation complementaire par serveurs, fichiers ou scenarios ; documente la sensibilite au protocole. \\
 HDFS Drain3 train--test & \texttt{validation\_hdfs\_drain3\_train\_test\_metrics.csv} & Validation complementaire avec templates Drain3 et fenetres ; progression moderee, non interpretee comme generalisation universelle. \\
 BGL Drain3 train--test & \texttt{validation\_bgl\_drain3\_train\_test\_metrics.csv} & Validation complementaire avec templates Drain3 et fenetres ; separabilite forte sur split local, a confirmer par repetitions. \\
 Synthese HDFS/BGL Drain3 & \texttt{validation\_hdfs\_bgl\_drain3\_train\_test\_summary.csv} & Tableau court utilise pour la redaction et le dashboard de capture. \\
 Anomalies Wazuh & \texttt{table\_wazuh\_logminer\_summary.md} & Evaluation non supervisee et recouvrement avec signaux HIDS/SIEM. \\
 Duree moyenne micro-lots & \texttt{realtime\_workflow\_benchmark\_20260604.csv} & Mesure du workflow local par micro-lots, sans revendication de temps reel strict. \\
 Campagne CPU/RAM & \texttt{resource\_campaign.csv} & Evaluation des ressources sur 30 cycles. \\
-Ablation routage & \texttt{family\_routing\_ablation.csv} & Evaluation exploratoire du routage par famille ; la preuve stricte demande plusieurs graines et une comparaison controlee. \\
+Ablation routage & \texttt{family\_routing\_ablation.csv} & Comparaison controlee global-versus-familles sur cinq graines ; F1, PR-AUC et MCC rapportes. \\
 Robustesse multi-format & Rapport de robustesse et figure associee & Validation de la conservation des formats inconnus ou incomplets. \\
 \bottomrule
 \end{longtable}
