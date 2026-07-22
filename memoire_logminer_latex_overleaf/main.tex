@@ -16,12 +16,14 @@
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{url}
+\usepackage[strings]{underscore}
 \usepackage{amsmath}
 \usepackage{enumitem}
 \usepackage{caption}
 \usepackage{fancyhdr}
 \usepackage{tocbibind}
 \usepackage{ragged2e}
+
 
 \geometry{margin=2.5cm}
 \onehalfspacing
@@ -30,22 +32,24 @@
 \Urlmuskip=0mu plus 2mu
 \setcounter{tocdepth}{2}
 \setcounter{secnumdepth}{3}
+
 \hypersetup{
-  colorlinks=true,
-  linkcolor=black,
-  citecolor=black,
-  urlcolor=blue
+colorlinks=true,
+linkcolor=black,
+citecolor=black,
+urlcolor=blue
 }
 
 \graphicspath{{figures/}{captures/}}
+
 \newcommand{\logminer}{Logminer}
-\newcommand{\universite}{UNIVERSITE DE KINSHASA}
-\newcommand{\faculte}{FACULTE POLYTECHNIQUE}
-\newcommand{\departement}{DEPARTEMENT DE GENIE ELECTRIQUE ET INFORMATIQUE}
+\newcommand{\universite}{UNIVERSITÉ DE KINSHASA}
+\newcommand{\faculte}{FACULTÉ POLYTECHNIQUE}
+\newcommand{\departement}{DÉPARTEMENT DE GÉNIE ÉLECTRIQUE ET INFORMATIQUE}
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small Memoire Logminer}
+\fancyhead[L]{\small Mémoire Logminer}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 \setlength{\headheight}{15pt}
@@ -54,34 +58,74 @@
 \sloppy
 
 \begin{titlepage}
-  \centering
-  {\Large\bfseries \universite\par}
-  \vspace{0.2cm}
-  
-  \IfFileExists{captures/unikin_logo.png}{\includegraphics[width=3cm]{unikin_logo.png}\par\vspace{0.8cm}}{}
-  {\large\bfseries \faculte\par}
-  \vspace{0.2cm}
-  {\large\bfseries \departement\par}
-  \vspace{0.8cm}
-  {\Large Memoire presente et defendu en vue de l'obtention du titre d'Ingenieur Civil Electricien\par}
-  \vspace{0.4cm}
-  {\large Orientation : Informatique\par}
-  \vspace{1.0cm}
-  {\huge\bfseries Detection Autonome et Distribuee d'Anomalies dans les Journaux Systemes et Reseaux a l'aide d'Agents Intelligents Multi-Taches\par}
-  \vspace{0.35cm}
-  {\Large Conception et evaluation locale du prototype Ariel \logminer\par}
-  \vfill
-  {\small
-  \begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}X>{\RaggedRight\arraybackslash}X}
-  \textbf{Par :} MARHEGANE BITATI André Olivier &
-  \textbf{Directeur :} Prof.Dr.Ir. KYANDOGHERE KYAMAKYA Jean Vianney \\
-  \textbf{Promotion :} 2ICE-IN &
-  \textbf{Co-Directeurs :} Dr. KAMBALE WITESYAVWIRWA Vianney \newline
-  Ir.civ. MUGISHA MUHIRE Jean-Pierre \\
-  \end{tabularx}}
-  \vspace{0.4cm}
-  \vfill
-  {\large ANNEE ACADEMIQUE : 2025--2026\par}
+\centering
+
+{\Large\bfseries \universite\par}
+\vspace{0.2cm}
+
+\IfFileExists{captures/unikin_logo.png}
+{\includegraphics[width=3cm]{unikin_logo.png}\par\vspace{0.8cm}}
+{}
+
+{\large\bfseries \faculte\par}
+\vspace{0.2cm}
+
+{\large\bfseries \departement\par}
+\vspace{0.8cm}
+
+{\Large
+Mémoire présenté et défendu en vue de l'obtention du titre d'Ingénieur Civil Électricien
+\par}
+
+\vspace{0.4cm}
+
+{\large Orientation : Informatique\par}
+
+\vspace{1.0cm}
+
+{\huge\bfseries
+Détection autonome et distribuée d'anomalies dans les journaux systèmes et réseaux à l'aide d'agents intelligents multitâches
+\par}
+
+\vspace{0.35cm}
+
+{\Large
+Conception et évaluation locale du prototype Ariel \logminer
+\par}
+
+\vfill
+
+{\small
+\noindent
+\begin{minipage}[t]{0.47\textwidth}
+\RaggedRight
+\textbf{Par :}\\
+MARHEGANE BITATI André Olivier
+
+\vspace{0.3cm}
+
+\textbf{Promotion :}\\
+2ICE-IN
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.47\textwidth}
+\RaggedRight
+\textbf{Directeur :}\\
+Prof. Dr Ir. KYANDOGHERE KYAMAKYA Jean Vianney
+
+\vspace{0.3cm}
+
+\textbf{Co-directeurs :}\\
+Dr KAMBALE WITESYAVWIRWA Vianney\\
+Ir. civ. MUGISHA MUHIRE Jean-Pierre
+\end{minipage}
+}
+
+\vspace{0.4cm}
+\vfill
+
+{\large ANNÉE ACADÉMIQUE : 2025--2026\par}
+
 \end{titlepage}
 
 \pagenumbering{roman}
@@ -90,36 +134,39 @@
 \include{frontmatter/dedicace}
 \include{frontmatter/remerciements}
 
-\chapter*{Resume}
-\addcontentsline{toc}{chapter}{Resume}
-Ce memoire presente \logminer, un prototype local multi-agents de detection d'anomalies dans des journaux systemes et reseaux heterogenes. Le systeme organise la collecte, le parsing, la normalisation, le routage multi-modeles, la detection, la correlation, l'audit, la memoire adaptative et la visualisation. Les termes autonome, distribue et agents intelligents multi-taches sont employes dans un sens operationnel : selection de taches par politique explicite, repartition locale multi-processus via Redis Streams, memoire locale et persistante, heartbeat et handlers multiples. L'objectif n'est pas de proposer un detecteur universel ni un SOC industriel, mais de valider une chaine complete transformant des logs heterogenes en evenements normalises, anomalies candidates et incidents exploitables.
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
 
-L'evaluation combine journaux Windows, exports Wazuh, logs Linux/auth, HDFS, BGL, CICIDS2017 et CIC-DDoS2019. Les protocoles exploratoires produisent des F1 de 0,916602, 0,997163 et 0,999965 sur Linux/auth, CICIDS2017 et CIC-DDoS2019. Des holdouts plus stricts donnent respectivement 0,826251, 0,157827 et 0,997577, montrant une forte sensibilite de CICIDS2017 au protocole de separation. Une comparaison controlee CICIDS2017, a features, hyperparametres, seeds et tailles apparies, oppose un split aleatoire a 0,999260 et cinq holdouts fichier/scenario associes aux graines 42--46 a 0,157827 ; la dispersion mesure surtout des differences entre scenarios tenus hors entrainement. Les sorties non supervisees sont rapportees comme anomalies candidates, notamment 3 676 signaux sur 122 563 evenements Wazuh. Sur HDFS/BGL, une validation complementaire Drain3 avec templates, fenetres temporelles et split train--test montre une progression moderee sur HDFS et une separabilite tres favorable sur BGL, sans preuve de generalisation universelle. Les benchmarks locaux rapportent 8,2012 secondes de workflow moyen sur 10 micro-lots de 8 537 lignes et 9,3300 secondes sur la campagne CPU/RAM de 30 cycles. La campagne Redis de six heures valide 8 508 taches uniques, aucune tache pending finale et 709 reprises apres panne simulee. Une comparaison controlee monolithique-versus-agents ne montre pas de gain de debit sur petit volume, mais mesure l'overhead d'orchestration et la reprise apres panne.
+Ce mémoire présente \logminer{}, un prototype local multi-agents destiné à la détection d'anomalies candidates dans des journaux systèmes et réseaux hétérogènes. Le système organise la collecte, le parsing, la normalisation, le routage multimodèle, la détection, la corrélation, l'audit, la mémoire adaptative et la visualisation. Les termes \textit{autonome}, \textit{distribué} et \textit{agents intelligents multitâches} sont employés dans un sens opérationnel : sélection des tâches selon une politique explicite, répartition locale multiprocessus via Redis Streams, mémoire locale et persistante, heartbeat et handlers multiples. L'objectif n'est pas de proposer un détecteur universel ni un SOC industriel, mais de valider une chaîne complète transformant des journaux hétérogènes en événements normalisés, anomalies candidates et incidents exploitables.
 
-Les resultats montrent la faisabilite d'une approche locale, legere et interpretable pour l'analyse de journaux heterogenes. La memoire adaptative constitue une capitalisation auditable des historiques et decisions analyste ; l'apprentissage actif complet reste une perspective. Les limites concernent notamment la validation multi-machine, la reduction mesuree des faux positifs, l'apprentissage continu controle et l'industrialisation en environnement SOC.
+L'évaluation combine des journaux Windows, des exports Wazuh, des journaux Linux/auth, HDFS, BGL, CICIDS2017 et CIC-DDoS2019. Les protocoles exploratoires produisent des F1-scores de 0,916602, 0,997163 et 0,999965 respectivement sur Linux/auth, CICIDS2017 et CIC-DDoS2019. Des holdouts plus stricts donnent respectivement 0,826251, 0,157827 et 0,997577, mettant en évidence une forte sensibilité de CICIDS2017 au protocole de séparation. Une comparaison contrôlée sur CICIDS2017, avec des caractéristiques, des hyperparamètres, des graines et des tailles d'échantillons appariés, oppose une partition aléatoire donnant un F1 de 0,999260 à cinq holdouts par fichier/scénario associés aux graines 42--46, donnant un F1 moyen de 0,157827 ; la dispersion observée reflète principalement les différences entre les scénarios maintenus hors de l'entraînement.
+
+Les sorties non supervisées sont rapportées comme des anomalies candidates, notamment 3 676 signaux parmi 122 563 événements Wazuh. Sur HDFS/BGL, une validation complémentaire fondée sur Drain3, utilisant des modèles de messages, des fenêtres temporelles et une séparation entraînement--test, montre une progression modérée sur HDFS et une séparabilité très favorable sur BGL, sans constituer une preuve de généralisation universelle.
+
+Les benchmarks locaux indiquent une durée moyenne du workflow de 8,2012 secondes sur 10 micro-lots de 8 537 lignes et de 9,3300 secondes lors de la campagne CPU/RAM de 30 cycles. La campagne Redis de six heures valide 8 508 tâches uniques, aucune tâche finale en attente et 709 reprises après des pannes simulées. Une comparaison contrôlée entre l'architecture monolithique et l'architecture à base d'agents ne montre pas de gain de débit sur de petits volumes, mais permet de mesurer le surcoût d'orchestration et la capacité de reprise après panne.
+
+Les résultats montrent la faisabilité d'une approche locale, légère et interprétable pour l'analyse de journaux hétérogènes. La mémoire adaptative constitue une capitalisation auditable des historiques et des décisions de l'analyste ; une boucle complète d'apprentissage actif reste une perspective. Les principales limites concernent notamment la validation sur plusieurs machines, la réduction mesurée des faux positifs, l'apprentissage continu contrôlé et l'industrialisation dans un environnement SOC.
 
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
-This thesis presents \logminer, a modular prototype for anomaly detection in heterogeneous system and network logs. The system combines collection, parsing, normalization, family-aware routing, detection, correlation, audit, adaptive memory and visualization. Autonomy, distribution and intelligent multi-task agents are used in an operational sense: explicit task-selection policy, local multi-process distribution through Redis Streams, local and persistent memory, heartbeat and multiple handlers. The objective is not to propose a universal detector or an industrial SOC, but to validate a local end-to-end chain that transforms heterogeneous logs into normalized events, anomaly candidates and analyst-readable incidents.
 
-The evaluation combines local Windows logs, Wazuh exports, Linux/auth logs, HDFS, BGL, CICIDS2017 and CIC-DDoS2019. Exploratory protocols produce F1-scores of 0.916602, 0.997163 and 0.999965 on Linux/auth, CICIDS2017 and CIC-DDoS2019. Stricter holdouts respectively give 0.826251, 0.157827 and 0.997577, showing strong sensitivity of CICIDS2017 to the split protocol. A controlled CICIDS2017 comparison, with matched features, hyperparameters, seeds and train/test sizes, contrasts a random split at 0.999260 with five file/scenario holdouts associated with seeds 42--46 at 0.157827; the dispersion mainly reflects differences between held-out scenarios. Non-supervised outputs are reported as anomaly candidates, including 3,676 signals over 122,563 Wazuh events. A Drain3-based train-test validation with templates and temporal windows shows moderate progress on HDFS and very favorable separability on BGL, without proving universal generalization. Local benchmarks report a mean workflow duration of 8.2012 seconds over 10 micro-batches of 8,537 lines and 9.3300 seconds over the 30-cycle CPU/RAM campaign. The six-hour Redis campaign validates 8,508 unique tasks, no final pending task and 709 recoveries after simulated failures. A controlled monolithic-versus-agents comparison does not show a throughput gain on small volume, but measures orchestration overhead and failure recovery.
+This thesis presents \logminer{}, a modular prototype for anomaly detection in heterogeneous system and network logs. The system combines log collection, parsing, normalization, family-aware routing, detection, correlation, auditing, adaptive memory, and visualization. The terms \textit{autonomous}, \textit{distributed}, and \textit{intelligent multi-task agents} are used in an operational sense: explicit task-selection policies, local multiprocess distribution through Redis Streams, local and persistent memory, heartbeat mechanisms, and multiple handlers. The objective is not to propose a universal detector or an industrial SOC platform, but to validate a local end-to-end processing chain that transforms heterogeneous logs into normalized events, anomaly candidates, and analyst-readable incidents.
 
-The results support the feasibility of a local, lightweight and interpretable approach to heterogeneous log analysis. Adaptive memory is treated as an auditable capitalization of histories and analyst decisions, while full active learning remains future work. Remaining limitations include strict multi-machine validation, measured false-positive reduction, controlled continuous learning and industrial-scale SOC deployment.
+The evaluation combines local Windows logs, Wazuh exports, Linux/auth logs, HDFS, BGL, CICIDS2017, and CIC-DDoS2019. Exploratory protocols produce F1-scores of 0.916602, 0.997163, and 0.999965 on Linux/auth, CICIDS2017, and CIC-DDoS2019, respectively. Stricter holdout protocols produce F1-scores of 0.826251, 0.157827, and 0.997577, respectively, showing the strong sensitivity of CICIDS2017 to the data-splitting protocol. A controlled comparison on CICIDS2017, using matched features, hyperparameters, seeds, and sample sizes, contrasts a random stratified split yielding an F1-score of 0.999260 with five file/scenario holdouts associated with seeds 42--46, yielding a mean F1-score of 0.157827. The observed dispersion mainly reflects differences among held-out scenarios rather than random seed variability.
 
-\chapter*{Depot GitHub du projet}
-\addcontentsline{toc}{chapter}{Depot GitHub du projet}
-Le code source, les scripts et les ressources techniques du projet sont associes au depot GitHub suivant :
+Unsupervised outputs are reported as anomaly candidates, including 3,676 signals among 122,563 Wazuh events. For HDFS and BGL, an additional Drain3-based validation using message templates, temporal windows, and a train--test split shows moderate improvement on HDFS and highly favorable separability on BGL, without providing evidence of universal generalization.
 
-\begin{center}
-\url{https://github.com/andybitati/Memoire/tree/version_3}
-\end{center}
+Local benchmarks report a mean workflow duration of 8.2012 seconds over 10 micro-batches of 8,537 lines and 9.3300 seconds during the 30-cycle CPU/RAM campaign. The six-hour Redis campaign validates 8,508 unique completed tasks, no tasks pending at completion, and 709 successful recoveries after simulated failures. A controlled comparison between the monolithic architecture and the agent-based architecture does not show a throughput improvement on small workloads, but quantifies orchestration overhead and demonstrates failure-recovery capability.
 
-Ce lien est fourni pour faciliter la verification, la consultation du code et la poursuite du travail apres la redaction du memoire. Les articles scientifiques lies au projet seront ajoutes ulterieurement lorsqu'ils seront finalises.
+The results support the feasibility of a local, lightweight, and interpretable approach to heterogeneous log analysis. Adaptive memory is treated as an auditable accumulation of execution histories and analyst decisions, while a complete active-learning loop remains future work. The main limitations include strict multi-machine validation, measured false-positive reduction, controlled continuous learning, and industrial-scale deployment within a SOC environment.
+
 
 \tableofcontents
 \listoffigures
 \listoftables
+
 \include{frontmatter/acronymes}
+
 \clearpage
 \pagenumbering{arabic}
 
@@ -138,4 +185,3 @@ Ce lien est fourni pour faciliter la verification, la consultation du code et la
 \bibliography{references}
 
 \end{document}
-
