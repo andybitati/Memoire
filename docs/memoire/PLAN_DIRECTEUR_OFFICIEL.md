@@ -118,7 +118,7 @@ Points a couvrir:
 - campagne CPU/RAM multi-cycles;
 - robustesse multi-format;
 - faux positifs;
-- comparaison prudente avec fail2ban-like, OSSEC/Wazuh et outils standards;
+- comparaison mesuree avec fail2ban-like, OSSEC/Wazuh et outils standards;
 - distinction entre anomalie candidate et intrusion confirmee.
 
 ### Chapitre 6 - Conclusion Et Perspectives
@@ -176,4 +176,5 @@ Le document directeur prevoit une progression en 7 mois:
 La redaction finale doit suivre ce plan directeur, mais les formulations
 doivent rester conformes aux preuves disponibles dans le pack. Ne pas inventer
 de resultats non presents dans les tableaux, figures, captures ou CSV.
+
 

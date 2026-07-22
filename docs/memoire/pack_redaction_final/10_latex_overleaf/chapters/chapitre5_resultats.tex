@@ -282,7 +282,7 @@ Une seconde passe a ete ajoutee pour repondre a cette limite. Les journaux sont 
 \scriptsize
 \begin{tabularx}{\textwidth}{p{2.6cm}p{3.4cm}rrrrX}
 \toprule
-\textbf{Famille} & \textbf{Modele} & \textbf{Precision} & \textbf{Rappel} & \textbf{F1} & \textbf{Exact.} & \textbf{Lecture prudente} \\
+\textbf{Famille} & \textbf{Modele} & \textbf{Precision} & \textbf{Rappel} & \textbf{F1} & \textbf{Exact.} & \textbf{Lecture nuancee} \\
 \midrule
 HDFS & Histogramme train--test & 0,653333 & 0,652246 & 0,652789 & 0,652789 & Gain modere par rapport aux features ligne par ligne ; la famille reste difficile. \\
 HDFS & Isolation Forest train--test & 0,638333 & 0,637271 & 0,637802 & 0,637802 & Resultat proche du meilleur histogramme, mais faux positifs et faux negatifs restent importants. \\
@@ -376,3 +376,4 @@ Les tests de robustesse verifient la capacite du systeme a traiter des formats d
 Ce chapitre etablit les resultats experimentaux retenus pour le memoire. Les resultats supervises principaux sont accompagnes de splits plus stricts et d'une comparaison controlee sur CICIDS2017. Les experimentations HDFS/BGL distinguent explicitement les essais exploratoires de la validation Drain3 train--test. Les mesures systeme documentent la latence, les ressources, la robustesse multi-format et la campagne Redis locale de six heures.
 
 L'interpretation generale, les limites scientifiques et les perspectives sont regroupees dans les chapitres suivants afin d'eviter de repeter les memes precautions dans la section de resultats.
+

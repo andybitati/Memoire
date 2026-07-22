@@ -179,7 +179,7 @@ Preuves quantitatives:
 
 Ecart restant:
 
-- l'adaptation automatique doit etre formulee prudemment: le systeme route et
+- l'adaptation automatique doit etre formulee clairement: le systeme route et
   applique des modeles specialises, mais l'auto-apprentissage continu n'est pas
   encore une preuve forte.
 
@@ -281,7 +281,7 @@ Conclusion:
    permettent.
 3. Consolider les mesures CPU/RAM par agent sur plusieurs cycles si le chapitre
    d'evaluation les detaille statistiquement.
-4. Formuler prudemment les limites: distribution locale, auto-apprentissage
+4. Formuler clairement les limites: distribution locale, auto-apprentissage
    continu non complet, anomalies candidates pour les modeles non supervises.
 
 ## Priorite De Redaction Recommandee
@@ -300,3 +300,4 @@ pas presenter le travail comme un systeme industriel totalement distribue et
 auto-apprenant, mais comme un prototype multi-agents modulaire, localement
 fonctionnel, extensible vers FastAPI/Redis, et valide sur plusieurs familles de
 logs avec des modeles adaptes.
+

@@ -32,7 +32,7 @@ Overleaf peut compiler directement le projet apres upload du dossier complet.
 ## Remarques
 
 La redaction suit le plan directeur officiel du memoire. Les affirmations sont
-cadrees prudemment:
+cadrees clairement:
 
 - les sorties non supervisees sont des anomalies candidates;
 - la baseline fail2ban-like n'est pas fail2ban officiel;
@@ -52,3 +52,4 @@ le lien GitHub du projet: `https://github.com/andybitati/Memoire/tree/version_3`
 Le projet n'utilise aucune image distante. Toutes les figures et captures sont
 locales et issues du prototype ou des resultats experimentaux. Voir
 `IMAGE_ASSETS.md`.
+

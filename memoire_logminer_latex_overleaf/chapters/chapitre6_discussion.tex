@@ -31,7 +31,7 @@ Parsing & Les formats pris en charge sont controles. & Parler de robustesse mult
 Dashboard & Les captures prouvent le fonctionnement, pas l'utilisabilite. & Prevoir une evaluation avec analystes ou grille heuristique. \\
 Monolithique vs agents & Les agents ajoutent un overhead sur petit volume. & Ne pas revendiquer un gain de performance brute ; distinguer overhead/reprise mesures et modularite/tracabilite architecturales. \\
 Scalabilite & Les benchmarks sont locaux et de duree limitee. & Ne pas revendiquer une capacite SOC industrielle. \\
-Apprentissage continu & Les decisions analyste sont preparees mais non reintegrees. & Traiter le reentrainement et le concept drift comme perspectives. \\
+Memoire adaptative & Les decisions analyste sont reintegrees dans la priorisation, mais sans preuve terrain de reduction des faux positifs. & Mesurer l'effet avec des validations analyste reelles et garder le reentrainement/concept drift comme perspectives. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -39,6 +39,6 @@ Apprentissage continu & Les decisions analyste sont preparees mais non reintegre
 \section{Perspectives prioritaires}
 La premiere perspective est d'etendre les comparaisons controlees : memes donnees, memes features, memes hyperparametres, memes tailles d'echantillon et memes seeds, en ne modifiant qu'un facteur experimental. Cette logique doit etre appliquee aux splits temporels, aux splits multi-environnements et aux variantes global-versus-familles.
 
-La deuxieme perspective concerne les logs sequentiels. HDFS et BGL doivent etre evalues avec plusieurs repetitions, un seuil fixe sur validation et des comparaisons a des modeles specialises tels que DeepLog ou LogAnomaly. La troisieme perspective concerne l'exploitation : ajouter une analyse qualitative des anomalies Wazuh, mesurer l'utilisabilite du dashboard, puis transformer les decisions analyste en feedback controle.
+La deuxieme perspective concerne les logs sequentiels. HDFS et BGL doivent etre evalues avec plusieurs repetitions, un seuil fixe sur validation et des comparaisons a des modeles specialises tels que DeepLog ou LogAnomaly. La troisieme perspective concerne l'exploitation : ajouter une analyse qualitative des anomalies Wazuh, mesurer l'utilisabilite du dashboard, puis alimenter la memoire avec des decisions analyste reelles afin de mesurer la reduction effective du bruit.
 
 Enfin, l'apprentissage continu doit rester encadre. Les agents pourraient surveiller le concept drift, proposer un reentrainement, comparer un modele candidat au modele courant sur un jeu de validation gele et conserver une possibilite de retour arriere. Cette autonomie serait operationnelle et auditable, non cognitive.

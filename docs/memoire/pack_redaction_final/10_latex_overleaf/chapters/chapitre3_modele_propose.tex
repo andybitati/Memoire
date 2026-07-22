@@ -116,7 +116,7 @@ Une extension future consisterait a introduire des graphes d'evenements. Les noe
 \section{Modele de decision analyste}
 Le modele propose integre explicitement la decision humaine. Le dashboard permet de valider, rejeter ou reclasser une anomalie candidate. Cette decision n'est pas seulement une annotation visuelle. Elle peut devenir un signal de retour. Dans une version future, les validations pourraient alimenter un apprentissage actif, ajuster les seuils ou enrichir les regles de correlation.
 
-La decision analyste suit une logique prudente. L'analyste consulte d'abord le contexte : source, message, score, severite, famille, horodatage et incident associe. Il compare ensuite l'evenement avec les autres signaux de la meme periode. Il peut enfin choisir une action : confirmer l'interet, rejeter le signal, le reclasser ou le laisser en observation. L'audit conserve cette decision afin de permettre une relecture.
+La decision analyste suit une logique mesuree. L'analyste consulte d'abord le contexte : source, message, score, severite, famille, horodatage et incident associe. Il compare ensuite l'evenement avec les autres signaux de la meme periode. Il peut enfin choisir une action : confirmer l'interet, rejeter le signal, le reclasser ou le laisser en observation. L'audit conserve cette decision afin de permettre une relecture.
 
 Ce modele reconnait que la detection d'anomalies est rarement totalement automatique. Dans un environnement reel, les alertes doivent etre interpretees. La valeur du systeme depend donc de sa capacite a fournir les bonnes informations au bon moment. L'agent dashboard est ainsi un composant du modele scientifique, pas seulement une interface graphique.
 
@@ -128,3 +128,4 @@ Le deuxieme scenario est le scenario de traitement local par micro-lots. Le serv
 Le troisieme scenario est le scenario d'extension evenementielle. Les agents peuvent publier ou consommer des messages via Redis Streams ou MQTT. Redis Streams est utilise dans les experiences pour valider une repartition locale multi-processus, avec reprise d'une tache non acquittee. MQTT prepare une communication legere entre composants. Dans le memoire, ce scenario est presente comme une preuve locale d'architecture distribuee, non comme une preuve industrielle multi-machine.
 
 Le quatrieme scenario est le scenario pedagogique. Le prototype sert a comprendre le cycle complet d'analyse des journaux : collecte, parsing, normalisation, detection, interpretation et audit. Ce scenario est important dans un cadre universitaire car il relie les notions theoriques de detection d'anomalies a un systeme concret.
+

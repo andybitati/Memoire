@@ -94,6 +94,8 @@ def _priority_details(
     category_score = SECURITY_CATEGORY_WEIGHT.get(category, 8 if category != "UNKNOWN" else 0)
 
     min_score = anomaly_scores.min() if not anomaly_scores.dropna().empty else 0
+    memory_scores = pd.to_numeric(group.get("memory_priority_score", pd.Series(dtype=str)), errors="coerce")
+    memory_delta = pd.to_numeric(group.get("memory_priority_delta", pd.Series(dtype=str)), errors="coerce")
     anomaly_depth_score = 0
     if min_score < -0.05:
         anomaly_depth_score = 18
@@ -102,9 +104,15 @@ def _priority_details(
     elif min_score < 0:
         anomaly_depth_score = 8
 
+    memory_adjustment = 0
+    if not memory_scores.dropna().empty:
+        memory_adjustment = int((float(memory_scores.max()) - 50.0) * 0.25)
+    if not memory_delta.dropna().empty:
+        memory_adjustment += int(float(memory_delta.mean()) * 0.25)
+
     priority_score = min(
         100,
-        int(volume_score + severity_score + diversity_score + category_score + anomaly_depth_score),
+        max(0, int(volume_score + severity_score + diversity_score + category_score + anomaly_depth_score + memory_adjustment)),
     )
     priority = _priority_label(priority_score)
 
@@ -122,6 +130,8 @@ def _priority_details(
         reasons.append(f"port destination {dst_port}")
     if min_score < 0:
         reasons.append(f"score minimal {min_score:.4f}")
+    if memory_adjustment:
+        reasons.append(f"memoire feedback {memory_adjustment:+d}")
 
     return priority_score, priority, "; ".join(reasons)
 

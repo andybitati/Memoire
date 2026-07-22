@@ -55,7 +55,7 @@ Correction de positionnement:
 > agency, negotiation, FIPA compliance or reinforcement-learning-based
 > cooperation.
 
-Formulation plus prudente:
+Formulation plus mesuree:
 
 > Logminer is a modular agent-oriented architecture rather than a fully
 > cognitive multi-agent system. Its agentic contribution lies in specialization,
@@ -106,7 +106,7 @@ Correction:
 > the number of families, c the number of inspected columns and s the sampled
 > rows. The expensive step remains model inference, not routing.
 
-Formulation prudente:
+Formulation mesuree:
 
 > Scaling to production SOC workloads requires distributed ingestion, batched
 > inference and queue-based deployment, which are outside the validated scope of
@@ -129,4 +129,5 @@ les deux tableaux d'ablation et de reduire la force de la conclusion:
 - affirmer qu'il fournit une specialisation controlee, utile surtout lorsque les
   familles necessitent des espaces de features differents;
 - presenter HDFS comme limite structurelle et perspective semantique/sequentielle.
+
 

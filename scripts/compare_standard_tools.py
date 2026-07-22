@@ -1,4 +1,4 @@
-"""Comparaison prudente avec outils standards de supervision securite.
+"""Comparaison mesuree avec outils standards de supervision securite.
 
 Ce script ne pretend pas executer fail2ban, OSSEC ou Wazuh en production.
 Il produit trois niveaux de comparaison scientifiquement defendables:
@@ -191,7 +191,7 @@ def write_method_note() -> None:
     METHOD.write_text(
         """# Comparaison Scientifique Avec Outils Standards
 
-Cette comparaison est volontairement prudente. Elle ne pretend pas que
+Cette comparaison est volontairement limitee. Elle ne pretend pas que
 fail2ban, OSSEC et Wazuh ont tous ete executes dans une meme infrastructure de
 production. Trois niveaux sont separes:
 
@@ -270,3 +270,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

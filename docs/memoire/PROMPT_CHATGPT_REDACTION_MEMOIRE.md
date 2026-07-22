@@ -16,7 +16,7 @@ Reseaux a l'aide d'Agents Intelligents Multi-Taches.
 3. Utiliser `01_plan_et_redaction/pack_redaction_memoire.md` pour les contenus
    prets a inserer chapitre par chapitre.
 4. Utiliser `01_plan_et_redaction/synthese_resultats_pour_memoire_articles.md`
-   pour les resultats, interpretations et formulations prudentes.
+   pour les resultats, interpretations et formulations mesurees.
 5. Inserer les tableaux de `03_resultats_tableaux/` et les figures de
    `04_figures_png_pdf/` selon les chapitres.
 6. Inserer les captures dashboard de `05_captures_dashboard/` dans le chapitre
@@ -58,4 +58,5 @@ Reseaux a l'aide d'Agents Intelligents Multi-Taches.
 - Chapitre 5: Resultats et evaluation.
 - Chapitre 6: Conclusion et perspectives.
 - Annexes.
+
 

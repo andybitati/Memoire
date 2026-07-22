@@ -18,7 +18,7 @@ Les remarques principales sont maintenant largement couvertes. L'article 1 ne
 se presente plus comme une victoire universelle du routage ni comme un systeme
 multi-agent cognitif. Il est repositionne comme une contribution systeme:
 routage familial auditable, specialisation controlee, fallback explicable,
-ablation prudente et limites clairement formulees.
+ablation mesuree et limites clairement formulees.
 
 Le point le plus fragile restant n'est plus l'honnetete scientifique, mais la
 reproductibilite stricte: il manque encore une analyse multi-seeds, une
@@ -36,7 +36,7 @@ modeles.
 | Repositionner le SupervisorAgent comme autonomie bornee | Couvert | Le superviseur est maintenant decrit comme couche de controle et d'audit, pas comme contribution adaptative principale | Article 2 peut approfondir stabilite, stress et degradation |
 | Montrer que le routeur est auditable | Couvert | Formalisation avec score, confiance, raison de routage; table `Routing Audit Evidence`; fallback avec score 141 sur entree corrompue | Ajouter une vraie route accuracy si les labels famille sont disponibles |
 | Expliquer les poids du routeur | Partiellement couvert | Table des constantes et texte expliquant que ce sont des preuves additives non calibrees | Sensibilite des poids encore absente |
-| Traiter le fallback comme degradation prudente | Couvert | Section `Fallback Routing`; entree corrompue conservee, routee fallback, 0 candidat, 0 incident | Ajouter un tableau plus large fallback precision si possible |
+| Traiter le fallback comme degradation controlee | Couvert | Section `Fallback Routing`; entree corrompue conservee, routee fallback, 0 candidat, 0 incident | Ajouter un tableau plus large fallback precision si possible |
 | Reconnaitre la faiblesse HDFS | Couvert | Le manuscrit presente HDFS comme limite structurelle des features row-level et recommande Drain/temporal windows | Ne pas comparer favorablement HDFS a DeepLog/LogAnomaly |
 | Ajouter la litterature Drain, DeepLog, LogAnomaly, LogRobust, LogBERT | Couvert | Related Work contient ces references et positionne Logminer par rapport aux logs sequentiels | Verifier le style bibliographique final |
 | Repondre a la critique ELK/Wazuh/fail2ban | Couvert | Section comparative avec table qualitative: Logminer est complement analytique, pas remplacement SOC | Eventuellement ajouter Elastic/Kibana si demande par reviewer |
@@ -87,3 +87,4 @@ La meilleure strategie de soumission est de garder l'article 1 court sur les
 ressources et le stress, puis de consacrer l'article 2 a l'evaluation
 operationnelle complete. Ainsi, les critiques sont traitees sans vider le
 deuxieme article de son interet scientifique.
+

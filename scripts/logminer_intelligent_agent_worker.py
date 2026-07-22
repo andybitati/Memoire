@@ -11,6 +11,7 @@ import argparse
 import json
 import socket
 import sys
+import time
 from dataclasses import asdict
 from pathlib import Path
 
@@ -91,10 +92,12 @@ def main() -> int:
     parser.add_argument("--memory", default="data/processed/intelligent_redis_agent_memory.json")
     parser.add_argument("--max-parallel-tasks", type=int, default=3)
     parser.add_argument("--cycles", type=int, default=1)
+    parser.add_argument("--duration-sec", type=int, default=0, help="Executer des cycles jusqu'a cette duree maximale")
     parser.add_argument("--block-ms", type=int, default=1000)
     parser.add_argument("--claim-idle-ms", type=int, default=0)
     parser.add_argument("--crash-after-fetch", action="store_true")
     parser.add_argument("--enqueue-demo", action="store_true")
+    parser.add_argument("--enqueue-only", action="store_true", help="Quitter apres l'enfilement des taches de demonstration")
     parser.add_argument("--demo-input", default="examples/windows_event_sample.xml")
     args = parser.parse_args()
 
@@ -111,7 +114,10 @@ def main() -> int:
     )
     if args.enqueue_demo:
         message_ids = enqueue_demo_tasks(source, args.demo_input)
+        bus.ensure_group(args.group, stream=args.task_stream, start_id="0")
         print(json.dumps({"enqueued": message_ids, "task_stream": args.task_stream}, ensure_ascii=False, indent=2))
+        if args.enqueue_only:
+            return 0
 
     agent = build_redis_agent(
         agent_id=args.agent_id or consumer,
@@ -130,8 +136,13 @@ def main() -> int:
         return 2 if fetched else 0
 
     all_results = []
-    for _ in range(max(1, args.cycles)):
-        all_results.extend(agent.run_once(source))
+    if args.duration_sec > 0:
+        deadline = time.monotonic() + max(1, args.duration_sec)
+        while time.monotonic() < deadline:
+            all_results.extend(agent.run_once(source))
+    else:
+        for _ in range(max(1, args.cycles)):
+            all_results.extend(agent.run_once(source))
     print(json.dumps([asdict(result) for result in all_results], ensure_ascii=False, indent=2))
     return 0 if all(result.status == "ok" for result in all_results) else 1
 
