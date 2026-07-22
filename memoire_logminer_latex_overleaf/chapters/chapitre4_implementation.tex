@@ -63,6 +63,13 @@ Deux modes d'execution sont disponibles. Le premier utilise une file locale en m
 
 Cette implementation donne un sens concret aux termes agents, multi-taches et distribue. Les agents ne sont pas de simples fonctions appelees sequentiellement : ils disposent d'un profil de capacites, d'un etat observable, d'une file de taches et d'une logique de reprise. La distribution reste locale dans les experiences du memoire, mais elle est executee par plusieurs processus independants relies par un bus Redis persistant.
 
+\section{Memoire adaptative implementee}
+La memoire adaptative est implementee de facon progressive. Dans \texttt{agents/intelligent\_runtime.py}, la structure \texttt{AgentMemory} conserve les succes et erreurs par type de tache, les durees recentes, les derniers messages d'erreur, les taches terminees et les raisons des decisions prises. Cette memoire est sauvegardee dans des fichiers JSON afin de rester inspectable et reutilisable entre plusieurs cycles ou workers.
+
+Le superviseur dispose egalement d'une memoire persistante dans \texttt{agents/supervisor\_agent.py}. La structure \texttt{SupervisorMemory} enregistre les chemins deja traites, les familles recentes, le nombre de cycles, les succes, les erreurs et la derniere decision. Lorsqu'il choisit une source candidate, le superviseur penalise par exemple les chemins deja traites recemment et documente les raisons de sa selection. Cette logique donne une premiere forme d'adaptation comportementale : le systeme ne repete pas aveuglement les memes choix.
+
+Enfin, les decisions analyste sont stockees par l'endpoint \texttt{/alerts/decision}. Une alerte peut etre acceptee, rejetee ou reclassee ; l'action, la cible, la categorie, la severite et la justification sont ajoutees au journal d'audit. Le superviseur relit ces decisions au debut d'un cycle, consolide les rejets et reclassements par categorie et severite, puis les utilise comme signal de contexte dans sa politique de selection. Ces informations servent donc a la fois a la tracabilite, a la consultation dans le dashboard et a une premiere memoire de feedback exploitable pour reduire les faux positifs repetitifs ou preparer un apprentissage actif hors ligne.
+
 \section{API FastAPI}
 La V2 du prototype expose une API locale permettant de lancer des analyses, consulter l'etat des services, interroger les modeles, lire les ressources et recuperer les evenements d'audit. L'API permet aussi au dashboard de fonctionner sans manipuler directement les fichiers internes.
 
@@ -98,6 +105,8 @@ La vue technique expose les services, les ressources et l'audit.
 
 \section{Audit et decisions analyste}
 Le dashboard permet de valider, rejeter ou reclasser une anomalie candidate. Ces decisions sont enregistrees dans l'audit. Cette fonctionnalite prepare une boucle d'amelioration future, dans laquelle les validations humaines pourraient servir a reduire les faux positifs.
+
+Cette boucle reste volontairement controlee. Une decision analyste ne modifie pas automatiquement un modele entraine ; elle enrichit une trace exploitable. Cette trace peut ensuite etre analysee pour identifier les motifs rejetes frequemment, les familles produisant trop de bruit ou les seuils a recalibrer. L'amelioration est donc progressive, auditable et compatible avec les exigences methodologiques du memoire.
 
 \section{Problemes rencontres}
 Plusieurs difficultes ont marque l'implementation. La premiere concerne l'heterogeneite des formats : certaines sources sont tabulaires, d'autres textuelles, et d'autres deja enrichies par un outil externe. La deuxieme concerne l'interpretation des sorties non supervisees : sans labels, un score d'anomalie doit rester une indication et non une conclusion. La troisieme concerne la coherence du dashboard : il faut afficher assez de details pour l'analyse sans transformer l'interface en simple dump technique.

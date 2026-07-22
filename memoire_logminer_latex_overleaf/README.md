@@ -32,7 +32,7 @@ Overleaf peut compiler directement le projet apres upload du dossier complet.
 ## Remarques
 
 La redaction suit le plan directeur officiel du memoire. Les affirmations sont
-cadrees prudemment:
+cadrees methodologiquement:
 
 - les sorties non supervisees sont des anomalies candidates;
 - la baseline fail2ban-like n'est pas fail2ban officiel;
