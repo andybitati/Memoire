@@ -8,6 +8,8 @@ Les scores supervises doivent toujours etre lus avec leur protocole. Les protoco
 
 Cette experience ne signifie pas que CICIDS2017 est inutilisable ni qu'un autre modele echouerait necessairement. Elle montre que le RandomForest utilise dans cette configuration apprend fortement des signatures propres aux fichiers ou scenarios vus pendant l'entrainement. L'analyse par fichier precise le phenomene : DDoS reste partiellement detecte, PortScan presque pas, et Bot, Infiltration et WebAttacks ne sont pas retrouves dans les echantillons de test. L'ecart-type eleve ne doit donc pas etre interprete comme une simple variabilite due aux seeds ; il reflete surtout l'heterogeneite des scenarios tenus hors entrainement. Pour cette raison, le score exploratoire de 0,997163 n'est jamais utilise seul comme resultat principal.
 
+Une passe complementaire compare plusieurs candidats legers sur les memes holdouts : RandomForest, ExtraTrees, HistGradientBoosting, LogisticRegression et SGDLogistic. Le meilleur F1 moyen est obtenu par LogisticRegression avec 0,233670, contre 0,157827 pour RandomForest. Ce gain est utile pour ameliorer le resultat strict, mais il ne suffit pas a conclure que le probleme est resolu : certains scenarios restent presque ou totalement non detectes. La lecture retenue est donc que le choix du modele compte, mais que la dependance au changement de distribution demeure le facteur dominant.
+
 Le cas CIC-DDoS2019 est traite separement. Le score 0,999965 est conserve comme resultat exploratoire historique rattache a une famille DDoS, mais la preuve principale est le holdout strict sur cinq graines documente dans \texttt{random\_forest\_cic\_ddos2019\_metrics.csv}. Le dataset UNSW-NB15 n'est pas fusionne avec CIC-DDoS2019 ; il apparait seulement dans l'ablation controlee distincte.
 
 \section{HDFS/BGL et risque de fuite}
@@ -38,7 +40,7 @@ HDFS/BGL & Fuite par seuil ou contamination. & Les premiers scores sont explorat
 Dashboard & Confusion entre validation fonctionnelle et evaluation utilisateur. & Les captures prouvent le fonctionnement ; une user study reste hors perimetre. \\
 Wazuh/Fail2ban & Comparaison abusive avec des outils matures. & \logminer{} est presente comme couche analytique complementaire, pas comme substitut. \\
 Agents intelligents & Sur-promesse sur l'autonomie ou le debit. & Agents logiciels multi-taches avec orchestration ; comparaison controlee mesurant surtout overhead et reprise, pas acceleration brute. \\
-Memoire adaptative & Confusion entre feedback conserve et reentrainement automatique. & Memoire persistante auditable pour priorisation, contexte et reduction future des faux positifs ; pas de modification autonome des poids en production. \\
+Memoire adaptative & Confusion entre feedback conserve, reduction mesuree des faux positifs et reentrainement automatique. & Memoire persistante auditable pour priorisation et contexte ; reduction reelle des faux positifs et apprentissage adaptatif complet non encore demontres. \\
 Scalabilite & Benchmarks locaux trop courts pour une preuve industrielle. & Les mesures documentent la faisabilite locale ; la scalabilite multi-machine reste une perspective. \\
 \bottomrule
 \end{tabularx}

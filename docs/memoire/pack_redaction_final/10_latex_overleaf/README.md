@@ -54,7 +54,7 @@ limites scientifiques et techniques, la valeur pratique du prototype et les
 perspectives de deploiement.
 
 Elle contient egalement un chapitre de reproductibilite et de deploiement avec
-le lien GitHub du projet: `https://github.com/andybitati/Memoire/tree/version_3`.
+le lien GitHub du projet: `https://github.com/andybitati/Memoire/tree/main`.
 
 ## Images
 

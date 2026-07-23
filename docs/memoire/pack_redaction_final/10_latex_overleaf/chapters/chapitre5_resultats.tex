@@ -132,6 +132,28 @@ Cette experience renforce l'interpretation methodologique : pour CICIDS2017, l'e
 
 Cette table explique pourquoi l'ecart-type du F1 est superieur a la moyenne. Le modele generalise partiellement au scenario DDoS tenu hors entrainement, presque pas au PortScan, et pas aux scenarios Bot, Infiltration et WebAttacks dans les echantillons testes. L'instabilite ne vient donc pas des graines en tant que telles ; elle vient d'abord des familles d'attaques et des fichiers que chaque graine tient hors entrainement.
 
+Une comparaison de modeles candidats a ensuite ete ajoutee sur le meme protocole de holdout strict CICIDS2017. Elle ne cherche pas a optimiser artificiellement les scores, mais a verifier si la faiblesse observee est propre a RandomForest ou si elle persiste lorsque le classifieur change. Les candidats restent volontairement legers et disponibles dans scikit-learn : RandomForest, ExtraTrees, HistGradientBoosting, LogisticRegression et SGDLogistic. Les dependances XGBoost et LightGBM ne sont pas retenues dans cette passe parce qu'elles ne sont pas figees dans l'environnement de base du prototype.
+
+\begin{table}[H]
+\centering
+\caption{Comparaison de modeles candidats sur CICIDS2017 en holdout strict, moyennes sur cinq holdouts}
+\label{tab:cicids-model-candidates}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3.1cm}rrrrrX}
+\toprule
+\textbf{Modele} & \textbf{Precision moy.} & \textbf{Rappel moy.} & \textbf{F1 moy.} & \textbf{PR-AUC moy.} & \textbf{MCC moy.} & \textbf{Lecture} \\
+\midrule
+LogisticRegression & 0,402899 & 0,189932 & 0,233670 & 0,458829 & 0,186858 & Meilleur F1 moyen parmi les candidats legers, mais rappel encore faible. \\
+RandomForest & 0,390476 & 0,128650 & 0,157827 & 0,506615 & 0,146206 & Reference actuelle ; tres sensible aux scenarios tenus hors entrainement. \\
+SGDLogistic & 0,249990 & 0,112100 & 0,143598 & 0,501021 & 0,091464 & Modele lineaire rapide, mais moins stable que LogisticRegression. \\
+ExtraTrees & 0,381818 & 0,110900 & 0,143265 & 0,507360 & 0,125863 & Variante d'arbres plus rapide que RandomForest, sans gain de generalisation. \\
+HistGradientBoosting & 0,200000 & 0,001800 & 0,003568 & 0,569002 & 0,001050 & Scores de classement partiellement informatifs, mais seuil de decision inadapte ici. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Cette experience ameliore legerement le resultat strict le plus defendable sur CICIDS2017 : LogisticRegression obtient un F1 moyen de 0,233670 contre 0,157827 pour RandomForest. Cependant, l'amelioration ne suffit pas a transformer CICIDS2017 en preuve de generalisation robuste. L'analyse par fichier montre que Bot reste non detecte dans l'echantillon teste, que PortScan reste presque non detecte, et que les gains de LogisticRegression viennent surtout d'une meilleure detection partielle d'Infiltration et WebAttacks au prix d'un nombre moyen de faux positifs plus eleve. Le resultat scientifique principal devient donc plus solide : changer de modele peut ameliorer le score, mais le verrou dominant reste le changement de distribution entre scenarios.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{fig_supervised_models_f1.png}

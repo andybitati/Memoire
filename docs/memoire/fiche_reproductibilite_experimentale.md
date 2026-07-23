@@ -20,7 +20,7 @@ dans un article pour permettre l'interpretation des benchmarks Logminer.
 | Chemin environnement | `.venv` |
 | API benchmarkee | FastAPI Logminer, `http://127.0.0.1:8000` |
 | Dashboard | `http://127.0.0.1:5173` |
-| Depot GitHub | `https://github.com/andybitati/Memoire/tree/version_3` |
+| Depot GitHub | `https://github.com/andybitati/Memoire/tree/main` |
 
 Note: les informations WMI detaillees ont retourne `Acces refuse` dans
 l'environnement courant. Les valeurs ci-dessus proviennent de Python, `platform`

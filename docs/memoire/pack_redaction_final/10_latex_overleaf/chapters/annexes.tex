@@ -31,7 +31,7 @@ Les commandes principales utilisees pour reproduire les resultats sont les suiva
 Le depot GitHub associe au projet est :
 
 \begin{center}
-\url{https://github.com/andybitati/Memoire/tree/version_3}
+\url{https://github.com/andybitati/Memoire/tree/main}
 \end{center}
 
 Il permet de retrouver le code source, les scripts de traitement, les ressources experimentales versionnees et les evolutions futures du prototype. Les articles scientifiques seront ajoutes plus tard lorsqu'ils seront rediges et finalises.
@@ -47,6 +47,8 @@ Les preuves experimentales principales sont conservees sous forme de CSV :
   \item \texttt{random\_forest\_network\_cicids\_metrics.csv} ;
   \item \texttt{random\_forest\_linux\_auth\_strict\_metrics.csv} ;
   \item \texttt{random\_forest\_cicids2017\_controlled\_split\_metrics.csv} ;
+  \item \texttt{cicids\_model\_candidates\_metrics.csv} ;
+  \item \texttt{cicids\_model\_candidates\_summary.csv} ;
   \item \texttt{random\_forest\_cic\_ddos2019\_metrics.csv} ;
   \item \texttt{validation\_hdfs\_drain3\_train\_test\_metrics.csv} ;
   \item \texttt{validation\_bgl\_drain3\_train\_test\_metrics.csv} ;
@@ -66,20 +68,6 @@ Pour toute lecture des resultats, les regles suivantes doivent etre conservees :
   \item la memoire adaptative est une capitalisation auditable des historiques et feedbacks ;
   \item l'auto-apprentissage continu avec reentrainement controle reste une extension future.
 \end{itemize}
-
-\section{Checklist de depot}
-Avant le depot final, les elements suivants doivent etre verifies :
-
-\begin{enumerate}
-  \item orthographe officielle de tous les noms figurant sur la page de garde ;
-  \item coherence entre le titre de la page de garde, le resume et le document directeur ;
-  \item presence des figures et captures dans les dossiers \texttt{figures} et \texttt{captures} ;
-  \item compilation Overleaf sans erreur bloquante ;
-  \item coherence des numeros de figures et tableaux apres compilation ;
-  \item verification des valeurs numeriques citees dans le chapitre des resultats ;
-  \item presence de la bibliographie et des citations principales ;
-  \item relecture finale des accents, noms propres et formulations administratives.
-\end{enumerate}
 
 \section{Fichiers de preuve recommandes}
 Les fichiers de preuve a conserver avec le memoire sont les CSV de benchmark, les tableaux Markdown, les captures du dashboard, les figures exportees et les scripts de generation. Ils permettent de justifier les valeurs reprises dans le texte et de montrer que les resultats ne sont pas seulement descriptifs, mais rattaches a des artefacts reproductibles.
@@ -101,6 +89,7 @@ Le tableau suivant donne une matrice de tracabilite simplifiee. Il doit etre con
 \endhead
 F1 Linux/auth & \texttt{random\_forest\_linux\_auth\_metrics.csv} & Evaluation supervisee et discussion sur les journaux d'authentification. \\
 F1 CICIDS2017 & \texttt{random\_forest\_network\_cicids\_metrics.csv} et \texttt{random\_forest\_cicids2017\_controlled\_split\_metrics.csv} & Evaluation supervisee reseau ; le score exploratoire doit etre lu avec le F1 strict de 0,157827. \\
+Comparaison modeles CICIDS2017 & \texttt{cicids\_model\_candidates\_metrics.csv} et \texttt{table\_cicids\_model\_candidates.md} & Teste plusieurs candidats legers sur les memes holdouts ; LogisticRegression ameliore le F1 strict sans supprimer la fragilite inter-scenarios. \\
 F1 CIC-DDoS2019 & \texttt{random\_forest\_cic\_ddos2019\_metrics.csv} & Evaluation supervisee stricte par holdout fichier/famille DDoS ; resultat principal retenu pour ce dataset. \\
 Splits supervises stricts & \texttt{supervised\_strict\_split\_metrics.csv} & Evaluation complementaire par serveurs, fichiers ou scenarios ; documente la sensibilite au protocole. \\
 HDFS Drain3 train--test & \texttt{validation\_hdfs\_drain3\_train\_test\_metrics.csv} & Validation complementaire avec templates Drain3 et fenetres ; progression moderee, non interpretee comme generalisation universelle. \\
