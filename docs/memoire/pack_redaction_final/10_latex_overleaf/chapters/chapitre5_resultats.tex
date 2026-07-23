@@ -171,6 +171,26 @@ Les faux positifs constituent une limite majeure des systemes de detection. Le p
   \label{fig:false-positive}
 \end{figure}
 
+\section{Ablation de la memoire de feedback}
+La memoire adaptative est exploitee dans la detection sous forme de post-traitement auditable. Apres la production des anomalies candidates, le systeme relit les decisions analyste conservees dans l'audit, calcule un motif de feedback et ajoute des colonnes \texttt{memory\_*} au CSV d'anomalies. Ces colonnes n'effacent pas les alertes ; elles ajustent leur priorite et documentent l'effet du feedback avant la correlation.
+
+\begin{table}[H]
+\centering
+\caption{Ablation de la memoire de feedback sur Wazuh}
+\label{tab:memory-feedback-ablation}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3.1cm}rrrrX}
+\toprule
+\textbf{Scenario} & \textbf{Decisions} & \textbf{Lignes} & \textbf{Anom.} & \textbf{Abaissees} & \textbf{Lecture} \\
+\midrule
+Audit reel & 0 & 122 563 & 3 676 & 0 & Aucune decision analyste exploitable n'etait encore presente dans l'audit au moment du test. \\
+Controle top 5 motifs rejetes & 15 & 122 563 & 3 676 & 1 343 & Test de sensibilite : les motifs repetitifs rejetes sont abaisses par la memoire. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Cette ablation ne prouve pas que le modele detecte mieux les intrusions. Elle montre plus precisement que la memoire agit maintenant dans la chaine de detection et peut modifier la priorisation des alertes lorsque des decisions analyste sont disponibles. La reduction mesuree des faux positifs en conditions reelles demanderait un jeu annote par analyste ou une campagne d'evaluation dediee.
+
 \section{Benchmark local par micro-lots}
 Le benchmark local par micro-lots utilise l'endpoint FastAPI \texttt{/run/discovered}. Il couvre 10 cycles, chacun portant sur 8 537 lignes. La duree moyenne du workflow est de 8,2012 secondes, avec un minimum de 3,1672 secondes et un maximum de 15,3289 secondes. Cette mesure ne doit pas etre interpretee comme une preuve de temps reel strict. Elle decrit un traitement periodique par lots de taille moderee dans un environnement local.
 
@@ -282,7 +302,7 @@ Une seconde passe a ete ajoutee pour repondre a cette limite. Les journaux sont 
 \scriptsize
 \begin{tabularx}{\textwidth}{p{2.6cm}p{3.4cm}rrrrX}
 \toprule
-\textbf{Famille} & \textbf{Modele} & \textbf{Precision} & \textbf{Rappel} & \textbf{F1} & \textbf{Exact.} & \textbf{Lecture nuancee} \\
+\textbf{Famille} & \textbf{Modele} & \textbf{Precision} & \textbf{Rappel} & \textbf{F1} & \textbf{Exact.} & \textbf{Lecture methodologique} \\
 \midrule
 HDFS & Histogramme train--test & 0,653333 & 0,652246 & 0,652789 & 0,652789 & Gain modere par rapport aux features ligne par ligne ; la famille reste difficile. \\
 HDFS & Isolation Forest train--test & 0,638333 & 0,637271 & 0,637802 & 0,637802 & Resultat proche du meilleur histogramme, mais faux positifs et faux negatifs restent importants. \\
@@ -321,7 +341,25 @@ Latence p99 & 8,7987 s \\
 \end{tabular}
 \end{table}
 
-La repartition par agent montre une execution effectivement partagee : \texttt{redis-agent-1} termine 2 654 taches, \texttt{redis-agent-2} 2 602, \texttt{redis-agent-3} 2 543 et \texttt{redis-recovery-agent} recupere 709 taches abandonnees par le worker de panne. Les trois types de taches restent equilibres : 2 836 \texttt{parse.logs}, 2 836 \texttt{route.model} et 2 836 \texttt{discover.logs}. Cette campagne soutient la dimension distribuee du titre au niveau local multi-processus. Elle ne remplace pas un deploiement multi-machine securise, mais elle montre que l'architecture n'est pas seulement monolithique.
+La repartition par agent montre une execution effectivement partagee : \texttt{redis-agent-1} termine 2 654 taches, \texttt{redis-agent-2} 2 602, \texttt{redis-agent-3} 2 543 et \texttt{redis-recovery-agent} recupere 709 taches abandonnees par le worker de panne. Les trois types de taches restent equilibres : 2 836 \texttt{parse.logs}, 2 836 \texttt{route.model} et 2 836 \texttt{discover.logs}. Cette campagne soutient la dimension distribuee du titre au niveau local multi-processus. Elle ne remplace pas un deploiement SOC securise, mais elle montre que l'architecture n'est pas seulement monolithique.
+
+Une validation multi-VM a ensuite ete ajoutee avec deux invites VirtualBox, \texttt{Debian} et \texttt{Ubuntu}, connectees au meme Redis heberge par Windows. La campagne equilibree enfile douze taches et confirme que les deux VM consomment le meme stream. Une seconde campagne simule une panne avant acquittement sur Debian; Ubuntu reclame ensuite la tache pending et termine l'ensemble sans perte. Enfin, une campagne d'endurance supervisee d'une heure enfile 525 taches sur le meme bus Redis. Les sessions \texttt{guestcontrol} VirtualBox ont necessite des relances supervisees, mais le groupe Redis termine avec 525 entrees lues, un lag final nul et aucun pending.
+
+\begin{table}[H]
+\centering
+\caption{Validation Redis multi-VM avec VirtualBox}
+\label{tab:vbox-redis-multivm}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3.2cm}rrrrrX}
+\toprule
+\textbf{Scenario} & \textbf{Taches} & \textbf{Terminees} & \textbf{Echecs} & \textbf{Pannes} & \textbf{Pending final} & \textbf{Lecture} \\
+\midrule
+Campagne equilibree Debian/Ubuntu & 12 & 12 & 0 & 0 & 0 & Les deux VM traitent des taches du meme stream Redis : 8 pour Debian, 4 pour Ubuntu. \\
+Panne Debian, reprise Ubuntu & 3 & 3 & 0 & 1 & 0 & Une tache prise avant panne est reprise par Ubuntu apres reclamation Redis. \\
+Endurance multi-VM supervisee 1 h & 525 & 525 & 0 & n/a & 0 & Toutes les entrees sont lues et acquittees par le groupe Redis; lag final nul. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \begin{table}[H]
 \centering
@@ -358,6 +396,9 @@ Agent unique multi-taches & 3 & 0 & n/a & n/a & Un agent execute discovery, pars
 Agents locaux multiples & 9 & 0 & 6,0688 s & 1,483 & Partage d'une file locale entre agents. \\
 Agents Redis prevalidation & 150 & 0 & 102,4202 s & 1,4646 & Distribution locale multi-processus validee. \\
 Agents Redis endurance 6h & 8 508 & 0 & 21 613,8566 s & 0,3936 & Distribution locale multi-processus et reprise repetee validees. \\
+Agents Redis multi-VM & 12 & 0 & n/a & n/a & Distribution reseau de laboratoire entre Debian et Ubuntu. \\
+Agents Redis multi-VM avec reprise & 3 & 0 & n/a & n/a & Panne Debian avant ack, tache reprise par Ubuntu, aucun pending final. \\
+Agents Redis multi-VM 1 h & 525 & 0 & 3 600 s & n/a & Endurance supervisee multi-VM, 525 entrees lues, lag et pending finaux nuls. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -376,4 +417,3 @@ Les tests de robustesse verifient la capacite du systeme a traiter des formats d
 Ce chapitre etablit les resultats experimentaux retenus pour le memoire. Les resultats supervises principaux sont accompagnes de splits plus stricts et d'une comparaison controlee sur CICIDS2017. Les experimentations HDFS/BGL distinguent explicitement les essais exploratoires de la validation Drain3 train--test. Les mesures systeme documentent la latence, les ressources, la robustesse multi-format et la campagne Redis locale de six heures.
 
 L'interpretation generale, les limites scientifiques et les perspectives sont regroupees dans les chapitres suivants afin d'eviter de repeter les memes precautions dans la section de resultats.
-

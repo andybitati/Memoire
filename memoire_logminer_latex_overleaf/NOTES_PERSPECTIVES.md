@@ -28,4 +28,3 @@ Formulation a garder dans la redaction :
 > Les resultats HDFS/BGL ne contredisent pas l'architecture Logminer ; ils
 > montrent qu'une famille de journaux systemes sequentiels doit etre prise en
 > charge par un agent specialise par templates et sequences legeres.
-

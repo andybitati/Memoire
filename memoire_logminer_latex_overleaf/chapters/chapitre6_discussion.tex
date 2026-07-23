@@ -5,6 +5,8 @@ Les resultats valident surtout une chaine d'ingenierie : collecte, parsing, norm
 
 La comparaison controlee sur CICIDS2017 illustre cette dependance au protocole : le F1 moyen passe de 0,999260 en split aleatoire stratifie a 0,157827 sur cinq holdouts fichier/scenario associes aux graines 42--46, toutes choses principales etant maintenues constantes. L'analyse par scenario explique l'ecart-type eleve : le modele detecte partiellement DDoS, presque pas PortScan, et pas Bot, Infiltration ni WebAttacks dans les echantillons tenus hors entrainement. Cette dispersion ne doit donc pas etre lue comme une simple variabilite aleatoire entre seeds, mais comme une dispersion entre scenarios tenus hors apprentissage. A l'inverse, CIC-DDoS2019 conserve un F1 strict eleve de 0,997577, mais ce resultat reste limite aux familles DDoS evaluees.
 
+Le benchmark algorithmique reste volontairement limite. Le prototype s'appuie principalement sur RandomForest pour le supervise et Isolation Forest pour le non-supervise afin de privilegier la legerete, l'interpretabilite, la disponibilite locale et le cout de calcul compatible avec un environnement universitaire. Cette decision ne permet pas d'affirmer que ces modeles seraient meilleurs que XGBoost, LightGBM, One-Class SVM, LOF, k-means ou des modeles sequentiels. Elle permet seulement de tester une architecture orchestrable avec des modeles simples, reproductibles et auditables. Une comparaison plus large des familles de modeles constitue donc un prolongement methodologique necessaire.
+
 \section{Apport architectural}
 L'apport principal de \logminer{} est l'integration modulaire. Le routage par famille evite d'appliquer indistinctement un modele unique a des sources semantiquement differentes. L'ablation sur cinq graines montre toutefois que le routage ne procure pas automatiquement un gain quantitatif lorsqu'il est force dans un espace commun. Son interet le plus defendable est donc la compatibilite entre source, features et modele, ainsi que l'extensibilite de la chaine.
 
@@ -26,6 +28,7 @@ Sur Wazuh, les 3 676 anomalies candidates sur 122 563 evenements mesurent la sel
 \textbf{Limite} & \textbf{Constat} & \textbf{Consequence} \\
 \midrule
 Protocoles supervises & Les scores varient fortement selon le split, surtout sur CICIDS2017. & Toujours presenter les scores avec leur protocole et privilegier les holdouts controles. \\
+Benchmark algorithmique & RandomForest et Isolation Forest ne couvrent pas toute la diversite des methodes citees dans l'etat de l'art. & Defendre leur choix par legerete, interpretabilite et cout local ; comparer ensuite XGBoost, LightGBM, LOF, One-Class SVM et modeles sequentiels. \\
 Logs sequentiels & HDFS/BGL restent sensibles au choix de representation et de seuil. & Poursuivre Drain3 avec validation separee et modeles sequentiels. \\
 Parsing & Les formats pris en charge sont controles. & Parler de robustesse multi-format, pas d'adaptation illimitee. \\
 Dashboard & Les captures prouvent le fonctionnement, pas l'utilisabilite. & Prevoir une evaluation avec analystes ou grille heuristique. \\

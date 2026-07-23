@@ -31,8 +31,8 @@ Les perspectives principales sont les suivantes :
 \begin{enumerate}
   \item etendre a d'autres familles la comparaison controlee entre split aleatoire et holdout temporel, fichier ou scenario, deja conduite sur CICIDS2017 avec memes features, memes hyperparametres, memes tailles d'echantillon et memes graines ;
   \item prolonger le protocole controle global-versus-familles par davantage de graines et des splits temporels, par fichier ou par scenario, avec latence et memoire ;
-  \item deployer le systeme sur plusieurs machines avec workers Redis et files persistantes ;
-  \item ajouter des tests multi-machine et des tests de charge sur plusieurs jours, au-dela de la campagne locale de six heures ;
+  \item consolider le deploiement multi-machine au-dela de la preuve VirtualBox de laboratoire, avec workers Redis, files persistantes, supervision explicite et securisation des communications ;
+  \item ajouter des tests de charge sur plusieurs jours, au-dela de la campagne locale de six heures et de la campagne multi-VM supervisee d'une heure ;
   \item transformer la memoire adaptative en boucle d'apprentissage actif a partir des decisions analyste, avec surveillance du concept drift et promotion controlee des nouveaux modeles ;
   \item consolider l'usage de Drain3 sur HDFS/BGL, repeter les splits et comparer avec des modeles sequentiels plus specialises ;
   \item reduire les faux positifs par calibration des seuils et contexte temporel ;

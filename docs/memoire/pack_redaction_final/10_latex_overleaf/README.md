@@ -32,12 +32,21 @@ Overleaf peut compiler directement le projet apres upload du dossier complet.
 ## Remarques
 
 La redaction suit le plan directeur officiel du memoire. Les affirmations sont
-cadrees clairement:
+cadrees methodologiquement:
 
 - les sorties non supervisees sont des anomalies candidates;
 - la baseline fail2ban-like n'est pas fail2ban officiel;
-- Redis/MQTT sont presentes comme extensions locales et perspectives;
-- la distribution multi-machine stricte reste une perspective.
+- Redis est presente comme preuve locale multi-processus pour les agents: la
+  campagne de six heures retient 8 508 taches terminees, 0 echec, 0 pending
+  final et 709 reprises apres panne simulee;
+- la campagne Redis locale de six heures utilisait le conteneur Docker
+  `logminer-redis` expose sur `localhost:6379`;
+- trois campagnes complementaires ont ete executees avec les VM VirtualBox
+  Debian et Ubuntu connectees au meme bus Redis: repartition equilibree,
+  panne/reprise et endurance supervisee d'une heure avec 525 taches, lag final
+  nul et aucun pending;
+- la validation multi-machine reste une preuve de laboratoire, pas encore une
+  validation SOC multi-site securisee.
 
 La version courante contient aussi un chapitre de discussion generale ajoute
 avant la conclusion afin de developper l'interpretation des resultats, les
@@ -52,4 +61,3 @@ le lien GitHub du projet: `https://github.com/andybitati/Memoire/tree/version_3`
 Le projet n'utilise aucune image distante. Toutes les figures et captures sont
 locales et issues du prototype ou des resultats experimentaux. Voir
 `IMAGE_ASSETS.md`.
-

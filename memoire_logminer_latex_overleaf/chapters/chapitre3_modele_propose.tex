@@ -54,6 +54,10 @@ L'evaluation experimentale de ce choix architectural est presentee au chapitre \
 \section{Modeles de detection}
 Deux categories de modeles sont utilisees. Les modeles supervises RandomForest sont entraines sur des datasets labelises tels que Linux/auth, CICIDS2017 et CIC-DDoS2019. Les modeles non supervises, notamment Isolation Forest, sont utilises lorsque les labels fiables ne sont pas disponibles. Dans ce cas, les sorties sont des anomalies candidates.
 
+Ce choix de portefeuille est un choix d'ingenierie locale, pas une affirmation de superiorite universelle. RandomForest a ete retenu pour les donnees tabulaires labelisees parce qu'il fonctionne correctement avec des variables heterogenes, demande peu de parametrage initial, reste disponible dans scikit-learn, s'exporte facilement en artefact \texttt{joblib} et permet une lecture relativement directe de l'importance des variables. Isolation Forest a ete retenu pour les sources sans labels fiables parce qu'il donne un score d'anomalie exploitable, reste peu couteux a executer localement et s'integre bien dans un prototype sobre.
+
+D'autres familles auraient pu etre integrees dans un benchmark plus large : XGBoost, LightGBM, One-Class SVM, LOF, k-means, autoencodeurs ou modeles sequentiels. Elles ne sont pas exclues pour des raisons theoriques ; elles sont reportees a une comparaison controlee ulterieure afin de conserver un prototype reproductible, leger et defendable sur machine locale. Les resultats du memoire doivent donc etre lus comme l'evaluation d'une architecture orchestrant des modeles simples et auditables, non comme la preuve que ces modeles dominent l'etat de l'art.
+
 \subsection{Decision et interpretation}
 La sortie d'un modele est convertie en objet d'analyse comprenant au minimum la famille, le score, la decision, la severite estimee et les champs ayant motive l'affichage dans le dashboard. Cette representation evite de presenter un score isole. Elle favorise une lecture par incident, dans laquelle l'analyste peut comparer le message original, le contexte temporel et l'historique des decisions.
 
