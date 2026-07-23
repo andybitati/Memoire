@@ -24,7 +24,7 @@ REPO_ROOT = BASE_DIR.parents[1]
 if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
 
-from agents.audit import write_audit
+from agents.audit import read_audit, write_audit
 from agents.bus import LocalMessageBus, MessageBus
 from agents.collector_agent import DEFAULT_ROOTS, LogCandidate, deployment_roots, discover_logs
 from agents.model_router import route_model, run_routed_detection
@@ -91,6 +91,9 @@ class SupervisorMemory:
     errors: int = 0
     processed_paths: list[str] = field(default_factory=list)
     recent_families: list[str] = field(default_factory=list)
+    analyst_decisions: list[dict[str, Any]] = field(default_factory=list)
+    analyst_rejections_by_category: dict[str, int] = field(default_factory=dict)
+    analyst_rejections_by_severity: dict[str, int] = field(default_factory=dict)
     last_decision: dict[str, Any] = field(default_factory=dict)
     last_error: str = ""
     updated_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
@@ -120,7 +123,8 @@ def load_memory(path: str | Path = "data/processed/supervisor_state.json") -> Su
         return SupervisorMemory()
     try:
         data = json.loads(memory_path.read_text(encoding="utf-8"))
-        return SupervisorMemory(**data)
+        allowed = set(SupervisorMemory.__dataclass_fields__)
+        return SupervisorMemory(**{key: value for key, value in data.items() if key in allowed})
     except Exception:
         return SupervisorMemory(last_error=f"memoire illisible: {memory_path}")
 
@@ -132,6 +136,36 @@ def save_memory(memory: SupervisorMemory, path: str | Path = "data/processed/sup
     memory_path = _project_path(path)
     memory_path.parent.mkdir(parents=True, exist_ok=True)
     memory_path.write_text(json.dumps(asdict(memory), ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def refresh_analyst_feedback(memory: SupervisorMemory, *, limit: int = 1000) -> None:
+    """Integre les decisions analyste auditees dans la memoire superviseur."""
+
+    decisions: list[dict[str, Any]] = []
+    reject_categories: dict[str, int] = {}
+    reject_severities: dict[str, int] = {}
+    for entry in read_audit(limit=limit):
+        if not entry.action.startswith("alert."):
+            continue
+        decision = entry.action.replace("alert.", "", 1)
+        details = entry.details or {}
+        category = str(details.get("category") or "unknown").strip().lower() or "unknown"
+        severity = str(details.get("severity") or "unknown").strip().lower() or "unknown"
+        record = {
+            "decision": decision,
+            "target": entry.target,
+            "category": category,
+            "severity": severity,
+            "reason": details.get("reason") or "",
+            "timestamp": entry.timestamp,
+        }
+        decisions.append(record)
+        if decision in {"reject", "reclassify"}:
+            reject_categories[category] = int(reject_categories.get(category, 0)) + 1
+            reject_severities[severity] = int(reject_severities.get(severity, 0)) + 1
+    memory.analyst_decisions = decisions[-200:]
+    memory.analyst_rejections_by_category = reject_categories
+    memory.analyst_rejections_by_severity = reject_severities
 
 
 def _score_candidate(candidate: dict[str, Any], memory: SupervisorMemory) -> tuple[int, list[str]]:
@@ -150,7 +184,12 @@ def _score_candidate(candidate: dict[str, Any], memory: SupervisorMemory) -> tup
         reasons.append("famille sequentielle a surveiller")
     if kind == "unknown":
         score -= 10
-        reasons.append("source inconnue: prudence")
+        reasons.append("source inconnue: controle requis")
+    analyst_rejections = int(memory.analyst_rejections_by_category.get(kind.lower(), 0))
+    if analyst_rejections:
+        penalty = min(20, analyst_rejections * 2)
+        score -= penalty
+        reasons.append(f"feedback analyste: {analyst_rejections} rejets/reclassements pour {kind}")
     if any(token in path.lower() for token in ("cef", "cloudtrail", "apache")):
         score += 5
         reasons.append("format robuste utile pour validation")
@@ -221,6 +260,7 @@ def update_state(perception: SupervisorPerception, memory: SupervisorMemory | No
         previous_errors=agent_memory.errors,
         processed_paths=list(agent_memory.processed_paths[-10:]),
         recent_families=list(agent_memory.recent_families[-10:]),
+        analyst_rejections=sum(agent_memory.analyst_rejections_by_category.values()),
     )
 
 
@@ -255,7 +295,7 @@ def decide(
     elif state.cpu_machine_percent >= 35:
         sample_rows = 600
         max_mb = min(max_mb, 20)
-        reasons.append("charge CPU moderee: profil prudent")
+        reasons.append("charge CPU moderee: profil reduit")
     else:
         reasons.append("charge locale acceptable")
 
@@ -264,13 +304,17 @@ def decide(
         max_mb = min(max_mb, 5)
         reasons.append("erreurs recentes: profil conservateur")
 
+    if state.analyst_rejections >= 5:
+        window_minutes = max(window_minutes, 20)
+        reasons.append("feedback analyste: rejets/reclassements frequents, contexte elargi")
+
     if state.selected_kind in {"hdfs", "bgl"} or any(token in state.selected_path.lower() for token in ("hdfs", "bgl")):
         window_minutes = 30
         reasons.append("logs systemes sequentiels: fenetre de correlation elargie")
 
     if state.selected_kind == "unknown":
         sample_rows = min(sample_rows, 300)
-        reasons.append("source inconnue: routage prudent vers degradation controlee")
+        reasons.append("source inconnue: routage controle vers degradation explicite")
 
     if state.recent_families.count("fallback") >= 3:
         window_minutes = max(window_minutes, 20)
@@ -392,6 +436,7 @@ def run_supervisor_cycle(
     started = perf_counter()
     bus = LocalMessageBus(bus_path, run_id=run_id)
     memory = load_memory(memory_path)
+    refresh_analyst_feedback(memory)
     perception = perceive(
         roots=roots,
         max_files=max_files,

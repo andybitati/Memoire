@@ -42,6 +42,7 @@ if str(BASE_DIR) not in sys.path:
 
 from agents.correlator import correlate_anomalies
 from agents.detector import detect_anomalies
+from agents.feedback_memory import apply_feedback_memory_to_csv
 from detectors.file_detector import detect_kind
 
 
@@ -835,6 +836,7 @@ def run_routed_detection(
         _detect_linux_auth_model(input_file, anomalies_output, sep=sep, artifact=artifact, chunk_workers=chunk_workers)
         detect_sec = round(perf_counter() - detect_started, 4)
         correlation_sep = _infer_sep(anomalies_output) if sep == "auto" else sep
+        apply_feedback_memory_to_csv(anomalies_output, sep=correlation_sep)
         correlate_started = perf_counter()
         correlate_anomalies(
             anomalies_output,
@@ -848,6 +850,7 @@ def run_routed_detection(
         _detect_supervised_model(input_file, anomalies_output, sep=sep, artifact=artifact, chunk_workers=chunk_workers)
         detect_sec = round(perf_counter() - detect_started, 4)
         correlation_sep = _infer_sep(anomalies_output) if sep == "auto" else sep
+        apply_feedback_memory_to_csv(anomalies_output, sep=correlation_sep)
         correlate_started = perf_counter()
         correlate_anomalies(
             anomalies_output,
@@ -861,6 +864,7 @@ def run_routed_detection(
         inference_sep = _infer_sep(input_file) if sep == "auto" else sep
         detect_anomalies(input_file, anomalies_output, sep=inference_sep, model_in=model_path)
         detect_sec = round(perf_counter() - detect_started, 4)
+        apply_feedback_memory_to_csv(anomalies_output, sep=inference_sep)
         correlate_started = perf_counter()
         correlate_anomalies(
             anomalies_output,

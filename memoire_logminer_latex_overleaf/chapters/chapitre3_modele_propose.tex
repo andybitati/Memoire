@@ -31,6 +31,7 @@ Detecteur & Applique le modele de detection ou de classification. \\
 Correlateur & Regroupe les anomalies candidates en incidents lisibles. \\
 Dashboard & Affiche les resultats, filtres, graphes, ressources et decisions. \\
 Audit & Trace les executions, decisions analyste et messages agents. \\
+Memoire adaptative & Conserve les historiques utiles afin d'aider les agents a eviter les repetitions, ajuster la priorite et preparer l'apprentissage actif. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -53,6 +54,10 @@ L'evaluation experimentale de ce choix architectural est presentee au chapitre \
 \section{Modeles de detection}
 Deux categories de modeles sont utilisees. Les modeles supervises RandomForest sont entraines sur des datasets labelises tels que Linux/auth, CICIDS2017 et CIC-DDoS2019. Les modeles non supervises, notamment Isolation Forest, sont utilises lorsque les labels fiables ne sont pas disponibles. Dans ce cas, les sorties sont des anomalies candidates.
 
+Ce choix de portefeuille est un choix d'ingenierie locale, pas une affirmation de superiorite universelle. RandomForest a ete retenu pour les donnees tabulaires labelisees parce qu'il fonctionne correctement avec des variables heterogenes, demande peu de parametrage initial, reste disponible dans scikit-learn, s'exporte facilement en artefact \texttt{joblib} et permet une lecture relativement directe de l'importance des variables. Isolation Forest a ete retenu pour les sources sans labels fiables parce qu'il donne un score d'anomalie exploitable, reste peu couteux a executer localement et s'integre bien dans un prototype sobre.
+
+D'autres familles auraient pu etre integrees dans un benchmark plus large : XGBoost, LightGBM, One-Class SVM, LOF, k-means, autoencodeurs ou modeles sequentiels. Elles ne sont pas exclues pour des raisons theoriques ; elles sont reportees a une comparaison controlee ulterieure afin de conserver un prototype reproductible, leger et defendable sur machine locale. Les resultats du memoire doivent donc etre lus comme l'evaluation d'une architecture orchestrant des modeles simples et auditables, non comme la preuve que ces modeles dominent l'etat de l'art.
+
 \subsection{Decision et interpretation}
 La sortie d'un modele est convertie en objet d'analyse comprenant au minimum la famille, le score, la decision, la severite estimee et les champs ayant motive l'affichage dans le dashboard. Cette representation evite de presenter un score isole. Elle favorise une lecture par incident, dans laquelle l'analyste peut comparer le message original, le contexte temporel et l'historique des decisions.
 
@@ -69,11 +74,13 @@ Une anomalie candidate isolee n'est pas forcement une intrusion. Le correlateur 
 \section{Bus, audit et extensions}
 La version locale s'appuie sur des fichiers JSONL et CSV reproductibles. La V2 FastAPI expose des endpoints de traitement et un dashboard web. Redis Streams est ajoute comme bus operationnel local pour l'orchestration evenementielle et la repartition de taches entre workers. MQTT reste une extension de communication legere. Ces extensions ne sont pas presentees comme une preuve de scalabilite industrielle, mais comme une validation locale de l'architecture et une trajectoire d'evolution.
 
+La memoire adaptative s'inscrit dans cette meme logique d'audit. Elle conserve des informations stables sur les cycles d'execution, les erreurs, les durees, les decisions recentes, les familles traitees et les retours analyste. Son objectif est de permettre aux agents de mieux contextualiser leurs choix lors des cycles suivants, sans transformer le prototype en systeme de reentrainement automatique non controle.
+
 \section{Positionnement du modele}
 Le modele propose est un complement aux outils SOC/SIEM existants. Il ne remplace pas Wazuh, OSSEC ou fail2ban. Il ajoute une couche analytique permettant de tester des detecteurs legers, de router les familles de journaux et de fournir un dashboard d'aide a l'analyse.
 
 \section{Contraintes de conception}
-La conception est guidee par quatre contraintes. La premiere est la reproductibilite : les resultats doivent pouvoir etre regeneres par scripts. La deuxieme est la legerete : le prototype doit fonctionner localement sans infrastructure SOC complete. La troisieme est l'auditabilite : les decisions et les messages agents doivent etre consultables. La quatrieme est la prudence scientifique : le systeme distingue les anomalies candidates, les alertes issues d'outils externes et les intrusions confirmees.
+La conception est guidee par quatre contraintes. La premiere est la reproductibilite : les resultats doivent pouvoir etre regeneres par scripts. La deuxieme est la legerete : le prototype doit fonctionner localement sans infrastructure SOC complete. La troisieme est l'auditabilite : les decisions et les messages agents doivent etre consultables. La quatrieme est la rigueur scientifique : le systeme distingue les anomalies candidates, les alertes issues d'outils externes et les intrusions confirmees.
 
 \section{Flot de traitement detaille}
 Le flot de traitement commence par l'identification de la source. Le systeme peut recevoir un fichier local, un export de plateforme, un dataset public ou une sortie produite par un script de collecte. La premiere operation consiste a associer cette entree a un type probable. Cette etape ne depend pas d'un seul indice ; elle peut utiliser l'extension du fichier, les noms de colonnes, la structure des lignes, la presence de champs caracteristiques ou la distribution de certaines valeurs.
@@ -116,9 +123,28 @@ Une extension future consisterait a introduire des graphes d'evenements. Les noe
 \section{Modele de decision analyste}
 Le modele propose integre explicitement la decision humaine. Le dashboard permet de valider, rejeter ou reclasser une anomalie candidate. Cette decision n'est pas seulement une annotation visuelle. Elle peut devenir un signal de retour. Dans une version future, les validations pourraient alimenter un apprentissage actif, ajuster les seuils ou enrichir les regles de correlation.
 
-La decision analyste suit une logique prudente. L'analyste consulte d'abord le contexte : source, message, score, severite, famille, horodatage et incident associe. Il compare ensuite l'evenement avec les autres signaux de la meme periode. Il peut enfin choisir une action : confirmer l'interet, rejeter le signal, le reclasser ou le laisser en observation. L'audit conserve cette decision afin de permettre une relecture.
+La decision analyste suit une logique d'analyse controlee. L'analyste consulte d'abord le contexte : source, message, score, severite, famille, horodatage et incident associe. Il compare ensuite l'evenement avec les autres signaux de la meme periode. Il peut enfin choisir une action : confirmer l'interet, rejeter le signal, le reclasser ou le laisser en observation. L'audit conserve cette decision afin de permettre une relecture.
 
 Ce modele reconnait que la detection d'anomalies est rarement totalement automatique. Dans un environnement reel, les alertes doivent etre interpretees. La valeur du systeme depend donc de sa capacite a fournir les bonnes informations au bon moment. L'agent dashboard est ainsi un composant du modele scientifique, pas seulement une interface graphique.
+
+\section{Memoire adaptative des agents}
+L'hypothese d'apprentissage retenue dans ce memoire est une hypothese d'adaptation par memoire. Elle ne suppose pas que les agents modifient directement les poids des modeles apres chaque alerte. Elle suppose plutot que le systeme peut capitaliser les observations utiles afin de mieux orienter les traitements futurs.
+
+La memoire est structuree en trois couches. La premiere est une memoire d'execution, rattachee aux agents multi-taches : succes par type de tache, erreurs, durees moyennes, taches recentes et raisons de decision. Elle sert a eviter les repetitions inutiles, estimer la fiabilite observee d'un agent sur un type de tache et documenter l'etat interne du runtime. La deuxieme est une memoire superviseur, persistante entre cycles : fichiers deja traites, familles recentes, derniere decision, nombre de cycles reussis ou echoues. Elle permet au superviseur de choisir une source en tenant compte de l'historique local. La troisieme est une memoire analyste, issue du dashboard et de l'audit : alertes acceptees, rejetees ou reclassees, severite, categorie et justification eventuelle.
+
+Le fonctionnement conceptuel est le suivant :
+
+\begin{enumerate}
+  \item l'agent observe une source, une tache ou une anomalie candidate ;
+  \item il consulte la memoire pertinente pour verifier les traitements recents, les erreurs connues et les decisions analyste comparables ;
+  \item il ajuste son choix, par exemple en diminuant la priorite d'une source deja traitee recemment ou en signalant une categorie souvent rejetee ;
+  \item il execute la tache et produit une trace d'audit ;
+  \item le resultat et le feedback analyste enrichissent la memoire pour les cycles suivants.
+\end{enumerate}
+
+Cette memoire peut etre materialisee par des fichiers JSONL ou JSON persistants dans le prototype local. Un enregistrement minimal peut contenir l'identifiant de l'evenement, la famille de logs, le score, la decision analyste, la raison, l'horodatage et la source. La forme exacte reste volontairement simple afin de maintenir la reproductibilite et l'inspection manuelle des preuves.
+
+L'apport scientifique de cette couche est double. D'une part, elle donne un contenu operationnel a l'objectif d'apprentissage adaptatif du document directeur. D'autre part, elle maintient une frontiere claire entre adaptation comportementale et apprentissage de modele. Une extension ulterieure pourrait utiliser cette memoire pour recalibrer des seuils, declencher une campagne de reentrainement hors ligne ou promouvoir un nouveau modele apres validation sur un jeu gele, mais ces operations doivent rester controlees et evaluables.
 
 \section{Scenarios d'utilisation}
 Plusieurs scenarios d'utilisation structurent le modele. Le premier est le scenario de traitement hors ligne. Un analyste fournit un fichier ou un dossier de logs. Le pipeline detecte les formats, normalise les evenements, applique les modeles et produit des CSV et tableaux. Ce scenario est utile pour l'analyse post-incident, la preparation de datasets et la redaction scientifique.

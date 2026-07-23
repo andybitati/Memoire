@@ -17,6 +17,7 @@ executables, et non seulement par une formulation redactionnelle.
 | Multi-taches | Un meme agent execute plusieurs types de taches | En place: discovery, parsing, routage, detection, correlation |
 | Intelligence operationnelle | Selection de taches selon priorite, confiance, cout et historique | En place: `score_task`, memoire succes/erreurs |
 | Autonomie faible | Cycle heartbeat -> perception des taches -> choix -> action -> memoire | En place localement |
+| Memoire adaptative | Capitalisation des executions, erreurs, decisions et retours analyste | En place comme base auditable; reentrainement controle en perspective |
 | Distribution | Plusieurs processus agents consomment un bus partage | Valide localement via Redis Streams, voir `intelligent_agents_redis_proof.md` |
 | Tolerance aux pannes | Jobs non acquittes recuperables, erreurs tracees | En place: reprise via `XAUTOCLAIM` et panne simulee avant `ack` |
 | Preuve experimentale | Scripts reproductibles et sorties auditables | En place: demos locales, Redis distribue, campagne longue 150 taches panne/reprise |
@@ -39,6 +40,12 @@ executables, et non seulement par une formulation redactionnelle.
   - worker Redis Streams;
   - permet plusieurs agents/processus consommateurs;
   - publie heartbeat, decisions et resultats dans `logminer:events`.
+
+- `src/logminer/agents/supervisor_agent.py` et `src/logminer/agents/audit.py`
+  - conservent une memoire persistante du superviseur;
+  - tracent les decisions analyste issues du dashboard;
+  - relisent les rejets/reclassements audites pour ajuster la selection;
+  - fournissent la base d'une reduction future plus mesuree des faux positifs par feedback.
 
 - `scripts/run_intelligent_redis_campaign.py`
   - enfile une campagne de taches multi-types;
@@ -98,8 +105,12 @@ qui reste une perspective separee.
 
 Avec cette branche, le terme agent devient plus solide: chaque agent possede
 des capacites, choisit ses taches, execute plusieurs competences et conserve
-une memoire. Le systeme devient distribue lorsque plusieurs workers Redis sont
+une memoire. Cette memoire doit etre lue comme une adaptation comportementale:
+elle aide a prioriser, eviter des repetitions et documenter les choix; elle ne
+constitue pas un apprentissage par renforcement ni un reentrainement automatique
+des modeles. Le systeme devient distribue lorsque plusieurs workers Redis sont
 lances dans des processus ou machines differentes.
 
-La revendication reste a valider experimentalement pour atteindre le niveau
-fort attendu par le titre initial.
+La revendication forte reste a valider experimentalement: reduction mesuree
+des faux positifs, boucle d'apprentissage actif, surveillance du concept drift
+et deploiement multi-machine.

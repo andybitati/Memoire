@@ -24,7 +24,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from time import perf_counter
-from typing import Any, Callable, Iterable, Protocol
+from typing import Any, Callable, Dict, Iterable, Protocol
 from uuid import uuid4
 
 try:
@@ -33,7 +33,7 @@ except ImportError:  # pragma: no cover - compatibility with direct script execu
     from agents.bus import MessageBus
 
 
-TaskHandler = Callable[["AgentTask", "AgentContext"], dict[str, Any]]
+TaskHandler = Callable[["AgentTask", "AgentContext"], Dict[str, Any]]
 
 
 @dataclass(frozen=True)
@@ -272,17 +272,36 @@ class RedisTaskSource:
         if self.claim_idle_ms <= 0:
             return []
         try:
-            response = self.bus.client.xautoclaim(
+            if hasattr(self.bus.client, "xautoclaim"):
+                response = self.bus.client.xautoclaim(
+                    self.stream,
+                    self.group,
+                    self.consumer,
+                    min_idle_time=max(1, self.claim_idle_ms),
+                    start_id="0-0",
+                    count=max(1, limit),
+                )
+                entries = response[1] if isinstance(response, (list, tuple)) and len(response) > 1 else []
+                return self._entries_to_tasks(agent, entries)
+            pending = self.bus.client.xpending_range(
+                self.stream,
+                self.group,
+                min="-",
+                max="+",
+                count=max(1, limit),
+            )
+            message_ids = [item["message_id"] for item in pending if int(item.get("time_since_delivered", 0)) >= self.claim_idle_ms]
+            if not message_ids:
+                return []
+            entries = self.bus.client.xclaim(
                 self.stream,
                 self.group,
                 self.consumer,
                 min_idle_time=max(1, self.claim_idle_ms),
-                start_id="0-0",
-                count=max(1, limit),
+                message_ids=message_ids[:limit],
             )
         except Exception:
             return []
-        entries = response[1] if isinstance(response, (list, tuple)) and len(response) > 1 else []
         return self._entries_to_tasks(agent, entries)
 
     def fetch(self, agent: "MultiTaskIntelligentAgent", limit: int) -> list[AgentTask]:

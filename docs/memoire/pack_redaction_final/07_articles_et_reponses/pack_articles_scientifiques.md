@@ -69,7 +69,7 @@ Questions du document directeur, adaptees au prototype:
    limitees?
 4. Le systeme peut-il etre adaptatif par routage et specialisation des modeles?
 5. Quel est l'impact du volume et du format des logs sur la detection?
-6. Comment le systeme se compare-t-il prudemment aux outils traditionnels?
+6. Comment le systeme se compare-t-il avec nuance aux outils traditionnels?
 
 ### Contribution A Defendre
 
@@ -127,7 +127,7 @@ Questions du document directeur, adaptees au prototype:
 6. Evaluation and Discussion
    - interpretation des performances;
    - avantages de la modularite;
-   - comparaison prudente avec outils standards;
+   - comparaison mesuree avec outils standards;
    - limites.
 7. Conclusion and Future Work
    - synthese;
@@ -383,3 +383,4 @@ Tableaux:
 - separer clairement supervise et non supervise;
 - declarer les menaces a la validite;
 - verifier le format IEEE des references.
+

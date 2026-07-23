@@ -5,6 +5,8 @@ Les resultats valident surtout une chaine d'ingenierie : collecte, parsing, norm
 
 La comparaison controlee sur CICIDS2017 illustre cette dependance au protocole : le F1 moyen passe de 0,999260 en split aleatoire stratifie a 0,157827 sur cinq holdouts fichier/scenario associes aux graines 42--46, toutes choses principales etant maintenues constantes. L'analyse par scenario explique l'ecart-type eleve : le modele detecte partiellement DDoS, presque pas PortScan, et pas Bot, Infiltration ni WebAttacks dans les echantillons tenus hors entrainement. Cette dispersion ne doit donc pas etre lue comme une simple variabilite aleatoire entre seeds, mais comme une dispersion entre scenarios tenus hors apprentissage. A l'inverse, CIC-DDoS2019 conserve un F1 strict eleve de 0,997577, mais ce resultat reste limite aux familles DDoS evaluees.
 
+Le benchmark algorithmique reste volontairement limite. Le prototype s'appuie principalement sur RandomForest pour le supervise et Isolation Forest pour le non-supervise afin de privilegier la legerete, l'interpretabilite, la disponibilite locale et le cout de calcul compatible avec un environnement universitaire. Une comparaison complementaire sur CICIDS2017 en holdout strict montre que LogisticRegression ameliore le F1 moyen de 0,157827 a 0,233670, mais sans resoudre la generalisation inter-scenarios. Cette experience permet de nuancer le choix initial : RandomForest n'est pas necessairement le meilleur candidat pour CICIDS2017, mais le probleme principal reste le changement de distribution. Elle ne permet pas non plus d'affirmer que les modeles testes seraient meilleurs que XGBoost, LightGBM, One-Class SVM, LOF, k-means ou des modeles sequentiels. Une comparaison plus large des familles de modeles constitue donc un prolongement methodologique necessaire.
+
 \section{Apport architectural}
 L'apport principal de \logminer{} est l'integration modulaire. Le routage par famille evite d'appliquer indistinctement un modele unique a des sources semantiquement differentes. L'ablation sur cinq graines montre toutefois que le routage ne procure pas automatiquement un gain quantitatif lorsqu'il est force dans un espace commun. Son interet le plus defendable est donc la compatibilite entre source, features et modele, ainsi que l'extensibilite de la chaine.
 
@@ -26,12 +28,13 @@ Sur Wazuh, les 3 676 anomalies candidates sur 122 563 evenements mesurent la sel
 \textbf{Limite} & \textbf{Constat} & \textbf{Consequence} \\
 \midrule
 Protocoles supervises & Les scores varient fortement selon le split, surtout sur CICIDS2017. & Toujours presenter les scores avec leur protocole et privilegier les holdouts controles. \\
+Benchmark algorithmique & RandomForest et Isolation Forest ne couvrent pas toute la diversite des methodes citees dans l'etat de l'art. & Defendre leur choix par legerete, interpretabilite et cout local ; comparer ensuite XGBoost, LightGBM, LOF, One-Class SVM et modeles sequentiels. \\
 Logs sequentiels & HDFS/BGL restent sensibles au choix de representation et de seuil. & Poursuivre Drain3 avec validation separee et modeles sequentiels. \\
 Parsing & Les formats pris en charge sont controles. & Parler de robustesse multi-format, pas d'adaptation illimitee. \\
 Dashboard & Les captures prouvent le fonctionnement, pas l'utilisabilite. & Prevoir une evaluation avec analystes ou grille heuristique. \\
 Monolithique vs agents & Les agents ajoutent un overhead sur petit volume. & Ne pas revendiquer un gain de performance brute ; distinguer overhead/reprise mesures et modularite/tracabilite architecturales. \\
 Scalabilite & Les benchmarks sont locaux et de duree limitee. & Ne pas revendiquer une capacite SOC industrielle. \\
-Apprentissage continu & Les decisions analyste sont preparees mais non reintegrees. & Traiter le reentrainement et le concept drift comme perspectives. \\
+Memoire adaptative & Les decisions analyste sont reintegrees dans la priorisation, mais sans preuve terrain de reduction des faux positifs ni boucle complete de reentrainement. & Distinguer memoire adaptative implementee et apprentissage adaptatif demontre ; mesurer l'effet avec des validations analyste reelles. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -39,6 +42,6 @@ Apprentissage continu & Les decisions analyste sont preparees mais non reintegre
 \section{Perspectives prioritaires}
 La premiere perspective est d'etendre les comparaisons controlees : memes donnees, memes features, memes hyperparametres, memes tailles d'echantillon et memes seeds, en ne modifiant qu'un facteur experimental. Cette logique doit etre appliquee aux splits temporels, aux splits multi-environnements et aux variantes global-versus-familles.
 
-La deuxieme perspective concerne les logs sequentiels. HDFS et BGL doivent etre evalues avec plusieurs repetitions, un seuil fixe sur validation et des comparaisons a des modeles specialises tels que DeepLog ou LogAnomaly. La troisieme perspective concerne l'exploitation : ajouter une analyse qualitative des anomalies Wazuh, mesurer l'utilisabilite du dashboard, puis transformer les decisions analyste en feedback controle.
+La deuxieme perspective concerne les logs sequentiels. HDFS et BGL doivent etre evalues avec plusieurs repetitions, un seuil fixe sur validation et des comparaisons a des modeles specialises tels que DeepLog ou LogAnomaly. La troisieme perspective concerne l'exploitation : ajouter une analyse qualitative des anomalies Wazuh, mesurer l'utilisabilite du dashboard, puis alimenter la memoire avec des decisions analyste reelles afin de mesurer la reduction effective du bruit.
 
 Enfin, l'apprentissage continu doit rester encadre. Les agents pourraient surveiller le concept drift, proposer un reentrainement, comparer un modele candidat au modele courant sur un jeu de validation gele et conserver une possibilite de retour arriere. Cette autonomie serait operationnelle et auditable, non cognitive.

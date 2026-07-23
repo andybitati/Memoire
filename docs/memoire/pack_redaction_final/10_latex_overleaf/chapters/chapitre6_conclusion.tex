@@ -6,7 +6,7 @@ Ce memoire a presente \logminer, un prototype d'agents intelligents multi-taches
 Le prototype valide une chaine complete allant de la collecte a la visualisation. Les journaux sont parses, normalises, routes vers une famille, traites par un modele compatible, puis transformes en anomalies candidates et incidents. Cette approche evite de reduire le probleme a un simple score de detection.
 
 \section{Verification des objectifs}
-Les objectifs definis dans le document directeur sont couverts. Les types de journaux ont ete identifies et categorises. Les techniques classiques et modernes ont ete analysees. Une architecture d'agents specialises a ete proposee et implementee. Des mecanismes d'apprentissage supervises et non supervises ont ete integres. Un dashboard a ete realise. Le systeme a ete teste sur des journaux locaux, des exports Wazuh et plusieurs datasets publics. Enfin, les performances ont ete evaluees par F1-score, latence, ressources, ablation global-versus-familles et comparaison operationnelle prudente.
+Les objectifs definis dans le document directeur sont couverts. Les types de journaux ont ete identifies et categorises. Les techniques classiques et modernes ont ete analysees. Une architecture d'agents specialises a ete proposee et implementee. Des mecanismes d'apprentissage supervises et non supervises ont ete integres, ainsi qu'une memoire adaptative permettant de capitaliser les executions, les erreurs et les decisions analyste. Un dashboard a ete realise. Le systeme a ete teste sur des journaux locaux, des exports Wazuh et plusieurs datasets publics. Enfin, les performances ont ete evaluees par F1-score, latence, ressources, ablation global-versus-familles et comparaison operationnelle encadree.
 
 \section{Apports}
 Les apports principaux sont :
@@ -15,6 +15,7 @@ Les apports principaux sont :
   \item une normalisation commune pour des journaux heterogenes ;
   \item un routage multi-modeles auditable ;
   \item une preuve locale d'agents distribues via Redis Streams, avec 8 508 taches terminees et 709 reprises de taches non acquittees pendant six heures ;
+  \item une premiere memoire adaptative auditable, fondee sur l'historique des agents, la memoire du superviseur et les decisions analyste ;
   \item une evaluation multi-source combinant logs systemes, SIEM, reseau et scenarios de robustesse ;
   \item un dashboard permettant l'analyse, les filtres, les decisions et l'audit ;
   \item un pack de reproduction comprenant figures, tableaux, captures et CSV.
@@ -23,16 +24,16 @@ Les apports principaux sont :
 \section{Limites}
 Plusieurs limites doivent etre reconnues. D'abord, la distribution validee reste locale et multi-processus : Redis Streams prouve la repartition de taches et la reprise apres panne dans l'environnement experimental, mais ne constitue pas encore une preuve de scalabilite industrielle multi-machine. Ensuite, les anomalies non supervisees restent des signaux candidats. Elles doivent etre interpretees par correlation, contexte et validation humaine.
 
-Les scores tres eleves obtenus sur certains datasets supervises doivent aussi etre lus avec prudence. Ils valident le comportement du modele dans le cadre experimental, mais ne prouvent pas une generalisation automatique a toutes les infrastructures. Enfin, la reduction des faux positifs et l'apprentissage continu restent des axes ouverts.
+Les scores tres eleves obtenus sur certains datasets supervises doivent aussi etre interpretes selon leur protocole. Ils valident le comportement du modele dans le cadre experimental, mais ne prouvent pas une generalisation automatique a toutes les infrastructures. La memoire adaptative mise en place reste une capitalisation d'historique et de feedback ; elle ne constitue pas encore une boucle complete de reentrainement, de detection de derive et de promotion automatique de nouveaux modeles. Enfin, la reduction des faux positifs et l'apprentissage continu restent des axes ouverts.
 
 \section{Perspectives}
 Les perspectives principales sont les suivantes :
 \begin{enumerate}
   \item etendre a d'autres familles la comparaison controlee entre split aleatoire et holdout temporel, fichier ou scenario, deja conduite sur CICIDS2017 avec memes features, memes hyperparametres, memes tailles d'echantillon et memes graines ;
   \item prolonger le protocole controle global-versus-familles par davantage de graines et des splits temporels, par fichier ou par scenario, avec latence et memoire ;
-  \item deployer le systeme sur plusieurs machines avec workers Redis et files persistantes ;
-  \item ajouter des tests multi-machine et des tests de charge sur plusieurs jours, au-dela de la campagne locale de six heures ;
-  \item integrer un apprentissage actif a partir des decisions analyste, avec surveillance du concept drift et promotion controlee des nouveaux modeles ;
+  \item consolider le deploiement multi-machine au-dela de la preuve VirtualBox de laboratoire, avec workers Redis, files persistantes, supervision explicite et securisation des communications ;
+  \item ajouter des tests de charge sur plusieurs jours, au-dela de la campagne locale de six heures et de la campagne multi-VM supervisee d'une heure ;
+  \item transformer la memoire adaptative en boucle d'apprentissage actif a partir des decisions analyste, avec surveillance du concept drift et promotion controlee des nouveaux modeles ;
   \item consolider l'usage de Drain3 sur HDFS/BGL, repeter les splits et comparer avec des modeles sequentiels plus specialises ;
   \item reduire les faux positifs par calibration des seuils et contexte temporel ;
   \item relier les incidents a des tactiques MITRE ATT\&CK ;
@@ -42,7 +43,7 @@ Les perspectives principales sont les suivantes :
 \section{Conclusion generale}
 \logminer{} montre qu'une architecture locale, modulaire et interpretable peut soutenir la detection d'anomalies dans des journaux heterogenes. Sa force principale n'est pas de remplacer les outils existants, mais d'organiser une chaine coherentement auditable entre logs bruts, modeles specialises, anomalies candidates, incidents et decisions analyste.
 
-Le prototype constitue ainsi une base solide pour un systeme de cyber-audit leger adapte aux environnements disposant de ressources limitees. Les resultats obtenus justifient une poursuite vers la scalabilite, l'integration SOC et l'apprentissage continu, tout en conservant une interpretation prudente des alertes produites.
+Le prototype constitue ainsi une base solide pour un systeme de cyber-audit leger adapte aux environnements disposant de ressources limitees. Les resultats obtenus justifient une poursuite vers la scalabilite, l'integration SOC et l'apprentissage continu. La memoire adaptative amorce cette trajectoire en conservant les traces utiles aux cycles suivants, tout en gardant une interpretation controlee des alertes produites.
 
 Le travail realise montre aussi l'importance d'une demarche equilibree. Dans le domaine de la cybersecurite, il serait tentant de reduire la valeur d'un systeme a un score de detection. Le memoire montre au contraire que la detection depend d'une chaine complete : collecte, parsing, normalisation, routage, modele, correlation, visualisation et audit. Chacune de ces etapes peut renforcer ou affaiblir le resultat final. L'apport de \logminer{} est donc de rendre cette chaine visible et experimentable.
 

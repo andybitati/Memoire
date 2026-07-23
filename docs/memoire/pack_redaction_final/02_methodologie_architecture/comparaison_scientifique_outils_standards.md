@@ -1,6 +1,6 @@
 # Comparaison Scientifique Avec Outils Standards
 
-Cette comparaison est volontairement prudente. Elle ne pretend pas que
+Cette comparaison est volontairement limitee. Elle ne pretend pas que
 fail2ban, OSSEC et Wazuh ont tous ete executes dans une meme infrastructure de
 production. Trois niveaux sont separes:
 
@@ -28,3 +28,4 @@ Limites:
 - Les anomalies non supervisees de Logminer sont des candidates, pas des
   intrusions confirmees.
 - Les comparaisons de F1 ne doivent etre faites que sur les datasets labelises.
+

@@ -222,7 +222,7 @@ Organisation recommandee:
 5. Robustesse multi-format.
 6. Benchmark quasi temps reel.
 7. Campagne CPU/RAM multi-cycles.
-8. Comparaison prudente avec outils standards.
+8. Comparaison mesuree avec outils standards.
 9. Synthese des resultats.
 
 Tableaux a inserer:
@@ -354,3 +354,4 @@ Captures disponibles:
 Capture mobile optionnelle:
 
 - `docs/memoire/captures/dashboard_mobile.png`.
+

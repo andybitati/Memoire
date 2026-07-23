@@ -29,7 +29,7 @@ Les principaux manques ne sont plus structurels. Ils concernent surtout:
 - la comparaison operationnelle stricte avec execution reelle de fail2ban,
   OSSEC ou Wazuh, si elle est exigee.
 
-Depuis la derniere mise a jour, une comparaison scientifiquement prudente avec
+Depuis la derniere mise a jour, une comparaison scientifiquement limitee avec
 les outils standards a ete ajoutee:
 
 - baseline experimentale `fail2ban_like_rules` sur Linux/auth labellise;
@@ -416,3 +416,4 @@ La position la plus solide pour la soutenance est:
 > avec routage multi-modeles, correlation, dashboard et premieres mesures de
 > latence/ressources. Le deploiement multi-machine, l'auto-apprentissage continu
 > et l'industrialisation SOC restent des perspectives techniques.
+

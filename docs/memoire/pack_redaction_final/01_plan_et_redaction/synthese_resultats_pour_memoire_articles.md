@@ -261,7 +261,7 @@ contribution scientifique. Deux niveaux sont disponibles:
 - ablation operationnelle: baseline globale commune comparee aux configurations
   specialisees completes.
 
-Resultat a formuler prudemment:
+Resultat a formuler clairement:
 
 > Le routage familial ne garantit pas un gain F1 universel sur chaque famille.
 > Il apporte surtout une specialisation controlee, utile lorsque les familles de
@@ -393,3 +393,4 @@ multi-modeles par famille de journaux et dashboard interpretable. Cette
 combinaison permet de passer de journaux heterogenes a des incidents
 priorisables, tout en gardant une architecture assez legere pour une PME, une
 universite ou une administration locale.
+
