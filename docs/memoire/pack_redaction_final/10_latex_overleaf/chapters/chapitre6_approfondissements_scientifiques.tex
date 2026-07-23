@@ -22,7 +22,7 @@ Le terme agent intelligent est employe dans un sens operationnel. Les agents dis
 
 Le parsing doit etre compris de la meme maniere. Le prototype sait reconnaitre plusieurs familles controlees, extraire des champs utiles et conserver les lignes inconnues ou incompletes. Il ne demontre pas une adaptation autonome illimitee a tout format nouveau. Sa robustesse vient surtout de la degradation controlee : ne pas perdre silencieusement l'information lorsque le format sort du cadre connu.
 
-La distribution est egalement locale. La campagne Redis de six heures montre une repartition multi-processus et une reprise de taches non acquittees. Une comparaison controlee monolithique-versus-agents a ete ajoutee sur les memes taches et le meme volume : elle ne montre pas de gain de debit sur petit volume, mais elle quantifie l'overhead d'orchestration et confirme la reprise d'une tache simulee comme non acquittee. La modularite et la tracabilite sont soutenues par la conception logicielle et les mecanismes d'audit ; la resilience locale dispose, elle, d'une preuve experimentale directe par panne simulee.
+La distribution doit etre lue en deux niveaux. La campagne Redis de six heures montre une repartition locale multi-processus et une reprise de taches non acquittees sur l'hote Windows. Une validation separee sous VirtualBox montre ensuite que Debian et Ubuntu peuvent consommer un stream Redis commun heberge sur l'hote, avec notamment 525 taches lues et acquittees par le groupe Redis pendant une campagne supervisee d'une heure. Une comparaison controlee monolithique-versus-agents a ete ajoutee sur les memes taches et le meme volume : elle ne montre pas de gain de debit sur petit volume, mais elle quantifie l'overhead d'orchestration et confirme la reprise d'une tache simulee comme non acquittee. La modularite et la tracabilite sont soutenues par la conception logicielle et les mecanismes d'audit ; la resilience locale et la distribution de laboratoire disposent, elles, de preuves experimentales distinctes.
 
 \section{Synthese des risques de validite}
 \begin{table}[H]
@@ -41,7 +41,7 @@ Dashboard & Confusion entre validation fonctionnelle et evaluation utilisateur. 
 Wazuh/Fail2ban & Comparaison abusive avec des outils matures. & \logminer{} est presente comme couche analytique complementaire, pas comme substitut. \\
 Agents intelligents & Sur-promesse sur l'autonomie ou le debit. & Agents logiciels multi-taches avec orchestration ; comparaison controlee mesurant surtout overhead et reprise, pas acceleration brute. \\
 Memoire adaptative & Confusion entre feedback conserve, reduction mesuree des faux positifs et reentrainement automatique. & Memoire persistante auditable pour priorisation et contexte ; reduction reelle des faux positifs et apprentissage adaptatif complet non encore demontres. \\
-Scalabilite & Benchmarks locaux trop courts pour une preuve industrielle. & Les mesures documentent la faisabilite locale ; la scalabilite multi-machine reste une perspective. \\
+Scalabilite & Campagne locale de six heures et validation VirtualBox d'une heure ne suffisent pas pour une preuve industrielle. & Les mesures documentent la faisabilite locale et inter-machines de laboratoire ; la scalabilite SOC multi-site securisee reste une perspective. \\
 \bottomrule
 \end{tabularx}
 \end{table}

@@ -58,73 +58,142 @@ urlcolor=blue
 \sloppy
 
 \begin{titlepage}
+\thispagestyle{empty}
 \centering
+\color{black}
 
-{\Large\bfseries \universite\par}
-\vspace{0.2cm}
+% ------------------------------------------------
+% En-tête institutionnel
+% ------------------------------------------------
 
-\IfFileExists{captures/unikin_logo.png}
-{\includegraphics[width=3cm]{unikin_logo.png}\par\vspace{0.8cm}}
-{}
-
-{\large\bfseries \faculte\par}
-\vspace{0.2cm}
-
-{\large\bfseries \departement\par}
-\vspace{0.8cm}
-
-{\Large
-Mémoire présenté et défendu en vue de l'obtention du titre d'Ingénieur Civil Électricien
-\par}
-
-\vspace{0.4cm}
-
-{\large Orientation : Informatique\par}
-
-\vspace{1.0cm}
-
-{\huge\bfseries
-Détection autonome et distribuée d'anomalies dans les journaux systèmes et réseaux à l'aide d'agents intelligents multitâches
-\par}
+{\Large\bfseries Université de Kinshasa\par}
 
 \vspace{0.35cm}
 
-{\Large
-Conception et évaluation locale du prototype Ariel \logminer
+\IfFileExists{captures/unikin_logo.png}
+{
+    \includegraphics[width=2.8cm]{captures/unikin_logo.png}
+    \par
+}
+{}
+
+\vspace{0.45cm}
+
+{\large\bfseries Faculté Polytechnique\par}
+
+\vspace{0.15cm}
+
+{\normalsize
+Département de Génie Électrique et Informatique
 \par}
 
-\vfill
+% ------------------------------------------------
+% Espace avant le titre
+% ------------------------------------------------
 
-{\small
-\noindent
-\begin{minipage}[t]{0.47\textwidth}
-\RaggedRight
-\textbf{Par :}\\
+\vspace{2.2cm}
+
+% ------------------------------------------------
+% Titre du mémoire
+% ------------------------------------------------
+
+\noindent\rule{0.82\textwidth}{0.7pt}
+
+\vspace{0.20cm}
+
+\begin{minipage}{0.88\textwidth}
+\centering
+\color{black}
+{\LARGE\bfseries
+Détection autonome et distribuée d'anomalies dans les journaux système et réseau à l'aide d'agents intelligents multitâches
+\par}
+
+\vspace{0.20cm}
+
+{\Large
+Conception et évaluation locale du prototype Ariel \logminer{}
+\par}
+\end{minipage}
+
+\vspace{0.20cm}
+
+\noindent\rule{0.82\textwidth}{0.7pt}
+
+% ------------------------------------------------
+% Auteur
+% ------------------------------------------------
+
+\vspace{0.65cm}
+
+{\normalsize Par\par}
+
+\vspace{0.15cm}
+
+{\Large\bfseries
 MARHEGANE BITATI André Olivier
+\par}
 
-\vspace{0.3cm}
+\vspace{0.20cm}
 
-\textbf{Promotion :}\\
-2ICE-IN
+{\normalsize
+Gradué en Sciences Appliquées
+\par}
+
+\vspace{0.55cm}
+
+% ------------------------------------------------
+% Nature du travail
+% ------------------------------------------------
+
+\begin{minipage}{0.72\textwidth}
+\centering
+\small
+Mémoire présenté et défendu en vue de l'obtention du titre
+d'Ingénieur Civil Électricien
 \end{minipage}
-\hfill
-\begin{minipage}[t]{0.47\textwidth}
-\RaggedRight
-\textbf{Directeur :}\\
+
+\vspace{0.35cm}
+
+{\normalsize
+\underline{Orientation} : Informatique
+\par}
+
+\vspace{0.65cm}
+
+% ------------------------------------------------
+% Encadrement
+% ------------------------------------------------
+
+\begin{minipage}{0.78\textwidth}
+\small
+
+\begin{tabular}{@{}p{2.8cm}p{9.2cm}@{}}
+\underline{Directeur :}
+&
 Prof. Dr Ir. KYANDOGHERE KYAMAKYA Jean Vianney
+\tabularnewline[0.25cm]
 
-\vspace{0.3cm}
+\underline{Co-directeurs :}
+&
+Dr KAMBALE WITESYAVWIRWA Vianney
+\tabularnewline[0.15cm]
 
-\textbf{Co-directeurs :}\\
-Dr KAMBALE WITESYAVWIRWA Vianney\\
+&
 Ir. civ. MUGISHA MUHIRE Jean-Pierre
-\end{minipage}
-}
+\tabularnewline
+\end{tabular}
 
-\vspace{0.4cm}
+\end{minipage}
+
 \vfill
 
-{\large ANNÉE ACADÉMIQUE : 2025--2026\par}
+% ------------------------------------------------
+% Année académique
+% ------------------------------------------------
+
+{\normalsize
+Année académique 2025--2026
+\par}
 
 \end{titlepage}
 
@@ -143,7 +212,7 @@ L'évaluation combine des journaux Windows, des exports Wazuh, des journaux Linu
 
 Les sorties non supervisées sont rapportées comme des anomalies candidates, notamment 3 676 signaux parmi 122 563 événements Wazuh. Sur HDFS/BGL, une validation complémentaire fondée sur Drain3, utilisant des modèles de messages, des fenêtres temporelles et une séparation entraînement--test, montre une progression modérée sur HDFS et une séparabilité très favorable sur BGL, sans constituer une preuve de généralisation universelle.
 
-Les benchmarks locaux indiquent une durée moyenne du workflow de 8,2012 secondes sur 10 micro-lots de 8 537 lignes et de 9,3300 secondes lors de la campagne CPU/RAM de 30 cycles. La campagne Redis de six heures valide 8 508 tâches uniques, aucune tâche finale en attente et 709 reprises après des pannes simulées. Une campagne multi-VM supervisée d'une heure, exécutée avec Debian et Ubuntu sous VirtualBox, enfile 525 tâches et se termine avec 525 entrées lues par le groupe Redis, un lag final nul et aucun pending. Une comparaison contrôlée entre l'architecture monolithique et l'architecture à base d'agents ne montre pas de gain de débit sur de petits volumes, mais permet de mesurer le surcoût d'orchestration et la capacité de reprise après panne.
+Les benchmarks locaux indiquent une durée moyenne du workflow de 8,2012 secondes sur 10 micro-lots de 8 537 lignes et de 9,3300 secondes lors de la campagne CPU/RAM de 30 cycles. La campagne Redis locale de six heures valide 8 508 tâches uniques, aucune tâche finale en attente et 709 reprises après des pannes simulées. Une campagne distincte multi-VM supervisée d'une heure, exécutée avec Debian et Ubuntu sous VirtualBox, enfile 525 tâches et se termine avec 525 entrées lues par le groupe Redis, un lag final nul et aucun pending. Une comparaison contrôlée entre l'architecture monolithique et l'architecture à base d'agents ne montre pas de gain de débit sur de petits volumes, mais permet de mesurer le surcoût d'orchestration et la capacité de reprise après panne.
 
 Les résultats montrent la faisabilité d'une approche locale, légère et interprétable pour l'analyse de journaux hétérogènes. La mémoire adaptative constitue une capitalisation auditable des historiques et des décisions de l'analyste ; une boucle complète d'apprentissage actif reste une perspective. Les principales limites concernent notamment la consolidation d'un déploiement multi-machine sécurisé, la réduction mesurée des faux positifs, l'apprentissage continu contrôlé et l'industrialisation dans un environnement SOC.
 
@@ -156,7 +225,7 @@ The evaluation combines local Windows logs, Wazuh exports, Linux/auth logs, HDFS
 
 Unsupervised outputs are reported as anomaly candidates, including 3,676 signals among 122,563 Wazuh events. For HDFS and BGL, an additional Drain3-based validation using message templates, temporal windows, and a train--test split shows moderate improvement on HDFS and highly favorable separability on BGL, without providing evidence of universal generalization.
 
-Local benchmarks report a mean workflow duration of 8.2012 seconds over 10 micro-batches of 8,537 lines and 9.3300 seconds during the 30-cycle CPU/RAM campaign. The six-hour Redis campaign validates 8,508 unique completed tasks, no tasks pending at completion, and 709 successful recoveries after simulated failures. A supervised one-hour multi-VM campaign, executed with Debian and Ubuntu under VirtualBox, enqueues 525 tasks and ends with 525 entries read by the Redis group, zero final lag, and no pending task. A controlled comparison between the monolithic architecture and the agent-based architecture does not show a throughput improvement on small workloads, but quantifies orchestration overhead and demonstrates failure-recovery capability.
+Local benchmarks report a mean workflow duration of 8.2012 seconds over 10 micro-batches of 8,537 lines and 9.3300 seconds during the 30-cycle CPU/RAM campaign. The local six-hour Redis campaign validates 8,508 unique completed tasks, no tasks pending at completion, and 709 successful recoveries after simulated failures. A distinct supervised one-hour multi-VM campaign, executed with Debian and Ubuntu under VirtualBox, enqueues 525 tasks and ends with 525 entries read by the Redis group, zero final lag, and no pending task. A controlled comparison between the monolithic architecture and the agent-based architecture does not show a throughput improvement on small workloads, but quantifies orchestration overhead and demonstrates failure-recovery capability.
 
 The results support the feasibility of a local, lightweight, and interpretable approach to heterogeneous log analysis. Adaptive memory is treated as an auditable accumulation of execution histories and analyst decisions, while a complete active-learning loop remains future work. The main limitations include consolidating a secured multi-machine deployment, measured false-positive reduction, controlled continuous learning, and industrial-scale deployment within a SOC environment.
 
