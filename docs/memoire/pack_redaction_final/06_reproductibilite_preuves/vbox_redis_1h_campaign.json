@@ -1,0 +1,60 @@
+{
+  "run_id": "redis-vbox-1h-20260722153650",
+  "task_stream": "logminer:agent_tasks:vbox_1h:20260722153650",
+  "group": "logminer-intelligent-agents",
+  "target_duration_sec": 3600,
+  "enqueue_iterations": 175,
+  "tasks_enqueued": 525,
+  "redis_entries_read": 525,
+  "redis_lag": 0,
+  "redis_pending": 0,
+  "tasks_acked_by_group": 525,
+  "event_window_completed_events": 285,
+  "event_window_unique_completed": 276,
+  "event_window_failed": 0,
+  "event_window_by_agent": {
+    "ubuntu-worker-1h": 116,
+    "debian-worker-1h": 128,
+    "ubuntu-worker-1h-r2": 22,
+    "debian-worker-1h-r2": 19
+  },
+  "event_window_by_type": {
+    "parse.logs": 93,
+    "discover.logs": 92,
+    "route.model": 100
+  },
+  "checkpoints": [
+    {
+      "label": "60 iterations",
+      "xlen": 180,
+      "unique_completed_observed": 180,
+      "pending": 0
+    },
+    {
+      "label": "80 iterations",
+      "xlen": 240,
+      "unique_completed_observed": 240,
+      "pending": 0
+    },
+    {
+      "label": "100 iterations",
+      "xlen": 303,
+      "unique_completed_observed": 303,
+      "pending": 0
+    },
+    {
+      "label": "120 iterations",
+      "xlen": 363,
+      "unique_completed_observed": 363,
+      "pending": 0
+    },
+    {
+      "label": "final Redis group",
+      "xlen": 525,
+      "entries_read": 525,
+      "lag": 0,
+      "pending": 0
+    }
+  ],
+  "interpretation": "Campagne multi-VM d'endurance supervisee: Debian et Ubuntu consomment un stream Redis commun pendant une fenetre d'une heure. Des relances supervisees ont ete necessaires apres interruption guestcontrol VirtualBox, mais le groupe Redis termine avec toutes les entrees lues et aucune tache pending."
+}

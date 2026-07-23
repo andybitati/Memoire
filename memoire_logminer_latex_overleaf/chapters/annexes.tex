@@ -55,6 +55,9 @@ Les preuves experimentales principales sont conservees sous forme de CSV :
   \item \texttt{validation\_hdfs\_bgl\_drain3\_train\_test\_summary.csv} ;
   \item \texttt{intelligent\_redis\_long\_campaign\_summary.json} ;
   \item \texttt{intelligent\_redis\_6h\_campaign\_summary.json} ;
+  \item \texttt{vbox\_redis\_balanced\_campaign.json} ;
+  \item \texttt{vbox\_redis\_recovery\_campaign.json} ;
+  \item \texttt{vbox\_redis\_1h\_campaign.json} ;
   \item \texttt{table\_intelligent\_redis\_6h\_campaign.md}.
 \end{itemize}
 
@@ -98,6 +101,8 @@ Synthese HDFS/BGL Drain3 & \texttt{validation\_hdfs\_bgl\_drain3\_train\_test\_s
 Anomalies Wazuh & \texttt{table\_wazuh\_logminer\_summary.md} & Evaluation non supervisee et recouvrement avec signaux HIDS/SIEM. \\
 Duree moyenne micro-lots & \texttt{realtime\_workflow\_benchmark\_20260604.csv} & Mesure du workflow local par micro-lots, sans revendication de temps reel strict. \\
 Campagne CPU/RAM & \texttt{resource\_campaign.csv} & Evaluation des ressources sur 30 cycles. \\
+Campagne Redis locale 6h & \texttt{intelligent\_redis\_6h\_campaign\_summary.json} et \texttt{table\_intelligent\_redis\_6h\_campaign.md} & Endurance locale multi-processus, reprises apres panne simulee et pending final nul. \\
+Validation Redis multi-VM & \texttt{vbox\_redis\_balanced\_campaign.json}, \texttt{vbox\_redis\_recovery\_campaign.json} et \texttt{vbox\_redis\_1h\_campaign.json} & Validation VirtualBox Debian/Ubuntu : repartition, panne/reprise et endurance supervisee d'une heure avec 525 taches acquittees. \\
 Ablation routage & \texttt{family\_routing\_ablation.csv} & Comparaison controlee global-versus-familles sur cinq graines ; F1, PR-AUC et MCC rapportes. \\
 Robustesse multi-format & Rapport de robustesse et figure associee & Validation de la conservation des formats inconnus ou incomplets. \\
 \bottomrule

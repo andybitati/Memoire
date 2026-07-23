@@ -365,7 +365,20 @@ Latence p99 & 8,7987 s \\
 
 La repartition par agent montre une execution effectivement partagee : \texttt{redis-agent-1} termine 2 654 taches, \texttt{redis-agent-2} 2 602, \texttt{redis-agent-3} 2 543 et \texttt{redis-recovery-agent} recupere 709 taches abandonnees par le worker de panne. Les trois types de taches restent equilibres : 2 836 \texttt{parse.logs}, 2 836 \texttt{route.model} et 2 836 \texttt{discover.logs}. Cette campagne soutient la dimension distribuee du titre au niveau local multi-processus. Elle ne remplace pas un deploiement SOC securise, mais elle montre que l'architecture n'est pas seulement monolithique.
 
-Une validation multi-VM a ensuite ete ajoutee avec deux invites VirtualBox, \texttt{Debian} et \texttt{Ubuntu}, connectees au meme Redis heberge par Windows. La campagne equilibree enfile douze taches et confirme que les deux VM consomment le meme stream. Une seconde campagne simule une panne avant acquittement sur Debian; Ubuntu reclame ensuite la tache pending et termine l'ensemble sans perte. Enfin, une campagne d'endurance supervisee d'une heure enfile 525 taches sur le meme bus Redis. Les sessions \texttt{guestcontrol} VirtualBox ont necessite des relances supervisees, mais le groupe Redis termine avec 525 entrees lues, un lag final nul et aucun pending.
+\section{Validation inter-machines sous VirtualBox}
+La validation inter-machines complete la campagne Redis locale. Elle utilise deux machines virtuelles VirtualBox, \texttt{Debian} et \texttt{Ubuntu}, executees sur l'hote Windows du projet. Redis n'est pas installe dans les invites : le bus est le conteneur Docker \texttt{logminer-redis} heberge sur l'hote Windows et expose en \texttt{redis://localhost:6379/0}. Les invites, configurees en NAT VirtualBox, accedent a ce Redis par l'adresse speciale de l'hote \texttt{redis://10.0.2.2:6379/0}. L'objectif est donc de verifier une distribution reseau de laboratoire entre deux systemes invites et un bus central, pas de revendiquer une infrastructure SOC multi-site securisee.
+
+Le protocole est porte par trois scripts : \texttt{scripts/run\_vbox\_redis\_balanced\_campaign.ps1}, \texttt{scripts/run\_vbox\_redis\_recovery\_campaign.ps1} et \texttt{scripts/run\_vbox\_redis\_1h\_campaign.ps1}. Chaque script verifie d'abord Redis par \texttt{docker exec logminer-redis redis-cli ping}, controle que les VM \texttt{Debian} et \texttt{Ubuntu} sont en etat \texttt{running} avec les additions invitees disponibles, puis lance les workers par \texttt{VBoxManage guestcontrol}. Pour la campagne d'une heure, le script copie aussi \texttt{scripts/logminer\_intelligent\_agent\_worker.py} et \texttt{src/logminer/agents/intelligent\_runtime.py} dans les invites avant execution, afin d'aligner le code worker avec celui de l'hote.
+
+Les workers reels executes dans les invites sont \texttt{debian-worker-1}, \texttt{ubuntu-worker-1}, \texttt{debian-crash-worker}, \texttt{ubuntu-recovery-worker}, \texttt{debian-worker-1h} et \texttt{ubuntu-worker-1h}. Dans la campagne d'endurance, deux relances supervisees apparaissent aussi dans la fenetre d'evenements sous les noms \texttt{debian-worker-1h-r2} et \texttt{ubuntu-worker-1h-r2}. Tous consomment le meme consumer group Redis \texttt{logminer-intelligent-agents} et des streams dedies : \texttt{logminer:agent\_tasks:vbox\_balanced:*}, \texttt{logminer:agent\_tasks:vbox\_recovery:*} et \texttt{logminer:agent\_tasks:vbox\_1h:*}.
+
+La campagne equilibree enfile douze taches : quatre \texttt{discover.logs}, quatre \texttt{parse.logs} et quatre \texttt{route.model}. Debian en termine huit et Ubuntu quatre, sans echec et sans pending final. La campagne panne/reprise enfile trois taches ; Debian prend volontairement une tache puis s'arrete avant acquittement, et Ubuntu la recupere par la logique Redis de reclamation. Les trois taches sont terminees, une tache abandonnee est reprise, aucun echec n'est observe et le pending final reste nul.
+
+La campagne principale d'endurance inter-machines dure 3 600 secondes, avec une phase de drain finale de 120 secondes. Le seeder Windows enfile une serie de taches toutes les 15 secondes via \texttt{--enqueue-demo --enqueue-only}; chaque iteration ajoute trois taches, ce qui donne 175 iterations et 525 taches enfilees. Le debit d'enfilement moyen est donc d'environ 0,1458 tache/s sur la fenetre cible d'une heure. Les workers Debian et Ubuntu executent \texttt{logminer\_intelligent\_agent\_worker.py} avec \texttt{--duration-sec 3720}, \texttt{--max-parallel-tasks 1}, \texttt{--block-ms 1000} et \texttt{--claim-idle-ms 1000}.
+
+Les resultats finaux sont mesures par le groupe Redis : 525 entrees lues, 525 taches acquittees par le groupe, lag final egal a 0 et pending final egal a 0. Les pertes observees sont donc nulles au niveau de la file Redis. La fenetre d'evenements encore visible au moment de la synthese contient 285 evenements de completion, dont 276 taches uniques, repartis entre \texttt{debian-worker-1h} avec 128 completions, \texttt{ubuntu-worker-1h} avec 116, \texttt{ubuntu-worker-1h-r2} avec 22 et \texttt{debian-worker-1h-r2} avec 19. Cette repartition par agent est presentee comme une indication issue de la fenetre evenementielle conservee, tandis que la preuve exhaustive de fin de campagne est le compteur Redis du consumer group. Aucune erreur de tache n'est observee dans cette fenetre ; la limite notee concerne les interruptions \texttt{guestcontrol} VirtualBox qui ont impose des relances supervisees, sans laisser de taches pending dans Redis.
+
+Les fichiers de preuve associes sont \texttt{data/processed/vbox\_redis\_balanced\_campaign.json}, \texttt{data/processed/vbox\_redis\_recovery\_campaign.json}, \texttt{data/processed/vbox\_redis\_1h\_campaign.json}, ainsi que les tableaux \texttt{docs/memoire/tables/table\_vbox\_redis\_balanced\_campaign.md}, \texttt{docs/memoire/tables/table\_vbox\_redis\_recovery\_campaign.md} et \texttt{docs/memoire/tables/table\_vbox\_redis\_1h\_campaign.md}. Le script \texttt{scripts/summarize\_vbox\_redis\_1h\_campaign.py} permet de reconstruire la synthese de la campagne d'une heure a partir du run \texttt{redis-vbox-1h-20260722153650} et du stream \texttt{logminer:agent\_tasks:vbox\_1h:20260722153650}.
 
 \begin{table}[H]
 \centering
@@ -379,6 +392,31 @@ Une validation multi-VM a ensuite ete ajoutee avec deux invites VirtualBox, \tex
 Campagne equilibree Debian/Ubuntu & 12 & 12 & 0 & 0 & 0 & Les deux VM traitent des taches du meme stream Redis : 8 pour Debian, 4 pour Ubuntu. \\
 Panne Debian, reprise Ubuntu & 3 & 3 & 0 & 1 & 0 & Une tache prise avant panne est reprise par Ubuntu apres reclamation Redis. \\
 Endurance multi-VM supervisee 1 h & 525 & 525 & 0 & n/a & 0 & Toutes les entrees sont lues et acquittees par le groupe Redis; lag final nul. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Details de la campagne Redis multi-VM supervisee d'une heure}
+\label{tab:vbox-redis-1h-details}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{4.2cm}p{3.5cm}X}
+\toprule
+\textbf{Element} & \textbf{Valeur} & \textbf{Interpretation} \\
+\midrule
+Hote Redis & \texttt{redis://localhost:6379/0} & Conteneur Docker \texttt{logminer-redis} sur Windows. \\
+Adresse depuis les VM & \texttt{redis://10.0.2.2:6379/0} & Adresse speciale de l'hote en NAT VirtualBox. \\
+VM invitees & \texttt{Debian}, \texttt{Ubuntu} & Workers executes hors de l'hote Windows. \\
+Run et stream & \texttt{redis-vbox-1h-20260722153650} ; \texttt{logminer:agent\_tasks:vbox\_1h:20260722153650} & Identifiants de reproduction de la campagne. \\
+Duree cible et drain & 3 600 s + 120 s & Endurance supervisee d'une heure, puis vidage final de la file. \\
+Iterations et taches & 175 iterations ; 525 taches & Trois taches demo enfilees par iteration. \\
+Debit d'enfilement & 0,1458 tache/s & 525 taches sur 3 600 s. \\
+Lecture/acquittement Redis & 525 lues ; 525 acquittees & Toutes les entrees sont prises en charge par le groupe Redis. \\
+Lag et pending finaux & 0 ; 0 & Aucune tache restante dans la file ou en attente d'acquittement. \\
+Echecs observes & 0 & Aucun evenement \texttt{agent.task.failed} dans la fenetre conservee. \\
+Completions visibles par agent & Debian 147 ; Ubuntu 138 & Fenetre evenementielle conservee : 128 + 19 pour Debian, 116 + 22 pour Ubuntu. \\
+Limite observee & relances \texttt{guestcontrol} & Limite VirtualBox d'orchestration, sans perte Redis finale. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -436,6 +474,6 @@ Les tests de robustesse verifient la capacite du systeme a traiter des formats d
 \end{figure}
 
 \section{Synthese du chapitre}
-Ce chapitre etablit les resultats experimentaux retenus pour le memoire. Les resultats supervises principaux sont accompagnes de splits plus stricts et d'une comparaison controlee sur CICIDS2017. Les experimentations HDFS/BGL distinguent explicitement les essais exploratoires de la validation Drain3 train--test. Les mesures systeme documentent la latence, les ressources, la robustesse multi-format et la campagne Redis locale de six heures.
+Ce chapitre etablit les resultats experimentaux retenus pour le memoire. Les resultats supervises principaux sont accompagnes de splits plus stricts, d'une comparaison controlee sur CICIDS2017 et d'un benchmark complementaire de modeles candidats. Les experimentations HDFS/BGL distinguent explicitement les essais exploratoires de la validation Drain3 train--test. Les mesures systeme documentent la latence, les ressources, la robustesse multi-format, la campagne Redis locale de six heures et la validation inter-machines sous VirtualBox avec Debian, Ubuntu et 525 taches acquittees par le groupe Redis.
 
 L'interpretation generale, les limites scientifiques et les perspectives sont regroupees dans les chapitres suivants afin d'eviter de repeter les memes precautions dans la section de resultats.

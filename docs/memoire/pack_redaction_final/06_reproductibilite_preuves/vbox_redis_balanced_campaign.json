@@ -1,0 +1,19 @@
+{
+  "run_id": "redis-vbox-balanced-20260722145314",
+  "task_stream": "logminer:agent_tasks:vbox_balanced:20260722145314",
+  "group": "logminer-intelligent-agents",
+  "tasks_enqueued": 12,
+  "tasks_completed": 12,
+  "unique_tasks_completed": 12,
+  "tasks_failed": 0,
+  "pending_after": 0,
+  "by_agent": {
+    "debian-worker-1": 8,
+    "ubuntu-worker-1": 4
+  },
+  "by_type": {
+    "discover.logs": 4,
+    "parse.logs": 4,
+    "route.model": 4
+  }
+}
