@@ -1,52 +1,201 @@
 \chapter{Approfondissements scientifiques}
 
-\section{Role du chapitre}
-Ce chapitre concentre l'analyse methodologique du memoire. Il ne repete pas les resultats du chapitre precedent et ne remplace pas la discussion generale. Son role est de preciser ce que les experiences permettent de conclure, ce qu'elles ne permettent pas de conclure, et comment les termes ambitieux du titre doivent etre compris.
+\section{Rôle du chapitre}
 
-\section{Lecture methodologique des scores supervises}
-Les scores supervises doivent toujours etre lus avec leur protocole. Les protocoles exploratoires donnent des valeurs elevees sur Linux/auth, CICIDS2017 et CIC-DDoS2019. Les holdouts plus stricts donnent cependant F1 = 0,826251, 0,157827 et 0,997577. Le resultat CICIDS2017 est le plus instructif : la comparaison controlee montre qu'a features, hyperparametres, tailles et seeds apparies, le F1 passe de 0,999260 en split aleatoire stratifie a 0,157827 sur cinq holdouts fichier/scenario associes aux graines 42--46.
+Ce chapitre propose une lecture méthodologique des résultats obtenus. Il ne reprend pas simplement les expériences déjà présentées et ne remplace pas non plus la discussion générale. Son objectif est différent : préciser la portée réelle des résultats, identifier les limites des protocoles utilisés et clarifier la manière dont certaines notions du titre doivent être comprises au regard de ce qui a effectivement été implémenté et évalué.
 
-Cette experience ne signifie pas que CICIDS2017 est inutilisable ni qu'un autre modele echouerait necessairement. Elle montre que le RandomForest utilise dans cette configuration apprend fortement des signatures propres aux fichiers ou scenarios vus pendant l'entrainement. L'analyse par fichier precise le phenomene : DDoS reste partiellement detecte, PortScan presque pas, et Bot, Infiltration et WebAttacks ne sont pas retrouves dans les echantillons de test. L'ecart-type eleve ne doit donc pas etre interprete comme une simple variabilite due aux seeds ; il reflete surtout l'heterogeneite des scenarios tenus hors entrainement. Pour cette raison, le score exploratoire de 0,997163 n'est jamais utilise seul comme resultat principal.
+L'enjeu est donc de distinguer ce que les expériences permettent raisonnablement d'affirmer de ce qu'elles ne permettent pas encore de démontrer. Cette distinction est particulièrement importante pour les scores élevés obtenus sur certains jeux de données, pour les expérimentations non supervisées et pour les notions d'autonomie, de distribution et d'adaptation utilisées dans la description de \logminer{}.
 
-Une passe complementaire compare plusieurs candidats legers sur les memes holdouts : RandomForest, ExtraTrees, HistGradientBoosting, LogisticRegression et SGDLogistic. Le meilleur F1 moyen est obtenu par LogisticRegression avec 0,233670, contre 0,157827 pour RandomForest. Ce gain est utile pour ameliorer le resultat strict, mais il ne suffit pas a conclure que le probleme est resolu : certains scenarios restent presque ou totalement non detectes. La lecture retenue est donc que le choix du modele compte, mais que la dependance au changement de distribution demeure le facteur dominant.
+\section{Lecture méthodologique des scores supervisés}
 
-Le cas CIC-DDoS2019 est traite separement. Le score 0,999965 est conserve comme resultat exploratoire historique rattache a une famille DDoS, mais la preuve principale est le holdout strict sur cinq graines documente dans \texttt{random\_forest\_cic\_ddos2019\_metrics.csv}. Le dataset UNSW-NB15 n'est pas fusionne avec CIC-DDoS2019 ; il apparait seulement dans l'ablation controlee distincte.
+Les performances des modèles supervisés ne peuvent pas être interprétées indépendamment du protocole expérimental utilisé.
 
-\section{HDFS/BGL et risque de fuite}
-Les premiers essais HDFS/BGL ont une valeur d'integration, mais ils ne constituent pas une validation robuste lorsque le seuil ou la contamination depend du jeu evalue. Utiliser implicitement l'information du test pour regler un hyperparametre peut surestimer fortement le F1, en particulier sur BGL. Le memoire ne presente donc pas ces scores exploratoires comme preuve principale.
+Les premières évaluations, réalisées dans un cadre exploratoire, produisent des scores élevés sur Linux/auth, CICIDS2017 et CIC-DDoS2019. Lorsque les conditions de séparation deviennent plus strictes, les résultats évoluent sensiblement. Les F1 obtenus sont alors respectivement de 0,826251, 0,157827 et 0,997577.
 
-La correction apportee est la branche Drain3 train--test : extraction de templates, fenetres temporelles, separation des ensembles et evaluation sur test. Cette version rend le protocole plus coherent avec la litterature sur les logs sequentiels. Elle reste toutefois limitee : HDFS demeure difficile, BGL reste tres favorable sur le split local, et une validation plus forte demanderait repetitions de splits, seuil fixe sur validation et comparaison a des modeles sequentiels specialises.
+Le cas de CICIDS2017 est le plus révélateur.
 
-\section{Agents, parsing et portee du titre}
-Le terme agent intelligent est employe dans un sens operationnel. Les agents disposent de capacites declarees, d'une memoire locale, d'un heartbeat, d'une politique de choix et de handlers multiples. La memoire adaptative ajoute une capitalisation persistante de certains historiques et retours analyste, mais elle ne transforme pas les agents en agents cognitifs autonomes capables de planification generale ou d'apprentissage par renforcement. La contribution se situe donc dans l'orchestration logicielle auditable et l'adaptation comportementale controlee, pas dans une nouvelle architecture agentique d'IA generale.
+Une comparaison contrôlée a été réalisée en maintenant les mêmes caractéristiques, les mêmes hyperparamètres, des tailles d'échantillons appariées et les mêmes graines. La différence principale concerne uniquement la stratégie utilisée pour séparer les données d'entraînement et de test.
 
-Le parsing doit etre compris de la meme maniere. Le prototype sait reconnaitre plusieurs familles controlees, extraire des champs utiles et conserver les lignes inconnues ou incompletes. Il ne demontre pas une adaptation autonome illimitee a tout format nouveau. Sa robustesse vient surtout de la degradation controlee : ne pas perdre silencieusement l'information lorsque le format sort du cadre connu.
+Avec une partition aléatoire stratifiée, le F1 moyen atteint 0,999260. Lorsque cinq fichiers ou scénarios complets sont successivement maintenus hors de l'entraînement, avec les graines 42--46, le F1 moyen tombe à 0,157827.
 
-La distribution doit etre lue en deux niveaux. La campagne Redis de six heures montre une repartition locale multi-processus et une reprise de taches non acquittees sur l'hote Windows. Une validation separee sous VirtualBox montre ensuite que Debian et Ubuntu peuvent consommer un stream Redis commun heberge sur l'hote, avec notamment 525 taches lues et acquittees par le groupe Redis pendant une campagne supervisee d'une heure. Une comparaison controlee monolithique-versus-agents a ete ajoutee sur les memes taches et le meme volume : elle ne montre pas de gain de debit sur petit volume, mais elle quantifie l'overhead d'orchestration et confirme la reprise d'une tache simulee comme non acquittee. La modularite et la tracabilite sont soutenues par la conception logicielle et les mecanismes d'audit ; la resilience locale et la distribution de laboratoire disposent, elles, de preuves experimentales distinctes.
+Cet écart montre que les performances obtenues avec une séparation aléatoire ne suffisent pas à caractériser la capacité du modèle à traiter un scénario qu'il n'a jamais rencontré.
 
-\section{Synthese des risques de validite}
+Il serait toutefois incorrect d'en déduire que CICIDS2017 est inutilisable ou que tout autre modèle produirait nécessairement le même résultat. La conclusion est plus limitée : dans la configuration étudiée, le Random Forest intégré à \logminer{} apprend fortement certaines caractéristiques propres aux fichiers et aux scénarios présents dans les données d'entraînement.
+
+L'analyse détaillée des holdouts permet de mieux comprendre ce comportement. Le scénario DDoS reste partiellement détecté lorsqu'il est exclu de l'entraînement. PortScan est beaucoup moins bien reconnu. Dans les échantillons considérés, aucune détection positive n'est obtenue pour Bot, Infiltration et WebAttacks.
+
+L'écart-type important observé entre les cinq holdouts ne correspond donc pas simplement à une instabilité aléatoire provoquée par les graines. Il reflète principalement les différences entre les scénarios maintenus hors de l'entraînement.
+
+Cette observation explique pourquoi le score exploratoire de 0,997163 sur CICIDS2017 n'est pas utilisé seul pour caractériser les performances du système. Il est systématiquement rapproché du résultat obtenu avec le protocole plus strict.
+
+Le cas de CIC-DDoS2019 est traité différemment.
+
+Le score de 0,999965 reste conservé comme résultat exploratoire historique associé à des données de la famille DDoS. Il ne constitue cependant pas le résultat principal retenu dans le mémoire.
+
+La preuve principale repose sur le holdout strict effectué sur cinq graines et documenté dans le fichier \texttt{random\_forest\_cic\_ddos2019\_metrics.csv}. Dans cette configuration, le modèle obtient un F1 de 0,997577.
+
+Il est également important de maintenir une séparation claire entre CIC-DDoS2019 et UNSW-NB15. Les deux jeux de données ne sont pas fusionnés dans l'interprétation des résultats. UNSW-NB15 intervient uniquement dans une étude d'ablation distincte et ne sert pas à justifier les performances attribuées à CIC-DDoS2019.
+
+\section{HDFS/BGL et risque de fuite d'information}
+
+Les premières expériences réalisées sur HDFS et BGL ont principalement servi à vérifier l'intégration de ces journaux dans le pipeline.
+
+Elles fournissent donc des informations utiles sur le fonctionnement du prototype, mais elles ne constituent pas à elles seules une validation robuste de la capacité de généralisation des détecteurs.
+
+La principale difficulté vient du réglage du seuil ou du paramètre de contamination.
+
+Lorsqu'une information provenant du jeu évalué est utilisée, directement ou indirectement, pour régler un hyperparamètre du détecteur, une fuite d'information peut apparaître. Le score obtenu risque alors de surestimer les performances que le modèle aurait sur des données réellement indépendantes.
+
+Ce risque est particulièrement important dans un cadre non supervisé, où le seuil déterminant la frontière entre observations normales et anomalies peut fortement influencer le F1.
+
+Pour cette raison, les premiers résultats obtenus sur HDFS et BGL sont conservés comme expériences exploratoires, mais ne sont pas considérés comme les principales preuves expérimentales.
+
+Une seconde branche d'évaluation a donc été mise en place.
+
+Elle repose sur Drain3 pour extraire les modèles de messages, sur l'utilisation de fenêtres temporelles et sur une séparation entre les données servant à l'entraînement et celles utilisées pour l'évaluation.
+
+Ce protocole correspond mieux à la nature séquentielle de HDFS et BGL et se rapproche davantage des méthodes généralement utilisées dans la littérature consacrée à l'analyse des journaux.
+
+Les résultats restent toutefois contrastés.
+
+HDFS demeure relativement difficile à traiter avec les caractéristiques légères utilisées dans le prototype. L'amélioration existe, mais reste modérée.
+
+BGL présente au contraire une très forte séparabilité sur la partition retenue. Cette performance favorable ne doit cependant pas être extrapolée sans précaution. Une validation plus solide nécessiterait plusieurs répétitions utilisant différentes partitions, un ensemble de validation distinct pour fixer les seuils et une comparaison avec des méthodes spécifiquement conçues pour les séquences de journaux.
+
+La branche Drain3 améliore donc la qualité du protocole, mais elle ne transforme pas les expériences actuelles en preuve de généralisation universelle.
+
+\section{Agents, parsing et portée du titre}
+
+Le terme \textit{agent intelligent} doit être compris dans le cadre précis de l'architecture proposée.
+
+Les agents de \logminer{} disposent de capacités déclarées, d'une mémoire locale, d'un mécanisme de heartbeat, de plusieurs handlers et d'une politique explicite permettant de sélectionner certaines tâches.
+
+La mémoire adaptative ajoute la possibilité de conserver des informations issues des exécutions précédentes ainsi que certains retours de l'analyste.
+
+Ces fonctions donnent aux agents une capacité d'adaptation opérationnelle, mais elles ne correspondent pas à une autonomie cognitive générale.
+
+Les agents ne planifient pas librement des objectifs complexes, ne construisent pas eux-mêmes une stratégie globale de cyberdéfense et ne reposent pas sur un mécanisme d'apprentissage par renforcement capable de modifier leur politique de manière autonome.
+
+La contribution doit donc être située au niveau de l'orchestration logicielle, de la traçabilité et de l'adaptation comportementale contrôlée.
+
+Le parsing doit être interprété avec la même prudence.
+
+Le prototype reconnaît plusieurs formats définis, extrait les informations exploitables et conserve les données lorsqu'une ligne ne correspond pas complètement à un format connu.
+
+Il ne démontre cependant pas une capacité universelle à comprendre automatiquement tout nouveau journal.
+
+La robustesse du parsing repose surtout sur un principe de dégradation contrôlée : lorsqu'une entrée ne peut pas être interprétée entièrement, elle n'est pas supprimée silencieusement. Le message original et les informations disponibles restent conservés afin de préserver la possibilité d'un examen ultérieur.
+
+La notion de distribution possède également une portée précise.
+
+La campagne Redis de six heures montre que plusieurs processus peuvent consommer un flux de tâches commun et que les tâches laissées sans acquittement peuvent être récupérées.
+
+Cette propriété constitue une validation directe du fonctionnement multiprocessus local.
+
+Une comparaison contrôlée a également été menée entre l'exécution monolithique et l'architecture reposant sur les agents, à charge identique.
+
+Les résultats ne montrent pas d'amélioration du débit sur le faible volume de tâches considéré. Au contraire, l'utilisation des agents introduit un surcoût d'orchestration mesurable.
+
+Ce résultat est important, car il permet de distinguer deux questions différentes.
+
+L'architecture multiagent n'est pas présentée ici comme une solution permettant automatiquement d'accélérer le traitement. Son intérêt se situe davantage dans la séparation des responsabilités, l'observabilité des composants, la possibilité de distribuer les tâches et la capacité de reprendre certaines tâches après une panne.
+
+La modularité et la traçabilité sont principalement soutenues par l'architecture logicielle et les mécanismes d'audit. La résilience locale, en revanche, dispose d'une preuve expérimentale plus directe grâce aux pannes simulées et aux reprises observées pendant les campagnes Redis.
+
+\section{Synthèse des risques de validité}
+
 \begin{table}[H]
 \centering
-\caption{Risques methodologiques et formulation retenue}
+\caption{Risques méthodologiques et formulations retenues}
 \label{tab:risques-methodologiques}
 \scriptsize
+
 \begin{tabularx}{\textwidth}{p{3.2cm}p{4.2cm}X}
 \toprule
-\textbf{Point critique} & \textbf{Risque} & \textbf{Formulation retenue} \\
+
+\textbf{Point critique} &
+\textbf{Risque} &
+\textbf{Formulation retenue}
+\tabularnewline
+
 \midrule
-Scores supervises & Confusion entre score exploratoire et generalisation. & Les scores sont associes a leur protocole ; CICIDS2017 est accompagne du holdout controle. \\
-CIC-DDoS2019/UNSW & Attribution dataset ambigue. & CIC-DDoS2019 et UNSW-NB15 sont separes ; le resultat principal DDoS est le holdout strict. \\
-HDFS/BGL & Fuite par seuil ou contamination. & Les premiers scores sont exploratoires ; Drain3 train--test devient la lecture principale. \\
-Dashboard & Confusion entre validation fonctionnelle et evaluation utilisateur. & Les captures prouvent le fonctionnement ; une user study reste hors perimetre. \\
-Wazuh/Fail2ban & Comparaison abusive avec des outils matures. & \logminer{} est presente comme couche analytique complementaire, pas comme substitut. \\
-Agents intelligents & Sur-promesse sur l'autonomie ou le debit. & Agents logiciels multi-taches avec orchestration ; comparaison controlee mesurant surtout overhead et reprise, pas acceleration brute. \\
-Memoire adaptative & Confusion entre feedback conserve, reduction mesuree des faux positifs et reentrainement automatique. & Memoire persistante auditable pour priorisation et contexte ; reduction reelle des faux positifs et apprentissage adaptatif complet non encore demontres. \\
-Scalabilite & Campagne locale de six heures et validation VirtualBox d'une heure ne suffisent pas pour une preuve industrielle. & Les mesures documentent la faisabilite locale et inter-machines de laboratoire ; la scalabilite SOC multi-site securisee reste une perspective. \\
+
+Scores supervisés &
+Confondre une bonne performance exploratoire avec une capacité générale de traitement de données nouvelles. &
+Chaque score est associé à son protocole expérimental. Sur CICIDS2017, le résultat exploratoire est complété par une comparaison contrôlée utilisant des holdouts par fichier ou scénario.
+\tabularnewline
+
+CIC-DDoS2019/UNSW &
+Attribuer à un jeu de données un résultat obtenu sur un autre. &
+CIC-DDoS2019 et UNSW-NB15 sont traités séparément. Le résultat principal attribué aux attaques DDoS provient du protocole strict appliqué à CIC-DDoS2019.
+\tabularnewline
+
+HDFS/BGL &
+Surestimer les performances en utilisant le jeu évalué pour régler le seuil ou le paramètre de contamination. &
+Les premiers résultats sont considérés comme exploratoires. La branche Drain3 avec séparation entraînement--test constitue le protocole principal retenu.
+\tabularnewline
+
+Tableau de bord &
+Confondre fonctionnement technique de l'interface et validation de son utilisabilité par des utilisateurs réels. &
+Les captures et les tests montrent que les principales fonctions sont opérationnelles. Une étude d'expérience utilisateur reste en dehors du périmètre actuel.
+\tabularnewline
+
+Wazuh/Fail2ban &
+Présenter le prototype comme supérieur ou équivalent à des outils opérationnels beaucoup plus matures. &
+\logminer{} est positionné comme une couche analytique complémentaire et non comme un substitut à Wazuh, OSSEC ou fail2ban.
+\tabularnewline
+
+Agents intelligents &
+Surestimer le niveau d'autonomie ou supposer un gain automatique de performance. &
+Les agents sont des composants logiciels multitâches orchestrés. La comparaison contrôlée mesure le coût d'orchestration et la capacité de reprise, sans démontrer une accélération systématique.
+\tabularnewline
+
+Mémoire adaptative &
+Assimiler la conservation des retours à un apprentissage automatique continu. &
+La mémoire sert à conserver, contextualiser et réutiliser certaines informations. Elle ne modifie pas automatiquement les poids des modèles actuellement déployés.
+\tabularnewline
+
+Scalabilité &
+Extrapoler les performances locales vers un environnement industriel multi-machine. &
+Les campagnes actuelles démontrent une faisabilité locale multiprocessus. La validation sur plusieurs machines et dans des conditions opérationnelles reste à réaliser.
+\tabularnewline
+
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \section{Exploitation scientifique prioritaire}
-Les resultats les plus utiles pour la suite sont ceux qui isolent une question scientifique claire. La comparaison controlee CICIDS2017 montre l'effet du protocole de separation. L'ablation global-versus-familles sur cinq graines montre que le routage ne domine pas automatiquement un modele global en espace commun. La branche Drain3 montre que les logs sequentiels demandent une representation plus riche que la ligne brute.
 
-Les prolongements doivent donc suivre trois axes : etendre les comparaisons controlees a d'autres familles, tester des splits temporels ou multi-environnements, et transformer la memoire adaptative actuelle en boucle de reentrainement controlee fondee sur le feedback analyste du dashboard. Cette boucle devra surveiller le concept drift, comparer tout nouveau modele a un modele courant sur un jeu de validation gele, puis conserver l'ancien modele pour retour arriere.
+Les résultats les plus intéressants pour la poursuite du travail ne sont pas nécessairement ceux qui présentent les valeurs numériques les plus élevées.
+
+Les expériences les plus utiles sont plutôt celles qui permettent d'isoler une question scientifique et de comparer clairement plusieurs hypothèses.
+
+La comparaison contrôlée menée sur CICIDS2017 en constitue un exemple important. Elle montre que la stratégie de séparation des données peut modifier profondément l'interprétation des performances d'un même modèle.
+
+Elle ouvre directement une question plus générale sur la capacité des détecteurs à fonctionner lorsque les attaques observées pendant le test diffèrent de celles présentes dans l'entraînement.
+
+L'étude d'ablation comparant un modèle global et plusieurs modèles spécialisés par famille fournit une autre information intéressante. Réalisée sur cinq graines et avec un espace de caractéristiques commun, elle ne montre pas de supériorité systématique du routage spécialisé.
+
+Ce résultat permet de nuancer l'hypothèse initiale selon laquelle un modèle spécialisé par famille serait nécessairement meilleur qu'un modèle global. Le routage conserve un intérêt architectural, notamment pour utiliser des caractéristiques ou des modèles différents selon les sources, mais son bénéfice prédictif doit être démontré expérimentalement au cas par cas.
+
+La branche Drain3 apporte également un enseignement méthodologique important. Les journaux tels que HDFS et BGL ne peuvent pas toujours être étudiés correctement comme une succession indépendante de lignes. La structure des messages, leur fréquence et leur organisation temporelle apportent des informations qui peuvent modifier la qualité de la détection.
+
+À partir de ces observations, trois axes apparaissent prioritaires pour prolonger le travail.
+
+Le premier consiste à étendre les comparaisons contrôlées à d'autres familles de données. L'objectif serait de vérifier si les comportements observés sur CICIDS2017 se retrouvent sur d'autres environnements et d'identifier les cas où la spécialisation par famille apporte réellement un avantage.
+
+Le deuxième axe concerne les partitions temporelles et multi-environnements. Une évaluation réalisée sur des périodes différentes, sur plusieurs machines ou sur plusieurs réseaux permettrait de mieux mesurer la capacité des modèles à résister aux changements de distribution.
+
+Le troisième axe concerne l'évolution de la mémoire adaptative actuelle vers une véritable boucle de réentraînement contrôlé.
+
+Les décisions enregistrées par l'analyste pourraient progressivement servir à constituer un ensemble de données validées. Ces données pourraient être utilisées hors ligne pour recalibrer certains seuils ou réentraîner un modèle.
+
+Une telle boucle devrait cependant rester strictement contrôlée.
+
+Le système devrait notamment surveiller les signes de dérive conceptuelle, séparer les données utilisées pour l'apprentissage de celles servant à la validation et comparer toute nouvelle version du modèle avec la version actuellement déployée sur un jeu de validation gelé.
+
+Le remplacement d'un modèle ne devrait avoir lieu que si le nouveau modèle respecte des critères définis à l'avance.
+
+L'ancienne version devrait également être conservée afin de permettre un retour arrière si les performances se dégradent après le déploiement.
+
+Cette évolution permettrait de passer progressivement d'une mémoire essentiellement descriptive et comportementale vers un mécanisme d'apprentissage continu auditable, tout en évitant qu'une succession de décisions locales entraîne une dérive non contrôlée du système.

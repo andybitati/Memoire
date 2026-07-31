@@ -1,115 +1,236 @@
-\chapter{Etat de l'art}
+\chapter{État de l'art}
 
-\section{Journalisation systeme et reseau}
-La journalisation consiste a enregistrer les evenements produits par un systeme, une application ou un equipement reseau. Les journaux peuvent documenter des authentifications, erreurs, acces aux fichiers, requetes web, changements de configuration ou alertes de securite. Le guide NIST SP 800-92 souligne l'importance de la collecte, de la conservation, de l'analyse et de la protection des journaux dans une strategie de securite \cite{nist80092}.
+\section{Journalisation système et réseau}
 
-Les formats sont nombreux. Le protocole syslog structure les messages systemes selon une logique d'horodatage, d'hote, de severite et de contenu \cite{rfc5424}. Windows Event Log encode les evenements dans un format propre aux systemes Microsoft. Apache produit des lignes textuelles d'acces et d'erreur. Les outils SIEM/HIDS comme Wazuh enrichissent les evenements avec des regles, niveaux de severite, agents et groupes. Les datasets reseau comme CICIDS2017, UNSW-NB15 ou CIC-DDoS2019 fournissent plutot des flux tabulaires avec des caracteristiques numeriques.
+La journalisation désigne l'enregistrement des événements générés par un système, une application ou un équipement réseau. Ces journaux peuvent contenir des informations sur les authentifications, les erreurs, les accès aux fichiers, les requêtes web, les modifications de configuration ou encore les alertes de sécurité. Le guide NIST SP 800-92 rappelle d'ailleurs que la collecte, la conservation, l'analyse et la protection de ces journaux constituent des éléments importants d'une stratégie de sécurité \cite{nist80092}.
 
-Cette heterogeneite rend difficile une detection unifiee. Avant toute detection, il faut donc parser les journaux, extraire les champs utiles et les normaliser dans un schema commun.
+Dans la pratique, ces données se présentent sous des formats très différents. Le protocole syslog organise les messages système autour d'informations comme l'horodatage, l'hôte, la sévérité et le contenu du message \cite{rfc5424}. Windows Event Log utilise pour sa part un format propre aux environnements Microsoft. Les serveurs Apache produisent principalement des journaux textuels liés aux accès et aux erreurs, tandis que des plateformes HIDS/SIEM telles que Wazuh enrichissent les événements avec des règles, des niveaux de sévérité, des identifiants d'agents ou encore des groupes. À l'inverse, des jeux de données réseau comme CICIDS2017, UNSW-NB15 ou CIC-DDoS2019 représentent généralement les communications sous forme de flux tabulaires caractérisés par plusieurs variables numériques.
 
-\section{Detection d'intrusion et detection d'anomalies}
-La detection d'intrusion vise a identifier des activites malveillantes ou non autorisees. Denning a propose un modele fonde sur l'observation des traces d'audit et la detection de deviations par rapport a un comportement attendu \cite{denning1987intrusion}. Axelsson a ensuite propose une taxonomie des systemes de detection d'intrusion, distinguant notamment les approches par signatures et les approches par anomalies \cite{axelsson2000intrusion}.
+Cette diversité rend difficile l'application directe d'une méthode unique de détection. Avant de chercher à identifier un comportement anormal, il est donc nécessaire de comprendre la structure des données, d'en extraire les informations utiles et de les rapprocher dans une représentation commune.
 
-La detection d'anomalies cherche a reperer des observations rares, inattendues ou eloignees d'un comportement normal. Chandola et al. classent les anomalies en anomalies ponctuelles, contextuelles et collectives \cite{chandola2009anomaly}. Dans les journaux, une anomalie peut etre une erreur isolee, une sequence inhabituelle, une activite rare d'un utilisateur ou un pic d'evenements.
+\section{Détection d'intrusions et détection d'anomalies}
+
+La détection d'intrusions cherche à identifier des activités malveillantes, suspectes ou non autorisées au sein d'un système informatique. Denning a proposé l'un des premiers modèles structurés reposant sur l'analyse des traces d'audit et sur l'identification des écarts par rapport à un comportement considéré comme normal \cite{denning1987intrusion}. Axelsson a ensuite proposé une taxonomie des systèmes de détection d'intrusions, en distinguant notamment les méthodes fondées sur les signatures de celles reposant sur la détection d'anomalies \cite{axelsson2000intrusion}.
+
+La détection d'anomalies adopte une logique légèrement différente. Elle cherche avant tout à identifier des observations rares, inhabituelles ou suffisamment éloignées d'un comportement de référence. Chandola et al. distinguent notamment les anomalies ponctuelles, contextuelles et collectives \cite{chandola2009anomaly}. Dans un journal informatique, une anomalie peut ainsi prendre la forme d'une erreur isolée, d'une succession inhabituelle d'événements, d'une activité rare associée à un utilisateur ou encore d'une augmentation anormale du nombre d'événements sur une courte période.
+
+Cette distinction est importante dans le cadre de ce mémoire. Un événement identifié comme anormal par un modèle ne constitue pas automatiquement une intrusion. Il s'agit d'abord d'un signal qui doit être replacé dans son contexte avant de pouvoir être interprété comme un incident de sécurité.
 
 \section{Approches classiques}
-Les approches classiques reposent souvent sur des regles, des seuils, des signatures ou des statistiques simples. Elles sont interpretable et operationnelles, mais elles capturent surtout des comportements connus. Des outils comme fail2ban peuvent reagir a des echecs repetes d'authentification en appliquant un bannissement IP. Des plateformes HIDS/SIEM comme OSSEC ou Wazuh utilisent des decoders, regles et correlations pour produire des alertes.
 
-Ces outils restent essentiels en production, mais ils peuvent generer des faux positifs et demandent une configuration adaptee. Ils detectent difficilement des comportements nouveaux si aucune regle ne les couvre. Le prototype \logminer{} se positionne donc comme un complement analytique, non comme un remplacement de ces outils.
+Les méthodes classiques de détection reposent principalement sur des règles, des signatures, des seuils ou des statistiques relativement simples. Elles restent largement utilisées, notamment parce que leur fonctionnement est généralement compréhensible et que leurs décisions peuvent être expliquées plus facilement.
 
-\section{Machine learning pour la detection}
-Les methodes de machine learning permettent d'apprendre des frontieres ou des comportements a partir de donnees. Les modeles supervises, comme RandomForest, necessitent des donnees labelisees. Ils peuvent produire de tres bons scores sur des datasets tabulaires, mais dependent fortement de la qualite des labels et de la stabilite des distributions. Les methodes non supervisees, comme Isolation Forest, identifient plutot des points rares sans disposer de labels. Leurs sorties doivent etre interpretees comme des anomalies candidates.
+Un outil comme fail2ban peut, par exemple, surveiller des échecs répétés d'authentification et déclencher le bannissement temporaire d'une adresse IP lorsque certaines conditions sont réunies. Des plateformes HIDS/SIEM telles que OSSEC ou Wazuh utilisent quant à elles des décodeurs, des règles et différents mécanismes de corrélation afin d'identifier des situations considérées comme suspectes et de générer des alertes.
 
-Buczak et Guven recensent de nombreuses methodes de machine learning appliquees a la cybersecurite \cite{buczak2016survey}. Khraisat et al. soulignent l'importance des datasets, de l'evaluation et des limites liees aux environnements reels \cite{khraisat2019survey}. Sommer et Paxson mettent en garde contre l'utilisation de machine learning hors du monde ferme des datasets experimentaux \cite{sommer2010outside}. Cette prudence guide l'interpretation des resultats de ce memoire.
+Ces approches ont une réelle valeur opérationnelle, notamment lorsque les comportements recherchés sont connus. Elles nécessitent cependant une configuration adaptée au contexte et peuvent générer des faux positifs. Leur efficacité diminue également lorsqu'un comportement nouveau n'est couvert par aucune règle ou signature existante.
 
-RandomForest occupe une place importante dans les experimentations supervisees car il combine plusieurs arbres de decision afin de reduire la variance et d'ameliorer la robustesse \cite{breiman2001random}. Ce type de modele est bien adapte aux donnees tabulaires issues de flux reseau ou de journaux deja transformes en variables numeriques. Il demande moins de pretraitement que certains modeles lineaires et donne souvent de bons resultats avec un effort de parametrage raisonnable. Cette facilite d'utilisation ne supprime cependant pas les precautions necessaires : un modele peut apprendre des specificites du dataset, voire des biais introduits par la collecte ou la preparation.
+Le positionnement de \logminer{} n'est donc pas celui d'un remplacement de ces outils. Le prototype est plutôt envisagé comme un complément analytique capable d'ajouter des mécanismes de détection fondés sur les données tout en conservant une validation humaine.
 
-Isolation Forest est utilise pour la partie non supervisee car il repose sur une idee compatible avec la detection d'anomalies : les observations rares sont souvent plus faciles a isoler que les observations normales \cite{liu2008isolation}. D'autres methodes non supervisees existent, notamment Local Outlier Factor, One-Class SVM ou k-means utilise comme baseline de regroupement \cite{breunig2000lof,scholkopf2001estimating,macqueen1967kmeans}. Elles ne produisent pas toutes le meme type de signal. Certaines capturent une densite locale, d'autres une frontiere globale, d'autres une distance a un centre. Cette diversite justifie la comparaison experimentale plutot qu'un choix purement theorique.
+\section{Apprentissage automatique pour la détection}
 
-\section{Deep learning et analyse de logs}
-Les approches profondes ont marque l'analyse de logs, notamment avec des modeles de sequences. DeepLog utilise des reseaux recurrentiels pour apprendre les sequences normales d'evenements et detecter des deviations \cite{du2017deeplog}. D'autres travaux exploitent des templates, embeddings ou architectures de type Transformer. Ces methodes sont puissantes, mais elles demandent souvent des volumes importants, une preparation fine des sequences et des ressources plus elevees.
+L'apprentissage automatique permet de construire des modèles capables d'apprendre des relations ou des frontières de décision à partir des données disponibles. Dans un contexte de cybersécurité, ces méthodes peuvent être utilisées aussi bien pour la classification d'événements que pour l'identification de comportements atypiques.
 
-Le prototype \logminer{} privilegie une approche plus legere : normalisation, routage par famille, modeles specialises et dashboard d'audit. Le deep learning est donc considere comme une perspective ou un point de comparaison, plutot que comme le coeur de l'implementation.
+Les approches supervisées, comme Random Forest, supposent la présence de données labellisées. Elles peuvent obtenir de très bonnes performances sur des données tabulaires, mais leur efficacité dépend fortement de la qualité des labels, de la manière dont les données sont séparées entre entraînement et test ainsi que de la stabilité de leur distribution.
 
-La litterature recente sur les logs montre aussi l'importance du parsing automatique et de la representation sequentielle. LogAnomaly combine par exemple des informations sequentielles et quantitatives afin de detecter des comportements atypiques dans des logs non structures \cite{meng2019loganomaly}. Ces methodes sont pertinentes lorsque l'ordre des evenements porte une information essentielle, comme dans des systemes distribues ou des services applicatifs complexes. Leur integration dans \logminer{} demanderait une evolution du pipeline vers des fenetres temporelles, des templates de messages et une gestion plus explicite des sequences.
+Les méthodes non supervisées, comme Isolation Forest, fonctionnent sans labels explicites. Elles cherchent plutôt à identifier des observations rares ou éloignées du comportement majoritaire. Dans ce cas, les sorties du modèle doivent être interprétées comme des anomalies candidates et non comme des attaques confirmées.
 
-\section{Travaux recents sur les representations de logs}
-Depuis 2021, l'analyse automatique de logs s'est rapprochee des modeles de langage et des representations semantiques. LogBERT applique une logique BERT auto-supervisee aux sequences de logs, avec prediction masquee et apprentissage du comportement normal \cite{guo2021logbert}. SSDLog propose une approche semi-supervisee de type enseignant--etudiant afin de limiter la dependance aux labels complets \cite{lu2023ssdlog}. LTAnomaly combine representations multi-echelles, informations semantiques, valeurs de composants, LSTM et Transformer sur HDFS et BGL \cite{han2023ltanomaly}. Ces travaux montrent que l'etat de l'art ne se limite plus aux premiers reseaux recurrents : il s'oriente vers des representations plus riches, capables de combiner sequence, contexte et semantique.
+Buczak et Guven présentent un panorama de nombreuses méthodes d'apprentissage automatique appliquées à la cybersécurité \cite{buczak2016survey}. Khraisat et al. insistent notamment sur l'importance des jeux de données utilisés, des protocoles d'évaluation et des différences entre les environnements expérimentaux et les systèmes réels \cite{khraisat2019survey}. Sommer et Paxson soulignent également les risques liés au passage direct de modèles entraînés dans des environnements expérimentaux vers des réseaux réels \cite{sommer2010outside}. Ces remarques conduisent à interpréter avec prudence les performances obtenues dans le cadre de ce mémoire.
 
-Cette evolution ne rend pas automatiquement obsolete une approche plus legere. Elle precise plutot son perimetre. \logminer{} ne revendique pas de battre ces modeles profonds sur les benchmarks de logs systemes. Sa contribution est d'integrer parsing, routage, detection, correlation et visualisation dans une chaine auditable. Les resultats HDFS/BGL fondes sur Drain3 et fenetres doivent donc etre lus comme une consolidation du protocole de representation, pas comme une substitution aux architectures Transformer specialisees.
+Random Forest occupe une place importante dans les expérimentations supervisées réalisées ici. Ce modèle combine plusieurs arbres de décision afin de limiter la variance et d'améliorer la robustesse de la prédiction \cite{breiman2001random}. Il convient particulièrement bien aux données tabulaires, comme celles issues de flux réseau ou de journaux déjà transformés en caractéristiques numériques.
 
-Les methodes recentes insistent aussi sur le parsing moderne. LogSL formule le parsing comme une tache auto-supervisee afin d'ameliorer la robustesse face aux formats heterogenes et au manque de labels \cite{cao2024logsl}. SemantiLog illustre la tendance a utiliser la similarite semantique pour rapprocher des messages de logs au-dela de leur forme textuelle exacte \cite{shavit2024semantilog}. Ces travaux soutiennent le choix d'ajouter Drain3 dans \logminer{} : l'extraction de templates n'est pas un detail de pretraitement, mais une etape qui influence directement la qualite de la detection.
+Son intérêt réside aussi dans sa relative simplicité d'utilisation. Il nécessite généralement moins de transformations que certains modèles linéaires et peut fournir de bonnes performances avec un effort de paramétrage raisonnable. Cela ne garantit cependant pas sa capacité à généraliser. Un modèle peut apprendre des particularités propres au jeu de données utilisé, voire exploiter indirectement certains biais introduits lors de la collecte ou de la préparation des données.
+
+Isolation Forest est utilisé pour une partie des traitements non supervisés. Son principe repose sur l'idée que les observations inhabituelles peuvent souvent être isolées avec moins de séparations que les observations appartenant aux comportements dominants \cite{liu2008isolation}. D'autres techniques peuvent également être utilisées pour ce type d'analyse, notamment Local Outlier Factor, One-Class SVM ou encore k-means comme méthode de regroupement de référence \cite{breunig2000lof,scholkopf2001estimating,macqueen1967kmeans}.
+
+Ces méthodes ne détectent cependant pas toutes le même type d'anomalie. Certaines analysent principalement la densité locale, d'autres construisent une frontière globale ou s'appuient sur la distance par rapport à un centre. Le choix d'une méthode ne peut donc pas reposer uniquement sur une justification théorique ; il doit également être confronté aux données et au protocole expérimental.
+
+\section{Apprentissage profond et analyse des journaux}
+
+L'apprentissage profond a progressivement pris une place importante dans l'analyse automatique des journaux, notamment grâce aux modèles capables d'exploiter les séquences d'événements.
+
+DeepLog utilise par exemple des réseaux récurrents afin d'apprendre les séquences considérées comme normales et de détecter les événements qui s'écartent de ces séquences \cite{du2017deeplog}. D'autres travaux ont ensuite utilisé des modèles de messages, des représentations vectorielles et des architectures de type Transformer pour améliorer la prise en compte du contexte.
+
+Ces approches sont particulièrement intéressantes lorsque l'ordre des événements contient une information importante. Elles nécessitent toutefois souvent davantage de données, une préparation plus précise des séquences ainsi que des ressources de calcul plus importantes.
+
+Dans ce mémoire, \logminer{} adopte volontairement une approche plus légère. L'accent est mis sur la normalisation des journaux, le routage selon la famille de données, l'utilisation de modèles spécialisés et la restitution des résultats dans un tableau de bord auditable. L'apprentissage profond est donc étudié comme élément de comparaison et comme perspective d'évolution, mais il ne constitue pas le cœur de l'implémentation actuelle.
+
+Les travaux sur l'analyse séquentielle des journaux montrent également que la représentation des événements joue un rôle important. LogAnomaly combine par exemple des informations séquentielles et quantitatives afin d'identifier des comportements atypiques dans des journaux non structurés \cite{meng2019loganomaly}.
+
+De telles méthodes deviennent particulièrement pertinentes lorsque la signification d'un événement dépend fortement de ceux qui le précèdent. Leur intégration complète dans \logminer{} demanderait toutefois une évolution du pipeline actuel, notamment par l'utilisation plus systématique de fenêtres temporelles, de modèles de messages et de traitements explicitement séquentiels.
+
+\section{Travaux récents sur les représentations des journaux}
+
+Les recherches récentes ont progressivement rapproché l'analyse des journaux des modèles de langage et des représentations sémantiques.
+
+LogBERT applique par exemple une approche inspirée de BERT à des séquences de journaux. Le modèle utilise un apprentissage auto-supervisé et la prédiction masquée afin de représenter le comportement normal et d'identifier les séquences inhabituelles \cite{guo2021logbert}.
+
+SSDLog s'inscrit dans une logique semi-supervisée fondée sur une architecture enseignant--étudiant, avec pour objectif de réduire la dépendance à des jeux de données entièrement labellisés \cite{lu2023ssdlog}. LTAnomaly combine quant à lui plusieurs niveaux de représentation avec des informations sémantiques, des valeurs de composants, un LSTM et un Transformer pour analyser notamment HDFS et BGL \cite{han2023ltanomaly}.
+
+Ces travaux montrent que les approches contemporaines ne se limitent plus aux premiers modèles récurrents. Elles cherchent à représenter conjointement la séquence, le contexte et la signification des messages.
+
+Cette évolution ne rend pas nécessairement les modèles plus légers inutiles. Elle permet plutôt de mieux définir leur domaine d'application. \logminer{} ne cherche pas à concurrencer directement les architectures profondes spécialisées sur les benchmarks de journaux système. Son apport se situe principalement dans l'intégration de plusieurs étapes dans une chaîne cohérente : parsing, routage, détection, corrélation, audit et visualisation.
+
+Dans cette perspective, les expériences menées sur HDFS et BGL avec Drain3 et des fenêtres temporelles doivent être considérées comme une amélioration du protocole de représentation des données, et non comme une alternative directe aux architectures Transformer spécialisées.
+
+Les travaux récents montrent également un intérêt croissant pour le parsing automatique. LogSL traite par exemple le parsing comme une tâche auto-supervisée dans le but d'améliorer la robustesse face à la diversité des formats et au manque de labels \cite{cao2024logsl}. SemantiLog s'appuie pour sa part sur la similarité sémantique afin de rapprocher des messages même lorsque leur forme textuelle diffère \cite{shavit2024semantilog}.
+
+Ces évolutions renforcent l'intérêt de l'utilisation de Drain3 dans \logminer{}. L'extraction de modèles de messages ne doit pas être considérée uniquement comme une opération de nettoyage préalable. La qualité du parsing influence directement les représentations qui seront ensuite utilisées par les modèles de détection.
 
 \section{Parsing et normalisation}
-Le parsing transforme des lignes brutes en champs exploitables. Des methodes comme Drain structurent les messages en templates pour faciliter l'analyse \cite{he2016drain}. Dans \logminer, le parsing est multi-format et vise d'abord a conserver les informations essentielles : timestamp, source, hote, utilisateur, categorie, message, severite et champs numeriques si disponibles.
 
-La normalisation est un enjeu central. Elle permet de traiter de maniere coherente des journaux issus de sources differentes. Sans schema commun, il serait difficile de router les evenements, de comparer les modeles ou d'afficher les resultats dans un tableau de bord unique.
+Le parsing consiste à transformer les lignes brutes des journaux en informations structurées pouvant être exploitées par les traitements suivants. Des méthodes comme Drain cherchent notamment à identifier les parties stables des messages et à les regrouper en modèles \cite{he2016drain}.
 
-Les travaux sur le parsing automatique rappellent qu'un journal n'est pas seulement une chaine de caracteres. Il contient souvent une partie stable, correspondant au template, et une partie variable, correspondant aux parametres. Les benchmarks de parsing montrent que la qualite de cette separation influence directement les analyses ulterieures \cite{zhu2019logparser}. Dans ce memoire, l'objectif n'est pas de remplacer les parseurs specialises par un extracteur universel, mais de combiner des parseurs controles avec une strategie de conservation des entrees inconnues.
+Dans \logminer{}, le parsing doit prendre en charge plusieurs formats. L'objectif est d'extraire, lorsque cela est possible, un ensemble d'informations communes telles que l'horodatage, la source, l'hôte, l'utilisateur, la catégorie, le message, la sévérité ainsi que certains champs numériques.
 
-\section{Datasets et evaluation en detection d'intrusion}
-Les datasets jouent un role central dans l'evaluation des systemes de detection. Ils permettent de comparer des methodes et de disposer de labels lorsque les journaux reels n'en fournissent pas. CICIDS2017 a ete propose pour produire un trafic plus representatif que certains jeux anciens, avec plusieurs scenarios d'attaque et des caracteristiques de flux reseau \cite{sharafaldin2018cicids}. UNSW-NB15 a egalement ete construit pour evaluer les systemes de detection d'intrusion sur un melange de trafic normal et d'attaques \cite{moustafa2015unsw}.
+La normalisation intervient ensuite pour rapprocher les différentes sources dans une représentation commune. Cette étape est essentielle, car sans schéma partagé, chaque format nécessiterait son propre mécanisme de traitement, de filtrage et d'affichage.
 
-Ces datasets sont utiles, mais ils ne doivent pas etre confondus avec la realite complete d'une infrastructure. Ils representent un contexte de collecte, des attaques choisies, des outils de generation et une convention de labellisation. Les scores obtenus sur ces donnees mesurent donc la performance dans un cadre experimental donne. Cette nuance est importante lorsque les F1-scores sont tres eleves : un resultat proche de 1 peut indiquer un modele performant, mais aussi un dataset dont les classes sont fortement separables.
+Les recherches consacrées au parsing montrent par ailleurs qu'un journal ne peut pas être réduit à une simple chaîne de caractères. Un message contient souvent une partie relativement stable, qui correspond au modèle général de l'événement, et plusieurs paramètres variables. Les travaux comparatifs sur les parseurs montrent que la manière dont cette séparation est réalisée influence les analyses effectuées ensuite \cite{zhu2019logparser}.
 
-Pour les journaux systemes comme HDFS ou BGL, l'evaluation pose un autre probleme. Les anomalies peuvent dependre d'une sequence, d'une fenetre temporelle ou d'un comportement collectif. Un modele ligne par ligne peut donc etre insuffisant. Les approches fondees sur templates et sequences sont souvent plus adaptees, mais elles augmentent la complexite du pipeline. Dans ce memoire, ces datasets servent a montrer a la fois la capacite du prototype a traiter des logs publics et les limites des features legeres lorsque la structure sequentielle devient dominante.
+L'objectif retenu dans ce mémoire n'est donc pas de construire un parseur universel capable de remplacer toutes les méthodes spécialisées. L'approche consiste plutôt à combiner plusieurs parseurs contrôlés tout en conservant les informations qui ne peuvent pas être immédiatement interprétées.
 
-\section{Systemes multi-agents pour la securite}
-Les architectures multi-agents ont ete explorees pour la detection d'intrusion distribuee. AAFID propose par exemple une architecture fondee sur des agents autonomes collectant et analysant des evenements locaux avant aggregation \cite{balasubramaniyan1998aafid}. Dans ce memoire, le terme agent designe des modules logiciels specialises et cooperants. Il ne s'agit pas d'agents cognitifs autonomes au sens fort, mais d'une decomposition fonctionnelle permettant modularite, audit et evolution.
+\section{Jeux de données et évaluation en détection d'intrusions}
 
-La litterature recente sur la cyberdefense autonome rappelle toutefois qu'un agent operationnel ne peut pas etre defini uniquement par son nom. Les revues contemporaines sur la defense cyber autonome soulignent des exigences d'explicabilite, de coordination, de gouvernance, de test dans des environnements realistes et de controle des actions \cite{vyas2026acnd}. Dans ce memoire, les agents de \logminer{} sont donc qualifies avec prudence : ils disposent d'une politique de choix, d'une memoire locale, d'un heartbeat, de handlers multiples et d'une capacite de reprise via Redis Streams, mais ils ne prennent pas de contre-mesures autonomes sur l'infrastructure.
+Les jeux de données occupent une place essentielle dans l'évaluation des systèmes de détection. Ils offrent un cadre commun permettant de comparer plusieurs approches et fournissent souvent des labels qui ne sont pas disponibles dans des journaux opérationnels.
 
-\section{Architectures distribuees, federes et robustesse temporelle}
-Les travaux recents en IDS federes montrent un mouvement vers l'apprentissage decentralise, motive par la confidentialite des donnees, la diversite des organisations et le cout du transfert de donnees brutes \cite{khraisat2024federatedids,makris2025fids}. Ces approches sont proches des besoins de securite operationnelle, mais elles soulevent des problemes de donnees non identiquement distribuees, de cout de communication, d'empoisonnement, d'agregation et de gouvernance des participants.
+CICIDS2017 a été conçu afin de proposer un trafic plus représentatif que plusieurs jeux de données historiques. Il regroupe différents scénarios d'attaque et décrit les communications à partir de caractéristiques de flux réseau \cite{sharafaldin2018cicids}. UNSW-NB15 a également été développé pour permettre l'évaluation des systèmes de détection sur un mélange de trafic normal et de plusieurs catégories d'attaques \cite{moustafa2015unsw}.
 
-Un autre axe contemporain concerne la derive conceptuelle. Les systemes de detection doivent rester utiles lorsque les comportements normaux, les attaques, les volumes et les features changent dans le temps \cite{shyaa2024conceptdrift}. Cette question est directement liee a l'apprentissage continu, aux seuils adaptatifs et a la validation humaine. Dans \logminer{}, la derive n'est pas encore traitee comme un module complet ; elle apparait comme une limite scientifique et comme une perspective de consolidation par suivi temporel, recalibrage et decisions analyste.
+Ces jeux de données restent cependant des représentations contrôlées d'une réalité beaucoup plus large. Chaque jeu dépend de son environnement de collecte, des attaques sélectionnées, des outils employés pour générer le trafic et de la méthode utilisée pour produire les labels.
 
-\section{Synthese comparative}
-La litterature montre que la detection d'anomalies dans les logs necessite un equilibre entre performance, interpretabilite et robustesse operationnelle. Les outils a regles sont matures et explicables. Les modeles supervises peuvent etre performants sur datasets labelises. Les modeles non supervises sont utiles pour signaler des comportements rares mais doivent etre interpretes avec contexte. Les approches profondes sont prometteuses mais plus couteuses et souvent plus complexes a deployer localement.
+Un score obtenu sur ces données doit donc être interprété dans le cadre du protocole expérimental correspondant. Cette précaution devient particulièrement importante lorsque les performances obtenues sont proches de 1. Un score très élevé peut effectivement correspondre à un modèle performant, mais il peut également traduire une forte séparabilité des classes ou certaines particularités du jeu de données.
 
-\logminer{} s'inscrit dans cet espace comme une architecture integratrice : elle combine parsing, normalisation, routage multi-modeles, detection legere, correlation et dashboard. Sa contribution principale est l'organisation exploitable de la chaine, plutot qu'un nouvel algorithme de detection isole.
+Les journaux système comme HDFS et BGL posent un problème supplémentaire. Dans ces données, l'anomalie peut dépendre d'une suite d'événements, d'une fenêtre temporelle ou d'une modification collective du comportement. Une analyse réalisée indépendamment ligne par ligne peut donc manquer une partie importante de l'information.
+
+Les approches reposant sur les modèles de messages et sur les séquences peuvent être plus adaptées dans ce cas, mais elles augmentent également la complexité du pipeline. Dans ce mémoire, HDFS et BGL permettent donc à la fois d'évaluer la capacité du prototype à manipuler des journaux publics et de mettre en évidence certaines limites des représentations légères lorsque la structure temporelle ou séquentielle devient importante.
+
+\section{Systèmes multi-agents pour la sécurité}
+
+Les architectures multi-agents ne sont pas nouvelles dans le domaine de la détection distribuée d'intrusions. AAFID propose par exemple une organisation reposant sur plusieurs agents autonomes chargés de collecter et d'analyser des événements locaux avant leur agrégation \cite{balasubramaniyan1998aafid}.
+
+Dans le cadre de \logminer{}, le terme \textit{agent} désigne principalement un composant logiciel spécialisé capable d'interagir avec les autres éléments de l'architecture. Ces agents ne sont pas présentés comme des systèmes cognitifs autonomes. Ils correspondent plutôt à une décomposition fonctionnelle destinée à améliorer la modularité, l'auditabilité et la possibilité de faire évoluer les différentes étapes du traitement indépendamment.
+
+Les travaux récents consacrés à la cyberdéfense autonome insistent d'ailleurs sur le fait qu'un agent opérationnel ne peut pas être qualifié d'autonome uniquement parce qu'il exécute automatiquement certaines tâches. Des exigences supplémentaires apparaissent, notamment en matière d'explicabilité, de coordination, de gouvernance, de validation dans des environnements réalistes et de contrôle des actions \cite{vyas2026acnd}.
+
+Les agents de \logminer{} doivent donc être replacés dans ce cadre. Ils disposent notamment d'une politique de sélection des tâches, d'une mémoire locale, d'un mécanisme de heartbeat, de plusieurs handlers spécialisés ainsi que d'une capacité de reprise de tâches via Redis Streams. En revanche, ils ne déclenchent pas automatiquement des contre-mesures sur l'infrastructure surveillée.
+
+\section{Architectures distribuées, fédérées et robustesse temporelle}
+
+Les recherches sur les systèmes de détection fédérés montrent un intérêt croissant pour l'apprentissage décentralisé. Cette orientation répond notamment à des contraintes de confidentialité, à la diversité des organisations participantes et au coût potentiel du transfert de grandes quantités de données brutes \cite{khraisat2024federatedids,makris2025fids}.
+
+Ces architectures ouvrent cependant de nouvelles difficultés. Les données détenues par les différents participants ne suivent pas nécessairement la même distribution. Les échanges entre nœuds ont un coût, et le mécanisme d'agrégation peut lui-même devenir une cible d'attaque. Les questions de gouvernance, d'empoisonnement des modèles et de contrôle des participants deviennent alors importantes.
+
+Un autre problème concerne l'évolution du comportement des systèmes au fil du temps. Les habitudes des utilisateurs changent, les applications évoluent, les volumes de données varient et de nouvelles formes d'attaque apparaissent. Cette dérive conceptuelle peut progressivement réduire la pertinence d'un modèle entraîné sur des données anciennes \cite{shyaa2024conceptdrift}.
+
+Cette question est directement liée aux mécanismes d'apprentissage continu, au recalibrage des seuils et à l'intégration des retours humains. Dans \logminer{}, la dérive conceptuelle n'est pas encore traitée comme un module autonome. Elle est plutôt considérée comme une limite du prototype actuel et comme une perspective nécessitant un suivi temporel plus structuré, des procédures de recalibrage et une exploitation contrôlée des décisions de l'analyste.
+
+\section{Synthèse comparative}
+
+L'état de l'art montre qu'aucune famille de méthodes ne répond à elle seule à l'ensemble des besoins liés à l'analyse des journaux.
+
+Les systèmes fondés sur des règles restent largement utilisés parce qu'ils sont rapides, compréhensibles et adaptés à des comportements déjà connus. Les modèles supervisés peuvent obtenir d'excellentes performances lorsque des données correctement labellisées sont disponibles. Les modèles non supervisés offrent une solution lorsque les labels sont absents, mais leurs sorties nécessitent généralement une interprétation supplémentaire. Les architectures profondes, quant à elles, permettent de mieux exploiter les séquences et le contexte, au prix d'une complexité et d'un coût de calcul plus importants.
+
+\logminer{} se place entre ces différentes approches. Le prototype cherche surtout à organiser une chaîne complète comprenant le parsing, la normalisation, le routage vers différents modèles, la détection, la corrélation et la visualisation. Sa contribution porte donc davantage sur l'intégration et l'exploitabilité de ces différentes briques que sur la proposition d'un nouvel algorithme isolé.
 
 \begin{table}[H]
 \centering
-\caption{Synthese comparative des familles d'approches}
+\caption{Synthèse comparative des familles d'approches}
 \label{tab:etat-art-comparaison}
 \scriptsize
+
 \begin{tabularx}{\textwidth}{p{2.8cm}p{3.5cm}p{3.5cm}X}
 \toprule
-\textbf{Approche} & \textbf{Forces} & \textbf{Limites} & \textbf{Positionnement de \logminer} \\
+\textbf{Approche} &
+\textbf{Forces} &
+\textbf{Limites} &
+\textbf{Positionnement de \logminer{}} \\
 \midrule
-Regles et signatures & Interpretables, rapides, bien adaptees aux attaques connues. & Dependent de regles maintenues et detectent mal l'inconnu. & Complement analytique, sans remplacer Wazuh ou OSSEC. \\
-Seuils statistiques & Simples a comprendre et faciles a deployer. & Sensibles au contexte et aux changements de charge. & Utilises comme repere, mais enrichis par correlation et routage. \\
-Machine learning supervise & Bons scores sur donnees labelisees et distributions stables. & Besoin de labels fiables et risque de surapprentissage aux datasets. & Utilise pour Linux/auth, CICIDS2017 et CIC-DDoS2019. \\
-Machine learning non supervise & Utile sans labels et capable de signaler des comportements rares. & Produit des anomalies candidates, pas des preuves d'intrusion. & Utilise avec interpretation contextuelle et validation analyste. \\
-Deep learning & Puissant pour sequences complexes et grands volumes. & Plus couteux, plus difficile a expliquer et a deployer localement. & Discute comme perspective, non comme coeur du prototype. \\
-Transformers et representations semantiques & Capturent mieux le contexte, la sequence et la similarite de messages. & Demandent un protocole de sequence, des ressources et une evaluation stricte. & Servent de positionnement contemporain pour HDFS/BGL et les perspectives. \\
-IDS federes et drift-aware & Repondent aux contraintes de confidentialite, decentralisation et evolution temporelle. & Complexite de gouvernance, donnees non-IID, securite de l'agregation et validation longue. & Positionnes comme prolongement multi-machine et apprentissage continu, pas comme resultat deja prouve. \\
+
+Règles et signatures &
+Méthodes rapides, interprétables et bien adaptées aux comportements ou attaques déjà connus. &
+Nécessitent une maintenance des règles et restent limitées face à certains comportements inconnus. &
+Utilisées comme référence opérationnelle ; \logminer{} est présenté comme un complément et non comme un remplacement de Wazuh ou OSSEC. \\
+
+Seuils statistiques &
+Approches simples à comprendre, peu coûteuses et relativement faciles à déployer. &
+Leur efficacité dépend fortement du contexte et peut se dégrader lorsque la charge ou le comportement normal évolue. &
+Utilisés comme points de comparaison et complétés par des mécanismes de routage et de corrélation. \\
+
+Apprentissage supervisé &
+Peut fournir de bonnes performances lorsque des données labellisées et représentatives sont disponibles. &
+Dépend de la qualité des labels et peut apprendre des particularités propres au jeu de données utilisé. &
+Employé notamment sur Linux/auth, CICIDS2017 et CIC-DDoS2019. \\
+
+Apprentissage non supervisé &
+Permet d'analyser des données non labellisées et de signaler des comportements rares. &
+Les résultats correspondent à des anomalies candidates et ne constituent pas directement des preuves d'intrusion. &
+Utilisé avec une interprétation contextuelle et une validation par l'analyste. \\
+
+Apprentissage profond &
+Particulièrement adapté aux séquences complexes et aux grandes quantités de données. &
+Demande généralement davantage de données, de calcul et d'efforts d'interprétation. &
+Étudié dans l'état de l'art et retenu comme perspective plutôt que comme composant central du prototype. \\
+
+Transformers et représentations sémantiques &
+Permettent de mieux intégrer le contexte, la séquence et la proximité sémantique entre les messages. &
+Demandent des protocoles séquentiels plus élaborés, davantage de ressources et une validation rigoureuse. &
+Utilisés pour situer les expérimentations HDFS/BGL et orienter les évolutions futures du prototype. \\
+
+IDS fédérés et méthodes sensibles à la dérive &
+Répondent aux besoins de décentralisation, de confidentialité et d'adaptation à l'évolution temporelle. &
+Soulèvent des difficultés liées aux données non-IID, à la gouvernance, à la sécurité de l'agrégation et au suivi à long terme. &
+Considérés comme des prolongements possibles vers un fonctionnement multi-machine et un apprentissage continu, sans être présentés comme des capacités déjà validées. \\
+
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\section{Limites identifiees dans l'etat de l'art}
-Trois limites structurent le besoin auquel repond ce memoire. La premiere est l'heterogeneite : les journaux ne partagent pas naturellement un format, une granularite ni une semantique commune. La deuxieme est la dependance aux labels : les datasets publics permettent de mesurer des scores, mais les environnements reels disposent rarement de labels exhaustifs et fiables. La troisieme est l'exploitabilite : un detecteur peut produire un score exact sans fournir a l'analyste le contexte necessaire pour agir.
+\section{Limites identifiées dans l'état de l'art}
 
-Ces limites motivent une approche integratrice. Le prototype met l'accent sur la chaine complete : acquisition, parsing, normalisation, routage, detection, correlation, visualisation et audit. Le choix est volontairement pragmatique : construire une base fonctionnelle, mesurable et extensible avant d'ajouter des mecanismes plus complexes.
+Plusieurs limites ressortent de cette revue et permettent de préciser le besoin auquel répond ce mémoire.
 
-\section{Typologie detaillee des journaux exploites}
-Les journaux systemes et reseaux ne constituent pas une famille homogene. Un premier groupe correspond aux journaux d'exploitation produits par les systemes d'exploitation. Les journaux Windows enregistrent les evenements de securite, d'application et de systeme. Les journaux Linux, notamment les journaux d'authentification, decrivent les connexions, echecs de mot de passe, changements d'utilisateur et activites liees aux services. Ces journaux sont utiles pour suivre les comportements d'administration et les tentatives d'acces.
+La première concerne l'hétérogénéité des données. Les journaux issus de systèmes différents ne partagent ni la même structure, ni la même granularité, ni nécessairement la même signification. Une analyse transversale devient donc difficile sans mécanisme de normalisation.
 
-Un deuxieme groupe concerne les journaux applicatifs. Les acces Apache, les erreurs applicatives ou les traces de services web decrivent les interactions entre utilisateurs, applications et ressources exposees. Ils peuvent signaler des comportements suspects comme une frequence inhabituelle de requetes, des erreurs repetitives, des codes HTTP atypiques ou des chemins sensibles. Leur interpretation demande souvent de relier les champs techniques a un contexte applicatif.
+La deuxième limite concerne la disponibilité des labels. Les jeux de données publics permettent d'entraîner et d'évaluer des modèles dans un environnement contrôlé. Dans une infrastructure réelle, les événements ne sont cependant pas systématiquement labellisés, et les labels disponibles ne sont pas toujours suffisamment complets ou fiables.
 
-Un troisieme groupe concerne les plateformes de securite. Wazuh, OSSEC ou d'autres outils de type HIDS/SIEM ne produisent pas seulement des journaux bruts ; ils enrichissent les evenements par des regles, niveaux de severite, identifiants d'agents et categories. Ces donnees sont interessantes car elles combinent deja une interpretation securite avec des metadonnees operationnelles. Elles permettent aussi de comparer une detection analytique avec des signaux produits par un outil etabli.
+La troisième limite concerne l'exploitabilité des résultats. Un modèle peut obtenir un score élevé sans nécessairement fournir les informations nécessaires à l'analyste pour comprendre pourquoi un événement a été signalé et décider de l'action à entreprendre.
 
-Un quatrieme groupe concerne les flux reseau et datasets tabulaires. CICIDS2017, UNSW-NB15 et CIC-DDoS2019 ne ressemblent pas a des logs textuels classiques. Ils representent des flux par des caracteristiques numeriques. Ces donnees sont bien adaptees aux modeles supervises, mais elles demandent une interpretation differente de celle des journaux textuels. Elles sont utiles pour mesurer des performances, mais elles ne remplacent pas l'analyse des journaux systemes reels.
+Ces trois limites motivent le choix d'une approche intégratrice. Le prototype ne se concentre donc pas uniquement sur le modèle de détection. Il couvre également l'acquisition des données, leur parsing, leur normalisation, leur routage, la détection, la corrélation, la visualisation et l'audit.
+
+Le choix est volontairement pragmatique : construire d'abord une chaîne fonctionnelle, mesurable et extensible, puis envisager l'ajout progressif de mécanismes plus complexes lorsque leur utilité peut être clairement évaluée.
+
+\section{Typologie détaillée des journaux exploités}
+
+Les journaux étudiés dans ce mémoire appartiennent à plusieurs familles qui ne doivent pas être considérées de la même manière.
+
+Une première catégorie regroupe les journaux directement produits par les systèmes d'exploitation. Sous Windows, les journaux enregistrent notamment des événements associés à la sécurité, aux applications et au fonctionnement général du système. Sous Linux, les journaux d'authentification permettent par exemple d'observer les connexions, les échecs de mot de passe, certains changements d'utilisateur et différentes activités liées aux services. Ces données sont particulièrement utiles pour suivre les opérations d'administration et identifier des tentatives d'accès inhabituelles.
+
+Une deuxième catégorie concerne les journaux applicatifs. Les journaux d'accès Apache, les fichiers d'erreurs et les traces de services web décrivent les interactions entre les utilisateurs, les applications et les ressources exposées. Ils peuvent révéler des comportements inhabituels comme une fréquence anormale de requêtes, des erreurs répétitives, des codes HTTP rares ou des tentatives d'accès à des chemins sensibles. Leur interprétation dépend toutefois fortement du contexte de l'application concernée.
+
+Une troisième famille regroupe les événements produits par les plateformes de sécurité. Wazuh, OSSEC et d'autres solutions HIDS/SIEM ne se contentent pas de stocker des messages bruts. Elles ajoutent généralement des règles, des niveaux de sévérité, des identifiants d'agents et différentes catégories de sécurité. Ces informations sont intéressantes parce qu'elles représentent déjà une première interprétation de l'événement et permettent de comparer certains résultats du prototype avec ceux d'un outil opérationnel existant.
+
+La quatrième catégorie concerne les flux réseau et les jeux de données tabulaires. CICIDS2017, UNSW-NB15 et CIC-DDoS2019 ne correspondent pas à des journaux textuels classiques. Les communications y sont représentées par un ensemble de caractéristiques numériques décrivant les flux.
+
+Ces données se prêtent bien à l'utilisation de modèles supervisés. Elles ne doivent cependant pas être interprétées de la même manière que les journaux système réels. Elles fournissent surtout un cadre contrôlé permettant de mesurer les performances de certains modèles.
 
 \section{Enjeux de normalisation}
-La normalisation est un probleme central car elle permet de rendre comparables des sources qui ne le sont pas naturellement. Sans normalisation, chaque format impose son propre traitement, son propre affichage et ses propres filtres. Avec un schema commun, le systeme peut manipuler les notions de temps, source, severite, categorie, utilisateur, message, score et decision de maniere transversale.
 
-Cependant, normaliser ne signifie pas appauvrir. Un mauvais schema commun peut effacer des details importants. Le choix adopte dans ce memoire consiste donc a definir un noyau commun tout en conservant les champs specifiques dans les metadonnees. Cette strategie preserve la richesse des sources originales et permet d'enrichir progressivement les parseurs sans rompre la compatibilite avec le dashboard.
+La normalisation constitue l'un des points importants de l'architecture proposée. Elle permet de rapprocher des sources qui, au départ, ne sont pas directement comparables.
 
-\section{Critere d'exploitabilite analyste}
-Un systeme de detection n'est pas seulement evalue par ses scores. Il doit etre exploitable par un humain. L'analyste doit comprendre la source de l'alerte, la raison du signalement, la severite estimee, le contexte temporel et les actions deja prises. L'exploitabilite devient donc un critere de conception au meme titre que la performance.
+Sans représentation commune, chaque type de journal nécessiterait ses propres règles de traitement, ses propres filtres et parfois une interface spécifique. L'utilisation d'un schéma partagé permet au contraire de manipuler de manière plus homogène des informations telles que le temps, la source, la sévérité, la catégorie, l'utilisateur, le message, le score ou encore la décision associée à un événement.
 
-Dans la litterature, cette dimension est parfois sous-estimee. Beaucoup de travaux presentent des resultats sous forme de precision, rappel ou F1-score, mais montrent peu comment ces resultats sont utilises dans une interface de decision. Le present memoire prend en compte ce manque en integrant le dashboard et l'audit comme composants de l'architecture, et non comme simples ajouts visuels.
+Cette harmonisation ne doit toutefois pas conduire à supprimer les particularités des données d'origine. Une normalisation trop agressive peut faire disparaître des informations importantes pour l'audit ou l'interprétation d'une anomalie.
 
+Le choix retenu dans ce travail consiste donc à utiliser un noyau de champs communs tout en conservant, dans les métadonnées, les éléments spécifiques à chaque format. Cette stratégie permet de maintenir une représentation homogène pour les traitements principaux tout en préservant les détails propres aux sources.
+
+Elle facilite également l'évolution progressive du système. De nouveaux parseurs ou de nouveaux champs peuvent être ajoutés sans remettre en cause l'organisation générale du tableau de bord ou du pipeline de traitement.
+
+\section{Critère d'exploitabilité pour l'analyste}
+
+L'évaluation d'un système de détection ne peut pas reposer uniquement sur ses performances statistiques. Un outil destiné à être utilisé dans un contexte de cybersécurité doit également fournir suffisamment d'informations pour qu'un analyste puisse comprendre ce qui a été détecté.
+
+L'utilisateur doit notamment pouvoir identifier la source de l'événement, comprendre la raison du signalement, connaître la sévérité estimée, replacer l'alerte dans son contexte temporel et consulter les décisions ou traitements déjà appliqués.
+
+L'exploitabilité devient donc un critère de conception au même titre que la précision d'un modèle.
+
+Cette dimension est parfois moins développée dans les travaux expérimentaux, qui se concentrent principalement sur des indicateurs comme la précision, le rappel ou le F1-score. Ces métriques restent indispensables pour mesurer les performances, mais elles ne montrent pas toujours comment le résultat sera utilisé dans une situation réelle.
+
+Dans ce mémoire, le tableau de bord et les mécanismes d'audit sont donc intégrés directement dans l'architecture. Ils ne sont pas considérés comme de simples éléments graphiques ajoutés après l'évaluation, mais comme des composants permettant de relier la détection algorithmique à l'interprétation et à la décision humaine.

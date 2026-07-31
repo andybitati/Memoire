@@ -1,146 +1,373 @@
-\chapter{Implementation}
+\chapter{Implémentation}
 
-\section{Organisation generale du prototype}
-Le prototype \logminer{} est organise autour d'un noyau Python et d'un dashboard web. Les modules principaux sont situes dans le paquet \texttt{src/logminer}. Les scripts experimentaux sont regroupes dans \texttt{scripts}. Les resultats consolides sont exportes vers \texttt{data/processed}, puis transformes en tableaux, figures et captures pour le memoire.
+\section{Organisation générale du prototype}
+
+Le prototype \logminer{} est construit autour d'un noyau développé en Python et d'un tableau de bord web destiné à la consultation des résultats. Les principaux composants applicatifs sont regroupés dans le paquet \texttt{src/logminer}, tandis que les scripts utilisés pour les expérimentations sont placés dans le dossier \texttt{scripts}. Les résultats consolidés sont enregistrés dans \texttt{data/processed} avant d'être utilisés pour produire les tableaux, les figures et les captures présentés dans ce mémoire.
+
+Cette organisation permet de séparer le code applicatif, les expérimentations et les artefacts utilisés pour la rédaction. Elle facilite également la vérification des résultats, puisque les valeurs présentées dans le mémoire peuvent être reliées aux scripts et aux fichiers qui les ont produites.
 
 \section{Outils et environnement}
-L'implementation repose principalement sur Python pour le pipeline, scikit-learn pour les modeles legers, FastAPI pour l'exposition des services locaux et une interface web pour le dashboard. Les donnees et resultats sont manipules sous forme de fichiers CSV, JSONL et artefacts graphiques. Cette pile technique a ete choisie pour sa simplicite de reproduction, sa disponibilite locale et sa compatibilite avec une experimentation rapide.
+
+L'implémentation repose principalement sur Python pour le développement du pipeline, scikit-learn pour les modèles d'apprentissage automatique légers et FastAPI pour l'exposition des services locaux. Une interface web complète cet ensemble afin de permettre la consultation et l'interaction avec les résultats.
+
+Les données intermédiaires et les résultats sont principalement conservés sous forme de fichiers CSV et JSONL. Les sorties destinées au mémoire sont ensuite transformées en tableaux, figures et captures.
+
+Cette pile technologique a été retenue pour trois raisons principales : sa facilité de mise en œuvre, sa compatibilité avec un environnement local et sa simplicité de reproduction. Elle permet également de modifier rapidement une partie du prototype sans nécessiter une infrastructure logicielle particulièrement lourde.
 
 \section{Pipeline de traitement}
-Le pipeline effectue les etapes suivantes :
+
+Le pipeline constitue le point central de l'implémentation. Il organise les différentes étapes nécessaires pour passer d'une source de journaux brute à un ensemble d'informations pouvant être analysées.
+
+Les principales étapes sont les suivantes :
+
 \begin{enumerate}
-  \item lecture ou decouverte des sources de journaux ;
-  \item parsing des formats connus ou conservation en format inconnu ;
-  \item normalisation dans un schema commun ;
-  \item routage vers une famille de logs ;
-  \item detection ou classification ;
-  \item correlation des anomalies candidates ;
-  \item export CSV et audit.
+
+\item lecture ou découverte des sources de journaux ;
+
+\item parsing des formats reconnus ou conservation des entrées lorsque leur format ne peut pas être identifié ;
+
+\item normalisation des informations extraites dans un schéma commun ;
+
+\item routage vers une famille de journaux ;
+
+\item détection ou classification à l'aide du modèle correspondant ;
+
+\item corrélation des anomalies candidates ;
+
+\item export des résultats au format CSV et journalisation des informations nécessaires à l'audit.
+
 \end{enumerate}
 
-Le module \texttt{pipeline.py} coordonne la chaine locale. Le module \texttt{api.py} expose les fonctions principales via FastAPI. Les modules \texttt{model\_router.py} et \texttt{model\_compare.py} gerent la selection des familles et la comparaison des modeles.
+Le module \texttt{pipeline.py} coordonne principalement cette chaîne de traitement dans sa version locale. Le fichier \texttt{api.py} expose les principales fonctions au moyen de FastAPI. Les modules \texttt{model\_router.py} et \texttt{model\_compare.py} sont utilisés respectivement pour le routage des données vers les familles appropriées et pour la comparaison de certains modèles.
 
-Dans l'implementation, le pipeline joue un role de glue code scientifique. Il ne s'agit pas seulement d'enchainer des fonctions ; il s'agit de garantir que les fichiers produits restent compatibles avec les experimentations et avec le memoire. Les sorties doivent donc conserver les colonnes attendues, les chemins doivent etre reproductibles et les erreurs doivent etre explicites. Cette contrainte explique le choix de formats simples comme CSV et JSONL pour plusieurs etapes. Ces formats sont moins sophistiques qu'une base specialisee, mais ils facilitent l'inspection, la comparaison et l'archivage des preuves.
+Dans cette implémentation, le pipeline ne joue pas uniquement le rôle d'un simple enchaînement de fonctions. Il constitue également une couche d'intégration entre le code, les expérimentations et les résultats utilisés dans le mémoire.
 
-Une attention particuliere est portee a la separation entre donnees brutes, donnees traitees et artefacts de redaction. Les donnees brutes volumineuses peuvent rester hors versionnement. Les donnees traitees utiles aux experiences sont exportees dans des dossiers dedies. Les figures et tableaux du memoire sont ensuite generes a partir de ces resultats. Cette organisation reduit le risque de citer une valeur qui ne serait plus liee a une preuve technique.
+Les fichiers produits doivent ainsi conserver une structure suffisamment stable pour être réutilisés par les scripts d'évaluation. Les colonnes attendues doivent rester cohérentes, les chemins doivent pouvoir être retrouvés et les erreurs doivent fournir des informations suffisamment explicites pour être diagnostiquées.
 
-\section{Parsing multi-format}
-Le prototype prend en charge plusieurs formats : CSV, JSONL, syslog, Apache, CloudTrail, HDFS, BGL, Windows XML/EVTX exporte, CEF/LEEF, tcpdump texte et pcap selon les dependances disponibles. Lorsqu'une entree est incomplete ou corrompue, elle est conservee plutot que supprimee. Cette strategie est importante pour l'audit, car une ligne non reconnue peut elle-meme etre un signal utile.
+Ce besoin explique notamment le recours fréquent aux formats CSV et JSONL. Ils sont moins spécialisés qu'une base de données dédiée, mais présentent l'avantage d'être faciles à lire, à comparer et à archiver. Ils conviennent donc bien à un prototype dont les résultats doivent pouvoir être examinés manuellement.
 
-Le parsing est organise autour d'un principe conservateur. Lorsqu'un parseur reconnait un format, il extrait les champs structurants. Lorsqu'il ne reconnait pas completement la ligne, il conserve le message d'origine et produit un statut exploitable. Cette decision est volontaire. Dans une chaine de securite, ignorer silencieusement une entree revient a creer un angle mort. A l'inverse, conserver trop d'informations non structurees peut augmenter le bruit. Le compromis retenu consiste a normaliser ce qui peut l'etre et a garder le reste sous forme de metadonnees.
+Une séparation est également maintenue entre les données brutes, les données transformées et les artefacts utilisés dans la rédaction.
+
+Les fichiers bruts volumineux peuvent être conservés en dehors du système de versionnement. Les résultats utiles aux expérimentations sont ensuite exportés vers les dossiers prévus à cet effet. Les tableaux et les figures utilisés dans le mémoire sont finalement produits à partir de ces sorties.
+
+Cette organisation permet de réduire le risque de présenter une valeur numérique qui ne serait plus directement reliée à l'expérience dont elle provient.
+
+\section{Parsing multiformat}
+
+Le prototype doit pouvoir traiter plusieurs familles de données qui n'utilisent pas les mêmes formats.
+
+Les formats pris en charge comprennent notamment CSV, JSONL, syslog, Apache, CloudTrail, HDFS, BGL, Windows XML ou EVTX exporté, CEF/LEEF, tcpdump sous forme textuelle ainsi que certains fichiers pcap lorsque les dépendances nécessaires sont disponibles.
+
+La stratégie retenue pour le parsing est volontairement conservatrice.
+
+Lorsqu'un format est correctement reconnu, le parseur extrait les informations qui peuvent être structurées. Lorsque la reconnaissance n'est que partielle, les champs identifiés sont conservés tandis que le message original reste disponible.
+
+Lorsqu'une ligne est incomplète, inconnue ou partiellement corrompue, elle n'est pas automatiquement supprimée.
+
+Cette décision est importante dans une chaîne d'analyse de sécurité. Ignorer silencieusement un événement peut créer un angle mort. À l'inverse, conserver toutes les données sans distinction pourrait produire une quantité importante de bruit.
+
+Le compromis adopté consiste donc à structurer ce qui peut être interprété tout en conservant les informations restantes sous forme de message brut ou de métadonnées.
 
 \begin{table}[H]
 \centering
 \caption{Exemples de formats pris en charge et traitement attendu}
 \label{tab:formats-implementation}
 \scriptsize
+
 \begin{tabularx}{\textwidth}{p{3cm}p{3cm}X}
 \toprule
 \textbf{Format} & \textbf{Type de source} & \textbf{Traitement dans le prototype} \\
 \midrule
-Windows XML/EVTX exporte & Systeme local & Extraction des evenements, canaux, messages et champs de securite disponibles. \\
-Syslog/Linux auth & Systeme Unix/Linux & Extraction timestamp, hote, processus, utilisateur et message d'authentification. \\
-Apache & Application web & Extraction methode, chemin, code HTTP, adresse cliente et volume lorsque disponible. \\
-Wazuh export & HIDS/SIEM & Conservation des champs enrichis : regle, agent, groupe, severite et message. \\
-HDFS/BGL & Logs systemes publics & Normalisation des messages et preparation a l'evaluation experimentale. \\
-CICIDS/CIC-DDoS2019 & Flux reseau tabulaire & Exploitation des features numeriques et des labels pour modeles supervises. \\
-Format inconnu & Cas limite & Conservation en fallback avec message original et statut explicite. \\
+
+Windows XML/EVTX exporté &
+Système local &
+Extraction des événements, des canaux, des messages et des champs de sécurité disponibles. \\
+
+Syslog/Linux auth &
+Système Unix/Linux &
+Extraction de l'horodatage, de l'hôte, du processus, de l'utilisateur et du message d'authentification lorsqu'ils sont présents. \\
+
+Apache &
+Application web &
+Extraction de la méthode, du chemin, du code HTTP, de l'adresse du client et du volume lorsque ces informations peuvent être récupérées. \\
+
+Wazuh export &
+HIDS/SIEM &
+Conservation des informations enrichies telles que la règle, l'agent, le groupe, le niveau de sévérité et le message. \\
+
+HDFS/BGL &
+Journaux systèmes publics &
+Normalisation des messages et préparation des données pour les expérimentations. \\
+
+CICIDS/CIC-DDoS2019 &
+Flux réseau tabulaire &
+Exploitation des caractéristiques numériques et des labels disponibles dans les expérimentations supervisées. \\
+
+Format inconnu &
+Cas limite &
+Conservation de l'entrée dans une route de fallback avec le message original et un statut explicite. \\
+
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\section{Registre des modeles}
-Les modeles sont stockes dans le dossier \texttt{models}. Le registre documente les familles, types de modeles et volumes associes. Le systeme distingue les modeles supervises, lorsqu'un label est disponible, et les modeles non supervises, lorsqu'il s'agit de signaler des comportements rares.
+\section{Registre des modèles}
 
-Le registre evite une ambiguite frequente dans les prototypes de detection : le meme mot ``modele'' peut designer un artefact entraine, une methode algorithmique ou une configuration experimentale. Dans \logminer{}, un modele exploitable doit etre associe a une famille de logs, un type d'apprentissage, un fichier d'artefact, des features attendues et des metriques connues lorsque celles-ci existent. Cette discipline facilite le routage et limite le risque d'appliquer un modele a une source incompatible.
+Les modèles entraînés sont enregistrés dans le dossier \texttt{models}. Un registre permet d'associer chaque modèle à la famille de journaux concernée, au type d'apprentissage utilisé et aux principales informations nécessaires à son exploitation.
 
-Les artefacts \texttt{joblib} permettent de reutiliser les modeles sans relancer l'entrainement a chaque execution. Cela accelere les tests et rend les demonstrations plus stables. En contrepartie, chaque artefact doit etre documente : dataset d'origine, date de generation, type de features, score de validation et limites connues. Sans cette documentation, un artefact performant peut devenir difficile a interpreter.
+Cette organisation répond à une difficulté fréquente dans les prototypes d'apprentissage automatique : le terme ``modèle'' peut désigner l'algorithme, le fichier entraîné ou encore une configuration expérimentale particulière.
 
-\section{Agents intelligents multi-taches}
-La version avancee ajoute un runtime d'agents intelligents dans \texttt{agents/intelligent\_runtime.py}. Chaque agent declare ses capacites, conserve une memoire locale des succes, erreurs, durees et decisions recentes, publie un heartbeat enrichi et choisit ses taches selon une politique explicite combinant priorite, confiance, cout, fiabilite observee, urgence, tentatives precedentes et diversite des taches recentes. Les taches supportees couvrent notamment la decouverte de sources, le parsing, le routage de modele, la detection et la correlation.
+Dans \logminer{}, un modèle utilisable doit être associé à une famille de journaux, à un type d'apprentissage, à un artefact sauvegardé, aux caractéristiques qu'il attend et, lorsque celles-ci sont disponibles, aux métriques obtenues lors de son évaluation.
 
-Deux modes d'execution sont disponibles. Le premier utilise une file locale en memoire pour les demonstrations reproductibles. Le second utilise Redis Streams avec des consumer groups, ce qui permet a plusieurs processus agents de consommer le meme flux de taches. Le worker \texttt{scripts/logminer\_intelligent\_agent\_worker.py} supporte aussi la reprise de taches non acquittees par \texttt{XAUTOCLAIM}, ce qui rend testable un scenario de panne avant acquittement.
+Cette information facilite le routage et réduit le risque d'utiliser un modèle sur des données incompatibles.
 
-Cette implementation donne un sens concret aux termes agents, multi-taches et distribue. Les agents ne sont pas de simples fonctions appelees sequentiellement : ils disposent d'un profil de capacites, d'un etat observable, d'une file de taches et d'une logique de reprise. La distribution reste locale dans les experiences du memoire, mais elle est executee par plusieurs processus independants relies par un bus Redis persistant.
+Les modèles sont notamment sauvegardés sous forme d'artefacts \texttt{joblib}. Cette solution évite de relancer l'entraînement lors de chaque démonstration ou campagne de test.
 
-\section{Memoire adaptative implementee}
-La memoire adaptative est implementee de facon progressive. Dans \texttt{agents/intelligent\_runtime.py}, la structure \texttt{AgentMemory} conserve les succes et erreurs par type de tache, les durees recentes, les derniers messages d'erreur, les taches terminees et les raisons des decisions prises. Cette memoire est sauvegardee dans des fichiers JSON afin de rester inspectable et reutilisable entre plusieurs cycles ou workers.
+Elle permet donc de stabiliser les expérimentations et d'en réduire le coût d'exécution.
 
-Le superviseur dispose egalement d'une memoire persistante dans \texttt{agents/supervisor\_agent.py}. La structure \texttt{SupervisorMemory} enregistre les chemins deja traites, les familles recentes, le nombre de cycles, les succes, les erreurs et la derniere decision. Lorsqu'il choisit une source candidate, le superviseur penalise par exemple les chemins deja traites recemment et documente les raisons de sa selection. Cette logique donne une premiere forme d'adaptation comportementale : le systeme ne repete pas aveuglement les memes choix.
+Cette facilité impose toutefois une discipline de documentation. Un artefact doit rester associé à son jeu de données d'origine, à sa date de génération, au type de caractéristiques utilisées, à ses résultats de validation et à ses principales limites.
 
-Enfin, les decisions analyste sont stockees par l'endpoint \texttt{/alerts/decision}. Une alerte peut etre acceptee, rejetee ou reclassee ; l'action, la cible, la categorie, la severite et la justification sont ajoutees au journal d'audit. Le superviseur relit ces decisions au debut d'un cycle, consolide les rejets et reclassements par categorie et severite, puis les utilise comme signal de contexte dans sa politique de selection. Ces informations servent donc a la fois a la tracabilite, a la consultation dans le dashboard et a une premiere memoire de feedback exploitable pour reduire les faux positifs repetitifs ou preparer un apprentissage actif hors ligne.
+Sans ces informations, un fichier de modèle peut rester techniquement utilisable tout en devenant difficile à interpréter scientifiquement.
+
+\section{Agents intelligents multitâches}
+
+La version avancée du prototype introduit un environnement d'exécution dédié aux agents dans le fichier \texttt{agents/intelligent\_runtime.py}.
+
+Chaque agent déclare les tâches qu'il peut exécuter et conserve un état interne décrivant notamment ses succès, ses erreurs, certaines durées d'exécution et ses décisions récentes.
+
+Un mécanisme de heartbeat permet également de suivre son état.
+
+Le choix des tâches repose sur une politique explicite combinant plusieurs éléments : priorité, confiance, coût, fiabilité observée, urgence, nombre de tentatives précédentes et diversité des tâches récemment exécutées.
+
+Les tâches concernées couvrent notamment la découverte des sources, le parsing, le routage des modèles, la détection et la corrélation.
+
+Deux modes d'exécution sont disponibles.
+
+Le premier utilise une file locale en mémoire. Ce mode est principalement adapté aux démonstrations et aux tests simples.
+
+Le second repose sur Redis Streams et ses consumer groups. Plusieurs processus peuvent alors consommer un même flux de tâches.
+
+Le worker \texttt{scripts/logminer\_intelligent\_agent\_worker.py} prend également en charge la récupération de certaines tâches non acquittées à l'aide de \texttt{XAUTOCLAIM}. Ce mécanisme permet notamment de tester le comportement du système lorsqu'un worker s'interrompt avant d'avoir confirmé le traitement d'une tâche.
+
+Cette implémentation donne une traduction concrète aux notions d'agents, de fonctionnement multitâche et de distribution utilisées dans le mémoire.
+
+Les agents ne sont plus uniquement des fonctions exécutées dans une séquence fixe. Ils disposent d'un ensemble de capacités déclarées, d'un état observable, d'une file de tâches et d'un mécanisme de reprise.
+
+La distribution évaluée reste toutefois locale. Les expériences utilisent plusieurs processus indépendants communiquant à travers un bus Redis persistant. Elles ne constituent donc pas une validation complète d'un déploiement industriel réparti entre plusieurs infrastructures distantes.
+
+\section{Mémoire adaptative implémentée}
+
+La mémoire adaptative est introduite progressivement à plusieurs niveaux du prototype.
+
+Dans \texttt{agents/intelligent\_runtime.py}, la structure \texttt{AgentMemory} conserve notamment les succès et les erreurs associés aux différents types de tâches, les durées récentes, les derniers messages d'erreur, les tâches exécutées et les raisons enregistrées lors de certaines décisions.
+
+Ces informations sont sauvegardées dans des fichiers JSON afin de rester lisibles et de pouvoir être réutilisées au cours de plusieurs cycles d'exécution.
+
+Le superviseur possède également sa propre mémoire persistante dans \texttt{agents/supervisor\_agent.py}.
+
+La structure \texttt{SupervisorMemory} conserve les chemins déjà traités, les familles rencontrées récemment, le nombre de cycles exécutés, les succès, les erreurs et la dernière décision prise.
+
+Lorsqu'il doit sélectionner une nouvelle source, le superviseur peut ainsi pénaliser les chemins traités récemment et conserver les raisons ayant conduit à sa sélection.
+
+Cette logique constitue une première forme d'adaptation comportementale. Le système ne répète pas systématiquement la même décision lorsqu'un historique pertinent est disponible.
+
+Un troisième niveau concerne les décisions prises par l'analyste.
+
+L'endpoint \texttt{/alerts/decision} permet d'enregistrer plusieurs actions sur une anomalie candidate. Celle-ci peut notamment être acceptée, rejetée ou reclassée.
+
+L'action, la cible, la catégorie, la sévérité et la justification éventuelle sont ajoutées au journal d'audit.
+
+Au début d'un nouveau cycle, le superviseur peut relire ces informations et consolider certains rejets ou reclassements selon leur catégorie et leur sévérité. Ces données sont ensuite utilisées comme éléments contextuels lors de certaines décisions.
+
+Les retours de l'analyste remplissent donc plusieurs fonctions. Ils améliorent la traçabilité, peuvent être consultés dans le tableau de bord et forment progressivement une mémoire pouvant servir à identifier les anomalies fréquemment rejetées.
+
+Cette mémoire pourrait également préparer un futur mécanisme d'apprentissage actif hors ligne. Dans l'implémentation actuelle, elle ne déclenche cependant pas automatiquement le réentraînement des modèles.
 
 \section{API FastAPI}
-La V2 du prototype expose une API locale permettant de lancer des analyses, consulter l'etat des services, interroger les modeles, lire les ressources et recuperer les evenements d'audit. L'API permet aussi au dashboard de fonctionner sans manipuler directement les fichiers internes.
 
-L'API joue un role de separation entre le moteur d'analyse et l'interface. Elle evite que le dashboard depende directement de l'organisation interne des fichiers. Cette separation facilite aussi l'ajout futur de workers, de files d'attente ou de connecteurs vers d'autres plateformes.
+La deuxième version du prototype expose plusieurs fonctions au moyen d'une API FastAPI locale.
 
-\section{Dashboard Ariel Logminer}
-Le dashboard web constitue l'interface de consultation et d'interaction. Il affiche les indicateurs globaux, les alertes prioritaires, les anomalies candidates, les incidents, les graphes de suivi periodique, les ressources agents, les services V2 et le journal d'audit.
+Cette API permet notamment de lancer certaines analyses, de consulter l'état des services, d'interroger le registre des modèles, de récupérer des informations sur les ressources et de consulter les événements enregistrés dans l'audit.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{dashboard_vue_ensemble.png}
-  \caption{Vue d'ensemble du dashboard Ariel \logminer.}
-  \label{fig:dashboard-overview}
-\end{figure}
+Le tableau de bord utilise également cette API pour récupérer les données nécessaires à son fonctionnement.
 
-La vue resultats permet d'inspecter les anomalies candidates, le detail incident et les decisions analyste.
+Cette architecture introduit une séparation entre l'interface graphique et le moteur d'analyse.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{dashboard_resultats_detail_incident.png}
-  \caption{Vue resultats, detail incident et decisions analyste.}
-  \label{fig:dashboard-results}
-\end{figure}
+Le tableau de bord n'a donc pas besoin de connaître directement l'organisation interne des fichiers ou des modules Python.
 
-La vue technique expose les services, les ressources et l'audit.
+Cette séparation rend l'architecture plus flexible. Elle facilite notamment l'ajout futur de nouveaux workers, de files d'attente, de services intermédiaires ou de connecteurs vers d'autres plateformes.
+
+\section{Tableau de bord Ariel Logminer}
+
+Le tableau de bord Ariel \logminer{} constitue l'interface principale de consultation et d'interaction avec le prototype.
+
+Il regroupe les indicateurs globaux, les alertes considérées comme prioritaires, les anomalies candidates, les incidents, plusieurs graphiques de suivi, les informations relatives aux ressources, l'état des services de la V2 ainsi que le journal d'audit.
 
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{dashboard_ressources_audit.png}
-  \caption{Vue technique, ressources, services et audit.}
-  \label{fig:dashboard-technical}
+\centering
+\includegraphics[width=\textwidth]{dashboard_vue_ensemble.png}
+\caption{Vue d'ensemble du tableau de bord Ariel \logminer{}.}
+\label{fig:dashboard-overview}
 \end{figure}
 
-\section{Audit et decisions analyste}
-Le dashboard permet de valider, rejeter ou reclasser une anomalie candidate. Ces decisions sont enregistrees dans l'audit. Cette fonctionnalite prepare une boucle d'amelioration future, dans laquelle les validations humaines pourraient servir a reduire les faux positifs.
+Une vue spécifique est consacrée aux résultats. Elle permet notamment d'examiner les anomalies candidates, d'accéder aux détails d'un incident et de consulter ou d'enregistrer les décisions de l'analyste.
 
-Cette boucle reste volontairement controlee. Une decision analyste ne modifie pas automatiquement un modele entraine ; elle enrichit une trace exploitable. Cette trace peut ensuite etre analysee pour identifier les motifs rejetes frequemment, les familles produisant trop de bruit ou les seuils a recalibrer. L'amelioration est donc progressive, auditable et compatible avec les exigences methodologiques du memoire.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{dashboard_resultats_detail_incident.png}
+\caption{Vue des résultats, détail d'un incident et décisions de l'analyste.}
+\label{fig:dashboard-results}
+\end{figure}
 
-\section{Problemes rencontres}
-Plusieurs difficultes ont marque l'implementation. La premiere concerne l'heterogeneite des formats : certaines sources sont tabulaires, d'autres textuelles, et d'autres deja enrichies par un outil externe. La deuxieme concerne l'interpretation des sorties non supervisees : sans labels, un score d'anomalie doit rester une indication et non une conclusion. La troisieme concerne la coherence du dashboard : il faut afficher assez de details pour l'analyse sans transformer l'interface en simple dump technique.
+Une autre vue est davantage orientée vers le fonctionnement technique du prototype. Elle présente notamment les ressources, les services et plusieurs informations issues de l'audit.
 
-\section{Reproductibilite}
-Les experimentations principales sont documentees par des CSV et scripts. Les scripts \texttt{benchmark\_realtime\_workflow.py}, \texttt{run\_resource\_campaign.py}, \texttt{run\_family\_routing\_ablation.py}, \texttt{generate\_memoire\_assets.py} et \texttt{export\_memoire\_figures.py} permettent de regenerer les mesures, figures et tableaux principaux.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{dashboard_ressources_audit.png}
+\caption{Vue technique : ressources, services et audit.}
+\label{fig:dashboard-technical}
+\end{figure}
+
+\section{Audit et décisions de l'analyste}
+
+Le tableau de bord ne se limite pas à la consultation des anomalies candidates.
+
+Il permet également à l'analyste d'enregistrer une décision. Une anomalie peut être validée, rejetée ou reclassée.
+
+Ces actions sont conservées dans le système d'audit afin de pouvoir être consultées ultérieurement.
+
+Cette fonctionnalité prépare une boucle d'amélioration dans laquelle les retours humains pourraient progressivement contribuer à réduire certains faux positifs.
+
+La boucle reste toutefois volontairement contrôlée.
+
+Une décision prise dans le tableau de bord ne modifie pas automatiquement les paramètres d'un modèle déjà entraîné.
+
+Elle enrichit plutôt une trace persistante qui peut ensuite être analysée afin d'identifier les catégories régulièrement rejetées, les familles produisant trop de bruit ou les seuils qui pourraient nécessiter un recalibrage.
+
+Cette séparation permet d'améliorer progressivement le système tout en maintenant une trace des décisions ayant conduit aux adaptations envisagées.
+
+\section{Problèmes rencontrés}
+
+Plusieurs difficultés ont été rencontrées au cours de l'implémentation.
+
+La première est directement liée à l'hétérogénéité des données. Certaines sources utilisent des structures tabulaires, d'autres sont essentiellement textuelles, tandis que d'autres encore contiennent déjà des informations enrichies par une plateforme de sécurité.
+
+La deuxième difficulté concerne les modèles non supervisés. Lorsqu'aucun label fiable n'est disponible, un score élevé d'anomalie ne peut pas être présenté comme la preuve d'une attaque. Il reste un indicateur qui nécessite une interprétation supplémentaire.
+
+La troisième difficulté concerne le tableau de bord.
+
+Une interface trop synthétique ne donne pas suffisamment de contexte à l'analyste. Une interface qui affiche directement toutes les données techniques peut, au contraire, devenir difficile à exploiter.
+
+Le développement a donc nécessité un compromis entre richesse des informations et lisibilité.
+
+\section{Reproductibilité}
+
+La reproductibilité constitue un élément important de l'implémentation.
+
+Les principales campagnes expérimentales sont accompagnées de scripts et de fichiers de résultats permettant de retrouver les mesures utilisées dans le mémoire.
+
+Parmi les scripts principaux figurent :
+
+\begin{itemize}
+
+\item \texttt{benchmark\_realtime\_workflow.py} ;
+
+\item \texttt{run\_resource\_campaign.py} ;
+
+\item \texttt{run\_family\_routing\_ablation.py} ;
+
+\item \texttt{generate\_memoire\_assets.py} ;
+
+\item \texttt{export\_memoire\_figures.py}.
+
+\end{itemize}
+
+Ils permettent notamment de reproduire plusieurs mesures, de consolider les résultats et de générer une partie des figures et tableaux utilisés dans le document.
 
 \section{Organisation des modules}
-Le paquet \texttt{src/logminer} regroupe les composants applicatifs. Le pipeline coordonne les traitements principaux. Le parseur reconnait les formats et produit des objets intermediaires. Le routeur associe les evenements a une famille de logs. Le detecteur applique les modeles disponibles. Le correlateur regroupe les anomalies candidates. L'audit conserve les traces d'execution et les decisions. Cette organisation correspond directement au modele modulaire presente au chapitre precedent.
 
-Le fichier \texttt{model\_compare.py}, ouvert dans l'environnement de developpement, participe a la comparaison des modeles et a la consolidation des resultats. Il s'inscrit dans une logique plus large de registre de modeles : chaque detecteur doit etre associe a une famille, a un type d'apprentissage et a des metriques connues. Cette discipline de nommage et de comparaison evite de melanger des resultats produits dans des contextes differents.
+Le paquet \texttt{src/logminer} contient les composants principaux du prototype.
 
-\section{Preparation des donnees}
-La preparation des donnees constitue une etape importante de l'implementation. Les journaux doivent etre nettoyes, convertis ou harmonises avant l'application des modeles. Pour les datasets tabulaires, il faut verifier les colonnes, isoler les labels, encoder les variables si necessaire et separer les ensembles d'entrainement et de test. Pour les journaux textuels, il faut extraire les timestamps, messages, sources et severites lorsque ces informations sont presentes.
+Le pipeline coordonne les traitements. Le parseur identifie les formats et construit les représentations intermédiaires. Le routeur détermine les familles de journaux. Le détecteur applique les modèles disponibles. Le corrélateur rapproche plusieurs anomalies candidates. Enfin, le système d'audit conserve les informations liées aux exécutions et aux décisions.
 
-La preparation n'a pas ete traitee comme une operation invisible. Les scripts conserves dans le dossier de reproductibilite documentent les transformations principales. Cette approche permet de justifier les tableaux et figures du memoire et de relier les valeurs citees aux fichiers qui les ont produites.
+Cette organisation traduit directement l'architecture modulaire décrite dans le chapitre précédent.
 
-\section{Implementation du dashboard}
-Le dashboard a ete concu comme une interface de travail. Il regroupe les indicateurs principaux, les resultats, les details d'incident, les ressources, les services et l'audit. Les captures inserees dans le memoire montrent plusieurs vues afin d'eviter de reduire l'interface a une seule image de presentation. La vue d'ensemble montre l'etat global du prototype. La vue resultats donne acces aux anomalies candidates et aux decisions analyste. La vue technique expose les ressources et les services.
+Le fichier \texttt{model\_compare.py} est utilisé dans l'environnement expérimental pour comparer certains modèles et consolider leurs résultats.
 
-L'interet de cette interface est de rendre les sorties du pipeline lisibles. Un fichier CSV peut suffire a un test automatique, mais il ne suffit pas a une analyse humaine. Le dashboard joue donc le role de couche d'interpretation. Il met en forme les evenements et permet de passer d'un signal technique a une decision.
+Il s'intègre dans une logique de registre où chaque détecteur reste associé à une famille de données, à un type d'apprentissage et à un ensemble de métriques.
 
-\section{Choix de legerete}
-Le prototype privilegie des technologies legeres et accessibles. Python et FastAPI permettent un developpement rapide. Les fichiers CSV et JSONL facilitent l'audit et l'export. Les modeles scikit-learn sont plus simples a entrainer et a deployer localement que des architectures profondes lourdes. Ce choix ne signifie pas que les methodes avancees sont inutiles ; il signifie que le memoire cherche d'abord a valider une chaine complete et reproductible.
+Cette discipline limite les risques de comparer ou d'utiliser des résultats provenant de contextes expérimentaux différents sans le signaler.
+
+\section{Préparation des données}
+
+La préparation des données constitue une étape indispensable avant l'application des modèles.
+
+Les traitements dépendent fortement du type de source.
+
+Pour les jeux de données tabulaires, il faut notamment vérifier les colonnes disponibles, identifier le label, traiter les variables lorsque cela est nécessaire et construire les ensembles d'entraînement et de test selon le protocole expérimental retenu.
+
+Pour les journaux textuels, le traitement porte plutôt sur l'extraction des horodatages, des messages, des sources, des utilisateurs ou encore des niveaux de sévérité lorsqu'ils sont disponibles.
+
+Ces transformations ne sont pas considérées comme une étape invisible de l'expérimentation.
+
+Les scripts conservés avec le projet documentent les principales opérations réalisées. Cette organisation permet de relier les tableaux, les figures et les valeurs numériques aux fichiers qui ont servi à les produire.
+
+\section{Implémentation du tableau de bord}
+
+Le tableau de bord a été conçu comme une véritable interface de travail et non comme une simple page de présentation.
+
+Il regroupe plusieurs catégories d'informations : indicateurs généraux, résultats, détails des incidents, ressources disponibles, services et événements d'audit.
+
+Plusieurs captures sont intégrées au mémoire afin de représenter ces différents usages.
+
+La vue d'ensemble présente l'état général du prototype.
+
+La vue consacrée aux résultats permet de parcourir les anomalies candidates et de consulter les décisions prises par l'analyste.
+
+La vue technique présente les ressources disponibles, l'état des services et plusieurs informations issues de l'audit.
+
+L'intérêt principal de cette interface est de rendre les sorties du pipeline plus faciles à interpréter.
+
+Un fichier CSV peut être suffisant pour vérifier automatiquement un résultat ou réaliser une analyse statistique. Il est cependant moins adapté lorsqu'un utilisateur doit examiner plusieurs événements, comprendre leur contexte et prendre une décision.
+
+Le tableau de bord constitue donc une couche d'interprétation entre la sortie technique du pipeline et l'analyse humaine.
+
+\section{Choix de légèreté}
+
+Le prototype privilégie volontairement des technologies relativement légères et accessibles.
+
+Python et FastAPI permettent de développer rapidement les composants nécessaires. Les fichiers CSV et JSONL simplifient l'export et l'audit. Les modèles issus de scikit-learn demandent généralement moins de ressources que des architectures profondes complexes et restent relativement simples à entraîner et à déployer dans un environnement local.
+
+Ce choix ne signifie pas que des méthodes plus avancées seraient inutiles.
+
+Il traduit plutôt le périmètre du mémoire : valider d'abord une chaîne complète, fonctionnelle et reproductible avant d'introduire des modèles dont la complexité augmenterait également les exigences de calcul, de données et d'évaluation.
 
 \section{Validation fonctionnelle}
-La validation fonctionnelle repose sur plusieurs verifications : execution des scripts experimentaux, production des CSV, generation des figures, consultation du dashboard, verification des captures et coherence des tableaux. Cette validation complete l'evaluation quantitative. Elle montre que le prototype ne produit pas seulement des scores, mais aussi des artefacts exploitables pour la redaction et pour l'analyse technique.
 
-\section{Gestion des dependances et portabilite}
-La portabilite du prototype depend de la maitrise des dependances. Les dependances principales sont separees des dependances plus lourdes ou optionnelles. Cette organisation permet d'installer rapidement le pipeline de base tout en conservant la possibilite d'ajouter des bibliotheques specialisees pour certains formats ou certaines experiences. Par exemple, la lecture directe de fichiers EVTX peut demander une dependance particuliere, alors que les exports XML Windows restent exploitables avec des outils plus standards.
+La validation fonctionnelle complète les métriques quantitatives présentées dans les chapitres consacrés aux résultats.
 
-La portabilite concerne aussi les systemes d'exploitation. Le projet est developpe et teste principalement dans un environnement Windows, mais plusieurs composants Python restent compatibles avec d'autres plateformes. Les scripts PowerShell sont utiles pour la collecte Windows locale, tandis que les scripts Python couvrent le traitement, l'evaluation et la generation d'artefacts. Cette separation permet d'adapter progressivement le prototype a un environnement Linux ou serveur.
+Elle repose sur plusieurs vérifications : exécution correcte des scripts expérimentaux, production des fichiers CSV attendus, génération des figures, fonctionnement du tableau de bord, cohérence des captures et correspondance entre les tableaux générés et les résultats expérimentaux.
 
-\section{Lien entre code et redaction}
-Un point important de l'implementation est le lien direct entre code, resultats et manuscrit. Les figures et tableaux ne sont pas seulement dessines manuellement ; ils proviennent de fichiers de donnees et de scripts de generation. Cette pratique reduit les incoherences entre le projet et la redaction. Elle permet aussi de regenerer les assets apres une nouvelle campagne.
+Ces vérifications montrent que le prototype ne se limite pas à produire des scores isolés.
 
-Le memoire doit donc etre lu comme un document accompagne d'un depot technique. Les fichiers \texttt{src/logminer} justifient l'architecture, les scripts justifient les experiences, les CSV justifient les valeurs et les captures justifient l'existence du dashboard. Cette relation est un element fort du travail, car elle transforme la redaction en synthese verifiable plutot qu'en description isolee.
+Il génère également des artefacts pouvant être consultés, archivés et utilisés pour l'analyse technique ou pour la rédaction scientifique.
+
+\section{Gestion des dépendances et portabilité}
+
+La portabilité du prototype dépend en partie de la manière dont ses dépendances sont organisées.
+
+Les bibliothèques indispensables au fonctionnement général sont distinguées des dépendances plus lourdes ou spécifiques à certains formats.
+
+Cette séparation permet d'installer rapidement le pipeline principal sans imposer immédiatement toutes les bibliothèques nécessaires aux traitements spécialisés.
+
+La lecture directe de fichiers EVTX peut, par exemple, nécessiter une bibliothèque spécifique, alors que des événements Windows exportés en XML peuvent être traités avec des outils plus standards.
+
+Cette distinction permet de maintenir un noyau relativement léger tout en conservant la possibilité d'ajouter certaines fonctionnalités lorsque l'environnement l'exige.
+
+La portabilité concerne également les systèmes d'exploitation.
+
+Le projet a été principalement développé et testé dans un environnement Windows. Une partie importante des composants repose cependant sur Python et reste donc portable vers d'autres plateformes.
+
+Les scripts PowerShell sont principalement utilisés pour certaines opérations de collecte propres à Windows, tandis que les scripts Python prennent en charge l'essentiel du traitement, de l'évaluation et de la génération des artefacts.
+
+Cette séparation facilite une adaptation progressive du prototype vers un environnement Linux ou vers un serveur dédié.

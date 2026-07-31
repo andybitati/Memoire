@@ -1,0 +1,44 @@
+{
+  "models": [
+    {
+      "family": "linux_auth",
+      "current_model": "models/random_forest_linux_auth.joblib",
+      "candidate_model": "models/candidates/random_forest_linux_auth_candidate.joblib",
+      "current_metrics": "data/processed/random_forest_linux_auth_metrics.csv",
+      "candidate_metrics": "data/processed/monthly/random_forest_linux_auth_candidate_metrics.csv",
+      "metric": "f1",
+      "min_delta": 0.001,
+      "train_command": [
+        "{python}",
+        "scripts/train_linux_auth_model.py",
+        "-i",
+        "data/raw/Datasets/linux_auth_logs_labeled.csv",
+        "-i",
+        "{feedback_csv}",
+        "--model-out",
+        "models/candidates/random_forest_linux_auth_candidate.joblib",
+        "--metrics-out",
+        "data/processed/monthly/random_forest_linux_auth_candidate_metrics.csv"
+      ]
+    },
+    {
+      "family": "network_cicids",
+      "current_model": "models/random_forest_network_cicids.joblib",
+      "candidate_model": "models/candidates/random_forest_network_cicids_candidate.joblib",
+      "current_metrics": "data/processed/random_forest_network_cicids_metrics.csv",
+      "candidate_metrics": "data/processed/monthly/random_forest_network_cicids_candidate_metrics.csv",
+      "metric": "f1",
+      "min_delta": 0.001,
+      "train_command": [
+        "{python}",
+        "scripts/train_cicids_network_model.py",
+        "--input-dir",
+        "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE",
+        "--model-out",
+        "models/candidates/random_forest_network_cicids_candidate.joblib",
+        "--metrics-out",
+        "data/processed/monthly/random_forest_network_cicids_candidate_metrics.csv"
+      ]
+    }
+  ]
+}
