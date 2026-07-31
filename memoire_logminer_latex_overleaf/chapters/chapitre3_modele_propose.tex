@@ -41,10 +41,45 @@ feedback/.style={-{Latex[length=2mm]}, dotted, thick}
 \node[box, left=of models] (corr) {Corrélation\\anomalies candidates\\incidents};
 \node[human, left=of corr] (dash) {Tableau de bord\\inspection\\décision};
 
-\node[store, below=1.0cm of parse] (storage) {Stockage\\CSV, JSONL\\artefacts};
-\node[store, below=1.0cm of corr] (audit) {Audit et mémoire\\erreurs, décisions\\historique};
-\node[bus, below=1.0cm of models] (redis) {Redis Streams\\consumer groups\\ACK et reprise};
-\node[box, right=of models] (mlops) {Mise à jour\\modèle candidat\\promotion contrôlée};
+\node[
+    store,
+    below=1.0cm of parse,
+    yshift=-2cm
+] (storage) {
+    Stockage\\
+    CSV, JSONL\\
+    artefacts
+};
+
+\node[
+    store,
+    below=1.0cm of corr,
+    yshift=-2cm
+] (audit) {
+    Audit et mémoire\\
+    erreurs, décisions\\
+    historique
+};
+
+\node[
+    bus,
+    below=1.0cm of models,
+    yshift=-2cm
+] (redis) {
+    Redis Streams\\
+    consumer groups\\
+    ACK et reprise
+};
+
+\node[
+    box,
+    right=of models,
+    yshift=-2cm
+] (mlops) {
+    Mise à jour\\
+    modèle candidat\\
+    promotion contrôlée
+};
 
 \draw[arrow] (sources) -- (collecte);
 \draw[arrow] (collecte) -- (parse);
