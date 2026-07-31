@@ -15,6 +15,89 @@ Dans ce contexte, le terme \textit{agent} doit être compris dans un sens archit
 
 La chaîne générale suit plusieurs étapes successives. Les journaux sont d'abord collectés, puis parsés et normalisés. Ils sont ensuite associés à une famille de données afin de sélectionner un modèle compatible. La sortie du modèle est interprétée comme une décision ou une anomalie candidate, puis transmise au mécanisme de corrélation. Les résultats sont finalement présentés dans le tableau de bord, tandis que les principales opérations sont conservées dans le système d'audit.
 
+La figure \ref{fig:architecture} donne volontairement une vue synthétique de cette organisation. Les flux détaillés sont ensuite décrits dans les sections suivantes : flux de données entre collecte, parsing, routage et détection ; flux de contrôle liés à l'audit, aux erreurs et aux reprises ; échanges par fichiers, API ou Redis Streams ; conservation des sorties et réutilisation des décisions dans la boucle de mise à jour des modèles. Cette distinction évite de faire porter au schéma général plus d'information qu'il ne peut en contenir lisiblement.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+node distance=0.85cm and 1.0cm,
+box/.style={draw, rounded corners=2pt, align=center, minimum width=2.55cm, minimum height=0.82cm, font=\scriptsize, fill=gray!8},
+store/.style={draw, cylinder, shape border rotate=90, aspect=0.25, align=center, minimum width=2.35cm, minimum height=0.82cm, font=\scriptsize, fill=blue!7},
+bus/.style={draw, rounded corners=2pt, align=center, minimum width=2.7cm, minimum height=0.82cm, font=\scriptsize, fill=orange!12},
+human/.style={draw, rounded corners=2pt, align=center, minimum width=2.7cm, minimum height=0.82cm, font=\scriptsize, fill=green!10},
+arrow/.style={-{Latex[length=2mm]}, thick},
+ctrl/.style={-{Latex[length=2mm]}, dashed, thick},
+feedback/.style={-{Latex[length=2mm]}, dotted, thick}
+]
+
+\node[box] (sources) {Sources\\Windows, Linux, Wazuh\\réseau, HDFS, BGL};
+\node[box, right=of sources] (collecte) {Collecte\\fichiers, exports\\campagnes};
+\node[box, right=of collecte] (parse) {Parsing\\formats connus\\fallback};
+\node[box, right=of parse] (norm) {Normalisation\\schéma commun\\métadonnées};
+\node[box, right=of norm] (router) {Routage\\famille\\modèle adapté};
+
+\node[box, below=1.0cm of router] (models) {Détection\\supervisée ou\\non supervisée};
+\node[box, left=of models] (corr) {Corrélation\\anomalies candidates\\incidents};
+\node[human, left=of corr] (dash) {Tableau de bord\\inspection\\décision};
+
+\node[store, below=1.0cm of parse] (storage) {Stockage\\CSV, JSONL\\artefacts};
+\node[store, below=1.0cm of corr] (audit) {Audit et mémoire\\erreurs, décisions\\historique};
+\node[bus, below=1.0cm of models] (redis) {Redis Streams\\consumer groups\\ACK et reprise};
+\node[box, right=of models] (mlops) {Mise à jour\\modèle candidat\\promotion contrôlée};
+
+\draw[arrow] (sources) -- (collecte);
+\draw[arrow] (collecte) -- (parse);
+\draw[arrow] (parse) -- (norm);
+\draw[arrow] (norm) -- (router);
+\draw[arrow] (router) -- (models);
+\draw[arrow] (models) -- (corr);
+\draw[arrow] (corr) -- (dash);
+
+\draw[ctrl] (collecte) -- (storage);
+\draw[ctrl] (parse) -- (storage);
+\draw[ctrl] (norm) -- (storage);
+\draw[ctrl] (models) -- (audit);
+\draw[ctrl] (corr) -- (audit);
+\draw[ctrl] (redis) -- (models);
+\draw[ctrl] (redis) -- (audit);
+\draw[feedback] (dash) -- (audit);
+\draw[feedback] (audit) -- (mlops);
+\draw[feedback] (mlops) -- (router);
+
+\node[draw, rounded corners=2pt, fit=(collecte)(parse)(norm)(router)(models)(corr)(dash), inner sep=0.25cm, label={[font=\scriptsize]above:Pipeline analytique local}] {};
+\node[draw, rounded corners=2pt, fit=(storage)(audit)(redis)(mlops), inner sep=0.25cm, label={[font=\scriptsize]below:Persistance, orchestration et amélioration contrôlée}] {};
+\end{tikzpicture}
+}
+\caption{Vue détaillée des flux de données, de contrôle et de retour dans \logminer{}.}
+\label{fig:architecture-detaillee}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Lecture synthétique des flux de l'architecture}
+\label{tab:flux-architecture}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3.0cm}p{4.0cm}X}
+\toprule
+\textbf{Type de flux} & \textbf{Exemples} & \textbf{Rôle dans le prototype} \tabularnewline
+\midrule
+Flux de données &
+Journaux bruts, événements parsés, événements normalisés, scores, anomalies candidates, incidents. &
+Assurer le passage progressif d'une source hétérogène vers une représentation exploitable par les modèles et par l'analyste. \tabularnewline
+Flux de contrôle &
+Tâches, états d'exécution, erreurs, heartbeats, acquittements Redis, reprises après panne simulée. &
+Rendre l'exécution observable, permettre la reprise locale de certaines tâches et conserver une trace des décisions techniques. \tabularnewline
+Flux de persistance &
+CSV, JSONL, rapports mensuels, métriques, traces d'audit, modèles sauvegardés. &
+Relier chaque résultat à un artefact vérifiable et soutenir la reproductibilité des campagnes. \tabularnewline
+Flux de retour &
+Validation, rejet, reclassement, justification analyste, historique des erreurs et des performances. &
+Alimenter la mémoire adaptative et préparer la mise à jour contrôlée des modèles sans modification immédiate du modèle en production. \tabularnewline
+\bottomrule
+\end{tabularx}
+\end{table}
+
 \section{Agents fonctionnels}
 
 Le tableau \ref{tab:agents} présente les principaux agents intégrés dans l'architecture ainsi que leurs responsabilités.
@@ -146,6 +229,31 @@ MQTT reste une possibilité d'extension pour les communications légères entre 
 
 Redis Streams et MQTT sont donc considérés comme des moyens d'explorer l'évolution de l'architecture, et non comme une démonstration de scalabilité à grande échelle.
 
+\begin{table}[H]
+\centering
+\caption{Évolution fonctionnelle de l'architecture}
+\label{tab:evolution-architecture}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.2cm}p{4.0cm}X}
+\toprule
+\textbf{Niveau} & \textbf{Composants dominants} & \textbf{Rôle dans le mémoire} \tabularnewline
+\midrule
+V1 &
+Scripts locaux, fichiers CSV/JSONL, modèles sauvegardés, génération des métriques. &
+Valider la chaîne minimale : préparation des données, parsing, routage, détection et conservation des résultats. \tabularnewline
+V2 &
+FastAPI, tableau de bord web, endpoints locaux, consultation des anomalies et de l'audit. &
+Séparer le moteur d'analyse de l'interface et rendre les résultats inspectables par un analyste. \tabularnewline
+V3 &
+Agents fonctionnels, Redis Streams, consumer groups, heartbeat, ACK et reprise locale. &
+Expérimenter une orchestration événementielle locale, mesurer son coût et vérifier la récupération de tâches non acquittées. \tabularnewline
+Extension &
+MQTT, bus sécurisé, plusieurs machines, supervision renforcée, tolérance aux pannes distribuée. &
+Définir les prolongements possibles sans les confondre avec les capacités déjà validées expérimentalement. \tabularnewline
+\bottomrule
+\end{tabularx}
+\end{table}
+
 La mémoire adaptative suit la même logique d'évolution contrôlée. Elle conserve certaines informations sur les cycles d'exécution, les erreurs, les durées observées, les familles traitées, les décisions récentes et les retours enregistrés par l'analyste.
 
 Ces informations peuvent ensuite être utilisées pour mieux contextualiser certaines décisions au cours des cycles suivants et pour alimenter une procédure de mise à jour contrôlée des modèles. Le principe retenu consiste à entraîner un modèle candidat, à le comparer au modèle courant sur des métriques définies, puis à ne promouvoir que la version qui obtient les meilleures performances dans le cadre retenu.
@@ -157,6 +265,40 @@ Ces informations peuvent ensuite être utilisées pour mieux contextualiser cert
 Il ne cherche pas à remplacer Wazuh, OSSEC ou fail2ban. Ces outils disposent déjà d'une maturité opérationnelle et d'un ensemble de fonctions qui dépassent le périmètre du prototype.
 
 L'objectif de \logminer{} est différent. Il consiste à fournir une couche analytique permettant d'expérimenter différents détecteurs, de router les journaux selon leur famille, de corréler certains résultats et de présenter les informations dans une interface destinée à l'analyse.
+
+Le prototype doit donc être compris comme un environnement d'exploration, d'audit et de recherche appliquée autour des journaux hétérogènes. Il est utile pour tester des modèles, comparer des protocoles, inspecter des sources peu normalisées, conserver les décisions d'un analyste et préparer des cycles de mise à jour contrôlée. Il ne fournit pas, dans son état actuel, les garanties attendues d'une plateforme SOC industrielle : supervision continue à grande échelle, gestion complète des incidents, haute disponibilité, réponse automatisée et intégration sécurisée avec l'ensemble du système d'information.
+
+\begin{table}[H]
+\centering
+\caption{Positionnement de \logminer{} par rapport aux outils opérationnels}
+\label{tab:positionnement-logminer}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3.2cm}X X}
+\toprule
+\textbf{Dimension} &
+\textbf{Outils SOC/HIDS/SIEM établis} &
+\textbf{\logminer{}}
+\tabularnewline
+\midrule
+Finalité principale &
+Surveillance opérationnelle, alerting, règles, intégration sécurité et gestion d'incidents. &
+Exploration analytique, comparaison de modèles, audit des traitements et étude de journaux hétérogènes.
+\tabularnewline
+Temps réel &
+Fonctionnement continu attendu dans un environnement de production. &
+Traitements locaux, périodiques ou par micro-lots ; le temps réel strict n'est pas revendiqué.
+\tabularnewline
+Données inconnues &
+Efficacité liée aux règles, décodeurs, connecteurs et configurations disponibles. &
+Route de fallback et conservation des éléments non reconnus afin de permettre l'inspection et l'amélioration ultérieure.
+\tabularnewline
+Apprentissage &
+Souvent centré sur des règles, signatures, corrélations et modules spécialisés. &
+Boucle MLOps contrôlée : mémoire des décisions, entraînement hors ligne d'un candidat, comparaison avec le modèle courant, promotion conditionnelle.
+\tabularnewline
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \section{Contraintes de conception}
 

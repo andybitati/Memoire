@@ -26,28 +26,28 @@ Les principales commandes utilisées pour reproduire les expériences sont repri
 \begin{itemize}
 
 \item Benchmark du workflow local :
-\path{python scripts/benchmark_realtime_workflow.py}
+\texttt{python} \path{scripts/benchmark_realtime_workflow.py}
 
 \item Campagne de mesure des ressources :
-\path{python scripts/run_resource_campaign.py}
+\texttt{python} \path{scripts/run_resource_campaign.py}
 
 \item Principales options utilisées pour cette campagne :
 \path{--cycles 30 --interval-sec 2 --max-mb 5}
 
 \item Étude d'ablation du routage par famille :
-\path{python scripts/run_family_routing_ablation.py}
+\texttt{python} \path{scripts/run_family_routing_ablation.py}
 
 \item Campagne d'endurance utilisant Redis Streams :
-\path{python scripts/run_intelligent_redis_endurance_campaign.py}
+\texttt{python} \path{scripts/run_intelligent_redis_endurance_campaign.py}
 
 \item Paramètres utilisés pour la campagne Redis de six heures :
 \path{--duration-sec 21600 --workers 3 --repetitions 4 --cycles 8}
 
 \item Génération des artefacts utilisés dans le mémoire :
-\path{python scripts/generate_memoire_assets.py}
+\texttt{python} \path{scripts/generate_memoire_assets.py}
 
 \item Export des figures :
-\path{python scripts/export_memoire_figures.py}
+\texttt{python} \path{scripts/export_memoire_figures.py}
 
 \end{itemize}
 

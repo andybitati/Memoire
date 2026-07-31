@@ -6,7 +6,7 @@ L'évaluation d'un prototype de détection d'anomalies ne peut pas se limiter au
 
 Ce chapitre présente donc les éléments qui soutiennent la reproductibilité de \logminer{}. Il décrit l'organisation technique du projet, les conditions nécessaires pour relancer les principales expériences, les scénarios de déploiement envisagés ainsi que les précautions à prendre avant une éventuelle utilisation opérationnelle.
 
-Il complète les chapitres précédents selon une perspective différente. Le chapitre consacré à l'implémentation décrit les composants du prototype, celui consacré aux résultats présente les mesures obtenues, tandis que la discussion en analyse la portée et les limites. Ici, l'accent est placé sur la vérification du travail : comment accéder au code, retrouver les preuves expérimentales, relancer les scripts et préparer les évolutions futures du système.
+Il complète les chapitres précédents selon une perspective différente. Le chapitre consacré à l'implémentation décrit les composants du prototype, celui consacré aux résultats présente les mesures obtenues, tandis que la discussion en analyse la portée et les limites. Ici, l'accent est placé sur la vérification du travail : comment accéder au code, retrouver les preuves expérimentales, relancer les scripts et préparer les évolutions futures du système. Les résultats ne sont donc pas réinterprétés dans ce chapitre ; ils sont rattachés à leurs conditions de reproduction.
 
 \section{Dépôt GitHub du projet}
 
@@ -38,7 +38,9 @@ Le projet LaTeX est également conservé dans un dossier dédié afin de pouvoir
 
 \section{Environnement logiciel}
 
-Le prototype repose principalement sur Python. Les versions précises des bibliothèques peuvent évoluer avec le dépôt, mais les principales dépendances concernent le traitement des données, l'apprentissage automatique, l'exposition de services web et la génération des artefacts expérimentaux.
+Le prototype repose principalement sur Python. Pour reproduire une campagne donnée, l'environnement doit être rattaché à un état figé du projet : identifiant de commit ou tag, version de Python, versions exactes des dépendances, système d'exploitation, contexte matériel, graines aléatoires, version ou empreinte des données et fichier de configuration utilisé.
+
+Les principales dépendances concernent le traitement des données, l'apprentissage automatique, l'exposition de services web et la génération des artefacts expérimentaux.
 
 Les mécanismes de détection utilisent principalement des modèles relativement légers, supervisés ou non supervisés, compatibles avec une exécution locale.
 
@@ -47,6 +49,25 @@ FastAPI est utilisé pour exposer plusieurs fonctions du prototype sous forme de
 Cette séparation facilite aussi une évolution vers une architecture comportant plusieurs workers, des files de messages ou des composants répartis sur différentes machines.
 
 Les formats CSV et JSONL sont largement utilisés pour conserver les sorties intermédiaires et les preuves expérimentales. Leur simplicité facilite leur inspection manuelle, leur comparaison et leur archivage. Ils permettent surtout de maintenir un lien clair entre une expérience exécutée, le résultat numérique obtenu et la figure ou le tableau finalement inséré dans le mémoire.
+
+\begin{table}[H]
+\centering
+\caption{Éléments à figer pour reproduire une campagne}
+\label{tab:fiche-reproductibilite-figee}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3.2cm}X}
+\toprule
+\textbf{Élément} & \textbf{Rôle dans la reproduction} \tabularnewline
+\midrule
+État du code & Commit Git ou tag permettant de retrouver exactement les scripts et modules utilisés. \tabularnewline
+Environnement Python & Version de Python, environnement virtuel et versions exactes des bibliothèques. \tabularnewline
+Matériel et système & Système d'exploitation, processeur, mémoire disponible et contexte d'exécution local ou virtualisé. \tabularnewline
+Données & Source, version, filtrage éventuel, taille, empreinte ou checksum lorsque cela est possible. \tabularnewline
+Configuration & Fichiers JSON, paramètres de scripts, seuils, graines aléatoires et chemins utilisés. \tabularnewline
+Sorties & Fichiers CSV, JSONL, journaux d'audit, figures et tableaux générés à partir de la campagne. \tabularnewline
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \section{Préparation d'un environnement local}
 
@@ -95,7 +116,7 @@ La mise à jour des modèles est organisée comme un processus reproductible. El
 Le script principal est :
 
 \begin{center}
-\path{python scripts/monthly_model_retraining.py}
+\texttt{python} \path{scripts/monthly_model_retraining.py}
 \end{center}
 
 Le plan de mise à jour est conservé dans :
@@ -108,10 +129,75 @@ Le fonctionnement suit quatre étapes. Premièrement, les décisions et événem
 
 Cette logique évite de remplacer directement un artefact par une version nouvelle simplement parce qu'elle vient d'être entraînée. La comparaison est explicite, les sorties sont conservées et l'ancien modèle peut être sauvegardé avant toute promotion.
 
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+node distance=0.9cm and 1.0cm,
+step/.style={draw, rounded corners=2pt, align=center, minimum width=2.8cm, minimum height=0.9cm, font=\scriptsize, fill=gray!8},
+data/.style={draw, cylinder, shape border rotate=90, aspect=0.25, align=center, minimum width=2.55cm, minimum height=0.85cm, font=\scriptsize, fill=blue!7},
+decision/.style={draw, diamond, aspect=2.2, align=center, inner sep=1pt, minimum width=2.7cm, minimum height=1.1cm, font=\scriptsize, fill=orange!12},
+ok/.style={draw, rounded corners=2pt, align=center, minimum width=2.6cm, minimum height=0.85cm, font=\scriptsize, fill=green!10},
+ko/.style={draw, rounded corners=2pt, align=center, minimum width=2.6cm, minimum height=0.85cm, font=\scriptsize, fill=red!8},
+arrow/.style={-{Latex[length=2mm]}, thick}
+]
+
+\node[data] (audit) {Audit et mémoire\\décisions, erreurs\\événements};
+\node[step, right=of audit] (export) {Export mensuel\\retours analyste\\labels faibles};
+\node[step, right=of export] (train) {Entraînement\\modèle candidat\\par famille};
+\node[data, right=of train] (validation) {Jeu de validation\\gelé\\métrique définie};
+
+\node[step, below=1.0cm of train] (eval) {Évaluation\\modèle courant\\et candidat};
+\node[decision, left=of eval] (compare) {Candidat\\meilleur ?};
+\node[ok, below left=0.9cm and 0.4cm of compare] (promote) {Promotion\\sauvegarde de\\l'ancien modèle};
+\node[ko, below right=0.9cm and 0.4cm of compare] (reject) {Rejet\\modèle courant\\conservé};
+\node[data, left=of promote] (registry) {Registre\\versions\\rapport mensuel};
+
+\draw[arrow] (audit) -- (export);
+\draw[arrow] (export) -- (train);
+\draw[arrow] (train) -- (validation);
+\draw[arrow] (validation) -- (eval);
+\draw[arrow] (train) -- (eval);
+\draw[arrow] (eval) -- (compare);
+\draw[arrow] (compare) -- node[above left,font=\scriptsize]{oui} (promote);
+\draw[arrow] (compare) -- node[above right,font=\scriptsize]{non} (reject);
+\draw[arrow] (promote) -- (registry);
+\draw[arrow] (reject) |- (registry);
+\draw[arrow] (registry) |- (audit);
+\end{tikzpicture}
+}
+\caption{Boucle de mise à jour contrôlée des modèles.}
+\label{fig:reentrainement-controle}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Décisions possibles lors de la comparaison des modèles}
+\label{tab:decisions-reentrainement}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3.1cm}p{4.1cm}X}
+\toprule
+\textbf{Situation} & \textbf{Décision} & \textbf{Conséquence} \tabularnewline
+\midrule
+Le candidat améliore la métrique retenue &
+Promotion contrôlée. &
+Le modèle courant est sauvegardé, le candidat devient la version active et la décision est consignée dans le rapport mensuel. \tabularnewline
+Le candidat est équivalent ou inférieur &
+Rejet du candidat. &
+Le modèle courant reste utilisé afin d'éviter une dégradation silencieuse du système. \tabularnewline
+Le jeu de validation ou les métriques sont insuffisants &
+Pas de promotion automatique. &
+La comparaison est tracée, mais la mise en production est suspendue jusqu'à clarification du protocole. \tabularnewline
+\bottomrule
+\end{tabularx}
+\end{table}
+
 La commande suivante permet de vérifier le plan sans lancer les entraînements :
 
 \begin{center}
-\path{python scripts/monthly_model_retraining.py --plan docs/model_training/monthly_retraining_plan.example.json --dry-run}
+\texttt{python} \path{scripts/monthly_model_retraining.py}\\
+\path{--plan docs/model_training/monthly_retraining_plan.example.json}\\
+\path{--dry-run}
 \end{center}
 
 Pour une exécution opérationnelle, le lanceur PowerShell suivant peut être utilisé :
@@ -158,7 +244,7 @@ La commande principale de reproduction est la suivante :
 
 \begin{itemize}
 
-\item \path{python scripts/run_intelligent_redis_endurance_campaign.py}
+\item \texttt{python} \path{scripts/run_intelligent_redis_endurance_campaign.py}
 
 \item options principales :
 \path{--duration-sec 21600 --workers 3 --repetitions 4 --cycles 8 --max-parallel-tasks 2 --iteration-timeout-sec 900}

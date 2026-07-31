@@ -20,6 +20,8 @@ Cette observation constitue l'un des résultats méthodologiques importants du m
 
 CIC-DDoS2019 présente un comportement différent. Le protocole strict conduit à un F1 de 0,997577. Cette performance reste élevée, mais elle doit être limitée au cadre dans lequel elle a été obtenue, c'est-à-dire aux familles d'attaques DDoS évaluées. Elle ne permet pas d'étendre automatiquement la même conclusion à d'autres attaques, à d'autres réseaux ou à d'autres jeux de données.
 
+Cette précision vaut en particulier pour UNSW-NB15. Les références à UNSW-NB15 relèvent d'expérimentations ou d'études d'ablation distinctes ; elles ne servent pas à justifier le F1 de 0,997577, qui est exclusivement rattaché à CIC-DDoS2019 dans le protocole retenu. Les deux jeux de données n'ont ni la même distribution, ni les mêmes scénarios, ni nécessairement les mêmes caractéristiques exploitables.
+
 \section{Apport architectural}
 
 La contribution principale de \logminer{} se situe au niveau de l'architecture et de l'intégration des différents traitements.
@@ -59,6 +61,8 @@ Le tableau de bord apporte une validation fonctionnelle importante au prototype.
 Il permet de consulter les anomalies candidates, les incidents corrélés, les ressources disponibles, l'état des services et les traces enregistrées dans l'audit. L'analyste peut également examiner le contexte d'un signal et enregistrer une décision.
 
 Cette fonctionnalité montre que les sorties du pipeline peuvent être présentées sous une forme plus exploitable qu'un simple fichier de métriques ou une liste de scores.
+
+Le terme \og exploitable \fg{} doit cependant être compris dans un sens limité : les résultats sont contextualisés, filtrables, traçables et consultables par un analyste. Le mémoire ne démontre pas encore, par une étude utilisateur formelle, que l'interface réduit effectivement le temps de décision, la charge cognitive ou le taux d'erreur humain.
 
 Elle ne constitue toutefois pas une évaluation complète de l'expérience utilisateur.
 
@@ -122,6 +126,16 @@ Ne pas présenter l'architecture multiagent comme une optimisation automatique d
 Scalabilité &
 Les principales campagnes restent exécutées dans un environnement local et sur des durées limitées. &
 Ne pas extrapoler ces résultats à un SOC industriel ou à une architecture distribuée multi-site.
+\tabularnewline
+
+Évaluation statistique &
+Les campagnes utilisent plusieurs graines pour certains protocoles, mais ne comportent pas encore de tests statistiques formels ni d'intervalles de confiance systématiques. &
+Présenter les résultats comme des mesures expérimentales contrôlées et non comme une preuve statistique générale indépendante des jeux de données.
+\tabularnewline
+
+Corrélation d'incidents &
+Le regroupement des anomalies améliore la lisibilité, mais il n'est pas évalué avec une métrique propre de qualité des incidents. &
+Distinguer la corrélation fonctionnelle observée de la validation complète d'un moteur de corrélation SOC.
 \tabularnewline
 
 Apprentissage continu &
