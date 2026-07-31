@@ -24,6 +24,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
+import joblib
+import numpy as np
+import pandas as pd
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src" / "logminer"
@@ -31,6 +36,9 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from agents.audit import DEFAULT_AUDIT_PATH, read_audit, write_audit
+from agents.detector import align_features
+from agents.model_router import _linux_auth_features, _positive_class_probability, _supervised_features
+from features.event_features import build_feature_frame
 
 
 POSITIVE_DECISIONS = {"accept", "reclassify"}
@@ -47,6 +55,10 @@ class ModelJob:
     train_command: list[str]
     metric: str = "f1"
     min_delta: float = 0.0
+    validation_csv: Path | None = None
+    validation_sep: str = "auto"
+    label_column: str = ""
+    expected_anomaly_rate: float | None = None
 
 
 def _resolve(path: str | Path) -> Path:
@@ -116,6 +128,146 @@ def _read_metric(path: Path, metric: str) -> float:
     return float(str(row[metric]).replace(",", "."))
 
 
+def _infer_sep(path: Path, sep: str = "auto") -> str:
+    if sep.lower() != "auto":
+        return sep
+    sample = path.read_text(encoding="utf-8-sig", errors="ignore")[:8192]
+    return max([";", ",", "\t"], key=sample.count)
+
+
+def _detect_label_column(frame: pd.DataFrame, label_column: str = "") -> str:
+    if label_column and label_column in frame.columns:
+        return label_column
+    candidates = [
+        "label",
+        "Label",
+        "is_anomaly",
+        "is_attack",
+        "anomaly",
+        "anomaly_label",
+        "class",
+        "Class",
+        "target",
+        "Target",
+    ]
+    for candidate in candidates:
+        if candidate in frame.columns:
+            return candidate
+    return ""
+
+
+def _labels_from_frame(frame: pd.DataFrame, label_column: str = "") -> pd.Series | None:
+    selected = _detect_label_column(frame, label_column)
+    if not selected:
+        return None
+
+    values = frame[selected].astype(str).str.strip().str.lower()
+    positive_values = {
+        "1",
+        "true",
+        "yes",
+        "y",
+        "anomaly",
+        "anomalous",
+        "abnormal",
+        "attack",
+        "attacked",
+        "malicious",
+        "failure",
+        "failed",
+        "fail",
+        "error",
+        "analyst_confirmed",
+    }
+    negative_values = {"0", "false", "no", "n", "normal", "benign", "none", "-"}
+
+    numeric = pd.to_numeric(values, errors="coerce")
+    labels = values.isin(positive_values).astype(int)
+    labels = labels.mask(values.isin(negative_values), 0)
+    labels = labels.mask(numeric.notna(), (numeric.fillna(0) != 0).astype(int))
+    return labels.astype(int)
+
+
+def _load_validation(path: Path, sep: str) -> pd.DataFrame:
+    if path.suffix.lower() == ".parquet":
+        return pd.read_parquet(path).astype(str)
+    return pd.read_csv(path, sep=_infer_sep(path, sep), dtype=str, keep_default_na=False)
+
+
+def _score_artifact(artifact_path: Path, events: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
+    artifact = joblib.load(artifact_path)
+    if not isinstance(artifact, dict) or "model" not in artifact:
+        raise ValueError(f"Artefact modele invalide: {artifact_path}")
+
+    model = artifact["model"]
+    model_type = str(artifact.get("model_type", type(model).__name__)).lower()
+    feature_columns = list(artifact.get("feature_columns", []))
+
+    if model_type == "random_forest_linux_auth":
+        features = _linux_auth_features(events, feature_columns)
+        labels = pd.Series(model.predict(features).astype(int), index=events.index)
+        scores = pd.Series(_positive_class_probability(model, features, labels.to_numpy()), index=events.index)
+        return labels, scores
+
+    if model_type.startswith("random_forest"):
+        features = _supervised_features(events, feature_columns)
+        labels = pd.Series(model.predict(features).astype(int), index=events.index)
+        scores = pd.Series(_positive_class_probability(model, features, labels.to_numpy()), index=events.index)
+        return labels, scores
+
+    features = build_feature_frame(events)
+    features = align_features(features, feature_columns)
+    raw_labels = model.predict(features)
+    scores = pd.Series(model.decision_function(features), index=events.index)
+    labels = pd.Series((raw_labels == -1).astype(int), index=events.index)
+    return labels, scores
+
+
+def evaluate_model(
+    artifact_path: Path,
+    validation_csv: Path,
+    *,
+    sep: str = "auto",
+    label_column: str = "",
+    expected_anomaly_rate: float | None = None,
+) -> dict[str, float | int | str]:
+    events = _load_validation(validation_csv, sep)
+    labels, scores = _score_artifact(artifact_path, events)
+    truth = _labels_from_frame(events, label_column)
+    anomaly_rate = float(labels.mean()) if len(labels) else 0.0
+
+    metrics: dict[str, float | int | str] = {
+        "artifact": str(artifact_path),
+        "validation_csv": str(validation_csv),
+        "events": int(len(events)),
+        "anomalies": int(labels.sum()),
+        "anomaly_rate": anomaly_rate,
+        "score_min": float(scores.min()) if len(scores) else 0.0,
+        "score_mean": float(scores.mean()) if len(scores) else 0.0,
+        "score_max": float(scores.max()) if len(scores) else 0.0,
+    }
+
+    if truth is not None and int(truth.nunique()) >= 2:
+        metrics.update(
+            {
+                "accuracy": float(accuracy_score(truth, labels)),
+                "precision": float(precision_score(truth, labels, zero_division=0)),
+                "recall": float(recall_score(truth, labels, zero_division=0)),
+                "f1": float(f1_score(truth, labels, zero_division=0)),
+            }
+        )
+    else:
+        target_rate = expected_anomaly_rate
+        if target_rate is None:
+            target_rate = min(max(anomaly_rate, 0.001), 0.5)
+        # Score proxy quand aucun label n'existe: il recompense un taux
+        # d'alertes proche du taux operationnel attendu, sans pretendre mesurer
+        # une verite-terrain. Les familles sans labels doivent garder un seuil
+        # de promotion prudent dans le plan.
+        metrics["stability_score"] = float(max(0.0, 1.0 - abs(anomaly_rate - target_rate) / max(target_rate, 1e-9)))
+    return metrics
+
+
 def _copy_with_backup(source: Path, target: Path, backup_dir: Path) -> Path:
     if not source.exists():
         raise FileNotFoundError(f"Modele candidat introuvable: {source}")
@@ -147,6 +299,12 @@ def load_plan(path: Path) -> list[ModelJob]:
                 train_command=[str(part) for part in item["train_command"]],
                 metric=str(item.get("metric", "f1")),
                 min_delta=float(item.get("min_delta", 0.0)),
+                validation_csv=_resolve(item["validation_csv"]) if item.get("validation_csv") else None,
+                validation_sep=str(item.get("validation_sep", "auto")),
+                label_column=str(item.get("label_column", "")),
+                expected_anomaly_rate=(
+                    float(item["expected_anomaly_rate"]) if item.get("expected_anomaly_rate") is not None else None
+                ),
             )
         )
     return result
@@ -187,8 +345,36 @@ def run_job(job: ModelJob, *, feedback_csv: Path, promote: bool, dry_run: bool, 
         if completed.returncode != 0:
             return {"family": job.family, "status": "train_failed", "returncode": completed.returncode}
 
-    current_score = _read_metric(job.current_metrics, job.metric)
-    candidate_score = _read_metric(job.candidate_metrics, job.metric)
+    current_metrics: dict[str, object]
+    candidate_metrics: dict[str, object]
+    if job.validation_csv is not None:
+        current_metrics = evaluate_model(
+            job.current_model,
+            job.validation_csv,
+            sep=job.validation_sep,
+            label_column=job.label_column,
+            expected_anomaly_rate=job.expected_anomaly_rate,
+        )
+        candidate_metrics = evaluate_model(
+            job.candidate_model,
+            job.validation_csv,
+            sep=job.validation_sep,
+            label_column=job.label_column,
+            expected_anomaly_rate=job.expected_anomaly_rate,
+        )
+        job.candidate_metrics.parent.mkdir(parents=True, exist_ok=True)
+        pd.DataFrame([{f"current_{k}": v for k, v in current_metrics.items()} | {f"candidate_{k}": v for k, v in candidate_metrics.items()}]).to_csv(
+            job.candidate_metrics,
+            index=False,
+            encoding="utf-8-sig",
+        )
+        current_score = float(current_metrics[job.metric])
+        candidate_score = float(candidate_metrics[job.metric])
+    else:
+        current_metrics = {"metrics_csv": str(job.current_metrics)}
+        candidate_metrics = {"metrics_csv": str(job.candidate_metrics)}
+        current_score = _read_metric(job.current_metrics, job.metric)
+        candidate_score = _read_metric(job.candidate_metrics, job.metric)
     delta = candidate_score - current_score
     better = delta >= job.min_delta
 
@@ -214,6 +400,8 @@ def run_job(job: ModelJob, *, feedback_csv: Path, promote: bool, dry_run: bool, 
         "promoted": promoted,
         "backup": backup,
         "command": " ".join(command),
+        "current_metrics": current_metrics,
+        "candidate_metrics": candidate_metrics,
     }
 
 

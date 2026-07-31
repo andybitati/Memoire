@@ -125,8 +125,8 @@ Ne pas extrapoler ces résultats à un SOC industriel ou à une architecture dis
 \tabularnewline
 
 Apprentissage continu &
-Les décisions de l'analyste sont conservées et peuvent influencer certains traitements, mais elles ne déclenchent pas encore une boucle complète de réentraînement. &
-Maintenir le réentraînement, la surveillance de la dérive conceptuelle et la promotion de nouveaux modèles parmi les perspectives de recherche.
+Les décisions de l'analyste sont conservées et peuvent influencer certains traitements. Elles alimentent aussi une procédure de mise à jour contrôlée des modèles. &
+Maintenir la comparaison systématique entre modèle courant et modèle candidat, surveiller la dérive conceptuelle et conserver une possibilité de retour arrière.
 \tabularnewline
 
 \bottomrule
@@ -163,16 +163,16 @@ En parallèle, une étude de l'utilisabilité du tableau de bord permettrait de 
 
 Les décisions enregistrées dans l'interface pourraient ensuite être transformées progressivement en signaux de retour plus structurés.
 
-Enfin, l'évolution vers l'apprentissage continu doit rester encadrée.
+Enfin, l'évolution vers l'apprentissage continu reste encadrée.
 
-La mémoire adaptative peut servir de point de départ, mais elle ne devrait pas conduire à un réentraînement automatique sans contrôle.
+La mémoire adaptative sert de point de départ, mais elle ne conduit pas à un réentraînement automatique sans contrôle.
 
-Une architecture plus mature pourrait surveiller certains indicateurs de dérive conceptuelle et signaler lorsqu'un réentraînement semble nécessaire.
+L'architecture surveille les événements, les décisions et les indicateurs disponibles afin de préparer la mise à jour des modèles lorsque les données accumulées le justifient.
 
-Un nouveau modèle serait alors entraîné hors ligne à partir de données validées.
+Un nouveau modèle est alors entraîné hors ligne à partir des données disponibles et des retours validés.
 
-Avant son remplacement, il devrait être comparé au modèle actuellement utilisé sur un jeu de validation gelé, à l'aide de métriques définies à l'avance.
+Avant son remplacement, il est comparé au modèle actuellement utilisé sur un jeu de validation gelé, à l'aide de métriques définies à l'avance.
 
-La nouvelle version ne serait déployée que si elle respecte les critères retenus. L'ancienne version devrait rester disponible afin de permettre un retour arrière en cas de dégradation.
+La nouvelle version n'est déployée que si elle respecte les critères retenus. L'ancienne version reste disponible afin de permettre un retour arrière en cas de dégradation.
 
-Une telle évolution conserverait la logique générale défendue dans ce mémoire : automatiser ce qui peut l'être, tout en maintenant les décisions importantes sous contrôle et en conservant une trace vérifiable des changements effectués.
+Cette organisation conserve la logique générale défendue dans ce mémoire : automatiser ce qui peut l'être, tout en maintenant les décisions importantes sous contrôle et en conservant une trace vérifiable des changements effectués.

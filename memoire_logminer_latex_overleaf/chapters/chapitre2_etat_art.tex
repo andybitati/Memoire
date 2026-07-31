@@ -120,7 +120,7 @@ Ces architectures ouvrent cependant de nouvelles difficultés. Les données dét
 
 Un autre problème concerne l'évolution du comportement des systèmes au fil du temps. Les habitudes des utilisateurs changent, les applications évoluent, les volumes de données varient et de nouvelles formes d'attaque apparaissent. Cette dérive conceptuelle peut progressivement réduire la pertinence d'un modèle entraîné sur des données anciennes \cite{shyaa2024conceptdrift}.
 
-Cette question est directement liée aux mécanismes d'apprentissage continu, au recalibrage des seuils et à l'intégration des retours humains. Dans \logminer{}, la dérive conceptuelle n'est pas encore traitée comme un module autonome. Elle est plutôt considérée comme une limite du prototype actuel et comme une perspective nécessitant un suivi temporel plus structuré, des procédures de recalibrage et une exploitation contrôlée des décisions de l'analyste.
+Cette question est directement liée aux mécanismes d'apprentissage continu, au recalibrage des seuils et à l'intégration des retours humains. Dans \logminer{}, la dérive conceptuelle est prise en compte à travers une logique de suivi, de capitalisation des événements et de mise à jour contrôlée des modèles. Les décisions de l'analyste et les sorties d'audit peuvent ainsi alimenter un réentraînement hors ligne, suivi d'une comparaison entre le modèle courant et le modèle candidat.
 
 \section{Synthèse comparative}
 

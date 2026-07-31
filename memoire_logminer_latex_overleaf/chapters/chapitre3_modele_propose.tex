@@ -53,7 +53,7 @@ Audit &
 Conserve les traces d'exécution, les décisions de l'analyste et les principaux échanges réalisés entre les agents. \tabularnewline
 
 Mémoire adaptative &
-Conserve des informations historiques afin de limiter certains traitements répétitifs, d'ajuster les priorités et de préparer l'intégration future de mécanismes d'apprentissage actif. \tabularnewline
+Conserve des informations historiques afin de limiter certains traitements répétitifs, d'ajuster les priorités et d'alimenter la mise à jour contrôlée des modèles. \tabularnewline
 
 \bottomrule
 \end{tabularx}
@@ -148,7 +148,7 @@ Redis Streams et MQTT sont donc considérés comme des moyens d'explorer l'évol
 
 La mémoire adaptative suit la même logique d'évolution contrôlée. Elle conserve certaines informations sur les cycles d'exécution, les erreurs, les durées observées, les familles traitées, les décisions récentes et les retours enregistrés par l'analyste.
 
-Ces informations peuvent ensuite être utilisées pour mieux contextualiser certaines décisions au cours des cycles suivants, sans pour autant déclencher automatiquement un réentraînement des modèles.
+Ces informations peuvent ensuite être utilisées pour mieux contextualiser certaines décisions au cours des cycles suivants et pour alimenter une procédure de mise à jour contrôlée des modèles. Le principe retenu consiste à entraîner un modèle candidat, à le comparer au modèle courant sur des métriques définies, puis à ne promouvoir que la version qui obtient les meilleures performances dans le cadre retenu.
 
 \section{Positionnement du modèle}
 
@@ -298,7 +298,7 @@ L'intervention humaine est explicitement prise en compte dans le modèle propos�
 
 Cette décision ne constitue pas seulement une modification visuelle dans l'interface. Elle peut également être conservée comme signal de retour.
 
-À terme, ces décisions pourraient être utilisées pour alimenter un mécanisme d'apprentissage actif, recalibrer certains seuils ou enrichir les règles de corrélation. Ces possibilités ne sont cependant pas présentées comme des fonctions déjà complètement automatisées dans la version actuelle.
+Ces décisions peuvent être utilisées pour alimenter le recalibrage de certains seuils, enrichir les règles de corrélation et préparer les jeux de retour utilisés lors de la mise à jour contrôlée des modèles.
 
 La décision de l'analyste suit une logique progressive.
 
@@ -364,9 +364,9 @@ D'une part, elle donne une traduction opérationnelle à l'objectif d'adaptation
 
 D'autre part, elle permet de maintenir une distinction claire entre adaptation du comportement du système et apprentissage du modèle lui-même.
 
-Une évolution ultérieure pourrait utiliser les informations accumulées pour recalibrer certains seuils, préparer un réentraînement hors ligne ou décider de promouvoir une nouvelle version d'un modèle après validation sur un jeu de données gelé.
+Les informations accumulées peuvent ainsi servir à recalibrer certains seuils, à préparer un réentraînement hors ligne et à décider de promouvoir une nouvelle version d'un modèle après validation sur un jeu de données gelé.
 
-De telles opérations devraient néanmoins rester contrôlées et faire l'objet d'une évaluation spécifique avant toute utilisation opérationnelle.
+Ces opérations restent contrôlées : le modèle courant est conservé, le modèle candidat est évalué avec les mêmes critères et la promotion n'a lieu que si la comparaison indique une amélioration.
 
 \section{Scénarios d'utilisation}
 

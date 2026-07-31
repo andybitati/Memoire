@@ -88,6 +88,46 @@ Les scores F1 des modèles supervisés, les anomalies candidates issues des expo
 
 Cette discipline reste particulièrement importante dans un travail d'ingénierie, où la possibilité de retrouver l'origine d'une valeur renforce la crédibilité de l'analyse.
 
+\section{Reproduction de la mise à jour contrôlée des modèles}
+
+La mise à jour des modèles est organisée comme un processus reproductible. Elle repose sur un plan déclaratif qui associe chaque famille de journaux au modèle courant, au modèle candidat, au jeu de validation et à la métrique utilisée pour la comparaison.
+
+Le script principal est :
+
+\begin{center}
+\path{python scripts/monthly_model_retraining.py}
+\end{center}
+
+Le plan de mise à jour est conservé dans :
+
+\begin{center}
+\path{docs/model_training/monthly_retraining_plan.example.json}
+\end{center}
+
+Le fonctionnement suit quatre étapes. Premièrement, les décisions et événements utiles sont extraits de l'audit. Deuxièmement, un modèle candidat est entraîné pour chaque famille configurée. Troisièmement, le modèle courant et le modèle candidat sont évalués sur le même jeu de validation. Quatrièmement, le candidat est promu seulement s'il obtient la meilleure performance selon la métrique retenue.
+
+Cette logique évite de remplacer directement un artefact par une version nouvelle simplement parce qu'elle vient d'être entraînée. La comparaison est explicite, les sorties sont conservées et l'ancien modèle peut être sauvegardé avant toute promotion.
+
+La commande suivante permet de vérifier le plan sans lancer les entraînements :
+
+\begin{center}
+\path{python scripts/monthly_model_retraining.py --plan docs/model_training/monthly_retraining_plan.example.json --dry-run}
+\end{center}
+
+Pour une exécution opérationnelle, le lanceur PowerShell suivant peut être utilisé :
+
+\begin{center}
+\path{scripts/run_monthly_retraining.ps1}
+\end{center}
+
+La planification mensuelle sous Windows est installée avec :
+
+\begin{center}
+\path{scripts/install_monthly_retraining_task.ps1}
+\end{center}
+
+Les rapports produits par cette procédure sont enregistrés dans \path{data/processed/monthly/}. Ils complètent l'audit et permettent de retrouver quelle version du modèle a été comparée, quelle métrique a été utilisée et quelle décision de promotion a été prise.
+
 La reproduction exacte n'est toutefois pas toujours garantie bit à bit.
 
 Les modèles comportant une composante aléatoire nécessitent l'utilisation de graines fixes pour réduire les variations. Les temps d'exécution dépendent de la charge de la machine et les versions des bibliothèques peuvent également modifier légèrement certains comportements.
@@ -242,11 +282,11 @@ Le modèle filtre et structure les informations. La décision finale reste humai
 
 Ce choix correspond à une réalité opérationnelle : une alerte ne peut pas toujours être comprise sans connaître le contexte métier, les opérations légitimes en cours ou l'historique du système surveillé.
 
-Les décisions prises par l'analyste peuvent également devenir une ressource pour les versions futures du système.
+Les décisions prises par l'analyste deviennent également une ressource pour les versions successives du système.
 
-Lorsqu'elles sont conservées de manière structurée, elles peuvent servir à identifier les motifs fréquemment rejetés, à recalibrer certains seuils ou à constituer progressivement un ensemble de données destiné à une boucle d'apprentissage actif.
+Lorsqu'elles sont conservées de manière structurée, elles servent à identifier les motifs fréquemment rejetés, à recalibrer certains seuils ou à constituer progressivement un ensemble de données destiné à la mise à jour contrôlée des modèles.
 
-Toute exploitation de ces retours devra cependant rester contrôlée afin d'éviter qu'une décision ponctuelle entraîne automatiquement une modification non validée du comportement des modèles.
+Toute exploitation de ces retours reste contrôlée afin d'éviter qu'une décision ponctuelle entraîne automatiquement une modification non validée du comportement des modèles.
 
 \section{Maintenance du prototype}
 
@@ -254,13 +294,13 @@ La maintenance de \logminer{} concerne plusieurs niveaux du système.
 
 Les parseurs doivent évoluer lorsque de nouveaux formats apparaissent. Les modèles doivent être réévalués lorsque les distributions de données changent. Le tableau de bord doit rester compatible avec les champs réellement disponibles et les scripts de reproduction doivent rester documentés.
 
-Chaque modification importante devrait idéalement être associée à une procédure de vérification.
+Chaque modification importante est associée autant que possible à une procédure de vérification.
 
-Lorsqu'un parseur est modifié, plusieurs formats connus ainsi que quelques cas limites devraient être testés.
+Lorsqu'un parseur est modifié, plusieurs formats connus ainsi que quelques cas limites sont testés.
 
-Lorsqu'un modèle est remplacé, les performances de l'ancienne et de la nouvelle version devraient être comparées dans les mêmes conditions.
+Lorsqu'un modèle est remplacé, les performances de l'ancienne et de la nouvelle version sont comparées dans les mêmes conditions.
 
-Lorsqu'une figure ou un tableau est régénéré, les valeurs utilisées dans le mémoire devraient également être contrôlées.
+Lorsqu'une figure ou un tableau est régénéré, les valeurs utilisées dans le mémoire sont également contrôlées.
 
 Cette discipline permet de réduire les régressions et de conserver une relation cohérente entre le code et la documentation scientifique.
 

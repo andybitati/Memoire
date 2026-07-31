@@ -108,6 +108,91 @@ Afin de conserver une trace vérifiable des expériences, les principaux résult
 Ces fichiers ne constituent pas uniquement des archives techniques. Ils servent également à relier les valeurs citées dans le mémoire aux sorties effectivement produites lors des campagnes expérimentales.
 
 
+\section{Définition des métriques utilisées}
+
+Les métriques employées dans le mémoire servent à évaluer des aspects différents du prototype. Elles doivent donc être interprétées avec leur contexte expérimental : présence ou absence de labels, déséquilibre des classes, nature supervisée ou non supervisée du modèle et objectif de l'expérience.
+
+\begin{longtable}{p{2.7cm}p{4.1cm}p{3.6cm}p{3.6cm}}
+
+\caption{Définition, points forts et limites des métriques utilisées}
+\label{tab:definition-metriques}\\
+
+\toprule
+\textbf{Métrique} &
+\textbf{Définition} &
+\textbf{Point fort} &
+\textbf{Limite} \\
+\midrule
+\endfirsthead
+
+\toprule
+\textbf{Métrique} &
+\textbf{Définition} &
+\textbf{Point fort} &
+\textbf{Limite} \\
+\midrule
+\endhead
+
+Accuracy &
+Proportion totale de prédictions correctes : vrais positifs et vrais négatifs rapportés à l'ensemble des observations. &
+Simple à comprendre et utile lorsque les classes sont équilibrées. &
+Peut être trompeuse en présence de classes très déséquilibrées, par exemple lorsque les anomalies sont rares. \\
+
+Précision &
+Part des alertes positives qui correspondent réellement à des anomalies : $TP/(TP+FP)$. &
+Mesure la fiabilité des alertes produites et aide à estimer le bruit opérationnel. &
+Ne montre pas combien d'anomalies réelles ont été manquées. \\
+
+Rappel &
+Part des anomalies réelles correctement détectées : $TP/(TP+FN)$. &
+Indique la capacité du modèle à retrouver les événements anormaux présents dans les données. &
+Peut être élevé au prix d'un grand nombre de faux positifs. \\
+
+F1-score &
+Moyenne harmonique entre précision et rappel : $2 \times \mathrm{precision} \times \mathrm{rappel}/(\mathrm{precision}+\mathrm{rappel})$. &
+Utile lorsque les classes sont déséquilibrées et que l'on veut équilibrer faux positifs et faux négatifs. &
+Ne tient pas compte directement des vrais négatifs et dépend fortement du protocole de séparation des données. \\
+
+Spécificité &
+Part des événements normaux correctement reconnus : $TN/(TN+FP)$. &
+Permet d'évaluer la capacité du modèle à ne pas signaler à tort des événements normaux. &
+Doit être interprétée avec le rappel, car un modèle très conservateur peut obtenir une bonne spécificité en détectant peu d'anomalies. \\
+
+MCC &
+Coefficient de corrélation de Matthews calculé à partir de $TP$, $TN$, $FP$ et $FN$. &
+Tient compte des quatre cases de la matrice de confusion et reste informatif en cas de déséquilibre. &
+Moins intuitif à expliquer qu'une précision ou un rappel. \\
+
+PR-AUC &
+Aire sous la courbe précision--rappel obtenue lorsque le seuil de décision varie. &
+Pertinente lorsque les anomalies sont rares et que la classe positive est prioritaire. &
+Nécessite des scores continus et ne donne pas directement un seuil opérationnel. \\
+
+Taux d'anomalies &
+Proportion d'événements signalés comme anomalies candidates par le détecteur. &
+Utile pour caractériser la sélectivité d'un modèle non supervisé. &
+Ne mesure pas à lui seul la justesse des alertes lorsqu'il n'existe pas de vérité terrain. \\
+
+Latence &
+Temps nécessaire pour exécuter une étape ou un workflow complet. &
+Permet de vérifier si le prototype reste exploitable dans un traitement par lots ou micro-lots. &
+Dépend fortement de la machine, du volume traité, des entrées et des services actifs. \\
+
+Consommation CPU/RAM &
+Utilisation des ressources processeur et mémoire pendant les campagnes. &
+Indique le coût d'exploitation local du prototype. &
+Ne suffit pas à prédire le comportement dans un environnement de production plus vaste. \\
+
+Stability score &
+Score opérationnel utilisé pour comparer deux modèles sur une source non labellisée en vérifiant que le taux d'alertes reste proche d'un taux attendu. &
+Permet une comparaison prudente lorsque les labels ne sont pas disponibles. &
+Ne remplace pas une métrique supervisée : il évalue la stabilité du comportement, pas la vérité des détections. \\
+
+\bottomrule
+
+\end{longtable}
+
+
 \section{Précautions d'interprétation}
 
 Les résultats doivent être interprétés en tenant compte de plusieurs précautions méthodologiques.
@@ -124,7 +209,7 @@ Les résultats doivent être interprétés en tenant compte de plusieurs précau
 
 \item La mémoire adaptative est utilisée comme un mécanisme de capitalisation des historiques d'exécution et des retours de l'analyste. Son contenu reste consultable et auditable.
 
-\item Un mécanisme complet d'auto-apprentissage comprenant la sélection des exemples, la validation des retours et le réentraînement contrôlé des modèles n'est pas encore intégré au prototype. Il constitue une extension possible du travail.
+\item Le système prévoit une mise à jour contrôlée des modèles en fonction des événements, des sorties d'audit et des retours enregistrés. Un nouveau modèle est traité comme un candidat et doit être comparé à la version courante avant toute promotion.
 
 \end{itemize}
 

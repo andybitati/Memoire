@@ -42,7 +42,7 @@ La problématique générale est décomposée en plusieurs questions de recherch
 
 \item Comment présenter les anomalies candidates dans un tableau de bord permettant à l'analyste de les comprendre, de les filtrer et de les valider ?
 
-\item Comment exploiter une mémoire persistante des décisions, des erreurs et des validations passées afin d'améliorer progressivement la priorisation et de préparer la réduction des faux positifs ?
+\item Comment exploiter une mémoire persistante des décisions, des erreurs et des validations passées afin d'améliorer progressivement la priorisation et d'organiser la mise à jour contrôlée des modèles ?
 
 \item Comment évaluer le prototype à partir de métriques quantitatives, de captures fonctionnelles, de mesures de latence et d'indicateurs de consommation des ressources ?
 
@@ -60,7 +60,7 @@ La troisième hypothèse concerne le routage par famille de journaux. L'idée es
 
 La quatrième hypothèse est que des modèles relativement légers peuvent conserver un intérêt dans une chaîne locale et reproductible lorsqu'ils sont évalués au moyen de métriques clairement définies, associés à un mécanisme de corrélation et complétés par une validation humaine.
 
-Enfin, la cinquième hypothèse suppose qu'une mémoire persistante des exécutions, des erreurs, des décisions et des validations de l'analyste peut soutenir une adaptation progressive du comportement des agents. Elle peut notamment contribuer à limiter certains traitements répétitifs, à mieux prioriser certaines sources et à préparer une réduction contrôlée des faux positifs. Cette mémoire n'est cependant pas assimilée à un mécanisme de réentraînement automatique et permanent des modèles. Elle correspond plutôt à une capitalisation vérifiable de l'historique opérationnel et des retours humains.
+Enfin, la cinquième hypothèse suppose qu'une mémoire persistante des exécutions, des erreurs, des décisions et des validations de l'analyste peut soutenir une adaptation progressive du comportement des agents. Elle peut notamment contribuer à limiter certains traitements répétitifs, à mieux prioriser certaines sources et à organiser une mise à jour contrôlée des modèles. Dans cette logique, un nouveau modèle est considéré comme un candidat : il est comparé au modèle courant sur des métriques définies avant d'être utilisé dans le système.
 
 \section{Objectif général}
 
@@ -110,7 +110,7 @@ Les principales contributions du mémoire sont les suivantes :
 
 \item un environnement d'exécution d'agents multitâches accompagné d'une preuve locale de répartition des tâches à l'aide de Redis Streams ;
 
-\item une mémoire adaptative auditable reliant l'historique des exécutions, les décisions de l'analyste et différents signaux de retour afin de préparer une amélioration progressive du comportement des agents ;
+\item une mémoire adaptative auditable reliant l'historique des exécutions, les décisions de l'analyste et différents signaux de retour afin d'améliorer progressivement le comportement des agents et d'alimenter la mise à jour contrôlée des modèles ;
 
 \item une évaluation réalisée sur plusieurs jeux de données, comprenant des journaux locaux, des exports Wazuh, des jeux de données publics et différents scénarios de robustesse ;
 
@@ -128,7 +128,7 @@ La dimension distribuée est étudiée à travers une architecture multiagent et
 
 De la même manière, les résultats issus des modèles supervisés décrivent les performances obtenues sur les jeux de données et les protocoles retenus. Ils ne démontrent pas que les mêmes performances seront automatiquement obtenues sur toutes les infrastructures réelles.
 
-La mémoire adaptative est considérée comme un mécanisme d'amélioration comportementale et d'aide à la décision. Elle ne constitue pas encore un système d'apprentissage continu modifiant automatiquement les poids des modèles utilisés en production.
+La mémoire adaptative est considérée comme un mécanisme d'amélioration comportementale et d'aide à la décision. Elle alimente également une procédure de mise à jour contrôlée dans laquelle les modèles candidats sont comparés aux modèles courants avant toute promotion.
 
 \section{Méthodologie générale}
 
@@ -144,7 +144,7 @@ La validation ne repose pas sur une seule métrique. Elle combine des mesures nu
 
 \section{Organisation du mémoire}
 
-Le mémoire reprend la structure définie dans le document directeur tout en ajoutant plusieurs parties consacrées à l'analyse scientifique, à la discussion et à la reproductibilité.
+Le mémoire reprend la structure définie dans le document directeur tout en ajoutant plusieurs parties consacrées à l'analyse scientifique, à la discussion, à la reproductibilité et à la conclusion générale.
 
 Le chapitre 2 présente l'état de l'art consacré aux journaux, aux méthodes de détection d'anomalies et aux architectures utilisées dans le domaine.
 
@@ -160,7 +160,7 @@ Le chapitre 7 discute les résultats obtenus, les limites du prototype et sa val
 
 Le chapitre 8 présente les éléments de reproductibilité, le dépôt GitHub, les scénarios de déploiement et certaines précautions d'exploitation.
 
-Le dernier chapitre reprend la conclusion générale ainsi que les principales perspectives.
+Le chapitre 9 reprend la conclusion générale ainsi que les principales perspectives.
 
 Enfin, les annexes regroupent les tableaux, les captures, les figures et plusieurs éléments permettant de vérifier ou de reproduire les résultats présentés dans le mémoire.
 
@@ -210,8 +210,8 @@ La deuxième contrainte concerne la reproductibilité. Les valeurs présentées 
 
 Une troisième difficulté concerne la disponibilité des données. Les journaux issus d'environnements réels ne sont pas toujours complets, accessibles, partageables ou labellisés. Le projet combine par conséquent plusieurs sources : journaux locaux, exports Wazuh, jeux de données publics et scénarios contrôlés. Cette combinaison ne remplace pas une évaluation menée directement dans un SOC industriel, mais elle permet de disposer d'une base expérimentale plus diversifiée.
 
-Enfin, une contrainte importante concerne la rigueur scientifique dans l'interprétation des résultats. Les sorties des modèles non supervisés sont donc présentées comme des anomalies candidates. Un déploiement distribué sécurisé sur plusieurs machines reste considéré comme une perspective, tout comme un véritable apprentissage continu intégrant un réentraînement contrôlé des modèles.
+Enfin, une contrainte importante concerne la rigueur scientifique dans l'interprétation des résultats. Les sorties des modèles non supervisés sont donc présentées comme des anomalies candidates. Un déploiement distribué sécurisé sur plusieurs machines reste considéré comme une perspective, tandis que la mise à jour des modèles est organisée comme un processus contrôlé reposant sur les événements, l'audit et la comparaison entre modèle courant et modèle candidat.
 
-La mémoire adaptative est, quant à elle, limitée à un mécanisme de capitalisation de l'historique des exécutions et des retours disponibles dans le prototype.
+La mémoire adaptative est, quant à elle, utilisée comme un mécanisme de capitalisation de l'historique des exécutions et des retours disponibles dans le prototype.
 
 Ces contraintes expliquent plusieurs décisions prises dans le reste du mémoire : le choix de modèles relativement légers, l'intégration du tableau de bord dans la contribution, la conservation de fichiers de preuve dans les annexes et la discussion explicite des limites expérimentales.

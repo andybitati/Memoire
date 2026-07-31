@@ -181,7 +181,32 @@ Au début d'un nouveau cycle, le superviseur peut relire ces informations et con
 
 Les retours de l'analyste remplissent donc plusieurs fonctions. Ils améliorent la traçabilité, peuvent être consultés dans le tableau de bord et forment progressivement une mémoire pouvant servir à identifier les anomalies fréquemment rejetées.
 
-Cette mémoire pourrait également préparer un futur mécanisme d'apprentissage actif hors ligne. Dans l'implémentation actuelle, elle ne déclenche cependant pas automatiquement le réentraînement des modèles.
+Cette mémoire alimente également la procédure de mise à jour contrôlée des modèles. Les décisions enregistrées sont exportées sous forme de jeu de feedback, puis associées aux données d'entraînement disponibles selon la famille de modèle concernée.
+
+La mise à jour est orchestrée par le script \texttt{scripts/monthly\_model\_retraining.py}. Celui-ci construit un modèle candidat, compare ce candidat au modèle courant sur un jeu de validation déclaré dans le plan de réentraînement, puis conserve le meilleur modèle selon la métrique retenue. Lorsqu'un candidat est promu, l'ancienne version est sauvegardée afin de permettre un retour arrière.
+
+Le plan de réentraînement est décrit dans \texttt{docs/model\_training/monthly\_retraining\_plan.example.json}. Il couvre les familles utilisées par le routeur : Windows, Wazuh, réseau CICIDS, réseau générique, Linux/auth, Linux, HDFS, BGL et fallback. Les familles labellisées sont comparées principalement avec le F1-score, tandis que les familles non labellisées utilisent un score de stabilité opérationnelle.
+
+\begin{table}[H]
+\centering
+\caption{Artefacts de mise à jour contrôlée des modèles}
+\label{tab:artefacts-maj-modeles}
+\small
+\begin{tabularx}{\textwidth}{p{4.5cm}X}
+\toprule
+\textbf{Artefact} & \textbf{Rôle} \tabularnewline
+\midrule
+\texttt{scripts/monthly\_model\_retraining.py} &
+Orchestre l'export de la mémoire, l'entraînement des candidats, la comparaison avec les modèles courants et la promotion contrôlée. \tabularnewline
+\texttt{docs/model\_training/monthly\_retraining\_plan.example.json} &
+Déclare les familles, les modèles courants, les modèles candidats, les jeux de validation et les métriques de comparaison. \tabularnewline
+\texttt{scripts/run\_monthly\_retraining.ps1} &
+Lance la procédure depuis Windows et écrit un journal d'exécution dans le dossier des résultats mensuels. \tabularnewline
+\texttt{scripts/install\_monthly\_retraining\_task.ps1} &
+Installe la tâche planifiée mensuelle qui exécute la mise à jour contrôlée. \tabularnewline
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \section{API FastAPI}
 
@@ -236,13 +261,13 @@ Il permet également à l'analyste d'enregistrer une décision. Une anomalie peu
 
 Ces actions sont conservées dans le système d'audit afin de pouvoir être consultées ultérieurement.
 
-Cette fonctionnalité prépare une boucle d'amélioration dans laquelle les retours humains pourraient progressivement contribuer à réduire certains faux positifs.
+Cette fonctionnalité participe à une boucle d'amélioration dans laquelle les retours humains contribuent progressivement à réduire certains faux positifs.
 
 La boucle reste toutefois volontairement contrôlée.
 
 Une décision prise dans le tableau de bord ne modifie pas automatiquement les paramètres d'un modèle déjà entraîné.
 
-Elle enrichit plutôt une trace persistante qui peut ensuite être analysée afin d'identifier les catégories régulièrement rejetées, les familles produisant trop de bruit ou les seuils qui pourraient nécessiter un recalibrage.
+Elle enrichit plutôt une trace persistante qui peut ensuite être analysée afin d'identifier les catégories régulièrement rejetées, les familles produisant trop de bruit ou les seuils nécessitant un recalibrage.
 
 Cette séparation permet d'améliorer progressivement le système tout en maintenant une trace des décisions ayant conduit aux adaptations envisagées.
 

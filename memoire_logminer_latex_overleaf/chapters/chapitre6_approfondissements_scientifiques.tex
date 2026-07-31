@@ -152,7 +152,7 @@ Les agents sont des composants logiciels multitâches orchestrés. La comparaiso
 
 Mémoire adaptative &
 Assimiler la conservation des retours à un apprentissage automatique continu. &
-La mémoire sert à conserver, contextualiser et réutiliser certaines informations. Elle ne modifie pas automatiquement les poids des modèles actuellement déployés.
+La mémoire sert à conserver, contextualiser et réutiliser certaines informations. Elle alimente une mise à jour contrôlée dans laquelle un modèle candidat est comparé au modèle courant avant toute promotion.
 \tabularnewline
 
 Scalabilité &
@@ -186,16 +186,16 @@ Le premier consiste à étendre les comparaisons contrôlées à d'autres famill
 
 Le deuxième axe concerne les partitions temporelles et multi-environnements. Une évaluation réalisée sur des périodes différentes, sur plusieurs machines ou sur plusieurs réseaux permettrait de mieux mesurer la capacité des modèles à résister aux changements de distribution.
 
-Le troisième axe concerne l'évolution de la mémoire adaptative actuelle vers une véritable boucle de réentraînement contrôlé.
+Le troisième axe concerne l'exploitation de la mémoire adaptative dans une boucle de réentraînement contrôlé.
 
-Les décisions enregistrées par l'analyste pourraient progressivement servir à constituer un ensemble de données validées. Ces données pourraient être utilisées hors ligne pour recalibrer certains seuils ou réentraîner un modèle.
+Les décisions enregistrées par l'analyste servent progressivement à constituer un ensemble de données validées. Ces données peuvent être utilisées hors ligne pour recalibrer certains seuils ou réentraîner un modèle.
 
-Une telle boucle devrait cependant rester strictement contrôlée.
+Une telle boucle reste strictement contrôlée.
 
 Le système devrait notamment surveiller les signes de dérive conceptuelle, séparer les données utilisées pour l'apprentissage de celles servant à la validation et comparer toute nouvelle version du modèle avec la version actuellement déployée sur un jeu de validation gelé.
 
-Le remplacement d'un modèle ne devrait avoir lieu que si le nouveau modèle respecte des critères définis à l'avance.
+Le remplacement d'un modèle n'a lieu que si le nouveau modèle respecte des critères définis à l'avance.
 
-L'ancienne version devrait également être conservée afin de permettre un retour arrière si les performances se dégradent après le déploiement.
+L'ancienne version est également conservée afin de permettre un retour arrière si les performances se dégradent après le déploiement.
 
-Cette évolution permettrait de passer progressivement d'une mémoire essentiellement descriptive et comportementale vers un mécanisme d'apprentissage continu auditable, tout en évitant qu'une succession de décisions locales entraîne une dérive non contrôlée du système.
+Cette organisation fait passer la mémoire d'un rôle uniquement descriptif vers un mécanisme d'apprentissage continu auditable, tout en évitant qu'une succession de décisions locales entraîne une dérive non contrôlée du système.
