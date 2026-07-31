@@ -12,6 +12,87 @@ Le modele propose repose sur une architecture modulaire composee de modules logi
 
 La chaine generale est la suivante : collecte des journaux, parsing, normalisation, routage vers une famille, detection par modele compatible, correlation des anomalies candidates, affichage dans le dashboard et journalisation d'audit.
 
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+node distance=0.85cm and 1.0cm,
+box/.style={draw, rounded corners=2pt, align=center, minimum width=2.55cm, minimum height=0.82cm, font=\scriptsize, fill=gray!8},
+store/.style={draw, cylinder, shape border rotate=90, aspect=0.25, align=center, minimum width=2.35cm, minimum height=0.82cm, font=\scriptsize, fill=blue!7},
+bus/.style={draw, rounded corners=2pt, align=center, minimum width=2.7cm, minimum height=0.82cm, font=\scriptsize, fill=orange!12},
+human/.style={draw, rounded corners=2pt, align=center, minimum width=2.7cm, minimum height=0.82cm, font=\scriptsize, fill=green!10},
+arrow/.style={-{Latex[length=2mm]}, thick},
+ctrl/.style={-{Latex[length=2mm]}, dashed, thick},
+feedback/.style={-{Latex[length=2mm]}, dotted, thick}
+]
+
+\node[box] (sources) {Sources\\Windows, Linux, Wazuh\\reseau, HDFS, BGL};
+\node[box, right=of sources] (collecte) {Collecte\\fichiers, exports\\campagnes};
+\node[box, right=of collecte] (parse) {Parsing\\formats connus\\fallback};
+\node[box, right=of parse] (norm) {Normalisation\\schema commun\\metadonnees};
+\node[box, right=of norm] (router) {Routage\\famille\\modele adapte};
+
+\node[box, below=1.0cm of router] (models) {Detection\\supervisee ou\\non supervisee};
+\node[box, left=of models] (corr) {Correlation\\anomalies candidates\\incidents};
+\node[human, left=of corr] (dash) {Dashboard\\inspection\\decision};
+
+\node[store, below=1.0cm of parse] (storage) {Stockage\\CSV, JSONL\\artefacts};
+\node[store, below=1.0cm of corr] (audit) {Audit et memoire\\erreurs, decisions\\historique};
+\node[bus, below=1.0cm of models] (redis) {Redis Streams\\consumer groups\\ACK et reprise};
+\node[box, right=of models] (mlops) {Mise a jour\\modele candidat\\promotion controlee};
+
+\draw[arrow] (sources) -- (collecte);
+\draw[arrow] (collecte) -- (parse);
+\draw[arrow] (parse) -- (norm);
+\draw[arrow] (norm) -- (router);
+\draw[arrow] (router) -- (models);
+\draw[arrow] (models) -- (corr);
+\draw[arrow] (corr) -- (dash);
+
+\draw[ctrl] (collecte) -- (storage);
+\draw[ctrl] (parse) -- (storage);
+\draw[ctrl] (norm) -- (storage);
+\draw[ctrl] (models) -- (audit);
+\draw[ctrl] (corr) -- (audit);
+\draw[ctrl] (redis) -- (models);
+\draw[ctrl] (redis) -- (audit);
+\draw[feedback] (dash) -- (audit);
+\draw[feedback] (audit) -- (mlops);
+\draw[feedback] (mlops) -- (router);
+
+\node[draw, rounded corners=2pt, fit=(collecte)(parse)(norm)(router)(models)(corr)(dash), inner sep=0.25cm, label={[font=\scriptsize]above:Pipeline analytique local}] {};
+\node[draw, rounded corners=2pt, fit=(storage)(audit)(redis)(mlops), inner sep=0.25cm, label={[font=\scriptsize]below:Persistance, orchestration et amelioration controlee}] {};
+\end{tikzpicture}
+}
+\caption{Vue detaillee des flux de donnees, de controle et de retour dans \logminer{}.}
+\label{fig:architecture-detaillee}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Lecture synthetique des flux de l'architecture}
+\label{tab:flux-architecture}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3.0cm}p{4.0cm}X}
+\toprule
+\textbf{Type de flux} & \textbf{Exemples} & \textbf{Role dans le prototype} \tabularnewline
+\midrule
+Flux de donnees &
+Journaux bruts, evenements parses, evenements normalises, scores, anomalies candidates, incidents. &
+Assurer le passage progressif d'une source heterogene vers une representation exploitable par les modeles et par l'analyste. \tabularnewline
+Flux de controle &
+Taches, etats d'execution, erreurs, heartbeats, acquittements Redis, reprises apres panne simulee. &
+Rendre l'execution observable, permettre la reprise locale de certaines taches et conserver une trace des decisions techniques. \tabularnewline
+Flux de persistance &
+CSV, JSONL, rapports mensuels, metriques, traces d'audit, modeles sauvegardes. &
+Relier chaque resultat a un artefact verifiable et soutenir la reproductibilite des campagnes. \tabularnewline
+Flux de retour &
+Validation, rejet, reclassement, justification analyste, historique des erreurs et des performances. &
+Alimenter la memoire adaptative et preparer la mise a jour controlee des modeles sans modification immediate du modele en production. \tabularnewline
+\bottomrule
+\end{tabularx}
+\end{table}
+
 \section{Agents fonctionnels}
 Le tableau \ref{tab:agents} resume les agents principaux.
 
@@ -31,7 +112,7 @@ Detecteur & Applique le modele de detection ou de classification. \\
 Correlateur & Regroupe les anomalies candidates en incidents lisibles. \\
 Dashboard & Affiche les resultats, filtres, graphes, ressources et decisions. \\
 Audit & Trace les executions, decisions analyste et messages agents. \\
-Memoire adaptative & Conserve les historiques utiles afin d'aider les agents a eviter les repetitions, ajuster la priorite et preparer l'apprentissage actif. \\
+Memoire adaptative & Conserve les historiques utiles afin d'aider les agents a eviter les repetitions, ajuster la priorite et alimenter la mise a jour controlee des modeles. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -74,7 +155,32 @@ Une anomalie candidate isolee n'est pas forcement une intrusion. Le correlateur 
 \section{Bus, audit et extensions}
 La version locale s'appuie sur des fichiers JSONL et CSV reproductibles. La V2 FastAPI expose des endpoints de traitement et un dashboard web. Redis Streams est ajoute comme bus operationnel local pour l'orchestration evenementielle et la repartition de taches entre workers. MQTT reste une extension de communication legere. Ces extensions ne sont pas presentees comme une preuve de scalabilite industrielle, mais comme une validation locale de l'architecture et une trajectoire d'evolution.
 
-La memoire adaptative s'inscrit dans cette meme logique d'audit. Elle conserve des informations stables sur les cycles d'execution, les erreurs, les durees, les decisions recentes, les familles traitees et les retours analyste. Son objectif est de permettre aux agents de mieux contextualiser leurs choix lors des cycles suivants, sans transformer le prototype en systeme de reentrainement automatique non controle.
+La memoire adaptative s'inscrit dans cette meme logique d'audit. Elle conserve des informations stables sur les cycles d'execution, les erreurs, les durees, les decisions recentes, les familles traitees et les retours analyste. Son objectif est de permettre aux agents de mieux contextualiser leurs choix lors des cycles suivants et d'alimenter une mise a jour controlee des modeles. Dans ce processus, un modele candidat est entraine hors ligne, compare au modele courant sur des metriques definies, puis promu uniquement lorsqu'il obtient les meilleures performances dans le cadre retenu.
+
+\begin{table}[H]
+\centering
+\caption{Evolution fonctionnelle de l'architecture}
+\label{tab:evolution-architecture}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.2cm}p{4.0cm}X}
+\toprule
+\textbf{Niveau} & \textbf{Composants dominants} & \textbf{Role dans le memoire} \tabularnewline
+\midrule
+V1 &
+Scripts locaux, fichiers CSV/JSONL, modeles sauvegardes, generation des metriques. &
+Valider la chaine minimale : preparation des donnees, parsing, routage, detection et conservation des resultats. \tabularnewline
+V2 &
+FastAPI, dashboard web, endpoints locaux, consultation des anomalies et de l'audit. &
+Separer le moteur d'analyse de l'interface et rendre les resultats inspectables par un analyste. \tabularnewline
+V3 &
+Agents fonctionnels, Redis Streams, consumer groups, heartbeat, ACK et reprise locale. &
+Experimenter une orchestration evenementielle locale, mesurer son cout et verifier la recuperation de taches non acquittees. \tabularnewline
+Extension &
+MQTT, bus securise, plusieurs machines, supervision renforcee, tolerance aux pannes distribuee. &
+Definir les prolongements possibles sans les confondre avec les capacites deja validees experimentalement. \tabularnewline
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \section{Positionnement du modele}
 Le modele propose est un complement aux outils SOC/SIEM existants. Il ne remplace pas Wazuh, OSSEC ou fail2ban. Il ajoute une couche analytique permettant de tester des detecteurs legers, de router les familles de journaux et de fournir un dashboard d'aide a l'analyse.

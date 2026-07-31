@@ -1,116 +1,342 @@
 \appendix
 \chapter{Annexes}
 
-\section{Captures dashboard}
-Les figures suivantes completent la documentation de l'interface Ariel \logminer.
+\section{Captures du tableau de bord}
+
+Les figures présentées dans cette section complètent la description de l'interface Ariel \logminer{}. Elles permettent notamment de visualiser la manière dont les informations issues du pipeline sont regroupées et présentées à l'utilisateur.
 
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{dashboard_longue_vue.png}
-  \caption{Vue longue du dashboard.}
+\centering
+\includegraphics[width=\textwidth]{dashboard_longue_vue.png}
+\caption{Vue générale du tableau de bord Ariel \logminer{}.}
 \end{figure}
 
-\section{Tableaux complementaires}
-Les tableaux Markdown complets sont fournis dans le dossier \texttt{tables/} du projet LaTeX et dans le pack de redaction final. Ils couvrent notamment les faux positifs, la comparaison Wazuh, les campagnes superviseur, la resilience, Redis Streams, MQTT et les ablations de routage.
+
+\section{Tableaux complémentaires}
+
+Les tableaux détaillés utilisés au cours des expérimentations sont conservés au format Markdown dans le dossier \texttt{tables/} du projet LaTeX ainsi que dans le pack final associé au mémoire. Ils regroupent notamment les résultats relatifs aux faux positifs, les comparaisons avec Wazuh, les campagnes menées avec le superviseur, les essais de résilience, les expérimentations avec Redis Streams et MQTT, ainsi que les études d'ablation portant sur le mécanisme de routage.
+
+Ces tableaux complètent les résultats synthétiques présentés dans le corps du mémoire. Ils permettent de conserver un niveau de détail suffisant pour vérifier les différentes expérimentations sans surcharger les chapitres principaux.
+
 
 \section{Commandes de reproduction}
-Les commandes principales utilisees pour reproduire les resultats sont les suivantes. Elles sont presentees sur plusieurs lignes afin de rester lisibles dans le document imprime :
+
+Les principales commandes utilisées pour reproduire les expériences sont reprises ci-dessous. Elles sont séparées afin de conserver une bonne lisibilité dans la version imprimée du mémoire.
 
 \begin{itemize}
-  \item \path{python scripts/benchmark_realtime_workflow.py}
-  \item \path{python scripts/run_resource_campaign.py}
-  \item options principales : \path{--cycles 30 --interval-sec 2 --max-mb 5}
-  \item \path{python scripts/run_family_routing_ablation.py}
-  \item \path{python scripts/run_intelligent_redis_endurance_campaign.py}
-  \item options Redis 6h : \path{--duration-sec 21600 --workers 3 --repetitions 4 --cycles 8}
-  \item \path{python scripts/generate_memoire_assets.py}
-  \item \path{python scripts/export_memoire_figures.py}
+
+\item Benchmark du workflow local :
+\texttt{python} \path{scripts/benchmark_realtime_workflow.py}
+
+\item Campagne de mesure des ressources :
+\texttt{python} \path{scripts/run_resource_campaign.py}
+
+\item Principales options utilisées pour cette campagne :
+\path{--cycles 30 --interval-sec 2 --max-mb 5}
+
+\item Étude d'ablation du routage par famille :
+\texttt{python} \path{scripts/run_family_routing_ablation.py}
+
+\item Campagne d'endurance utilisant Redis Streams :
+\texttt{python} \path{scripts/run_intelligent_redis_endurance_campaign.py}
+
+\item Paramètres utilisés pour la campagne Redis de six heures :
+\path{--duration-sec 21600 --workers 3 --repetitions 4 --cycles 8}
+
+\item Génération des artefacts utilisés dans le mémoire :
+\texttt{python} \path{scripts/generate_memoire_assets.py}
+
+\item Export des figures :
+\texttt{python} \path{scripts/export_memoire_figures.py}
+
 \end{itemize}
 
-\section{Depot GitHub}
-Le depot GitHub associe au projet est :
+Ces commandes correspondent aux principaux scripts mobilisés pour produire ou consolider les résultats présentés dans le document. Leur disponibilité facilite la vérification des expériences et permet de reproduire une partie importante du protocole dans un environnement compatible.
+
+
+\section{Dépôt GitHub}
+
+Le code source du projet est disponible dans le dépôt GitHub suivant :
 
 \begin{center}
 \url{https://github.com/andybitati/Memoire/tree/main}
 \end{center}
 
-Il permet de retrouver le code source, les scripts de traitement, les ressources experimentales versionnees et les evolutions futures du prototype. Les articles scientifiques seront ajoutes plus tard lorsqu'ils seront rediges et finalises.
+Ce dépôt regroupe le code du prototype, les scripts de traitement et d'expérimentation, ainsi que les différentes ressources versionnées utilisées au cours du développement. Il constitue également le point de suivi des évolutions techniques du projet.
 
-\section{Fichiers de preuves}
-Les preuves experimentales principales sont conservees sous forme de CSV :
+Les éventuels articles scientifiques issus de ce travail pourront y être référencés ultérieurement, après leur rédaction et leur finalisation.
+
+
+\section{Fichiers de preuve}
+
+Afin de conserver une trace vérifiable des expériences, les principaux résultats ont été sauvegardés sous forme de fichiers CSV, JSON et Markdown. Parmi les fichiers les plus importants figurent :
+
 \begin{itemize}
-  \item \texttt{realtime\_workflow\_benchmark\_20260604.csv} ;
-  \item \texttt{resource\_campaign.csv} ;
-  \item \texttt{family\_routing\_ablation.csv} ;
-  \item \texttt{standard\_tools\_wazuh\_logminer\_overlap.csv} ;
-  \item \texttt{random\_forest\_linux\_auth\_metrics.csv} ;
-  \item \texttt{random\_forest\_network\_cicids\_metrics.csv} ;
-  \item \texttt{random\_forest\_linux\_auth\_strict\_metrics.csv} ;
-  \item \texttt{random\_forest\_cicids2017\_controlled\_split\_metrics.csv} ;
-  \item \texttt{cicids\_model\_candidates\_metrics.csv} ;
-  \item \texttt{cicids\_model\_candidates\_summary.csv} ;
-  \item \texttt{random\_forest\_cic\_ddos2019\_metrics.csv} ;
-  \item \texttt{validation\_hdfs\_drain3\_train\_test\_metrics.csv} ;
-  \item \texttt{validation\_bgl\_drain3\_train\_test\_metrics.csv} ;
-  \item \texttt{validation\_hdfs\_bgl\_drain3\_train\_test\_summary.csv} ;
-  \item \texttt{intelligent\_redis\_long\_campaign\_summary.json} ;
-  \item \texttt{intelligent\_redis\_6h\_campaign\_summary.json} ;
-  \item \texttt{vbox\_redis\_balanced\_campaign.json} ;
-  \item \texttt{vbox\_redis\_recovery\_campaign.json} ;
-  \item \texttt{vbox\_redis\_1h\_campaign.json} ;
-  \item \texttt{table\_intelligent\_redis\_6h\_campaign.md}.
+
+\item \texttt{realtime\_workflow\_benchmark\_20260604.csv} ;
+
+\item \texttt{resource\_campaign.csv} ;
+
+\item \texttt{family\_routing\_ablation.csv} ;
+
+\item \texttt{standard\_tools\_wazuh\_logminer\_overlap.csv} ;
+
+\item \texttt{random\_forest\_linux\_auth\_metrics.csv} ;
+
+\item \texttt{random\_forest\_network\_cicids\_metrics.csv} ;
+
+\item \texttt{random\_forest\_linux\_auth\_strict\_metrics.csv} ;
+
+\item \texttt{random\_forest\_cicids2017\_controlled\_split\_metrics.csv} ;
+
+\item \texttt{random\_forest\_cic\_ddos2019\_metrics.csv} ;
+
+\item \texttt{validation\_hdfs\_drain3\_train\_test\_metrics.csv} ;
+
+\item \texttt{validation\_bgl\_drain3\_train\_test\_metrics.csv} ;
+
+\item \texttt{validation\_hdfs\_bgl\_drain3\_train\_test\_summary.csv} ;
+
+\item \texttt{intelligent\_redis\_long\_campaign\_summary.json} ;
+
+\item \texttt{intelligent\_redis\_6h\_campaign\_summary.json} ;
+
+\item \texttt{table\_intelligent\_redis\_6h\_campaign.md}.
+
 \end{itemize}
 
-\section{Regles de prudence}
-Pour toute lecture des resultats, les regles suivantes doivent etre conservees :
-\begin{itemize}
-  \item les anomalies non supervisees sont des anomalies candidates ;
-  \item la baseline fail2ban-like n'est pas une execution officielle de fail2ban ;
-  \item Wazuh/OSSEC restent des references operationnelles plus matures ;
-  \item la distribution multi-machine stricte est une perspective ;
-  \item la memoire adaptative est une capitalisation auditable des historiques et feedbacks ;
-  \item l'auto-apprentissage continu avec reentrainement controle reste une extension future.
-\end{itemize}
+Ces fichiers ne constituent pas uniquement des archives techniques. Ils servent également à relier les valeurs citées dans le mémoire aux sorties effectivement produites lors des campagnes expérimentales.
 
-\section{Fichiers de preuve recommandes}
-Les fichiers de preuve a conserver avec le memoire sont les CSV de benchmark, les tableaux Markdown, les captures du dashboard, les figures exportees et les scripts de generation. Ils permettent de justifier les valeurs reprises dans le texte et de montrer que les resultats ne sont pas seulement descriptifs, mais rattaches a des artefacts reproductibles.
 
-Les scripts les plus importants sont ceux qui generent les assets du memoire, executent les benchmarks de latence, lancent la campagne CPU/RAM, testent le routage par famille et consolident les metriques supervisees. Les fichiers sources du pipeline, de l'API, du routeur, du detecteur, du correlateur et de l'audit completent ces preuves.
+\section{Définition des métriques utilisées}
 
-\section{Matrice de tracabilite resultats-preuves}
-Le tableau suivant donne une matrice de tracabilite simplifiee. Il doit etre conserve avec le memoire afin de faciliter la verification par un lecteur technique.
+Les métriques employées dans le mémoire servent à évaluer des aspects différents du prototype. Elles doivent donc être interprétées avec leur contexte expérimental : présence ou absence de labels, déséquilibre des classes, nature supervisée ou non supervisée du modèle et objectif de l'expérience.
 
-\begin{longtable}{p{3.2cm}p{4.2cm}p{5.5cm}}
-\caption{Matrice de tracabilite des resultats principaux}\\
+\begin{longtable}{p{2.7cm}p{4.1cm}p{3.6cm}p{3.6cm}}
+
+\caption{Définition, points forts et limites des métriques utilisées}
+\label{tab:definition-metriques}\\
+
 \toprule
-\textbf{Resultat cite} & \textbf{Preuve attendue} & \textbf{Usage dans le memoire} \\
+\textbf{Métrique} &
+\textbf{Définition} &
+\textbf{Point fort} &
+\textbf{Limite} \\
 \midrule
 \endfirsthead
+
 \toprule
-\textbf{Resultat cite} & \textbf{Preuve attendue} & \textbf{Usage dans le memoire} \\
+\textbf{Métrique} &
+\textbf{Définition} &
+\textbf{Point fort} &
+\textbf{Limite} \\
 \midrule
 \endhead
-F1 Linux/auth & \texttt{random\_forest\_linux\_auth\_metrics.csv} & Evaluation supervisee et discussion sur les journaux d'authentification. \\
-F1 CICIDS2017 & \texttt{random\_forest\_network\_cicids\_metrics.csv} et \texttt{random\_forest\_cicids2017\_controlled\_split\_metrics.csv} & Evaluation supervisee reseau ; le score exploratoire doit etre lu avec le F1 strict de 0,157827. \\
-Comparaison modeles CICIDS2017 & \texttt{cicids\_model\_candidates\_metrics.csv} et \texttt{table\_cicids\_model\_candidates.md} & Teste plusieurs candidats legers sur les memes holdouts ; LogisticRegression ameliore le F1 strict sans supprimer la fragilite inter-scenarios. \\
-F1 CIC-DDoS2019 & \texttt{random\_forest\_cic\_ddos2019\_metrics.csv} & Evaluation supervisee stricte par holdout fichier/famille DDoS ; resultat principal retenu pour ce dataset. \\
-Splits supervises stricts & \texttt{supervised\_strict\_split\_metrics.csv} & Evaluation complementaire par serveurs, fichiers ou scenarios ; documente la sensibilite au protocole. \\
-HDFS Drain3 train--test & \texttt{validation\_hdfs\_drain3\_train\_test\_metrics.csv} & Validation complementaire avec templates Drain3 et fenetres ; progression moderee, non interpretee comme generalisation universelle. \\
-BGL Drain3 train--test & \texttt{validation\_bgl\_drain3\_train\_test\_metrics.csv} & Validation complementaire avec templates Drain3 et fenetres ; separabilite forte sur split local, a confirmer par repetitions. \\
-Synthese HDFS/BGL Drain3 & \texttt{validation\_hdfs\_bgl\_drain3\_train\_test\_summary.csv} & Tableau court utilise pour la redaction et le dashboard de capture. \\
-Anomalies Wazuh & \texttt{table\_wazuh\_logminer\_summary.md} & Evaluation non supervisee et recouvrement avec signaux HIDS/SIEM. \\
-Duree moyenne micro-lots & \texttt{realtime\_workflow\_benchmark\_20260604.csv} & Mesure du workflow local par micro-lots, sans revendication de temps reel strict. \\
-Campagne CPU/RAM & \texttt{resource\_campaign.csv} & Evaluation des ressources sur 30 cycles. \\
-Campagne Redis locale 6h & \texttt{intelligent\_redis\_6h\_campaign\_summary.json} et \texttt{table\_intelligent\_redis\_6h\_campaign.md} & Endurance locale multi-processus, reprises apres panne simulee et pending final nul. \\
-Validation Redis multi-VM & \texttt{vbox\_redis\_balanced\_campaign.json}, \texttt{vbox\_redis\_recovery\_campaign.json} et \texttt{vbox\_redis\_1h\_campaign.json} & Validation VirtualBox Debian/Ubuntu : repartition, panne/reprise et endurance supervisee d'une heure avec 525 taches acquittees. \\
-Ablation routage & \texttt{family\_routing\_ablation.csv} & Comparaison controlee global-versus-familles sur cinq graines ; F1, PR-AUC et MCC rapportes. \\
-Robustesse multi-format & Rapport de robustesse et figure associee & Validation de la conservation des formats inconnus ou incomplets. \\
+
+Accuracy &
+Proportion totale de prédictions correctes : vrais positifs et vrais négatifs rapportés à l'ensemble des observations. &
+Simple à comprendre et utile lorsque les classes sont équilibrées. &
+Peut être trompeuse en présence de classes très déséquilibrées, par exemple lorsque les anomalies sont rares. \\
+
+Précision &
+Part des alertes positives qui correspondent réellement à des anomalies : $TP/(TP+FP)$. &
+Mesure la fiabilité des alertes produites et aide à estimer le bruit opérationnel. &
+Ne montre pas combien d'anomalies réelles ont été manquées. \\
+
+Rappel &
+Part des anomalies réelles correctement détectées : $TP/(TP+FN)$. &
+Indique la capacité du modèle à retrouver les événements anormaux présents dans les données. &
+Peut être élevé au prix d'un grand nombre de faux positifs. \\
+
+F1-score &
+Moyenne harmonique entre précision et rappel : $2 \times \mathrm{precision} \times \mathrm{rappel}/(\mathrm{precision}+\mathrm{rappel})$. &
+Utile lorsque les classes sont déséquilibrées et que l'on veut équilibrer faux positifs et faux négatifs. &
+Ne tient pas compte directement des vrais négatifs et dépend fortement du protocole de séparation des données. \\
+
+Spécificité &
+Part des événements normaux correctement reconnus : $TN/(TN+FP)$. &
+Permet d'évaluer la capacité du modèle à ne pas signaler à tort des événements normaux. &
+Doit être interprétée avec le rappel, car un modèle très conservateur peut obtenir une bonne spécificité en détectant peu d'anomalies. \\
+
+MCC &
+Coefficient de corrélation de Matthews calculé à partir de $TP$, $TN$, $FP$ et $FN$. &
+Tient compte des quatre cases de la matrice de confusion et reste informatif en cas de déséquilibre. &
+Moins intuitif à expliquer qu'une précision ou un rappel. \\
+
+PR-AUC &
+Aire sous la courbe précision--rappel obtenue lorsque le seuil de décision varie. &
+Pertinente lorsque les anomalies sont rares et que la classe positive est prioritaire. &
+Nécessite des scores continus et ne donne pas directement un seuil opérationnel. \\
+
+Taux d'anomalies &
+Proportion d'événements signalés comme anomalies candidates par le détecteur. &
+Utile pour caractériser la sélectivité d'un modèle non supervisé. &
+Ne mesure pas à lui seul la justesse des alertes lorsqu'il n'existe pas de vérité terrain. \\
+
+Latence &
+Temps nécessaire pour exécuter une étape ou un workflow complet. &
+Permet de vérifier si le prototype reste exploitable dans un traitement par lots ou micro-lots. &
+Dépend fortement de la machine, du volume traité, des entrées et des services actifs. \\
+
+Consommation CPU/RAM &
+Utilisation des ressources processeur et mémoire pendant les campagnes. &
+Indique le coût d'exploitation local du prototype. &
+Ne suffit pas à prédire le comportement dans un environnement de production plus vaste. \\
+
+Stability score &
+Score opérationnel utilisé pour comparer deux modèles sur une source non labellisée en vérifiant que le taux d'alertes reste proche d'un taux attendu. &
+Permet une comparaison prudente lorsque les labels ne sont pas disponibles. &
+Ne remplace pas une métrique supervisée : il évalue la stabilité du comportement, pas la vérité des détections. \\
+
 \bottomrule
+
 \end{longtable}
 
-\section{Exemple de lecture scientifique des resultats}
-Une lecture rigoureuse des resultats doit suivre quatre etapes. La premiere consiste a identifier le type de donnees : labelisees, non labelisees, synthetiques ou issues d'un outil externe. La deuxieme consiste a choisir la metrique adaptee. Un F1-score est pertinent pour une source labelisee, mais il ne l'est pas toujours pour un export non supervise. La troisieme consiste a relier la valeur a une preuve. La quatrieme consiste a formuler une conclusion proportionnee.
 
-Par exemple, le resultat Wazuh ne doit pas etre formule comme une detection de 3 676 attaques. La formulation correcte est que le prototype a traite 122 563 evenements et produit 3 676 anomalies candidates selon le detecteur non supervise applique. Cette nuance est importante car elle distingue le signal algorithmique de la validation securite.
+\section{Précautions d'interprétation}
+
+Les résultats doivent être interprétés en tenant compte de plusieurs précautions méthodologiques.
+
+\begin{itemize}
+
+\item Les sorties produites par les modèles non supervisés sont considérées comme des anomalies candidates. Elles ne doivent pas être assimilées automatiquement à des attaques ou à des incidents de sécurité confirmés.
+
+\item La méthode utilisée comme référence de type fail2ban reproduit certains principes de fonctionnement de cet outil, mais ne correspond pas à une exécution officielle de fail2ban.
+
+\item Wazuh et OSSEC disposent d'un niveau de maturité opérationnelle supérieur à celui du prototype développé dans le cadre de ce mémoire. Les comparaisons réalisées doivent donc être interprétées dans les limites du protocole expérimental retenu.
+
+\item Les expériences multi-VM montrent qu'une distribution des tâches peut être mise en place. En revanche, un déploiement distribué complet, sécurisé et consolidé sur plusieurs machines physiques ou environnements de production reste à approfondir.
+
+\item La mémoire adaptative est utilisée comme un mécanisme de capitalisation des historiques d'exécution et des retours de l'analyste. Son contenu reste consultable et auditable.
+
+\item Le système prévoit une mise à jour contrôlée des modèles en fonction des événements, des sorties d'audit et des retours enregistrés. Un nouveau modèle est traité comme un candidat et doit être comparé à la version courante avant toute promotion.
+
+\end{itemize}
 
 
+\section{Vérifications avant le dépôt}
+
+Avant le dépôt définitif du mémoire, plusieurs vérifications doivent être effectuées afin d'éviter que des erreurs de forme ou de cohérence ne subsistent dans la version finale.
+
+\begin{enumerate}
+
+\item Vérifier l'orthographe officielle de tous les noms repris sur la page de garde.
+
+\item S'assurer que le titre utilisé sur la page de garde est identique, ou au minimum cohérent, avec celui du résumé et du document directeur.
+
+\item Vérifier la présence de toutes les figures et captures utilisées dans les dossiers \texttt{figures} et \texttt{captures}.
+
+\item Compiler l'ensemble du projet sur Overleaf et vérifier qu'aucune erreur bloquante ne subsiste.
+
+\item Contrôler la numérotation finale des figures, des tableaux, des sections et des annexes après compilation.
+
+\item Comparer les principales valeurs numériques mentionnées dans le chapitre des résultats avec les fichiers expérimentaux correspondants.
+
+\item Vérifier la présence de la bibliographie ainsi que des références citées dans le texte.
+
+\item Effectuer une dernière relecture portant sur les accents, les noms propres, la terminologie scientifique et les formulations administratives.
+
+\end{enumerate}
+
+
+\section{Fichiers de preuve à conserver}
+
+Les fichiers de benchmark, les tableaux Markdown, les captures du tableau de bord, les figures exportées et les scripts ayant servi à produire les résultats doivent être conservés avec les autres ressources du projet. Ils permettent de retrouver l'origine des valeurs mentionnées dans le mémoire et de vérifier qu'elles correspondent bien à des sorties expérimentales identifiables.
+
+Cette conservation est particulièrement importante pour les résultats numériques. Une valeur présentée dans le mémoire gagne en crédibilité lorsqu'il est possible de la rattacher à un fichier de métriques, à un script d'exécution et au protocole qui a permis de la produire.
+
+Parmi les scripts les plus importants figurent ceux consacrés à la génération des artefacts du mémoire, aux benchmarks de latence, à la campagne CPU/RAM, à l'évaluation du routage par famille et à la consolidation des métriques supervisées.
+
+Les fichiers sources du pipeline, de l'API, du routeur, du détecteur, du corrélateur et du mécanisme d'audit complètent cet ensemble. Ils permettent de relier les résultats expérimentaux à l'implémentation qui les a produits.
+
+
+\section{Matrice de traçabilité résultats--preuves}
+
+La matrice suivante met en relation plusieurs résultats importants du mémoire avec les fichiers ou artefacts utilisés pour les vérifier. Son objectif est de faciliter la lecture technique du travail et de rendre plus explicite le lien entre les résultats rapportés et les preuves expérimentales correspondantes.
+
+\begin{longtable}{p{3.2cm}p{4.2cm}p{5.5cm}}
+
+\caption{Matrice de traçabilité des principaux résultats}
+\label{tab:matrice-tracabilite}\\
+
+\toprule
+\textbf{Résultat cité} &
+\textbf{Preuve associée} &
+\textbf{Rôle dans le mémoire} \\
+\midrule
+\endfirsthead
+
+\toprule
+\textbf{Résultat cité} &
+\textbf{Preuve associée} &
+\textbf{Rôle dans le mémoire} \\
+\midrule
+\endhead
+
+F1 Linux/auth &
+\texttt{random\_forest\_linux\_auth\_metrics.csv} &
+Évaluation supervisée du modèle sur les journaux d'authentification et support de la discussion consacrée aux performances obtenues sur cette famille de données. \\
+
+F1 CICIDS2017 &
+\texttt{random\_forest\_network\_cicids\_metrics.csv} et
+\texttt{random\_forest\_cicids2017\_controlled\_split\_metrics.csv} &
+Évaluation supervisée des données réseau. Le score exploratoire est interprété conjointement avec le F1 strict de 0,157827 afin de mettre en évidence la sensibilité du résultat au protocole de séparation. \\
+
+F1 CIC-DDoS2019 &
+\texttt{random\_forest\_cic\_ddos2019\_metrics.csv} &
+Évaluation supervisée fondée sur un holdout par fichier ou famille DDoS. Ce résultat constitue la principale référence utilisée pour ce jeu de données. \\
+
+Partitions supervisées strictes &
+\texttt{supervised\_strict\_split\_metrics.csv} &
+Évaluation complémentaire utilisant des séparations par serveur, fichier ou scénario afin de mesurer la sensibilité des modèles aux conditions d'évaluation. \\
+
+HDFS Drain3 entraînement--test &
+\texttt{validation\_hdfs\_drain3\_train\_test\_metrics.csv} &
+Validation complémentaire fondée sur les modèles de messages produits par Drain3 et sur des fenêtres temporelles. Les résultats indiquent une progression modérée qui n'est pas interprétée comme une preuve de généralisation universelle. \\
+
+BGL Drain3 entraînement--test &
+\texttt{validation\_bgl\_drain3\_train\_test\_metrics.csv} &
+Validation complémentaire utilisant Drain3 et des fenêtres temporelles. Une forte séparabilité est observée sur la partition locale étudiée, mais ce résultat doit encore être confirmé par des répétitions et des protocoles supplémentaires. \\
+
+Synthèse HDFS/BGL Drain3 &
+\texttt{validation\_hdfs\_bgl\_drain3\_train\_test\_summary.csv} &
+Synthèse des principales métriques utilisées dans la rédaction du mémoire et dans les éléments de visualisation du tableau de bord. \\
+
+Anomalies Wazuh &
+\texttt{table\_wazuh\_logminer\_summary.md} &
+Analyse non supervisée des événements Wazuh et étude du recouvrement entre les anomalies candidates produites par \logminer{} et les signaux provenant du HIDS/SIEM. \\
+
+Durée moyenne des micro-lots &
+\texttt{realtime\_workflow\_benchmark\_20260604.csv} &
+Mesure du temps nécessaire au traitement local de plusieurs micro-lots. Ce résultat caractérise les performances du workflow sans être présenté comme une démonstration de fonctionnement en temps réel strict. \\
+
+Campagne CPU/RAM &
+\texttt{resource\_campaign.csv} &
+Mesure de la consommation des ressources et du comportement du prototype durant une campagne de 30 cycles. \\
+
+Ablation du routage &
+\texttt{family\_routing\_ablation.csv} &
+Comparaison contrôlée entre un modèle global et des modèles spécialisés par famille, évalués sur cinq graines à partir des métriques F1, PR-AUC et MCC. \\
+
+Robustesse multiformat &
+Rapport de robustesse et figure associée &
+Vérification du comportement du pipeline en présence d'entrées inconnues, incomplètes ou utilisant des formats différents de ceux attendus. \\
+
+\bottomrule
+
+\end{longtable}
+
+
+\section{Exemple d'interprétation scientifique des résultats}
+
+L'interprétation d'un résultat expérimental ne peut pas se limiter à la valeur d'une métrique. Elle doit tenir compte de la nature des données, du protocole utilisé et du niveau de validation disponible.
+
+Une première étape consiste donc à déterminer la nature du jeu de données étudié. Il peut s'agir de données labellisées, non labellisées, synthétiques ou encore d'informations provenant d'un outil externe. Cette distinction influence directement la manière dont les résultats doivent être évalués.
+
+La deuxième étape consiste à sélectionner une métrique cohérente avec le type de données et avec l'objectif de l'expérience. Un F1-score peut, par exemple, être pertinent lorsque des labels de référence sont disponibles. Il perd toutefois une partie de son sens lorsque le modèle travaille sur des données non labellisées et que la sortie correspond uniquement à un score d'anomalie.
+
+La troisième étape consiste à relier chaque résultat à une preuve expérimentale identifiable : fichier CSV, tableau, figure, journal d'exécution ou script de reproduction. La dernière étape consiste à formuler une conclusion dont la portée reste compatible avec ce que le protocole permet réellement d'affirmer.
+
+Le cas de Wazuh illustre bien cette nécessité. Le prototype a traité 122 563 événements et identifié 3 676 anomalies candidates à l'aide du détecteur non supervisé utilisé dans l'expérience. Il serait incorrect de présenter ces 3 676 éléments comme autant d'attaques détectées. Le système a identifié des comportements considérés comme atypiques par le modèle, mais une étape supplémentaire de validation serait nécessaire pour déterminer combien correspondent effectivement à des incidents de sécurité.
+
+Cette distinction entre anomalie algorithmique et incident confirmé est essentielle. Elle permet de présenter les performances du prototype sans leur attribuer une portée supérieure à celle réellement démontrée par les expériences.

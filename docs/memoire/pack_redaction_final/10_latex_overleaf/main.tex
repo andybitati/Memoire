@@ -14,6 +14,8 @@
 \usepackage{longtable}
 \usepackage{float}
 \usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit}
 \usepackage{hyperref}
 \usepackage{url}
 \usepackage[strings]{underscore}
@@ -143,7 +145,7 @@ L'évaluation combine des journaux Windows, des exports Wazuh, des journaux Linu
 
 Les sorties non supervisées sont rapportées comme des anomalies candidates, notamment 3 676 signaux parmi 122 563 événements Wazuh. Sur HDFS/BGL, une validation complémentaire fondée sur Drain3, utilisant des modèles de messages, des fenêtres temporelles et une séparation entraînement--test, montre une progression modérée sur HDFS et une séparabilité très favorable sur BGL, sans constituer une preuve de généralisation universelle.
 
-Les benchmarks locaux indiquent une durée moyenne du workflow de 8,2012 secondes sur 10 micro-lots de 8 537 lignes et de 9,3300 secondes lors de la campagne CPU/RAM de 30 cycles. La campagne Redis de six heures valide 8 508 tâches uniques, aucune tâche finale en attente et 709 reprises après des pannes simulées. Une campagne multi-VM supervisée d'une heure, exécutée avec Debian et Ubuntu sous VirtualBox, enfile 525 tâches et se termine avec 525 entrées lues par le groupe Redis, un lag final nul et aucun pending. Une comparaison contrôlée entre l'architecture monolithique et l'architecture à base d'agents ne montre pas de gain de débit sur de petits volumes, mais permet de mesurer le surcoût d'orchestration et la capacité de reprise après panne.
+Les benchmarks locaux indiquent une durée moyenne du workflow de 8,2012 secondes sur 10 micro-lots de 8 537 lignes et de 9,3300 secondes lors de la campagne CPU/RAM de 30 cycles. La campagne Redis locale de six heures valide 8 508 tâches uniques, aucune tâche finale en attente et 709 reprises après des pannes simulées. Une campagne distincte multi-VM supervisée d'une heure, exécutée avec Debian et Ubuntu sous VirtualBox, enfile 525 tâches et se termine avec 525 entrées lues par le groupe Redis, un lag final nul et aucun pending. Une comparaison contrôlée entre l'architecture monolithique et l'architecture à base d'agents ne montre pas de gain de débit sur de petits volumes, mais permet de mesurer le surcoût d'orchestration et la capacité de reprise après panne.
 
 Les résultats montrent la faisabilité d'une approche locale, légère et interprétable pour l'analyse de journaux hétérogènes. La mémoire adaptative constitue une capitalisation auditable des historiques et des décisions de l'analyste ; une boucle complète d'apprentissage actif reste une perspective. Les principales limites concernent notamment la consolidation d'un déploiement multi-machine sécurisé, la réduction mesurée des faux positifs, l'apprentissage continu contrôlé et l'industrialisation dans un environnement SOC.
 
@@ -156,7 +158,7 @@ The evaluation combines local Windows logs, Wazuh exports, Linux/auth logs, HDFS
 
 Unsupervised outputs are reported as anomaly candidates, including 3,676 signals among 122,563 Wazuh events. For HDFS and BGL, an additional Drain3-based validation using message templates, temporal windows, and a train--test split shows moderate improvement on HDFS and highly favorable separability on BGL, without providing evidence of universal generalization.
 
-Local benchmarks report a mean workflow duration of 8.2012 seconds over 10 micro-batches of 8,537 lines and 9.3300 seconds during the 30-cycle CPU/RAM campaign. The six-hour Redis campaign validates 8,508 unique completed tasks, no tasks pending at completion, and 709 successful recoveries after simulated failures. A supervised one-hour multi-VM campaign, executed with Debian and Ubuntu under VirtualBox, enqueues 525 tasks and ends with 525 entries read by the Redis group, zero final lag, and no pending task. A controlled comparison between the monolithic architecture and the agent-based architecture does not show a throughput improvement on small workloads, but quantifies orchestration overhead and demonstrates failure-recovery capability.
+Local benchmarks report a mean workflow duration of 8.2012 seconds over 10 micro-batches of 8,537 lines and 9.3300 seconds during the 30-cycle CPU/RAM campaign. The local six-hour Redis campaign validates 8,508 unique completed tasks, no tasks pending at completion, and 709 successful recoveries after simulated failures. A distinct supervised one-hour multi-VM campaign, executed with Debian and Ubuntu under VirtualBox, enqueues 525 tasks and ends with 525 entries read by the Redis group, zero final lag, and no pending task. A controlled comparison between the monolithic architecture and the agent-based architecture does not show a throughput improvement on small workloads, but quantifies orchestration overhead and demonstrates failure-recovery capability.
 
 The results support the feasibility of a local, lightweight, and interpretable approach to heterogeneous log analysis. Adaptive memory is treated as an auditable accumulation of execution histories and analyst decisions, while a complete active-learning loop remains future work. The main limitations include consolidating a secured multi-machine deployment, measured false-positive reduction, controlled continuous learning, and industrial-scale deployment within a SOC environment.
 

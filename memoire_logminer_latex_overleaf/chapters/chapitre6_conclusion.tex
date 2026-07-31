@@ -1,54 +1,55 @@
-\chapter{Conclusion et perspectives}
+\chapter{Conclusion générale}
 
-\section{Bilan du travail}
-Ce memoire a presente \logminer, un prototype d'agents intelligents multi-taches pour la detection d'anomalies candidates dans des journaux systemes et reseaux heterogenes. Le travail a couvert l'analyse des formats de logs, la conception d'une architecture modulaire et multi-agents, l'implementation d'un pipeline complet, la mise en place d'un dashboard et l'evaluation sur plusieurs familles de donnees.
+\section{Synthèse du travail}
 
-Le prototype valide une chaine complete allant de la collecte a la visualisation. Les journaux sont parses, normalises, routes vers une famille, traites par un modele compatible, puis transformes en anomalies candidates et incidents. Cette approche evite de reduire le probleme a un simple score de detection.
+Ce mémoire a présenté \logminer{}, un prototype local destiné à analyser des journaux système et réseau hétérogènes à l'aide d'une architecture modulaire organisée autour d'agents fonctionnels. Le travail a porté sur l'ensemble de la chaîne de traitement : collecte, parsing, normalisation, routage vers des modèles adaptés, détection, corrélation, audit, mémoire adaptative et visualisation dans un tableau de bord.
 
-\section{Verification des objectifs}
-Les objectifs definis dans le document directeur sont couverts. Les types de journaux ont ete identifies et categorises. Les techniques classiques et modernes ont ete analysees. Une architecture d'agents specialises a ete proposee et implementee. Des mecanismes d'apprentissage supervises et non supervises ont ete integres, ainsi qu'une memoire adaptative permettant de capitaliser les executions, les erreurs et les decisions analyste. Un dashboard a ete realise. Le systeme a ete teste sur des journaux locaux, des exports Wazuh et plusieurs datasets publics. Enfin, les performances ont ete evaluees par F1-score, latence, ressources, ablation global-versus-familles et comparaison operationnelle encadree.
+La contribution principale n'est pas un nouvel algorithme d'apprentissage automatique. Elle se situe plutôt dans l'intégration contrôlée de plusieurs composants permettant de transformer des journaux de natures différentes en événements normalisés, en anomalies candidates et en incidents exploitables par un analyste.
 
-\section{Apports}
-Les apports principaux sont :
-\begin{itemize}
-  \item une architecture modulaire claire et extensible ;
-  \item une normalisation commune pour des journaux heterogenes ;
-  \item un routage multi-modeles auditable ;
-  \item une preuve locale d'agents distribues via Redis Streams, avec 8 508 taches terminees et 709 reprises de taches non acquittees pendant six heures ;
-  \item une premiere memoire adaptative auditable, fondee sur l'historique des agents, la memoire du superviseur et les decisions analyste ;
-  \item une evaluation multi-source combinant logs systemes, SIEM, reseau et scenarios de robustesse ;
-  \item un dashboard permettant l'analyse, les filtres, les decisions et l'audit ;
-  \item un pack de reproduction comprenant figures, tableaux, captures et CSV.
-\end{itemize}
+Le prototype distingue plusieurs familles de données, notamment Windows, Wazuh, Linux/auth, les flux réseau, HDFS, BGL et les entrées inconnues orientées vers une route de fallback. Cette organisation permet d'éviter l'application indistincte d'un modèle unique à des sources dont la structure et le sens opérationnel sont différents.
+
+\section{Principaux résultats}
+
+Les expérimentations montrent qu'une chaîne locale, légère et reproductible peut être mise en place pour traiter plusieurs familles de journaux. Les modèles supervisés obtiennent des résultats élevés dans certains protocoles exploratoires, mais les évaluations plus strictes rappellent que les performances dépendent fortement de la stratégie de séparation des données.
+
+Le cas de CICIDS2017 est particulièrement important. Une séparation aléatoire produit un F1-score très élevé, tandis que les holdouts par fichier ou scénario font fortement diminuer le résultat. Cette observation montre qu'un score isolé ne suffit pas à démontrer une capacité de généralisation.
+
+Les modèles non supervisés sont interprétés comme des générateurs d'anomalies candidates. Sur Wazuh, le système identifie 3 676 signaux parmi 122 563 événements. Ces signaux ne sont pas assimilés automatiquement à des intrusions confirmées ; ils constituent des éléments à filtrer, contextualiser et examiner.
+
+Les campagnes Redis démontrent aussi l'intérêt architectural de l'approche par agents. Elles valident une répartition locale multiprocessus et la reprise de tâches non acquittées après panne simulée. La comparaison avec une chaîne monolithique montre cependant que cette architecture n'améliore pas automatiquement le débit sur de petits volumes. Son intérêt principal réside donc dans la modularité, l'observabilité, l'audit et la résilience locale.
+
+\section{Mise à jour contrôlée des modèles}
+
+Le système prévoit une mise à jour contrôlée des modèles en fonction des événements, de l'audit et des retours enregistrés par l'analyste. Les décisions de validation, de rejet ou de reclassement ne modifient pas directement un modèle en production. Elles enrichissent une mémoire exploitable lors des cycles suivants.
+
+Le principe retenu est conservateur. Une nouvelle version d'un modèle est d'abord traitée comme un candidat. Elle est entraînée hors ligne, évaluée sur un jeu de validation déclaré, puis comparée au modèle courant avec une métrique définie à l'avance. Le candidat n'est promu que s'il obtient les meilleures performances dans le cadre retenu. L'ancien modèle reste conservé afin de permettre un retour arrière en cas de dégradation.
+
+Cette organisation permet d'intégrer une logique d'amélioration progressive sans transformer le prototype en système d'auto-apprentissage non contrôlé. Elle maintient une séparation claire entre mémoire, décision humaine, entraînement candidat, validation et déploiement.
 
 \section{Limites}
-Plusieurs limites doivent etre reconnues. D'abord, la distribution validee reste locale et multi-processus : Redis Streams prouve la repartition de taches et la reprise apres panne dans l'environnement experimental, mais ne constitue pas encore une preuve de scalabilite industrielle multi-machine. Ensuite, les anomalies non supervisees restent des signaux candidats. Elles doivent etre interpretees par correlation, contexte et validation humaine.
 
-Les scores tres eleves obtenus sur certains datasets supervises doivent aussi etre interpretes selon leur protocole. Ils valident le comportement du modele dans le cadre experimental, mais ne prouvent pas une generalisation automatique a toutes les infrastructures. La memoire adaptative mise en place reste une capitalisation d'historique et de feedback ; elle ne constitue pas encore une boucle complete de reentrainement, de detection de derive et de promotion automatique de nouveaux modeles. Enfin, la reduction des faux positifs et l'apprentissage continu restent des axes ouverts.
+Plusieurs limites doivent être retenues.
+
+Premièrement, les performances mesurées restent liées aux jeux de données, aux partitions et aux caractéristiques utilisées. Elles ne doivent pas être extrapolées directement à tous les environnements réels.
+
+Deuxièmement, les expériences non supervisées produisent des anomalies candidates, mais pas une vérité terrain complète sur les incidents.
+
+Troisièmement, la distribution validée est principalement locale et multiprocessus. Elle ne constitue pas encore une preuve de fonctionnement industriel multi-site.
+
+Quatrièmement, le tableau de bord a été validé fonctionnellement, mais son utilisabilité auprès d'analystes réels reste à évaluer de manière plus structurée.
+
+Enfin, la mise à jour contrôlée des modèles exige une discipline de suivi : conservation des métriques, séparation entre entraînement et validation, traçabilité des artefacts et surveillance de la dérive conceptuelle.
 
 \section{Perspectives}
-Les perspectives principales sont les suivantes :
-\begin{enumerate}
-  \item etendre a d'autres familles la comparaison controlee entre split aleatoire et holdout temporel, fichier ou scenario, deja conduite sur CICIDS2017 avec memes features, memes hyperparametres, memes tailles d'echantillon et memes graines ;
-  \item prolonger le protocole controle global-versus-familles par davantage de graines et des splits temporels, par fichier ou par scenario, avec latence et memoire ;
-  \item consolider le deploiement multi-machine au-dela de la preuve VirtualBox de laboratoire, avec workers Redis, files persistantes, supervision explicite et securisation des communications ;
-  \item ajouter des tests de charge sur plusieurs jours, au-dela de la campagne locale de six heures et de la campagne multi-VM supervisee d'une heure ;
-  \item transformer la memoire adaptative en boucle d'apprentissage actif a partir des decisions analyste, avec surveillance du concept drift et promotion controlee des nouveaux modeles ;
-  \item consolider l'usage de Drain3 sur HDFS/BGL, repeter les splits et comparer avec des modeles sequentiels plus specialises ;
-  \item reduire les faux positifs par calibration des seuils et contexte temporel ;
-  \item relier les incidents a des tactiques MITRE ATT\&CK ;
-  \item produire une integration plus stricte avec un SIEM existant.
-\end{enumerate}
 
-\section{Conclusion generale}
-\logminer{} montre qu'une architecture locale, modulaire et interpretable peut soutenir la detection d'anomalies dans des journaux heterogenes. Sa force principale n'est pas de remplacer les outils existants, mais d'organiser une chaine coherentement auditable entre logs bruts, modeles specialises, anomalies candidates, incidents et decisions analyste.
+Les prolongements les plus importants concernent la validation multi-machine, l'amélioration de l'évaluation temporelle, l'anonymisation des journaux sensibles et l'étude de l'expérience utilisateur du tableau de bord.
 
-Le prototype constitue ainsi une base solide pour un systeme de cyber-audit leger adapte aux environnements disposant de ressources limitees. Les resultats obtenus justifient une poursuite vers la scalabilite, l'integration SOC et l'apprentissage continu. La memoire adaptative amorce cette trajectoire en conservant les traces utiles aux cycles suivants, tout en gardant une interpretation controlee des alertes produites.
+Il serait également utile de renforcer les protocoles pour les journaux séquentiels comme HDFS et BGL, notamment par l'utilisation d'ensembles distincts d'entraînement, de validation et de test, ainsi que par une comparaison plus poussée avec des méthodes spécialisées dans les séquences de journaux.
 
-Le travail realise montre aussi l'importance d'une demarche equilibree. Dans le domaine de la cybersecurite, il serait tentant de reduire la valeur d'un systeme a un score de detection. Le memoire montre au contraire que la detection depend d'une chaine complete : collecte, parsing, normalisation, routage, modele, correlation, visualisation et audit. Chacune de ces etapes peut renforcer ou affaiblir le resultat final. L'apport de \logminer{} est donc de rendre cette chaine visible et experimentable.
+Enfin, la mise à jour contrôlée des modèles pourra être enrichie par une meilleure structuration des retours analyste, une surveillance plus explicite de la dérive conceptuelle et une documentation systématique des promotions ou retours arrière de modèles.
 
-Les resultats supervises confirment l'interet des modeles specialises lorsque des labels sont disponibles. Les resultats non supervises montrent l'utilite d'une exploration par anomalies candidates lorsque les labels manquent. Les benchmarks de duree et de ressources indiquent qu'un traitement local par micro-lots est possible sur des volumes moderes. Les captures du dashboard montrent que les sorties ne restent pas limitees a des fichiers techniques, mais deviennent consultables par un analyste.
+\section{Conclusion finale}
 
-La contribution principale reste l'integration architecturale rigoureuse de ces elements. Le prototype ne remplace pas Wazuh, OSSEC, fail2ban ou une pile SIEM complete. Il propose une couche analytique complementaire, adaptee a l'experimentation, a la pedagogie et a une organisation souhaitant progresser vers une meilleure exploitation de ses journaux. Cette couche pourra etre renforcee par des splits comparatifs plus stricts, des parseurs supplementaires, des modeles sequentiels, une reduction des faux positifs, une anonymisation des donnees et une validation distribuee.
+\logminer{} montre qu'il est possible de construire une chaîne locale d'analyse de journaux à la fois modulaire, auditable et exploitable. Le prototype ne remplace pas un SOC industriel ni les plateformes de sécurité existantes, mais il fournit une base concrète pour comprendre, expérimenter et évaluer l'analyse de journaux hétérogènes.
 
-Ainsi, le memoire atteint son objectif principal : demontrer la faisabilite d'une detection d'anomalies modulaire, interpretable et reproductible sur des journaux heterogenes. Les limites identifiees ne constituent pas un echec du prototype ; elles definissent le programme logique des travaux futurs.
+L'intérêt du travail réside dans cette articulation entre architecture logicielle, modèles légers, mémoire adaptative, validation humaine et reproductibilité. Cette combinaison permet de traiter les anomalies comme des signaux à interpréter plutôt que comme des décisions automatiques définitives, ce qui correspond mieux aux exigences d'une application de cybersécurité.
