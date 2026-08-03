@@ -29,11 +29,11 @@ CAPTURES = [
 
 def find_browser() -> Path | None:
     candidates = [
-        Path(r"C:\Program Files\Google\Chrome\Application\chrome.exe"),
-        Path(r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"),
         Path(r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"),
         Path(r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"),
         Path(r"C:\Program Files (x86)\Microsoft\EdgeCore\msedge.exe"),
+        Path(r"C:\Program Files\Google\Chrome\Application\chrome.exe"),
+        Path(r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"),
     ]
     for candidate in candidates:
         if candidate.exists():
@@ -44,15 +44,19 @@ def find_browser() -> Path | None:
 def capture(browser: Path, filename: str, url: str, window_size: str) -> Path:
     DOCS_CAPTURE_DIR.mkdir(parents=True, exist_ok=True)
     output_path = DOCS_CAPTURE_DIR / filename
-    user_data_dir = ROOT / "data" / "processed" / "_edge_dashboard_capture"
+    user_data_dir = ROOT / "data" / "processed" / f"_edge_dashboard_capture_{filename.removesuffix('.png')}"
+    shutil.rmtree(user_data_dir, ignore_errors=True)
     user_data_dir.mkdir(parents=True, exist_ok=True)
     command = [
         str(browser),
-        "--headless",
+        "--headless=new",
         "--disable-gpu",
+        "--disable-dev-shm-usage",
         "--hide-scrollbars",
         "--no-first-run",
+        "--no-default-browser-check",
         "--disable-crash-reporter",
+        "--disable-breakpad",
         "--disable-features=RendererCodeIntegrity",
         f"--user-data-dir={user_data_dir.resolve()}",
         f"--window-size={window_size}",
@@ -60,7 +64,7 @@ def capture(browser: Path, filename: str, url: str, window_size: str) -> Path:
         f"--screenshot={output_path.resolve()}",
         url,
     ]
-    subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=35)
+    subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=90)
     if not output_path.exists() or output_path.stat().st_size < 50_000:
         raise RuntimeError(f"Capture suspecte ou vide: {output_path}")
     return output_path

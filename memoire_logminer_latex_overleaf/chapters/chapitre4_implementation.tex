@@ -22,7 +22,7 @@ Les principales étapes sont les suivantes :
 
 \begin{enumerate}
 
-\item lecture ou découverte des sources de journaux ;
+\item collecte continue, lecture ou découverte des sources de journaux ;
 
 \item parsing des formats reconnus ou conservation des entrées lorsque leur format ne peut pas être identifié ;
 
@@ -37,6 +37,10 @@ Les principales étapes sont les suivantes :
 \item export des résultats au format CSV et journalisation des informations nécessaires à l'audit.
 
 \end{enumerate}
+
+La collecte ne doit pas être interprétée comme une étape ponctuelle qui conditionnerait tout le fonctionnement du système.
+Dans le scénario d'exécution retenu, elle est considérée comme active dès le lancement de l'application.
+Les opérations de découverte et de synchronisation servent alors à rafraîchir l'inventaire des sources disponibles et à prioriser le prochain lot à traiter, mais elles ne remplacent pas la logique de collecte continue.
 
 Le module \texttt{pipeline.py} coordonne principalement cette chaîne de traitement dans sa version locale. Le fichier \texttt{api.py} expose les principales fonctions au moyen de FastAPI. Les modules \texttt{model\_router.py} et \texttt{model\_compare.py} sont utilisés respectivement pour le routage des données vers les familles appropriées et pour la comparaison de certains modèles.
 
@@ -222,11 +226,14 @@ Le tableau de bord n'a donc pas besoin de connaître directement l'organisation 
 
 Cette séparation rend l'architecture plus flexible. Elle facilite notamment l'ajout futur de nouveaux workers, de files d'attente, de services intermédiaires ou de connecteurs vers d'autres plateformes.
 
+Dans cette version, Docker n'est pas présenté comme un agent d'analyse autonome. Il sert de couche d'exécution pour certains services de support, en particulier Redis Streams et MQTT. L'activité observable du système provient donc principalement de FastAPI, des workers Python et des messages publiés sur Redis, tandis que Docker est suivi comme un runtime d'infrastructure indiquant si ces services peuvent être hébergés localement.
+
 \section{Tableau de bord Ariel Logminer}
 
 Le tableau de bord Ariel \logminer{} constitue l'interface principale de consultation et d'interaction avec le prototype.
 
 Il regroupe les indicateurs globaux, les alertes considérées comme prioritaires, les anomalies candidates, les incidents, plusieurs graphiques de suivi, les informations relatives aux ressources, l'état des services de la V2 ainsi que le journal d'audit.
+Il présente également la collecte comme un processus continu : l'interface affiche la dernière source priorisée ou l'état de surveillance des sources, tandis que l'action de synchronisation permet seulement de rafraîchir cette priorité avant un nouveau traitement.
 
 \begin{figure}[H]
 \centering

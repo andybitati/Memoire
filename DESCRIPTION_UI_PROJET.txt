@@ -1,0 +1,288 @@
+Description detaillee du UI du projet Ariel Logminer
+=====================================================
+
+1. Objectif general du UI
+-------------------------
+
+Le UI du projet doit servir de centre d'analyse pour Ariel Logminer, un prototype
+de detection d'anomalies dans les journaux systemes et reseaux. Il doit permettre
+a un utilisateur technique, un administrateur systeme ou un analyste securite de
+comprendre rapidement l'etat des journaux collectes, les anomalies detectees, les
+incidents correles et le fonctionnement des agents du pipeline.
+
+L'interface ne doit pas etre une simple page de presentation. Elle doit etre un
+poste de pilotage operationnel: afficher les donnees, orienter les priorites,
+permettre de lancer ou rafraichir l'analyse, suivre les services techniques, et
+donner une lecture claire des resultats produits par les agents Logminer.
+
+2. Role fonctionnel du UI dans l'architecture
+---------------------------------------------
+
+Le UI correspond a l'agent visualiseur de l'architecture multi-agents. Il recoit
+ou lit les sorties produites par les autres agents:
+
+- evenements normalises issus du parsing et de la normalisation;
+- anomalies candidates issues de l'agent detecteur;
+- incidents correles issus de l'agent correlateur;
+- messages du bus agents JSONL ou Redis Streams;
+- etat des services V2 comme FastAPI, Redis, MQTT, Docker et les modeles IA;
+- ressources consommees par les agents;
+- journal d'audit des decisions utilisateur et systeme.
+
+Son role est de transformer ces donnees techniques en une lecture exploitable,
+avec des indicateurs, des filtres, des tableaux, des alertes visuelles et des
+actions simples.
+
+3. Structure globale attendue
+-----------------------------
+
+Le UI doit s'ouvrir directement sur l'application, pas sur une page marketing.
+La premiere vue doit montrer le tableau de bord de surveillance.
+
+La mise en page attendue est composee de:
+
+- une barre laterale fixe contenant la marque Ariel Logminer, les actions
+  principales et les filtres;
+- un en-tete principal indiquant que l'utilisateur est dans le centre d'analyse
+  Ariel Logminer;
+- des onglets ou boutons de navigation entre les vues principales;
+- une zone de contenu centrale qui change selon la vue selectionnee;
+- des panneaux visuels pour les statistiques, les graphiques, les incidents,
+  les services, les messages agents et les tableaux de donnees.
+
+Les vues principales doivent etre:
+
+- Vue d'ensemble;
+- Resultats;
+- Technique.
+
+4. Barre laterale
+-----------------
+
+La barre laterale doit permettre de piloter l'application sans quitter le
+dashboard.
+
+Elle doit contenir:
+
+- le logo ou nom Ariel Logminer;
+- un bouton "Actualiser" pour recharger les donnees;
+- un bouton d'activation des notifications navigateur;
+- un bouton "Preparer runtime" pour verifier ou preparer l'environnement
+  d'execution;
+- un bouton de demande de collecte privilegiee pour les journaux systeme lorsque
+  des droits administrateur sont necessaires;
+- un bouton de decouverte des journaux disponibles;
+- un bouton pour lancer une analyse autonome;
+- les boutons de navigation "Vue d'ensemble", "Resultats" et "Technique";
+- un champ de recherche textuelle;
+- des filtres par host, severity, category et source.
+
+Le champ de recherche doit chercher dans les messages, sources, utilisateurs,
+machines, evenements et resumes d'incidents. Les filtres doivent s'appliquer aux
+anomalies lorsqu'elles existent, sinon aux evenements normalises.
+
+5. Vue d'ensemble
+-----------------
+
+La vue d'ensemble doit donner une reponse immediate a la question:
+"Que dois-je faire maintenant ?"
+
+Elle doit afficher:
+
+- une synthese du nombre d'evenements, anomalies candidates, incidents correles
+  et messages agents;
+- l'etat des principaux services: API, Redis Streams, MQTT, Docker, modeles;
+- un panneau de priorite indiquant la prochaine action recommandee;
+- une banniere d'alerte lorsqu'il existe des signaux urgents;
+- une analyse temporelle des evenements ou anomalies;
+- une timeline ou heatmap d'activite;
+- des indicateurs de sante du pipeline;
+- les signaux importants a regarder en premier;
+- les graphiques temps reel lorsque des donnees sont disponibles.
+
+Les alertes urgentes doivent etre mises en avant lorsqu'un incident a une
+severite elevee, lorsqu'une anomalie est marquee comme suspecte, ou lorsqu'un
+mot-cle inquietant apparait dans le contenu, par exemple attaque, brute force,
+failed login, privilege, malware, XSS ou SQL injection.
+
+6. Vue Resultats
+----------------
+
+La vue Resultats doit permettre d'examiner les donnees produites par l'analyse.
+Elle doit etre concue pour une lecture d'investigation.
+
+Elle doit afficher:
+
+- les incidents correles, tries par importance ou nombre d'evenements;
+- le detail d'un incident selectionne;
+- les anomalies candidates;
+- les evenements normalises;
+- les scores, severites, categories, sources, machines et messages utiles;
+- des badges de severite lisibles;
+- des tableaux filtrables par la recherche et les filtres globaux;
+- la possibilite d'exporter les lignes affichees au format CSV;
+- la possibilite d'exporter le detail d'un incident.
+
+Lorsqu'un incident est selectionne, le UI doit montrer son identifiant, son
+resume, sa severite, le nombre d'evenements lies, les anomalies associees et les
+messages importants permettant de comprendre la cause probable.
+
+7. Vue Technique
+----------------
+
+La vue Technique doit servir au suivi du fonctionnement interne du prototype.
+Elle doit etre utile pour demontrer le caractere multi-agents, distribue et
+observable du systeme.
+
+Elle doit afficher:
+
+- le panneau Services V2 avec l'etat de FastAPI, Redis Streams, MQTT, Docker et
+  des artefacts modeles;
+- les jobs Redis pending ou non acquittes;
+- les actions techniques comme tester MQTT ou preparer le runtime;
+- la consommation CPU et memoire par agent;
+- le parcours d'analyse du workflow;
+- le flux agents, traduit en langage humain;
+- le journal agents brut ou resume;
+- les evenements Redis recents;
+- le journal d'audit systeme;
+- les resultats de validation des modeles;
+- le panneau d'explication analyste.
+
+Les messages agents doivent etre presentes de maniere lisible. Par exemple,
+"parse.completed" doit devenir "Parsing termine", et les couples source -> cible
+doivent etre affiches sous forme "Parseur -> Detecteur IA" ou equivalent.
+
+8. Explication analyste
+-----------------------
+
+Le UI doit proposer une fonction d'explication des resultats. Elle doit resumer
+l'etat du dashboard dans un langage clair pour un humain:
+
+- synthese generale;
+- niveau de risque;
+- incident principal;
+- anomalies ou signaux importants;
+- etat des modeles si une validation existe;
+- dernier message agent significatif;
+- action prioritaire recommandee.
+
+L'explication peut etre produite par un service IA si une cle API est disponible,
+mais le UI doit aussi fonctionner avec une explication locale de secours. Aucune
+cle API ne doit etre exposee cote navigateur.
+
+9. Gestion des alertes et decisions
+-----------------------------------
+
+Le UI doit permettre de traiter les alertes importantes. Pour chaque signal
+prioritaire, l'utilisateur doit pouvoir prendre une decision, par exemple:
+
+- confirmer;
+- ignorer;
+- marquer comme faux positif;
+- demander une verification ulterieure.
+
+Ces decisions doivent etre visibles dans le UI, enregistrees dans le journal
+d'audit, et ne doivent pas faire reapparaitre inutilement la meme alerte dans
+la liste des signaux en attente.
+
+10. Rafraichissement et temps reel
+----------------------------------
+
+Le UI doit se rafraichir automatiquement environ toutes les 5 secondes, tout en
+gardant un bouton d'actualisation manuelle.
+
+Il doit afficher:
+
+- l'heure du dernier rafraichissement;
+- le delai avant le prochain rafraichissement;
+- les variations recentes du volume d'evenements;
+- l'evolution des anomalies, incidents et ressources;
+- les donnees de consommation CPU et memoire lorsque disponibles.
+
+Le rafraichissement ne doit pas casser les filtres actifs ni la vue courante.
+
+11. Donnees a charger
+---------------------
+
+Le UI doit charger les donnees depuis les routes ou fichiers exposes par le
+serveur dashboard:
+
+- /api/data?type=events pour les evenements normalises;
+- /api/data?type=anomalies pour les anomalies;
+- /api/data?type=incidents pour les incidents correles;
+- /api/data?type=messages pour les messages agents;
+- /api/services pour l'etat des services;
+- /api/redis-events pour les evenements Redis;
+- /api/audit pour le journal d'audit;
+- /api/resources pour la consommation des agents;
+- /api/explain pour l'explication analyste;
+- /api/auto-run pour lancer une analyse autonome;
+- /api/collect-discover pour decouvrir les journaux disponibles;
+- /api/privileged-collect pour demander une collecte privilegiee;
+- /api/runtime-prepare pour preparer l'environnement;
+- /api/mqtt-publish pour tester la publication MQTT;
+- /api/alert-decision pour enregistrer une decision sur une alerte.
+
+Les donnees principales proviennent du dossier data/processed, notamment les
+CSV d'evenements, anomalies, incidents et les fichiers JSONL de messages agents.
+
+12. Etats d'interface obligatoires
+----------------------------------
+
+Le UI doit gerer proprement les etats suivants:
+
+- chargement initial;
+- rafraichissement en cours;
+- analyse autonome en cours;
+- aucune donnee disponible;
+- erreur de chargement;
+- service indisponible;
+- runtime non prepare;
+- absence de Redis ou MQTT;
+- absence de modeles IA;
+- resultats disponibles mais sans anomalie;
+- incident selectionne introuvable;
+- action utilisateur en cours d'enregistrement;
+- confirmation visuelle apres decision sur une alerte.
+
+Un etat vide ne doit pas etre une page blanche. Il doit expliquer sobrement ce
+qui manque et quelle action peut debloquer la situation.
+
+13. Experience utilisateur attendue
+-----------------------------------
+
+L'interface doit etre claire, dense et orientee travail. Elle doit ressembler a
+un outil d'analyse securite ou supervision, pas a une landing page.
+
+Les principes visuels attendus:
+
+- informations prioritaires visibles au premier ecran;
+- contraste suffisant pour les severites;
+- badges pour les niveaux CRITICAL, ERROR, WARNING, INFO;
+- tableaux lisibles avec colonnes utiles;
+- panneaux organises et faciles a scanner;
+- textes courts et operationnels;
+- design responsive pour ordinateur portable et ecran large;
+- aucun chevauchement de texte ou de boutons;
+- actions critiques clairement distinguees des actions secondaires.
+
+14. Critere de reussite
+-----------------------
+
+Le UI est considere reussi si un utilisateur peut:
+
+- savoir en moins de quelques secondes si le systeme est stable ou a verifier;
+- voir combien d'evenements, anomalies et incidents ont ete detectes;
+- identifier les incidents prioritaires;
+- filtrer et chercher dans les donnees;
+- comprendre le parcours des agents;
+- verifier l'etat de FastAPI, Redis, MQTT, Docker et des modeles;
+- lancer ou relancer une analyse autonome;
+- obtenir une explication humaine des resultats;
+- exporter les donnees utiles;
+- garder une trace des decisions prises sur les alertes.
+
+En resume, le UI doit faire le lien entre le pipeline technique Logminer et une
+lecture humaine actionnable: collecter, analyser, prioriser, expliquer et aider
+a decider.

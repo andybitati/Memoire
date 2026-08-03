@@ -100,8 +100,16 @@ feedback/.style={-{Latex[length=2mm]}, dotted, thick}
 \draw[feedback] (audit) -- (mlops);
 \draw[feedback] (mlops) -- (router);
 
+\node[draw, rounded corners=2pt, align=left, font=\scriptsize, fill=white, below=0.35cm of redis] (legend) {
+\begin{tabular}{@{}ll@{}}
+\tikz{\draw[arrow] (0,0) -- (0.65,0);} & flux de donnees \\
+\tikz{\draw[ctrl] (0,0) -- (0.65,0);} & flux de controle \\
+\tikz{\draw[feedback] (0,0) -- (0.65,0);} & flux de retour ou de mise a jour
+\end{tabular}
+};
+
 \node[draw, rounded corners=2pt, fit=(collecte)(parse)(norm)(router)(models)(corr)(dash), inner sep=0.25cm, label={[font=\scriptsize]above:Pipeline analytique local}] {};
-\node[draw, rounded corners=2pt, fit=(storage)(audit)(redis)(mlops), inner sep=0.25cm, label={[font=\scriptsize]below:Persistance, orchestration et amélioration contrôlée}] {};
+\node[draw, rounded corners=2pt, fit=(storage)(audit)(redis)(mlops)(legend), inner sep=0.25cm, label={[font=\scriptsize]below:Persistance, orchestration et amélioration contrôlée}] {};
 \end{tikzpicture}
 }
 \caption{Vue détaillée des flux de données, de contrôle et de retour dans \logminer{}.}
