@@ -411,8 +411,6 @@ async function loadData(options = {}) {
   }
 }
 
-window.__logminerRefreshForCapture = () => loadData({ mode: "capture", silent: true, skipAutoAnalysis: true });
-
 async function discoverLogs() {
   state = { ...state, collector: { ...state.collector, loading: true, error: "" } };
   render();
@@ -648,9 +646,9 @@ function sidebar() {
       </div>
       <button class="primaryAction" id="reloadBtn" ${state.loading ? "disabled" : ""}><span class="icon">↻</span>Actualiser</button>
       <button class="secondaryAction" id="browserNotifBtn"><span class="icon">!</span>${state.browserNotifications ? "Notifications actives" : "Activer notifications"}</button>
-      <button class="secondaryAction" id="runtimeBtn" ${state.runtime.loading ? "disabled" : ""}><span class="icon">◉</span>${state.runtime.loading ? "Préparation" : "Vérifier runtime"}</button>
+      <button class="secondaryAction" id="runtimeBtn" ${state.runtime.loading ? "disabled" : ""}><span class="icon">◉</span>${state.runtime.loading ? "Préparation" : "Préparer runtime"}</button>
       <button class="secondaryAction" id="privilegedBtn" ${state.privilege.loading ? "disabled" : ""}><span class="icon">⌘</span>${state.privilege.loading ? "Demande" : "Autoriser journaux sensibles"}</button>
-      <button class="secondaryAction" id="discoverBtn" ${state.collector.loading ? "disabled" : ""}><span class="icon">⌕</span>${state.collector.loading ? "Synchronisation" : "Synchroniser collecte"}</button>
+      <button class="secondaryAction" id="discoverBtn" ${state.collector.loading ? "disabled" : ""}><span class="icon">⌕</span>${state.collector.loading ? "Recherche" : "Trouver les journaux"}</button>
       <button class="primaryAction" id="autoRunBtn" ${state.autoRun.loading ? "disabled" : ""}><span class="icon">▶</span>${state.autoRun.loading ? "Analyse en cours" : "Lancer l'analyse"}</button>
       <div class="viewSwitch">
         <button data-view="overview" class="${state.view === "overview" ? "activeView" : ""}">Vue d'ensemble</button>
@@ -719,8 +717,8 @@ const AGENT_LABELS = {
 const MESSAGE_LABELS = {
   "workflow.started": "Workflow lancé",
   "workflow.completed": "Workflow terminé",
-  "collector.discovery.started": "Synchronisation collecte",
-  "collector.discovery.completed": "Sources collectées",
+  "collector.discovery.started": "Recherche des journaux",
+  "collector.discovery.completed": "Journaux trouvés",
   "runtime.prepare.started": "Préparation runtime",
   "runtime.prepare.completed": "Runtime prêt",
   "privilege.request.started": "Autorisation demandée",
@@ -832,7 +830,7 @@ function pipelineTopologyPanel() {
       <div class="pipelineTopology">
         <div class="agentNode active">
           <strong>Collecteur</strong>
-          <small>${state.collector.selected ? "Lot priorisé" : "Collecte continue"}</small>
+          <small>${state.collector.selected ? "Source active" : "Scanner"}</small>
         </div>
         <div class="nodeConnector"></div>
         <div class="agentNode active">
@@ -863,23 +861,11 @@ function servicePanel() {
   const { api, redis, redisPending, mqtt, models } = state.services;
   const runtime = state.runtime.result || state.services.runtime || {};
   const modelCount = (models || []).filter((model) => model.exists).length;
-  const selected = state.collector.selected || state.autoRun.result?.selected;
+  const selected = state.collector.selected;
   const result = state.autoRun.result;
   const privilege = state.privilege.result;
   const mqttTest = state.mqttTest || {};
   const pendingJobs = redisPending?.pending?.pending ?? redisPending?.pending_count ?? 0;
-  const runtimeReady = Boolean(runtime?.docker_engine);
-  const runtimeAction = runtime?.services_started
-    ? "compose lancé"
-    : runtimeReady
-      ? "surveillance seule"
-      : "à vérifier";
-  const hostedServices = [
-    redis?.status === "ok" ? "Redis actif" : "",
-    mqtt?.status === "ok" ? "MQTT actif" : "",
-  ]
-    .filter(Boolean)
-    .join(" · ");
 
   return `
     <section class="panel servicePanel">
@@ -892,13 +878,7 @@ function servicePanel() {
         <div class="serviceItem"><span class="dot ${redis?.status === "ok" ? "" : "errorDot"}"></span><div><strong>Redis Streams</strong><small>${escapeHtml(redis?.stream || redis?.error || "non vérifié")}</small></div></div>
         <div class="serviceItem"><span class="dot ${mqtt?.status === "ok" ? "" : "errorDot"}"></span><div><strong>MQTT</strong><small>${escapeHtml(mqtt?.status === "ok" ? `${mqtt.host || "localhost"}:${mqtt.port || 1883}` : mqtt?.error || "non vérifié")}</small></div></div>
         <div class="serviceItem"><span class="dot ${Number(pendingJobs) ? "warnDot" : ""}"></span><div><strong>Jobs pending</strong><small>${escapeHtml(pendingJobs)} job(s) Redis</small></div></div>
-        <div class="serviceItem runtimeItem">
-          <span class="dot ${runtimeReady ? "" : "errorDot"}"></span>
-          <div>
-            <strong>Runtime Docker</strong>
-            <small>${escapeHtml(runtimeReady ? `${runtimeAction}${hostedServices ? ` · ${hostedServices}` : ""}` : runtime?.message || "moteur indisponible")}</small>
-          </div>
-        </div>
+        <div class="serviceItem"><span class="dot ${runtime?.docker_engine ? "" : "errorDot"}"></span><div><strong>Docker</strong><small>${escapeHtml(runtime?.message || "état non vérifié")}</small></div></div>
         <div class="serviceItem"><span class="dot"></span><div><strong>Modèles IA</strong><small>${modelCount}/${(models || []).length} artefacts</small></div></div>
       </div>
       <div style="display:flex; gap:10px; align-items:center;">
@@ -907,8 +887,8 @@ function servicePanel() {
         ${mqttTest.error ? `<small style="color:var(--crimson);">${escapeHtml(mqttTest.error)}</small>` : ""}
       </div>
       <div class="rationaleBox">
-        <strong>Collecte continue :</strong>
-        <span>${selected ? `Dernière source priorisée : ${escapeHtml(selected.path)}` : "Surveillance active des sources; aucun fichier prioritaire isolé dans le dernier lot."}</span>
+        <strong>Source & Collecte Active :</strong>
+        <span>${selected ? escapeHtml(selected.path) : "Aucun fichier sélectionné par le collecteur."}</span>
         ${result ? `<br/><small style="color:var(--cyan);">Dernier run: ${escapeHtml(result.run_id)} · ${escapeHtml(result.anomalies_rows ?? "0")} anomalies · ${escapeHtml(result.incidents_rows ?? "0")} incidents</small>` : ""}
         ${privilege ? `<br/><small style="color:var(--gold);">Accès sensible: ${escapeHtml(privilege.message || (privilege.launched ? "demande lancée" : "non autorisé"))}</small>` : ""}
       </div>
@@ -922,12 +902,12 @@ function operatorSummaryPanel() {
   const apiOk = state.services.api?.status === "ok";
   const latestAudit = state.audit[state.audit.length - 1];
   const result = state.autoRun.result;
-  const selected = state.collector.selected || state.autoRun.result?.selected;
+  const selected = state.collector.selected;
   const nextAction = result
     ? "Consulter les résultats d'incidents ou demander une explication synthétique par l'analyste."
     : selected
-      ? "La collecte continue a priorisé une source; lancer l'analyse traite le dernier lot disponible."
-      : "Collecte continue active; synchroniser les sources sert uniquement à rafraîchir la priorité du prochain lot.";
+      ? "Lancer l'analyse autonome pour traiter les journaux détectés."
+      : "Rechercher les journaux puis lancer l'analyse autonome.";
 
   return `
     <section class="starkHero">
@@ -1337,174 +1317,6 @@ function incidentDetailPanel(incident, anomalies) {
   `;
 }
 
-function analystQueuePanel(incidents, anomalies, selectedIncident) {
-  const rows = [
-    ...incidents.slice(0, 12).map((incident) => ({
-      type: "incident",
-      id: incident.incident_id || "incident",
-      title: incident.summary || incident.incident_id || "Incident corrélé",
-      severity: incident.priority || incident.severity || "WARNING",
-      host: incident.host || "",
-      time: incident.start_time || incident.timestamp_iso || "",
-      count: incident.event_count || "",
-      incidentId: incident.incident_id || "",
-    })),
-    ...anomalies.slice(0, 8).map((row, index) => ({
-      type: "anomaly",
-      id: row.recno || `anomaly-${index + 1}`,
-      title: row.event || row.category || "Anomalie candidate",
-      severity: row.severity || (row.is_anomaly === "1" ? "WARNING" : "INFO"),
-      host: row.host || "",
-      time: row.timestamp_iso || row.start_time || "",
-      count: row.anomaly_score || "",
-      incidentId: "",
-    })),
-  ].sort((a, b) => severityValue(b.severity) - severityValue(a.severity));
-
-  return `
-    <section class="analystPane alertQueue">
-      <div class="analystPaneHeader">
-        <div>
-          <span>Priorité analyste</span>
-          <h2>File des alertes</h2>
-        </div>
-        <strong>${rows.length}</strong>
-      </div>
-      <div class="queueList">
-        ${
-          rows.length
-            ? rows
-                .map(
-                  (item) => `
-                    <button class="queueItem ${selectedIncident?.incident_id === item.incidentId ? "active" : ""}" ${item.incidentId ? `data-incident-id="${escapeHtml(item.incidentId)}"` : ""}>
-                      <span class="severityRail ${severityClass(item.severity)}"></span>
-                      <span class="queueBody">
-                        <strong>${escapeHtml(item.title)}</strong>
-                        <small>${escapeHtml(formatDateTime(item.time) || "--")} · ${escapeHtml(item.host || "host inconnu")}</small>
-                      </span>
-                      <span class="queueMeta">
-                        <span class="pill ${severityClass(item.severity)}">${escapeHtml(item.severity || "N/A")}</span>
-                        <small>${escapeHtml(String(item.count || item.type))}</small>
-                      </span>
-                    </button>
-                  `,
-                )
-                .join("")
-            : `<div class="emptyState">Aucune alerte active. Lancez une analyse ou actualisez les données.</div>`
-        }
-      </div>
-    </section>
-  `;
-}
-
-function investigationWorkspace(selectedIncident, anomalies, events) {
-  const sourceRows = selectedIncident
-    ? anomalies.filter((row) => {
-        const start = new Date(selectedIncident.start_time || "");
-        const end = new Date(selectedIncident.end_time || "");
-        const date = new Date(row.timestamp_iso || row.start_time || "");
-        const sameHost = !selectedIncident.host || !row.host || row.host === selectedIncident.host;
-        return sameHost && !Number.isNaN(date.getTime()) && !Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime()) && date >= start && date <= end;
-      })
-    : anomalies;
-  const timelineRows = (sourceRows.length ? sourceRows : events).slice(0, 8);
-
-  return `
-    <section class="analystPane investigationWorkspace">
-      <div class="workspaceHero">
-        <div>
-          <span class="eyebrow">Investigation en cours</span>
-          <h2>${escapeHtml(selectedIncident?.summary || "Aucun incident sélectionné")}</h2>
-          <p>${escapeHtml(selectedIncident ? selectedIncident.rationale || "Corrélation temporelle et contexte commun détectés." : "Sélectionnez une alerte dans la file pour ouvrir son contexte d'analyse.")}</p>
-        </div>
-        <div class="caseScore">
-          <span>Risque</span>
-          <strong>${escapeHtml(selectedIncident?.priority || selectedIncident?.severity || (anomalies.length ? "A surveiller" : "Stable"))}</strong>
-        </div>
-      </div>
-      <div class="caseFacts">
-        <div><span>Hôte</span><strong>${escapeHtml(selectedIncident?.host || "n/a")}</strong></div>
-        <div><span>Source</span><strong>${escapeHtml(selectedIncident?.source || "n/a")}</strong></div>
-        <div><span>Fenêtre</span><strong>${escapeHtml(formatDateTime(selectedIncident?.start_time) || "--")}</strong></div>
-        <div><span>Événements</span><strong>${escapeHtml(selectedIncident?.event_count || timelineRows.length || "0")}</strong></div>
-      </div>
-      <div class="timelineStrip">
-        <div class="analystSectionTitle">Chronologie utile</div>
-        ${
-          timelineRows.length
-            ? timelineRows
-                .map(
-                  (row) => `
-                    <article class="timelineEvent">
-                      <time>${escapeHtml(formatTime(row.timestamp_iso || row.start_time))}</time>
-                      <div>
-                        <strong>${escapeHtml(row.event || row.category || "Événement")}</strong>
-                        <p>${escapeHtml(row.message || row.summary || "")}</p>
-                      </div>
-                      <span class="pill ${severityClass(row.severity)}">${escapeHtml(row.severity || "N/A")}</span>
-                    </article>
-                  `,
-                )
-                .join("")
-            : `<div class="emptyState">Aucun événement exploitable pour la chronologie.</div>`
-        }
-      </div>
-      <div class="caseActions">
-        <button class="primaryAction" id="openResultsBtn" style="width:auto;">Ouvrir les résultats</button>
-        <button class="secondaryAction" id="explainBtn" style="width:auto;">Demander l'explication</button>
-      </div>
-    </section>
-  `;
-}
-
-function analystDecisionPanel(alerts, selectedIncident) {
-  const top = alerts[0];
-  const serviceState = [
-    ["API", state.services.api?.status === "ok"],
-    ["Redis", state.services.redis?.status === "ok"],
-    ["MQTT", state.services.mqtt?.status === "ok"],
-    ["Modèles", (state.services.models || []).some((model) => model.exists)],
-  ];
-
-  return `
-    <aside class="analystPane decisionSupport">
-      <div class="analystPaneHeader">
-        <div>
-          <span>Aide décision</span>
-          <h2>Lecture analyste</h2>
-        </div>
-      </div>
-      <div class="recommendationBox">
-        <span>Action prioritaire</span>
-        <strong>${escapeHtml(top ? top.title : selectedIncident ? "Confirmer le contexte de l'incident" : "Surveiller le prochain lot")}</strong>
-        <p>${escapeHtml(top?.detail || selectedIncident?.summary || "Aucun signal critique immédiat dans la file actuelle.")}</p>
-      </div>
-      <div class="analystSectionTitle">État de confiance</div>
-      <div class="serviceChecklist">
-        ${serviceState
-          .map(
-            ([label, ok]) => `
-              <div><span class="dot ${ok ? "" : "warnDot"}"></span><strong>${escapeHtml(label)}</strong><small>${ok ? "OK" : "à vérifier"}</small></div>
-            `,
-          )
-          .join("")}
-      </div>
-      ${explanationPanel()}
-    </aside>
-  `;
-}
-
-function analystConsole(filteredEvents, filteredAnomalies, incidents, selectedIncident, alerts) {
-  return `
-    <section class="analystConsole">
-      ${analystQueuePanel(incidents, filteredAnomalies, selectedIncident)}
-      ${investigationWorkspace(selectedIncident, filteredAnomalies, filteredEvents)}
-      ${analystDecisionPanel(alerts, selectedIncident)}
-    </section>
-    ${realtimeChartsPanel(filteredEvents, filteredAnomalies, incidents)}
-  `;
-}
-
 function dataTable(title, rows, columns, icon, options = {}) {
   return `
     <section class="panel">
@@ -1578,7 +1390,7 @@ function render() {
       ${sidebar()}
       <main class="content">
         <header class="topbar">
-          <div><span>Console analyste SOC</span><h1>Ariel Logminer</h1></div>
+          <div><span>CENTRE DE COMMANDEMENT SOC</span><h1>Ariel Logminer HUD</h1></div>
           <div class="statusCluster">
             <div class="status"><span class="${state.error ? "dot errorDot" : "dot"}"></span>${escapeHtml(state.error || (state.loading ? "Synchronisation" : "Système Synchronisé"))}</div>
             <div class="refreshHud">
@@ -1600,7 +1412,11 @@ function render() {
         ${
           state.view === "overview"
             ? `
-              ${analystConsole(filteredEvents, filteredAnomalies, state.incidents, selectedIncident, alerts)}
+              ${operatorSummaryPanel()}
+              ${pipelineTopologyPanel()}
+              ${realtimeChartsPanel(filteredEvents, filteredAnomalies, state.incidents)}
+              ${incidentsPanel(state.incidents)}
+              ${explanationPanel()}
             `
             : state.view === "results"
               ? `
