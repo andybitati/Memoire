@@ -1,0 +1,1386 @@
+Sol high
+
+TU AGIS COMME UN REVIEWER SCIENTIFIQUE SENIOR ET COMME UN ÉDITEUR DE MÉMOIRE
+D'INGÉNIERIE.
+
+Domaines :
+- cybersécurité ;
+- analyse de journaux système et réseau ;
+- machine learning appliqué ;
+- systèmes distribués ;
+- architectures multi-agents ;
+- ingénierie logicielle ;
+- méthodologie expérimentale ;
+- rédaction scientifique.
+
+Je vais te fournir la version actuelle complète de mon mémoire :
+
+« Détection autonome et distribuée d’anomalies dans les journaux système et réseau
+à l’aide d’agents intelligents multitâches —
+Conception et évaluation locale du prototype Ariel Logminer ».
+
+============================================================
+RÈGLE FONDAMENTALE
+============================================================
+
+À CETTE ÉTAPE, TU NE DOIS PAS RÉÉCRIRE LE MÉMOIRE.
+
+Je veux d’abord un DIAGNOSTIC COMPLET et un PLAN DE CORRECTION.
+
+La réécriture sera effectuée ensuite par un autre modèle.
+
+Tu dois donc :
+
+- lire le mémoire comme un document scientifique final ;
+- identifier ce qui affaiblit sa présentation ;
+- vérifier sa cohérence interne ;
+- identifier les traces inutiles du processus de développement ;
+- identifier les affirmations insuffisamment soutenues ;
+- identifier les références externes implicites ;
+- identifier les problèmes de citations et d’attribution ;
+- identifier les redondances ;
+- identifier les problèmes dans la présentation des résultats ;
+- identifier les formulations qui empêchent de comprendre rapidement la contribution.
+
+Ne modifie aucune valeur numérique.
+
+N’invente :
+- aucune expérience ;
+- aucune métrique ;
+- aucune source ;
+- aucun résultat ;
+- aucune fonctionnalité ;
+- aucune justification absente des preuves disponibles.
+
+Si une information manque, écris explicitement :
+
+« INFORMATION À VÉRIFIER »
+
+et non une réponse inventée.
+
+============================================================
+1. PRINCIPE GÉNÉRAL : PRÉSENTER LE PRODUIT FINAL, PAS SON HISTORIQUE
+============================================================
+
+Le mémoire doit présenter LOGMINER TEL QU’IL A ÉTÉ PRODUIT ET ÉVALUÉ.
+
+Il ne doit pas raconter inutilement les tâtonnements successifs ayant conduit
+à cette architecture.
+
+Le lecteur n’a pas besoin de connaître une histoire de type :
+
+- version 1 ;
+- V1 ;
+- version 2 ;
+- V2 ;
+- V3 ;
+- première version ;
+- ancienne architecture ;
+- nouvelle architecture ;
+- version locale ;
+- version distribuée ;
+- version améliorée ;
+- version avancée ;
+
+sauf si cette évolution constitue elle-même une expérience scientifique formellement
+évaluée, ce qui doit alors être démontré.
+
+Effectue une recherche dans TOUT le mémoire pour identifier ces formulations.
+
+Pour chaque occurrence :
+
+1. indique sa localisation ;
+2. dis si elle est nécessaire scientifiquement ;
+3. si elle ne l’est pas, recommande sa suppression ;
+4. indique comment présenter directement l’état final du système.
+
+Le mémoire doit répondre à la question :
+
+« Quelle architecture a été conçue et évaluée ? »
+
+et non :
+
+« Par quelles étapes successives l’auteur est-il passé pour arriver à cette architecture ? »
+
+============================================================
+2. CORRECTION PRIORITAIRE DU POINT 3.7
+============================================================
+
+Examine particulièrement le §3.7 « Bus, audit et extensions ».
+
+La rédaction actuelle donne trop l’impression d’un journal de développement :
+
+- version locale ;
+- V2 ;
+- introduction ensuite de Redis Streams ;
+- évolution de l’architecture ;
+- tableau V1/V2/V3 ;
+- MQTT comme étape supplémentaire.
+
+Je considère cette présentation trop tâtonnante.
+
+Analyse cette section et propose une restructuration conceptuelle.
+
+Le §3.7 doit présenter directement :
+
+- le mécanisme d’échange réellement utilisé ;
+- Redis Streams si Redis est effectivement implémenté ;
+- les fichiers JSONL/CSV lorsqu’ils ont une fonction réellement nécessaire ;
+- les mécanismes d’audit ;
+- les mécanismes de communication entre agents ;
+- la reprise des tâches ;
+- le rôle éventuel de FastAPI ;
+- la place exacte de MQTT, uniquement si elle est réellement pertinente.
+
+IMPORTANT :
+
+Si MQTT n’est pas implémenté et évalué, il doit être présenté clairement comme
+une perspective ou une extension possible, et non comme une composante de
+l’architecture démontrée.
+
+Analyse également le tableau actuellement consacré à « l’évolution fonctionnelle
+de l’architecture ».
+
+Détermine s’il doit :
+
+A. être supprimé ;
+B. être transformé ;
+C. être remplacé par un tableau décrivant directement les COMPOSANTS DE
+L’ARCHITECTURE FINALE, leurs rôles et leurs preuves d’implémentation.
+
+Je privilégie fortement C si l’information reste utile.
+
+============================================================
+3. CORRECTION PRIORITAIRE DU POINT 3.14
+============================================================
+
+Examine le §3.14 « Contrat de message entre modules ».
+
+Supprime la logique :
+
+« dans la version locale... »
+« dans une version plus distribuée... »
+
+Le contrat de message doit être présenté comme un élément de l’architecture
+proposée.
+
+Il doit expliquer directement :
+
+- identifiant ;
+- horodatage ;
+- source ;
+- type d’événement ;
+- payload ;
+- métadonnées ;
+- rôle de chaque composant ;
+- traçabilité de l’événement ;
+- mécanisme d’échange réellement implémenté.
+
+Si plusieurs supports de communication existent dans le prototype, présente-les
+comme des MÉCANISMES ou des MODES D’ÉCHANGE, pas comme des générations
+successives du produit.
+
+Par exemple, conceptuellement :
+
+ARCHITECTURE LOGIQUE
+→ contrat de message commun
+
+IMPLÉMENTATION
+→ objets internes / fichiers / API / Redis Streams selon le besoin.
+
+Ne raconte pas l’ordre chronologique dans lequel ces mécanismes ont été ajoutés.
+
+============================================================
+4. ÉLIMINER TOUTES LES TRACES DE « VERSIONING NARRATIF »
+============================================================
+
+Ne te limite pas aux §3.7 et §3.14.
+
+Recherche dans tout le document :
+
+- V1 ;
+- V2 ;
+- V3 ;
+- version locale ;
+- version avancée ;
+- version distribuée ;
+- version précédente ;
+- nouvelle version ;
+- première implémentation ;
+- évolution fonctionnelle ;
+- initialement ;
+- ensuite nous avons ajouté ;
+- dans un second temps ;
+- prototype précédent ;
+- ancienne approche.
+
+Classe chaque occurrence :
+
+A. nécessaire scientifiquement ;
+B. historique de développement inutile ;
+C. ambiguë.
+
+L’objectif est que le mémoire ressemble à la description d’un système final cohérent
+et non au journal de bord du développeur.
+
+============================================================
+5. RENDRE LE MÉMOIRE AUTONOME
+============================================================
+
+Le mémoire final doit être AUTOSUFFISANT.
+
+Un lecteur doit pouvoir comprendre :
+
+- la problématique ;
+- les objectifs ;
+- les hypothèses ;
+- l’architecture ;
+- la méthodologie ;
+- les expériences ;
+- les résultats ;
+- les limites ;
+- les contributions ;
+
+SANS avoir besoin d’un autre document.
+
+Recherche donc toutes les expressions telles que :
+
+- « conformément au document directeur » ;
+- « comme défini dans le document directeur » ;
+- « selon le cahier des charges » ;
+- « conformément à notre cahier des charges » ;
+- « comme demandé précédemment » ;
+- « selon le document initial » ;
+- « comme indiqué dans le document de référence » ;
+- et toute formulation équivalente.
+
+Pour chaque cas :
+
+1. identifie l’information externe dont dépend le passage ;
+2. détermine si elle est déjà définie ailleurs dans le mémoire ;
+3. si oui, recommande un renvoi interne vers cette section ;
+4. si non, recommande d’intégrer directement l’information nécessaire dans le mémoire.
+
+Ne conserve une référence à un document externe que s’il constitue réellement
+une SOURCE bibliographique ou institutionnelle accessible et correctement citée.
+
+============================================================
+6. CAS DU « DOCUMENT DIRECTEUR »
+============================================================
+
+Recherche explicitement toutes les occurrences de :
+
+« document directeur »
+
+Le mémoire ne doit pas dépendre de ce document pour justifier :
+
+- un objectif ;
+- une fonctionnalité ;
+- une hypothèse ;
+- une architecture ;
+- une décision méthodologique ;
+- une définition.
+
+Si une idée actuellement justifiée par :
+
+« l’objectif défini dans le document directeur »
+
+est importante pour Logminer, elle doit être expliquée directement dans le mémoire.
+
+Le lecteur ne doit jamais avoir à se demander :
+
+« Qu’est-ce que ce document directeur et où puis-je le lire ? »
+
+============================================================
+7. CAS DU « CAHIER DES CHARGES »
+============================================================
+
+Applique le même principe aux références au « cahier des charges ».
+
+Par exemple, une phrase comme :
+
+« Les objectifs spécifiques retenus conformément à notre cahier des charges sont… »
+
+n’est pas suffisante dans un mémoire autonome.
+
+Les objectifs doivent être justifiés par :
+
+PROBLÉMATIQUE
+→ QUESTIONS DE RECHERCHE
+→ HYPOTHÈSES
+→ OBJECTIFS.
+
+Le cahier des charges peut avoir servi pendant le développement, mais ne doit pas
+devenir une dépendance argumentative du mémoire final.
+
+Analyse toutes ces occurrences.
+
+============================================================
+8. CONTRIBUTION CENTRALE
+============================================================
+
+Vérifie que la contribution réelle de ce mémoire apparaît clairement.
+
+Le travail ne propose PAS :
+
+- un nouvel algorithme fondamental de machine learning ;
+- une nouvelle fonction de coût ;
+- une nouvelle théorie de détection ;
+- un détecteur universel ;
+- un SOC industriel complet.
+
+La contribution semble principalement être une ARCHITECTURE D’INTÉGRATION
+et son ÉVALUATION EXPÉRIMENTALE.
+
+
+Elle combine notamment :
+
+- ingestion de journaux hétérogènes ;
+- parsing ;
+- normalisation ;
+- schéma commun ;
+- routage multimodèle ;
+- détection supervisée et non supervisée ;
+- corrélation ;
+- agents spécialisés ;
+- Redis Streams ;
+- mémoire persistante/adaptative ;
+- heartbeat ;
+- audit ;
+- reprise après panne ;
+- interaction avec l’analyste ;
+- mise à jour contrôlée des modèles ;
+- tableau de bord ;
+- reproductibilité.
+
+Vérifie lesquelles de ces fonctions sont :
+
+A. effectivement implémentées ;
+B. expérimentalement évaluées ;
+C. seulement décrites ;
+D. seulement proposées comme perspectives.
+
+Ne mets jamais B, C et D au même niveau.
+
+============================================================
+9. MATRICE « AFFIRMATION → PREUVE »
+============================================================
+
+Construis une matrice pour toutes les affirmations importantes.
+
+Colonnes :
+
+- affirmation ;
+- section ;
+- preuve disponible ;
+- expérience associée ;
+- résultat associé ;
+- niveau de confiance ;
+- formulation actuelle ;
+- formulation scientifiquement défendable ;
+- problème éventuel.
+
+Utilise au minimum les niveaux :
+
+DÉMONTRÉ
+OBSERVÉ
+SUGGÉRÉ
+NON ÉVALUÉ
+PERSPECTIVE.
+
+Cette matrice doit empêcher le mémoire de transformer une fonctionnalité conçue
+en contribution expérimentalement démontrée.
+
+============================================================
+10. PRÉSENTATION DES RÉSULTATS
+============================================================
+
+Analyse le chapitre 5 en profondeur.
+
+Ne te contente pas d’évaluer si les chiffres sont corrects.
+
+Demande-toi :
+
+« Quelle question chaque expérience cherche-t-elle à résoudre ? »
+
+Pour chaque résultat, identifie :
+
+1. question scientifique ;
+2. protocole ;
+3. métrique ;
+4. observation ;
+5. interprétation autorisée ;
+6. interprétation interdite ;
+7. contribution à laquelle il se rattache ;
+8. importance :
+   - résultat majeur ;
+   - résultat secondaire ;
+   - résultat de contrôle ;
+   - résultat à déplacer en annexe.
+
+============================================================
+11. RESTRUCTURER LES RÉSULTATS AUTOUR DE QUESTIONS
+============================================================
+
+Évalue cette organisation possible :
+
+AXE 1
+Logminer peut-il ingérer et normaliser plusieurs familles de journaux ?
+
+AXE 2
+Le routage multimodèle permet-il d’utiliser des traitements cohérents avec
+la nature des données ?
+
+AXE 3
+Les détecteurs produisent-ils des anomalies candidates mesurables ?
+
+AXE 4
+Ces performances restent-elles valables lorsque le protocole d’évaluation
+devient plus strict ?
+
+AXE 5
+Que montrent HDFS et BGL sur l’analyse de journaux séquentiels ?
+
+AXE 6
+Que montre la comparaison avec Wazuh ?
+
+AXE 7
+Quels sont les coûts CPU, RAM et latence ?
+
+AXE 8
+Que démontre réellement l’architecture multi-agent ?
+
+AXE 9
+Le système reprend-il correctement les tâches après une défaillance ?
+
+AXE 10
+Les résultats sont-ils structurés de façon exploitable par l’analyste ?
+
+Dis si cette organisation est meilleure que l’organisation actuelle.
+
+Propose mieux si nécessaire.
+
+============================================================
+12. CAS CICIDS2017
+============================================================
+
+Analyse soigneusement le contraste entre :
+
+- séparation aléatoire stratifiée ;
+- holdout par fichier ou scénario.
+
+Le résultat élevé en séparation aléatoire et la forte chute en holdout strict ne
+doivent pas être présentés uniquement comme :
+
+« le modèle fonctionne mal ».
+
+Analyse plutôt ce que cette différence enseigne sur :
+
+- généralisation ;
+- similarité entre entraînement et test ;
+- protocole expérimental ;
+- risque de conclusions trop optimistes ;
+- dépendance aux scénarios.
+
+Ne masque pas le résultat négatif.
+
+Détermine s’il constitue au contraire l’un des résultats méthodologiques les plus
+intéressants du mémoire.
+
+============================================================
+13. RÉSULTATS NÉGATIFS
+============================================================
+
+Recherche tous les résultats où Logminer ou une composante :
+
+- n’améliore pas une baseline ;
+- ajoute un overhead ;
+- généralise mal ;
+- produit beaucoup de faux positifs ;
+- montre une instabilité ;
+- ne démontre pas une hypothèse complète.
+
+Pour chacun :
+
+NE PAS LE CACHER.
+
+Déterminer :
+
+- ce qu’il invalide ;
+- ce qu’il nuance ;
+- ce qu’il permet néanmoins d’apprendre.
+
+Un résultat négatif correctement interprété est préférable à une affirmation
+positive non démontrée.
+
+============================================================
+14. MONOLITHIQUE VS MULTI-AGENT
+============================================================
+
+Vérifie que le mémoire ne présente jamais implicitement les agents comme
+automatiquement plus rapides.
+
+Si le débit n’augmente pas ou diminue sur les petits volumes, présenter clairement :
+
+COÛT :
+- overhead ;
+- orchestration ;
+- communication.
+
+BÉNÉFICES POSSIBLES OU OBSERVÉS :
+- séparation des responsabilités ;
+- modularité ;
+- traçabilité ;
+- reprise ;
+- supervision ;
+- extensibilité.
+
+Distingue ce qui est réellement mesuré de ce qui est seulement un avantage
+d’architecture attendu.
+
+============================================================
+15. HDFS ET BGL
+============================================================
+
+Vérifie :
+
+- séparation entraînement/test ;
+- représentation des messages ;
+- rôle de Drain3 ;
+- fenêtres ;
+- seuils ;
+- risque de fuite d’information ;
+- interprétation des résultats.
+
+Ne permettre aucune formulation de généralisation universelle si elle n’est pas
+soutenue expérimentalement.
+
+============================================================
+16. WAZUH
+============================================================
+
+Vérifie rigoureusement la terminologie.
+
+Une anomalie candidate n’est PAS automatiquement :
+
+- une attaque ;
+- une intrusion ;
+- un incident confirmé.
+
+Vérifie toutes les occurrences correspondantes dans le mémoire.
+
+============================================================
+17. AUTONOMIE
+============================================================
+
+Recherche toutes les utilisations des mots :
+
+- autonome ;
+- autonomie ;
+- décision autonome.
+
+Vérifie que la définition reste cohérente avec l’implémentation réelle.
+
+Dans ce mémoire, l’autonomie doit être opérationnelle :
+
+- sélection de tâches ;
+- routage ;
+- exécution ;
+- surveillance ;
+- mémoire ;
+- politiques définies.
+
+Ne pas laisser entendre une autonomie décisionnelle générale de cybersécurité.
+
+============================================================
+18. DISTRIBUTION
+============================================================
+
+Même audit pour :
+
+- distribué ;
+- distribution ;
+- architecture distribuée ;
+- multi-machine.
+
+Distinguer clairement :
+
+- multiprocessus local ;
+- utilisation de Redis Streams ;
+- expérimentation multi-VM ;
+- véritable système distribué multi-machine ;
+- déploiement industriel.
+
+Ne jamais extrapoler.
+
+============================================================
+19. « INTELLIGENCE » DES AGENTS
+============================================================
+
+Vérifie que le terme « intelligent » est défini et utilisé de manière défendable.
+
+Identifier précisément ce qui justifie ce qualificatif :
+
+- politique de sélection ;
+- mémoire ;
+- adaptation ;
+- routage ;
+- handlers ;
+- retours analyste ;
+- mise à jour contrôlée.
+
+Ne jamais laisser entendre une cognition générale ou un agent LLM si ce n’est
+pas ce qui a été implémenté.
+
+============================================================
+20. MÉMOIRE ADAPTATIVE
+============================================================
+
+Vérifie que :
+
+mémoire persistante
+≠ apprentissage continu automatique
+≠ réentraînement automatique
+≠ intelligence autonome.
+
+Distinguer :
+
+- conservation de l’historique ;
+- exploitation des décisions analyste ;
+- recalibrage éventuel ;
+- comparaison modèle courant/modèle candidat ;
+- promotion contrôlée.
+
+============================================================
+21. CHAPITRES 5, 6 ET 7
+============================================================
+
+Analyse leurs frontières.
+
+Idéalement :
+
+CHAPITRE 5
+= CE QUI A ÉTÉ MESURÉ ET OBSERVÉ.
+
+CHAPITRE 6
+= VALIDITÉ, ROBUSTESSE ET SENSIBILITÉ DES RÉSULTATS AUX PROTOCOLES.
+
+CHAPITRE 7
+= INTERPRÉTATION, APPORTS, LIMITES ET SIGNIFICATION DU TRAVAIL.
+
+Repère chaque répétition importante entre ces chapitres.
+
+Pour chaque répétition, propose :
+
+- conserver ici ;
+- raccourcir ailleurs ;
+- déplacer ;
+- supprimer.
+
+============================================================
+22. PRÉSENTATION VISUELLE
+============================================================
+
+Analyse toutes les figures et tous les tableaux.
+
+Pour chacun, vérifier :
+
+- apporte-t-il une information nécessaire ?
+- répète-t-il exactement le texte ?
+- est-il lisible sans lire plusieurs pages ?
+- son titre dit-il réellement ce qui est représenté ?
+- les axes sont-ils nommés ?
+- les unités sont-elles présentes ?
+- la légende est-elle compréhensible ?
+- les valeurs sont-elles cohérentes avec le texte ?
+- la source est-elle indiquée ?
+- le protocole expérimental nécessaire à son interprétation est-il identifiable ?
+
+Classer :
+
+CONSERVER
+AMÉLIORER
+REMPLACER
+FUSIONNER
+DÉPLACER EN ANNEXE
+SUPPRIMER.
+
+============================================================
+23. CITATION DE TOUTES LES FIGURES ET IMAGES
+============================================================
+
+Effectue un AUDIT D’ATTRIBUTION complet.
+
+CHAQUE figure, schéma, illustration, capture ou image doit avoir une origine claire.
+
+Cas possibles :
+
+A. Figure entièrement produite par l’auteur à partir de ses propres résultats :
+   préciser par exemple :
+   « Source : auteur, à partir des résultats expérimentaux. »
+
+B. Figure reproduite d’une publication :
+   citer la publication.
+
+C. Figure adaptée :
+   préciser :
+   « Adapté de [référence]. »
+
+D. Capture de Logminer :
+   préciser qu’il s’agit d’une capture du prototype réalisé dans ce travail.
+
+E. Figure produite automatiquement par un script :
+   indiquer qu’elle est produite à partir des résultats de l’expérience concernée.
+
+F. Figure ou illustration générée avec une IA générative :
+   le déclarer explicitement selon les règles académiques applicables.
+
+G. Image provenant d’un site web :
+   citer la source primaire, auteur, organisme ou publication correspondante.
+
+Aucune figure ne doit avoir une provenance ambiguë.
+
+NE PAS INVENTER DE SOURCE MANQUANTE.
+
+Si la source est impossible à déterminer :
+« SOURCE À IDENTIFIER AVANT DÉPÔT ».
+
+============================================================
+24. TABLEAUX
+============================================================
+
+Appliquer une logique comparable aux tableaux.
+
+Distinguer :
+
+- tableau original produit à partir des expérimentations ;
+- tableau de synthèse construit par l’auteur à partir de plusieurs références ;
+- tableau adapté d’une publication ;
+- données reprises d’une source externe.
+
+Toutes les données externes doivent être traçables.
+
+============================================================
+25. CITATIONS SCIENTIFIQUES
+============================================================
+
+Effectue un audit de toutes les affirmations qui nécessitent une référence.
+
+Notamment :
+
+- définition d’un concept ;
+- affirmation historique ;
+- performance connue d’une méthode ;
+- description d’un dataset ;
+- propriété d’un outil ;
+- comparaison avec l’état de l’art ;
+- description d’une technologie tierce ;
+- affirmation sur un SOC, SIEM, IDS, Redis, MQTT, Wazuh, Drain3, etc.
+
+Une affirmation provenant de la littérature doit être citée.
+
+Une décision propre au prototype ne nécessite pas artificiellement une citation
+si elle est clairement présentée comme un choix de conception de l’auteur.
+
+============================================================
+26. SOURCES PRIMAIRES
+============================================================
+
+Lorsque cela est possible, privilégier :
+
+- article original ;
+- documentation officielle ;
+- publication du dataset ;
+- documentation officielle du logiciel ;
+- standard ;
+- ouvrage académique.
+
+Éviter une citation secondaire lorsque la source primaire est disponible.
+
+NE PAS inventer de référence.
+
+============================================================
+27. COHÉRENCE BIBLIOGRAPHIQUE
+============================================================
+
+Vérifier :
+
+- citation présente dans le texte mais absente de la bibliographie ;
+- référence bibliographique jamais citée ;
+- doublons ;
+- noms incohérents ;
+- année incohérente ;
+- URL seules lorsqu’une source scientifique meilleure existe ;
+- références incomplètes ;
+- style bibliographique incohérent.
+
+============================================================
+28. DÉCLARATION DE L’UTILISATION DE L’IA
+============================================================
+
+Le mémoire doit déclarer de façon transparente que la rédaction a bénéficié
+d’une assistance par intelligence artificielle générative.
+
+Vérifie d’abord si une telle déclaration existe déjà.
+
+Si elle n’existe pas, recommande son emplacement.
+
+Possibilités à évaluer :
+
+- note liminaire ;
+- avant-propos ;
+- méthodologie ;
+- déclaration spécifique avant la bibliographie ;
+- autre emplacement conforme aux règles de l’institution.
+
+La déclaration doit expliquer clairement que les outils d’IA ont pu être utilisés pour :
+
+- assistance à la rédaction ;
+- reformulation ;
+- amélioration linguistique ;
+- structuration de certains passages ;
+- génération ou proposition de texte ;
+- éventuellement assistance au code si c’est réellement le cas ;
+- éventuellement création de certaines illustrations si c’est réellement le cas.
+
+Mais elle doit également préciser que :
+
+- les choix scientifiques appartiennent à l’auteur ;
+- les expériences ont été vérifiées par l’auteur ;
+- les résultats relèvent du travail présenté ;
+- l’interprétation et la responsabilité finale du contenu appartiennent à l’auteur.
+
+NE PAS inventer le nom d’un outil d’IA utilisé.
+
+Si les outils exacts doivent être mentionnés mais ne sont pas explicitement connus,
+écrire :
+
+« OUTIL(S) D’IA À RENSEIGNER PAR L’AUTEUR ».
+
+Propose une formulation académique courte et transparente à faire valider
+par l’établissement.
+
+============================================================
+29. FIGURES GÉNÉRÉES PAR IA
+============================================================
+
+Pour toute illustration générée ou fortement modifiée à l’aide d’une IA générative :
+
+- identifier la figure ;
+- indiquer que l’origine doit être déclarée ;
+- ne pas la présenter comme une photographie ou une observation expérimentale ;
+- ne pas laisser croire qu’elle constitue une preuve empirique.
+
+Une illustration IA peut expliquer un concept.
+Elle ne peut pas remplacer une preuve expérimentale.
+
+============================================================
+30. CODE ET OUTILS ASSISTÉS PAR IA
+============================================================
+
+Si la programmation du prototype a elle aussi bénéficié d’une assistance d’IA,
+propose une façon transparente de le mentionner, à condition que cela soit vrai.
+
+Distinguer :
+
+- assistance à la génération de code ;
+- revue de code ;
+- débogage ;
+- génération de documentation ;
+- conception scientifique.
+
+Ne pas inventer ce qui a été fait.
+
+============================================================
+31. AUTONOMIE DU MÉMOIRE
+============================================================
+
+Effectue un « test du lecteur isolé ».
+
+Imagine un reviewer qui reçoit UNIQUEMENT le PDF du mémoire.
+
+Il n’a pas :
+
+- document directeur ;
+- cahier des charges ;
+- historique de projet ;
+- discussions avec le directeur ;
+- prompts ;
+- anciens rapports ;
+- anciennes versions ;
+- notes personnelles.
+
+Question :
+
+PEUT-IL COMPRENDRE ET VÉRIFIER LE TRAVAIL UNIQUEMENT AVEC CE MÉMOIRE
+ET LES SOURCES QU’IL CITE ?
+
+Pour chaque réponse négative, identifier ce qui manque.
+
+============================================================
+32. NE PAS ÉCRIRE POUR LE DIRECTEUR : ÉCRIRE POUR UN LECTEUR EXTERNE
+============================================================
+
+Repérer toutes les phrases qui semblent supposer que le lecteur connaît déjà :
+
+- l’historique du projet ;
+- les décisions précédentes ;
+- les documents d’encadrement ;
+- les anciennes versions ;
+- les discussions menées pendant le développement.
+
+Transformer conceptuellement ces passages afin qu’ils puissent être compris par
+un chercheur extérieur au projet.
+
+============================================================
+33. TON SCIENTIFIQUE
+============================================================
+
+Identifier les formulations :
+
+- promotionnelles ;
+- excessives ;
+- vagues ;
+- auto-congratulatoires ;
+- absolues ;
+- insuffisamment quantifiées.
+
+Exemples à surveiller :
+
+« très performant »
+« robuste »
+« intelligent »
+« autonome »
+« optimal »
+« efficace »
+« fiable »
+« améliore »
+« scalable »
+« temps réel »
+« distribué »
+
+Chaque terme fort doit être :
+
+- défini ;
+- mesuré ;
+- démontré ;
+ou
+- atténué.
+
+============================================================
+34. ÉLIMINER LES PHRASES MÉTA-RÉDACTIONNELLES
+============================================================
+
+Recherche les passages du type :
+
+- « dans ce mémoire nous avons voulu… »
+- « conformément au document… »
+- « nous avons décidé d’ajouter… »
+- « dans la nouvelle version… »
+- « après plusieurs essais… »
+- « dans l’évolution du prototype… »
+- « cette partie a été ajoutée afin de… »
+
+Conserver uniquement celles qui ont une réelle fonction méthodologique.
+
+Le lecteur doit voir la logique scientifique, pas la fabrication progressive du manuscrit.
+
+============================================================
+35. COHÉRENCE TERMINOLOGIQUE
+============================================================
+
+Construire une liste des termes importants et vérifier leur usage uniforme :
+
+- Logminer / Ariel Logminer ;
+- agent ;
+- agent intelligent ;
+- agent multitâche ;
+- anomalie ;
+- anomalie candidate ;
+- attaque ;
+- alerte ;
+- incident ;
+- journal ;
+- log ;
+- événement ;
+- source ;
+- famille ;
+- modèle ;
+- détecteur ;
+- corrélateur ;
+- mémoire adaptative ;
+- apprentissage ;
+- adaptation ;
+- distribution ;
+- orchestration ;
+- routage.
+
+Signaler toute utilisation incohérente.
+
+============================================================
+36. COHÉRENCE ENTRE TITRE ET TRAVAIL
+============================================================
+
+Le titre contient notamment :
+
+- détection autonome ;
+- distribuée ;
+- anomalies ;
+- journaux système et réseau ;
+- agents intelligents ;
+- multitâches.
+
+Pour CHACUN de ces termes :
+
+1. définir ce qu’il signifie dans ce mémoire ;
+2. identifier où il est implémenté ;
+3. identifier comment il est évalué ;
+4. préciser sa limite ;
+5. indiquer si le titre reste défendable.
+
+============================================================
+37. QUESTIONS DE RECHERCHE
+============================================================
+
+Pour chaque question de recherche :
+
+- identifier l’expérience ou l’argument qui y répond ;
+- identifier le chapitre où se trouve la réponse ;
+- préciser si la réponse est :
+  complète,
+  partielle,
+  non démontrée.
+
+Le mémoire ne doit contenir aucune question de recherche oubliée dans la conclusion.
+
+============================================================
+38. HYPOTHÈSES
+============================================================
+
+Même exercice :
+
+HYPOTHÈSE
+→ EXPÉRIENCE
+→ RÉSULTAT
+→ STATUT.
+
+Statuts :
+
+VALIDÉE DANS LE CADRE ÉVALUÉ
+PARTIELLEMENT SOUTENUE
+NON SOUTENUE
+NON TESTÉE.
+
+Éviter le mot « validée » si le protocole ne permet pas réellement une validation forte.
+
+============================================================
+39. OBJECTIFS
+============================================================
+
+Vérifier la chaîne :
+
+PROBLÉMATIQUE
+→ QUESTIONS
+→ HYPOTHÈSES
+→ OBJECTIF GÉNÉRAL
+→ OBJECTIFS SPÉCIFIQUES
+→ EXPÉRIENCES
+→ RÉSULTATS
+→ CONCLUSION.
+
+Identifier tout objectif qui n’a pas de preuve finale.
+
+Identifier toute expérience qui ne correspond à aucun objectif clair.
+
+============================================================
+40. REDONDANCES
+============================================================
+
+Repérer les informations répétées :
+
+- introduction ;
+- modèle proposé ;
+- implémentation ;
+- résultats ;
+- approfondissements ;
+- discussion ;
+- reproductibilité ;
+- conclusion.
+
+Pour chaque répétition :
+
+CONSERVER ICI
+RÉSUMER ICI
+SUPPRIMER ICI
+RENVOI INTERNE.
+
+============================================================
+41. CHAPITRE 8
+============================================================
+
+Examiner particulièrement le chapitre consacré à la reproductibilité,
+au déploiement et à l’exploitation.
+
+Vérifier qu’il ne ressemble pas :
+
+- à une checklist personnelle ;
+- à des notes de travail ;
+- à des instructions à l’auteur ;
+- à un journal de développement.
+
+Les éléments tels que :
+
+« vérifier avant dépôt »
+« vérifier l’orthographe »
+« compiler sur Overleaf »
+« contrôler les figures »
+
+sont probablement des tâches de préparation du mémoire et non du contenu
+scientifique destiné au lecteur.
+
+Repérer tous ces éléments et recommander :
+
+- suppression du mémoire ;
+- transfert vers une checklist privée ;
+- ou reformulation en protocole de reproductibilité si réellement pertinent.
+
+============================================================
+42. ANNEXES
+============================================================
+
+Vérifier que les annexes contiennent :
+
+- preuves utiles ;
+- détails reproductibles ;
+- résultats secondaires ;
+- commandes ;
+- matrices ;
+- tableaux trop volumineux.
+
+Elles ne doivent pas contenir :
+
+- notes personnelles ;
+- TODO ;
+- checklist de l’auteur ;
+- éléments nécessaires à la compréhension fondamentale du mémoire.
+
+Toute information indispensable doit rester dans le corps du travail.
+
+============================================================
+43. REPRODUCTIBILITÉ
+============================================================
+
+Vérifier que le mémoire précise suffisamment :
+
+- datasets ;
+- versions utiles des logiciels ;
+- environnement ;
+- graines ;
+- splits ;
+- hyperparamètres ;
+- scripts ;
+- conditions de mesure ;
+- matériel si nécessaire ;
+- protocole de reproduction.
+
+Mais éviter les détails qui relèvent uniquement de l’historique du développement.
+
+============================================================
+44. FIGURES ET RÉSULTATS : TRAÇABILITÉ
+============================================================
+
+Pour chaque résultat majeur, vérifier si le lecteur peut retrouver :
+
+RÉSULTAT
+→ TABLEAU/FIGURE
+→ EXPÉRIENCE
+→ PROTOCOLE
+→ DONNÉES
+→ SCRIPT OU ARTEFACT SI DISPONIBLE.
+
+Signaler toute rupture de traçabilité.
+
+============================================================
+45. CONTRIBUTIONS
+============================================================
+
+À partir des preuves réellement présentes, reconstruire une hiérarchie des contributions :
+
+1. contribution architecturale ;
+2. contribution méthodologique ;
+3. contribution expérimentale ;
+4. contribution logicielle ;
+5. contribution opérationnelle.
+
+Pour chacune :
+
+- description ;
+- nouveauté réelle ;
+- preuve ;
+- limite ;
+- importance ;
+- formulation recommandée.
+
+Puis préciser :
+
+CE QUI NE DOIT PAS ÊTRE REVENDIQUÉ COMME CONTRIBUTION.
+
+============================================================
+46. MESSAGE CENTRAL
+============================================================
+
+À la fin, déterminer :
+
+A. Une phrase répondant :
+« Quel problème Logminer résout-il ? »
+
+B. Une phrase répondant :
+« Qu’est-ce que l’auteur a réellement conçu ? »
+
+C. Une phrase répondant :
+« Qu’est-ce que les expériences démontrent ? »
+
+D. Une phrase répondant :
+« Quel est le principal résultat méthodologique ? »
+
+E. Une phrase répondant :
+« Quelle est la principale limite ? »
+
+F. Une phrase répondant :
+« Pourquoi ce travail reste-t-il intéressant malgré cette limite ? »
+
+============================================================
+47. TEST DU JURY
+============================================================
+
+Agis ensuite comme un jury sévère.
+
+Identifie les 20 critiques les plus probables portant sur :
+
+- titre ;
+- contribution ;
+- nouveauté ;
+- architecture ;
+- agents ;
+- autonomie ;
+- distribution ;
+- ML ;
+- datasets ;
+- protocole ;
+- résultats ;
+- généralisation ;
+- Wazuh ;
+- HDFS/BGL ;
+- Redis ;
+- faux positifs ;
+- reproductibilité ;
+- IA générative ;
+- sources ;
+- limites.
+
+Pour chaque critique :
+
+- niveau de risque : faible / moyen / élevé ;
+- passage concerné ;
+- correction nécessaire.
+
+============================================================
+48. PRIORISATION
+============================================================
+
+Classe toutes les corrections en :
+
+P0 — À CORRIGER ABSOLUMENT AVANT DÉPÔT
+Erreur scientifique, contradiction, source manquante, revendication non soutenue,
+dépendance à un document externe, résultat mal interprété.
+
+P1 — IMPORTANT
+Structure, contribution, résultats, redondances, figures.
+
+P2 — AMÉLIORATION
+Style, fluidité, formulation, mise en page.
+
+============================================================
+49. FORMAT FINAL DE TA RÉPONSE
+============================================================
+
+NE RÉÉCRIS PAS ENCORE LE MÉMOIRE.
+
+Produis exactement :
+
+1. Diagnostic exécutif
+2. Forces réelles du mémoire
+3. Faiblesses de présentation
+4. Problèmes scientifiques
+5. Problèmes éditoriaux
+6. Problèmes d’autonomie documentaire
+7. Références externes implicites à supprimer
+8. Occurrences V1/V2/V3/version locale/version distribuée
+9. Analyse détaillée du §3.7
+10. Analyse détaillée du §3.14
+11. Audit des affirmations et preuves
+12. Audit des citations
+13. Audit des figures et sources
+14. Audit des tableaux
+15. Audit de la déclaration d’usage de l’IA
+16. Audit de la terminologie
+17. Audit du titre
+18. Audit questions–hypothèses–objectifs–résultats
+19. Analyse du chapitre 5
+20. Analyse du chapitre 6
+21. Analyse du chapitre 7
+22. Analyse du chapitre 8
+23. Analyse des annexes
+24. Redondances à supprimer
+25. Éléments à déplacer
+26. Éléments à supprimer
+27. Éléments à renforcer
+28. Nouvelle narration scientifique proposée
+29. Nouvelle hiérarchie des contributions
+30. Figures à conserver/modifier/remplacer
+31. Tableau des risques devant le jury
+32. Corrections P0
+33. Corrections P1
+34. Corrections P2
+35. Plan détaillé de révision
+36. Instructions finales à transmettre au modèle de rédaction Luna
+
+Pour chaque problème important :
+- cite le chapitre ;
+- cite la section ;
+- cite si possible la figure ou le tableau ;
+- reproduis uniquement quelques mots du passage problématique ;
+- explique le problème ;
+- propose l’action, PAS encore la rédaction finale.
+
+Termine par une CHECKLIST DE VALIDATION.
+
+Cette checklist doit permettre de vérifier que la future version :
+
+□ ne contient plus de narration V1/V2/V3 inutile ;
+□ présente directement l’architecture finale ;
+□ ne dépend plus du document directeur ;
+□ ne dépend plus du cahier des charges ;
+□ est autonome pour un lecteur externe ;
+□ sépare clairement implémenté / évalué / perspective ;
+□ cite toutes les sources externes ;
+□ attribue toutes les figures ;
+□ attribue toutes les images ;
+□ identifie les illustrations IA si elles existent ;
+□ contient une déclaration transparente sur l’assistance par IA générative ;
+□ ne transforme jamais une anomalie en attaque confirmée sans preuve ;
+□ distingue split exploratoire et évaluation stricte ;
+□ ne masque pas les résultats négatifs ;
+□ ne revendique pas de gain multi-agent non démontré ;
+□ distingue multiprocessus, multi-VM et distribution industrielle ;
+□ définit clairement l’autonomie ;
+□ définit clairement l’intelligence des agents ;
+□ rend les contributions immédiatement identifiables ;
+□ répond à toutes les questions de recherche ;
+□ statue sur toutes les hypothèses ;
+□ relie chaque résultat majeur à une preuve ;
+□ supprime les TODO et checklists personnelles du corps scientifique ;
+□ élimine les répétitions entre chapitres 5, 6 et 7 ;
+□ maintient toutes les valeurs numériques inchangées ;
+□ ne crée aucune source ni expérience fictive ;
+□ est défendable devant un jury extérieur au projet.

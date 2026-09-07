@@ -1,7 +1,7 @@
 # CURRENT STATE
 
 Last update: 2026-09-07
-Git commit: 37bccf083f3c8e92a11377cf758cf1e9e183dee9
+Git commit: 4db70f0 (checkpoint PHASE 0; baseline expérimental 37bccf083f3c8e92a11377cf758cf1e9e183dee9)
 Active phase: PHASE 1
 Active experiment: CICIDS2017 multi-seeds — batch DDoS
 Status: READY

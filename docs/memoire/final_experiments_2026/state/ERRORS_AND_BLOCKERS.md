@@ -63,3 +63,19 @@ Already attempted: Comparaison de l'en-tête normalisé à `Label`.
 Current status: RESOLVED IN CODE — la sélection compare désormais les noms normalisés tout en conservant le nom physique.
 
 Next action: Relancer la phase 0 ; l'environnement déjà écrit peut être régénéré sans perte.
+
+## E0005 — Écriture Git initialement refusée par le bac à sable
+
+Error: Création de `.git/index.lock` refusée lors du premier `git add`.
+
+Command: `rtk git add -- scripts/run_final_experiments.py docs/memoire/final_experiments_2026`
+
+Short traceback: `fatal: Unable to create '.git/index.lock': Permission denied`.
+
+Probable cause: Le dossier `.git` est en lecture seule dans le bac à sable standard.
+
+Already attempted: Commande dans le bac à sable, puis même commande avec autorisation explicite.
+
+Current status: RESOLVED — checkpoint `4db70f0` créé, limité aux douze fichiers de phase 0.
+
+Next action: Demander l'autorisation d'écriture Git uniquement aux checkpoints ultérieurs.

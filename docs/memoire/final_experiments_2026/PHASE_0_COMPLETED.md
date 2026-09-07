@@ -13,6 +13,7 @@ Runs échoués: Aucun run scientifique. Un premier passage du manifeste a échou
 Résultats principaux:
 
 - Commit gelé : `37bccf083f3c8e92a11377cf758cf1e9e183dee9`.
+- Checkpoint Git de phase : `4db70f0` (`experiment: freeze final environment`).
 - Environnement : Windows `10.0.26200`, Python `3.11.9`, 4 cœurs physiques, 8 processeurs logiques, 8 425 529 344 octets de RAM.
 - Versions : scikit-learn `1.7.2`, pandas `2.3.2`, NumPy `2.2.3`, SciPy `1.16.1`.
 - Manifeste : 11 fichiers, soit 8 CICIDS2017, 2 HDFS et 1 BGL.
@@ -35,4 +36,3 @@ Problèmes: Voir `state/ERRORS_AND_BLOCKERS.md`, entrées E0001 à E0004.
 Conclusion scientifique: Les fichiers locaux nécessaires aux campagnes prioritaires sont identifiés par hash. Ces hashes prouvent l'identité des copies locales, pas leur provenance officielle, qui reste `INFORMATION À VÉRIFIER.`.
 
 Impact probable sur le mémoire: Les futures valeurs devront référencer le manifeste, le commit, le protocole figé et les artefacts unitaires. Aucune valeur nouvelle n'est encore autorisée comme résultat expérimental.
-

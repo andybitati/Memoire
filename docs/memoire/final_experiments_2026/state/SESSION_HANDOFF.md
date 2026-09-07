@@ -25,7 +25,8 @@ Batch DDoS tenu à l'écart, RandomForest, seeds 42 à 46.
 
 ## Key results
 
-- Git commit : `37bccf083f3c8e92a11377cf758cf1e9e183dee9`.
+- Commit initial : `37bccf083f3c8e92a11377cf758cf1e9e183dee9`.
+- Checkpoint PHASE 0 : `4db70f0` (`experiment: freeze final environment`).
 - Aucun ancien artefact modifié.
 - Onze fichiers prioritaires identifiés par SHA-256.
 - Les 30 runs de phase 1 sont détectés comme manquants par le dry-run.
