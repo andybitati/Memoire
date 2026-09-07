@@ -79,3 +79,35 @@ Already attempted: Commande dans le bac à sable, puis même commande avec autor
 Current status: RESOLVED — checkpoint `4db70f0` créé, limité aux douze fichiers de phase 0.
 
 Next action: Demander l'autorisation d'écriture Git uniquement aux checkpoints ultérieurs.
+
+## E0006 — Cache Python verrouillé
+
+Error: `py_compile` n'a pas pu remplacer le fichier `.pyc` de `run_final_experiments.py`.
+
+Command: `rtk python -m py_compile scripts/run_final_experiments.py`
+
+Short traceback: `[WinError 5] Accès refusé: ...run_final_experiments.cpython-311.pyc...`.
+
+Probable cause: Fichier `__pycache__` verrouillé ou non inscriptible.
+
+Already attempted: Compilation directe ; l'import réel du module et le dry-run ont ensuite réussi.
+
+Current status: OPEN NON BLOQUANT — le source s'importe et s'exécute correctement.
+
+Next action: Ne pas supprimer le cache ; utiliser l'import/dry-run comme contrôle et réévaluer uniquement si l'exécution échoue.
+
+## E0007 — HistGradientBoosting bloqué par les pipes du bac à sable
+
+Error: Les cinq fits DDoS de HistGradientBoosting échouent lors de la création du pool de threads interne.
+
+Command: `rtk python scripts/run_final_experiments.py --resume --phase 2 --scenario DDoS --model HistGradientBoosting`
+
+Short traceback: `PermissionError: [WinError 5] Accès refusé` dans `multiprocessing.connection.Pipe`, appelé par joblib puis `_BinMapper.fit_transform`.
+
+Probable cause: Restriction du bac à sable Windows sur les pipes utilisés par le backend de threads de joblib.
+
+Already attempted: Cinq seeds dans le bac à sable ; toutes ont produit le même type d'échec. Aucun artefact de résultat n'a été créé.
+
+Current status: RESOLVED — relance hors bac à sable réussie pour les cinq seeds, protocole inchangé ; échecs initiaux conservés.
+
+Next action: Utiliser directement l'exécution autorisée hors bac à sable pour les futurs batches HistGradientBoosting.

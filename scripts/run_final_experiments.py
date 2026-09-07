@@ -258,6 +258,21 @@ def build_plans() -> list[RunPlan]:
     return plans
 
 
+def matching_phase1_random_forest(plan: RunPlan) -> RunPlan | None:
+    if plan.phase != 2 or plan.model != "RandomForest":
+        return None
+    for candidate in build_plans():
+        if (
+            candidate.phase == 1
+            and candidate.experiment == "cicids_holdout_multiseed"
+            and candidate.scenario == plan.scenario
+            and candidate.seed == plan.seed
+            and candidate.model == "RandomForest"
+        ):
+            return candidate
+    return None
+
+
 def select_plans(args: argparse.Namespace) -> list[RunPlan]:
     plans = build_plans()
     if args.phase is not None:
@@ -423,6 +438,34 @@ def execute_cicids(plan: RunPlan, data: tuple[pd.DataFrame, pd.Series, pd.DataFr
         },
         "metrics": metrics,
     }
+
+
+def reuse_phase1_random_forest(plan: RunPlan, source: RunPlan) -> dict[str, object]:
+    valid, reason = artifact_valid(source)
+    if not valid:
+        raise ValueError(f"Cannot reuse {source.experiment_id}: {reason}")
+    payload = json.loads(source.raw_path.read_text(encoding="utf-8"))
+    payload.update(
+        {
+            "experiment_id": plan.experiment_id,
+            "run_id": plan.experiment_id,
+            "phase": plan.phase,
+            "experiment": plan.experiment,
+            "generated_at": utc_now(),
+            "git_commit": git_commit(),
+            "execution_kind": "REUSED_IDENTICAL_PHASE1_RESULT",
+            "reused_from": {
+                "experiment_id": source.experiment_id,
+                "artifact_path": rel(source.raw_path),
+                "reason": "Same dataset, scenario, seed, representation, sampling caps and RandomForest hyperparameters.",
+            },
+        }
+    )
+    configuration = dict(payload.get("configuration", {}))
+    configuration["reused_without_refit"] = True
+    configuration["source_protocol_path"] = configuration.get("protocol_path", rel(CICIDS_CONFIG))
+    payload["configuration"] = configuration
+    return payload
 
 
 def flatten_artifacts(phase: int) -> pd.DataFrame:
@@ -669,6 +712,46 @@ def run_plans(plans: list[RunPlan], *, resume: bool) -> int:
             runnable.append(plan)
         if not runnable:
             continue
+        remaining: list[RunPlan] = []
+        for plan in runnable:
+            source = matching_phase1_random_forest(plan)
+            if source is None:
+                remaining.append(plan)
+                continue
+            started_at = utc_now()
+            append_ledger(plan, "PLANNED")
+            append_ledger(plan, "RUNNING", started_at=started_at, notes=f"reuse_source={source.experiment_id}")
+            try:
+                payload = reuse_phase1_random_forest(plan, source)
+                atomic_json(plan.raw_path, payload)
+                valid, reason = artifact_valid(plan)
+                if not valid:
+                    raise ValueError(f"Reused artifact validation failed: {reason}")
+                refresh_phase_outputs(plan.phase)
+                append_ledger(
+                    plan,
+                    "COMPLETED",
+                    started_at=started_at,
+                    completed_at=utc_now(),
+                    summary_path=rel(plan.summary_path),
+                    notes=f"REUSED_IDENTICAL_PHASE1_RESULT source={source.experiment_id}",
+                )
+                print(f"COMPLETED_REUSED {plan.experiment_id} source={source.experiment_id}")
+            except Exception as exc:
+                error_path = LOGS / f"{plan.experiment_id}.error.txt"
+                error_path.write_text(traceback.format_exc(), encoding="utf-8")
+                append_ledger(
+                    plan,
+                    "FAILED",
+                    started_at=started_at,
+                    completed_at=utc_now(),
+                    error_path=rel(error_path),
+                    notes=str(exc),
+                )
+                failures += 1
+        runnable = remaining
+        if not runnable:
+            continue
         try:
             data = load_random_control(runnable[0]) if runnable[0].split == "random_stratified" else load_holdout(runnable[0])
         except Exception as exc:
@@ -894,7 +977,14 @@ def main(argv: Iterable[str] | None = None) -> int:
         for plan in plans:
             previous = latest.get(plan.experiment_id, {}).get("status", "PLANNED")
             valid, _ = artifact_valid(plan)
-            action = "SKIPPED_ALREADY_COMPLETED" if previous == "COMPLETED" and valid else "WOULD_RUN"
+            source = matching_phase1_random_forest(plan)
+            source_valid = artifact_valid(source)[0] if source is not None else False
+            if previous == "COMPLETED" and valid:
+                action = "SKIPPED_ALREADY_COMPLETED"
+            elif source_valid:
+                action = "WOULD_REUSE_PHASE1"
+            else:
+                action = "WOULD_RUN"
             print(f"{action} {plan.experiment_id} phase={plan.phase} scenario={plan.scenario} seed={plan.seed} model={plan.model}")
         return 0
     return run_plans(plans, resume=args.resume)

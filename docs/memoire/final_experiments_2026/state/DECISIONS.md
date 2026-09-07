@@ -167,3 +167,27 @@ Reason: Les résultats changent massivement selon le scénario tenu hors entraî
 Affected sections: Protocole CICIDS, résultats, discussion de la généralisation, limites et conclusion.
 
 Do not reconsider unless: Un protocole plus complet, préspécifié et strictement comparable fournit une preuve contradictoire.
+
+## D015
+
+Decision: Conclure qu'aucun des cinq modèles comparés ne généralise utilement à PortScan au seuil courant dans ce protocole.
+
+Evidence: F1 moyens : RandomForest 0,009947 ; ExtraTrees 0,008955 ; LogisticRegression 0,000497 ; HistGradientBoosting 0 ; SGDLogistic 0. Chaque modèle est évalué sur cinq seeds et 4 000 attaques par run.
+
+Reason: Même le meilleur F1 correspond à un rappel de seulement 0,005. Les PR-AUC parfois élevées doivent être rapportées séparément comme information de classement, sans ajuster de seuil sur le test.
+
+Affected sections: Comparaison des modèles CICIDS, résultats négatifs et discussion des seuils.
+
+Do not reconsider unless: Une procédure avec validation indépendante sélectionne le seuil avant une évaluation unique sur un test PortScan gelé.
+
+## D016
+
+Decision: Conclure qu'aucun des cinq modèles comparés ne détecte Bot au seuil courant dans ce protocole.
+
+Evidence: RandomForest, ExtraTrees, HistGradientBoosting, LogisticRegression et SGDLogistic ont tous F1=0, rappel=0 et zéro vrai positif sur 1 966 attaques par run, chacun sur cinq seeds.
+
+Reason: Les différences de PR-AUC et de faux positifs ne produisent aucune détection correcte au seuil utilisé.
+
+Affected sections: Comparaison des modèles CICIDS et résultats négatifs.
+
+Do not reconsider unless: Une procédure avec validation indépendante ou une représentation nouvelle est évaluée sur un test Bot gelé.

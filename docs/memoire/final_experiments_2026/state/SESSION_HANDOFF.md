@@ -10,7 +10,7 @@ PHASE 2 — comparaison multi-modèles CICIDS2017.
 
 ## Current experiment
 
-Préparation de la réutilisation traçable RandomForest, puis batches modèle × scénario.
+RandomForest × Infiltration, réutilisation des cinq seeds.
 
 ## Completed since previous checkpoint
 
@@ -30,6 +30,27 @@ Préparation de la réutilisation traçable RandomForest, puis batches modèle �
 - Holdout complet : 25/25 runs.
 - Contrôle random complet : 5/5 runs.
 - PHASE 1 terminée, résumés, tableau et cinq figures produits.
+- Checkpoint PHASE 1 : `265cdfb`.
+- Plan PHASE 2 : 125 résultats, dont 25 réutilisés et 100 nouveaux fits.
+- RandomForest × DDoS : 5/5 réutilisés, artefacts validés.
+- ExtraTrees × DDoS : 5/5 nouveaux runs terminés ; F1 moyen 0,707001, PR-AUC 0,954894.
+- HistGradientBoosting × DDoS : cinq FAILED conservés ; `PermissionError [WinError 5]` lors de la création du pool interne joblib.
+- HistGradientBoosting × DDoS : reprise hors bac à sable réussie, F1 moyen 0,016809, rappel 0,008500.
+- LogisticRegression × DDoS : 5/5 terminés, F1 0,720357 sur chaque seed, PR-AUC 0,811788.
+- SGDLogistic × DDoS : 5/5 terminés, F1 moyen 0,715936, PR-AUC 0,861798.
+- DDoS phase 2 complet : RandomForest meilleur F1, ExtraTrees meilleure PR-AUC ; aucun gagnant toutes métriques.
+- RandomForest × PortScan : 5/5 résultats réutilisés.
+- ExtraTrees × PortScan : F1 moyen 0,008955, rappel 0,004500, PR-AUC 0,855074.
+- HistGradientBoosting × PortScan : F1=0, rappel=0, PR-AUC 0,804916.
+- LogisticRegression × PortScan : F1 0,000497, rappel 0,000250, PR-AUC 0,527866.
+- SGDLogistic × PortScan : F1=0, rappel=0, PR-AUC 0,800987.
+- PortScan complet : aucun modèle ne dépasse F1 moyen 0,009947.
+- RandomForest × Bot : 5/5 résultats réutilisés, F1 nul.
+- ExtraTrees × Bot : 5/5 terminés, F1 nul, PR-AUC 0,440980.
+- HistGradientBoosting × Bot : 5/5 terminés, F1 nul, PR-AUC 0,475149.
+- LogisticRegression × Bot : 5/5 terminés, F1 nul, PR-AUC 0,313997, 77 FP moyens.
+- SGDLogistic × Bot : 5/5 terminés, F1 nul, PR-AUC 0,485505.
+- Bot complet : aucun vrai positif pour aucun des cinq modèles.
 
 ## Key results
 
@@ -55,11 +76,12 @@ Préparation de la réutilisation traçable RandomForest, puis batches modèle �
 
 - `drain3` absent de l'interpréteur courant ; requis seulement en phase 3.
 - `graphify update .` échoue avec `[WinError 5] Accès refusé`.
+- HistGradientBoosting doit être exécuté hors bac à sable sur cette machine.
 - Premier manifeste interrompu par le nom physique ` Label`; correction appliquée, aucune sortie de manifeste partielle conservée.
 
 ## Exact next action
 
-Implémenter la réutilisation des résultats RandomForest de phase 1, puis exécuter le dry-run complet de phase 2.
+Exécuter `rtk python scripts/run_final_experiments.py --resume --phase 2 --scenario Infiltration --model RandomForest`.
 
 ## Read only these files first
 
@@ -79,4 +101,4 @@ Implémenter la réutilisation des résultats RandomForest de phase 1, puis exé
 
 ## Resume command
 
-`python scripts/run_final_experiments.py --resume --phase 2 --dry-run`
+`python scripts/run_final_experiments.py --resume --phase 2 --scenario Infiltration --model RandomForest`

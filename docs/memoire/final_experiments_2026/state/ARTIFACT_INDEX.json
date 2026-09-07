@@ -3,6 +3,7 @@
   "updated_at": "2026-09-07",
   "git_commit": "37bccf083f3c8e92a11377cf758cf1e9e183dee9",
   "phase_0_checkpoint_commit": "4db70f0",
+  "phase_1_checkpoint_commit": "265cdfb",
   "artifacts": [
     {
       "kind": "state",
@@ -145,6 +146,109 @@
       "path": "docs/memoire/final_experiments_2026/figures/cicids_*.png",
       "status": "complete",
       "count": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_ddos_seed*_randomforest.json",
+      "status": "complete_reused",
+      "runs": 5
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_cicids_model_multiseed_summary.md",
+      "status": "partial",
+      "completed_results": 75,
+      "planned_results": 125
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_ddos_seed*_extratrees.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "error_logs",
+      "path": "docs/memoire/final_experiments_2026/logs/e2_models_ddos_seed*_histgradientboosting.error.txt",
+      "status": "failed_attempts_preserved_then_retried",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_ddos_seed*_histgradientboosting.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_ddos_seed*_logisticregression.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_ddos_seed*_sgdlogistic.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_portscan_seed*_randomforest.json",
+      "status": "complete_reused",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_portscan_seed*_extratrees.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_portscan_seed*_histgradientboosting.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_portscan_seed*_logisticregression.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_portscan_seed*_sgdlogistic.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_bot_seed*_randomforest.json",
+      "status": "complete_reused",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_bot_seed*_extratrees.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_bot_seed*_histgradientboosting.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_bot_seed*_logisticregression.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_bot_seed*_sgdlogistic.json",
+      "status": "complete",
+      "runs": 5
     }
   ]
 }
