@@ -6,11 +6,11 @@ Consolider expérimentalement le mémoire Ariel Logminer sans réécrire le mém
 
 ## Current phase
 
-PHASE 1 — CICIDS2017 multi-seeds.
+PHASE 2 — comparaison multi-modèles CICIDS2017.
 
 ## Current experiment
 
-Batch PortScan tenu à l'écart, RandomForest, seeds 42 à 46.
+Préparation de la réutilisation traçable RandomForest, puis batches modèle × scénario.
 
 ## Completed since previous checkpoint
 
@@ -23,6 +23,13 @@ Batch PortScan tenu à l'écart, RandomForest, seeds 42 à 46.
 - Environnement et manifeste hashé terminés.
 - PHASE 0 clôturée avec son rapport.
 - Batch DDoS terminé : 5/5 runs COMPLETED, aucun échec.
+- Batch PortScan terminé : 5/5 runs COMPLETED, aucun échec.
+- Batch Bot terminé : 5/5 runs COMPLETED, aucun échec.
+- Batch Infiltration terminé : 5/5 runs COMPLETED, aucun échec.
+- Batch WebAttacks terminé : 5/5 runs COMPLETED, aucun échec.
+- Holdout complet : 25/25 runs.
+- Contrôle random complet : 5/5 runs.
+- PHASE 1 terminée, résumés, tableau et cinq figures produits.
 
 ## Key results
 
@@ -32,6 +39,12 @@ Batch PortScan tenu à l'écart, RandomForest, seeds 42 à 46.
 - Onze fichiers prioritaires identifiés par SHA-256.
 - Les 30 runs de phase 1 sont détectés comme manquants par le dry-run.
 - DDoS : F1 moyen 0,778774, écart-type 0,001342, rappel moyen 0,637700, aucun faux positif sur les cinq tests.
+- PortScan : F1 moyen 0,009947, rappel moyen 0,005000, PR-AUC moyenne 0,881982 ; quasi-défaillance au seuil fixe malgré un classement encore informatif.
+- Bot : F1=0 sur cinq seeds, aucun vrai positif, PR-AUC 0,322471 pour une prévalence 0,329534.
+- Infiltration : F1=0 sur cinq seeds, mais seulement 32 attaques par test ; ne pas extrapoler au scénario complet.
+- WebAttacks : F1=0 sur cinq seeds et 2 180 attaques par test ; PR-AUC 0,654341, donc information de classement sans décision positive utile au seuil fixe.
+- Random : F1 moyen 0,995142 ± 0,001013.
+- Holdout macro : F1 0,157744 ; la dispersion inter-scénarios domine très largement la dispersion entre seeds.
 
 ## Files created or modified
 
@@ -46,7 +59,7 @@ Batch PortScan tenu à l'écart, RandomForest, seeds 42 à 46.
 
 ## Exact next action
 
-Exécuter le batch PortScan avec `rtk python scripts/run_final_experiments.py --resume --phase 1 --experiment cicids_holdout_multiseed --scenario PortScan`.
+Implémenter la réutilisation des résultats RandomForest de phase 1, puis exécuter le dry-run complet de phase 2.
 
 ## Read only these files first
 
@@ -66,4 +79,4 @@ Exécuter le batch PortScan avec `rtk python scripts/run_final_experiments.py --
 
 ## Resume command
 
-`python scripts/run_final_experiments.py --resume --phase 1 --experiment cicids_holdout_multiseed --scenario PortScan`
+`python scripts/run_final_experiments.py --resume --phase 2 --dry-run`

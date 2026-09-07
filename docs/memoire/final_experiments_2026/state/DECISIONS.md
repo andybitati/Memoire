@@ -107,3 +107,63 @@ Reason: L'identité binaire locale et la provenance officielle sont deux propri�
 Affected sections: Reproductibilité, description des datasets et limites.
 
 Do not reconsider unless: Des URL, versions, checksums éditeur et preuves de téléchargement concordantes sont retrouvés.
+
+## D010
+
+Decision: Considérer PortScan tenu hors entraînement comme une quasi-défaillance au seuil de décision fixe du RandomForest, tout en distinguant cette défaillance de la qualité de classement des scores.
+
+Evidence: Sur cinq seeds, F1 moyen 0,009947, rappel 0,005000, 3 980 faux négatifs sur 4 000 attaques par run, tandis que la PR-AUC moyenne vaut 0,881982.
+
+Reason: Le F1 et le rappel mesurent les décisions au seuil utilisé ; la PR-AUC indique qu'une information de classement subsiste. Aucun seuil ne doit être ajusté sur le test tenu à l'écart.
+
+Affected sections: Résultats CICIDS holdout, discussion sur la généralisation et limites du seuil fixe.
+
+Do not reconsider unless: Un seuil sélectionné uniquement sur validation, puis évalué une fois sur un test gelé, donne une preuve différente.
+
+## D011
+
+Decision: Classer le holdout Bot comme échec de généralisation du RandomForest strict dans ce protocole.
+
+Evidence: Cinq seeds donnent F1=0, rappel=0 et aucun vrai positif sur 1 966 attaques Bot par run ; PR-AUC moyenne 0,322471 pour une prévalence positive de 0,329534.
+
+Reason: Ni la décision au seuil courant ni le classement des scores ne fournissent ici une performance utile démontrée.
+
+Affected sections: Résultats CICIDS holdout, limites et résultats négatifs.
+
+Do not reconsider unless: Un protocole distinct avec validation indépendante et test gelé apporte une nouvelle preuve.
+
+## D012
+
+Decision: Rapporter le F1 nul d'Infiltration comme observation négative sur l'échantillon lu, sans conclure à une estimation robuste du scénario complet.
+
+Evidence: Les cinq runs manquent les 32 attaques présentes dans les deux chunks autorisés ; F1=0, rappel=0, PR-AUC moyenne 0,015396, prévalence 0,007937.
+
+Reason: Le plafond de deux chunks fournit trop peu de positifs pour une généralisation statistique forte au scénario Infiltration.
+
+Affected sections: Résultats CICIDS holdout, tableau des tailles de test et limites.
+
+Do not reconsider unless: Une évaluation préspécifiée couvrant davantage d'attaques Infiltration est exécutée sur un test gelé.
+
+## D013
+
+Decision: Considérer WebAttacks comme une défaillance complète au seuil de décision fixe, sans nier l'information de classement observée.
+
+Evidence: Sur cinq seeds, aucun vrai positif parmi 2 180 attaques par run, F1=0 et rappel=0 ; PR-AUC moyenne 0,654341 pour une prévalence 0,352751.
+
+Reason: Le seuil courant ne produit aucune détection utile, mais la PR-AUC interdit de conclure que les scores sont entièrement aléatoires. Aucun seuil n'a été ajusté sur le test.
+
+Affected sections: Résultats CICIDS holdout, discussion des seuils et résultats négatifs.
+
+Do not reconsider unless: Un seuil sélectionné sur validation indépendante est évalué une seule fois sur un test WebAttacks gelé.
+
+## D014
+
+Decision: Retenir que la chute CICIDS en holdout persiste sur cinq seeds par scénario et que la variabilité est principalement inter-scénarios.
+
+Evidence: F1 random moyen 0,995142 contre F1 holdout macro 0,157744 ; écart-type des moyennes de scénarios 0,347193 contre écart-type intra-scénario combiné 0,000600 ; 30/30 runs terminés.
+
+Reason: Les résultats changent massivement selon le scénario tenu hors entraînement, tandis que les répétitions de seed restent presque identiques au sein d'un même scénario.
+
+Affected sections: Protocole CICIDS, résultats, discussion de la généralisation, limites et conclusion.
+
+Do not reconsider unless: Un protocole plus complet, préspécifié et strictement comparable fournit une preuve contradictoire.

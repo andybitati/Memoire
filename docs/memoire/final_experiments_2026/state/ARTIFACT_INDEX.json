@@ -64,20 +64,87 @@
     {
       "kind": "raw_csv",
       "path": "data/processed/final_experiments_2026/cicids_holdout_multiseed_raw.csv",
-      "status": "partial",
-      "runs": 5
+      "status": "complete",
+      "runs": 25
     },
     {
       "kind": "summary_csv",
       "path": "data/processed/final_experiments_2026/cicids_holdout_multiseed_summary.csv",
-      "status": "partial"
+      "status": "complete"
     },
     {
       "kind": "summary",
       "path": "docs/memoire/final_experiments_2026/experiment_cicids_holdout_multiseed_summary.md",
-      "status": "partial",
-      "completed_runs": 5,
+      "status": "complete",
+      "completed_runs": 25,
       "planned_runs": 25
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_1/e1_holdout_portscan_seed*.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_1/e1_holdout_bot_seed*.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_1/e1_holdout_infiltration_seed*.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_1/e1_holdout_webattacks_seed*.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_1/e1_random_stratified_seed*.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_csv",
+      "path": "data/processed/final_experiments_2026/cicids_random_multiseed_raw.csv",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "summary_csv",
+      "path": "data/processed/final_experiments_2026/cicids_random_multiseed_summary.csv",
+      "status": "complete"
+    },
+    {
+      "kind": "comparison_csv",
+      "path": "data/processed/final_experiments_2026/cicids_random_vs_holdout_summary.csv",
+      "status": "complete"
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_cicids_random_multiseed_summary.md",
+      "status": "complete"
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_1_COMPLETED.md",
+      "status": "complete"
+    },
+    {
+      "kind": "table",
+      "path": "docs/memoire/final_experiments_2026/tables/cicids_phase1_results.md",
+      "status": "complete"
+    },
+    {
+      "kind": "figures",
+      "path": "docs/memoire/final_experiments_2026/figures/cicids_*.png",
+      "status": "complete",
+      "count": 5
     }
   ]
 }

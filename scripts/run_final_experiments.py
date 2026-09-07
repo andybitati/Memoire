@@ -85,6 +85,7 @@ LEDGER_FIELDS = (
     "notes",
 )
 ALLOWED_STATUSES = {"PLANNED", "RUNNING", "COMPLETED", "FAILED", "SKIPPED", "INVALIDATED"}
+_RANDOM_POOL_CACHE: tuple[pd.DataFrame, pd.Series, dict[str, object]] | None = None
 
 
 @dataclass(frozen=True)
@@ -318,31 +319,42 @@ def load_holdout(plan: RunPlan) -> tuple[pd.DataFrame, pd.Series, pd.DataFrame, 
 
 
 def load_random_control(plan: RunPlan) -> tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series, dict[str, object]]:
-    files = cicids_files()
-    feature_columns = _network_feature_columns(files[0])
-    x_parts: list[pd.DataFrame] = []
-    y_parts: list[pd.Series] = []
-    source_counts: dict[str, dict[str, int]] = {}
-    for file_index, path in enumerate(files):
-        x_part, y_part, labels = collect_network_sample(
-            [path],
-            feature_columns,
-            max_negative=12000,
-            max_positive=12000,
-            chunksize=100000,
-            max_chunks_per_file=2,
-            seed=2026 + file_index,
-        )
-        x_parts.append(x_part.reset_index(drop=True))
-        y_parts.append(y_part.reset_index(drop=True))
-        source_counts[path.name] = labels
-    x_pool = pd.concat(x_parts, ignore_index=True)
-    y_pool = pd.concat(y_parts, ignore_index=True)
-    negative_indices = y_pool[y_pool == 0].sample(n=12000, random_state=2026).index
-    positive_indices = y_pool[y_pool == 1].sample(n=12000, random_state=2026).index
-    pool_indices = negative_indices.append(positive_indices)
-    x_pool = x_pool.loc[pool_indices].reset_index(drop=True)
-    y_pool = y_pool.loc[pool_indices].reset_index(drop=True)
+    global _RANDOM_POOL_CACHE
+    if _RANDOM_POOL_CACHE is None:
+        files = cicids_files()
+        feature_columns = _network_feature_columns(files[0])
+        x_parts: list[pd.DataFrame] = []
+        y_parts: list[pd.Series] = []
+        source_counts: dict[str, dict[str, int]] = {}
+        for file_index, path in enumerate(files):
+            x_part, y_part, labels = collect_network_sample(
+                [path],
+                feature_columns,
+                max_negative=12000,
+                max_positive=12000,
+                chunksize=100000,
+                max_chunks_per_file=2,
+                seed=2026 + file_index,
+            )
+            x_parts.append(x_part.reset_index(drop=True))
+            y_parts.append(y_part.reset_index(drop=True))
+            source_counts[path.name] = labels
+        x_pool = pd.concat(x_parts, ignore_index=True)
+        y_pool = pd.concat(y_parts, ignore_index=True)
+        negative_indices = y_pool[y_pool == 0].sample(n=12000, random_state=2026).index
+        positive_indices = y_pool[y_pool == 1].sample(n=12000, random_state=2026).index
+        pool_indices = negative_indices.append(positive_indices)
+        x_pool = x_pool.loc[pool_indices].reset_index(drop=True)
+        y_pool = y_pool.loc[pool_indices].reset_index(drop=True)
+        pool_details: dict[str, object] = {
+            "source_files": [rel(path) for path in files],
+            "source_label_counts_before_caps": source_counts,
+            "pool_seed": 2026,
+            "pool_rows": int(len(y_pool)),
+            "pool_positive_rate": float(y_pool.mean()),
+        }
+        _RANDOM_POOL_CACHE = x_pool, y_pool, pool_details
+    x_pool, y_pool, cached_details = _RANDOM_POOL_CACHE
     x_train, x_test, y_train, y_test = train_test_split(
         x_pool,
         y_pool,
@@ -351,13 +363,7 @@ def load_random_control(plan: RunPlan) -> tuple[pd.DataFrame, pd.Series, pd.Data
         stratify=y_pool,
         random_state=plan.seed,
     )
-    details = {
-        "source_files": [rel(path) for path in files],
-        "source_label_counts_before_caps": source_counts,
-        "pool_seed": 2026,
-        "pool_rows": int(len(y_pool)),
-        "pool_positive_rate": float(y_pool.mean()),
-    }
+    details = dict(cached_details)
     return x_train, y_train, x_test, y_test, details
 
 
@@ -489,6 +495,120 @@ def aggregate(frame: pd.DataFrame, groups: list[str]) -> pd.DataFrame:
     return pd.DataFrame(records)
 
 
+def _write_heatmap(frame: pd.DataFrame, metric: str, title: str, output_name: str) -> Path:
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    scenarios = list(SCENARIO_FILES)
+    matrix = frame.pivot(index="scenario", columns="seed", values=metric).reindex(index=scenarios, columns=SEEDS)
+    values = matrix.to_numpy(dtype=float)
+    fig, axis = plt.subplots(figsize=(8.8, 4.8))
+    image = axis.imshow(values, aspect="auto", cmap="viridis", vmin=np.nanmin(values), vmax=np.nanmax(values))
+    axis.set_xticks(range(len(SEEDS)), labels=[str(seed) for seed in SEEDS])
+    axis.set_yticks(range(len(scenarios)), labels=scenarios)
+    axis.set_xlabel("Seed")
+    axis.set_ylabel("Scénario tenu hors entraînement")
+    axis.set_title(title)
+    for row_index in range(values.shape[0]):
+        for column_index in range(values.shape[1]):
+            value = values[row_index, column_index]
+            axis.text(column_index, row_index, f"{value:.3f}", ha="center", va="center", color="white" if value < np.nanmean(values) else "black", fontsize=8)
+    fig.colorbar(image, ax=axis, label=metric.upper().replace("PR_AUC", "PR-AUC"))
+    fig.tight_layout()
+    output = FIGURES / output_name
+    fig.savefig(output, dpi=180)
+    plt.close(fig)
+    return output
+
+
+def write_phase1_assets(holdout: pd.DataFrame, random: pd.DataFrame) -> list[Path]:
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    outputs: list[Path] = []
+    scenarios = list(SCENARIO_FILES)
+    values = [holdout.loc[holdout["scenario"] == scenario, "f1"].to_numpy() for scenario in scenarios]
+    fig, axis = plt.subplots(figsize=(9.2, 5.2))
+    axis.boxplot(values, tick_labels=scenarios, showmeans=True)
+    axis.set_ylabel("F1")
+    axis.set_xlabel("Scénario tenu hors entraînement")
+    axis.set_ylim(-0.03, 1.03)
+    axis.set_title("CICIDS2017 — F1 par scénario holdout\nRandomForest, 5 seeds/scénario, N=25 runs")
+    axis.grid(axis="y", alpha=0.25)
+    fig.tight_layout()
+    output = FIGURES / "cicids_f1_par_scenario_boxplot.png"
+    fig.savefig(output, dpi=180)
+    plt.close(fig)
+    outputs.append(output)
+
+    fig, axis = plt.subplots(figsize=(7.8, 5.2))
+    comparison = [holdout["f1"].to_numpy(), random["f1"].to_numpy()]
+    axis.boxplot(comparison, tick_labels=["Holdout scénario\nN=25", "Split aléatoire stratifié\nN=5"], showmeans=True)
+    for position, series in enumerate(comparison, start=1):
+        offsets = np.linspace(-0.08, 0.08, len(series))
+        axis.scatter(np.full(len(series), position) + offsets, series, s=22, alpha=0.75)
+    axis.set_ylabel("F1")
+    axis.set_ylim(-0.03, 1.03)
+    axis.set_title("CICIDS2017 — Split aléatoire vs scénarios tenus hors entraînement\nRandomForest, même représentation et plafonds comparables")
+    axis.grid(axis="y", alpha=0.25)
+    fig.tight_layout()
+    output = FIGURES / "cicids_random_vs_holdout_f1.png"
+    fig.savefig(output, dpi=180)
+    plt.close(fig)
+    outputs.append(output)
+
+    outputs.append(
+        _write_heatmap(
+            holdout,
+            "f1",
+            "CICIDS2017 — F1 scénario × seed\nRandomForest, holdout complet, N=25 runs",
+            "cicids_f1_scenario_seed_heatmap.png",
+        )
+    )
+    outputs.append(
+        _write_heatmap(
+            holdout,
+            "pr_auc",
+            "CICIDS2017 — PR-AUC scénario × seed\nRandomForest, holdout complet, N=25 runs",
+            "cicids_prauc_scenario_seed_heatmap.png",
+        )
+    )
+    outputs.append(
+        _write_heatmap(
+            holdout,
+            "mcc",
+            "CICIDS2017 — MCC scénario × seed\nRandomForest, holdout complet, N=25 runs",
+            "cicids_mcc_scenario_seed_heatmap.png",
+        )
+    )
+
+    holdout_summary = aggregate(holdout, ["dataset", "scenario", "model", "split"])
+    random_summary = aggregate(random, ["dataset", "model", "split"])
+    lines = [
+        "# CICIDS2017 — PHASE 1",
+        "",
+        "| Protocole | Scénario | N | Seeds | F1 moyen | Écart-type | PR-AUC | MCC | FPR | Limite |",
+        "| --- | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | --- |",
+    ]
+    for _, row in holdout_summary.iterrows():
+        limitation = "32 positifs/run" if row["scenario"] == "Infiltration" else "Sous-échantillon plafonné fixe"
+        lines.append(
+            f"| Holdout fichier/scénario | {row['scenario']} | {int(row['n'])} | {row['seeds']} | {row['f1_mean']:.6f} | {row['f1_std']:.6f} | {row['pr_auc_mean']:.6f} | {row['mcc_mean']:.6f} | {row['fpr_mean']:.6f} | {limitation} |"
+        )
+    for _, row in random_summary.iterrows():
+        lines.append(
+            f"| Split aléatoire stratifié | Tous scénarios, pool fixe | {int(row['n'])} | {row['seeds']} | {row['f1_mean']:.6f} | {row['f1_std']:.6f} | {row['pr_auc_mean']:.6f} | {row['mcc_mean']:.6f} | {row['fpr_mean']:.6f} | Mélange aléatoire des captures |"
+        )
+    table_output = TABLES / "cicids_phase1_results.md"
+    table_output.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    outputs.append(table_output)
+    return outputs
+
+
 def refresh_phase_outputs(phase: int) -> None:
     frame = flatten_artifacts(phase)
     if frame.empty:
@@ -509,6 +629,8 @@ def refresh_phase_outputs(phase: int) -> None:
         aggregate(combined, ["dataset", "model", "split"]).to_csv(
             FINAL_DATA / "cicids_random_vs_holdout_summary.csv", index=False, encoding="utf-8-sig"
         )
+        if len(holdout) == 25 and len(random) == 5:
+            write_phase1_assets(holdout, random)
     elif phase == 2:
         frame.to_csv(FINAL_DATA / "cicids_model_multiseed_raw.csv", index=False, encoding="utf-8-sig")
         summary = aggregate(frame, ["dataset", "model", "split"]).sort_values("f1_mean", ascending=False)

@@ -1,16 +1,16 @@
 # NEXT ACTION
 
-Phase: PHASE 1
+Phase: PHASE 2
 
-Experiment: CICIDS2017 multi-seeds — batch PortScan
+Experiment: Comparaison multi-modèles — préparation et réutilisation RandomForest
 
-Last completed step: Batch DDoS terminé et validé, 5/5 COMPLETED.
+Last completed step: PHASE 1 terminée, 30/30 runs COMPLETED et cinq figures validées visuellement.
 
-Next exact step: Lancer les cinq runs du scénario PortScan tenu à l'écart.
+Next exact step: Ajouter au runner une réutilisation traçable des 25 résultats RandomForest identiques de phase 1, puis valider le plan de phase 2 en dry-run.
 
-Command to run: `rtk python scripts/run_final_experiments.py --resume --phase 1 --experiment cicids_holdout_multiseed --scenario PortScan`
+Command to run: `rtk python scripts/run_final_experiments.py --resume --phase 2 --dry-run`
 
-Expected output: Cinq artefacts JSON valides, cinq états finaux COMPLETED dans le ledger et résumés partiels CICIDS.
+Expected output: 125 résultats planifiés, dont 25 RandomForest réutilisables et 100 nouveaux ajustements.
 
 Files that must be read: `configs/cicids_final_protocol.json`, `state/EXPERIMENT_LEDGER.csv`, `dataset_manifest_final.csv`.
 
