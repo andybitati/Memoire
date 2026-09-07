@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-09-07",
+  "git_commit": "37bccf083f3c8e92a11377cf758cf1e9e183dee9",
+  "artifacts": [
+    {
+      "kind": "state",
+      "path": "docs/memoire/final_experiments_2026/state/CURRENT_STATE.md",
+      "status": "active"
+    },
+    {
+      "kind": "state",
+      "path": "docs/memoire/final_experiments_2026/state/NEXT_ACTION.md",
+      "status": "active"
+    },
+    {
+      "kind": "ledger",
+      "path": "docs/memoire/final_experiments_2026/state/EXPERIMENT_LEDGER.csv",
+      "status": "active"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/memoire/final_experiments_2026/state/DECISIONS.md",
+      "status": "active"
+    },
+    {
+      "kind": "handoff",
+      "path": "docs/memoire/final_experiments_2026/state/SESSION_HANDOFF.md",
+      "status": "active"
+    },
+    {
+      "kind": "runner",
+      "path": "scripts/run_final_experiments.py",
+      "status": "validated_dry_run"
+    },
+    {
+      "kind": "config",
+      "path": "docs/memoire/final_experiments_2026/configs/cicids_final_protocol.json",
+      "status": "frozen"
+    },
+    {
+      "kind": "environment",
+      "path": "docs/memoire/final_experiments_2026/environment_final_experiments.json",
+      "status": "complete"
+    },
+    {
+      "kind": "dataset_manifest",
+      "path": "docs/memoire/final_experiments_2026/dataset_manifest_final.csv",
+      "status": "complete",
+      "entries": 11
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_0_COMPLETED.md",
+      "status": "complete"
+    }
+  ]
+}
