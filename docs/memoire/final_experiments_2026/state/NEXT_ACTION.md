@@ -2,13 +2,13 @@
 
 Phase: PHASE 1
 
-Experiment: CICIDS2017 multi-seeds — batch DDoS
+Experiment: CICIDS2017 multi-seeds — batch PortScan
 
-Last completed step: PHASE 0 complète ; environnement, manifeste et runner validés.
+Last completed step: Batch DDoS terminé et validé, 5/5 COMPLETED.
 
-Next exact step: Lancer les cinq runs du scénario DDoS tenu à l'écart.
+Next exact step: Lancer les cinq runs du scénario PortScan tenu à l'écart.
 
-Command to run: `rtk python scripts/run_final_experiments.py --resume --phase 1 --experiment cicids_holdout_multiseed --scenario DDoS`
+Command to run: `rtk python scripts/run_final_experiments.py --resume --phase 1 --experiment cicids_holdout_multiseed --scenario PortScan`
 
 Expected output: Cinq artefacts JSON valides, cinq états finaux COMPLETED dans le ledger et résumés partiels CICIDS.
 

@@ -3,7 +3,7 @@
 Last update: 2026-09-07
 Git commit: 4db70f0 (checkpoint PHASE 0; baseline expérimental 37bccf083f3c8e92a11377cf758cf1e9e183dee9)
 Active phase: PHASE 1
-Active experiment: CICIDS2017 multi-seeds — batch DDoS
+Active experiment: CICIDS2017 multi-seeds — batch PortScan
 Status: READY
 
 ## Completed
@@ -16,6 +16,7 @@ Status: READY
 - Protocole CICIDS final figé dans un fichier de configuration distinct.
 - Environnement et manifeste de 11 fichiers avec SHA-256 validés.
 - PHASE 0 terminée.
+- Batch DDoS : 5/5 runs terminés, aucun échec.
 
 ## In progress
 
@@ -23,8 +24,8 @@ Status: READY
 
 ## Pending
 
-- Batch DDoS : cinq seeds RandomForest.
-- Quatre autres batches holdout, puis contrôle random stratifié.
+- Batch PortScan : cinq seeds RandomForest.
+- Trois autres batches holdout, puis contrôle random stratifié.
 - Phases 2 à 12.
 
 ## Verified facts
@@ -34,6 +35,7 @@ Status: READY
 - Le dépôt avait six fichiers non suivis préexistants au démarrage de la mission.
 - Le manifeste contient 8 fichiers CICIDS2017, 2 HDFS et 1 BGL, tous hashés.
 - Le plan de phase 1 contient 30 runs : 25 holdout et 5 random stratifié.
+- DDoS holdout : F1 moyen 0,778774 ± 0,001342 ; rappel 0,637700 ; FP moyen 0 ; N=5.
 
 ## Open issues
 

@@ -102,6 +102,16 @@ class RunPlan:
     def raw_path(self) -> Path:
         return FINAL_DATA / f"phase_{self.phase}" / f"{self.experiment_id}.json"
 
+    @property
+    def summary_path(self) -> Path:
+        if self.phase == 1 and self.split == "random_stratified":
+            return FINAL_DATA / "cicids_random_multiseed_summary.csv"
+        if self.phase == 1:
+            return FINAL_DATA / "cicids_holdout_multiseed_summary.csv"
+        if self.phase == 2:
+            return FINAL_DATA / "cicids_model_multiseed_summary.csv"
+        return FINAL_DATA / f"phase_{self.phase}_summary.csv"
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -556,8 +566,14 @@ def run_plans(plans: list[RunPlan], *, resume: bool) -> int:
                 valid, reason = artifact_valid(plan)
                 if not valid:
                     raise ValueError(f"Artifact validation failed: {reason}")
-                append_ledger(plan, "COMPLETED", started_at=started_at, completed_at=utc_now())
                 refresh_phase_outputs(plan.phase)
+                append_ledger(
+                    plan,
+                    "COMPLETED",
+                    started_at=started_at,
+                    completed_at=utc_now(),
+                    summary_path=rel(plan.summary_path),
+                )
                 print(f"COMPLETED {plan.experiment_id} f1={payload['metrics']['f1']:.6f}")
             except Exception as exc:
                 error_path = LOGS / f"{plan.experiment_id}.error.txt"

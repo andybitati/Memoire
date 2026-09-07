@@ -54,6 +54,30 @@
       "kind": "phase_report",
       "path": "docs/memoire/final_experiments_2026/PHASE_0_COMPLETED.md",
       "status": "complete"
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_1/e1_holdout_ddos_seed*.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_csv",
+      "path": "data/processed/final_experiments_2026/cicids_holdout_multiseed_raw.csv",
+      "status": "partial",
+      "runs": 5
+    },
+    {
+      "kind": "summary_csv",
+      "path": "data/processed/final_experiments_2026/cicids_holdout_multiseed_summary.csv",
+      "status": "partial"
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_cicids_holdout_multiseed_summary.md",
+      "status": "partial",
+      "completed_runs": 5,
+      "planned_runs": 25
     }
   ]
 }

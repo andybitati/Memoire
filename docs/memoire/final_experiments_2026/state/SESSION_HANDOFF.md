@@ -10,7 +10,7 @@ PHASE 1 — CICIDS2017 multi-seeds.
 
 ## Current experiment
 
-Batch DDoS tenu à l'écart, RandomForest, seeds 42 à 46.
+Batch PortScan tenu à l'écart, RandomForest, seeds 42 à 46.
 
 ## Completed since previous checkpoint
 
@@ -22,6 +22,7 @@ Batch DDoS tenu à l'écart, RandomForest, seeds 42 à 46.
 - Configuration CICIDS multi-seeds figée.
 - Environnement et manifeste hashé terminés.
 - PHASE 0 clôturée avec son rapport.
+- Batch DDoS terminé : 5/5 runs COMPLETED, aucun échec.
 
 ## Key results
 
@@ -30,6 +31,7 @@ Batch DDoS tenu à l'écart, RandomForest, seeds 42 à 46.
 - Aucun ancien artefact modifié.
 - Onze fichiers prioritaires identifiés par SHA-256.
 - Les 30 runs de phase 1 sont détectés comme manquants par le dry-run.
+- DDoS : F1 moyen 0,778774, écart-type 0,001342, rappel moyen 0,637700, aucun faux positif sur les cinq tests.
 
 ## Files created or modified
 
@@ -44,7 +46,7 @@ Batch DDoS tenu à l'écart, RandomForest, seeds 42 à 46.
 
 ## Exact next action
 
-Exécuter le batch DDoS avec `rtk python scripts/run_final_experiments.py --resume --phase 1 --experiment cicids_holdout_multiseed --scenario DDoS`.
+Exécuter le batch PortScan avec `rtk python scripts/run_final_experiments.py --resume --phase 1 --experiment cicids_holdout_multiseed --scenario PortScan`.
 
 ## Read only these files first
 
@@ -64,4 +66,4 @@ Exécuter le batch DDoS avec `rtk python scripts/run_final_experiments.py --resu
 
 ## Resume command
 
-`python scripts/run_final_experiments.py --resume --phase 1 --experiment cicids_holdout_multiseed --scenario DDoS`
+`python scripts/run_final_experiments.py --resume --phase 1 --experiment cicids_holdout_multiseed --scenario PortScan`
