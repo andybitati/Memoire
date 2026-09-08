@@ -10,7 +10,7 @@ PHASE 5 — validation multiformat étendue.
 
 ## Current experiment
 
-Audit des parseurs et corpus disponibles avant gel du protocole multiformat.
+Exécution des huit voies multiformats selon le protocole figé.
 
 ## Completed since previous checkpoint
 
@@ -89,6 +89,9 @@ Audit des parseurs et corpus disponibles avant gel du protocole multiformat.
 - Rejet d'un candidat inférieur : delta `-0,063163`, courant inchangé.
 - Rejet d'un gain positif insuffisant : delta `+0,009016 < 0,02`, courant inchangé.
 - Rapport d'intégrité global positif, tableau et figure phase 4 produits ; D024 enregistrée.
+- Checkpoint final PHASE 4 : `1e184ab`.
+- Protocole multiformat figé : huit voies, maximum 1 000 événements en ordre source, aucune duplication.
+- Runner phase 5 compilé et dry-run validé ; huit lignes PLANNED enregistrées.
 
 ## Key results
 
@@ -123,7 +126,7 @@ Audit des parseurs et corpus disponibles avant gel du protocole multiformat.
 
 ## Exact next action
 
-Figer la configuration de validation multiformat à partir des seuls parseurs et corpus locaux démontrables, puis créer le runner idempotent produisant les quatre CSV exigés.
+Exécuter `scripts/run_multiformat_validation.py --resume`, valider les quatre CSV et inspecter la figure.
 
 ## Read only these files first
 
@@ -133,11 +136,9 @@ Figer la configuration de validation multiformat à partir des seuls parseurs et
 - `state/EXPERIMENT_LEDGER.csv`
 - `scripts/run_final_experiments.py`
 - `dataset_manifest_final.csv`
+- `configs/multiformat_validation_protocol.json`
+- `scripts/run_multiformat_validation.py`
 - `PHASE_4_COMPLETED.md`
-- `experiment_model_update_e2e_summary.md`
-- `src/logminer/detectors/file_detector.py`
-- `src/logminer/pipeline.py`
-- parseurs sélectionnés pour PHASE 5
 - `PHASE_2_COMPLETED.md`
 
 ## Do not reread
@@ -147,4 +148,4 @@ Figer la configuration de validation multiformat à partir des seuls parseurs et
 
 ## Resume command
 
-`rtk graphify explain "détection et pipeline de parsing multiformat"`
+`rtk python scripts/run_multiformat_validation.py --resume`

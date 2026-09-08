@@ -1,10 +1,10 @@
 # CURRENT STATE
 
 Last update: 2026-09-08
-Git commit: 2afd1dd (checkpoint préparation PHASE 4; checkpoint final PHASE 3 749625a)
+Git commit: 1e184ab (checkpoint final PHASE 4; checkpoint final PHASE 3 749625a)
 Active phase: PHASE 5
-Active experiment: Audit des formats et corpus disponibles pour validation multiformat étendue
-Status: PHASE 4 COMPLETE — PHASE 5 PROTOCOL DESIGN
+Active experiment: Validation fonctionnelle de huit voies multiformats du code courant
+Status: PHASE 5 PROTOCOL FROZEN — RUN READY
 
 ## Completed
 
@@ -78,10 +78,12 @@ Status: PHASE 4 COMPLETE — PHASE 5 PROTOCOL DESIGN
 - Rejet RandomForest→SGDLogistic observé : delta -0,063163, courant inchangé.
 - Rejet sous seuil ExtraTrees→LogisticRegression observé : delta +0,009016 < 0,02, courant inchangé.
 - Rapport d'intégrité, tableau, résumé et figure PHASE 4 produits et vérifiés.
+- Protocole phase 5 figé avant exécution : huit formats/adaptateurs, maximum 1 000 événements, aucune duplication.
+- Dry-run phase 5 validé et huit expériences PLANNED inscrites dans le ledger.
 
 ## In progress
 
-- Audit ciblé des parseurs, détecteurs et corpus réellement disponibles pour la phase 5.
+- Aucun run en cours ; exécution multiformat prête.
 
 ## Pending
 
@@ -138,6 +140,9 @@ Status: PHASE 4 COMPLETE — PHASE 5 PROTOCOL DESIGN
 - Hash évaluation gelée phase 4 : `23019860997b8071e0922c52c1710e10b017adcc20f53121872e3875dc5a3126`.
 - La mise à jour contrôlée est IMPLÉMENTÉE et TESTÉE FONCTIONNELLEMENT DE BOUT EN BOUT ; elle n'est pas évaluée comme apprentissage continu autonome ni comme mécanisme de production.
 - Trois branches sont prouvées : promotion avec backup, rejet inférieur et rejet d'un gain positif sous le seuil.
+- Phase 5 inclut Windows EVTX, Linux/auth tabulaire, Wazuh CSV, syslog, Apache, HDFS, BGL et flux réseau tabulaires, chacun via une voie de code existante.
+- Le corpus Apache disponible est un fixture synthétique existant d'une ligne ; il n'est pas dupliqué.
+- Le routage est explicitement exclu de la phase 5 et reporté à la phase 6.
 
 ## Open issues
 

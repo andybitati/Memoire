@@ -2,20 +2,20 @@
 
 Phase: PHASE 5
 
-Experiment: Validation multiformat étendue — conception du protocole
+Experiment: Validation multiformat étendue — exécution des huit formats
 
-Last completed step: PHASE 4 complète, 3/3 décisions exécutées et intégrité vérifiée ; figure inspectée.
+Last completed step: Configuration phase 5 figée, runner compilé, dry-run validé et huit plans inscrits au ledger.
 
-Next exact step: Inventorier les sources réelles utilisables, définir pour chaque format l'unité brute et la limite de 500 à 1 000 événements, puis figer la configuration avant exécution.
+Next exact step: Exécuter les huit validations avec reprise idempotente, vérifier les quatre CSV agrégés et inspecter la figure.
 
-Command to run: `rtk graphify explain "détection et pipeline de parsing multiformat"`
+Command to run: `rtk python scripts/run_multiformat_validation.py --resume`
 
-Expected output: Sous-graphe ciblé permettant de relier détecteur, parseurs, normalisation et schéma sans rescanner le dépôt.
+Expected output: Huit artefacts par format, quatre CSV agrégés, un tableau et `figures/validation_multiformat.png`, avec toute défaillance conservée.
 
-Files that must be read: `src/logminer/detectors/file_detector.py`, `src/logminer/pipeline.py`, `src/logminer/io/csv_writer.py`, parseurs sélectionnés et sources locales candidates.
+Files that must be read: `configs/multiformat_validation_protocol.json`, `scripts/run_multiformat_validation.py`.
 
 Files that DO NOT need to be reread: mémoire LaTeX complet, artefacts CICIDS unitaires, artefacts HDFS/BGL phase 3, modèles phase 4, anciens rapports éditoriaux et multi-VM.
 
-Success criterion: Une configuration phase 5 figée qui n'inclut que des formats avec parseur et source démontrables, sépare parsing/normalisation/routage et prévoit les quatre CSV exigés.
+Success criterion: Les huit validations écrivent des métriques traçables ; les quatre CSV sont lisibles ; les comptes satisfont N_brut = N_normalisé + N_perdu ; aucune défaillance n'est masquée.
 
-If failure: Exclure le format concerné ou utiliser tout le volume réellement disponible en documentant la limite ; ne jamais fabriquer un corpus présenté comme réel.
+If failure: Conserver les artefacts déjà écrits, inscrire FAILED uniquement pour l'erreur d'infrastructure, corriger sans changer le protocole et relancer avec `--resume`.

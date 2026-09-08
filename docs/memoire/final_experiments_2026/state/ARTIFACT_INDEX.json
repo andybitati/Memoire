@@ -549,6 +549,17 @@
       "kind": "phase_report",
       "path": "docs/memoire/final_experiments_2026/PHASE_4_COMPLETED.md",
       "status": "complete"
+    },
+    {
+      "kind": "config",
+      "path": "docs/memoire/final_experiments_2026/configs/multiformat_validation_protocol.json",
+      "status": "frozen_before_run",
+      "formats": 8
+    },
+    {
+      "kind": "runner",
+      "path": "scripts/run_multiformat_validation.py",
+      "status": "validated_dry_run"
     }
   ]
 }
