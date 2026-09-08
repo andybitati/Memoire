@@ -1,0 +1,30 @@
+{
+  "protocol_id": "transversal_statistics_v1",
+  "phase": 9,
+  "frozen_before_run": true,
+  "repeated_sources": [
+    "data/processed/final_experiments_2026/cicids_model_multiseed_raw.csv",
+    "data/processed/final_experiments_2026/cicids_random_multiseed_raw.csv",
+    "data/processed/final_experiments_2026/hdfs_strict_drain3_raw.csv",
+    "data/processed/final_experiments_2026/bgl_strict_drain3_raw.csv"
+  ],
+  "single_evaluation_sources": [
+    "docs/memoire/pack_redaction_final/06_reproductibilite_preuves/controlled_monolith_vs_agents.csv",
+    "data/processed/final_experiments_2026/router_evaluation_summary.json",
+    "data/processed/final_experiments_2026/multiformat_validation_summary.csv",
+    "data/processed/final_experiments_2026/correlation_synthetic_summary.json"
+  ],
+  "metrics": ["f1", "precision", "recall", "pr_auc", "mcc", "fpr"],
+  "descriptive_statistics": ["n", "mean", "sample_std", "median", "min", "max"],
+  "ci95": "Student t interval for the mean only when n >= 2; conditional on the fixed protocol and seeds",
+  "cicids_unit": "one run for a fixed scenario, model and seed; grouping is scenario x model",
+  "sequence_unit": "one run for a fixed dataset, method and seed; deterministic methods have n=1",
+  "model_effect_unit": "one scenario-level mean; five fixed scenarios, descriptive only",
+  "inferential_tests": "none: five fixed scenarios are not a random population; n=5 seed repetitions are too limited for thesis-wide inference",
+  "forbidden_pooling": [
+    "do not treat five scenarios as five identical repetitions",
+    "do not pool 25 CICIDS scenario-seed rows as independent replicates",
+    "do not compute dispersion for deterministic n=1 methods",
+    "do not infer significance between random split and scenario holdout"
+  ]
+}

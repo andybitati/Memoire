@@ -23,6 +23,10 @@ Inventaire des unités répétées et préparation d'agrégats statistiquement a
 - Une fragmentation de frontière et une fusion d'incidents indiscernables; 3/3 bruits exclus.
 - Tableau et figure produits; figure inspectée; reprise idempotente validée.
 - D028 et rapport de phase ajoutés.
+- Sources statistiques ciblées inventoriées: CICIDS multi-seeds, HDFS/BGL stricts, benchmark contrôlé, routeur, multiformat et corrélation.
+- Protocole phase 9 figé: regroupement scenario×modèle, méthodes déterministes N=1, évaluations uniques séparées.
+- Aucun test inférentiel prévu; IC Student seulement pour N≥2 et interprétation conditionnelle.
+- Runner compilé et dry-run validé; ligne `PLANNED` ajoutée.
 
 ## Key results
 
@@ -48,7 +52,7 @@ Inventaire des unités répétées et préparation d'agrégats statistiquement a
 
 ## Exact next action
 
-Créer le checkpoint final phase 8, puis exécuter la requête Graphify définie dans `NEXT_ACTION.md`.
+Créer le checkpoint du protocole phase 9, puis exécuter `rtk python scripts/build_transversal_statistics.py --resume`.
 
 ## Read only these files first
 
@@ -66,4 +70,4 @@ Créer le checkpoint final phase 8, puis exécuter la requête Graphify définie
 
 ## Resume command
 
-`rtk graphify query "Quels artefacts agrègent les métriques multi-seeds CICIDS, HDFS/BGL, routeur, multiformat, corrélation et benchmark monolithique agents ?"`
+`rtk python scripts/build_transversal_statistics.py --resume`

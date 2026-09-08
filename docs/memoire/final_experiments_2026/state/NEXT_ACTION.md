@@ -4,19 +4,18 @@ Phase: PHASE 9
 
 Experiment: Analyse statistique transversale
 
-Last completed step: PHASE 8 terminée; 1/1 run, 120 paires, F1 pairwise 0,812500, reprise idempotente validée.
+Last completed step: Protocole phase 9 figé; runner compilé et dry-run validé; expérience enregistrée `PLANNED`.
 
-Next exact step: Inventorier les CSV de synthèse des phases 1–8 et le benchmark monolithique/agents; définir quelles unités sont réellement répétées et quelles comparaisons appariées sont méthodologiquement admissibles.
+Next exact step: Après checkpoint Git, construire les statistiques répétées, les effets par scénario et le registre des évaluations uniques; valider les comptages et les IC.
 
-Command to run: `rtk graphify query "Quels artefacts agrègent les métriques multi-seeds CICIDS, HDFS/BGL, routeur, multiformat, corrélation et benchmark monolithique agents ?"`
+Command to run: `rtk python scripts/build_transversal_statistics.py --resume`
 
-Expected output: Liste ciblée des fichiers de synthèse permettant un tableau transversal sans confondre seeds, scénarios, méthodes déterministes et tâches.
+Expected output: 228 lignes de statistiques répétées, 4 comparaisons descriptives LogisticRegression contre candidats, 20 métriques d'évaluations uniques, rapport et tableau.
 
-Files that must be read: CSV de synthèse indexés, rapports PHASE_1 à PHASE_8 et artefact exact du benchmark D008.
+Files that must be read: `configs/transversal_statistics_protocol.json`, `scripts/build_transversal_statistics.py` et les trois sorties seulement.
 
 Files that DO NOT need to be reread: mémoire complet, JSON de runs individuels si les CSV agrégés suffisent, modèles et états Drain3 binaires.
 
 Success criterion: N, moyenne, écart-type, médiane, min, max et IC95 lorsque pertinents; aucune pseudo-réplication; tests appariés seulement si justifiés.
 
 If failure: Produire des statistiques descriptives et documenter explicitement l'absence de test inférentiel justifiable.
-

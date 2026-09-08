@@ -4,7 +4,7 @@ Last update: 2026-09-08
 Git commit: a51ee59 (checkpoint protocole PHASE 8; checkpoint final PHASE 7 238e94c)
 Active phase: PHASE 9
 Active experiment: Analyse statistique transversale
-Status: PHASE 8 COMPLETE — PHASE 9 AUDIT
+Status: PHASE 8 COMPLETE — PHASE 9 PROTOCOL FROZEN
 
 ## Completed
 
@@ -20,11 +20,11 @@ Status: PHASE 8 COMPLETE — PHASE 9 AUDIT
 
 ## In progress
 
-- Inventaire des comparaisons répétées et des statistiques déjà disponibles avant agrégation transversale.
+- Protocole transversal figé: 228 statistiques répétées attendues, effets descriptifs au niveau scénario et évaluations uniques séparées; aucun test inférentiel.
 
 ## Pending
 
-- Produire l'analyse statistique transversale uniquement sur unités expérimentales comparables.
+- Créer le checkpoint de protocole puis construire les trois artefacts statistiques avec `--resume`.
 - PHASE 10: matrice affirmation→preuve.
 - PHASE 11: hypothèses et questions de recherche.
 - PHASE 12: rapport final pour Luna.
@@ -59,4 +59,3 @@ Status: PHASE 8 COMPLETE — PHASE 9 AUDIT
 - `data/processed/final_experiments_2026/`
 - `docs/memoire/final_experiments_2026/PHASE_0_COMPLETED.md` à `PHASE_8_COMPLETED.md`
 - `docs/memoire/final_experiments_2026/experiment_correlation_synthetic_summary.md`
-

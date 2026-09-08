@@ -749,6 +749,16 @@
       "kind": "phase_report",
       "path": "docs/memoire/final_experiments_2026/PHASE_8_COMPLETED.md",
       "status": "complete"
+    },
+    {
+      "kind": "config",
+      "path": "docs/memoire/final_experiments_2026/configs/transversal_statistics_protocol.json",
+      "status": "frozen_before_aggregation"
+    },
+    {
+      "kind": "runner",
+      "path": "scripts/build_transversal_statistics.py",
+      "status": "validated_dry_run"
     }
   ]
 }
