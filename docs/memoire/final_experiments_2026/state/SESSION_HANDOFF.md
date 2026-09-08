@@ -2,69 +2,68 @@
 
 ## Mission
 
-Consolider expérimentalement le mémoire Ariel Logminer sans le réécrire, avec résultats traçables et rapport final pour Luna.
+Consolider expérimentalement le mémoire Ariel Logminer sans le réécrire, puis livrer des matrices et un rapport autonome pour Luna.
 
 ## Current phase
 
-PHASE 8 — audit GO/NO-GO de corrélation synthétique contrôlée.
+PHASE 9 — analyse statistique transversale.
 
 ## Current experiment
 
-Exécution du protocole synthétique contrôlé pré-spécifié.
+Inventaire des unités répétées et préparation d'agrégats statistiquement admissibles.
 
 ## Completed since previous checkpoint
 
-- PHASE 6 clôturée au commit `ae56145`: 81/81 fichiers routés, 80 corrects, une erreur Apache→fallback.
-- Campagne `redis-vbox-recovery-20260722150924` auditée.
-- L'injection existante quitte après `fetch`, avant traitement et ACK; Ubuntu réclame puis traite la tâche pending.
-- Résumé existant: 3 enfilées, 3 terminées, 3 uniques, 0 échec, 1 reprise, pending final 0.
-- Le runtime publie le résultat avant ACK, donc la fenêtre après traitement/avant ACK existe mais n'est pas testée.
-- Docker Desktop et Redis local étaient indisponibles; aucune infrastructure n'a été démarrée.
-- PHASE 7 classée `SKIPPED`; D027, E0013, ledger, index, résumé et rapport de phase mis à jour.
-- Corrélateur réel audité: groupement par fenêtre fixe de 15 minutes et huit clés explicites.
-- Protocole phase 8 figé avant exécution: 19 entrées, 16 anomalies, 6 incidents vrais, 3 bruits.
-- Les cas comprennent une frontière de fenêtre et deux vérités distinctes indiscernables par les clés.
-- Runner compilé et dry-run validé; expérience enregistrée `PLANNED`.
+- PHASE 7 clôturée `SKIPPED` au checkpoint `238e94c`; preuve de reprise existante auditée sans rejeu.
+- Corrélateur réel audité: fenêtre fixe de 15 minutes et huit clés.
+- Protocole phase 8 figé au checkpoint `a51ee59`: 19 entrées, 16 anomalies, 6 incidents vrais, 3 bruits.
+- Vérité terrain séparée et absente de l'entrée de l'algorithme.
+- Run phase 8 terminé: 6 incidents produits, 120 paires.
+- Précision `0,764706`, rappel `0,866667`, F1 pairwise `0,812500`; TP=13, FP=4, FN=2, TN=101.
+- Une fragmentation de frontière et une fusion d'incidents indiscernables; 3/3 bruits exclus.
+- Tableau et figure produits; figure inspectée; reprise idempotente validée.
+- D028 et rapport de phase ajoutés.
 
 ## Key results
 
-- Preuve autorisée: reprise multi-VM de laboratoire après sortie contrôlée avant traitement/ACK.
-- Non démontré: absence générale de doublons/pertes, idempotence, temps de reprise, interruption Redis, haute disponibilité.
-- Les résultats majeurs des phases 1–6 sont condensés dans `CURRENT_STATE.md` et leurs rapports de phase.
+- Le même nombre d'incidents vrais et prédits masque une fragmentation et une fusion: le comptage seul est insuffisant.
+- Le statut maximal est `VALIDATION SUR SCÉNARIOS SYNTHÉTIQUES CONTRÔLÉS`, jamais validation SOC réelle.
+- Les résultats majeurs des phases 1–8 sont condensés dans `CURRENT_STATE.md`.
 
 ## Files created or modified
 
-- `experiment_resilience_complementary_summary.md`
-- `PHASE_7_COMPLETED.md`
-- `state/{CURRENT_STATE,NEXT_ACTION,SESSION_HANDOFF,DECISIONS,ERRORS_AND_BLOCKERS}.md`
-- `state/EXPERIMENT_LEDGER.csv`
-- `state/ARTIFACT_INDEX.json`
+- `configs/correlation_synthetic_protocol.json`
+- `scripts/run_correlation_synthetic_validation.py`
+- `experiment_correlation_synthetic_summary.md`
+- `PHASE_8_COMPLETED.md`
+- `tables/correlation_synthetic_metrics.md`
+- `figures/correlation_synthetic_metrics.png`
+- `state/*`
 
 ## Current blockers
 
-- `graphify update .`: `[WinError 5] Accès refusé`.
-- Redis indisponible; non bloquant après décision de sauter la phase 7.
+- Provenance officielle des copies locales non démontrée.
+- Le scénario Redis traitement→ACK reste non évalué.
+- Corrélation SOC réelle non évaluée.
 
 ## Exact next action
 
-Créer le checkpoint du protocole, puis exécuter `rtk python scripts/run_correlation_synthetic_validation.py --resume`.
+Créer le checkpoint final phase 8, puis exécuter la requête Graphify définie dans `NEXT_ACTION.md`.
 
 ## Read only these files first
 
 - `state/CURRENT_STATE.md`
 - `state/NEXT_ACTION.md`
 - `state/DECISIONS.md`
-- `PHASE_7_COMPLETED.md`
-- `experiment_resilience_complementary_summary.md`
-- `configs/correlation_synthetic_protocol.json`
-- `scripts/run_correlation_synthetic_validation.py`
+- `PHASE_8_COMPLETED.md`
+- CSV de synthèse révélés par l'index ou Graphify
 
 ## Do not reread
 
 - Le mémoire complet.
-- Les artefacts bruts des phases 1–6.
-- Les anciens rapports multi-VM au-delà des chemins déjà audités.
+- Les JSON de runs individuels lorsque les CSV agrégés suffisent.
+- Les anciens rapports éditoriaux et multi-VM.
 
 ## Resume command
 
-`rtk python scripts/run_correlation_synthetic_validation.py --resume`
+`rtk graphify query "Quels artefacts agrègent les métriques multi-seeds CICIDS, HDFS/BGL, routeur, multiformat, corrélation et benchmark monolithique agents ?"`

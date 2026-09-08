@@ -1,21 +1,22 @@
 # NEXT ACTION
 
-Phase: PHASE 8
+Phase: PHASE 9
 
-Experiment: Corrélation d'incidents synthétique — audit GO/NO-GO
+Experiment: Analyse statistique transversale
 
-Last completed step: Protocole phase 8 figé et dry-run validé: 19 entrées, 16 anomalies, 6 incidents vrais et 3 bruits.
+Last completed step: PHASE 8 terminée; 1/1 run, 120 paires, F1 pairwise 0,812500, reprise idempotente validée.
 
-Next exact step: Après checkpoint Git du protocole, exécuter l'unique run, valider le résumé, les 120 paires, le tableau et la figure, puis tester la reprise idempotente.
+Next exact step: Inventorier les CSV de synthèse des phases 1–8 et le benchmark monolithique/agents; définir quelles unités sont réellement répétées et quelles comparaisons appariées sont méthodologiquement admissibles.
 
-Command to run: `rtk python scripts/run_correlation_synthetic_validation.py --resume`
+Command to run: `rtk graphify query "Quels artefacts agrègent les métriques multi-seeds CICIDS, HDFS/BGL, routeur, multiformat, corrélation et benchmark monolithique agents ?"`
 
-Expected output: Un résumé `COMPLETED`, 120 paires évaluées, métriques pairwise, fragmentation, fusion incorrecte et exclusion du bruit.
+Expected output: Liste ciblée des fichiers de synthèse permettant un tableau transversal sans confondre seeds, scénarios, méthodes déterministes et tâches.
 
-Files that must be read: `configs/correlation_synthetic_protocol.json`, `scripts/run_correlation_synthetic_validation.py` et les sorties phase 8 seulement.
+Files that must be read: CSV de synthèse indexés, rapports PHASE_1 à PHASE_8 et artefact exact du benchmark D008.
 
-Files that DO NOT need to be reread: mémoire complet, artefacts CICIDS unitaires, JSON HDFS/BGL, modèles phase 4 et anciens rapports multi-VM.
+Files that DO NOT need to be reread: mémoire complet, JSON de runs individuels si les CSV agrégés suffisent, modèles et états Drain3 binaires.
 
-Success criterion: Entrée sans vérité cachée, 16 anomalies couvertes exactement une fois, 120 paires, métriques cohérentes, artefacts lisibles et second `--resume` retournant `SKIPPED_ALREADY_COMPLETED`.
+Success criterion: N, moyenne, écart-type, médiane, min, max et IC95 lorsque pertinents; aucune pseudo-réplication; tests appariés seulement si justifiés.
 
-If failure: Conserver la trace `FAILED`, ne pas adapter les scénarios au résultat, corriger uniquement un défaut d'exécution démontré puis reprendre explicitement.
+If failure: Produire des statistiques descriptives et documenter explicitement l'absence de test inférentiel justifiable.
+

@@ -697,6 +697,58 @@
       "kind": "runner",
       "path": "scripts/run_correlation_synthetic_validation.py",
       "status": "validated_dry_run"
+    },
+    {
+      "kind": "synthetic_input",
+      "path": "data/processed/final_experiments_2026/phase_8/correlation_synthetic_input.csv",
+      "status": "complete",
+      "events": 19,
+      "truth_columns_present": false
+    },
+    {
+      "kind": "ground_truth",
+      "path": "data/processed/final_experiments_2026/phase_8/correlation_synthetic_truth.csv",
+      "status": "complete_separate",
+      "anomalous_events": 16,
+      "true_incidents": 6
+    },
+    {
+      "kind": "raw_output",
+      "path": "data/processed/final_experiments_2026/phase_8/correlation_synthetic_incidents.csv",
+      "status": "complete",
+      "predicted_incidents": 6
+    },
+    {
+      "kind": "pairwise_detail",
+      "path": "data/processed/final_experiments_2026/phase_8/correlation_synthetic_pairs.csv",
+      "status": "complete",
+      "pairs": 120
+    },
+    {
+      "kind": "summary",
+      "path": "data/processed/final_experiments_2026/correlation_synthetic_summary.json",
+      "status": "complete",
+      "pairwise_f1": 0.8125
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_correlation_synthetic_summary.md",
+      "status": "complete"
+    },
+    {
+      "kind": "table",
+      "path": "docs/memoire/final_experiments_2026/tables/correlation_synthetic_metrics.md",
+      "status": "complete"
+    },
+    {
+      "kind": "figure",
+      "path": "docs/memoire/final_experiments_2026/figures/correlation_synthetic_metrics.png",
+      "status": "complete_inspected"
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_8_COMPLETED.md",
+      "status": "complete"
     }
   ]
 }

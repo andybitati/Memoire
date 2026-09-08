@@ -323,3 +323,15 @@ Reason: Rejouer le scénario existant n'ajouterait aucune preuve. Le scénario s
 Affected sections: Résilience, multi-VM, limites, résultats négatifs et annexes de preuve.
 
 Do not reconsider unless: Une campagne pré-spécifiée injecte une panne entre effet applicatif et ACK et mesure explicitement tâches terminées, récupérées, dupliquées, perdues, temps de reprise, pending et lag.
+
+## D028
+
+Decision: Classer la phase 8 `VALIDATION SUR SCÉNARIOS SYNTHÉTIQUES CONTRÔLÉS`, et non validation SOC réelle.
+
+Evidence: Sur 16 anomalies appartenant à 6 incidents vrais, le corrélateur produit 6 incidents, avec précision pairwise `0,764706`, rappel `0,866667` et F1 `0,812500` (TP=13, FP=4, FN=2, TN=101). Un incident franchissant une frontière de fenêtre de 15 minutes est fragmenté et deux incidents vrais partageant toutes les clés sont fusionnés. Les 3 bruits `is_anomaly=0` sont exclus.
+
+Reason: La vérité terrain a été figée avant exécution et cachée à l'algorithme, ce qui soutient une validation fonctionnelle honnête. Le corpus est toutefois construit pour exercer les règles connues et ne représente ni la variété ni l'incertitude d'un SOC réel.
+
+Affected sections: Corrélation d'incidents, protocole expérimental, résultats, limites, résultats négatifs et annexes.
+
+Do not reconsider unless: Un corpus d'incidents réels annotés indépendamment ou plusieurs familles de scénarios externes apportent une preuve de généralisation.

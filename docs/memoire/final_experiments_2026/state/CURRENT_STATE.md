@@ -1,10 +1,10 @@
 # CURRENT STATE
 
 Last update: 2026-09-08
-Git commit: ae56145 (checkpoint final PHASE 6)
-Active phase: PHASE 8
-Active experiment: Audit GO/NO-GO d'une corrélation synthétique contrôlée
-Status: PHASE 7 COMPLETE — SKIPPED; PHASE 8 PROTOCOL FROZEN
+Git commit: a51ee59 (checkpoint protocole PHASE 8; checkpoint final PHASE 7 238e94c)
+Active phase: PHASE 9
+Active experiment: Analyse statistique transversale
+Status: PHASE 8 COMPLETE — PHASE 9 AUDIT
 
 ## Completed
 
@@ -15,16 +15,16 @@ Status: PHASE 7 COMPLETE — SKIPPED; PHASE 8 PROTOCOL FROZEN
 - PHASE 4: mise à jour contrôlée, 3/3 branches end-to-end; checkpoint `1e184ab`.
 - PHASE 5: validation de huit voies multiformat, 8/8; checkpoint `f499797`.
 - PHASE 6: routeur réel, 81/81 décisions, 80 correctes; checkpoint `ae56145`.
-- PHASE 7: audit de résilience complémentaire terminé; nouvelle exécution classée `SKIPPED`.
+- PHASE 7: audit de résilience complémentaire; nouvelle exécution `SKIPPED`; checkpoint `238e94c`.
+- PHASE 8: corrélation synthétique contrôlée, 1/1 run, 120 paires évaluées.
 
 ## In progress
 
-- Protocole synthétique contrôlé figé: 19 événements, 16 anomalies, 6 incidents vrais, 3 bruits; runner validé en dry-run.
+- Inventaire des comparaisons répétées et des statistiques déjà disponibles avant agrégation transversale.
 
 ## Pending
 
-- Créer le checkpoint de protocole puis exécuter l'unique run PHASE 8 avec `--resume`.
-- PHASE 9: analyse statistique transversale.
+- Produire l'analyse statistique transversale uniquement sur unités expérimentales comparables.
 - PHASE 10: matrice affirmation→preuve.
 - PHASE 11: hypothèses et questions de recherche.
 - PHASE 12: rapport final pour Luna.
@@ -33,8 +33,7 @@ Status: PHASE 7 COMPLETE — SKIPPED; PHASE 8 PROTOCOL FROZEN
 
 - Le F1 `0,999965` est exclu; provenance insuffisamment démontrée.
 - Multi-VM: 525 entrées Redis lues/acquittées, lag et pending finaux nuls; pas 525 succès applicatifs prouvés.
-- Reprise existante: 3 tâches enfilées/terminées/uniques, 1 reprise après sortie contrôlée avant traitement et ACK, pending final 0.
-- La panne après traitement mais avant ACK, les doublons applicatifs et l'idempotence restent non évalués.
+- Reprise: 3 tâches enfilées/terminées/uniques, 1 reprise avant traitement/ACK, pending final 0; fenêtre après traitement/avant ACK non évaluée.
 - `AgentMessage`: `run_id`, `source`, `target`, `message_type`, `payload`, `status`, `timestamp`; aucun `event_id`, `message_id` ou `metadata` direct.
 - CICIDS random: F1 `0,995142 ± 0,001013`; holdout macro: `0,157744`.
 - LogisticRegression est première uniquement par F1 macro (`0,233670`) et MCC macro (`0,186858`) parmi cinq candidats.
@@ -43,19 +42,21 @@ Status: PHASE 7 COMPLETE — SKIPPED; PHASE 8 PROTOCOL FROZEN
 - Multiformat: 7 001 unités lues, 5 001 normalisées, 2 000 perdues; HDFS/BGL pipeline 0/1 000.
 - Routeur: exactitude `0,987654`, F1 macro union `0,883598`; Apache normalisé est l'unique erreur.
 - Aucun gain prédictif systématique du routage spécialisé n'est démontré.
-- Benchmark existant: agents sans gain de débit sur monolithique à 60 tâches; unités CPU/RAM établies par D008.
+- Benchmark: agents sans gain de débit sur monolithique à 60 tâches; unités CPU/RAM établies par D008.
+- Corrélation synthétique: précision pairwise `0,764706`, rappel `0,866667`, F1 `0,812500`; une fragmentation, une fusion, 3/3 bruits exclus.
 
 ## Open issues
 
 - Provenance officielle des copies locales: `INFORMATION À VÉRIFIER.`.
-- Ancien HDFS/BGL exploratoire; la comparaison ancien/strict n'est pas une ablation causale.
+- Ancien HDFS/BGL exploratoire; comparaison ancien/strict non causale.
 - Scénario Redis après traitement avant ACK: non évalué.
-- Docker/Redis indisponibles pendant l'audit phase 7.
-- `graphify update .` bloqué par `[WinError 5] Accès refusé`.
+- Corrélation non évaluée sur incidents SOC réels.
+- `graphify update .` historiquement bloqué par `[WinError 5]`; dernier appel sans diagnostic exploitable.
 
 ## Important artifact paths
 
 - `docs/memoire/final_experiments_2026/state/`
 - `data/processed/final_experiments_2026/`
-- `docs/memoire/final_experiments_2026/PHASE_0_COMPLETED.md` à `PHASE_7_COMPLETED.md`
-- `docs/memoire/final_experiments_2026/experiment_resilience_complementary_summary.md`
+- `docs/memoire/final_experiments_2026/PHASE_0_COMPLETED.md` à `PHASE_8_COMPLETED.md`
+- `docs/memoire/final_experiments_2026/experiment_correlation_synthetic_summary.md`
+
