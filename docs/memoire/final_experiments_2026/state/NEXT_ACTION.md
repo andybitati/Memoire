@@ -1,21 +1,21 @@
 # NEXT ACTION
 
-Phase: PHASE 4
+Phase: PHASE 5
 
-Experiment: Mise à jour contrôlée — exécution end-to-end réelle
+Experiment: Validation multiformat étendue — conception du protocole
 
-Last completed step: Bundle, évaluation gelée et trois modèles courants isolés présents et hashés ; candidats absents ; affichage console corrigé.
+Last completed step: PHASE 4 complète, 3/3 décisions exécutées et intégrité vérifiée ; figure inspectée.
 
-Next exact step: Lancer l'entraînement réel des trois candidats, comparer courant/candidat sur le même CSV gelé et autoriser uniquement la branche dont delta ≥ 0,02.
+Next exact step: Inventorier les sources réelles utilisables, définir pour chaque format l'unité brute et la limite de 500 à 1 000 événements, puis figer la configuration avant exécution.
 
-Command to run: `rtk python scripts/monthly_model_retraining.py --plan docs/memoire/final_experiments_2026/configs/model_update_e2e_plan.json --audit-path data/processed/final_experiments_2026/phase_4/model_update_audit.jsonl --feedback-csv data/processed/final_experiments_2026/phase_4/feedback.csv --report-out data/processed/final_experiments_2026/phase_4/model_update_end_to_end_report.json --backups-dir data/processed/final_experiments_2026/phase_4/backups --promote`
+Command to run: `rtk graphify explain "détection et pipeline de parsing multiformat"`
 
-Expected output: Rapport JSON avec trois scores/deltas/décisions, un backup et une promotion seulement pour le cas éligible, audit isolé.
+Expected output: Sous-graphe ciblé permettant de relier détecteur, parseurs, normalisation et schéma sans rescanner le dépôt.
 
-Files that must be read: `configs/model_update_e2e_plan.json`, `scripts/prepare_model_update_e2e.py`, `scripts/monthly_model_retraining.py`.
+Files that must be read: `src/logminer/detectors/file_detector.py`, `src/logminer/pipeline.py`, `src/logminer/io/csv_writer.py`, parseurs sélectionnés et sources locales candidates.
 
-Files that DO NOT need to be reread: mémoire LaTeX complet, artefacts CICIDS unitaires, anciens rapports éditoriaux et multi-VM.
+Files that DO NOT need to be reread: mémoire LaTeX complet, artefacts CICIDS unitaires, artefacts HDFS/BGL phase 3, modèles phase 4, anciens rapports éditoriaux et multi-VM.
 
-Success criterion: Un candidat réellement promu avec backup, un rejet moins bon, un gain positif inférieur à 0,02 sans promotion ; aucun modèle de production touché.
+Success criterion: Une configuration phase 5 figée qui n'inclut que des formats avec parseur et source démontrables, sépare parsing/normalisation/routage et prévoit les quatre CSV exigés.
 
-If failure: Conserver tout candidat et audit, restaurer le modèle courant depuis le backup isolé et documenter le cas comme non évalué plutôt que simuler une promotion.
+If failure: Exclure le format concerné ou utiliser tout le volume réellement disponible en documentant la limite ; ne jamais fabriquer un corpus présenté comme réel.

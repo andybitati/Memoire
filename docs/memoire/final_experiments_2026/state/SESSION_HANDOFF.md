@@ -6,11 +6,11 @@ Consolider expérimentalement le mémoire Ariel Logminer sans réécrire le mém
 
 ## Current phase
 
-PHASE 4 — mise à jour contrôlée des modèles end-to-end.
+PHASE 5 — validation multiformat étendue.
 
 ## Current experiment
 
-Exécution end-to-end des trois cas phase 4 préparés.
+Audit des parseurs et corpus disponibles avant gel du protocole multiformat.
 
 ## Completed since previous checkpoint
 
@@ -83,6 +83,12 @@ Exécution end-to-end des trois cas phase 4 préparés.
 - Préparation terminée : train 16k, test gelé 8k, 78 features ; hash évaluation `230198...a3126`.
 - Modèles courants présents/hashés, candidats absents, trois cas PLANNED.
 - Erreur d'affichage cp1252 corrigée ; artefacts de préparation confirmés valides, ne pas relancer.
+- Checkpoint pré-exécution PHASE 4 : `2afd1dd`.
+- Trois candidats phase 4 réellement entraînés ; 3/3 comparaisons COMPLETED.
+- Promotion réelle avec backup : delta F1 `+0,067845` ; hashes avant/backup/candidat/après cohérents.
+- Rejet d'un candidat inférieur : delta `-0,063163`, courant inchangé.
+- Rejet d'un gain positif insuffisant : delta `+0,009016 < 0,02`, courant inchangé.
+- Rapport d'intégrité global positif, tableau et figure phase 4 produits ; D024 enregistrée.
 
 ## Key results
 
@@ -100,6 +106,7 @@ Exécution end-to-end des trois cas phase 4 préparés.
 - Holdout macro : F1 0,157744 ; la dispersion inter-scénarios domine très largement la dispersion entre seeds.
 - Modèles phase 2 : LogisticRegression F1 macro 0,233670 ; SGDLogistic 0,165406 ; RandomForest 0,157744 ; ExtraTrees 0,143191 ; HGB 0,003362.
 - HGB a la meilleure PR-AUC macro (0,567697) malgré un F1 presque nul ; aucun candidat ne domine toutes les métriques et tous les coûts.
+- La mise à jour contrôlée est testée fonctionnellement de bout en bout, mais ni la généralisation prédictive indépendante, ni l'exploitation périodique en production, ni l'apprentissage continu autonome ne sont démontrés.
 
 ## Files created or modified
 
@@ -116,7 +123,7 @@ Exécution end-to-end des trois cas phase 4 préparés.
 
 ## Exact next action
 
-Exécuter la commande `monthly_model_retraining.py` complète de `NEXT_ACTION.md` avec `--promote` et chemins d'audit/backups isolés.
+Figer la configuration de validation multiformat à partir des seuls parseurs et corpus locaux démontrables, puis créer le runner idempotent produisant les quatre CSV exigés.
 
 ## Read only these files first
 
@@ -126,9 +133,11 @@ Exécuter la commande `monthly_model_retraining.py` complète de `NEXT_ACTION.md
 - `state/EXPERIMENT_LEDGER.csv`
 - `scripts/run_final_experiments.py`
 - `dataset_manifest_final.csv`
-- `configs/model_update_e2e_plan.json`
-- `scripts/prepare_model_update_e2e.py`
-- `scripts/monthly_model_retraining.py`
+- `PHASE_4_COMPLETED.md`
+- `experiment_model_update_e2e_summary.md`
+- `src/logminer/detectors/file_detector.py`
+- `src/logminer/pipeline.py`
+- parseurs sélectionnés pour PHASE 5
 - `PHASE_2_COMPLETED.md`
 
 ## Do not reread
@@ -138,4 +147,4 @@ Exécuter la commande `monthly_model_retraining.py` complète de `NEXT_ACTION.md
 
 ## Resume command
 
-Voir la commande exacte dans `state/NEXT_ACTION.md`.
+`rtk graphify explain "détection et pipeline de parsing multiformat"`

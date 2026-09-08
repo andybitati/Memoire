@@ -275,3 +275,15 @@ Reason: L'objectif phase 4 est de prouver entraînement, comparaison, décision,
 Affected sections: Mise à jour des modèles, statut logiciel, limites et annexes de preuve.
 
 Do not reconsider unless: Les deltas réels ne déclenchent pas les trois branches prévues ; le résultat doit alors être conservé tel quel sans modifier les scores.
+
+## D024
+
+Decision: Classer la procédure contrôlée de mise à jour comme `IMPLÉMENTÉE` et `TESTÉE FONCTIONNELLEMENT DE BOUT EN BOUT`, mais non évaluée comme mécanisme prédictif indépendant ou système de production ; l'apprentissage continu autonome reste une perspective.
+
+Evidence: Trois candidats ont été réellement entraînés puis comparés sur le même holdout gelé. Une promotion avec backup est observée pour un delta F1 `+0,067845`; un candidat inférieur est rejeté à `-0,063163`; un gain positif est rejeté à `+0,009016` car inférieur au seuil `0,02`. Les hashes montrent que le backup égale le courant avant promotion, que le courant après promotion égale le candidat, et que les deux courants rejetés restent inchangés.
+
+Reason: Les branches essentielles du mécanisme sont désormais exécutées réellement, mais les cas utilisent des relations déjà connues en phase 2 et des copies isolées. Cela prouve le fonctionnement logiciel contrôlé, pas une généralisation nouvelle, un fonctionnement périodique en service ou une autonomie d'apprentissage.
+
+Affected sections: Mise à jour des modèles, statut de la contribution logicielle, chapitre 5, limites et annexes de preuve.
+
+Do not reconsider unless: Une évaluation indépendante, une exécution périodique réelle ou une preuve de production correctement instrumentée apporte un niveau de preuve supérieur.

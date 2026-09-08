@@ -488,6 +488,67 @@
       "path": "data/processed/final_experiments_2026/phase_4/cases/*/current.joblib",
       "status": "current_before_decision_hashed",
       "files": 3
+    },
+    {
+      "kind": "raw_report",
+      "path": "data/processed/final_experiments_2026/phase_4/model_update_end_to_end_report.json",
+      "status": "complete",
+      "comparisons": 3
+    },
+    {
+      "kind": "integrity_report",
+      "path": "data/processed/final_experiments_2026/phase_4/model_update_integrity_report.json",
+      "status": "complete_all_checks_passed"
+    },
+    {
+      "kind": "case_reports",
+      "path": "data/processed/final_experiments_2026/phase_4/model_update_*_case.json",
+      "status": "complete",
+      "files": 3
+    },
+    {
+      "kind": "audit",
+      "path": "data/processed/final_experiments_2026/phase_4/model_update_audit.jsonl",
+      "status": "complete_isolated",
+      "records": 1
+    },
+    {
+      "kind": "models",
+      "path": "data/processed/final_experiments_2026/phase_4/cases/*/candidate.joblib",
+      "status": "trained",
+      "files": 3
+    },
+    {
+      "kind": "backup",
+      "path": "data/processed/final_experiments_2026/phase_4/backups/*.joblib",
+      "status": "complete_hash_verified",
+      "files": 1
+    },
+    {
+      "kind": "summary_csv",
+      "path": "data/processed/final_experiments_2026/phase_4/model_update_decisions.csv",
+      "status": "complete",
+      "rows": 3
+    },
+    {
+      "kind": "table",
+      "path": "docs/memoire/final_experiments_2026/tables/model_update_end_to_end.md",
+      "status": "complete"
+    },
+    {
+      "kind": "figure",
+      "path": "docs/memoire/final_experiments_2026/figures/model_update_promotion_rejet.png",
+      "status": "complete_inspected"
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_model_update_e2e_summary.md",
+      "status": "complete"
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_4_COMPLETED.md",
+      "status": "complete"
     }
   ]
 }

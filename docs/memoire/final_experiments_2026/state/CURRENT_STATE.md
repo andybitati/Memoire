@@ -1,10 +1,10 @@
 # CURRENT STATE
 
 Last update: 2026-09-08
-Git commit: 749625a (checkpoint final PHASE 3; checkpoint final PHASE 2 6e07c3e)
-Active phase: PHASE 4
-Active experiment: Préparation de trois cas isolés de mise à jour contrôlée
-Status: PHASE 4 PREPARED — END-TO-END RUN READY
+Git commit: 2afd1dd (checkpoint préparation PHASE 4; checkpoint final PHASE 3 749625a)
+Active phase: PHASE 5
+Active experiment: Audit des formats et corpus disponibles pour validation multiformat étendue
+Status: PHASE 4 COMPLETE — PHASE 5 PROTOCOL DESIGN
 
 ## Completed
 
@@ -73,16 +73,20 @@ Status: PHASE 4 PREPARED — END-TO-END RUN READY
 - Scripts de préparation, entraînement candidat et vérification des hashes créés et importés avec succès.
 - Préparation phase 4 validée malgré une erreur d'affichage console finale : train 16 000, évaluation gelée 8 000, 78 features, prévalence 0,5.
 - Trois modèles courants isolés présents et hashés ; trois candidats absents ; trois cas PLANNED dans le ledger.
+- PHASE 4 terminée : 3/3 comparaisons fonctionnelles, trois candidats réellement entraînés, aucun échec.
+- Promotion ExtraTrees→RandomForest observée : delta F1 +0,067845, backup et remplacement vérifiés par hash.
+- Rejet RandomForest→SGDLogistic observé : delta -0,063163, courant inchangé.
+- Rejet sous seuil ExtraTrees→LogisticRegression observé : delta +0,009016 < 0,02, courant inchangé.
+- Rapport d'intégrité, tableau, résumé et figure PHASE 4 produits et vérifiés.
 
 ## In progress
 
-- Aucun run en cours.
+- Audit ciblé des parseurs, détecteurs et corpus réellement disponibles pour la phase 5.
 
 ## Pending
 
-- Exécuter la boucle réelle avec `--promote`, puis vérifier les hashes et l'audit.
-- Phases 4 à 12.
-- Phases 3 à 12.
+- Figer puis exécuter la validation multiformat étendue.
+- Phases 5 à 12.
 
 ## Verified facts
 
@@ -132,6 +136,8 @@ Status: PHASE 4 PREPARED — END-TO-END RUN READY
 - Phase 4 n'utilisera aucun modèle sous `models/`; tous les courants, candidats et backups sont sous `final_experiments_2026/phase_4`.
 - Les cas phase 4 sont fonctionnels et construits à partir des résultats phase 2 déjà connus ; ils ne constituent pas une nouvelle comparaison prédictive indépendante.
 - Hash évaluation gelée phase 4 : `23019860997b8071e0922c52c1710e10b017adcc20f53121872e3875dc5a3126`.
+- La mise à jour contrôlée est IMPLÉMENTÉE et TESTÉE FONCTIONNELLEMENT DE BOUT EN BOUT ; elle n'est pas évaluée comme apprentissage continu autonome ni comme mécanisme de production.
+- Trois branches sont prouvées : promotion avec backup, rejet inférieur et rejet d'un gain positif sous le seuil.
 
 ## Open issues
 
