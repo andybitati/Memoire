@@ -6,7 +6,7 @@ Protocole: Figé dans `configs/strict_sequence_protocol.json` avant inspection d
 
 Nombre de runs prévus: 36 résultats — 18 par dataset. Les trois méthodes déterministes ont un run chacune ; IsolationForest, AutoencoderMLP et EnsembleTrainCalibrated ont cinq seeds chacune.
 
-Nombre terminé: 18 résultats HDFS ; préparation BGL en attente.
+Nombre terminé: 36/36 résultats — 18 HDFS et 18 BGL.
 
 Nombre échoué: 0.
 
@@ -34,6 +34,17 @@ Conclusion de l'audit: Les anciens résultats HDFS/BGL restent `EXPLORATOIRE` co
 
 Le meilleur F1 HDFS strict est `0,269307` pour Histogram. Il est descriptif pour ce test gelé de 20 000 événements et 118 anomalies ; la faible prévalence explique notamment que le rappel supérieur à 0,57 coexiste avec une précision inférieure à 0,18.
 
+| Dataset | Méthode | N | F1 moyen | Écart-type | Précision | Rappel | PR-AUC | MCC | FPR |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| BGL | Histogram | 1 | 0,913698 | n/a | 0,841108 | 1,000000 | 0,841108 | 0,902319 | 0,032016 |
+| BGL | AutoencoderMLP | 5 | 0,278511 | 0,000997 | 0,161791 | 0,999792 | 0,467383 | 0,140318 | 0,877859 |
+| BGL | ZScore | 1 | 0,277885 | n/a | 0,161362 | 1,000000 | 0,161472 | 0,138683 | 0,880808 |
+| BGL | IQR | 1 | 0,265446 | n/a | 0,153034 | 1,000000 | 0,428025 | 0,097433 | 0,937966 |
+| BGL | EnsembleTrainCalibrated | 5 | 0,253473 | 0,000048 | 0,145129 | 1,000000 | 0,162227 | 0,015745 | 0,998285 |
+| BGL | IsolationForest | 5 | 0,253473 | 0,000048 | 0,145129 | 1,000000 | 0,146129 | 0,015745 | 0,998285 |
+
+Le meilleur F1 BGL strict est `0,913698` pour Histogram : 2 885/2 885 anomalies détectées, 545 faux positifs et 16 478 vrais négatifs. Les autres méthodes ont un FPR compris entre 0,877859 et 0,998285, malgré un rappel proche de 1.
+
 ## Préparation HDFS vérifiée
 
 - Train: 50 000 événements, 1 858 anomalies (3,716 %), 4 787 blocs, lignes source 3 327 689 à 3 377 688.
@@ -44,6 +55,16 @@ Le meilleur F1 HDFS strict est `0,269307` pour Histogram. Il est descriptif pour
 - Taux de templates inconnus: train 0 %, validation 0,095 %, test 1,880 %.
 - Le SHA-256 du journal HDFS relu correspond au manifeste phase 0.
 
+## Préparation BGL vérifiée
+
+- Train: 49 999 événements, 0 anomalie, lignes source 1 399 389 à 1 449 388.
+- Validation: 17 764 événements, 8 126 anomalies (45,744 %), lignes source 3 313 574 à 3 333 573.
+- Test gelé: 19 908 événements, 2 885 anomalies (14,492 %), lignes source 4 263 167 à 4 283 166.
+- La sélection des fenêtres n'utilise pas les labels ; les 2 237 lignes manquantes au total ne correspondaient pas au parseur BGL strict.
+- Drain3 0.9.11: 7 clusters appris sur train, état de 864 octets, SHA-256 `43ef590469a379daf21f7b644b3fc2592ca66e74643353254e60659baf27db82`.
+- Taux de templates inconnus: train 0 %, validation 84,367 %, test 89,808 %.
+- Le SHA-256 du journal BGL relu correspond au manifeste phase 0.
+
 ## Limites préspecifiées
 
 - Les fenêtres contiguës ne couvrent qu'une partie de chaque log.
@@ -52,6 +73,13 @@ Le meilleur F1 HDFS strict est `0,269307` pour Histogram. Il est descriptif pour
 - La prévalence HDFS varie fortement entre train, validation et test ; aucun rééquilibrage n'est appliqué.
 - Quatre ajustements MLP au moins ont atteint 80 itérations sans convergence complète ; la limite préspecifiée n'a pas été modifiée après observation.
 - Les durées internes du bundle partagé ne sont pas attribuables à une méthode individuelle et sont exclues des résumés scientifiques.
+- BGL présente un déplacement temporel majeur de vocabulaire et de prévalence entre les trois fenêtres ; le protocole n'est pas modifié pour le réduire.
+
+## Comparaison ancien versus strict
+
+- HDFS: ancien meilleur F1 `0,652789` sur 1 201 événements équilibrés ; strict `0,269307` sur 20 000 événements à 0,590 % d'anomalies ; différence descriptive `-0,383482`.
+- BGL: ancien meilleur F1 `1,000000` sur 1 200 événements équilibrés ; strict `0,913698` sur 19 908 événements à 14,492 % d'anomalies ; différence descriptive `-0,086302`.
+- Ces différences ne sont pas une ablation causale de Drain3 : plusieurs dimensions du protocole changent simultanément.
 
 ## Chemins des artefacts prévus
 
@@ -59,3 +87,5 @@ Le meilleur F1 HDFS strict est `0,269307` pour Histogram. Il est descriptif pour
 - États Drain3: `data/processed/final_experiments_2026/drain3_train_state/`.
 - Sorties: `hdfs_strict_drain3_{raw,summary}.csv`, `bgl_strict_drain3_{raw,summary}.csv`.
 - Manifeste: `drain3_template_manifest.json`.
+- Comparaison: `hdfs_bgl_old_vs_strict_protocol.csv` et `tables/hdfs_bgl_old_vs_strict_protocol.md`.
+- Figures: `figures/hdfs_bgl_ancien_vs_strict_f1.png` et `figures/hdfs_bgl_strict_methodes_f1.png`.

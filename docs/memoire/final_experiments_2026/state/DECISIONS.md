@@ -239,3 +239,27 @@ Reason: Le résultat est reproductible et sans fuite test identifiée, mais il d
 Affected sections: Résultats HDFS/BGL, discussion, limites et annexe de protocole.
 
 Do not reconsider unless: Une nouvelle fenêtre ou une mesure de temps isolée par méthode est exécutée selon un protocole préspecifié.
+
+## D021
+
+Decision: Retenir Histogram comme meilleur résultat BGL strict dans la fenêtre test gelée, et classer les autres méthodes comme défaillantes au seuil sélectionné.
+
+Evidence: Histogram F1 0,913698, précision 0,841108, rappel 1, MCC 0,902319 et FPR 0,032016. Les cinq méthodes restantes ont F1 entre 0,253473 et 0,278511 et FPR entre 0,877859 et 0,998285. Le test comporte 19 908 événements, dont 2 885 anomalies, et 89,808 % de templates inconnus par rapport au train.
+
+Reason: Histogram conserve une séparation utile malgré le déplacement temporel ; les autres seuils sélectionnés sur une validation à prévalence différente généralisent mal au test.
+
+Affected sections: Résultats BGL, comparaison des méthodes, discussion des dérives et limites.
+
+Do not reconsider unless: Une nouvelle fenêtre temporelle indépendante ou un protocole de calibration préspecifié apporte une preuve différente.
+
+## D022
+
+Decision: Utiliser les anciens résultats HDFS/BGL uniquement comme comparatif exploratoire et les nouveaux résultats stricts comme preuve principale locale.
+
+Evidence: L'ancien pipeline réajuste Drain3 et certaines statistiques sur chaque partition et calibre les décisions via le classement du test. Le nouveau pipeline a 36 artefacts valides, un état Drain3 train-only inchangé et un seuil choisi uniquement sur validation.
+
+Reason: La séparation des données et du réglage de seuil est nécessaire pour une évaluation indépendante du test.
+
+Affected sections: Résumé, chapitre 5, discussion, conclusion et annexes HDFS/BGL.
+
+Do not reconsider unless: L'ancien pipeline est reproduit sans ces fuites, ce qui en ferait une nouvelle expérience distincte.

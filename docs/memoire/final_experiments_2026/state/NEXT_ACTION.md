@@ -1,21 +1,21 @@
 # NEXT ACTION
 
-Phase: PHASE 3
+Phase: PHASE 4
 
-Experiment: BGL — préparation stricte train/validation/test
+Experiment: Mise à jour contrôlée des modèles — audit end-to-end
 
-Last completed step: HDFS strict terminé, 18/18 artefacts valides ; meilleur F1 0,269307 pour Histogram.
+Last completed step: PHASE 3 terminée, 36/36 runs et deux états Drain3 vérifiés ; ancien versus strict documenté.
 
-Next exact step: Extraire les trois fenêtres BGL gelées, ajuster Drain3 uniquement sur train, sauvegarder/recharger l'état et produire le bundle causal.
+Next exact step: Identifier l'API et les scripts réels de comparaison/promotion, les formats de modèle et d'audit, puis définir un jeu d'évaluation gelé pour les trois cas.
 
-Command to run: `rtk .\.venv-final-experiments\Scripts\python.exe scripts/run_strict_sequence_experiments.py --dataset bgl --prepare-only`
+Command to run: `rtk graphify query "controlled model update candidate promotion rejection backup audit implementation"`
 
-Expected output: Trois CSV BGL préparés, bundle NPZ, état Drain3 persistant et manifeste mis à jour.
+Expected output: Carte exacte des fonctions, scripts et artefacts nécessaires pour exécuter promotion, rejet et min_delta sans simulation de score.
 
-Files that must be read: `configs/strict_sequence_protocol.json`, `scripts/run_strict_sequence_experiments.py`, `state/EXPERIMENT_LEDGER.csv`.
+Files that must be read: fichiers retournés par Graphify pour la mise à jour des modèles, `state/DECISIONS.md`, `PHASE_3_COMPLETED.md`.
 
 Files that DO NOT need to be reread: mémoire LaTeX complet, artefacts CICIDS unitaires, anciens rapports éditoriaux et multi-VM.
 
-Success criterion: Trois partitions BGL non vides et chronologiquement ordonnées ; labels non utilisés pour la sélection ; état Drain3 non vide et hashé.
+Success criterion: Distinguer le code existant et le dry-run des chemins réellement exécutables ; aucun modèle de production n'est touché, les modèles de test restent isolés sous final_experiments_2026.
 
-If failure: Conserver le log, ne pas modifier les fenêtres après lecture des labels pour améliorer les résultats, corriger uniquement un défaut technique puis reprendre explicitement.
+If failure: Conserver tout candidat et audit, restaurer le modèle courant depuis le backup isolé et documenter le cas comme non évalué plutôt que simuler une promotion.

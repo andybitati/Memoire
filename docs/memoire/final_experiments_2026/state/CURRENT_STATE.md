@@ -1,10 +1,10 @@
 # CURRENT STATE
 
 Last update: 2026-09-08
-Git commit: 6e07c3e (checkpoint final PHASE 2; baseline expérimental 37bccf083f3c8e92a11377cf758cf1e9e183dee9)
-Active phase: PHASE 3
-Active experiment: Préparation BGL stricte et état Drain3 train-only
-Status: HDFS 18/18 COMPLETED — BGL READY
+Git commit: 81c8cda (checkpoint HDFS strict; checkpoint final PHASE 2 6e07c3e)
+Active phase: PHASE 4
+Active experiment: Mise à jour contrôlée des modèles end-to-end
+Status: PHASE 3 COMPLETED — PHASE 4 READY
 
 ## Completed
 
@@ -64,6 +64,10 @@ Status: HDFS 18/18 COMPLETED — BGL READY
 - État Drain3 HDFS train-only sauvegardé/rechargé : 13 clusters, hash vérifié, aucune mise à jour validation/test.
 - HDFS strict : 18/18 résultats terminés, aucun échec.
 - Résumé HDFS régénéré sans durées par méthode non comparables.
+- BGL préparé : 49 999 train, 17 764 validation, 19 908 test ; sélection label-agnostique.
+- État Drain3 BGL train-only sauvegardé/rechargé : 7 clusters, hash vérifié, aucune mise à jour validation/test.
+- BGL strict : 18/18 résultats terminés, aucun échec.
+- PHASE 3 terminée : 36/36 artefacts valides, deux états Drain3 inchangés, tableau et deux figures produits.
 
 ## In progress
 
@@ -71,8 +75,8 @@ Status: HDFS 18/18 COMPLETED — BGL READY
 
 ## Pending
 
-- Préparer BGL : fenêtres chronologiques, état Drain3 train-only et bundle causal.
-- Exécuter les 18 résultats BGL.
+- Auditer l'implémentation de mise à jour contrôlée et préparer trois cas réels : promotion, rejet et delta positif insuffisant si faisable.
+- Phases 4 à 12.
 - Phases 3 à 12.
 
 ## Verified facts
@@ -116,11 +120,16 @@ Status: HDFS 18/18 COMPLETED — BGL READY
 - HDFS : 13 clusters Drain3 train-only ; templates inconnus test 1,880 %.
 - HDFS strict : meilleur F1 Histogram 0,269307 ; IQR 0,268775 ; ensemble 0,242946 ± 0,010487.
 - Sur 118 anomalies HDFS test, Histogram détecte 68 vrais positifs avec 319 faux positifs.
+- BGL : train sans anomalie, validation 45,744 % et test 14,492 % d'anomalies ; déplacement naturel conservé.
+- BGL : 7 clusters Drain3 train-only ; 89,808 % de templates inconnus sur test.
+- BGL strict : Histogram F1 0,913698 ; les cinq autres méthodes ont un FPR supérieur à 0,877.
+- Phase 3 : 36 JSON valides, 36 statuts finaux COMPLETED, états Drain3 HDFS/BGL inchangés après scoring.
 
 ## Open issues
 
 - La provenance officielle des copies locales reste `INFORMATION À VÉRIFIER.`.
 - Le venv Drain3 repose sur `--system-site-packages`; il n'est pas destiné à exécuter Streamlit à cause des contraintes cachetools incompatibles.
+- Les anciennes et nouvelles performances HDFS/BGL ne forment pas une ablation causale ; plusieurs dimensions du protocole changent.
 - La mise à jour Graphify est bloquée par un accès refusé Windows.
 - HistGradientBoosting nécessite l'exécution hors bac à sable sur cette machine ; reprise réussie.
 

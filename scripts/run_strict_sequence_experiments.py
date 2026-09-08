@@ -720,6 +720,124 @@ def refresh_outputs(dataset: str) -> None:
     )
 
 
+def write_phase3_assets() -> None:
+    hdfs_path = FINAL_DATA / "hdfs_strict_drain3_summary.csv"
+    bgl_path = FINAL_DATA / "bgl_strict_drain3_summary.csv"
+    if not hdfs_path.exists() or not bgl_path.exists():
+        return
+    strict = pd.concat([pd.read_csv(hdfs_path), pd.read_csv(bgl_path)], ignore_index=True)
+    if strict.groupby("dataset")["method"].nunique().to_dict() != {"BGL": 6, "HDFS": 6}:
+        return
+
+    old_rows: list[dict[str, object]] = []
+    old_files = {
+        "HDFS": ROOT / "data" / "processed" / "validation_hdfs_drain3_train_test_metrics.csv",
+        "BGL": ROOT / "data" / "processed" / "validation_bgl_drain3_train_test_metrics.csv",
+    }
+    for dataset, path in old_files.items():
+        old = pd.read_csv(path, sep=None, engine="python")
+        old.columns = [str(column).lstrip("\ufeff") for column in old.columns]
+        best = old.sort_values("f1", ascending=False).iloc[0]
+        old_rows.append(
+            {
+                "dataset": dataset,
+                "protocol": "old_exploratory",
+                "split": "class-stratified chronological; HDFS additionally grouped",
+                "drain3": "refit separately on each partition",
+                "features": "partition-wide template statistics, including test",
+                "threshold": "test ranking with fixed prediction quota",
+                "test_rows": int(best["events"]),
+                "test_positive_rate": float((best["tp"] + best["fn"]) / best["events"]),
+                "best_method": str(best["model"]),
+                "best_f1": float(best["f1"]),
+                "status": "EXPLORATORY",
+            }
+        )
+        strict_best = strict.loc[strict["dataset"].eq(dataset)].sort_values("f1_mean", ascending=False).iloc[0]
+        preparation = json.loads(
+            (PREPARED_DIR / f"{dataset.lower()}_preparation.json").read_text(encoding="utf-8")
+        )
+        old_rows.append(
+            {
+                "dataset": dataset,
+                "protocol": "new_strict_local",
+                "split": "disjoint chronological source windows; HDFS blocks disjoint",
+                "drain3": "fit train only, persisted, reloaded and frozen",
+                "features": "train-only template/source statistics; causal past-only windows",
+                "threshold": "selected on validation, applied once to frozen test",
+                "test_rows": int(preparation["splits"]["test"]["rows"]),
+                "test_positive_rate": float(preparation["splits"]["test"]["positive_rate"]),
+                "best_method": str(strict_best["method"]),
+                "best_f1": float(strict_best["f1_mean"]),
+                "status": "STRICT_LOCAL_VALIDATION",
+            }
+        )
+    comparison = pd.DataFrame(old_rows)
+    comparison.to_csv(FINAL_DATA / "hdfs_bgl_old_vs_strict_protocol.csv", index=False, encoding="utf-8-sig")
+
+    lines = [
+        "# HDFS/BGL — ancien protocole vs protocole strict",
+        "",
+        "| Dataset | Protocole | Split | Drain3 | Features | Seuil | N test | Prévalence test | Meilleure méthode | F1 | Statut |",
+        "| --- | --- | --- | --- | --- | --- | ---: | ---: | --- | ---: | --- |",
+    ]
+    for _, row in comparison.iterrows():
+        lines.append(
+            f"| {row['dataset']} | {row['protocol']} | {row['split']} | {row['drain3']} | {row['features']} | {row['threshold']} | {int(row['test_rows'])} | {row['test_positive_rate']:.6f} | {row['best_method']} | {row['best_f1']:.6f} | {row['status']} |"
+        )
+    lines.extend(
+        [
+            "",
+            "Les variations de F1 ne sont pas des effets causaux attribuables à Drain3 seul : split, prévalence, volumes, features et règle de seuil changent simultanément. Le tableau documente une différence de protocole, pas une ablation contrôlée.",
+        ]
+    )
+    table_path = DOC_ROOT / "tables" / "hdfs_bgl_old_vs_strict_protocol.md"
+    table_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    pivot = comparison.pivot(index="dataset", columns="protocol", values="best_f1").reindex(["HDFS", "BGL"])
+    fig, axis = plt.subplots(figsize=(8.3, 5.2))
+    positions = np.arange(len(pivot))
+    width = 0.36
+    old_values = pivot["old_exploratory"].to_numpy()
+    strict_values = pivot["new_strict_local"].to_numpy()
+    bars_old = axis.bar(positions - width / 2, old_values, width, label="Ancien — exploratoire")
+    bars_new = axis.bar(positions + width / 2, strict_values, width, label="Nouveau — strict local")
+    axis.bar_label(bars_old, fmt="%.3f", padding=3)
+    axis.bar_label(bars_new, fmt="%.3f", padding=3)
+    axis.set_xticks(positions, labels=pivot.index)
+    axis.set_ylabel("Meilleur F1 observé")
+    axis.set_ylim(0, 1.08)
+    axis.set_title("HDFS/BGL — comparaison descriptive des protocoles\nAncien N test ≈ 1 200 ; strict HDFS N=20 000, BGL N=19 908")
+    axis.legend()
+    axis.grid(axis="y", alpha=0.25)
+    fig.tight_layout()
+    fig.savefig(DOC_ROOT / "figures" / "hdfs_bgl_ancien_vs_strict_f1.png", dpi=180)
+    plt.close(fig)
+
+    method_order = ["Histogram", "IQR", "EnsembleTrainCalibrated", "ZScore", "AutoencoderMLP", "IsolationForest"]
+    strict_pivot = strict.pivot(index="method", columns="dataset", values="f1_mean").reindex(method_order)
+    fig, axis = plt.subplots(figsize=(10.0, 5.7))
+    positions = np.arange(len(strict_pivot))
+    hdfs_bars = axis.bar(positions - width / 2, strict_pivot["HDFS"], width, label="HDFS")
+    bgl_bars = axis.bar(positions + width / 2, strict_pivot["BGL"], width, label="BGL")
+    axis.bar_label(hdfs_bars, fmt="%.3f", padding=2, fontsize=8)
+    axis.bar_label(bgl_bars, fmt="%.3f", padding=2, fontsize=8)
+    axis.set_xticks(positions, labels=strict_pivot.index, rotation=18, ha="right")
+    axis.set_ylabel("F1 moyen sur test gelé")
+    axis.set_ylim(0, 1.02)
+    axis.set_title("HDFS/BGL — méthodes sous protocole strict\nN=18 résultats/dataset ; cinq seeds pour les méthodes stochastiques")
+    axis.legend()
+    axis.grid(axis="y", alpha=0.25)
+    fig.tight_layout()
+    fig.savefig(DOC_ROOT / "figures" / "hdfs_bgl_strict_methodes_f1.png", dpi=180)
+    plt.close(fig)
+
+
 def run_dataset(
     dataset: str,
     config: dict[str, object],
@@ -830,6 +948,7 @@ def run_dataset(
             )
             print(f"FAILED {experiment_id}: {type(exc).__name__}: {exc}")
     refresh_outputs(dataset)
+    write_phase3_assets()
     return failures
 
 

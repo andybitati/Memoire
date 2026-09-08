@@ -6,11 +6,11 @@ Consolider expérimentalement le mémoire Ariel Logminer sans réécrire le mém
 
 ## Current phase
 
-PHASE 3 — HDFS/BGL avec protocole strict.
+PHASE 4 — mise à jour contrôlée des modèles end-to-end.
 
 ## Current experiment
 
-Préparation BGL stricte, puis 18 évaluations.
+Audit de l'implémentation réelle avant trois cas isolés : promotion, rejet et delta positif insuffisant si disponible naturellement.
 
 ## Completed since previous checkpoint
 
@@ -71,6 +71,11 @@ Préparation BGL stricte, puis 18 évaluations.
 - Drain3 HDFS : 13 clusters train-only, état hashé, 1,88 % de templates inconnus sur test.
 - HDFS strict 18/18 terminé ; Histogram F1 0,269307, IQR 0,268775, ensemble 0,242946 ± 0,010487.
 - Les durées internes partagées ont été exclues des résumés car elles ne sont pas comparables par méthode.
+- Checkpoint HDFS strict : `81c8cda`.
+- BGL préparé : 49 999/17 764/19 908 événements ; train sans anomalie, test à 14,492 %.
+- Drain3 BGL : 7 clusters train-only ; 89,808 % de templates inconnus sur test.
+- BGL strict 18/18 terminé ; Histogram F1 0,913698, autres méthodes FPR ≥ 0,877859.
+- PHASE 3 complète : 36/36 JSON valides, ancien versus strict et deux figures produits.
 
 ## Key results
 
@@ -104,7 +109,7 @@ Préparation BGL stricte, puis 18 évaluations.
 
 ## Exact next action
 
-Exécuter `rtk .\.venv-final-experiments\Scripts\python.exe scripts/run_strict_sequence_experiments.py --dataset bgl --prepare-only`.
+Interroger Graphify sur l'implémentation de mise à jour contrôlée, puis lire uniquement les fichiers retournés.
 
 ## Read only these files first
 
@@ -114,8 +119,8 @@ Exécuter `rtk .\.venv-final-experiments\Scripts\python.exe scripts/run_strict_s
 - `state/EXPERIMENT_LEDGER.csv`
 - `scripts/run_final_experiments.py`
 - `dataset_manifest_final.csv`
-- `configs/strict_sequence_protocol.json`
-- `scripts/run_strict_sequence_experiments.py`
+- `PHASE_3_COMPLETED.md`
+- fichiers de mise à jour retournés par Graphify
 - `PHASE_2_COMPLETED.md`
 
 ## Do not reread
@@ -125,4 +130,4 @@ Exécuter `rtk .\.venv-final-experiments\Scripts\python.exe scripts/run_strict_s
 
 ## Resume command
 
-`rtk .\.venv-final-experiments\Scripts\python.exe scripts/run_strict_sequence_experiments.py --dataset bgl --prepare-only`
+`rtk graphify query "controlled model update candidate promotion rejection backup audit implementation"`
