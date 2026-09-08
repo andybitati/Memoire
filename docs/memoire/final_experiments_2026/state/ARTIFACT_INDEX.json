@@ -560,6 +560,56 @@
       "kind": "runner",
       "path": "scripts/run_multiformat_validation.py",
       "status": "validated_dry_run"
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_5/e5_multiformat_*.json",
+      "status": "complete",
+      "runs": 8
+    },
+    {
+      "kind": "raw_detail",
+      "path": "data/processed/final_experiments_2026/multiformat_validation_raw.csv",
+      "status": "complete",
+      "rows": 7001
+    },
+    {
+      "kind": "summary",
+      "path": "data/processed/final_experiments_2026/multiformat_validation_summary.csv",
+      "status": "complete",
+      "rows": 8
+    },
+    {
+      "kind": "field_completeness",
+      "path": "data/processed/final_experiments_2026/multiformat_field_completeness.csv",
+      "status": "complete",
+      "rows": 56
+    },
+    {
+      "kind": "failures",
+      "path": "data/processed/final_experiments_2026/multiformat_failures.csv",
+      "status": "complete",
+      "rows": 2000
+    },
+    {
+      "kind": "table",
+      "path": "docs/memoire/final_experiments_2026/tables/validation_multiformat.md",
+      "status": "complete"
+    },
+    {
+      "kind": "figure",
+      "path": "docs/memoire/final_experiments_2026/figures/validation_multiformat.png",
+      "status": "complete_inspected"
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_multiformat_validation_summary.md",
+      "status": "complete"
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_5_COMPLETED.md",
+      "status": "complete"
     }
   ]
 }

@@ -1,21 +1,21 @@
 # NEXT ACTION
 
-Phase: PHASE 5
+Phase: PHASE 6
 
-Experiment: Validation multiformat étendue — exécution des huit formats
+Experiment: Évaluation du routeur réel — audit et protocole
 
-Last completed step: Configuration phase 5 figée, runner compilé, dry-run validé et huit plans inscrits au ledger.
+Last completed step: PHASE 5 complète, huit runs et quatre CSV validés, figure inspectée, reprise idempotente vérifiée.
 
-Next exact step: Exécuter les huit validations avec reprise idempotente, vérifier les quatre CSV agrégés et inspecter la figure.
+Next exact step: Identifier l'API réellement utilisée pour attribuer une famille/modèle, les règles, la confiance et le fallback ; construire uniquement ensuite le corpus de vérité terrain.
 
-Command to run: `rtk python scripts/run_multiformat_validation.py --resume`
+Command to run: `rtk graphify query "Où le routeur réel attribue-t-il une famille ou un modèle à un événement, avec quelles règles, confiance et fallback ?"`
 
-Expected output: Huit artefacts par format, quatre CSV agrégés, un tableau et `figures/validation_multiformat.png`, avec toute défaillance conservée.
+Expected output: Sous-graphe ciblé vers l'implémentation réellement appelée et ses points d'entrée, distinct du simple `detect_kind` de phase 5.
 
-Files that must be read: `configs/multiformat_validation_protocol.json`, `scripts/run_multiformat_validation.py`.
+Files that must be read: fichiers du routeur révélés par Graphify, appels depuis les agents/runtime, configurations de modèles.
 
 Files that DO NOT need to be reread: mémoire LaTeX complet, artefacts CICIDS unitaires, artefacts HDFS/BGL phase 3, modèles phase 4, anciens rapports éditoriaux et multi-VM.
 
-Success criterion: Les huit validations écrivent des métriques traçables ; les quatre CSV sont lisibles ; les comptes satisfont N_brut = N_normalisé + N_perdu ; aucune défaillance n'est masquée.
+Success criterion: Une définition exacte du routeur réel et un corpus où `true_family` provient de la source, sans réutiliser la famille prédite comme vérité terrain.
 
-If failure: Conserver les artefacts déjà écrits, inscrire FAILED uniquement pour l'erreur d'infrastructure, corriger sans changer le protocole et relancer avec `--resume`.
+If failure: Classer l'exactitude du routeur comme NON ÉVALUÉE et documenter précisément l'absence d'API ou de vérité terrain ; ne pas substituer l'ablation D005.

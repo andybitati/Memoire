@@ -1,10 +1,10 @@
 # CURRENT STATE
 
 Last update: 2026-09-08
-Git commit: 1e184ab (checkpoint final PHASE 4; checkpoint final PHASE 3 749625a)
-Active phase: PHASE 5
-Active experiment: Validation fonctionnelle de huit voies multiformats du code courant
-Status: PHASE 5 PROTOCOL FROZEN — RUN READY
+Git commit: c9e1814 (checkpoint protocole PHASE 5; checkpoint final PHASE 4 1e184ab)
+Active phase: PHASE 6
+Active experiment: Audit du routeur réel et conception d'un corpus à vraie famille connue
+Status: PHASE 5 COMPLETE — PHASE 6 PROTOCOL DESIGN
 
 ## Completed
 
@@ -80,15 +80,18 @@ Status: PHASE 5 PROTOCOL FROZEN — RUN READY
 - Rapport d'intégrité, tableau, résumé et figure PHASE 4 produits et vérifiés.
 - Protocole phase 5 figé avant exécution : huit formats/adaptateurs, maximum 1 000 événements, aucune duplication.
 - Dry-run phase 5 validé et huit expériences PLANNED inscrites dans le ledger.
+- PHASE 5 terminée : 8/8 formats, 7 001 unités lues, 5 001 normalisées et 2 000 perdues.
+- Windows, Linux/auth, Wazuh, syslog et réseau : 1 000/1 000 ; Apache : 1/1 ; HDFS/BGL : 0/1 000 chacun.
+- Reprise idempotente phase 5 validée ; quatre CSV, huit JSON, tableau et figure vérifiés.
 
 ## In progress
 
-- Aucun run en cours ; exécution multiformat prête.
+- Audit ciblé de l'implémentation du routeur réel avant gel de la phase 6.
 
 ## Pending
 
-- Figer puis exécuter la validation multiformat étendue.
-- Phases 5 à 12.
+- Figer puis exécuter l'évaluation du routeur réel.
+- Phases 6 à 12.
 
 ## Verified facts
 
@@ -143,6 +146,9 @@ Status: PHASE 5 PROTOCOL FROZEN — RUN READY
 - Phase 5 inclut Windows EVTX, Linux/auth tabulaire, Wazuh CSV, syslog, Apache, HDFS, BGL et flux réseau tabulaires, chacun via une voie de code existante.
 - Le corpus Apache disponible est un fixture synthétique existant d'une ligne ; il n'est pas dupliqué.
 - Le routage est explicitement exclu de la phase 5 et reporté à la phase 6.
+- HDFS/BGL sont correctement détectés mais leurs `Parser.parse` courants ne produisent aucune ligne ; les lecteurs stricts phase 3 sont distincts.
+- La conservation intégrale de l'événement brut n'est pas générale : 0/1 000 pour Windows XML et syslog complet.
+- La complétude timestamp Wazuh vaut 0 % sur les 1 000 lignes testées ; l'adaptateur réseau ne produit aucun des sept champs d'événement communs.
 
 ## Open issues
 

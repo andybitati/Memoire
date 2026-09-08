@@ -207,3 +207,18 @@ Already attempted: Installation du wheel Drain3 présent dans le cache local ave
 Current status: RESOLVED — Drain3 0.9.11 importable et opérationnel dans le venv.
 
 Next action: Aucune, sauf recréation future du venv à partir des versions consignées.
+## E0012 — PHASE 5 ledger commit metadata
+
+Error: Les lignes PLANNED/RUNNING/COMPLETED initiales de phase 5 contiennent `git_commit=1e184ab` alors que le run réel a été exécuté après le checkpoint de protocole `c9e1814`.
+
+Command: `rtk python scripts/run_multiformat_validation.py --resume`
+
+Short traceback: Aucun ; défaut de métadonnée dû à une valeur de commit codée en dur.
+
+Probable cause: Le runner a été préparé avant le checkpoint et utilisait le hash précédent au lieu de résoudre HEAD lors de l'écriture.
+
+Already attempted: Fonction `current_git_commit()` ajoutée ; huit entrées COMPLETED correctives ajoutées sans supprimer l'historique.
+
+Current status: RESOLVED. Les dernières entrées phase 5 portent `c9e1814` et les anciennes restent conservées conformément au registre append-only.
+
+Next action: Utiliser la résolution dynamique pour toute nouvelle entrée de ce runner.

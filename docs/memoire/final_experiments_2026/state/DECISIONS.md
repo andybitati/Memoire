@@ -287,3 +287,15 @@ Reason: Les branches essentielles du mécanisme sont désormais exécutées rée
 Affected sections: Mise à jour des modèles, statut de la contribution logicielle, chapitre 5, limites et annexes de preuve.
 
 Do not reconsider unless: Une évaluation indépendante, une exécution périodique réelle ou une preuve de production correctement instrumentée apporte un niveau de preuve supérieur.
+
+## D025
+
+Decision: Classer la phase 5 comme validation fonctionnelle multiformat partielle, et interdire les affirmations de robustesse universelle ou de conservation générale du message brut.
+
+Evidence: Sur 7 001 unités, 5 001 sont normalisées et 2 000 perdues. Windows, Linux/auth, Wazuh, syslog et flux réseau produisent 1 000/1 000 sorties ; Apache produit 1/1 sur fixture synthétique ; HDFS et BGL produisent 0/1 000 chacun malgré une détection de type correcte. La ligne complète n'est conservée à l'identique ni pour Windows ni pour syslog. La complétude temporelle Wazuh est nulle dans le préfixe testé.
+
+Reason: La campagne mesure plusieurs voies réelles avec comptabilité événementielle et conserve les échecs, mais un seul préfixe par format, l'hétérogénéité des adaptateurs et le très faible N Apache empêchent toute conclusion universelle.
+
+Affected sections: Validation multiformat, architecture de parsing, conservation du brut, limites, résultats négatifs et annexes.
+
+Do not reconsider unless: Les parseurs HDFS/BGL du pipeline sont réellement réparés puis réévalués, plusieurs fichiers indépendants par format sont testés, ou un champ brut explicite est ajouté et vérifié.

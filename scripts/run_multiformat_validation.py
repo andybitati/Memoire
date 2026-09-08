@@ -7,6 +7,7 @@ import argparse
 import csv
 import hashlib
 import json
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -59,6 +60,17 @@ def sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8", errors="replace")).hexdigest()
 
 
+def current_git_commit() -> str:
+    process = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return process.stdout.strip() if process.returncode == 0 else ""
+
+
 def write_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str] | None = None) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     names = fieldnames or (list(rows[0]) if rows else [])
@@ -109,7 +121,7 @@ def ledger_row(item: dict[str, Any], status: str, *, started_at: str = "", compl
         "raw_result_path": f"data/processed/final_experiments_2026/phase_5/{experiment_id}.json",
         "summary_path": "data/processed/final_experiments_2026/multiformat_validation_summary.csv",
         "figure_path": "docs/memoire/final_experiments_2026/figures/validation_multiformat.png",
-        "git_commit": "1e184ab",
+        "git_commit": current_git_commit(),
         "notes": notes,
     }
 

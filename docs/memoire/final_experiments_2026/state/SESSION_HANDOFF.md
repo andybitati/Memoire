@@ -6,11 +6,11 @@ Consolider expérimentalement le mémoire Ariel Logminer sans réécrire le mém
 
 ## Current phase
 
-PHASE 5 — validation multiformat étendue.
+PHASE 6 — évaluation du routeur réel.
 
 ## Current experiment
 
-Exécution des huit voies multiformats selon le protocole figé.
+Audit de l'API de routage et construction d'un corpus à vraie famille connue.
 
 ## Completed since previous checkpoint
 
@@ -92,6 +92,9 @@ Exécution des huit voies multiformats selon le protocole figé.
 - Checkpoint final PHASE 4 : `1e184ab`.
 - Protocole multiformat figé : huit voies, maximum 1 000 événements en ordre source, aucune duplication.
 - Runner phase 5 compilé et dry-run validé ; huit lignes PLANNED enregistrées.
+- PHASE 5 complète : 7 001 lus, 5 001 normalisés, 2 000 perdus ; 8/8 runs COMPLETED.
+- HDFS/BGL pipeline : 0/1 000 chacun ; Windows/Linux-auth/Wazuh/syslog/réseau : 1 000/1 000 ; Apache : 1/1.
+- Quatre CSV, huit JSON, tableau et figure validés ; reprise idempotente réussie ; D025 enregistrée.
 
 ## Key results
 
@@ -126,7 +129,7 @@ Exécution des huit voies multiformats selon le protocole figé.
 
 ## Exact next action
 
-Exécuter `scripts/run_multiformat_validation.py --resume`, valider les quatre CSV et inspecter la figure.
+Auditer le routeur réellement appelé, distinguer ses règles de `detect_kind`, puis figer un corpus à vérité terrain indépendante.
 
 ## Read only these files first
 
@@ -136,9 +139,9 @@ Exécuter `scripts/run_multiformat_validation.py --resume`, valider les quatre C
 - `state/EXPERIMENT_LEDGER.csv`
 - `scripts/run_final_experiments.py`
 - `dataset_manifest_final.csv`
-- `configs/multiformat_validation_protocol.json`
-- `scripts/run_multiformat_validation.py`
-- `PHASE_4_COMPLETED.md`
+- `PHASE_5_COMPLETED.md`
+- `experiment_multiformat_validation_summary.md`
+- fichiers du routeur révélés par Graphify
 - `PHASE_2_COMPLETED.md`
 
 ## Do not reread
@@ -148,4 +151,4 @@ Exécuter `scripts/run_multiformat_validation.py --resume`, valider les quatre C
 
 ## Resume command
 
-`rtk python scripts/run_multiformat_validation.py --resume`
+`rtk graphify query "Où le routeur réel attribue-t-il une famille ou un modèle à un événement, avec quelles règles, confiance et fallback ?"`
