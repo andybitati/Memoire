@@ -4,7 +4,7 @@ Last update: 2026-09-08
 Git commit: 749625a (checkpoint final PHASE 3; checkpoint final PHASE 2 6e07c3e)
 Active phase: PHASE 4
 Active experiment: Préparation de trois cas isolés de mise à jour contrôlée
-Status: PHASE 4 PROTOCOL FROZEN — PREPARATION READY
+Status: PHASE 4 PREPARED — END-TO-END RUN READY
 
 ## Completed
 
@@ -71,6 +71,8 @@ Status: PHASE 4 PROTOCOL FROZEN — PREPARATION READY
 - Audit du script mensuel terminé ; support supervisé générique ajouté et chemin d'audit isolé désormais respecté.
 - Plan phase 4 figé sur le holdout DDoS seed 42 avant nouvelle exécution : promotion, rejet, delta positif insuffisant.
 - Scripts de préparation, entraînement candidat et vérification des hashes créés et importés avec succès.
+- Préparation phase 4 validée malgré une erreur d'affichage console finale : train 16 000, évaluation gelée 8 000, 78 features, prévalence 0,5.
+- Trois modèles courants isolés présents et hashés ; trois candidats absents ; trois cas PLANNED dans le ledger.
 
 ## In progress
 
@@ -78,7 +80,6 @@ Status: PHASE 4 PROTOCOL FROZEN — PREPARATION READY
 
 ## Pending
 
-- Préparer le bundle train et l'évaluation DDoS gelée, puis les trois modèles courants isolés.
 - Exécuter la boucle réelle avec `--promote`, puis vérifier les hashes et l'audit.
 - Phases 4 à 12.
 - Phases 3 à 12.
@@ -130,6 +131,7 @@ Status: PHASE 4 PROTOCOL FROZEN — PREPARATION READY
 - Phase 3 : 36 JSON valides, 36 statuts finaux COMPLETED, états Drain3 HDFS/BGL inchangés après scoring.
 - Phase 4 n'utilisera aucun modèle sous `models/`; tous les courants, candidats et backups sont sous `final_experiments_2026/phase_4`.
 - Les cas phase 4 sont fonctionnels et construits à partir des résultats phase 2 déjà connus ; ils ne constituent pas une nouvelle comparaison prédictive indépendante.
+- Hash évaluation gelée phase 4 : `23019860997b8071e0922c52c1710e10b017adcc20f53121872e3875dc5a3126`.
 
 ## Open issues
 

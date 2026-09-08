@@ -470,6 +470,24 @@
       "kind": "verifier",
       "path": "scripts/verify_model_update_e2e.py",
       "status": "import_validated"
+    },
+    {
+      "kind": "prepared_dataset",
+      "path": "data/processed/final_experiments_2026/phase_4/frozen_ddos_evaluation.csv",
+      "status": "frozen",
+      "sha256": "23019860997b8071e0922c52c1710e10b017adcc20f53121872e3875dc5a3126",
+      "rows": 8000
+    },
+    {
+      "kind": "preparation_report",
+      "path": "data/processed/final_experiments_2026/phase_4/model_update_preparation.json",
+      "status": "complete"
+    },
+    {
+      "kind": "models",
+      "path": "data/processed/final_experiments_2026/phase_4/cases/*/current.joblib",
+      "status": "current_before_decision_hashed",
+      "files": 3
     }
   ]
 }

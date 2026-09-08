@@ -10,7 +10,7 @@ PHASE 4 — mise à jour contrôlée des modèles end-to-end.
 
 ## Current experiment
 
-Préparation de trois cas isolés sur le holdout DDoS seed 42.
+Exécution end-to-end des trois cas phase 4 préparés.
 
 ## Completed since previous checkpoint
 
@@ -80,6 +80,9 @@ Préparation de trois cas isolés sur le holdout DDoS seed 42.
 - `monthly_model_retraining.py` corrigé pour les modèles supervisés génériques et l'audit explicitement fourni.
 - Plan phase 4 figé : ExtraTrees→RF, RF→SGD, ExtraTrees→LogisticRegression, `min_delta=0,02`.
 - Trois scripts phase 4 créés : préparation, entraînement réel du candidat, vérification des hashes.
+- Préparation terminée : train 16k, test gelé 8k, 78 features ; hash évaluation `230198...a3126`.
+- Modèles courants présents/hashés, candidats absents, trois cas PLANNED.
+- Erreur d'affichage cp1252 corrigée ; artefacts de préparation confirmés valides, ne pas relancer.
 
 ## Key results
 
@@ -113,7 +116,7 @@ Préparation de trois cas isolés sur le holdout DDoS seed 42.
 
 ## Exact next action
 
-Exécuter `rtk python scripts/prepare_model_update_e2e.py`.
+Exécuter la commande `monthly_model_retraining.py` complète de `NEXT_ACTION.md` avec `--promote` et chemins d'audit/backups isolés.
 
 ## Read only these files first
 
@@ -135,4 +138,4 @@ Exécuter `rtk python scripts/prepare_model_update_e2e.py`.
 
 ## Resume command
 
-`rtk python scripts/prepare_model_update_e2e.py`
+Voir la commande exacte dans `state/NEXT_ACTION.md`.

@@ -160,6 +160,22 @@ Current status: RESOLVED BY EXCLUSION — aucune métrique prédictive n'est aff
 
 Next action: Ne citer aucun temps par méthode pour HDFS/BGL dans le mémoire.
 
+## E0011 — Affichage console de la préparation phase 4
+
+Error: `UnicodeEncodeError` lors du `print(json.dumps(..., ensure_ascii=False))` final.
+
+Command: `rtk python scripts/prepare_model_update_e2e.py`
+
+Short traceback: Le codec console `cp1252` ne peut pas encoder `\ufffd` présent dans une métadonnée de chemin source.
+
+Probable cause: Encodage de la console Windows, pas les fichiers UTF-8 écrits.
+
+Already attempted: Validation directe de `model_update_preparation.json`, du bundle, du CSV d'évaluation et des trois modèles courants ; tous présents, lisibles et hashés. Les candidats sont encore absents. Affichage corrigé avec `ensure_ascii=True` sans relancer la préparation.
+
+Current status: RESOLVED — aucune donnée expérimentale perdue ou corrompue.
+
+Next action: Ne pas relancer la préparation ; exécuter directement la boucle end-to-end sur les artefacts validés.
+
 ## E0008 — Conflit de dépendance Drain3 dans l'environnement partagé
 
 Error: `drain3==0.9.11` impose `cachetools==4.2.1`, incompatible avec `streamlit==1.57.0` qui exige `cachetools>=5.5,<8`.
