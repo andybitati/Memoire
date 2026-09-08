@@ -44,9 +44,9 @@ Probable cause: Un artefact Graphify est verrouillé ou non inscriptible dans le
 
 Already attempted: Une mise à jour après ajout du runner.
 
-Current status: OPEN — le runner et les expériences restent exécutables ; le graphe existant a été utilisé pour l'inventaire initial.
+Current status: OPEN — échec reproduit après la modification du runner de phase 2 le 2026-09-08 ; le runner et les expériences restent exécutables.
 
-Next action: Retenter après la phase 0 ou documenter durablement si le verrou persiste.
+Next action: Ne plus retenter à chaque batch ; retenter uniquement après une modification de code majeure et conserver le graphe existant pour les requêtes.
 
 ## E0004 — Résolution du champ CICIDS ` Label`
 

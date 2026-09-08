@@ -191,3 +191,27 @@ Reason: Les différences de PR-AUC et de faux positifs ne produisent aucune dét
 Affected sections: Comparaison des modèles CICIDS et résultats négatifs.
 
 Do not reconsider unless: Une procédure avec validation indépendante ou une représentation nouvelle est évaluée sur un test Bot gelé.
+
+## D017
+
+Decision: Rapporter la meilleure performance Infiltration de LogisticRegression comme un résultat local fragile, sans généralisation au scénario complet.
+
+Evidence: LogisticRegression obtient F1 0,372881, rappel 0,343750, PR-AUC 0,356763 et MCC 0,369642 sur les cinq seeds ; le test plafonné ne contient que 32 attaques. SGDLogistic varie fortement (F1 moyen 0,111097 ± 0,181391) et les trois modèles d'arbres ont F1 nul.
+
+Reason: La répétition des métriques de LogisticRegression ne compense pas la très petite taille de l'échantillon positif ni le plafonnement à deux chunks.
+
+Affected sections: Comparaison des modèles CICIDS, tailles d'échantillon, résultats négatifs et limites.
+
+Do not reconsider unless: Une évaluation préspecifiée couvrant davantage de positifs Infiltration est effectuée sur un test gelé.
+
+## D018
+
+Decision: Retenir LogisticRegression comme meilleur candidat uniquement selon le F1 macro du protocole phase 2, sans lui attribuer une domination globale.
+
+Evidence: Sur 25 résultats par candidat, F1 macro LogisticRegression 0,233670, SGDLogistic 0,165406, RandomForest 0,157744, ExtraTrees 0,143191 et HistGradientBoosting 0,003362. HistGradientBoosting a la meilleure PR-AUC macro (0,567697), ExtraTrees le plus faible FPR macro (0,000100) et SGDLogistic le fit moyen le plus court (0,149185 s).
+
+Reason: Les métriques, coûts et scénarios désignent des gagnants différents ; le F1 macro est une agrégation descriptive à poids égal des scénarios.
+
+Affected sections: Chapitre 5, comparaison des candidats, discussion, limites et conclusion.
+
+Do not reconsider unless: Un critère de sélection préspecifié différent ou une nouvelle évaluation comparable apporte une preuve contradictoire.

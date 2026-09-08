@@ -6,11 +6,11 @@ Consolider expérimentalement le mémoire Ariel Logminer sans réécrire le mém
 
 ## Current phase
 
-PHASE 2 — comparaison multi-modèles CICIDS2017.
+PHASE 3 — HDFS/BGL avec protocole strict.
 
 ## Current experiment
 
-RandomForest × Infiltration, réutilisation des cinq seeds.
+Audit du pipeline séquentiel existant et préparation du split train/validation/test strict.
 
 ## Completed since previous checkpoint
 
@@ -51,6 +51,17 @@ RandomForest × Infiltration, réutilisation des cinq seeds.
 - LogisticRegression × Bot : 5/5 terminés, F1 nul, PR-AUC 0,313997, 77 FP moyens.
 - SGDLogistic × Bot : 5/5 terminés, F1 nul, PR-AUC 0,485505.
 - Bot complet : aucun vrai positif pour aucun des cinq modèles.
+- Checkpoint intermédiaire PHASE 2 : `73c421a` à 75/125 résultats.
+- RandomForest × Infiltration : 5/5 résultats réutilisés ; phase 2 à 80/125.
+- ExtraTrees × Infiltration : 5/5 terminés, F1 nul, PR-AUC moyenne 0,049074.
+- HistGradientBoosting × Infiltration : 5/5 terminés hors bac à sable, F1 nul, PR-AUC moyenne 0,009143.
+- LogisticRegression × Infiltration : 5/5 terminés, F1 0,372881, rappel 0,343750, PR-AUC 0,356763, MCC 0,369642.
+- SGDLogistic × Infiltration : 5/5 terminés, F1 moyen 0,111097 ± 0,181391.
+- Infiltration complet : 25/25 résultats ; phase 2 à 100/125.
+- WebAttacks complet : LogisticRegression F1 0,074614 ; les quatre autres candidats ont F1 nul.
+- PHASE 2 complète : 125/125 artefacts valides, 100 nouveaux fits et 25 réutilisations RandomForest.
+- LogisticRegression meilleur F1 macro parmi cinq candidats : 0,233670 ; aucune domination multi-métrique.
+- Tableaux et quatre figures PHASE 2 générés et inspectés.
 
 ## Key results
 
@@ -66,6 +77,8 @@ RandomForest × Infiltration, réutilisation des cinq seeds.
 - WebAttacks : F1=0 sur cinq seeds et 2 180 attaques par test ; PR-AUC 0,654341, donc information de classement sans décision positive utile au seuil fixe.
 - Random : F1 moyen 0,995142 ± 0,001013.
 - Holdout macro : F1 0,157744 ; la dispersion inter-scénarios domine très largement la dispersion entre seeds.
+- Modèles phase 2 : LogisticRegression F1 macro 0,233670 ; SGDLogistic 0,165406 ; RandomForest 0,157744 ; ExtraTrees 0,143191 ; HGB 0,003362.
+- HGB a la meilleure PR-AUC macro (0,567697) malgré un F1 presque nul ; aucun candidat ne domine toutes les métriques et tous les coûts.
 
 ## Files created or modified
 
@@ -81,7 +94,7 @@ RandomForest × Infiltration, réutilisation des cinq seeds.
 
 ## Exact next action
 
-Exécuter `rtk python scripts/run_final_experiments.py --resume --phase 2 --scenario Infiltration --model RandomForest`.
+Auditer `scripts/evaluate_sequence_split.py`, `src/logminer/features/drain_templates.py` et `src/logminer/features/sequence_windows.py`, puis figer `strict_sequence_protocol.json` avant les runs.
 
 ## Read only these files first
 
@@ -89,10 +102,12 @@ Exécuter `rtk python scripts/run_final_experiments.py --resume --phase 2 --scen
 - `state/NEXT_ACTION.md`
 - `state/DECISIONS.md`
 - `state/EXPERIMENT_LEDGER.csv`
-- `configs/cicids_final_protocol.json`
 - `scripts/run_final_experiments.py`
 - `dataset_manifest_final.csv`
-- `PHASE_0_COMPLETED.md`
+- `scripts/evaluate_sequence_split.py`
+- `src/logminer/features/drain_templates.py`
+- `src/logminer/features/sequence_windows.py`
+- `PHASE_2_COMPLETED.md`
 
 ## Do not reread
 
@@ -101,4 +116,4 @@ Exécuter `rtk python scripts/run_final_experiments.py --resume --phase 2 --scen
 
 ## Resume command
 
-`python scripts/run_final_experiments.py --resume --phase 2 --scenario Infiltration --model RandomForest`
+`rtk powershell -NoProfile -Command "Get-Content scripts/evaluate_sequence_split.py,src/logminer/features/drain_templates.py,src/logminer/features/sequence_windows.py"`

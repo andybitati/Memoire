@@ -1,9 +1,9 @@
 # CURRENT STATE
 
-Last update: 2026-09-07
-Git commit: 265cdfb (checkpoint PHASE 1; baseline expérimental 37bccf083f3c8e92a11377cf758cf1e9e183dee9)
-Active phase: PHASE 2
-Active experiment: Comparaison des modèles CICIDS — RandomForest × Infiltration
+Last update: 2026-09-08
+Git commit: 73c421a (checkpoint PHASE 2 à 75/125; checkpoint final PHASE 2 en attente)
+Active phase: PHASE 3
+Active experiment: Préparation du protocole strict HDFS/BGL
 Status: READY
 
 ## Completed
@@ -43,6 +43,19 @@ Status: READY
 - LogisticRegression × Bot : 5/5 runs terminés.
 - SGDLogistic × Bot : 5/5 runs terminés.
 - Scénario Bot PHASE 2 : 25/25 résultats disponibles.
+- RandomForest × Infiltration : 5/5 résultats réutilisés.
+- ExtraTrees × Infiltration : 5/5 nouveaux runs terminés, F1 nul.
+- HistGradientBoosting × Infiltration : 5/5 runs terminés hors bac à sable, F1 nul.
+- LogisticRegression × Infiltration : 5/5 runs terminés, F1 0,372881.
+- SGDLogistic × Infiltration : 5/5 runs terminés, F1 moyen 0,111097 et forte dispersion.
+- Scénario Infiltration PHASE 2 : 25/25 résultats disponibles ; phase 2 à 100/125.
+- RandomForest × WebAttacks : 5/5 résultats réutilisés.
+- ExtraTrees × WebAttacks : 5/5 nouveaux runs terminés, F1 nul.
+- HistGradientBoosting × WebAttacks : 5/5 runs terminés hors bac à sable, F1 nul.
+- LogisticRegression × WebAttacks : 5/5 runs terminés, F1 0,074614.
+- SGDLogistic × WebAttacks : 5/5 runs terminés, F1 nul.
+- PHASE 2 terminée : 125/125 artefacts valides, 100 nouveaux fits, 25 réutilisations, aucun échec final.
+- Quatre figures et un tableau multi-métrique PHASE 2 générés et inspectés.
 
 ## In progress
 
@@ -50,9 +63,9 @@ Status: READY
 
 ## Pending
 
-- Réutiliser RandomForest × Infiltration, puis exécuter les quatre autres modèles.
-- Continuer les autres batches modèle × scénario.
-- Phases 2 à 12.
+- Auditer le pipeline HDFS/BGL existant et construire le protocole strict train/validation/test.
+- Installer ou isoler Drain3 après enregistrement explicite de la dépendance et de sa version.
+- Phases 3 à 12.
 
 ## Verified facts
 
@@ -82,11 +95,18 @@ Status: READY
 - Bot HistGradientBoosting : F1 et rappel nuls ; PR-AUC 0,475149 ; N=5.
 - Bot LogisticRegression : F1 et rappel nuls ; PR-AUC 0,313997 ; 77 FP moyens ; N=5.
 - Bot : les cinq modèles ont F1 et rappel nuls ; meilleure PR-AUC 0,485505 (SGDLogistic), sans vrai positif.
+- Infiltration LogisticRegression : F1 0,372881, rappel 0,343750, PR-AUC 0,356763 et MCC 0,369642 ; N=5 mais seulement 32 positifs par test.
+- Infiltration SGDLogistic : F1 moyen 0,111097 ± 0,181391 ; résultat instable.
+- Infiltration : ExtraTrees, HistGradientBoosting et RandomForest ont F1 et rappel nuls.
+- Phase 2 : 125 JSON présents et lisibles, 125 run_id uniques, cinq résultats pour chaque couple modèle/scénario.
+- LogisticRegression est premier uniquement par F1 macro (0,233670) et MCC macro (0,186858) parmi les cinq candidats testés.
+- HistGradientBoosting a la meilleure PR-AUC macro (0,567697) mais un F1 macro de 0,003362.
+- WebAttacks : LogisticRegression F1 0,074614 et rappel 0,039908 ; les quatre autres modèles ont F1 nul.
 
 ## Open issues
 
 - La provenance officielle des copies locales reste `INFORMATION À VÉRIFIER.`.
-- Drain3 n'est pas installé dans l'interpréteur actuel.
+- Drain3 n'est pas installé dans l'interpréteur actuel et bloque l'exécution stricte de phase 3 tant que l'environnement dédié n'est pas préparé.
 - La mise à jour Graphify est bloquée par un accès refusé Windows.
 - HistGradientBoosting nécessite l'exécution hors bac à sable sur cette machine ; reprise réussie.
 

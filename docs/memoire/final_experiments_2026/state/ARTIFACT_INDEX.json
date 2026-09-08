@@ -1,9 +1,11 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-09-07",
+  "updated_at": "2026-09-08",
   "git_commit": "37bccf083f3c8e92a11377cf758cf1e9e183dee9",
   "phase_0_checkpoint_commit": "4db70f0",
   "phase_1_checkpoint_commit": "265cdfb",
+  "phase_2_midpoint_checkpoint_commit": "73c421a",
+  "phase_2_checkpoint_commit": "PENDING",
   "artifacts": [
     {
       "kind": "state",
@@ -157,7 +159,7 @@
       "kind": "summary",
       "path": "docs/memoire/final_experiments_2026/experiment_cicids_model_multiseed_summary.md",
       "status": "partial",
-      "completed_results": 75,
+      "completed_results": 80,
       "planned_results": 125
     },
     {
@@ -249,6 +251,88 @@
       "path": "data/processed/final_experiments_2026/phase_2/e2_models_bot_seed*_sgdlogistic.json",
       "status": "complete",
       "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_infiltration_seed*_randomforest.json",
+      "status": "complete_reused",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_infiltration_seed*_extratrees.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_infiltration_seed*_histgradientboosting.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_infiltration_seed*_logisticregression.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_infiltration_seed*_sgdlogistic.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_webattacks_seed*_randomforest.json",
+      "status": "complete_reused",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_webattacks_seed*_extratrees.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_webattacks_seed*_histgradientboosting.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_webattacks_seed*_logisticregression.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_webattacks_seed*_sgdlogistic.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "summary",
+      "path": "data/processed/final_experiments_2026/cicids_model_scenario_summary.csv",
+      "status": "complete",
+      "rows": 25
+    },
+    {
+      "kind": "table",
+      "path": "docs/memoire/final_experiments_2026/tables/cicids_phase2_model_comparison.md",
+      "status": "complete"
+    },
+    {
+      "kind": "figures",
+      "path": "docs/memoire/final_experiments_2026/figures/cicids_modeles_*.png",
+      "status": "complete",
+      "files": 4
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_2_COMPLETED.md",
+      "status": "complete"
     }
   ]
 }

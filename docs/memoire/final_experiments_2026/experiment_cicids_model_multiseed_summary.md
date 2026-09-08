@@ -6,11 +6,11 @@ Protocole: 5 modèles × 5 scénarios × 5 seeds. Données, caractéristiques, p
 
 Nombre de résultats prévus: 125.
 
-Nombre terminé: 75.
+Nombre terminé: 125.
 
-Nombre de nouveaux ajustements terminés: 60.
+Nombre de nouveaux ajustements terminés: 100.
 
-Nombre réutilisé: 15.
+Nombre réutilisé: 25.
 
 Nombre échoué: 0.
 
@@ -33,6 +33,16 @@ Nombre échoué: 0.
 | HistGradientBoosting | Bot | 5 | 0,000000 | Ajusté hors bac à sable en PHASE 2 |
 | LogisticRegression | Bot | 5 | 0,000000 | Ajusté en PHASE 2 |
 | SGDLogistic | Bot | 5 | 0,000000 | Ajusté en PHASE 2 |
+| RandomForest | Infiltration | 5 | 0,000000 | Réutilisé depuis PHASE 1 |
+| ExtraTrees | Infiltration | 5 | 0,000000 | Ajusté en PHASE 2 |
+| HistGradientBoosting | Infiltration | 5 | 0,000000 | Ajusté hors bac à sable en PHASE 2 |
+| LogisticRegression | Infiltration | 5 | 0,372881 | Ajusté en PHASE 2 |
+| SGDLogistic | Infiltration | 5 | 0,111097 | Ajusté en PHASE 2 |
+| RandomForest | WebAttacks | 5 | 0,000000 | Réutilisé depuis PHASE 1 |
+| ExtraTrees | WebAttacks | 5 | 0,000000 | Ajusté en PHASE 2 |
+| HistGradientBoosting | WebAttacks | 5 | 0,000000 | Ajusté hors bac à sable en PHASE 2 |
+| LogisticRegression | WebAttacks | 5 | 0,074614 | Ajusté en PHASE 2 |
+| SGDLogistic | WebAttacks | 5 | 0,000000 | Ajusté en PHASE 2 |
 
 ## Résultats importants
 
@@ -50,6 +60,13 @@ Nombre échoué: 0.
 - HistGradientBoosting ne produit aucun vrai positif Bot ; PR-AUC moyenne `0,475149`.
 - LogisticRegression ne produit aucun vrai positif Bot et génère en moyenne 77 faux positifs ; PR-AUC `0,313997`, inférieure à la prévalence positive `0,329534`.
 - Les cinq modèles ont F1=0 et rappel=0 sur Bot. La meilleure PR-AUC est `0,485505` pour SGDLogistic, sans vrai positif au seuil courant.
+- Sur Infiltration, LogisticRegression obtient F1 `0,372881`, rappel `0,343750`, PR-AUC `0,356763` et MCC `0,369642` sur chaque seed.
+- SGDLogistic est instable sur Infiltration : F1 moyen `0,111097` avec écart-type `0,181391`; les trois modèles d'arbres ont F1 et rappel nuls.
+- Le test Infiltration ne contient que 32 positifs. Ces résultats décrivent cet échantillon plafonné et ne constituent pas une estimation robuste du scénario complet.
+- Sur WebAttacks, LogisticRegression est le seul candidat avec des vrais positifs au seuil courant : F1 `0,074614`, rappel `0,039908`, précision `0,572368`, PR-AUC `0,283731` et MCC `0,072985`.
+- RandomForest, ExtraTrees, HistGradientBoosting et SGDLogistic ont F1 et rappel nuls sur WebAttacks. HistGradientBoosting a néanmoins la meilleure PR-AUC (`0,695643`), ce qui sépare classement des scores et décisions au seuil.
+- Sur l'agrégation macro de 25 résultats par modèle, LogisticRegression a le meilleur F1 moyen (`0,233670`) et le meilleur MCC moyen (`0,186858`). HistGradientBoosting a la meilleure PR-AUC moyenne (`0,567697`) mais le plus faible F1 (`0,003362`).
+- Aucun candidat ne domine simultanément F1, PR-AUC, MCC, FPR et coût. LogisticRegression est seulement le meilleur candidat par F1 macro parmi les cinq configurations testées.
 
 ## Résultat négatif éventuel
 
@@ -57,8 +74,8 @@ Nombre échoué: 0.
 
 ## Limites
 
-- Résumé partiel : 50 résultats restent à produire ou réutiliser.
-- Le classement DDoS ne doit pas être présenté comme classement final avant les quatre autres scénarios.
+- L'agrégation macro donne le même poids aux cinq scénarios, mais n'est pas une estimation de prévalence réelle.
+- Les 25 observations par modèle ne sont pas 25 datasets indépendants : elles combinent cinq scénarios et cinq seeds.
 - Les temps du RandomForest sont ceux de l'exécution source de phase 1, pas de nouveaux chronométrages.
 
 ## Chemins des artefacts

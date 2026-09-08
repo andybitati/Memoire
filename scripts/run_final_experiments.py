@@ -652,6 +652,126 @@ def write_phase1_assets(holdout: pd.DataFrame, random: pd.DataFrame) -> list[Pat
     return outputs
 
 
+def write_phase2_assets(frame: pd.DataFrame) -> list[Path]:
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    outputs: list[Path] = []
+    scenarios = list(SCENARIO_FILES)
+    models = list(_candidate_models(seed=SEEDS[0]))
+    scenario_summary = aggregate(frame, ["dataset", "scenario", "model", "split"])
+    scenario_summary.to_csv(
+        FINAL_DATA / "cicids_model_scenario_summary.csv", index=False, encoding="utf-8-sig"
+    )
+
+    def heatmap(metric: str, label: str, output_name: str) -> Path:
+        matrix = (
+            scenario_summary.pivot(index="model", columns="scenario", values=metric)
+            .reindex(index=models, columns=scenarios)
+        )
+        values = matrix.to_numpy(dtype=float)
+        fig, axis = plt.subplots(figsize=(10.2, 5.4))
+        image = axis.imshow(values, aspect="auto", cmap="viridis", vmin=np.nanmin(values), vmax=np.nanmax(values))
+        axis.set_xticks(range(len(scenarios)), labels=scenarios)
+        axis.set_yticks(range(len(models)), labels=models)
+        axis.set_xlabel("Scénario tenu hors entraînement")
+        axis.set_ylabel("Modèle")
+        axis.set_title(f"CICIDS2017 — {label} moyen par modèle et scénario\n5 seeds par cellule, N=125 résultats")
+        threshold = float(np.nanmean(values))
+        for row_index in range(values.shape[0]):
+            for column_index in range(values.shape[1]):
+                value = values[row_index, column_index]
+                axis.text(
+                    column_index,
+                    row_index,
+                    f"{value:.3f}",
+                    ha="center",
+                    va="center",
+                    color="white" if value < threshold else "black",
+                    fontsize=8,
+                )
+        fig.colorbar(image, ax=axis, label=label)
+        fig.tight_layout()
+        output = FIGURES / output_name
+        fig.savefig(output, dpi=180)
+        plt.close(fig)
+        return output
+
+    outputs.append(heatmap("f1_mean", "F1", "cicids_modeles_scenarios_f1.png"))
+    outputs.append(heatmap("pr_auc_mean", "PR-AUC", "cicids_modeles_scenarios_prauc.png"))
+    outputs.append(heatmap("mcc_mean", "MCC", "cicids_modeles_scenarios_mcc.png"))
+
+    model_summary = aggregate(frame, ["dataset", "model", "split"]).sort_values("f1_mean", ascending=False)
+    fig, axis = plt.subplots(figsize=(8.8, 5.4))
+    sizes = 70 + 850 * model_summary["pr_auc_mean"].clip(lower=0)
+    axis.scatter(
+        model_summary["train_time_sec_mean"],
+        model_summary["f1_mean"],
+        s=sizes,
+        c=model_summary["fpr_mean"],
+        cmap="magma_r",
+        edgecolor="black",
+        linewidth=0.6,
+    )
+    for _, row in model_summary.iterrows():
+        axis.annotate(
+            row["model"],
+            (row["train_time_sec_mean"], row["f1_mean"]),
+            xytext=(5, 5),
+            textcoords="offset points",
+            fontsize=8,
+        )
+    axis.set_xlabel("Temps moyen d'entraînement par run (s)")
+    axis.set_ylabel("F1 macro moyen")
+    axis.set_title("CICIDS2017 — compromis performance/coût\nTaille = PR-AUC moyenne ; couleur = FPR moyen ; N=25 résultats/modèle")
+    axis.grid(alpha=0.25)
+    fig.tight_layout()
+    output = FIGURES / "cicids_modeles_compromis_f1_temps.png"
+    fig.savefig(output, dpi=180)
+    plt.close(fig)
+    outputs.append(output)
+
+    lines = [
+        "# CICIDS2017 — PHASE 2",
+        "",
+        "Chaque cellule agrège cinq seeds. Le test de chaque scénario est tenu hors entraînement.",
+        "",
+        "| Scénario | Modèle | N | F1 moyen | Écart-type | Précision | Rappel | PR-AUC | MCC | FPR | Entraînement (s) | Inférence (s) |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    for _, row in scenario_summary.sort_values(["scenario", "f1_mean"], ascending=[True, False]).iterrows():
+        lines.append(
+            f"| {row['scenario']} | {row['model']} | {int(row['n'])} | {row['f1_mean']:.6f} | {row['f1_std']:.6f} | {row['precision_mean']:.6f} | {row['recall_mean']:.6f} | {row['pr_auc_mean']:.6f} | {row['mcc_mean']:.6f} | {row['fpr_mean']:.6f} | {row['train_time_sec_mean']:.6f} | {row['test_time_sec_mean']:.6f} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Agrégation macro sur les cinq scénarios",
+            "",
+            "| Modèle | N | F1 moyen | Écart-type | PR-AUC | MCC | FPR | Entraînement (s) | Inférence (s) |",
+            "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        ]
+    )
+    for _, row in model_summary.iterrows():
+        lines.append(
+            f"| {row['model']} | {int(row['n'])} | {row['f1_mean']:.6f} | {row['f1_std']:.6f} | {row['pr_auc_mean']:.6f} | {row['mcc_mean']:.6f} | {row['fpr_mean']:.6f} | {row['train_time_sec_mean']:.6f} | {row['test_time_sec_mean']:.6f} |"
+        )
+    lines.extend(
+        [
+            "",
+            "Les temps sont des durées murales mesurées par `time.perf_counter()` autour de `fit` et de la prédiction/scoring dans le runner. Les 25 temps RandomForest proviennent des runs strictement identiques de phase 1 réutilisés sans refit.",
+            "",
+            "Le F1 macro ne suffit pas à désigner un modèle dominant : les classements PR-AUC, MCC, FPR et coût diffèrent selon le scénario.",
+        ]
+    )
+    table_output = TABLES / "cicids_phase2_model_comparison.md"
+    table_output.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    outputs.append(table_output)
+    return outputs
+
+
 def refresh_phase_outputs(phase: int) -> None:
     frame = flatten_artifacts(phase)
     if frame.empty:
@@ -681,6 +801,8 @@ def refresh_phase_outputs(phase: int) -> None:
         summary.sort_values(["f1_mean", "pr_auc_mean", "mcc_mean"], ascending=[False, False, False]).to_csv(
             FINAL_DATA / "cicids_model_tradeoffs.csv", index=False, encoding="utf-8-sig"
         )
+        if len(frame) == len(SCENARIO_FILES) * len(SEEDS) * len(_candidate_models(seed=SEEDS[0])):
+            write_phase2_assets(frame)
 
 
 def run_plans(plans: list[RunPlan], *, resume: bool) -> int:
