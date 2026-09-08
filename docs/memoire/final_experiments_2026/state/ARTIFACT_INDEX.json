@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "updated_at": "2026-09-08",
+  "active_phase": "PHASE 13A — DATA TRACEABILITY",
   "git_commit": "844d76b",
   "phase_0_checkpoint_commit": "4db70f0",
   "phase_1_checkpoint_commit": "265cdfb",
@@ -8,6 +9,11 @@
   "phase_2_checkpoint_commit": "6e07c3e",
   "phase_12_checkpoint_commit": "844d76b",
   "artifacts": [
+    {
+      "kind": "phase_checkpoint",
+      "path": "docs/memoire/final_experiments_2026/PHASE_13A_STARTED.md",
+      "status": "started"
+    },
     {
       "kind": "state",
       "path": "docs/memoire/final_experiments_2026/state/CURRENT_STATE.md",

@@ -1,21 +1,21 @@
 # NEXT ACTION
 
-Phase: MISSION COMPLETE
+Phase: PHASE 13A — DATA TRACEABILITY
 
 Experiment: Aucun
 
-Last completed step: Rapport final de 26 sections validé et checkpoint phase 12 créé: `844d76b`.
+Last completed step: Checkpoint `PHASE_13A_STARTED.md` créé; aucune expérience relancée.
 
-Next exact step: Remettre les quatre fichiers finaux à Luna pour une mission distincte de réécriture; aucun travail expérimental restant.
+Next exact step: Identifier les références officielles CICIDS2017 puis comparer les huit CSV locaux à des objets publics équivalents si accessibles.
 
-Command to run: aucune.
+Command to run: recherches officielles et `scripts/verify_public_dataset_copies.py` uniquement.
 
-Expected output: N/A — mission expérimentale terminée.
+Expected output: décision CICIDS2017 distinguant source identifiée et copie locale vérifiée.
 
-Files that must be read: `FINAL_EXPERIMENTAL_REPORT_FOR_LUNA.md`, les trois matrices finales et, si nécessaire, `FERMETURE_INCERTITUDES_FACTUELLES_P0.md`.
+Files that must be read: manifeste final, chemins CICIDS concernés et sources publiques officielles.
 
-Files that DO NOT need to be reread: données brutes, JSON individuels, mémoire complet, anciens diagnostics.
+Files that DO NOT need to be reread: mémoire complet, résultats expérimentaux et JSON de runs.
 
-Success criterion: Luna peut réviser le mémoire sans deviner les faits ni relancer une expérience.
+Success criterion: statut CICIDS conforme à la preuve, fichiers de comparaison et état de reprise mis à jour.
 
 If failure: Revenir au chemin précis dans `ARTIFACT_INDEX.json`; ne pas rescanner tout le dépôt.

@@ -2,9 +2,9 @@
 
 Last update: 2026-09-08
 Git commit: 844d76b (checkpoint final PHASE 12)
-Active phase: MISSION COMPLETE
+Active phase: PHASE 13A — DATA TRACEABILITY
 Active experiment: Aucun
-Status: MISSION COMPLETE
+Status: IN PROGRESS — SOURCE TRACEABILITY ONLY
 
 ## Completed
 
@@ -24,12 +24,14 @@ Status: MISSION COMPLETE
 
 ## In progress
 
-- Aucun.
+- PHASE 13A: classification, official-source identification and local-copy verification.
+- Current public dataset: CICIDS2017.
 
 ## Pending
 
-- Aucun travail expérimental.
-- Réécriture du mémoire: mission distincte confiée ultérieurement à Luna.
+- CICIDS2017, HDFS_v1, BGL, Linux_2k and UNSW-NB15 source/copy decisions.
+- Local, exported, synthetic and indeterminate source classification.
+- Final Phase 13A traceability artifacts and Luna-only provenance updates.
 
 ## Verified facts
 

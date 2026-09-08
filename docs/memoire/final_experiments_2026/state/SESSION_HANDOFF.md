@@ -6,11 +6,11 @@ Consolidation expérimentale finale du mémoire Ariel Logminer, sans réécritur
 
 ## Current phase
 
-MISSION COMPLETE.
+PHASE 13A — DATA TRACEABILITY (STARTED).
 
 ## Current experiment
 
-Aucun.
+Aucun; cette phase n'autorise aucune réexécution expérimentale.
 
 ## Completed since previous checkpoint
 
@@ -49,7 +49,7 @@ Aucun.
 
 ## Exact next action
 
-Aucune action expérimentale. Transmettre les quatre fichiers finaux à Luna pour la réécriture distincte.
+Vérifier CICIDS2017: source officielle, publication, accès public et correspondance des huit CSV locaux, sans les modifier.
 
 ## Read only these files first
 
@@ -65,4 +65,4 @@ Aucune action expérimentale. Transmettre les quatre fichiers finaux à Luna pou
 
 ## Resume command
 
-Aucune commande de reprise requise.
+Consulter `state/NEXT_ACTION.md`; reprendre au dataset public indiqué, sans répéter les vérifications terminées.
