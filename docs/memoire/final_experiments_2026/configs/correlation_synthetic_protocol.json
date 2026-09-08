@@ -1,0 +1,67 @@
+{
+  "protocol_id": "correlation_synthetic_controlled_v1",
+  "phase": 8,
+  "frozen_before_run": true,
+  "algorithm": "src/logminer/agents/correlator.py::correlate_anomalies",
+  "separator": ";",
+  "window_minutes": 15,
+  "parallel_workers": 1,
+  "ground_truth_visibility": "true_incident is stored only in a separate evaluator file and is absent from algorithm input",
+  "anomaly_filter": "is_anomaly == '1'",
+  "grouping_keys": [
+    "floor(timestamp_iso, 15min)",
+    "host",
+    "user",
+    "source",
+    "category",
+    "subcategory",
+    "proto",
+    "dst_port"
+  ],
+  "true_incidents": [
+    {
+      "id": "GT-A",
+      "purpose": "stable same-key authentication incident",
+      "timestamps": ["2026-01-15T10:01:00Z", "2026-01-15T10:03:00Z", "2026-01-15T10:05:00Z", "2026-01-15T10:07:00Z"],
+      "keys": {"host": "srv-a", "user": "alice", "source": "auth.log", "category": "AUTHENTICATION", "subcategory": "LOGIN_FAILURE", "proto": "", "dst_port": ""}
+    },
+    {
+      "id": "GT-B",
+      "purpose": "independent incident separated by host",
+      "timestamps": ["2026-01-15T10:02:00Z", "2026-01-15T10:04:00Z", "2026-01-15T10:06:00Z"],
+      "keys": {"host": "srv-b", "user": "alice", "source": "auth.log", "category": "AUTHENTICATION", "subcategory": "LOGIN_FAILURE", "proto": "", "dst_port": ""}
+    },
+    {
+      "id": "GT-C",
+      "purpose": "single true incident crossing a fixed-window boundary",
+      "timestamps": ["2026-01-15T10:14:00Z", "2026-01-15T10:15:00Z", "2026-01-15T10:16:00Z"],
+      "keys": {"host": "edge-a", "user": "", "source": "netflow", "category": "NETWORK", "subcategory": "SCAN", "proto": "TCP", "dst_port": "445"}
+    },
+    {
+      "id": "GT-D",
+      "purpose": "first independent incident sharing all observable keys",
+      "timestamps": ["2026-01-15T10:20:00Z", "2026-01-15T10:21:00Z"],
+      "keys": {"host": "db-a", "user": "svc", "source": "audit", "category": "AUTHORIZATION", "subcategory": "DENIED", "proto": "TCP", "dst_port": "5432"}
+    },
+    {
+      "id": "GT-E",
+      "purpose": "second independent incident sharing all observable keys",
+      "timestamps": ["2026-01-15T10:22:00Z", "2026-01-15T10:23:00Z"],
+      "keys": {"host": "db-a", "user": "svc", "source": "audit", "category": "AUTHORIZATION", "subcategory": "DENIED", "proto": "TCP", "dst_port": "5432"}
+    },
+    {
+      "id": "GT-F",
+      "purpose": "stable process incident",
+      "timestamps": ["2026-01-15T10:31:00Z", "2026-01-15T10:33:00Z"],
+      "keys": {"host": "app-a", "user": "bob", "source": "sysmon", "category": "PROCESS", "subcategory": "SPAWN", "proto": "", "dst_port": ""}
+    }
+  ],
+  "noise_events": [
+    {"timestamp_iso": "2026-01-15T10:03:30Z", "host": "srv-a", "user": "alice", "source": "auth.log", "category": "AUTHENTICATION", "subcategory": "LOGIN_SUCCESS", "proto": "", "dst_port": ""},
+    {"timestamp_iso": "2026-01-15T10:15:30Z", "host": "edge-a", "user": "", "source": "netflow", "category": "NETWORK", "subcategory": "BENIGN", "proto": "TCP", "dst_port": "445"},
+    {"timestamp_iso": "2026-01-15T10:22:30Z", "host": "db-a", "user": "svc", "source": "audit", "category": "AUTHORIZATION", "subcategory": "ALLOWED", "proto": "TCP", "dst_port": "5432"}
+  ],
+  "expected_counts_before_run": {"input_events": 19, "anomalous_events": 16, "noise_events": 3, "true_incidents": 6},
+  "metrics": ["pairwise_precision", "pairwise_recall", "pairwise_f1", "fragmented_true_incidents", "incorrectly_fused_predicted_incidents", "predicted_incidents", "noise_excluded"],
+  "interpretation_ceiling": "VALIDATION SUR SCENARIOS SYNTHETIQUES CONTROLES — never SOC validation"
+}

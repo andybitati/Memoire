@@ -10,7 +10,7 @@ PHASE 8 — audit GO/NO-GO de corrélation synthétique contrôlée.
 
 ## Current experiment
 
-Inventaire de l'implémentation, des règles et des preuves existantes de corrélation d'incidents.
+Exécution du protocole synthétique contrôlé pré-spécifié.
 
 ## Completed since previous checkpoint
 
@@ -21,6 +21,10 @@ Inventaire de l'implémentation, des règles et des preuves existantes de corré
 - Le runtime publie le résultat avant ACK, donc la fenêtre après traitement/avant ACK existe mais n'est pas testée.
 - Docker Desktop et Redis local étaient indisponibles; aucune infrastructure n'a été démarrée.
 - PHASE 7 classée `SKIPPED`; D027, E0013, ledger, index, résumé et rapport de phase mis à jour.
+- Corrélateur réel audité: groupement par fenêtre fixe de 15 minutes et huit clés explicites.
+- Protocole phase 8 figé avant exécution: 19 entrées, 16 anomalies, 6 incidents vrais, 3 bruits.
+- Les cas comprennent une frontière de fenêtre et deux vérités distinctes indiscernables par les clés.
+- Runner compilé et dry-run validé; expérience enregistrée `PLANNED`.
 
 ## Key results
 
@@ -43,7 +47,7 @@ Inventaire de l'implémentation, des règles et des preuves existantes de corré
 
 ## Exact next action
 
-Exécuter la requête Graphify ciblée de `NEXT_ACTION.md`, puis lire seulement les fichiers de corrélation révélés.
+Créer le checkpoint du protocole, puis exécuter `rtk python scripts/run_correlation_synthetic_validation.py --resume`.
 
 ## Read only these files first
 
@@ -52,6 +56,8 @@ Exécuter la requête Graphify ciblée de `NEXT_ACTION.md`, puis lire seulement 
 - `state/DECISIONS.md`
 - `PHASE_7_COMPLETED.md`
 - `experiment_resilience_complementary_summary.md`
+- `configs/correlation_synthetic_protocol.json`
+- `scripts/run_correlation_synthetic_validation.py`
 
 ## Do not reread
 
@@ -61,4 +67,4 @@ Exécuter la requête Graphify ciblée de `NEXT_ACTION.md`, puis lire seulement 
 
 ## Resume command
 
-`rtk graphify query "Où la corrélation d'incidents est-elle implémentée, quelles règles utilise-t-elle et quels tests ou artefacts la couvrent ?"`
+`rtk python scripts/run_correlation_synthetic_validation.py --resume`

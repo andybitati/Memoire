@@ -4,19 +4,18 @@ Phase: PHASE 8
 
 Experiment: Corrélation d'incidents synthétique — audit GO/NO-GO
 
-Last completed step: PHASE 7 clôturée `SKIPPED` après audit de la preuve avant traitement/ACK et constat d'indisponibilité Redis.
+Last completed step: Protocole phase 8 figé et dry-run validé: 19 entrées, 16 anomalies, 6 incidents vrais et 3 bruits.
 
-Next exact step: Identifier l'algorithme de corrélation réellement implémenté, ses entrées/sorties et les tests ou artefacts existants; décider si une vérité terrain synthétique contrôlée peut être figée sans adapter le protocole aux sorties.
+Next exact step: Après checkpoint Git du protocole, exécuter l'unique run, valider le résumé, les 120 paires, le tableau et la figure, puis tester la reprise idempotente.
 
-Command to run: `rtk graphify query "Où la corrélation d'incidents est-elle implémentée, quelles règles utilise-t-elle et quels tests ou artefacts la couvrent ?"`
+Command to run: `rtk python scripts/run_correlation_synthetic_validation.py --resume`
 
-Expected output: Sous-graphe ciblé des fonctions, règles, seuils, tests et sorties de corrélation permettant une décision RUN ou SKIPPED.
+Expected output: Un résumé `COMPLETED`, 120 paires évaluées, métriques pairwise, fragmentation, fusion incorrecte et exclusion du bruit.
 
-Files that must be read: Fichiers révélés par Graphify pour la corrélation et leurs tests directs; D001–D027 si une conclusion semble contradictoire.
+Files that must be read: `configs/correlation_synthetic_protocol.json`, `scripts/run_correlation_synthetic_validation.py` et les sorties phase 8 seulement.
 
 Files that DO NOT need to be reread: mémoire complet, artefacts CICIDS unitaires, JSON HDFS/BGL, modèles phase 4 et anciens rapports multi-VM.
 
-Success criterion: Pré-spécifier une vérité terrain et des métriques pairwise propres avant toute exécution, ou documenter précisément pourquoi la phase optionnelle est `SKIPPED`.
+Success criterion: Entrée sans vérité cachée, 16 anomalies couvertes exactement une fois, 120 paires, métriques cohérentes, artefacts lisibles et second `--resume` retournant `SKIPPED_ALREADY_COMPLETED`.
 
-If failure: Ne pas créer une validation SOC artificielle; classer la phase `SKIPPED` et conserver le statut `NON ÉVALUÉ`.
-
+If failure: Conserver la trace `FAILED`, ne pas adapter les scénarios au résultat, corriger uniquement un défaut d'exécution démontré puis reprendre explicitement.

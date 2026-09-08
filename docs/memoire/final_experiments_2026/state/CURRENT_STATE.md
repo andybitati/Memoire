@@ -4,7 +4,7 @@ Last update: 2026-09-08
 Git commit: ae56145 (checkpoint final PHASE 6)
 Active phase: PHASE 8
 Active experiment: Audit GO/NO-GO d'une corrélation synthétique contrôlée
-Status: PHASE 7 COMPLETE — SKIPPED; PHASE 8 GO/NO-GO AUDIT
+Status: PHASE 7 COMPLETE — SKIPPED; PHASE 8 PROTOCOL FROZEN
 
 ## Completed
 
@@ -19,11 +19,11 @@ Status: PHASE 7 COMPLETE — SKIPPED; PHASE 8 GO/NO-GO AUDIT
 
 ## In progress
 
-- Inventaire ciblé de l'implémentation et des preuves de corrélation d'incidents avant décision de lancer ou sauter la phase 8 optionnelle.
+- Protocole synthétique contrôlé figé: 19 événements, 16 anomalies, 6 incidents vrais, 3 bruits; runner validé en dry-run.
 
 ## Pending
 
-- Décider PHASE 8 RUN ou SKIPPED selon la possibilité d'une vérité terrain synthétique propre.
+- Créer le checkpoint de protocole puis exécuter l'unique run PHASE 8 avec `--resume`.
 - PHASE 9: analyse statistique transversale.
 - PHASE 10: matrice affirmation→preuve.
 - PHASE 11: hypothèses et questions de recherche.
@@ -59,4 +59,3 @@ Status: PHASE 7 COMPLETE — SKIPPED; PHASE 8 GO/NO-GO AUDIT
 - `data/processed/final_experiments_2026/`
 - `docs/memoire/final_experiments_2026/PHASE_0_COMPLETED.md` à `PHASE_7_COMPLETED.md`
 - `docs/memoire/final_experiments_2026/experiment_resilience_complementary_summary.md`
-
