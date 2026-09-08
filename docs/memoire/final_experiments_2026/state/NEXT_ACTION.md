@@ -6,11 +6,11 @@ Experiment: Aucun
 
 Last completed step: Checkpoint `PHASE_13A_STARTED.md` créé; aucune expérience relancée.
 
-Next exact step: Identifier les références officielles CICIDS2017 puis comparer les huit CSV locaux à des objets publics équivalents si accessibles.
+Next exact step: Télécharger l'archive BGL officielle du dépôt Zenodo Loghub, valider son checksum publié, extraire `BGL.log` séparément puis comparer la copie locale.
 
 Command to run: recherches officielles et `scripts/verify_public_dataset_copies.py` uniquement.
 
-Expected output: décision CICIDS2017 distinguant source identifiée et copie locale vérifiée.
+Expected output: décision BGL distinguant source identifiée et copie locale vérifiée.
 
 Files that must be read: manifeste final, chemins CICIDS concernés et sources publiques officielles.
 

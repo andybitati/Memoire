@@ -15,6 +15,17 @@
       "status": "started"
     },
     {
+      "kind": "source_verifier",
+      "path": "scripts/verify_public_dataset_copies.py",
+      "status": "validated"
+    },
+    {
+      "kind": "source_verification",
+      "path": "docs/memoire/final_experiments_2026/public_dataset_copy_verification.csv",
+      "status": "partial",
+      "verified": ["HDFS.log", "anomaly_label.csv", "Linux_2k.log"]
+    },
+    {
       "kind": "state",
       "path": "docs/memoire/final_experiments_2026/state/CURRENT_STATE.md",
       "status": "active"

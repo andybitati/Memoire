@@ -25,7 +25,9 @@ Status: IN PROGRESS — SOURCE TRACEABILITY ONLY
 ## In progress
 
 - PHASE 13A: classification, official-source identification and local-copy verification.
-- Current public dataset: CICIDS2017.
+- HDFS_v1 completed: `HDFS.log` and `anomaly_label.csv` are exact SHA-256 matches to files extracted from the checksum-verified official Loghub Zenodo archive.
+- Linux_2k completed: exact SHA-256 match to the official LogPAI/Loghub raw file.
+- Current public dataset: BGL.
 
 ## Pending
 
