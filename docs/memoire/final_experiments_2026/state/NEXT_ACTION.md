@@ -1,21 +1,22 @@
 # NEXT ACTION
 
-Phase: PHASE 11
+Phase: PHASE 12
 
-Experiment: Statut des hypothèses et questions de recherche
+Experiment: `FINAL_EXPERIMENTAL_REPORT_FOR_LUNA.md`
 
-Last completed step: PHASE 10 terminée; 31 affirmations majeures reliées à leurs preuves, limites et actions.
+Last completed step: PHASE 11 terminée; 5 hypothèses et 6 questions de recherche reliées aux preuves.
 
-Next exact step: Extraire uniquement les formulations explicites d'hypothèses et questions de recherche des fichiers LaTeX/plan, puis les relier aux expériences et statuts finaux.
+Next exact step: Rédiger le rapport expérimental autonome en 26 sections obligatoires, exclusivement à partir des résumés, matrices, décisions, manifeste et artefacts indexés.
 
-Command to run: `rtk rg -n -S "hypoth[eè]se|question de recherche|research question|RQ[0-9]" memoire_logminer_latex_overleaf docs/memoire -g "*.tex" -g "*.md"`
+Command to run: aucune commande longue; produire le rapport puis valider automatiquement les 26 titres, les valeurs majeures et les chemins.
 
-Expected output: Formulations sources vérifiables, puis deux matrices sans reformulation trompeuse.
+Expected output: Rapport permettant à Luna de réviser le mémoire sans relire les données brutes ni deviner les faits.
 
-Files that must be read: Occurrences LaTeX/Markdown ciblées, `final_claim_evidence_matrix.md` et `state/DECISIONS.md`.
+Files that must be read: `environment_final_experiments.json`, `dataset_manifest_final.csv`, `state/DECISIONS.md`, trois matrices finales, rapports PHASE_0 à PHASE_11 et résumés hiérarchiques.
 
-Files that DO NOT need to be reread: mémoire complet, artefacts bruts, modèles et fichiers binaires.
+Files that DO NOT need to be reread: mémoire complet, JSON/CSV unitaires, modèles, états Drain3 binaires, anciens rapports éditoriaux.
 
-Success criterion: Chaque hypothèse et question a une formulation traçable, une réponse, une preuve, une limite et un statut autorisé.
+Success criterion: 26 sections présentes; huit P0 explicitement traités; résultats positifs/négatifs/exploratoires/invalidés séparés; actions chapitre par chapitre; inconnues écrites exactement `INFORMATION À VÉRIFIER.`.
 
-If failure: Conserver la formulation comme `INFORMATION À VÉRIFIER.`; ne pas inventer une hypothèse ou une question.
+If failure: Revenir uniquement à l'artefact résumé concerné; ne pas rescanner le dépôt ni inventer une donnée.
+

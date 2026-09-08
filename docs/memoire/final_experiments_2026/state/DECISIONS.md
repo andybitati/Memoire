@@ -347,3 +347,15 @@ Reason: Pooler les 25 lignes scenario×seed violerait l'indépendance et utilise
 Affected sections: Méthodologie statistique, chapitre 5, tableaux de résultats, discussion et limites.
 
 Do not reconsider unless: De nouvelles répétitions indépendantes ou de nouveaux datasets/scénarios échantillonnés selon un plan explicite permettent une inférence valide.
+
+## D030
+
+Decision: Classer les cinq hypothèses du chapitre 1 comme `PARTIELLEMENT SOUTENUES`; classer QR1–QR5 comme `RÉPONSE PARTIELLE` et QR6 comme `RÉPONSE FORTE` dans le périmètre du prototype.
+
+Evidence: H1 échoue à préserver universellement le brut; H2 combine preuve architecturale et surcoût; H3 n'a aucun gain prédictif systématique; H4 combine résultats utiles et échecs de généralisation; H5 n'isole pas l'effet causal de la mémoire. Les campagnes fournissent en revanche une méthode d'évaluation substantielle pour QR6.
+
+Reason: Le statut doit refléter simultanément les preuves positives et les limites, sans déclarer une hypothèse validée sur la base d'une implémentation ou d'un corpus local.
+
+Affected sections: Chapitre 1, discussion, réponses aux questions de recherche et conclusion.
+
+Do not reconsider unless: Une preuve externe ou opérationnelle nouvelle ferme les limites identifiées pour une hypothèse ou question précise.
