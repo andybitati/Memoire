@@ -1,21 +1,21 @@
 # NEXT ACTION
 
-Phase: PHASE 9
+Phase: PHASE 10
 
-Experiment: Analyse statistique transversale
+Experiment: Matrice affirmation→preuve
 
-Last completed step: Protocole phase 9 figé; runner compilé et dry-run validé; expérience enregistrée `PLANNED`.
+Last completed step: PHASE 9 terminée; 228 statistiques répétées, 4 effets et 20 mesures uniques; reprise idempotente validée.
 
-Next exact step: Après checkpoint Git, construire les statistiques répétées, les effets par scénario et le registre des évaluations uniques; valider les comptages et les IC.
+Next exact step: Construire une ligne par affirmation importante avec expérience, artefact exact, résultat, statut autorisé, limite, section et action rédactionnelle.
 
-Command to run: `rtk python scripts/build_transversal_statistics.py --resume`
+Command to run: `rtk python scripts/build_final_evidence_matrices.py --claims-only`
 
-Expected output: 228 lignes de statistiques répétées, 4 comparaisons descriptives LogisticRegression contre candidats, 20 métriques d'évaluations uniques, rapport et tableau.
+Expected output: `final_claim_evidence_matrix.md` complet, couvrant D001–D029 et les expériences 1–9 sans réécriture du mémoire.
 
-Files that must be read: `configs/transversal_statistics_protocol.json`, `scripts/build_transversal_statistics.py` et les trois sorties seulement.
+Files that must be read: `state/DECISIONS.md`, `state/ARTIFACT_INDEX.json`, `PHASE_0_COMPLETED.md` à `PHASE_9_COMPLETED.md` et les résumés hiérarchiques.
 
 Files that DO NOT need to be reread: mémoire complet, JSON de runs individuels si les CSV agrégés suffisent, modèles et états Drain3 binaires.
 
-Success criterion: N, moyenne, écart-type, médiane, min, max et IC95 lorsque pertinents; aucune pseudo-réplication; tests appariés seulement si justifiés.
+Success criterion: Toute affirmation majeure a une preuve précise ou le statut NON SOUTENU/NON ÉVALUÉ; aucune valeur invalidée n'est réintroduite.
 
-If failure: Produire des statistiques descriptives et documenter explicitement l'absence de test inférentiel justifiable.
+If failure: Marquer l'élément `INFORMATION À VÉRIFIER.` ou NON SOUTENU; ne rien inférer.

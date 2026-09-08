@@ -1,10 +1,10 @@
 # CURRENT STATE
 
 Last update: 2026-09-08
-Git commit: a51ee59 (checkpoint protocole PHASE 8; checkpoint final PHASE 7 238e94c)
-Active phase: PHASE 9
-Active experiment: Analyse statistique transversale
-Status: PHASE 8 COMPLETE — PHASE 9 PROTOCOL FROZEN
+Git commit: 0f506e7 (checkpoint protocole PHASE 9; checkpoint final PHASE 8 1348eff)
+Active phase: PHASE 10
+Active experiment: Matrice finale affirmation→preuve
+Status: PHASE 9 COMPLETE — PHASE 10 IN PROGRESS
 
 ## Completed
 
@@ -17,15 +17,15 @@ Status: PHASE 8 COMPLETE — PHASE 9 PROTOCOL FROZEN
 - PHASE 6: routeur réel, 81/81 décisions, 80 correctes; checkpoint `ae56145`.
 - PHASE 7: audit de résilience complémentaire; nouvelle exécution `SKIPPED`; checkpoint `238e94c`.
 - PHASE 8: corrélation synthétique contrôlée, 1/1 run, 120 paires évaluées.
+- PHASE 9: 228 statistiques répétées, 4 effets scénario et 20 mesures uniques; aucun test inférentiel.
 
 ## In progress
 
-- Protocole transversal figé: 228 statistiques répétées attendues, effets descriptifs au niveau scénario et évaluations uniques séparées; aucun test inférentiel.
+- Construction de la matrice finale reliant chaque affirmation importante à une preuve, un statut, une limite et une action rédactionnelle.
 
 ## Pending
 
-- Créer le checkpoint de protocole puis construire les trois artefacts statistiques avec `--resume`.
-- PHASE 10: matrice affirmation→preuve.
+- Produire et contrôler `final_claim_evidence_matrix.md`.
 - PHASE 11: hypothèses et questions de recherche.
 - PHASE 12: rapport final pour Luna.
 
@@ -44,6 +44,7 @@ Status: PHASE 8 COMPLETE — PHASE 9 PROTOCOL FROZEN
 - Aucun gain prédictif systématique du routage spécialisé n'est démontré.
 - Benchmark: agents sans gain de débit sur monolithique à 60 tâches; unités CPU/RAM établies par D008.
 - Corrélation synthétique: précision pairwise `0,764706`, rappel `0,866667`, F1 `0,812500`; une fragmentation, une fusion, 3/3 bruits exclus.
+- Statistiques transversales: unités scénario–modèle séparées; méthodes déterministes N=1; aucun test inférentiel global.
 
 ## Open issues
 

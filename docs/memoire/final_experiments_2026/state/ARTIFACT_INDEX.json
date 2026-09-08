@@ -759,6 +759,39 @@
       "kind": "runner",
       "path": "scripts/build_transversal_statistics.py",
       "status": "validated_dry_run"
+    },
+    {
+      "kind": "statistics",
+      "path": "data/processed/final_experiments_2026/transversal_repeated_statistics.csv",
+      "status": "complete",
+      "rows": 228
+    },
+    {
+      "kind": "effect_summary",
+      "path": "data/processed/final_experiments_2026/cicids_model_scenario_effects.csv",
+      "status": "complete_descriptive_only",
+      "rows": 4
+    },
+    {
+      "kind": "single_evaluations",
+      "path": "data/processed/final_experiments_2026/transversal_single_evaluations.csv",
+      "status": "complete_no_dispersion",
+      "rows": 20
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_transversal_statistics_summary.md",
+      "status": "complete"
+    },
+    {
+      "kind": "table",
+      "path": "docs/memoire/final_experiments_2026/tables/transversal_statistics_key_results.md",
+      "status": "complete"
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_9_COMPLETED.md",
+      "status": "complete"
     }
   ]
 }

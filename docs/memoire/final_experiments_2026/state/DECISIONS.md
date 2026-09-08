@@ -335,3 +335,15 @@ Reason: La vérité terrain a été figée avant exécution et cachée à l'algo
 Affected sections: Corrélation d'incidents, protocole expérimental, résultats, limites, résultats négatifs et annexes.
 
 Do not reconsider unless: Un corpus d'incidents réels annotés indépendamment ou plusieurs familles de scénarios externes apportent une preuve de généralisation.
+
+## D029
+
+Decision: Limiter l'analyse statistique transversale à des statistiques descriptives conditionnelles et ne réaliser aucun test inférentiel global.
+
+Evidence: Les répétitions comparables sont cinq seeds au sein de chaque couple scénario–modèle ou dataset–méthode. Les cinq scénarios CICIDS sont fixes et hétérogènes; les méthodes déterministes HDFS/BGL ont N=1; le benchmark, le routeur, le multiformat et la corrélation sont des évaluations uniques. LogisticRegression ne domine RandomForest que sur 2 scénarios, avec 1 égalité et 2 défaites malgré un F1 macro supérieur.
+
+Reason: Pooler les 25 lignes scenario×seed violerait l'indépendance et utiliser cinq scénarios fixes pour inférer une population de scénarios serait injustifié. Les IC à N=5 décrivent seulement la sensibilité aux seeds dans le protocole observé.
+
+Affected sections: Méthodologie statistique, chapitre 5, tableaux de résultats, discussion et limites.
+
+Do not reconsider unless: De nouvelles répétitions indépendantes ou de nouveaux datasets/scénarios échantillonnés selon un plan explicite permettent une inférence valide.

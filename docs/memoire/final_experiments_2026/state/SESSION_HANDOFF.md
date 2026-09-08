@@ -6,11 +6,11 @@ Consolider expérimentalement le mémoire Ariel Logminer sans le réécrire, pui
 
 ## Current phase
 
-PHASE 9 — analyse statistique transversale.
+PHASE 10 — matrice affirmation→preuve.
 
 ## Current experiment
 
-Inventaire des unités répétées et préparation d'agrégats statistiquement admissibles.
+Construction de la matrice finale des affirmations et preuves.
 
 ## Completed since previous checkpoint
 
@@ -27,6 +27,10 @@ Inventaire des unités répétées et préparation d'agrégats statistiquement a
 - Protocole phase 9 figé: regroupement scenario×modèle, méthodes déterministes N=1, évaluations uniques séparées.
 - Aucun test inférentiel prévu; IC Student seulement pour N≥2 et interprétation conditionnelle.
 - Runner compilé et dry-run validé; ligne `PLANNED` ajoutée.
+- Agrégation phase 9 terminée: 228 lignes répétées, 4 effets descriptifs, 20 mesures uniques.
+- Méthodes N=1 laissées sans écart-type/IC; IC Student uniquement à N=5.
+- LogisticRegression vs RandomForest: 2 gains, 1 égalité, 2 pertes au niveau scénario; aucun gain systématique.
+- Aucun test inférentiel; reprise idempotente réussie; D029 et rapport de phase ajoutés.
 
 ## Key results
 
@@ -42,6 +46,11 @@ Inventaire des unités répétées et préparation d'agrégats statistiquement a
 - `PHASE_8_COMPLETED.md`
 - `tables/correlation_synthetic_metrics.md`
 - `figures/correlation_synthetic_metrics.png`
+- `configs/transversal_statistics_protocol.json`
+- `scripts/build_transversal_statistics.py`
+- `experiment_transversal_statistics_summary.md`
+- `PHASE_9_COMPLETED.md`
+- `tables/transversal_statistics_key_results.md`
 - `state/*`
 
 ## Current blockers
@@ -52,7 +61,7 @@ Inventaire des unités répétées et préparation d'agrégats statistiquement a
 
 ## Exact next action
 
-Créer le checkpoint du protocole phase 9, puis exécuter `rtk python scripts/build_transversal_statistics.py --resume`.
+Créer le checkpoint final phase 9, puis construire la matrice affirmation→preuve à partir des décisions et résumés.
 
 ## Read only these files first
 
@@ -70,4 +79,4 @@ Créer le checkpoint du protocole phase 9, puis exécuter `rtk python scripts/bu
 
 ## Resume command
 
-`rtk python scripts/build_transversal_statistics.py --resume`
+`rtk python scripts/build_final_evidence_matrices.py --claims-only`
