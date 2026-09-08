@@ -450,6 +450,26 @@
       "kind": "phase_report",
       "path": "docs/memoire/final_experiments_2026/PHASE_3_COMPLETED.md",
       "status": "complete"
+    },
+    {
+      "kind": "config",
+      "path": "docs/memoire/final_experiments_2026/configs/model_update_e2e_plan.json",
+      "status": "frozen_before_run"
+    },
+    {
+      "kind": "runner",
+      "path": "scripts/prepare_model_update_e2e.py",
+      "status": "import_validated"
+    },
+    {
+      "kind": "runner",
+      "path": "scripts/train_model_update_candidate.py",
+      "status": "import_validated"
+    },
+    {
+      "kind": "verifier",
+      "path": "scripts/verify_model_update_e2e.py",
+      "status": "import_validated"
     }
   ]
 }

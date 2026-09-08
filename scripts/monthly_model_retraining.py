@@ -209,7 +209,7 @@ def _score_artifact(artifact_path: Path, events: pd.DataFrame) -> tuple[pd.Serie
         scores = pd.Series(_positive_class_probability(model, features, labels.to_numpy()), index=events.index)
         return labels, scores
 
-    if model_type.startswith("random_forest"):
+    if model_type.startswith(("random_forest", "supervised_tabular")):
         features = _supervised_features(events, feature_columns)
         labels = pd.Series(model.predict(features).astype(int), index=events.index)
         scores = pd.Series(_positive_class_probability(model, features, labels.to_numpy()), index=events.index)
@@ -439,6 +439,7 @@ def run_plan(
         actor="scheduler",
         target=str(plan_path),
         details={"report": str(report_out), "feedback_rows": feedback_rows, "results": rows},
+        path=audit_path,
     )
     return rows
 

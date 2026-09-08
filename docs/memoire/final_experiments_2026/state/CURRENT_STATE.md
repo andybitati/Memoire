@@ -1,10 +1,10 @@
 # CURRENT STATE
 
 Last update: 2026-09-08
-Git commit: 81c8cda (checkpoint HDFS strict; checkpoint final PHASE 2 6e07c3e)
+Git commit: 749625a (checkpoint final PHASE 3; checkpoint final PHASE 2 6e07c3e)
 Active phase: PHASE 4
-Active experiment: Mise à jour contrôlée des modèles end-to-end
-Status: PHASE 3 COMPLETED — PHASE 4 READY
+Active experiment: Préparation de trois cas isolés de mise à jour contrôlée
+Status: PHASE 4 PROTOCOL FROZEN — PREPARATION READY
 
 ## Completed
 
@@ -68,6 +68,9 @@ Status: PHASE 3 COMPLETED — PHASE 4 READY
 - État Drain3 BGL train-only sauvegardé/rechargé : 7 clusters, hash vérifié, aucune mise à jour validation/test.
 - BGL strict : 18/18 résultats terminés, aucun échec.
 - PHASE 3 terminée : 36/36 artefacts valides, deux états Drain3 inchangés, tableau et deux figures produits.
+- Audit du script mensuel terminé ; support supervisé générique ajouté et chemin d'audit isolé désormais respecté.
+- Plan phase 4 figé sur le holdout DDoS seed 42 avant nouvelle exécution : promotion, rejet, delta positif insuffisant.
+- Scripts de préparation, entraînement candidat et vérification des hashes créés et importés avec succès.
 
 ## In progress
 
@@ -75,7 +78,8 @@ Status: PHASE 3 COMPLETED — PHASE 4 READY
 
 ## Pending
 
-- Auditer l'implémentation de mise à jour contrôlée et préparer trois cas réels : promotion, rejet et delta positif insuffisant si faisable.
+- Préparer le bundle train et l'évaluation DDoS gelée, puis les trois modèles courants isolés.
+- Exécuter la boucle réelle avec `--promote`, puis vérifier les hashes et l'audit.
 - Phases 4 à 12.
 - Phases 3 à 12.
 
@@ -124,6 +128,8 @@ Status: PHASE 3 COMPLETED — PHASE 4 READY
 - BGL : 7 clusters Drain3 train-only ; 89,808 % de templates inconnus sur test.
 - BGL strict : Histogram F1 0,913698 ; les cinq autres méthodes ont un FPR supérieur à 0,877.
 - Phase 3 : 36 JSON valides, 36 statuts finaux COMPLETED, états Drain3 HDFS/BGL inchangés après scoring.
+- Phase 4 n'utilisera aucun modèle sous `models/`; tous les courants, candidats et backups sont sous `final_experiments_2026/phase_4`.
+- Les cas phase 4 sont fonctionnels et construits à partir des résultats phase 2 déjà connus ; ils ne constituent pas une nouvelle comparaison prédictive indépendante.
 
 ## Open issues
 

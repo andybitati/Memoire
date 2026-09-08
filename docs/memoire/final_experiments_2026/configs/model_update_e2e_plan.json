@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-09-08",
+  "status": "FROZEN_BEFORE_END_TO_END_EXECUTION",
+  "dataset": "CICIDS2017 local files",
+  "scenario": "DDoS file holdout, seed 42",
+  "evaluation_csv": "data/processed/final_experiments_2026/phase_4/frozen_ddos_evaluation.csv",
+  "metric": "f1",
+  "models": [
+    {
+      "family": "phase4_promotion",
+      "case": "promotion",
+      "current_model": "data/processed/final_experiments_2026/phase_4/cases/promotion/current.joblib",
+      "candidate_model": "data/processed/final_experiments_2026/phase_4/cases/promotion/candidate.joblib",
+      "current_metrics": "data/processed/final_experiments_2026/phase_4/cases/promotion/current_metrics.csv",
+      "candidate_metrics": "data/processed/final_experiments_2026/phase_4/cases/promotion/comparison_metrics.csv",
+      "validation_csv": "data/processed/final_experiments_2026/phase_4/frozen_ddos_evaluation.csv",
+      "validation_sep": ",",
+      "label_column": "label",
+      "metric": "f1",
+      "min_delta": 0.02,
+      "current_estimator": "ExtraTrees",
+      "candidate_estimator": "RandomForest",
+      "train_command": [
+        "{python}",
+        "scripts/train_model_update_candidate.py",
+        "--bundle",
+        "data/processed/final_experiments_2026/phase_4/frozen_ddos_train_bundle.npz",
+        "--model",
+        "RandomForest",
+        "--model-out",
+        "data/processed/final_experiments_2026/phase_4/cases/promotion/candidate.joblib"
+      ]
+    },
+    {
+      "family": "phase4_rejection",
+      "case": "rejection",
+      "current_model": "data/processed/final_experiments_2026/phase_4/cases/rejection/current.joblib",
+      "candidate_model": "data/processed/final_experiments_2026/phase_4/cases/rejection/candidate.joblib",
+      "current_metrics": "data/processed/final_experiments_2026/phase_4/cases/rejection/current_metrics.csv",
+      "candidate_metrics": "data/processed/final_experiments_2026/phase_4/cases/rejection/comparison_metrics.csv",
+      "validation_csv": "data/processed/final_experiments_2026/phase_4/frozen_ddos_evaluation.csv",
+      "validation_sep": ",",
+      "label_column": "label",
+      "metric": "f1",
+      "min_delta": 0.02,
+      "current_estimator": "RandomForest",
+      "candidate_estimator": "SGDLogistic",
+      "train_command": [
+        "{python}",
+        "scripts/train_model_update_candidate.py",
+        "--bundle",
+        "data/processed/final_experiments_2026/phase_4/frozen_ddos_train_bundle.npz",
+        "--model",
+        "SGDLogistic",
+        "--model-out",
+        "data/processed/final_experiments_2026/phase_4/cases/rejection/candidate.joblib"
+      ]
+    },
+    {
+      "family": "phase4_min_delta",
+      "case": "positive_but_insufficient",
+      "current_model": "data/processed/final_experiments_2026/phase_4/cases/min_delta/current.joblib",
+      "candidate_model": "data/processed/final_experiments_2026/phase_4/cases/min_delta/candidate.joblib",
+      "current_metrics": "data/processed/final_experiments_2026/phase_4/cases/min_delta/current_metrics.csv",
+      "candidate_metrics": "data/processed/final_experiments_2026/phase_4/cases/min_delta/comparison_metrics.csv",
+      "validation_csv": "data/processed/final_experiments_2026/phase_4/frozen_ddos_evaluation.csv",
+      "validation_sep": ",",
+      "label_column": "label",
+      "metric": "f1",
+      "min_delta": 0.02,
+      "current_estimator": "ExtraTrees",
+      "candidate_estimator": "LogisticRegression",
+      "train_command": [
+        "{python}",
+        "scripts/train_model_update_candidate.py",
+        "--bundle",
+        "data/processed/final_experiments_2026/phase_4/frozen_ddos_train_bundle.npz",
+        "--model",
+        "LogisticRegression",
+        "--model-out",
+        "data/processed/final_experiments_2026/phase_4/cases/min_delta/candidate.joblib"
+      ]
+    }
+  ]
+}

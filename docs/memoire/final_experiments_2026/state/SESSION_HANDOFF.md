@@ -10,7 +10,7 @@ PHASE 4 — mise à jour contrôlée des modèles end-to-end.
 
 ## Current experiment
 
-Audit de l'implémentation réelle avant trois cas isolés : promotion, rejet et delta positif insuffisant si disponible naturellement.
+Préparation de trois cas isolés sur le holdout DDoS seed 42.
 
 ## Completed since previous checkpoint
 
@@ -76,6 +76,10 @@ Audit de l'implémentation réelle avant trois cas isolés : promotion, rejet et
 - Drain3 BGL : 7 clusters train-only ; 89,808 % de templates inconnus sur test.
 - BGL strict 18/18 terminé ; Histogram F1 0,913698, autres méthodes FPR ≥ 0,877859.
 - PHASE 3 complète : 36/36 JSON valides, ancien versus strict et deux figures produits.
+- Checkpoint final PHASE 3 : `749625a`.
+- `monthly_model_retraining.py` corrigé pour les modèles supervisés génériques et l'audit explicitement fourni.
+- Plan phase 4 figé : ExtraTrees→RF, RF→SGD, ExtraTrees→LogisticRegression, `min_delta=0,02`.
+- Trois scripts phase 4 créés : préparation, entraînement réel du candidat, vérification des hashes.
 
 ## Key results
 
@@ -109,7 +113,7 @@ Audit de l'implémentation réelle avant trois cas isolés : promotion, rejet et
 
 ## Exact next action
 
-Interroger Graphify sur l'implémentation de mise à jour contrôlée, puis lire uniquement les fichiers retournés.
+Exécuter `rtk python scripts/prepare_model_update_e2e.py`.
 
 ## Read only these files first
 
@@ -119,8 +123,9 @@ Interroger Graphify sur l'implémentation de mise à jour contrôlée, puis lire
 - `state/EXPERIMENT_LEDGER.csv`
 - `scripts/run_final_experiments.py`
 - `dataset_manifest_final.csv`
-- `PHASE_3_COMPLETED.md`
-- fichiers de mise à jour retournés par Graphify
+- `configs/model_update_e2e_plan.json`
+- `scripts/prepare_model_update_e2e.py`
+- `scripts/monthly_model_retraining.py`
 - `PHASE_2_COMPLETED.md`
 
 ## Do not reread
@@ -130,4 +135,4 @@ Interroger Graphify sur l'implémentation de mise à jour contrôlée, puis lire
 
 ## Resume command
 
-`rtk graphify query "controlled model update candidate promotion rejection backup audit implementation"`
+`rtk python scripts/prepare_model_update_e2e.py`

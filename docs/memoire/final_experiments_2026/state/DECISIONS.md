@@ -263,3 +263,15 @@ Reason: La séparation des données et du réglage de seuil est nécessaire pour
 Affected sections: Résumé, chapitre 5, discussion, conclusion et annexes HDFS/BGL.
 
 Do not reconsider unless: L'ancien pipeline est reproduit sans ces fuites, ce qui en ferait une nouvelle expérience distincte.
+
+## D023
+
+Decision: Tester la procédure de mise à jour sur trois copies de modèles isolées et un holdout DDoS déjà évalué, exclusivement comme validation fonctionnelle des branches de décision.
+
+Evidence: Le plan figé compare ExtraTrees à RandomForest pour la promotion, RandomForest à SGDLogistic pour le rejet et ExtraTrees à LogisticRegression avec `min_delta=0,02` pour le gain positif insuffisant. Ces relations proviennent des résultats phase 2, sans sélection de seed autre que 42.
+
+Reason: L'objectif phase 4 est de prouver entraînement, comparaison, décision, backup, promotion/rejet et audit réels, pas d'apporter une nouvelle estimation indépendante de généralisation.
+
+Affected sections: Mise à jour des modèles, statut logiciel, limites et annexes de preuve.
+
+Do not reconsider unless: Les deltas réels ne déclenchent pas les trois branches prévues ; le résultat doit alors être conservé tel quel sans modifier les scores.
