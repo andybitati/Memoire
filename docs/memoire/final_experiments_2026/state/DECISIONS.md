@@ -311,3 +311,15 @@ Reason: L'expérience mesure directement l'attribution de famille/modèle par l'
 Affected sections: Architecture du routeur, protocole et résultats du chapitre 5, limites, contribution logicielle et annexes.
 
 Do not reconsider unless: Un corpus multi-source indépendant ou une évaluation end-to-end routeur→prédiction avec vérité terrain apporte une preuve plus forte.
+
+## D027
+
+Decision: Classer la phase 7 optionnelle `SKIPPED` et conserver uniquement la preuve existante de reprise multi-VM de laboratoire après sortie contrôlée avant traitement et ACK.
+
+Evidence: La campagne `redis-vbox-recovery-20260722150924` contient 3 tâches enfilées, 3 événements de fin portant 3 identifiants uniques, 0 échec, 1 tâche lue par le worker Debian avant sa sortie, 1 tâche reprise par le worker Ubuntu et 0 pending final. Le code de la panne s'arrête immédiatement après `fetch`, sans exécuter la tâche. Le runtime normal publie le résultat avant l'appel d'ACK, mais aucune injection ni mesure ne couvre cette seconde fenêtre. Docker/Redis étaient indisponibles pendant l'audit.
+
+Reason: Rejouer le scénario existant n'ajouterait aucune preuve. Le scénario scientifiquement nouveau après traitement mais avant ACK exigerait une instrumentation nouvelle et une infrastructure Redis active; il ne doit pas être improvisé pour une phase optionnelle.
+
+Affected sections: Résilience, multi-VM, limites, résultats négatifs et annexes de preuve.
+
+Do not reconsider unless: Une campagne pré-spécifiée injecte une panne entre effet applicatif et ACK et mesure explicitement tâches terminées, récupérées, dupliquées, perdues, temps de reprise, pending et lag.

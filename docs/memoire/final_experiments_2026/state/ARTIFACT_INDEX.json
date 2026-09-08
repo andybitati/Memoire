@@ -665,6 +665,25 @@
       "kind": "phase_report",
       "path": "docs/memoire/final_experiments_2026/PHASE_6_COMPLETED.md",
       "status": "complete"
+    },
+    {
+      "kind": "audit_summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_resilience_complementary_summary.md",
+      "status": "complete_no_go"
+    },
+    {
+      "kind": "existing_evidence",
+      "path": "data/processed/vbox_redis_recovery_campaign.json",
+      "status": "audited_existing_not_modified",
+      "tasks_enqueued": 3,
+      "tasks_completed": 3,
+      "recovered_crashed_tasks": 1,
+      "pending_after": 0
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_7_COMPLETED.md",
+      "status": "complete_skipped"
     }
   ]
 }

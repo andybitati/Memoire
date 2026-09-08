@@ -222,3 +222,19 @@ Already attempted: Fonction `current_git_commit()` ajoutée ; huit entrées COMP
 Current status: RESOLVED. Les dernières entrées phase 5 portent `c9e1814` et les anciennes restent conservées conformément au registre append-only.
 
 Next action: Utiliser la résolution dynamique pour toute nouvelle entrée de ce runner.
+
+## E0013 — Infrastructure Redis indisponible pour la phase 7 optionnelle
+
+Error: Docker Desktop ne répond pas et aucun service TCP n'écoute sur `localhost:6379`.
+
+Command: `rtk docker ps --format "{{.Names}}|{{.Status}}|{{.Ports}}"` puis `rtk powershell -NoProfile -Command "Test-NetConnection -ComputerName localhost -Port 6379 -InformationLevel Quiet"`.
+
+Short traceback: Pipe Docker Desktop Linux introuvable; test TCP Redis retourné `False`.
+
+Probable cause: Docker Desktop et le conteneur Redis ne sont pas démarrés dans la session courante.
+
+Already attempted: Audit statique de la campagne de reprise existante et du point exact de l'ACK; aucune tentative de démarrage d'infrastructure ni modification du runtime.
+
+Current status: NON BLOQUANT — phase 7 optionnelle classée `SKIPPED`.
+
+Next action: Ne reprendre que si une campagne après traitement avant ACK est pré-spécifiée et qu'une infrastructure Redis isolée est disponible.

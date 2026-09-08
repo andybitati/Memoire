@@ -1,21 +1,22 @@
 # NEXT ACTION
 
-Phase: PHASE 7
+Phase: PHASE 8
 
-Experiment: Résilience complémentaire — audit GO/NO-GO
+Experiment: Corrélation d'incidents synthétique — audit GO/NO-GO
 
-Last completed step: PHASE 6 complète, 81/81 fichiers routés, matrice inspectée et reprise idempotente validée.
+Last completed step: PHASE 7 clôturée `SKIPPED` après audit de la preuve avant traitement/ACK et constat d'indisponibilité Redis.
 
-Next exact step: Inventorier les campagnes panne/reprise existantes et déterminer si un nouveau scénario apporte une information distincte de D002.
+Next exact step: Identifier l'algorithme de corrélation réellement implémenté, ses entrées/sorties et les tests ou artefacts existants; décider si une vérité terrain synthétique contrôlée peut être figée sans adapter le protocole aux sorties.
 
-Command to run: `rtk graphify query "Quelles campagnes Redis de panne, reprise, pending, ACK, doublons et pertes existent déjà et quels artefacts les prouvent ?"`
+Command to run: `rtk graphify query "Où la corrélation d'incidents est-elle implémentée, quelles règles utilise-t-elle et quels tests ou artefacts la couvrent ?"`
 
-Expected output: Sous-graphe ciblé des scripts et preuves existantes permettant une décision RUN ou SKIPPED justifiée.
+Expected output: Sous-graphe ciblé des fonctions, règles, seuils, tests et sorties de corrélation permettant une décision RUN ou SKIPPED.
 
-Files that must be read: scripts de campagnes Redis/résilience révélés par Graphify et leurs résumés/artefacts existants.
+Files that must be read: Fichiers révélés par Graphify pour la corrélation et leurs tests directs; D001–D027 si une conclusion semble contradictoire.
 
-Files that DO NOT need to be reread: mémoire LaTeX complet, artefacts CICIDS unitaires, artefacts HDFS/BGL phase 3, modèles phase 4, anciens rapports éditoriaux et multi-VM.
+Files that DO NOT need to be reread: mémoire complet, artefacts CICIDS unitaires, JSON HDFS/BGL, modèles phase 4 et anciens rapports multi-VM.
 
-Success criterion: Lancer uniquement un scénario qui mesure une propriété non déjà démontrée ; sinon enregistrer SKIPPED avec justification et passer à la phase 8.
+Success criterion: Pré-spécifier une vérité terrain et des métriques pairwise propres avant toute exécution, ou documenter précisément pourquoi la phase optionnelle est `SKIPPED`.
 
-If failure: Ne pas relancer les campagnes existantes pour produire du volume ; classer la phase optionnelle SKIPPED si aucune preuve nouvelle sûre n'est accessible.
+If failure: Ne pas créer une validation SOC artificielle; classer la phase `SKIPPED` et conserver le statut `NON ÉVALUÉ`.
+
