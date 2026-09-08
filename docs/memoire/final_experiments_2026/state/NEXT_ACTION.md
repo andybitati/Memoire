@@ -1,21 +1,21 @@
 # NEXT ACTION
 
-Phase: PHASE 10
+Phase: PHASE 11
 
-Experiment: Matrice affirmation→preuve
+Experiment: Statut des hypothèses et questions de recherche
 
-Last completed step: PHASE 9 terminée; 228 statistiques répétées, 4 effets et 20 mesures uniques; reprise idempotente validée.
+Last completed step: PHASE 10 terminée; 31 affirmations majeures reliées à leurs preuves, limites et actions.
 
-Next exact step: Construire une ligne par affirmation importante avec expérience, artefact exact, résultat, statut autorisé, limite, section et action rédactionnelle.
+Next exact step: Extraire uniquement les formulations explicites d'hypothèses et questions de recherche des fichiers LaTeX/plan, puis les relier aux expériences et statuts finaux.
 
-Command to run: `rtk python scripts/build_final_evidence_matrices.py --claims-only`
+Command to run: `rtk rg -n -S "hypoth[eè]se|question de recherche|research question|RQ[0-9]" memoire_logminer_latex_overleaf docs/memoire -g "*.tex" -g "*.md"`
 
-Expected output: `final_claim_evidence_matrix.md` complet, couvrant D001–D029 et les expériences 1–9 sans réécriture du mémoire.
+Expected output: Formulations sources vérifiables, puis deux matrices sans reformulation trompeuse.
 
-Files that must be read: `state/DECISIONS.md`, `state/ARTIFACT_INDEX.json`, `PHASE_0_COMPLETED.md` à `PHASE_9_COMPLETED.md` et les résumés hiérarchiques.
+Files that must be read: Occurrences LaTeX/Markdown ciblées, `final_claim_evidence_matrix.md` et `state/DECISIONS.md`.
 
-Files that DO NOT need to be reread: mémoire complet, JSON de runs individuels si les CSV agrégés suffisent, modèles et états Drain3 binaires.
+Files that DO NOT need to be reread: mémoire complet, artefacts bruts, modèles et fichiers binaires.
 
-Success criterion: Toute affirmation majeure a une preuve précise ou le statut NON SOUTENU/NON ÉVALUÉ; aucune valeur invalidée n'est réintroduite.
+Success criterion: Chaque hypothèse et question a une formulation traçable, une réponse, une preuve, une limite et un statut autorisé.
 
-If failure: Marquer l'élément `INFORMATION À VÉRIFIER.` ou NON SOUTENU; ne rien inférer.
+If failure: Conserver la formulation comme `INFORMATION À VÉRIFIER.`; ne pas inventer une hypothèse ou une question.
