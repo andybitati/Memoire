@@ -299,3 +299,15 @@ Reason: La campagne mesure plusieurs voies réelles avec comptabilité événeme
 Affected sections: Validation multiformat, architecture de parsing, conservation du brut, limites, résultats négatifs et annexes.
 
 Do not reconsider unless: Les parseurs HDFS/BGL du pipeline sont réellement réparés puis réévalués, plusieurs fichiers indépendants par format sont testés, ou un champ brut explicite est ajouté et vérifié.
+
+## D026
+
+Decision: Considérer le routeur réel comme fonctionnellement évalué sur un corpus local dérivé, avec 80/81 décisions correctes, tout en maintenant qu'aucun gain prédictif systématique du routage n'est démontré.
+
+Evidence: `route_model` route correctement 80 fichiers sur 81, exactitude 0,987654, F1 macro 0,883598 en incluant la classe fallback prédite sans support vrai. La seule erreur est Apache normalisé, vraie famille network mais prédiction fallback. Aucun fichier ne provoque d'erreur et tous les modèles choisis existent.
+
+Reason: L'expérience mesure directement l'attribution de famille/modèle par l'implémentation réelle, contrairement à D005. Toutefois, les chunks partagent leur source et contiennent souvent des métadonnées familiales ; elle ne prouve ni généralisation universelle ni amélioration des prédictions d'anomalie.
+
+Affected sections: Architecture du routeur, protocole et résultats du chapitre 5, limites, contribution logicielle et annexes.
+
+Do not reconsider unless: Un corpus multi-source indépendant ou une évaluation end-to-end routeur→prédiction avec vérité terrain apporte une preuve plus forte.

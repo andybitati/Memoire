@@ -1,10 +1,10 @@
 # CURRENT STATE
 
 Last update: 2026-09-08
-Git commit: f499797 (checkpoint final PHASE 5; checkpoint final PHASE 4 1e184ab)
-Active phase: PHASE 6
-Active experiment: Routage de 81 fichiers dérivés à noms neutres et vérité terrain issue de neuf sources
-Status: PHASE 6 PROTOCOL FROZEN — RUN READY
+Git commit: b324d05 (checkpoint protocole PHASE 6; checkpoint final PHASE 5 f499797)
+Active phase: PHASE 7
+Active experiment: Audit d'utilité scientifique d'une campagne de résilience complémentaire
+Status: PHASE 6 COMPLETE — PHASE 7 GO/NO-GO AUDIT
 
 ## Completed
 
@@ -86,15 +86,18 @@ Status: PHASE 6 PROTOCOL FROZEN — RUN READY
 - Routeur réel identifié : `agents.model_router.route_model`, classification au niveau fichier par scores heuristiques explicables.
 - Protocole phase 6 figé avant routage : neuf sources, chunks de 100 lignes, 81 fichiers attendus, noms de fichiers neutres.
 - Dry-run phase 6 validé et expérience inscrite PLANNED dans le ledger.
+- PHASE 6 terminée : 81/81 fichiers routés, 80 corrects, exactitude 0,987654, aucun échec.
+- Une erreur Apache→fallback observée ; fallback 1/81, unknown 0, tous modèles choisis présents.
+- Matrice de confusion, métriques, rapport, tableau et figure phase 6 validés ; reprise idempotente réussie.
 
 ## In progress
 
-- Aucun run en cours ; exécution du routeur prête.
+- Audit des preuves de résilience déjà présentes avant décision de lancer ou sauter la phase 7 optionnelle.
 
 ## Pending
 
-- Figer puis exécuter l'évaluation du routeur réel.
-- Phases 6 à 12.
+- Décider PHASE 7 RUN ou SKIPPED selon l'existence d'une information réellement nouvelle.
+- Phases 7 à 12.
 
 ## Verified facts
 
@@ -154,6 +157,9 @@ Status: PHASE 6 PROTOCOL FROZEN — RUN READY
 - La complétude timestamp Wazuh vaut 0 % sur les 1 000 lignes testées ; l'adaptateur réseau ne produit aucun des sept champs d'événement communs.
 - `confidence` du routeur est une marge entière entre les deux meilleurs scores, pas une probabilité calibrée.
 - La vérité terrain phase 6 vient de la source avant routage ; les chunks d'une même source ne sont pas des réplications indépendantes.
+- Routeur réel : 80/81 corrects ; F1 macro union vraies+prédites 0,883598 et F1 macro sur vraies familles 0,994048.
+- L'unique erreur est Apache normalisé classé fallback plutôt que network, marge 21.
+- Cette évaluation du routeur ne change pas D005 : aucun gain prédictif systématique du routage spécialisé.
 
 ## Open issues
 

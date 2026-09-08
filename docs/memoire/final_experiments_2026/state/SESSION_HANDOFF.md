@@ -6,11 +6,11 @@ Consolider expérimentalement le mémoire Ariel Logminer sans réécrire le mém
 
 ## Current phase
 
-PHASE 6 — évaluation du routeur réel.
+PHASE 7 — audit GO/NO-GO de résilience complémentaire.
 
 ## Current experiment
 
-Exécution de 81 fichiers dérivés à noms neutres avec vérité terrain fixée par source.
+Inventaire des preuves panne/reprise existantes avant toute nouvelle campagne optionnelle.
 
 ## Completed since previous checkpoint
 
@@ -99,6 +99,9 @@ Exécution de 81 fichiers dérivés à noms neutres avec vérité terrain fixée
 - `route_model` audité : routage au niveau fichier, scores heuristiques, marge non calibrée, départage fixe et modèle par famille.
 - Protocole phase 6 figé sur neuf sources : 81 chunks attendus de 100 lignes sauf Apache N=1 ; noms neutres.
 - Dry-run phase 6 validé et expérience PLANNED.
+- PHASE 6 complète : 80/81 corrects, exactitude 0,987654, fallback 1/81, aucune erreur d'exécution.
+- Erreur unique : Apache normalisé routé fallback au lieu de network ; D026 enregistrée.
+- Rapport, métriques, confusion, tableau et figure phase 6 validés ; reprise idempotente réussie.
 
 ## Key results
 
@@ -133,7 +136,7 @@ Exécution de 81 fichiers dérivés à noms neutres avec vérité terrain fixée
 
 ## Exact next action
 
-Exécuter le routeur sur les 81 fichiers, calculer accuracy/F1 par famille, fallback/unknown/error et inspecter la confusion.
+Auditer les campagnes Redis existantes et ne lancer la phase 7 que si elle apporte une propriété nouvelle par rapport à D002.
 
 ## Read only these files first
 
@@ -143,9 +146,9 @@ Exécuter le routeur sur les 81 fichiers, calculer accuracy/F1 par famille, fall
 - `state/EXPERIMENT_LEDGER.csv`
 - `scripts/run_final_experiments.py`
 - `dataset_manifest_final.csv`
-- `configs/router_evaluation_protocol.json`
-- `scripts/run_router_evaluation.py`
-- `src/logminer/agents/model_router.py`
+- `PHASE_6_COMPLETED.md`
+- `experiment_router_real_summary.md`
+- scripts et artefacts de résilience révélés par Graphify
 - `PHASE_2_COMPLETED.md`
 
 ## Do not reread
@@ -155,4 +158,4 @@ Exécuter le routeur sur les 81 fichiers, calculer accuracy/F1 par famille, fall
 
 ## Resume command
 
-`rtk python scripts/run_router_evaluation.py --resume`
+`rtk graphify query "Quelles campagnes Redis de panne, reprise, pending, ACK, doublons et pertes existent déjà et quels artefacts les prouvent ?"`

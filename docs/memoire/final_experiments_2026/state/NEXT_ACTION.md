@@ -1,21 +1,21 @@
 # NEXT ACTION
 
-Phase: PHASE 6
+Phase: PHASE 7
 
-Experiment: Évaluation du routeur réel — exécution du corpus figé
+Experiment: Résilience complémentaire — audit GO/NO-GO
 
-Last completed step: Routeur audité, protocole à neuf sources figé, dry-run de 81 fichiers validé et plan inscrit au ledger.
+Last completed step: PHASE 6 complète, 81/81 fichiers routés, matrice inspectée et reprise idempotente validée.
 
-Next exact step: Construire les chunks à noms neutres, appeler réellement `route_model` une fois par fichier, puis calculer les métriques et la matrice de confusion.
+Next exact step: Inventorier les campagnes panne/reprise existantes et déterminer si un nouveau scénario apporte une information distincte de D002.
 
-Command to run: `rtk python scripts/run_router_evaluation.py --resume`
+Command to run: `rtk graphify query "Quelles campagnes Redis de panne, reprise, pending, ACK, doublons et pertes existent déjà et quels artefacts les prouvent ?"`
 
-Expected output: 81 décisions détaillées, métriques par famille, matrice de confusion, rapport JSON, tableau et figure en français.
+Expected output: Sous-graphe ciblé des scripts et preuves existantes permettant une décision RUN ou SKIPPED justifiée.
 
-Files that must be read: `configs/router_evaluation_protocol.json`, `scripts/run_router_evaluation.py`, `src/logminer/agents/model_router.py`.
+Files that must be read: scripts de campagnes Redis/résilience révélés par Graphify et leurs résumés/artefacts existants.
 
 Files that DO NOT need to be reread: mémoire LaTeX complet, artefacts CICIDS unitaires, artefacts HDFS/BGL phase 3, modèles phase 4, anciens rapports éditoriaux et multi-VM.
 
-Success criterion: 81 fichiers routés ou erreurs explicitement conservées ; `true_family`, `predicted_family`, marge, règles, fallback et modèle enregistrés ; métriques lisibles.
+Success criterion: Lancer uniquement un scénario qui mesure une propriété non déjà démontrée ; sinon enregistrer SKIPPED avec justification et passer à la phase 8.
 
-If failure: Conserver le corpus et les lignes déjà routées, enregistrer FAILED pour l'erreur technique, corriger sans modifier la vérité terrain puis reprendre.
+If failure: Ne pas relancer les campagnes existantes pour produire du volume ; classer la phase optionnelle SKIPPED si aucune preuve nouvelle sûre n'est accessible.
