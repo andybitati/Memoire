@@ -144,6 +144,22 @@ Current status: RESOLVED — Drain3 0.9.11 importable et opérationnel dans le v
 
 Next action: Aucune, sauf recréation future du venv à partir des versions consignées.
 
+## E0010 — Durées phase 3 non attribuables par méthode
+
+Error: `fit_score_time_sec` du premier run de chaque seed incluait la construction mutualisée des scores de toutes les méthodes ; les runs suivants utilisaient le cache.
+
+Command: `run_strict_sequence_experiments.py --resume --dataset hdfs`
+
+Short traceback: Aucun échec ; défaut sémantique détecté lors de l'inspection du résumé.
+
+Probable cause: Optimisation du runner par cache `scores_by_seed` alors que le chronomètre était attaché au run courant.
+
+Already attempted: Champ retiré des CSV et résumés ; les anciens champs JSON HDFS restent traçables mais ne seront pas interprétés. Les nouveaux JSON indiquent explicitement la portée du chronométrage et `comparable_across_methods=false`.
+
+Current status: RESOLVED BY EXCLUSION — aucune métrique prédictive n'est affectée.
+
+Next action: Ne citer aucun temps par méthode pour HDFS/BGL dans le mémoire.
+
 ## E0008 — Conflit de dépendance Drain3 dans l'environnement partagé
 
 Error: `drain3==0.9.11` impose `cachetools==4.2.1`, incompatible avec `streamlit==1.57.0` qui exige `cachetools>=5.5,<8`.

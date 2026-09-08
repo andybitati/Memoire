@@ -353,6 +353,41 @@
       "kind": "environment",
       "path": ".venv-final-experiments",
       "status": "local_untracked_drain3_0.9.11"
+    },
+    {
+      "kind": "prepared_dataset",
+      "path": "data/processed/final_experiments_2026/phase_3/prepared/hdfs_*_events.csv",
+      "status": "complete",
+      "files": 3
+    },
+    {
+      "kind": "feature_bundle",
+      "path": "data/processed/final_experiments_2026/phase_3/prepared/hdfs_feature_bundle.npz",
+      "status": "complete",
+      "features": 19
+    },
+    {
+      "kind": "drain3_state",
+      "path": "data/processed/final_experiments_2026/drain3_train_state/hdfs_drain3_state.bin",
+      "status": "complete_train_only",
+      "sha256": "18bc825effd29a8c4cd957d41d9a4502a2e47f905738dd6b193017056905ebd2"
+    },
+    {
+      "kind": "preparation_report",
+      "path": "data/processed/final_experiments_2026/phase_3/prepared/hdfs_preparation.json",
+      "status": "complete"
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_3/e3_strict_hdfs_*.json",
+      "status": "complete",
+      "runs": 18
+    },
+    {
+      "kind": "summary",
+      "path": "data/processed/final_experiments_2026/hdfs_strict_drain3_summary.csv",
+      "status": "complete",
+      "rows": 6
     }
   ]
 }

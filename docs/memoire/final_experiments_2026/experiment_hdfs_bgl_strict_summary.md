@@ -6,7 +6,7 @@ Protocole: Figé dans `configs/strict_sequence_protocol.json` avant inspection d
 
 Nombre de runs prévus: 36 résultats — 18 par dataset. Les trois méthodes déterministes ont un run chacune ; IsolationForest, AutoencoderMLP et EnsembleTrainCalibrated ont cinq seeds chacune.
 
-Nombre terminé: 0.
+Nombre terminé: 18 résultats HDFS ; préparation BGL en attente.
 
 Nombre échoué: 0.
 
@@ -23,13 +23,35 @@ Conclusion de l'audit: Les anciens résultats HDFS/BGL restent `EXPLORATOIRE` co
 
 ## Résultats agrégés disponibles
 
-Aucun run strict terminé.
+| Dataset | Méthode | N | F1 moyen | Écart-type | Précision | Rappel | PR-AUC | MCC | FPR |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| HDFS | Histogram | 1 | 0,269307 | n/a | 0,175711 | 0,576271 | 0,099431 | 0,311464 | 0,016045 |
+| HDFS | IQR | 1 | 0,268775 | n/a | 0,175258 | 0,576271 | 0,154748 | 0,311042 | 0,016095 |
+| HDFS | EnsembleTrainCalibrated | 5 | 0,242946 | 0,010487 | 0,154410 | 0,571186 | 0,090662 | 0,289505 | 0,018630 |
+| HDFS | ZScore | 1 | 0,226230 | n/a | 0,140244 | 0,584746 | 0,110571 | 0,278582 | 0,021276 |
+| HDFS | AutoencoderMLP | 5 | 0,214286 | 0,015815 | 0,131259 | 0,586441 | 0,095514 | 0,269074 | 0,023207 |
+| HDFS | IsolationForest | 5 | 0,204530 | 0,004496 | 0,123291 | 0,600000 | 0,079169 | 0,263521 | 0,025340 |
+
+Le meilleur F1 HDFS strict est `0,269307` pour Histogram. Il est descriptif pour ce test gelé de 20 000 événements et 118 anomalies ; la faible prévalence explique notamment que le rappel supérieur à 0,57 coexiste avec une précision inférieure à 0,18.
+
+## Préparation HDFS vérifiée
+
+- Train: 50 000 événements, 1 858 anomalies (3,716 %), 4 787 blocs, lignes source 3 327 689 à 3 377 688.
+- Validation: 20 000 événements, 599 anomalies (2,995 %), 1 994 blocs, lignes source 7 812 940 à 7 832 939.
+- Test gelé: 20 000 événements, 118 anomalies (0,590 %), 2 456 blocs, lignes source 10 048 066 à 10 068 065.
+- Chevauchement de blocs entre partitions: zéro ; aucune ligne retirée pour chevauchement.
+- Drain3 0.9.11: 13 clusters appris sur train, état de 1 212 octets, SHA-256 `18bc825effd29a8c4cd957d41d9a4502a2e47f905738dd6b193017056905ebd2`.
+- Taux de templates inconnus: train 0 %, validation 0,095 %, test 1,880 %.
+- Le SHA-256 du journal HDFS relu correspond au manifeste phase 0.
 
 ## Limites préspecifiées
 
 - Les fenêtres contiguës ne couvrent qu'une partie de chaque log.
 - Les labels HDFS sont définis au niveau bloc mais les métriques principales seront événementielles ; les blocs ne se recouvrent pas entre partitions retenues.
 - Les seuils sont choisis sur validation labellisée et ne mesurent donc pas une détection entièrement non supervisée.
+- La prévalence HDFS varie fortement entre train, validation et test ; aucun rééquilibrage n'est appliqué.
+- Quatre ajustements MLP au moins ont atteint 80 itérations sans convergence complète ; la limite préspecifiée n'a pas été modifiée après observation.
+- Les durées internes du bundle partagé ne sont pas attribuables à une méthode individuelle et sont exclues des résumés scientifiques.
 
 ## Chemins des artefacts prévus
 

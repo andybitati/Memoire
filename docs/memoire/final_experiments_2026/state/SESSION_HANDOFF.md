@@ -10,7 +10,7 @@ PHASE 3 — HDFS/BGL avec protocole strict.
 
 ## Current experiment
 
-Préparation HDFS stricte : fenêtres chronologiques, blocs disjoints, Drain3 train-only et bundle causal.
+Préparation BGL stricte, puis 18 évaluations.
 
 ## Completed since previous checkpoint
 
@@ -67,6 +67,10 @@ Préparation HDFS stricte : fenêtres chronologiques, blocs disjoints, Drain3 tr
 - `strict_sequence_protocol.json` figé avant lecture des labels des nouvelles fenêtres.
 - `.venv-final-experiments` créé ; Drain3 0.9.11 fonctionne sans modifier durablement l'environnement global.
 - Runner `run_strict_sequence_experiments.py` créé ; dry-run = 36 plans.
+- HDFS préparé : 50k/20k/20k événements, 1 858/599/118 positifs, zéro bloc partagé.
+- Drain3 HDFS : 13 clusters train-only, état hashé, 1,88 % de templates inconnus sur test.
+- HDFS strict 18/18 terminé ; Histogram F1 0,269307, IQR 0,268775, ensemble 0,242946 ± 0,010487.
+- Les durées internes partagées ont été exclues des résumés car elles ne sont pas comparables par méthode.
 
 ## Key results
 
@@ -100,7 +104,7 @@ Préparation HDFS stricte : fenêtres chronologiques, blocs disjoints, Drain3 tr
 
 ## Exact next action
 
-Exécuter `rtk .\.venv-final-experiments\Scripts\python.exe scripts/run_strict_sequence_experiments.py --dataset hdfs --prepare-only`.
+Exécuter `rtk .\.venv-final-experiments\Scripts\python.exe scripts/run_strict_sequence_experiments.py --dataset bgl --prepare-only`.
 
 ## Read only these files first
 
@@ -121,4 +125,4 @@ Exécuter `rtk .\.venv-final-experiments\Scripts\python.exe scripts/run_strict_s
 
 ## Resume command
 
-`rtk .\.venv-final-experiments\Scripts\python.exe scripts/run_strict_sequence_experiments.py --dataset hdfs --prepare-only`
+`rtk .\.venv-final-experiments\Scripts\python.exe scripts/run_strict_sequence_experiments.py --dataset bgl --prepare-only`

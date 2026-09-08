@@ -687,7 +687,6 @@ def refresh_outputs(dataset: str) -> None:
                 "validation_rows": payload["configuration"]["split_rows"]["validation"],
                 "test_rows": payload["configuration"]["split_rows"]["test"],
                 **payload["metrics"],
-                "fit_score_time_sec": payload["fit_score_time_sec"],
                 "artifact_path": rel(path),
             }
         )
@@ -714,7 +713,6 @@ def refresh_outputs(dataset: str) -> None:
                 "pr_auc_mean": float(group["pr_auc"].mean()),
                 "mcc_mean": float(group["mcc"].mean()),
                 "fpr_mean": float(group["fpr"].mean()),
-                "fit_score_time_sec_mean": float(group["fit_score_time_sec"].mean()),
             }
         )
     pd.DataFrame(records).sort_values("f1_mean", ascending=False).to_csv(
@@ -757,7 +755,8 @@ def run_dataset(
         append_ledger(experiment_id, dataset, seed, method, "RUNNING", raw_path, started_at=started)
         try:
             timing = time.perf_counter()
-            if seed not in scores_by_seed:
+            computed_shared_bundle = seed not in scores_by_seed
+            if computed_shared_bundle:
                 scores_by_seed[seed] = score_sets(bundle, seed)
             scores = scores_by_seed[seed][method]
             threshold, validation_metrics = select_threshold(y["validation"], scores["validation"])
@@ -790,7 +789,11 @@ def run_dataset(
                 "threshold": threshold,
                 "validation_metrics": validation_metrics,
                 "metrics": metrics,
-                "fit_score_time_sec": duration,
+                "timing": {
+                    "elapsed_sec": duration,
+                    "scope": "shared_all_method_score_bundle_plus_threshold" if computed_shared_bundle else "threshold_only_using_cached_scores",
+                    "comparable_across_methods": False,
+                },
             }
             raw_path.parent.mkdir(parents=True, exist_ok=True)
             raw_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

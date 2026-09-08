@@ -3,8 +3,8 @@
 Last update: 2026-09-08
 Git commit: 6e07c3e (checkpoint final PHASE 2; baseline expérimental 37bccf083f3c8e92a11377cf758cf1e9e183dee9)
 Active phase: PHASE 3
-Active experiment: Préparation HDFS stricte et état Drain3 train-only
-Status: READY FOR LONG RUN
+Active experiment: Préparation BGL stricte et état Drain3 train-only
+Status: HDFS 18/18 COMPLETED — BGL READY
 
 ## Completed
 
@@ -60,6 +60,10 @@ Status: READY FOR LONG RUN
 - Protocole strict HDFS/BGL figé avant inspection des labels des nouvelles fenêtres.
 - Venv dédié `.venv-final-experiments` opérationnel avec Drain3 0.9.11 ; environnement global restauré et valide.
 - Runner spécialisé phase 3 créé ; dry-run 36/36 plans et test synthétique du seuil réussis.
+- HDFS préparé : 50 000 train, 20 000 validation, 20 000 test, zéro bloc partagé.
+- État Drain3 HDFS train-only sauvegardé/rechargé : 13 clusters, hash vérifié, aucune mise à jour validation/test.
+- HDFS strict : 18/18 résultats terminés, aucun échec.
+- Résumé HDFS régénéré sans durées par méthode non comparables.
 
 ## In progress
 
@@ -67,8 +71,8 @@ Status: READY FOR LONG RUN
 
 ## Pending
 
-- Préparer le batch HDFS : fenêtres chronologiques, contrôle des blocs, état Drain3 train-only et bundle de features.
-- Exécuter les 18 résultats HDFS, puis le batch BGL.
+- Préparer BGL : fenêtres chronologiques, état Drain3 train-only et bundle causal.
+- Exécuter les 18 résultats BGL.
 - Phases 3 à 12.
 
 ## Verified facts
@@ -108,6 +112,10 @@ Status: READY FOR LONG RUN
 - WebAttacks : LogisticRegression F1 0,074614 et rappel 0,039908 ; les quatre autres modèles ont F1 nul.
 - L'ancien HDFS/BGL n'a pas de validation séparée et utilise des informations de distribution du test ; il reste exploratoire.
 - Le nouveau protocole prévoit 18 résultats par dataset : 15 stochastiques sur cinq seeds et trois déterministes sans pseudo-réplication.
+- Prévalence HDFS observée après gel : train 3,716 %, validation 2,995 %, test 0,590 % ; aucune adaptation du protocole.
+- HDFS : 13 clusters Drain3 train-only ; templates inconnus test 1,880 %.
+- HDFS strict : meilleur F1 Histogram 0,269307 ; IQR 0,268775 ; ensemble 0,242946 ± 0,010487.
+- Sur 118 anomalies HDFS test, Histogram détecte 68 vrais positifs avec 319 faux positifs.
 
 ## Open issues
 

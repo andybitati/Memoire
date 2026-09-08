@@ -227,3 +227,15 @@ Reason: Ce protocole ferme les fuites identifiées dans l'ancien pipeline tout e
 Affected sections: Protocole et résultats HDFS/BGL, limites, annexes expérimentales.
 
 Do not reconsider unless: Une impossibilité technique empêche l'extraction ; toute adaptation devra être enregistrée avant d'examiner les résultats du test.
+
+## D020
+
+Decision: Retenir Histogram comme meilleur résultat HDFS strict par F1 dans ce test gelé, sans revendiquer une performance générale ni comparer les durées par méthode.
+
+Evidence: Histogram F1 0,269307, IQR 0,268775, ensemble 0,242946 ± 0,010487 ; test de 20 000 événements dont 118 anomalies. La construction du bundle de scores est mutualisée par seed, donc les durées internes ne sont pas attribuables individuellement.
+
+Reason: Le résultat est reproductible et sans fuite test identifiée, mais il dépend d'une fenêtre locale à faible prévalence et d'un seuil supervisé sur validation.
+
+Affected sections: Résultats HDFS/BGL, discussion, limites et annexe de protocole.
+
+Do not reconsider unless: Une nouvelle fenêtre ou une mesure de temps isolée par méthode est exécutée selon un protocole préspecifié.
