@@ -1,0 +1,107 @@
+\chapter*{INTRODUCTION GÉNÉRALE}
+\addcontentsline{toc}{chapter}{INTRODUCTION GÉNÉRALE}
+
+\section{Contexte general}
+Les journaux systemes et reseaux constituent une source essentielle d'information pour la supervision, l'audit et la cybersecurite. Ils enregistrent les connexions, les erreurs, les changements d'etat, les acces aux services, les alertes de securite et les activites applicatives. Dans une infrastructure moderne, ces journaux proviennent de sources diverses : systemes Windows, serveurs Linux, applications web, equipements reseau, plateformes SIEM, traces cloud ou jeux de donnees publics utilises pour l'evaluation scientifique.
+
+Cette richesse est aussi une difficulte. Les journaux sont volumineux, heterogenes, parfois incomplets et rarement harmonises. Un evenement Windows, une ligne syslog Linux, un acces Apache, une alerte Wazuh ou un flux reseau tabulaire ne portent pas les memes champs, n'ont pas la meme granularite temporelle et ne decrivent pas le meme niveau semantique. L'analyse manuelle devient donc couteuse et fragile, en particulier dans les petites structures, les etablissements universitaires ou les organisations ne disposant pas d'un Security Operations Center complet.
+
+La litterature en detection d'intrusion insiste depuis longtemps sur le role des traces d'audit et sur la detection de comportements anormaux \cite{denning1987intrusion,axelsson2000intrusion}. Les approches modernes de detection d'anomalies et de machine learning offrent des perspectives interessantes, mais elles restent sensibles a la qualite des donnees, au desequilibre des classes, aux changements de distribution et aux faux positifs \cite{chandola2009anomaly,buczak2016survey,khraisat2019survey}. Dans ce contexte, il devient utile de concevoir une chaine modulaire capable de collecter, normaliser, orienter et expliquer les signaux de securite.
+
+\section{Problematique}
+La problematique centrale du memoire peut etre formulee ainsi :
+
+\begin{quote}
+Comment concevoir un prototype autonome, distribue au sens logiciel, modulaire et exploitable par un analyste, capable de detecter et de prioriser des anomalies candidates dans des journaux systemes et reseaux heterogenes par traitements periodiques, par micro-lots et par agents multi-taches ?
+\end{quote}
+
+Cette question recouvre plusieurs difficultes. Il faut d'abord reconnaitre et structurer des formats de journaux tres differents. Il faut ensuite choisir des modeles adaptes aux familles de donnees disponibles. Il faut aussi transformer les scores techniques en informations exploitables par un humain. Enfin, il faut evaluer la solution de maniere rigoureuse, sans confondre anomalie candidate et attaque confirmee.
+
+\section{Definition operationnelle du titre}
+Le titre du memoire est conserve dans sa formulation retenue, mais il est interprete avec des definitions operationnelles verifiables. La detection autonome signifie que le prototype peut selectionner des traitements, router les familles de journaux et executer des taches sans intervention manuelle constante, selon des regles explicites et un registre de modeles. Elle ne signifie pas une intelligence generale ni une decision de securite definitive sans analyste.
+
+La detection distribuee signifie que les traitements sont decomposes en agents logiciels et que la version avancee valide deux niveaux de repartition par Redis Streams. Le premier niveau est local multi-processus : plusieurs workers sur l'hote consomment une file partagee, publient leur progression et peuvent reprendre des taches non acquittees. Le second niveau est une preuve inter-machines de laboratoire sous VirtualBox, ou Debian et Ubuntu consomment un stream Redis commun heberge par l'hote Windows. Cette distribution n'est pas encore une preuve de scalabilite industrielle multi-site securisee ; elle montre cependant que l'architecture n'est plus seulement monolithique.
+
+Les agents intelligents multi-taches sont des agents logiciels dotes de capacites declarees, d'une memoire locale des succes, erreurs, durees et decisions recentes, d'un heartbeat, d'une politique de choix de taches et de plusieurs handlers : decouverte de sources, parsing, routage de modele, detection et correlation. Le terme intelligent est donc employe dans un sens d'ingenierie logicielle et d'orchestration adaptative, non dans le sens d'une cognition humaine.
+
+\section{Questions de recherche}
+La problematique generale est declinee en questions de recherche operationnelles :
+
+\begin{enumerate}
+  \item Comment concevoir un schema de normalisation capable de rapprocher des journaux systemes, reseaux et SIEM sans supprimer les informations utiles a l'analyse ?
+  \item Comment organiser plusieurs agents logiciels specialises afin que la detection reste modulaire, auditable et extensible ?
+  \item Comment choisir automatiquement un modele de detection adapte a la famille de donnees analysee ?
+  \item Comment presenter les anomalies candidates dans un dashboard qui aide l'analyste a comprendre, filtrer et valider les alertes ?
+  \item Comment exploiter une memoire persistante des decisions, erreurs et validations passees pour ameliorer progressivement la priorisation et la reduction des faux positifs ?
+  \item Comment evaluer le prototype avec des metriques quantitatives, des captures fonctionnelles et des mesures de latence et de ressources ?
+\end{enumerate}
+
+\section{Hypotheses de travail}
+Le memoire repose sur cinq hypotheses de travail, formulees de maniere operationnelle. Premierement, les journaux heterogenes peuvent etre rapproches par un noyau commun de champs tout en conservant les donnees originales utiles a l'audit. Deuxiemement, une architecture par agents logiciels specialises peut ameliorer la modularite, la tracabilite et la robustesse d'execution par rapport a une chaine monolithique. Cette hypothese est partiellement etayee par la progression fonctionnelle du prototype, la campagne Redis locale de six heures, la validation inter-machines VirtualBox d'une heure et une comparaison controlee monolithique-versus-agents ; cette derniere mesure surtout l'overhead d'orchestration et la reprise apres panne, tandis que la modularite et la tracabilite sont soutenues par la conception logicielle et les mecanismes d'audit. Troisiemement, le routage par famille de logs constitue une hypothese de conception : il reduit l'incompatibilite entre source, features et modele. Une premiere comparaison controlee global-versus-familles est realisee dans ce memoire ; elle montre des performances proches lorsque les variantes utilisent un espace commun, ce qui ne permet pas de conclure a une superiorite universelle du routage. Quatriemement, les modeles legers restent utiles dans une chaine locale reproductible lorsqu'ils sont mesures avec des metriques explicites, associes a une correlation et soumis a une validation humaine. Cinquiemement, une memoire persistante des executions, erreurs, decisions analyste et validations peut soutenir une adaptation progressive du comportement des agents, notamment pour eviter des traitements repetitifs, prioriser les sources pertinentes et preparer une reduction controlee des faux positifs. Cette hypothese ne correspond pas a un reentrainement automatique permanent des modeles, mais a une capitalisation auditable des retours et de l'historique operationnel.
+
+\section{Objectif general}
+L'objectif general de ce travail est de concevoir et d'evaluer un prototype modulaire, appele \logminer, pour la detection et la priorisation d'anomalies candidates dans des journaux systemes et reseaux heterogenes. Le systeme doit couvrir la chaine allant de la collecte des journaux a la visualisation des alertes, en passant par la normalisation, le routage multi-modeles, la detection et la correlation.
+
+\section{Objectifs specifiques}
+Conformement au document directeur, les objectifs specifiques sont les suivants :
+
+\begin{enumerate}
+  \item Identifier, categoriser et structurer les differents types de journaux systemes et reseaux pertinents pour l'analyse de securite.
+  \item Analyser les techniques classiques et modernes de detection d'anomalies.
+  \item Concevoir une architecture multi-agents extensible et valider une repartition de taches via Redis Streams, d'abord localement puis dans un laboratoire VirtualBox Debian/Ubuntu.
+  \item Integrer des mecanismes d'apprentissage pour la detection adaptative, notamment par modeles supervises/non supervises et par memoire persistante des retours analyste.
+  \item Concevoir un tableau de bord pour visualiser les alertes et anomalies.
+  \item Tester le systeme sur des journaux simules et reels.
+  \item Evaluer les performances du systeme en precision, rappel, F1-score, latence et consommation de ressources.
+\end{enumerate}
+
+\section{Contributions}
+La contribution scientifique principale du memoire se situe d'abord au niveau architectural. Le travail ne propose ni nouvel algorithme de detection, ni nouvelle fonction objectif, ni theorie generale de l'apprentissage d'anomalies. Il propose une architecture d'integration modulaire et reproductible pour orchestrer des traitements specialises sur des journaux heterogenes, en coherence avec le titre et avec le document directeur. Une comparaison controlee entre modele global et routage familial est realisee sur cinq graines dans un espace commun ; elle est completee par une analyse des configurations specialisees, tandis que des extensions a des splits temporels et multi-environnements restent necessaires.
+
+Les contributions de ce memoire sont les suivantes :
+
+\begin{itemize}
+  \item une architecture logicielle modulaire pour l'analyse de journaux heterogenes ;
+  \item un schema commun de normalisation permettant de rapprocher des sources de logs differentes ;
+  \item un routage multi-modeles par famille de journaux afin d'eviter l'application indiscriminee d'un modele unique ;
+  \item un runtime d'agents intelligents multi-taches, une preuve locale de repartition de taches par Redis Streams et une validation inter-machines de laboratoire sous VirtualBox ;
+  \item une memoire adaptative auditable associant historique d'execution, decisions analyste et signaux de retour pour preparer l'amelioration progressive du comportement des agents ;
+  \item une evaluation multi-datasets combinant journaux locaux, exports Wazuh, datasets publics et scenarios de robustesse ;
+  \item un tableau de bord web permettant la visualisation, le filtrage, la validation analyste et l'audit des decisions ;
+  \item un pack de resultats reproductibles comprenant figures, tableaux, captures et preuves experimentales.
+\end{itemize}
+
+\section{Delimitation du travail}
+Le travail est centre sur la conception, l'implementation et l'evaluation d'un prototype reproductible. La distribution est traitee comme une architecture multi-agents, une preuve locale multi-processus via Redis Streams et une validation inter-machines de laboratoire sous VirtualBox. Elle n'est pas revendiquee comme un deploiement industriel multi-site complet. De meme, les resultats supervises mesurent la performance sur les datasets utilises ; ils ne prouvent pas une generalisation automatique a toutes les infrastructures reelles. La memoire adaptative est presentee comme un mecanisme d'amelioration comportementale et d'aide a la decision, non comme une preuve d'apprentissage continu autonome modifiant les poids des modeles en production.
+
+\section{Methodologie generale}
+La demarche adoptee est iterative et experimentale. Elle commence par l'etude des formats de journaux et des methodes de detection d'anomalies. Elle se poursuit par la conception d'une architecture modulaire, puis par l'implementation du prototype \logminer. Les modeles sont ensuite evalues sur plusieurs familles de donnees, et les resultats sont synthetises sous forme de tableaux, figures et captures dashboard.
+
+La solution privilegie des modeles legers et localement deployables. Les approches profondes sont discutees dans l'etat de l'art, mais le prototype se concentre sur des methodes plus simples a integrer dans un environnement local : Isolation Forest, RandomForest, routage par famille et correlation d'anomalies candidates.
+
+La validation combine plusieurs formes de preuves : mesures numeriques, tableaux synthetiques, figures exportees, captures du dashboard, scripts de reproduction et comparaison encadree avec des outils de reference. Cette combinaison evite de limiter l'evaluation a un score unique et permet de juger a la fois la performance, l'exploitabilite et la reproductibilite.
+
+\section{Organisation du memoire}
+Le memoire respecte la structure du document directeur, en l'enrichissant par des chapitres supplementaires dedies aux approfondissements scientifiques, a la discussion et a la reproductibilite. Le chapitre 2 presente l'etat de l'art. Le chapitre 3 decrit le modele propose et l'architecture modulaire. Le chapitre 4 presente l'implementation du prototype. Le chapitre 5 analyse les resultats experimentaux. Le chapitre 6 approfondit les limites scientifiques, les risques de validite et les corrections methodologiques. Le chapitre 7 discute les resultats, les limites et la valeur pratique du prototype. Le chapitre 8 presente la reproductibilite, le depot GitHub, les scenarios de deploiement et les precautions d'exploitation. Le dernier chapitre conclut le travail et propose les perspectives. Les annexes regroupent les tableaux, captures, figures et elements de reproductibilite.
+
+\section{Motivation du choix du sujet}
+Le choix du sujet provient d'un constat simple : les journaux systemes et reseaux sont disponibles dans presque toutes les infrastructures, mais ils sont rarement exploites a leur plein potentiel. Une machine Windows produit des evenements de securite, d'application et de systeme. Un serveur Linux conserve des traces d'authentification et d'activite des services. Un serveur web enregistre les requetes et erreurs. Un outil HIDS/SIEM comme Wazuh ajoute des alertes, regles et metadonnees de securite. Pourtant, ces sources restent souvent separees, consultees ponctuellement ou analysees seulement apres incident.
+
+Cette situation cree une opportunite scientifique et pratique. Les journaux contiennent des signaux faibles, mais leur volume et leur heterogeneite rendent l'analyse manuelle difficile. Les outils standards apportent une aide importante, mais ils reposent souvent sur des regles, des signatures ou des pipelines propres a chaque plateforme. Les methodes d'apprentissage automatique peuvent completer ces approches, a condition d'etre integrees dans une chaine explicable et reproductible. Le memoire explore donc cet espace intermediaire : une solution plus analytique qu'un simple filtrage manuel, mais plus legere et plus verifiable qu'une plateforme SOC industrielle.
+
+La motivation est egalement locale. Dans un contexte universitaire ou dans une petite organisation, il n'est pas toujours possible de deployer immediatement une infrastructure complete de supervision. Il reste pourtant possible de construire un prototype capable de collecter, structurer, analyser et visualiser les journaux disponibles. Cette approche progressive permet de comprendre les besoins, d'identifier les sources utiles, de mesurer les performances et de preparer une evolution future.
+
+\section{Interet scientifique et interet d'ingenierie}
+L'interet scientifique du travail reside dans la combinaison de plusieurs dimensions. La premiere est la normalisation multi-format. Sans representation commune, les journaux restent difficiles a comparer et a router. La deuxieme est le routage par famille. Au lieu de supposer qu'un modele unique peut traiter tous les logs, le prototype selectionne un traitement adapte a la nature de la source. La troisieme est l'association de modeles supervises et non supervises. Les donnees labelisees permettent de mesurer des scores classiques, tandis que les donnees non labelisees produisent des anomalies candidates a analyser. La quatrieme est l'integration d'un dashboard et d'un audit afin de relier les resultats a une decision humaine.
+
+L'interet d'ingenierie se trouve dans la realisation concrete. Le travail ne se limite pas a une revue bibliographique ni a un notebook isole. Il produit un depot structure, des modules Python, des scripts de collecte et de benchmark, des modeles sauvegardes, des figures, des tableaux et une interface web. Cette materialisation est importante pour un memoire d'ingenieur civil, car elle montre la capacite a passer d'un probleme a une architecture, puis a une implementation mesurable.
+
+Le memoire cherche donc un equilibre. Il ne revendique pas un produit fini ni un detecteur universel. Il revendique une chaine prototypee, testee et documentee, capable de traiter plusieurs familles de journaux et de produire des resultats discutables scientifiquement. Cette position permet de defendre le travail sans exagerer sa portee.
+
+\section{Contraintes et choix de conception}
+Plusieurs contraintes ont oriente le projet. La premiere est la contrainte de legerete. Le prototype devait rester executable localement, sans infrastructure lourde. Cette contrainte explique le choix de Python, scikit-learn, FastAPI, CSV, JSONL et d'un dashboard web. La deuxieme est la contrainte de reproductibilite. Les resultats devaient etre rattaches a des scripts et fichiers de preuve, afin d'eviter une redaction purement declarative.
+
+La troisieme contrainte est la disponibilite des donnees. Les journaux reels ne sont pas toujours complets, partageables ou labelises. Le projet combine donc des journaux locaux, des exports Wazuh, des datasets publics et des scenarios controles. Cette combinaison ne remplace pas une evaluation SOC industrielle, mais elle donne une base experimentale diversifiee. La quatrieme contrainte est la rigueur scientifique. Les anomalies non supervisees sont presentees comme candidates, la distribution inter-machines est limitee a une preuve VirtualBox de laboratoire, et l'apprentissage continu avec reentrainement controle reste une extension future. La memoire adaptative, elle, est traitee comme une capitalisation d'historique et de feedback deja compatible avec le prototype.
+
+Ces choix de conception structurent tout le memoire. Ils expliquent pourquoi le prototype privilegie des modeles legers, pourquoi le dashboard est integre a la contribution, pourquoi les annexes contiennent des preuves de reproduction et pourquoi les limites sont discutees explicitement.
+
