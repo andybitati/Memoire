@@ -2,57 +2,66 @@
 
 ## Mission
 
-Consolider expérimentalement le mémoire Ariel Logminer sans le réécrire et livrer un rapport autonome pour Luna.
+Consolidation expérimentale finale du mémoire Ariel Logminer, sans réécriture.
 
 ## Current phase
 
-PHASE 12 — rapport expérimental final.
+MISSION COMPLETE — checkpoint terminal restant.
 
 ## Current experiment
 
-Synthèse en 26 sections obligatoires.
+Aucun.
 
 ## Completed since previous checkpoint
 
-- PHASE 10 clôturée au checkpoint `57f8e64`: 31 affirmations reliées aux preuves.
-- Cinq hypothèses exactes extraites du chapitre 1; toutes classées partiellement soutenues.
-- Six questions exactes extraites; QR1–QR5 partielles, QR6 forte dans le périmètre du prototype.
-- Matrices hypothèses et questions créées; D030, ledger, index et rapport phase 11 ajoutés.
+- PHASE 11 clôturée au commit `d7e8ded`.
+- Rapport final pour Luna créé avec 26 sections obligatoires.
+- Environnement, datasets, hashes, protocoles, résultats, négatifs, exploratoires et invalidés inclus.
+- Contributions architecturale, méthodologique, expérimentale et logicielle séparées.
+- Statuts des hypothèses et questions repris.
+- Figures, tableaux, annexes, suppressions et modifications chapitre par chapitre listés.
+- Douze familles d'informations ouvertes utilisent `INFORMATION À VÉRIFIER.`.
+- Ledger, index et `PHASE_12_COMPLETED.md` mis à jour.
 
 ## Key results
 
-- Aucun résultat invalidé n'est réintroduit.
-- Les contributions architecturale, méthodologique, expérimentale et logicielle doivent être séparées.
-- Les résultats négatifs doivent inclure généralisation CICIDS, overhead agents, routage sans gain, parsing HDFS/BGL pipeline, corrélation fragmentée/fusionnée et lacunes de résilience.
+- PHASE 1: 30/30; random F1 `0,995142`, holdout macro `0,157744`.
+- PHASE 2: 125/125; LR F1 macro `0,233670`, pas de domination générale.
+- PHASE 3: 36/36; HDFS `0,269307`, BGL `0,913698`, Drain3 train-only.
+- PHASE 4: promotion et deux rejets avec hashes.
+- PHASE 5: 5 001/7 001 normalisées, HDFS/BGL pipeline à zéro.
+- PHASE 6: 80/81, Apache→fallback.
+- PHASE 7: SKIPPED; fenêtre traitement→ACK non évaluée.
+- PHASE 8: F1 pairwise `0,812500`, une fragmentation et une fusion.
+- PHASE 9: descriptif seulement, aucune p-value.
 
 ## Files created or modified
 
-- `final_hypothesis_status.md`
-- `final_research_questions_status.md`
-- `PHASE_11_COMPLETED.md`
+- `FINAL_EXPERIMENTAL_REPORT_FOR_LUNA.md`
+- `PHASE_12_COMPLETED.md`
 - `state/*`
 
 ## Current blockers
 
-- Provenance officielle locale, SOC réel, production et certaines propriétés de résilience restent non vérifiables.
+- Aucun pour la clôture.
+- Questions ouvertes consignées dans la section 26 du rapport final.
 
 ## Exact next action
 
-Valider et committer la phase 11, puis produire `FINAL_EXPERIMENTAL_REPORT_FOR_LUNA.md`.
+Valider les 26 sections, le JSON d'index, le CSV du ledger et les quatre fichiers finaux; créer le commit terminal.
 
 ## Read only these files first
 
-- `state/CURRENT_STATE.md`
-- `state/NEXT_ACTION.md`
-- `state/DECISIONS.md`
-- les trois matrices finales
-- rapports de phase et résumés hiérarchiques
+- `FINAL_EXPERIMENTAL_REPORT_FOR_LUNA.md`
+- `final_claim_evidence_matrix.md`
+- `final_hypothesis_status.md`
+- `final_research_questions_status.md`
 
 ## Do not reread
 
-- Le mémoire complet.
+- Le dépôt complet.
 - Les artefacts bruts déjà agrégés.
 
 ## Resume command
 
-Aucune commande longue; poursuivre la synthèse documentaire de phase 12.
+`rtk git status --short`

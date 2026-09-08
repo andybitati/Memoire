@@ -1,10 +1,10 @@
 # CURRENT STATE
 
 Last update: 2026-09-08
-Git commit: 57f8e64 (checkpoint final PHASE 10)
+Git commit: d7e8ded (checkpoint final PHASE 11)
 Active phase: PHASE 12
 Active experiment: Rapport expérimental final pour Luna
-Status: PHASE 11 COMPLETE — PHASE 12 IN PROGRESS
+Status: MISSION COMPLETE — FINAL CHECKPOINT PENDING
 
 ## Completed
 
@@ -19,43 +19,41 @@ Status: PHASE 11 COMPLETE — PHASE 12 IN PROGRESS
 - PHASE 8: corrélation synthétique, 1/1; `1348eff`.
 - PHASE 9: statistiques transversales; `9f8615d`.
 - PHASE 10: matrice de 31 affirmations; `57f8e64`.
-- PHASE 11: cinq hypothèses et six questions de recherche classées.
+- PHASE 11: cinq hypothèses et six questions; `d7e8ded`.
+- PHASE 12: rapport final de 26 sections et rapport de clôture produits.
 
 ## In progress
 
-- Construction du rapport final autonome pour Luna avec les 26 sections obligatoires.
+- Validation finale des fichiers et checkpoint Git terminal.
 
 ## Pending
 
-- Vérifier chemins, valeurs, statuts et cohérence du rapport final.
-- Produire `PHASE_12_COMPLETED.md`, mettre à jour l'état final et créer le dernier checkpoint.
+- Aucun travail expérimental.
+- Réécriture du mémoire: mission distincte confiée ultérieurement à Luna.
 
 ## Verified facts
 
-- F1 `0,999965`: artefact historique exact, provenance officielle non démontrée, suppression requise.
-- Multi-VM: preuve de laboratoire au niveau lecture/ACK; pas 525 succès applicatifs.
+- F1 `0,999965` exclu; provenance officielle non démontrée.
+- Multi-VM: preuve laboratoire lecture/ACK, pas 525 succès applicatifs.
 - AgentMessage: sept champs métier; transport distinct.
-- Ancien HDFS/BGL exploratoire; nouveau protocole train-only strict.
-- LogisticRegression: meilleur F1 macro `0,233670`, pas meilleure partout.
-- Mise à jour: implémentée et testée fonctionnellement de bout en bout.
-- Routage: intérêt architectural; aucun gain prédictif systématique.
-- Benchmark: agents plus lents à la charge de 60 tâches; CPU cœur-logique %, RAM RSS MiB.
-- Multiformat partiel; corrélation synthétique uniquement; inférence statistique globale interdite.
-- 5 hypothèses partiellement soutenues; QR1–QR5 partielles; QR6 forte dans le périmètre prototype.
+- HDFS/BGL stricts, mise à jour end-to-end, multiformat partiel, routeur 80/81 et corrélation synthétique documentés.
+- LogisticRegression meilleur F1 macro `0,233670` seulement.
+- Agents sans gain de débit à 60 tâches; unités CPU/RAM établies.
+- Cinq hypothèses partiellement soutenues; QR1–QR5 partielles; QR6 forte dans le prototype.
 
 ## Open issues
 
 - Provenance officielle des copies locales: `INFORMATION À VÉRIFIER.`.
-- Scénario Redis après traitement avant ACK: non évalué.
-- Corrélation SOC et utilisabilité analyste: non évaluées.
-- Généralisation industrielle et production: non évaluées.
+- Résilience après traitement/avant ACK: `INFORMATION À VÉRIFIER.`.
+- Corrélation SOC, utilisabilité, production et généralisation industrielle: `INFORMATION À VÉRIFIER.`.
 - `graphify update .`: `[WinError 5] Accès refusé`.
 
 ## Important artifact paths
 
+- `FINAL_EXPERIMENTAL_REPORT_FOR_LUNA.md`
 - `final_claim_evidence_matrix.md`
 - `final_hypothesis_status.md`
 - `final_research_questions_status.md`
-- `state/DECISIONS.md`
-- `PHASE_0_COMPLETED.md` à `PHASE_11_COMPLETED.md`
+- `state/ARTIFACT_INDEX.json`
+- `state/EXPERIMENT_LEDGER.csv`
 

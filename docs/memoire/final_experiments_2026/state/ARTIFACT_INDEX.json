@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "updated_at": "2026-09-08",
-  "git_commit": "37bccf083f3c8e92a11377cf758cf1e9e183dee9",
+  "git_commit": "d7e8ded",
   "phase_0_checkpoint_commit": "4db70f0",
   "phase_1_checkpoint_commit": "265cdfb",
   "phase_2_midpoint_checkpoint_commit": "73c421a",
@@ -819,6 +819,17 @@
     {
       "kind": "phase_report",
       "path": "docs/memoire/final_experiments_2026/PHASE_11_COMPLETED.md",
+      "status": "complete"
+    },
+    {
+      "kind": "final_report",
+      "path": "docs/memoire/final_experiments_2026/FINAL_EXPERIMENTAL_REPORT_FOR_LUNA.md",
+      "status": "complete",
+      "required_sections": 26
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_12_COMPLETED.md",
       "status": "complete"
     }
   ]

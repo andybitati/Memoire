@@ -1,22 +1,22 @@
 # NEXT ACTION
 
-Phase: PHASE 12
+Phase: MISSION COMPLETE
 
-Experiment: `FINAL_EXPERIMENTAL_REPORT_FOR_LUNA.md`
+Experiment: Aucun
 
-Last completed step: PHASE 11 terminée; 5 hypothèses et 6 questions de recherche reliées aux preuves.
+Last completed step: Rapport final de 26 sections, `PHASE_12_COMPLETED.md`, index et ledger produits.
 
-Next exact step: Rédiger le rapport expérimental autonome en 26 sections obligatoires, exclusivement à partir des résumés, matrices, décisions, manifeste et artefacts indexés.
+Next exact step: Créer le checkpoint Git terminal, puis remettre les quatre fichiers finaux à Luna pour une mission distincte de réécriture.
 
-Command to run: aucune commande longue; produire le rapport puis valider automatiquement les 26 titres, les valeurs majeures et les chemins.
+Command to run: `rtk git status --short` puis validation des artefacts; aucun run expérimental.
 
-Expected output: Rapport permettant à Luna de réviser le mémoire sans relire les données brutes ni deviner les faits.
+Expected output: Arbre de travail propre pour les fichiers de mission et rapport final lisible.
 
-Files that must be read: `environment_final_experiments.json`, `dataset_manifest_final.csv`, `state/DECISIONS.md`, trois matrices finales, rapports PHASE_0 à PHASE_11 et résumés hiérarchiques.
+Files that must be read: `FINAL_EXPERIMENTAL_REPORT_FOR_LUNA.md`, les trois matrices finales et, si nécessaire, `FERMETURE_INCERTITUDES_FACTUELLES_P0.md`.
 
-Files that DO NOT need to be reread: mémoire complet, JSON/CSV unitaires, modèles, états Drain3 binaires, anciens rapports éditoriaux.
+Files that DO NOT need to be reread: données brutes, JSON individuels, mémoire complet, anciens diagnostics.
 
-Success criterion: 26 sections présentes; huit P0 explicitement traités; résultats positifs/négatifs/exploratoires/invalidés séparés; actions chapitre par chapitre; inconnues écrites exactement `INFORMATION À VÉRIFIER.`.
+Success criterion: Luna peut réviser le mémoire sans deviner les faits ni relancer une expérience.
 
-If failure: Revenir uniquement à l'artefact résumé concerné; ne pas rescanner le dépôt ni inventer une donnée.
+If failure: Revenir au chemin précis dans `ARTIFACT_INDEX.json`; ne pas rescanner tout le dépôt.
 
