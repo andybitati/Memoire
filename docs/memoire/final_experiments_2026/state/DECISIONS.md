@@ -215,3 +215,15 @@ Reason: Les métriques, coûts et scénarios désignent des gagnants différents
 Affected sections: Chapitre 5, comparaison des candidats, discussion, limites et conclusion.
 
 Do not reconsider unless: Un critère de sélection préspecifié différent ou une nouvelle évaluation comparable apporte une preuve contradictoire.
+
+## D019
+
+Decision: Figer la phase 3 sur des fenêtres sources contiguës, disjointes et choisies sans labels, avec Drain3 et toutes les statistiques appris sur train, seuil choisi sur validation et test gelé.
+
+Evidence: `configs/strict_sequence_protocol.json` a été écrit avec le statut `FROZEN_BEFORE_LABEL_DISTRIBUTION_INSPECTION` avant l'extraction des nouvelles fenêtres ; le dry-run annonce 36 résultats.
+
+Reason: Ce protocole ferme les fuites identifiées dans l'ancien pipeline tout en gardant un volume calculable et une chronologie explicite.
+
+Affected sections: Protocole et résultats HDFS/BGL, limites, annexes expérimentales.
+
+Do not reconsider unless: Une impossibilité technique empêche l'extraction ; toute adaptation devra être enregistrée avant d'examiner les résultats du test.

@@ -10,7 +10,7 @@ PHASE 3 — HDFS/BGL avec protocole strict.
 
 ## Current experiment
 
-Audit du pipeline séquentiel existant et préparation du split train/validation/test strict.
+Préparation HDFS stricte : fenêtres chronologiques, blocs disjoints, Drain3 train-only et bundle causal.
 
 ## Completed since previous checkpoint
 
@@ -62,6 +62,11 @@ Audit du pipeline séquentiel existant et préparation du split train/validation
 - PHASE 2 complète : 125/125 artefacts valides, 100 nouveaux fits et 25 réutilisations RandomForest.
 - LogisticRegression meilleur F1 macro parmi cinq candidats : 0,233670 ; aucune domination multi-métrique.
 - Tableaux et quatre figures PHASE 2 générés et inspectés.
+- Checkpoint final PHASE 2 : `6e07c3e`.
+- Audit de l'ancien pipeline séquentiel terminé ; D004 confirmée par cinq mécanismes précis.
+- `strict_sequence_protocol.json` figé avant lecture des labels des nouvelles fenêtres.
+- `.venv-final-experiments` créé ; Drain3 0.9.11 fonctionne sans modifier durablement l'environnement global.
+- Runner `run_strict_sequence_experiments.py` créé ; dry-run = 36 plans.
 
 ## Key results
 
@@ -90,11 +95,12 @@ Audit du pipeline séquentiel existant et préparation du split train/validation
 - `drain3` absent de l'interpréteur courant ; requis seulement en phase 3.
 - `graphify update .` échoue avec `[WinError 5] Accès refusé`.
 - HistGradientBoosting doit être exécuté hors bac à sable sur cette machine.
+- Le venv de phase 3 ne doit pas exécuter Streamlit ; il isole cachetools 4.2.1 requis par Drain3.
 - Premier manifeste interrompu par le nom physique ` Label`; correction appliquée, aucune sortie de manifeste partielle conservée.
 
 ## Exact next action
 
-Auditer `scripts/evaluate_sequence_split.py`, `src/logminer/features/drain_templates.py` et `src/logminer/features/sequence_windows.py`, puis figer `strict_sequence_protocol.json` avant les runs.
+Exécuter `rtk .\.venv-final-experiments\Scripts\python.exe scripts/run_strict_sequence_experiments.py --dataset hdfs --prepare-only`.
 
 ## Read only these files first
 
@@ -104,9 +110,8 @@ Auditer `scripts/evaluate_sequence_split.py`, `src/logminer/features/drain_templ
 - `state/EXPERIMENT_LEDGER.csv`
 - `scripts/run_final_experiments.py`
 - `dataset_manifest_final.csv`
-- `scripts/evaluate_sequence_split.py`
-- `src/logminer/features/drain_templates.py`
-- `src/logminer/features/sequence_windows.py`
+- `configs/strict_sequence_protocol.json`
+- `scripts/run_strict_sequence_experiments.py`
 - `PHASE_2_COMPLETED.md`
 
 ## Do not reread
@@ -116,4 +121,4 @@ Auditer `scripts/evaluate_sequence_split.py`, `src/logminer/features/drain_templ
 
 ## Resume command
 
-`rtk powershell -NoProfile -Command "Get-Content scripts/evaluate_sequence_split.py,src/logminer/features/drain_templates.py,src/logminer/features/sequence_windows.py"`
+`rtk .\.venv-final-experiments\Scripts\python.exe scripts/run_strict_sequence_experiments.py --dataset hdfs --prepare-only`

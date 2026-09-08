@@ -111,3 +111,67 @@ Already attempted: Cinq seeds dans le bac à sable ; toutes ont produit le même
 Current status: RESOLVED — relance hors bac à sable réussie pour les cinq seeds, protocole inchangé ; échecs initiaux conservés.
 
 Next action: Utiliser directement l'exécution autorisée hors bac à sable pour les futurs batches HistGradientBoosting.
+
+## E0008 — Conflit de dépendance Drain3 dans l'environnement partagé
+
+Error: `drain3==0.9.11` impose `cachetools==4.2.1`, incompatible avec `streamlit==1.57.0` qui exige `cachetools>=5.5,<8`.
+
+Command: `rtk python -m pip install drain3==0.9.11`
+
+Short traceback: Installation réussie avec avertissement du résolveur pip sur l'incompatibilité Streamlit/cachetools.
+
+Probable cause: Métadonnées de dépendance strictes et anciennes de Drain3 0.9.11.
+
+Already attempted: Drain3 retiré de l'environnement global ; cachetools 7.1.2 restauré ; `pip check` global sans erreur. Venv `.venv-final-experiments` créé avec `--system-site-packages`; Drain3 et cachetools 4.2.1 installés localement. Import et premier cluster Drain3 réussis.
+
+Current status: RESOLVED WITH ISOLATION — l'environnement global n'est pas dégradé ; le venv dédié exécute Drain3. Le venv n'est pas destiné à exécuter Streamlit.
+
+Next action: Utiliser exclusivement `.venv-final-experiments/Scripts/python.exe` pour la phase 3 et enregistrer versions/configuration dans les artefacts.
+
+## E0009 — Échec SSL pendant l'installation Drain3 dans le venv
+
+Error: `SSLCertVerificationError: unable to get local issuer certificate`.
+
+Command: `rtk .\.venv-final-experiments\Scripts\python.exe -m pip install drain3==0.9.11`
+
+Short traceback: Cinq tentatives HTTPS vers PyPI, puis `No matching distribution found` car l'index n'était pas accessible.
+
+Probable cause: Chaîne de certificats du contexte d'exécution.
+
+Already attempted: Installation du wheel Drain3 présent dans le cache local avec `--no-deps`; installation de cachetools 4.2.1 dans le venv avec hôtes explicitement autorisés.
+
+Current status: RESOLVED — Drain3 0.9.11 importable et opérationnel dans le venv.
+
+Next action: Aucune, sauf recréation future du venv à partir des versions consignées.
+
+## E0008 — Conflit de dépendance Drain3 dans l'environnement partagé
+
+Error: `drain3==0.9.11` impose `cachetools==4.2.1`, incompatible avec `streamlit==1.57.0` qui exige `cachetools>=5.5,<8`.
+
+Command: `rtk python -m pip install drain3==0.9.11`
+
+Short traceback: Installation réussie avec avertissement du résolveur pip sur l'incompatibilité Streamlit/cachetools.
+
+Probable cause: Métadonnées de dépendance strictes et anciennes de Drain3 0.9.11.
+
+Already attempted: Drain3 retiré de l'environnement global ; cachetools 7.1.2 restauré ; `pip check` global sans erreur. Venv `.venv-final-experiments` créé avec `--system-site-packages`; Drain3 installé depuis le wheel local et cachetools 4.2.1 installé localement. Import et premier cluster Drain3 réussis.
+
+Current status: RESOLVED WITH ISOLATION — l'environnement global n'est pas dégradé ; le venv dédié exécute Drain3. Le venv n'est pas destiné à exécuter Streamlit.
+
+Next action: Utiliser exclusivement `.venv-final-experiments/Scripts/python.exe` pour la phase 3 et enregistrer versions/configuration dans les artefacts.
+
+## E0009 — Échec SSL pendant l'installation Drain3 dans le venv
+
+Error: `SSLCertVerificationError: unable to get local issuer certificate`.
+
+Command: `rtk .\.venv-final-experiments\Scripts\python.exe -m pip install drain3==0.9.11`
+
+Short traceback: Cinq tentatives HTTPS vers PyPI, puis `No matching distribution found` car l'index n'était pas accessible.
+
+Probable cause: Chaîne de certificats du contexte d'exécution.
+
+Already attempted: Installation du wheel Drain3 présent dans le cache local avec `--no-deps`; installation de cachetools 4.2.1 dans le venv avec hôtes explicitement autorisés.
+
+Current status: RESOLVED — Drain3 0.9.11 importable et opérationnel dans le venv.
+
+Next action: Aucune, sauf recréation future du venv à partir des versions consignées.

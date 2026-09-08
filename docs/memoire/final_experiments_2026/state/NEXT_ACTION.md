@@ -2,20 +2,20 @@
 
 Phase: PHASE 3
 
-Experiment: HDFS/BGL — audit et préparation du protocole strict
+Experiment: HDFS — préparation stricte train/validation/test
 
-Last completed step: PHASE 2 complète, 125/125 artefacts valides ; tableaux, agrégats et figures produits.
+Last completed step: Protocole phase 3 figé ; venv Drain3 isolé ; runner spécialisé validé en dry-run sur 36 plans.
 
-Next exact step: Lire le pipeline séquentiel existant, identifier précisément les fuites de l'ancien protocole et spécifier un split train/validation/test sans recouvrement avant tout nouveau run.
+Next exact step: Extraire les trois fenêtres HDFS gelées, supprimer tout bloc partagé, ajuster Drain3 uniquement sur train, sauvegarder/recharger l'état et produire le bundle de 19 features causales.
 
-Command to run: `rtk powershell -NoProfile -Command "Get-Content scripts/evaluate_sequence_split.py,src/logminer/features/drain_templates.py,src/logminer/features/sequence_windows.py"`
+Command to run: `rtk .\.venv-final-experiments\Scripts\python.exe scripts/run_strict_sequence_experiments.py --dataset hdfs --prepare-only`
 
-Expected output: Carte exacte du pipeline actuel, liste des corrections nécessaires et configuration strict_sequence_protocol.json figée avant exécution.
+Expected output: Trois CSV HDFS préparés, bundle NPZ, état Drain3 persistant, manifeste avec hashes, effectifs, prévalences et taux de templates inconnus.
 
-Files that must be read: `scripts/evaluate_sequence_split.py`, `src/logminer/features/drain_templates.py`, `src/logminer/features/sequence_windows.py`, les entrées HDFS/BGL de `dataset_manifest_final.csv`, `state/DECISIONS.md`.
+Files that must be read: `configs/strict_sequence_protocol.json`, `scripts/run_strict_sequence_experiments.py`, `state/EXPERIMENT_LEDGER.csv`.
 
 Files that DO NOT need to be reread: mémoire LaTeX complet, artefacts CICIDS unitaires, anciens rapports éditoriaux et multi-VM.
 
-Success criterion: Split strict documenté ; Drain3 appris uniquement sur train puis état figé ; statistiques/scaler train-only ; seuil choisi sur validation ; test évalué une fois.
+Success criterion: Les trois partitions sont non vides, chronologiquement ordonnées et sans bloc HDFS partagé ; l'état Drain3 est non vide et hashé ; validation/test n'appellent jamais `add_log_message`.
 
-If failure: Écrire `INFORMATION À VÉRIFIER.` pour tout point non démontrable, consigner le blocage et ne pas réutiliser l'ancien résultat exploratoire comme validation stricte.
+If failure: Conserver le log, ne pas modifier les fenêtres après lecture des labels pour améliorer les résultats, corriger uniquement un défaut technique puis reprendre explicitement.

@@ -1,10 +1,10 @@
 # CURRENT STATE
 
 Last update: 2026-09-08
-Git commit: 73c421a (checkpoint PHASE 2 à 75/125; checkpoint final PHASE 2 en attente)
+Git commit: 6e07c3e (checkpoint final PHASE 2; baseline expérimental 37bccf083f3c8e92a11377cf758cf1e9e183dee9)
 Active phase: PHASE 3
-Active experiment: Préparation du protocole strict HDFS/BGL
-Status: READY
+Active experiment: Préparation HDFS stricte et état Drain3 train-only
+Status: READY FOR LONG RUN
 
 ## Completed
 
@@ -56,6 +56,10 @@ Status: READY
 - SGDLogistic × WebAttacks : 5/5 runs terminés, F1 nul.
 - PHASE 2 terminée : 125/125 artefacts valides, 100 nouveaux fits, 25 réutilisations, aucun échec final.
 - Quatre figures et un tableau multi-métrique PHASE 2 générés et inspectés.
+- Audit de l'ancien pipeline HDFS/BGL terminé : espace Drain3 séparé, fréquences par partition, rangs test et quota test identifiés.
+- Protocole strict HDFS/BGL figé avant inspection des labels des nouvelles fenêtres.
+- Venv dédié `.venv-final-experiments` opérationnel avec Drain3 0.9.11 ; environnement global restauré et valide.
+- Runner spécialisé phase 3 créé ; dry-run 36/36 plans et test synthétique du seuil réussis.
 
 ## In progress
 
@@ -63,8 +67,8 @@ Status: READY
 
 ## Pending
 
-- Auditer le pipeline HDFS/BGL existant et construire le protocole strict train/validation/test.
-- Installer ou isoler Drain3 après enregistrement explicite de la dépendance et de sa version.
+- Préparer le batch HDFS : fenêtres chronologiques, contrôle des blocs, état Drain3 train-only et bundle de features.
+- Exécuter les 18 résultats HDFS, puis le batch BGL.
 - Phases 3 à 12.
 
 ## Verified facts
@@ -102,11 +106,13 @@ Status: READY
 - LogisticRegression est premier uniquement par F1 macro (0,233670) et MCC macro (0,186858) parmi les cinq candidats testés.
 - HistGradientBoosting a la meilleure PR-AUC macro (0,567697) mais un F1 macro de 0,003362.
 - WebAttacks : LogisticRegression F1 0,074614 et rappel 0,039908 ; les quatre autres modèles ont F1 nul.
+- L'ancien HDFS/BGL n'a pas de validation séparée et utilise des informations de distribution du test ; il reste exploratoire.
+- Le nouveau protocole prévoit 18 résultats par dataset : 15 stochastiques sur cinq seeds et trois déterministes sans pseudo-réplication.
 
 ## Open issues
 
 - La provenance officielle des copies locales reste `INFORMATION À VÉRIFIER.`.
-- Drain3 n'est pas installé dans l'interpréteur actuel et bloque l'exécution stricte de phase 3 tant que l'environnement dédié n'est pas préparé.
+- Le venv Drain3 repose sur `--system-site-packages`; il n'est pas destiné à exécuter Streamlit à cause des contraintes cachetools incompatibles.
 - La mise à jour Graphify est bloquée par un accès refusé Windows.
 - HistGradientBoosting nécessite l'exécution hors bac à sable sur cette machine ; reprise réussie.
 

@@ -5,7 +5,7 @@
   "phase_0_checkpoint_commit": "4db70f0",
   "phase_1_checkpoint_commit": "265cdfb",
   "phase_2_midpoint_checkpoint_commit": "73c421a",
-  "phase_2_checkpoint_commit": "PENDING",
+  "phase_2_checkpoint_commit": "6e07c3e",
   "artifacts": [
     {
       "kind": "state",
@@ -333,6 +333,26 @@
       "kind": "phase_report",
       "path": "docs/memoire/final_experiments_2026/PHASE_2_COMPLETED.md",
       "status": "complete"
+    },
+    {
+      "kind": "config",
+      "path": "docs/memoire/final_experiments_2026/configs/strict_sequence_protocol.json",
+      "status": "frozen_before_run"
+    },
+    {
+      "kind": "runner",
+      "path": "scripts/run_strict_sequence_experiments.py",
+      "status": "validated_dry_run"
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_hdfs_bgl_strict_summary.md",
+      "status": "planned"
+    },
+    {
+      "kind": "environment",
+      "path": ".venv-final-experiments",
+      "status": "local_untracked_drain3_0.9.11"
     }
   ]
 }
