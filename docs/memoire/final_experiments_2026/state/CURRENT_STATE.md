@@ -1,10 +1,10 @@
 # CURRENT STATE
 
 Last update: 2026-09-08
-Git commit: c9e1814 (checkpoint protocole PHASE 5; checkpoint final PHASE 4 1e184ab)
+Git commit: f499797 (checkpoint final PHASE 5; checkpoint final PHASE 4 1e184ab)
 Active phase: PHASE 6
-Active experiment: Audit du routeur réel et conception d'un corpus à vraie famille connue
-Status: PHASE 5 COMPLETE — PHASE 6 PROTOCOL DESIGN
+Active experiment: Routage de 81 fichiers dérivés à noms neutres et vérité terrain issue de neuf sources
+Status: PHASE 6 PROTOCOL FROZEN — RUN READY
 
 ## Completed
 
@@ -83,10 +83,13 @@ Status: PHASE 5 COMPLETE — PHASE 6 PROTOCOL DESIGN
 - PHASE 5 terminée : 8/8 formats, 7 001 unités lues, 5 001 normalisées et 2 000 perdues.
 - Windows, Linux/auth, Wazuh, syslog et réseau : 1 000/1 000 ; Apache : 1/1 ; HDFS/BGL : 0/1 000 chacun.
 - Reprise idempotente phase 5 validée ; quatre CSV, huit JSON, tableau et figure vérifiés.
+- Routeur réel identifié : `agents.model_router.route_model`, classification au niveau fichier par scores heuristiques explicables.
+- Protocole phase 6 figé avant routage : neuf sources, chunks de 100 lignes, 81 fichiers attendus, noms de fichiers neutres.
+- Dry-run phase 6 validé et expérience inscrite PLANNED dans le ledger.
 
 ## In progress
 
-- Audit ciblé de l'implémentation du routeur réel avant gel de la phase 6.
+- Aucun run en cours ; exécution du routeur prête.
 
 ## Pending
 
@@ -149,6 +152,8 @@ Status: PHASE 5 COMPLETE — PHASE 6 PROTOCOL DESIGN
 - HDFS/BGL sont correctement détectés mais leurs `Parser.parse` courants ne produisent aucune ligne ; les lecteurs stricts phase 3 sont distincts.
 - La conservation intégrale de l'événement brut n'est pas générale : 0/1 000 pour Windows XML et syslog complet.
 - La complétude timestamp Wazuh vaut 0 % sur les 1 000 lignes testées ; l'adaptateur réseau ne produit aucun des sept champs d'événement communs.
+- `confidence` du routeur est une marge entière entre les deux meilleurs scores, pas une probabilité calibrée.
+- La vérité terrain phase 6 vient de la source avant routage ; les chunks d'une même source ne sont pas des réplications indépendantes.
 
 ## Open issues
 

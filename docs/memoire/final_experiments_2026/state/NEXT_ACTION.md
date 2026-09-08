@@ -2,20 +2,20 @@
 
 Phase: PHASE 6
 
-Experiment: Évaluation du routeur réel — audit et protocole
+Experiment: Évaluation du routeur réel — exécution du corpus figé
 
-Last completed step: PHASE 5 complète, huit runs et quatre CSV validés, figure inspectée, reprise idempotente vérifiée.
+Last completed step: Routeur audité, protocole à neuf sources figé, dry-run de 81 fichiers validé et plan inscrit au ledger.
 
-Next exact step: Identifier l'API réellement utilisée pour attribuer une famille/modèle, les règles, la confiance et le fallback ; construire uniquement ensuite le corpus de vérité terrain.
+Next exact step: Construire les chunks à noms neutres, appeler réellement `route_model` une fois par fichier, puis calculer les métriques et la matrice de confusion.
 
-Command to run: `rtk graphify query "Où le routeur réel attribue-t-il une famille ou un modèle à un événement, avec quelles règles, confiance et fallback ?"`
+Command to run: `rtk python scripts/run_router_evaluation.py --resume`
 
-Expected output: Sous-graphe ciblé vers l'implémentation réellement appelée et ses points d'entrée, distinct du simple `detect_kind` de phase 5.
+Expected output: 81 décisions détaillées, métriques par famille, matrice de confusion, rapport JSON, tableau et figure en français.
 
-Files that must be read: fichiers du routeur révélés par Graphify, appels depuis les agents/runtime, configurations de modèles.
+Files that must be read: `configs/router_evaluation_protocol.json`, `scripts/run_router_evaluation.py`, `src/logminer/agents/model_router.py`.
 
 Files that DO NOT need to be reread: mémoire LaTeX complet, artefacts CICIDS unitaires, artefacts HDFS/BGL phase 3, modèles phase 4, anciens rapports éditoriaux et multi-VM.
 
-Success criterion: Une définition exacte du routeur réel et un corpus où `true_family` provient de la source, sans réutiliser la famille prédite comme vérité terrain.
+Success criterion: 81 fichiers routés ou erreurs explicitement conservées ; `true_family`, `predicted_family`, marge, règles, fallback et modèle enregistrés ; métriques lisibles.
 
-If failure: Classer l'exactitude du routeur comme NON ÉVALUÉE et documenter précisément l'absence d'API ou de vérité terrain ; ne pas substituer l'ablation D005.
+If failure: Conserver le corpus et les lignes déjà routées, enregistrer FAILED pour l'erreur technique, corriger sans modifier la vérité terrain puis reprendre.

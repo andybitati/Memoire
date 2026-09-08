@@ -10,7 +10,7 @@ PHASE 6 — évaluation du routeur réel.
 
 ## Current experiment
 
-Audit de l'API de routage et construction d'un corpus à vraie famille connue.
+Exécution de 81 fichiers dérivés à noms neutres avec vérité terrain fixée par source.
 
 ## Completed since previous checkpoint
 
@@ -95,6 +95,10 @@ Audit de l'API de routage et construction d'un corpus à vraie famille connue.
 - PHASE 5 complète : 7 001 lus, 5 001 normalisés, 2 000 perdus ; 8/8 runs COMPLETED.
 - HDFS/BGL pipeline : 0/1 000 chacun ; Windows/Linux-auth/Wazuh/syslog/réseau : 1 000/1 000 ; Apache : 1/1.
 - Quatre CSV, huit JSON, tableau et figure validés ; reprise idempotente réussie ; D025 enregistrée.
+- Checkpoint final PHASE 5 : `f499797`.
+- `route_model` audité : routage au niveau fichier, scores heuristiques, marge non calibrée, départage fixe et modèle par famille.
+- Protocole phase 6 figé sur neuf sources : 81 chunks attendus de 100 lignes sauf Apache N=1 ; noms neutres.
+- Dry-run phase 6 validé et expérience PLANNED.
 
 ## Key results
 
@@ -129,7 +133,7 @@ Audit de l'API de routage et construction d'un corpus à vraie famille connue.
 
 ## Exact next action
 
-Auditer le routeur réellement appelé, distinguer ses règles de `detect_kind`, puis figer un corpus à vérité terrain indépendante.
+Exécuter le routeur sur les 81 fichiers, calculer accuracy/F1 par famille, fallback/unknown/error et inspecter la confusion.
 
 ## Read only these files first
 
@@ -139,9 +143,9 @@ Auditer le routeur réellement appelé, distinguer ses règles de `detect_kind`,
 - `state/EXPERIMENT_LEDGER.csv`
 - `scripts/run_final_experiments.py`
 - `dataset_manifest_final.csv`
-- `PHASE_5_COMPLETED.md`
-- `experiment_multiformat_validation_summary.md`
-- fichiers du routeur révélés par Graphify
+- `configs/router_evaluation_protocol.json`
+- `scripts/run_router_evaluation.py`
+- `src/logminer/agents/model_router.py`
 - `PHASE_2_COMPLETED.md`
 
 ## Do not reread
@@ -151,4 +155,4 @@ Auditer le routeur réellement appelé, distinguer ses règles de `detect_kind`,
 
 ## Resume command
 
-`rtk graphify query "Où le routeur réel attribue-t-il une famille ou un modèle à un événement, avec quelles règles, confiance et fallback ?"`
+`rtk python scripts/run_router_evaluation.py --resume`
