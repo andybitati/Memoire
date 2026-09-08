@@ -6,7 +6,7 @@ Consolidation expérimentale finale du mémoire Ariel Logminer, sans réécritur
 
 ## Current phase
 
-MISSION COMPLETE — checkpoint terminal restant.
+MISSION COMPLETE.
 
 ## Current experiment
 
@@ -22,6 +22,7 @@ Aucun.
 - Figures, tableaux, annexes, suppressions et modifications chapitre par chapitre listés.
 - Douze familles d'informations ouvertes utilisent `INFORMATION À VÉRIFIER.`.
 - Ledger, index et `PHASE_12_COMPLETED.md` mis à jour.
+- Checkpoint final phase 12: `844d76b`.
 
 ## Key results
 
@@ -48,7 +49,7 @@ Aucun.
 
 ## Exact next action
 
-Valider les 26 sections, le JSON d'index, le CSV du ledger et les quatre fichiers finaux; créer le commit terminal.
+Aucune action expérimentale. Transmettre les quatre fichiers finaux à Luna pour la réécriture distincte.
 
 ## Read only these files first
 
@@ -64,4 +65,4 @@ Valider les 26 sections, le JSON d'index, le CSV du ledger et les quatre fichier
 
 ## Resume command
 
-`rtk git status --short`
+Aucune commande de reprise requise.
