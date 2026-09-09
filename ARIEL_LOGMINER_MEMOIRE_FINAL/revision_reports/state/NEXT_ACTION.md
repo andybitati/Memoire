@@ -11,6 +11,7 @@ La phase demandée est terminée. Les runs de référence sont :
 Ne pas réexécuter ces campagnes sans nouvelle demande. L'extension encore légitime est un test `XPENDING/XAUTOCLAIM` avec arrêt forcé d'un agent invité après effet persistant et avant ACK. Tant qu'il n'existe pas, conserver la résilience post-traitement multi-VM au statut `PARTIELLEMENT CORRIGÉ`.
 
 Les identifiants VM sont stockés sous chiffrement DPAPI dans `.secrets/`; ne jamais les ajouter à Git ni les recopier dans un rapport.
+Pour les consulter volontairement sous le même compte Windows : `powershell -File scripts/show_vm_credential.ps1 -VM Ubuntu -RevealPassword` (remplacer `Ubuntu` par `Debian` si nécessaire).
 
 ## ACTION LATEX CONSERVÉE POUR REPRISE ULTÉRIEURE
 
