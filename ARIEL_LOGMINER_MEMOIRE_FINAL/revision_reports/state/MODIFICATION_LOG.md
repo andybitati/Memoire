@@ -1,5 +1,13 @@
 # Modification log
 
+## 2026-09-09 — Dataset strengthening, phase 0
+
+- Cahier de mission dataset lu intégralement.
+- Code, configurations, manifestes, sources locales et limitations existantes audités.
+- `docs/DATASET_STRENGTHENING_GAP_ANALYSIS.md` créé.
+- Aucun chapitre LaTeX et aucun ancien résultat modifiés.
+- Aucune nouvelle expérience exécutée avant la clôture de l’audit.
+
 ## 2026-09-09 — Audit d'intégration dans le mémoire
 
 - État des chapitres contrôlé sans réécriture du manuscrit.

@@ -1,5 +1,15 @@
 # NEXT ACTION
 
+## MISSION DATASET STRENGTHENING — 2026-09-09
+
+Audit préalable terminé dans `docs/DATASET_STRENGTHENING_GAP_ANALYSIS.md` sans modification
+du mémoire et sans nouvelle expérience. Prochaine étape : créer et geler les configurations
+des six campagnes prioritaires, réparer les adaptateurs HDFS/BGL, ajouter les tests
+méthodologiques, puis exécuter HDFS block-level en premier.
+
+Ne pas relancer les campagnes `ma_20260909T160812Z_34016`,
+`redis_cnp_20260909T162814Z_47940` ou `multivm_cnp_20260909T202632Z_37592`.
+
 ## RÈGLE DE COMPILATION — À CONSERVER
 
 Toutes les prochaines compilations doivent utiliser
