@@ -1113,4 +1113,13 @@ def main() -> int:
                 "recovery": recovery,
                 "end_to_end_status": end_to_end.get("status"),
                 "manifest": str(manifest_path),
-         
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
+    return 0 if status == "ok" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -12,9 +12,25 @@ Mission active : implémenter et évaluer une architecture réellement multi-age
 - `AgentMessage` reste un contrat à sept champs; toutes les nouvelles métadonnées doivent rester dans `payload`.
 - Le noyau autonome est désormais implémenté dans `contract_net.py`, `idempotency.py` et `intelligent_runtime.py`.
 - Sept tests unitaires couvrent le contrat de message, les six refus, le CNP, la mémoire et la reprise idempotente; ils réussissent tous.
-- Prochaine étape : construire puis exécuter la campagne A/B/C/D et les expériences complémentaires.
+- Phase locale terminée; prochaine étape éventuelle : CNP Redis inter-processus, puis campagne multi-VM autonome.
 - Ne pas réécrire le mémoire avant la production de nouveaux résultats.
 - Préserver toutes les modifications préexistantes visibles dans `ARIEL_LOGMINER_MEMOIRE_FINAL/`.
+
+### Résultat obtenu
+
+- Noyau Contract Net testé : 7/7 tests réussis.
+- Run de référence : `ma_20260909T154523Z_13604`.
+- Campagne principale : 160/160 runs réussis, 264 000/264 000 tâches réussies.
+- Artefacts : `experiments/phase_multi_agent/`.
+- Rapport final : `MULTI_AGENT_FINAL_REPORT.md`.
+- Architecture : `docs/TRUE_MULTI_AGENT_ARCHITECTURE.md`.
+- Mémoire ON : aucune amélioration systématique dans la matrice principale.
+- Adaptation contrôlée : réussite après huit réattributions au changement de phase.
+- Reprise locale contrôlée : zéro effet dupliqué.
+- Pipeline réel : 6/6 étapes réussies.
+- Non réalisé : CNP Redis inter-processus et CNP multi-VM.
+
+À la reprise, lire uniquement `MULTI_AGENT_FINAL_REPORT.md`, `docs/TRUE_MULTI_AGENT_ARCHITECTURE.md` et les artefacts du run `ma_20260909T154523Z_13604`.
 
 Fichiers à lire à la reprise : `docs/MULTI_AGENT_GAP_ANALYSIS.md`, `src/logminer/agents/bus.py`, `src/logminer/agents/intelligent_runtime.py` et `NEXT_ACTION.md`.
 

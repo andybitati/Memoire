@@ -2,16 +2,17 @@
 
 ## PROCHAINE ACTION EXACTE — MISSION MULTI-AGENTS
 
-1. Créer `scripts/run_true_multi_agent_experiments.py`.
-2. Comparer A monolithe, B workers centralisés, C agents autonomes mémoire OFF et D agents autonomes mémoire ON sur des workloads appariés.
-3. Mesurer durée, débit, latences, CPU, RSS, messages CNP, réattributions, équité de Jain, succès, échecs, reprises et doublons.
-4. Exécuter au moins 10 répétitions par charge raisonnable et enregistrer les données brutes avant toute agrégation.
-5. Ajouter l’adaptation en deux phases, l’expérience post-traitement/pré-ACK et le pipeline bout en bout avec `end_to_end_run_id`.
-6. Générer les agrégats, figures, rapports et manifestes SHA-256 sans modifier les artefacts historiques.
+La phase locale est terminée. La prochaine extension légitime, non exécutée dans cette session, est :
+
+1. Porter le cycle CNP sur Redis entre processus distincts, sans revenir au premier consommateur compatible.
+2. Tester le même scénario post-traitement/pré-ACK avec `XPENDING`, `XAUTOCLAIM` et ACK réel.
+3. Après validation inter-processus seulement, préparer deux agents autonomes sur Debian et Ubuntu.
+4. Exécuter une campagne multi-VM où les deux VM émettent réellement `PROPOSE`/`REFUSE` et reçoivent `AWARD`/`REJECT`.
+5. Ne pas présenter les anciennes campagnes de consommateurs Redis comme cette preuve.
 
 Document de référence déjà produit : `docs/MULTI_AGENT_GAP_ANALYSIS.md`.
 
-Critère de sortie de la prochaine phase : artefacts bruts et agrégés reproductibles, statistiques descriptives complètes, dix figures demandées ou échec documenté pour chacune.
+Critère de sortie de la prochaine phase : traces Redis montrant la négociation inter-processus, puis traces machine/OS pour Debian et Ubuntu. Tant qu'elles n'existent pas, conserver le statut `NON ÉVALUÉ`.
 
 ## ACTION LATEX CONSERVÉE POUR REPRISE ULTÉRIEURE
 

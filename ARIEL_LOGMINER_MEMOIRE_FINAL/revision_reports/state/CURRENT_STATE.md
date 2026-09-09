@@ -26,6 +26,23 @@
 - `graphify update .` tenté après modification : échec maintenu avec `[WinError 5] Accès refusé`; le code et les tests ne sont pas affectés.
 - Prochaine phase : campagne expérimentale A/B/C/D, mémoire ON/OFF, adaptation, reprise et pipeline bout en bout.
 
+## CHECKPOINT EXPÉRIMENTAL — 2026-09-09 16:55
+
+- Run de référence : `ma_20260909T154523Z_13604`.
+- Matrice principale terminée : 4 architectures × 4 charges × 10 répétitions = 160 runs.
+- Charges : 100, 500, 1 000 et 5 000 tâches; trois workers/agents; workloads et graines appariés.
+- Traitements principaux : 264 000; échecs : 0.
+- Mémoire ON/OFF évaluée : aucun gain systématique de débit, latence ou équité avec mémoire ON.
+- Adaptation : 120 tâches; 60 succès alpha en phase 1, 60 succès gamma en phase 2; huit réattributions après la rupture, puis zéro à partir de l'index 67.
+- Reprise contrôlée post-traitement/pré-ACK : un effet persistant, zéro doublon, une tâche récupérée, latence 0,003836 s, pending final 0, lag final 0.
+- Pipeline Logminer bout en bout : six étapes sur six réussies avec `end_to_end_run_id=e2e-ma_20260909T154523Z_13604`.
+- Dix figures non vides générées.
+- Validation : 160 lignes de runs, 264 000 lignes de latence, appariement complet, 26 fichiers vérifiés par SHA-256 sans erreur.
+- Documentation créée : `docs/TRUE_MULTI_AGENT_ARCHITECTURE.md` et `MULTI_AGENT_FINAL_REPORT.md`.
+- Limite ouverte : aucun CNP Redis inter-processus ni CNP multi-VM Debian/Ubuntu n'a été exécuté.
+- `graphify update .` retenté : échec `[WinError 5] Accès refusé`.
+- Compilation LaTeX reste suspendue après la première passe; aucune section du mémoire n'a été réécrite pendant cette mission.
+
 ## CHECKPOINT DE REPRISE — 2026-09-09
 
 - MiKTeX détecté dans `C:\Users\aoliv\AppData\Local\Programs\MiKTeX\miktex\bin\x64\`.
@@ -44,8 +61,8 @@ CURRENT PDF PAGE COUNT: 293 (première passe, bibliographie et références non 
 Last update: 2026-09-09
 Git commit: 844d76b (checkpoint final PHASE 12)
 Active phase: PHASE 13A COMPLETE — FINAL DELIVERY PREPARATION
-Active experiment: Phase multi-agents — audit préalable terminé
-Status: IN PROGRESS — MULTI-AGENT IMPLEMENTATION
+Active experiment: `ma_20260909T154523Z_13604` terminé
+Status: LOCAL MULTI-AGENT PHASE COMPLETE — REDIS/MULTI-VM NOT EVALUATED
 
 ## Completed
 
