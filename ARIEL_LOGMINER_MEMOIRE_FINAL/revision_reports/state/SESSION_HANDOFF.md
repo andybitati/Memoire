@@ -1,5 +1,17 @@
 # SESSION HANDOFF
 
+## HANDOFF MULTI-VM DÉFINITIF — 2026-09-09 20:28 UTC
+
+- Noyau CNP local, Redis inter-processus et multi-VM implémentés et exécutés.
+- Run principal : `ma_20260909T160812Z_34016` — 160 runs, 264 000 tâches, E2E 8/8.
+- Run Redis local : `redis_cnp_20260909T162814Z_47940` — 60/60, trois PID.
+- Run multi-VM retenu : `multivm_cnp_20260909T202632Z_37592` — Debian et Ubuntu, 60/60, 15 refus, 1 panne contrôlée, 1 réattribution, 0 doublon.
+- Réseau de laboratoire : second adaptateur VirtualBox host-only; Redis 7.4.9 central sur l'hôte Windows.
+- Identifiants VM : fichiers DPAPI `.secrets/debian_vm.credential.json` et `.secrets/ubuntu_vm.credential.json`, tous deux ignorés par Git.
+- Point de restauration Ubuntu : `pre-password-reset-20260909`.
+- Rapports à lire en reprise : `MULTI_AGENT_FINAL_REPORT.md`, `docs/TRUE_MULTI_AGENT_ARCHITECTURE.md`, puis le JSON du run multi-VM.
+- Ne pas relancer les expériences ni réécrire le mémoire. La seule limite technique restante de cette mission est `XPENDING/XAUTOCLAIM` post-effet/pré-ACK avec arrêt forcé invité.
+
 ## HANDOFF MISSION MULTI-AGENTS — 2026-09-09 16:12
 
 Mission active : implémenter et évaluer une architecture réellement multi-agents légère, avec Contract Net, mémoire ON/OFF, idempotence et comparaison A/B/C/D.
@@ -28,7 +40,7 @@ Mission active : implémenter et évaluer une architecture réellement multi-age
 - Adaptation contrôlée : réussite après huit réattributions au changement de phase.
 - Reprise locale contrôlée : zéro effet dupliqué.
 - Pipeline réel : 6/6 étapes réussies.
-- Non réalisé : CNP Redis inter-processus et CNP multi-VM.
+- Non réalisé à ce checkpoint historique; réalisé ensuite dans les runs Redis local et multi-VM indiqués en tête du fichier.
 
 À la reprise, lire uniquement `MULTI_AGENT_FINAL_REPORT.md`, `docs/TRUE_MULTI_AGENT_ARCHITECTURE.md` et les artefacts du run `ma_20260909T154523Z_13604`.
 

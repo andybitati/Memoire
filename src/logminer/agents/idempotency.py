@@ -168,3 +168,107 @@ class SQLiteIdempotencyStore:
                 "SELECT COUNT(*) AS count FROM idempotency_records WHERE status = 'completed'"
             ).fetchone()
         return int(row["count"] if row else 0)
+
+
+class RedisIdempotencyStore:
+    """Registre d'idempotence partagé par des processus ou machines via Redis."""
+
+    def __init__(self, client: Any, namespace: str = "logminer:cnp:idempotency"):
+        self.client = client
+        self.namespace = namespace.rstrip(":")
+
+    def _key(self, idempotency_key: str) -> str:
+        import hashlib
+
+        digest = hashlib.sha256(idempotency_key.encode("utf-8")).hexdigest()
+        return f"{self.namespace}:{digest}"
+
+    @staticmethod
+    def _decode(raw: str | bytes | None) -> IdempotencyRecord | None:
+        if not raw:
+            return None
+        if isinstance(raw, bytes):
+            raw = raw.decode("utf-8")
+        payload = json.loads(raw)
+        return IdempotencyRecord(
+            idempotency_key=str(payload["idempotency_key"]),
+            status=str(payload["status"]),
+            owner=str(payload["owner"]),
+            task_id=str(payload["task_id"]),
+            result=dict(payload.get("result") or {}),
+            created_at=str(payload["created_at"]),
+            updated_at=str(payload["updated_at"]),
+        )
+
+    def get(self, idempotency_key: str) -> IdempotencyRecord | None:
+        return self._decode(self.client.get(self._key(idempotency_key)))
+
+    def reserve(self, idempotency_key: str, *, owner: str, task_id: str) -> tuple[str, IdempotencyRecord | None]:
+        now = _utc_now()
+        payload = json.dumps(
+            {
+                "idempotency_key": idempotency_key,
+                "status": "processing",
+                "owner": owner,
+                "task_id": task_id,
+                "result": {},
+                "created_at": now,
+                "updated_at": now,
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+        )
+        if self.client.set(self._key(idempotency_key), payload, nx=True):
+            return "reserved", None
+        record = self.get(idempotency_key)
+        return ("completed" if record and record.status == "completed" else "in_progress"), record
+
+    def complete(
+        self,
+        idempotency_key: str,
+        *,
+        owner: str,
+        task_id: str,
+        result: dict[str, Any],
+    ) -> IdempotencyRecord:
+        previous = self.get(idempotency_key)
+        now = _utc_now()
+        payload = {
+            "idempotency_key": idempotency_key,
+            "status": "completed",
+            "owner": owner,
+            "task_id": task_id,
+            "result": dict(result),
+            "created_at": previous.created_at if previous else now,
+            "updated_at": now,
+        }
+        self.client.set(self._key(idempotency_key), json.dumps(payload, ensure_ascii=False, sort_keys=True))
+        record = self.get(idempotency_key)
+        if record is None:  # pragma: no cover - garde défensive
+            raise RuntimeError("Le résultat idempotent Redis n'a pas été persisté")
+        return record
+
+    def release_failed(self, idempotency_key: str, *, owner: str) -> bool:
+        key = self._key(idempotency_key)
+        while True:
+            with self.client.pipeline() as pipeline:
+                try:
+                    pipeline.watch(key)
+                    record = self._decode(pipeline.get(key))
+                    if record is None or record.status != "processing" or record.owner != owner:
+                        pipeline.unwatch()
+                        return False
+                    pipeline.multi()
+                    pipeline.delete(key)
+                    return bool(pipeline.execute()[0])
+                except Exception as exc:
+                    if exc.__class__.__name__ == "WatchError":
+                        continue
+                    raise
+
+    def completed_count(self) -> int:
+        count = 0
+        for key in self.client.scan_iter(match=f"{self.namespace}:*"):
+            record = self._decode(self.client.get(key))
+            count += int(record is not None and record.status == "completed")
+        return count

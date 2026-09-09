@@ -1,0 +1,144 @@
+{
+  "run_id": "redis_cnp_20260909T162814Z_47940",
+  "namespace": "logminer:cnp:redis_cnp_20260909T162814Z_47940",
+  "redis_url": "redis://localhost:6379/0",
+  "redis_server": "7.4.9",
+  "host": "andy-aaron",
+  "registered_agents": {
+    "redis-alpha": {
+      "agent_id": "redis-alpha",
+      "run_id": "redis_cnp_20260909T162814Z_47940",
+      "updated_at": "2026-09-09T16:28:25.925321+00:00",
+      "pid": 45400,
+      "host": "andy-aaron",
+      "os": "Windows-10-10.0.26200-SP0",
+      "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+      "profile": "alpha",
+      "perception": {
+        "agent_id": "redis-alpha",
+        "healthy": true,
+        "active_tasks": 0,
+        "max_parallel_tasks": 1,
+        "load_ratio": 0.0,
+        "available_models": [
+          "*"
+        ],
+        "available_dependencies": [
+          "*"
+        ],
+        "memory_enabled": true,
+        "observed_at": "2026-09-09T16:28:25.925321+00:00"
+      }
+    },
+    "redis-beta": {
+      "agent_id": "redis-beta",
+      "run_id": "redis_cnp_20260909T162814Z_47940",
+      "updated_at": "2026-09-09T16:28:25.870254+00:00",
+      "pid": 22104,
+      "host": "andy-aaron",
+      "os": "Windows-10-10.0.26200-SP0",
+      "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+      "profile": "beta",
+      "perception": {
+        "agent_id": "redis-beta",
+        "healthy": true,
+        "active_tasks": 0,
+        "max_parallel_tasks": 1,
+        "load_ratio": 0.0,
+        "available_models": [
+          "*"
+        ],
+        "available_dependencies": [
+          "*"
+        ],
+        "memory_enabled": true,
+        "observed_at": "2026-09-09T16:28:25.870254+00:00"
+      }
+    },
+    "redis-gamma": {
+      "agent_id": "redis-gamma",
+      "run_id": "redis_cnp_20260909T162814Z_47940",
+      "updated_at": "2026-09-09T16:28:25.913007+00:00",
+      "pid": 34288,
+      "host": "andy-aaron",
+      "os": "Windows-10-10.0.26200-SP0",
+      "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+      "profile": "gamma",
+      "perception": {
+        "agent_id": "redis-gamma",
+        "healthy": true,
+        "active_tasks": 0,
+        "max_parallel_tasks": 1,
+        "load_ratio": 0.0,
+        "available_models": [
+          "*"
+        ],
+        "available_dependencies": [
+          "*"
+        ],
+        "memory_enabled": true,
+        "observed_at": "2026-09-09T16:28:25.913007+00:00"
+      }
+    }
+  },
+  "worker_status": {
+    "redis-alpha": {
+      "pid": 45400,
+      "returncode": 0
+    },
+    "redis-beta": {
+      "pid": 22104,
+      "returncode": 0
+    },
+    "redis-gamma": {
+      "pid": 34288,
+      "returncode": 0
+    }
+  },
+  "tasks": 60,
+  "successful_tasks": 60,
+  "failed_tasks": 0,
+  "duration_sec": 2.504343,
+  "throughput_tasks_sec": 23.958378,
+  "latency_mean_ms": 41.651117,
+  "latency_median_ms": 38.1725,
+  "latency_p95_ms": 59.87145,
+  "latency_p99_ms": 85.89429,
+  "tasks_by_agent": {
+    "redis-alpha": 15,
+    "redis-beta": 15,
+    "redis-gamma": 30
+  },
+  "message_counts": {
+    "agent.heartbeat": 3,
+    "CFP": 185,
+    "PROPOSE": 185,
+    "AWARD": 62,
+    "ACCEPT": 62,
+    "REJECT": 123,
+    "agent.task.started": 62,
+    "agent.task.completed": 62,
+    "RESULT": 62,
+    "FEEDBACK": 62
+  },
+  "distinct_result_pids": [
+    "22104",
+    "34288",
+    "45400"
+  ],
+  "distinct_result_hosts": [
+    "andy-aaron"
+  ],
+  "idempotence": {
+    "first_agent": "redis-alpha",
+    "replay_agent": "redis-beta",
+    "different_process_agents": true,
+    "first_status": "ok",
+    "replay_status": "ok",
+    "replayed": true,
+    "persistent_effects": 1,
+    "duplicate_effects": 0,
+    "redis_completed_keys": 61
+  },
+  "status": "ok"
+}

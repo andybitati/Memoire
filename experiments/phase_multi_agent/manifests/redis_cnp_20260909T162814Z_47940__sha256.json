@@ -1,0 +1,60 @@
+{
+  "run_id": "redis_cnp_20260909T162814Z_47940",
+  "files": [
+    {
+      "path": "experiments/phase_multi_agent/logs/redis_cnp_20260909T162814Z_47940__agent_messages.jsonl",
+      "bytes": 564699,
+      "sha256": "5f9fbe1cbe4057316656386e0de0db666d04bce584df17b83b2b9e1c6b2371e4"
+    },
+    {
+      "path": "experiments/phase_multi_agent/logs/redis_cnp_20260909T162814Z_47940__redis-alpha.log",
+      "bytes": 160,
+      "sha256": "ff079683568d731c433db8d33ee15777e9164c4033b93f5a7c2bae1a72f35d0d"
+    },
+    {
+      "path": "experiments/phase_multi_agent/logs/redis_cnp_20260909T162814Z_47940__redis-beta.log",
+      "bytes": 159,
+      "sha256": "b21fb4e67d26ac286cce11019a4d34ca67076878f444ade14a91f8e7e974bf4c"
+    },
+    {
+      "path": "experiments/phase_multi_agent/logs/redis_cnp_20260909T162814Z_47940__redis-gamma.log",
+      "bytes": 160,
+      "sha256": "78aa55c690e2ab276b43d271379cebe10d130f54f04e240f10a0231b5bfb6152"
+    },
+    {
+      "path": "experiments/phase_multi_agent/raw/redis_cnp_20260909T162814Z_47940__redis_cnp.json",
+      "bytes": 3931,
+      "sha256": "b3d6519c5ba6c4192fe47b0ab2b944540419219000baf655e5485dda7601a705"
+    },
+    {
+      "path": "experiments/phase_multi_agent/raw/redis_cnp_20260909T162814Z_47940__redis_cnp_tasks.csv",
+      "bytes": 10732,
+      "sha256": "076a108dfa324974359be080d8c0d501ba9e95dbd0c35cb89f2838f9d04b0041"
+    },
+    {
+      "path": "experiments/phase_multi_agent/reports/redis_cnp_20260909T162814Z_47940__redis_cnp.md",
+      "bytes": 556,
+      "sha256": "ef0d2a5996b4a468f14d8d1642ea03bc3e9bc7a3537627adf58b490b42915089"
+    },
+    {
+      "path": "scripts/logminer_redis_cnp_agent.py",
+      "bytes": 7128,
+      "sha256": "7ada55f69db13567b7d9f284ad6bc2e835dd168e577c57215d09f0b9cb41238a"
+    },
+    {
+      "path": "scripts/run_redis_cnp_process_campaign.py",
+      "bytes": 13393,
+      "sha256": "f591936d9826ffd5fdf17fbf62842c59e9a91ec395485c93173b15b66779fac1"
+    },
+    {
+      "path": "src/logminer/agents/idempotency.py",
+      "bytes": 10322,
+      "sha256": "e7f18186dab1aa5e017ac353ab4a8ae3756b5ad2b544f1cc12273c74afa125c4"
+    },
+    {
+      "path": "src/logminer/agents/redis_contract_net.py",
+      "bytes": 10619,
+      "sha256": "5967de48b964208805caa82a56e56bb3d92c63ba21aa6d5598520fbbaa82ead1"
+    }
+  ]
+}

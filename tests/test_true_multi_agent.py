@@ -16,6 +16,7 @@ from agents.bus import AgentMessage, LocalMessageBus
 from agents.contract_net import ContractNetCoordinator
 from agents.idempotency import SQLiteIdempotencyStore
 from agents.intelligent_runtime import AgentCapability, AgentMemory, AgentTask, MultiTaskIntelligentAgent
+from agents.redis_contract_net import RedisContractNetCoordinator
 
 
 def ok_handler(task, context):
@@ -23,6 +24,56 @@ def ok_handler(task, context):
 
 
 class TrueMultiAgentTests(unittest.TestCase):
+    def test_redis_contract_net_reassigns_after_failed_award(self):
+        class FakeTransport:
+            response_stream = "responses"
+
+            def __init__(self):
+                self.messages = []
+
+            def latest_id(self, stream):
+                return "0-0"
+
+            def send_to_agent(self, agent_id, *, source, message_type, payload, status="ok"):
+                contract_id = payload["contract_id"]
+                if message_type == "CFP":
+                    utility = 0.9 if agent_id == "agent-a" else 0.8
+                    self.messages.append(
+                        AgentMessage("run", agent_id, source, "PROPOSE", {"contract_id": contract_id, "utility": utility})
+                    )
+                elif message_type == "AWARD":
+                    self.messages.append(AgentMessage("run", agent_id, source, "ACCEPT", {"contract_id": contract_id}))
+                    result_status = "error" if agent_id == "agent-a" else "ok"
+                    self.messages.append(
+                        AgentMessage(
+                            "run",
+                            agent_id,
+                            source,
+                            "FAIL" if result_status == "error" else "RESULT",
+                            {
+                                "contract_id": contract_id,
+                                "result": {
+                                    "task_id": payload["task_id"],
+                                    "task_type": "detect",
+                                    "agent_id": agent_id,
+                                    "status": result_status,
+                                },
+                            },
+                            result_status,
+                        )
+                    )
+
+            def read(self, stream, cursor, **kwargs):
+                messages, self.messages = self.messages, []
+                return "1-0", messages
+
+        outcome = RedisContractNetCoordinator(FakeTransport(), ["agent-a", "agent-b"]).negotiate(
+            AgentTask.create("detect")
+        )
+        self.assertEqual(outcome.status, "ok")
+        self.assertEqual(outcome.winner, "agent-b")
+        self.assertEqual(outcome.reassignments, 1)
+
     def test_agent_message_contract_stays_at_seven_fields(self):
         self.assertEqual(
             [item.name for item in fields(AgentMessage)],

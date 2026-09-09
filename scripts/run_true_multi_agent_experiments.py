@@ -26,6 +26,7 @@ import statistics
 import sys
 import threading
 import time
+import xml.etree.ElementTree as ET
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict
@@ -508,6 +509,66 @@ def aggregate_runs(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return aggregated
 
 
+def paired_memory_analysis(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Analyse descriptive appariée C/D; aucune p-value sans hypothèse établie."""
+
+    metrics = ("throughput_tasks_sec", "latency_p95_ms", "jain_fairness", "rss_peak_mb")
+    by_key = {
+        (int(row["load"]), int(row["repetition"]), str(row["architecture"])): row
+        for row in rows
+        if row["architecture"] in {"C", "D"}
+    }
+    output = []
+    for load in sorted({int(row["load"]) for row in rows}):
+        for metric in metrics:
+            differences = []
+            for repetition in sorted({int(row["repetition"]) for row in rows if int(row["load"]) == load}):
+                off = by_key[(load, repetition, "C")]
+                on = by_key[(load, repetition, "D")]
+                differences.append(float(on[metric]) - float(off[metric]))
+            average = statistics.fmean(differences)
+            deviation = statistics.stdev(differences) if len(differences) > 1 else 0.0
+            margin = 1.96 * deviation / math.sqrt(len(differences)) if len(differences) > 1 else 0.0
+            output.append(
+                {
+                    "comparison": "D_memory_on_minus_C_memory_off",
+                    "load": load,
+                    "metric": metric,
+                    "paired_unit": "same_load_repetition_seed",
+                    "n_pairs": len(differences),
+                    "mean_difference": round(average, 6),
+                    "std_difference": round(deviation, 6),
+                    "median_difference": round(statistics.median(differences), 6),
+                    "ci95_low": round(average - margin, 6),
+                    "ci95_high": round(average + margin, 6),
+                    "cohen_dz": round(average / deviation, 6) if deviation > 0 else 0.0,
+                    "inferential_test": "none_descriptive",
+                    "reason": "N=10 et distribution des différences non établie pour ce microbenchmark",
+                }
+            )
+    return output
+
+
+def count_csv_rows(path: str | Path, delimiter: str = ";") -> int:
+    target = Path(path)
+    if not target.exists():
+        return 0
+    with target.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.reader(handle, delimiter=delimiter)
+        return max(0, sum(1 for _ in reader) - 1)
+
+
+def count_source_events(path: str | Path) -> int:
+    """Compte les éléments Event de l'échantillon XML utilisé dans le run E2E."""
+
+    target = Path(path)
+    try:
+        root = ET.parse(target).getroot()
+        return sum(1 for element in root.iter() if str(element.tag).split("}")[-1] == "Event")
+    except Exception:
+        return 0
+
+
 def adaptation_experiment(run_id: str, raw_dir: Path) -> list[dict[str, Any]]:
     weights, minimum = load_policy()
     agent_ids = ("agent-alpha", "agent-beta", "agent-gamma")
@@ -615,7 +676,10 @@ def end_to_end_experiment(run_id: str, raw_dir: Path, logs_dir: Path) -> dict[st
         parse_handler,
         route_handler,
     )
+    from agents.audit import write_audit
+    from api import health
 
+    e2e_timer = time.perf_counter()
     end_to_end_run_id = f"e2e-{run_id}"
     output_dir = raw_dir / f"{run_id}__end_to_end_outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -626,6 +690,34 @@ def end_to_end_experiment(run_id: str, raw_dir: Path, logs_dir: Path) -> dict[st
         output = apply_feedback_memory_to_csv(task.payload["input_path"], sep=task.payload.get("sep", ";"))
         return {"feedback_csv": output, "agent_id": context.agent_id}
 
+    def audit_handler(task: AgentTask, context: Any) -> dict[str, Any]:
+        audit_path = Path(task.payload["audit_path"])
+        entry = write_audit(
+            action="multi_agent.end_to_end.completed",
+            status="ok",
+            actor=context.agent_id,
+            target=str(task.payload.get("target", "")),
+            details={
+                "end_to_end_run_id": task.payload["end_to_end_run_id"],
+                "anomalies_csv": task.payload.get("anomalies_csv", ""),
+                "incidents_csv": task.payload.get("incidents_csv", ""),
+            },
+            path=audit_path,
+        )
+        return {"audit_path": str(audit_path), "audit_entry": asdict(entry)}
+
+    def api_snapshot_handler(task: AgentTask, context: Any) -> dict[str, Any]:
+        snapshot = {
+            "end_to_end_run_id": task.payload["end_to_end_run_id"],
+            "api_health": health(),
+            "anomalies_rows": count_csv_rows(task.payload["anomalies_csv"]),
+            "incidents_rows": count_csv_rows(task.payload["incidents_csv"]),
+            "served_by_agent": context.agent_id,
+        }
+        output_path = Path(task.payload["output_path"])
+        output_path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
+        return {"api_snapshot": str(output_path), **snapshot}
+
     handlers: dict[str, Callable[..., dict[str, Any]]] = {
         "discover.logs": discover_handler,
         "parse.logs": parse_handler,
@@ -633,6 +725,8 @@ def end_to_end_experiment(run_id: str, raw_dir: Path, logs_dir: Path) -> dict[st
         "detect.anomalies": detect_handler,
         "correlate.incidents": correlate_handler,
         "feedback.apply": feedback_handler,
+        "persist.audit": audit_handler,
+        "api.snapshot": api_snapshot_handler,
     }
     task_types = tuple(handlers)
     agents = []
@@ -661,6 +755,7 @@ def end_to_end_experiment(run_id: str, raw_dir: Path, logs_dir: Path) -> dict[st
     stage_records = []
     parsed_path = ""
     anomalies_path = ""
+    incidents_path = ""
     common = {"end_to_end_run_id": end_to_end_run_id}
     stage_specs: list[tuple[str, dict[str, Any]]] = [
         ("discover.logs", {**common, "roots": ["examples"], "max_files": 10}),
@@ -728,16 +823,76 @@ def end_to_end_experiment(run_id: str, raw_dir: Path, logs_dir: Path) -> dict[st
             stage_records.append(asdict(outcome))
             if outcome.status != "ok":
                 break
+            if task_type == "correlate.incidents" and outcome.result is not None:
+                incidents_path = str(outcome.result.output.get("incidents_csv", ""))
+
+    if incidents_path and all(record["status"] == "ok" for record in stage_records):
+        final_stages = (
+            (
+                "persist.audit",
+                {
+                    **common,
+                    "audit_path": str(output_dir / "e2e_audit.jsonl"),
+                    "target": incidents_path,
+                    "anomalies_csv": anomalies_path,
+                    "incidents_csv": incidents_path,
+                },
+            ),
+            (
+                "api.snapshot",
+                {
+                    **common,
+                    "anomalies_csv": anomalies_path,
+                    "incidents_csv": incidents_path,
+                    "output_path": str(output_dir / "e2e_api_snapshot.json"),
+                },
+            ),
+        )
+        for task_type, payload in final_stages:
+            payload["idempotency_key"] = f"{end_to_end_run_id}-{task_type}"
+            outcome = coordinator.negotiate(AgentTask.create(task_type, payload))
+            stage_records.append(asdict(outcome))
+            if outcome.status != "ok":
+                break
+
+    parsed_count = count_csv_rows(parsed_path) if parsed_path else 0
+    detected_count = count_csv_rows(anomalies_path) if anomalies_path else 0
+    candidate_anomalies = 0
+    if anomalies_path and Path(anomalies_path).exists():
+        with Path(anomalies_path).open("r", encoding="utf-8-sig", newline="") as handle:
+            candidate_anomalies = sum(
+                str(row.get("is_anomaly", "0")).strip().lower() in {"1", "true", "yes"}
+                for row in csv.DictReader(handle, delimiter=";")
+            )
+    route_outputs = [
+        record["result"]["output"]
+        for record in stage_records
+        if record.get("result") and record["result"].get("task_type") == "route.model"
+    ]
+    routed_family = str(route_outputs[0].get("family", "")) if route_outputs else ""
 
     result = {
         "run_id": run_id,
         "end_to_end_run_id": end_to_end_run_id,
-        "expected_stages": 6,
+        "expected_stages": 8,
         "executed_stages": len(stage_records),
         "successful_stages": sum(record["status"] == "ok" for record in stage_records),
-        "status": "ok" if len(stage_records) == 6 and all(record["status"] == "ok" for record in stage_records) else "error",
+        "status": "ok" if len(stage_records) == 8 and all(record["status"] == "ok" for record in stage_records) else "error",
         "parsed_path": parsed_path,
         "anomalies_path": anomalies_path,
+        "incidents_path": incidents_path,
+        "input_count": count_source_events(ROOT / "examples" / "windows_event_sample.xml"),
+        "parsed_count": parsed_count,
+        "normalized_count": parsed_count,
+        "routed_count": int(bool(route_outputs)),
+        "routed_unit": "source_file",
+        "routed_family": routed_family,
+        "detected_count": detected_count,
+        "candidate_anomalies": int(candidate_anomalies),
+        "candidate_incidents": count_csv_rows(incidents_path) if incidents_path else 0,
+        "errors": sum(record["status"] != "ok" for record in stage_records),
+        "fallbacks": int(routed_family == "fallback"),
+        "end_to_end_latency_sec": round(time.perf_counter() - e2e_timer, 6),
         "message_counts": coordinator.message_counts(),
         "stages": stage_records,
     }
@@ -775,6 +930,7 @@ def create_figures(
     run_id: str,
     figure_dir: Path,
     run_rows: list[dict[str, Any]],
+    task_rows_path: Path,
     adaptation_rows: list[dict[str, Any]],
     recovery: dict[str, Any],
     end_to_end: dict[str, Any],
@@ -810,8 +966,34 @@ def create_figures(
     line_figure("01_throughput_vs_load.png", "throughput_tasks_sec", "Débit (tâches/s)")
     line_figure("02_p95_latency_vs_load.png", "latency_p95_ms", "Latence p95 (ms)")
     line_figure("03_cpu_vs_load.png", "cpu_machine_normalized_percent", "CPU machine normalisé (%)")
-    line_figure("04_rss_vs_load.png", "rss_peak_mb", "RSS maximale (MiB)")
-    line_figure("05_messages_per_task.png", "messages_per_task", "Messages CNP par tâche")
+    line_figure("04_memory_vs_load.png", "rss_peak_mb", "RSS maximale (MiB)")
+
+    agent_counts: Counter[tuple[str, str]] = Counter()
+    with task_rows_path.open("r", encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle):
+            architecture = str(row["architecture"])
+            if architecture in {"C", "D"}:
+                agent_counts[(architecture, str(row["agent_id"]))] += 1
+    fig, axis = plt.subplots(figsize=(8, 5))
+    agent_ids = sorted({agent_id for _, agent_id in agent_counts})
+    positions = list(range(len(agent_ids)))
+    width = 0.36
+    for offset, architecture in ((-width / 2, "C"), (width / 2, "D")):
+        axis.bar(
+            [position + offset for position in positions],
+            [agent_counts[(architecture, agent_id)] for agent_id in agent_ids],
+            width=width,
+            label=architecture,
+        )
+    axis.set_xticks(positions, agent_ids, rotation=15)
+    axis.set_ylabel("Tâches exécutées sur toute la campagne")
+    axis.legend(title="Architecture")
+    fig.tight_layout()
+    target = figure_dir / "05_tasks_per_agent.png"
+    fig.savefig(target, dpi=180)
+    plt.close(fig)
+    created.append(target)
+
     line_figure("06_jain_fairness.png", "jain_fairness", "Indice d'équité de Jain")
 
     fig, axis = plt.subplots(figsize=(7, 5))
@@ -822,7 +1004,7 @@ def create_figures(
     axis.set_ylabel("Latence p95 moyenne (ms)")
     axis.set_title("Ablation de la mémoire décisionnelle")
     fig.tight_layout()
-    target = figure_dir / "07_memory_ablation.png"
+    target = figure_dir / "08_memory_ablation.png"
     fig.savefig(target, dpi=180)
     plt.close(fig)
     created.append(target)
@@ -834,7 +1016,7 @@ def create_figures(
     axis.tick_params(axis="x", rotation=20)
     axis.set_ylabel("Nombre")
     fig.tight_layout()
-    target = figure_dir / "08_recovery_idempotency.png"
+    target = figure_dir / "09_failure_recovery.png"
     fig.savefig(target, dpi=180)
     plt.close(fig)
     created.append(target)
@@ -850,7 +1032,7 @@ def create_figures(
     axis.legend()
     axis.grid(True, alpha=0.3)
     fig.tight_layout()
-    target = figure_dir / "09_agent_utility_over_time.png"
+    target = figure_dir / "07_agent_utility_over_time.png"
     fig.savefig(target, dpi=180)
     plt.close(fig)
     created.append(target)
@@ -992,13 +1174,25 @@ def main() -> int:
     run_rows: list[dict[str, Any]] = []
     raw_runs_path = raw_dir / f"{run_id}__runs.csv"
     raw_tasks_path = raw_dir / f"{run_id}__task_latencies.csv"
+    workload_path = raw_dir / f"{run_id}__workloads.jsonl"
     task_fields = ["run_id", "architecture", "load", "repetition", "seed", "task_id", "agent_id", "status", "latency_ms", "error"]
     write_csv(raw_tasks_path, [], task_fields)
+    workload_path.write_text("", encoding="utf-8")
     representative_log = logs_dir / f"{run_id}__representative_cnp_messages.jsonl"
     for load in loads:
         for repetition in range(args.repetitions):
             seed = args.base_seed + load * 100 + repetition
             workload = generate_workload(load, seed)
+            with workload_path.open("a", encoding="utf-8") as workload_handle:
+                for specification in workload:
+                    workload_handle.write(
+                        json.dumps(
+                            {"load": load, "repetition": repetition, "seed": seed, **specification},
+                            ensure_ascii=False,
+                            sort_keys=True,
+                        )
+                        + "\n"
+                    )
             architecture_order = list(ARCHITECTURES)
             rotation = repetition % len(architecture_order)
             architecture_order = architecture_order[rotation:] + architecture_order[:rotation]
@@ -1032,21 +1226,24 @@ def main() -> int:
 
     run_rows.sort(key=lambda row: (int(row["load"]), int(row["repetition"]), str(row["architecture"])))
     aggregated = aggregate_runs(run_rows)
+    paired = paired_memory_analysis(run_rows)
     aggregated_path = aggregated_dir / f"{run_id}__statistics.csv"
+    paired_path = aggregated_dir / f"{run_id}__paired_memory_effects.csv"
     write_csv(raw_runs_path, run_rows, RUN_FIELDS)
     write_csv(aggregated_path, aggregated)
+    write_csv(paired_path, paired)
 
     adaptation_rows = adaptation_experiment(run_id, raw_dir)
     recovery = recovery_experiment(run_id, raw_dir)
     if args.skip_end_to_end:
-        end_to_end = {"status": "skipped", "expected_stages": 6, "successful_stages": 0, "stages": []}
+        end_to_end = {"status": "skipped", "expected_stages": 8, "successful_stages": 0, "stages": []}
         end_to_end_path = raw_dir / f"{run_id}__end_to_end.json"
         end_to_end_path.write_text(json.dumps(end_to_end, ensure_ascii=False, indent=2), encoding="utf-8")
     else:
         end_to_end = end_to_end_experiment(run_id, raw_dir, logs_dir)
         end_to_end_path = raw_dir / f"{run_id}__end_to_end.json"
 
-    figure_paths = create_figures(run_id, figure_dir, run_rows, adaptation_rows, recovery, end_to_end)
+    figure_paths = create_figures(run_id, figure_dir, run_rows, raw_tasks_path, adaptation_rows, recovery, end_to_end)
     report_path = reports_dir / f"{run_id}__summary.md"
     write_report(
         report_path,
@@ -1062,7 +1259,9 @@ def main() -> int:
     generated_files = [
         raw_runs_path,
         raw_tasks_path,
+        workload_path,
         aggregated_path,
+        paired_path,
         raw_dir / f"{run_id}__adaptation.csv",
         raw_dir / f"{run_id}__recovery.json",
         raw_dir / f"{run_id}__recovery_idempotency.sqlite3",
@@ -1072,8 +1271,19 @@ def main() -> int:
         logs_dir / f"{run_id}__end_to_end_messages.jsonl",
         report_path,
         environment_path,
+        PHASE_ROOT / "configs" / "agent_policy.json",
+        Path(__file__).resolve(),
         *figure_paths,
     ]
+    for stage in end_to_end.get("stages", []):
+        result_payload = stage.get("result") or {}
+        output = result_payload.get("output") or {}
+        model_value = output.get("model")
+        if not model_value and isinstance(output.get("route"), dict):
+            model_value = output["route"].get("model")
+        if model_value:
+            model_path = Path(str(model_value))
+            generated_files.append(model_path if model_path.is_absolute() else ROOT / model_path)
     generated_files.extend(path for path in (raw_dir / f"{run_id}__end_to_end_outputs").glob("**/*") if path.is_file())
     manifest_path = manifests_dir / f"{run_id}__sha256.json"
     sha256_manifest(manifest_path, run_id, generated_files)

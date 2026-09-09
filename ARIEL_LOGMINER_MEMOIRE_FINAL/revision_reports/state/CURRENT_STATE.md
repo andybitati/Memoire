@@ -1,5 +1,20 @@
 # CURRENT STATE
 
+## CHECKPOINT MULTI-VM DÉFINITIF — 2026-09-09 20:28 UTC
+
+- Run principal retenu : `ma_20260909T160812Z_34016`.
+- Matrice A/B/C/D : 160/160 runs, 264 000/264 000 tâches, 0 échec; dix figures et manifeste SHA-256.
+- Pipeline bout en bout : `e2e-ma_20260909T160812Z_34016`, 8/8 étapes, 0 erreur, 0 fallback.
+- Run Redis local inter-processus : `redis_cnp_20260909T162814Z_47940`, trois PID, 60/60 tâches, replay idempotent sans doublon.
+- Run Redis multi-VM retenu : `multivm_cnp_20260909T202632Z_37592`.
+- VM réelles : Debian 13 (`andy`, PID 2787) et Ubuntu/Linux Lite 5.4 (`andy-VirtualBox`, PID 4305).
+- Multi-VM : 60/60 tâches, répartition 30/30, 15 `REFUSE`, un `FAIL` contrôlé, une réattribution réussie, replay entre VM avec un effet persistant et zéro doublon.
+- Redis 7.4.9 reste centralisé sur l'hôte Windows du laboratoire; aucune haute disponibilité ni portée industrielle n'est revendiquée.
+- Le mot de passe Ubuntu a été réinitialisé avec un point de restauration préalable. Les identifiants Debian/Ubuntu sont chiffrés par Windows DPAPI dans `.secrets/`, exclu de Git.
+- `MULTI_AGENT_FINAL_REPORT.md` et `docs/TRUE_MULTI_AGENT_ARCHITECTURE.md` ont été mis en cohérence avec la preuve multi-VM.
+- Limite ouverte : pas de test `XPENDING/XAUTOCLAIM` multi-VM avec arrêt forcé après effet métier et avant ACK.
+- Aucune section du mémoire n'a été réécrite pendant cette mission.
+
 ## CHECKPOINT MULTI-AGENTS — 2026-09-09 16:12
 
 - Nouvelle mission active : transformation contrôlée de Logminer en système multi-agents autonome léger.
@@ -39,7 +54,7 @@
 - Dix figures non vides générées.
 - Validation : 160 lignes de runs, 264 000 lignes de latence, appariement complet, 26 fichiers vérifiés par SHA-256 sans erreur.
 - Documentation créée : `docs/TRUE_MULTI_AGENT_ARCHITECTURE.md` et `MULTI_AGENT_FINAL_REPORT.md`.
-- Limite ouverte : aucun CNP Redis inter-processus ni CNP multi-VM Debian/Ubuntu n'a été exécuté.
+- Limite de ce checkpoint historique, fermée ensuite : le CNP Redis inter-processus et multi-VM est désormais exécuté; voir le checkpoint définitif en tête du fichier.
 - `graphify update .` retenté : échec `[WinError 5] Accès refusé`.
 - Compilation LaTeX reste suspendue après la première passe; aucune section du mémoire n'a été réécrite pendant cette mission.
 
@@ -61,8 +76,8 @@ CURRENT PDF PAGE COUNT: 293 (première passe, bibliographie et références non 
 Last update: 2026-09-09
 Git commit: 844d76b (checkpoint final PHASE 12)
 Active phase: PHASE 13A COMPLETE — FINAL DELIVERY PREPARATION
-Active experiment: `ma_20260909T154523Z_13604` terminé
-Status: LOCAL MULTI-AGENT PHASE COMPLETE — REDIS/MULTI-VM NOT EVALUATED
+Active experiment: `multivm_cnp_20260909T202632Z_37592` terminé
+Status: MULTI-AGENT LAB VALIDATED — LOCAL, REDIS INTER-PROCESS AND DEBIAN/UBUNTU MULTI-VM
 
 ## Completed
 

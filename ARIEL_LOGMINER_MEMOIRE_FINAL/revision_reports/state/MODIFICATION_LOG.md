@@ -1,5 +1,15 @@
 # Modification log
 
+## 2026-09-09 — Clôture Redis inter-processus et multi-VM
+
+- `RedisContractNetTransport`, `RedisContractNetCoordinator` et `RedisIdempotencyStore` ajoutés.
+- Trois processus agents locaux validés dans `redis_cnp_20260909T162814Z_47940` : 60/60 tâches et replay sans doublon.
+- Mot de passe Ubuntu réinitialisé après création du snapshot `pre-password-reset-20260909`; accès `andy` vérifié.
+- Identifiants Debian et Ubuntu stockés sous chiffrement DPAPI dans `.secrets/`, exclu de Git.
+- Adaptateur host-only ajouté aux deux VM; Redis reste sur l'hôte Windows du laboratoire.
+- Campagne définitive `multivm_cnp_20260909T202632Z_37592` : Debian et Ubuntu, 60/60 tâches, 30/30, 15 refus explicites, un échec contrôlé, une réattribution et zéro effet dupliqué.
+- Rapport final et architecture mis à jour; aucune revendication de haute disponibilité ou d'usage industriel.
+
 ## 2026-09-09 — Compilation locale MiKTeX
 
 - Détection de MiKTeX 25.12 et de `pdflatex.exe`, `latexmk.exe`, `bibtex.exe`.

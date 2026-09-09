@@ -2,17 +2,15 @@
 
 ## PROCHAINE ACTION EXACTE — MISSION MULTI-AGENTS
 
-La phase locale est terminée. La prochaine extension légitime, non exécutée dans cette session, est :
+La phase demandée est terminée. Les runs de référence sont :
 
-1. Porter le cycle CNP sur Redis entre processus distincts, sans revenir au premier consommateur compatible.
-2. Tester le même scénario post-traitement/pré-ACK avec `XPENDING`, `XAUTOCLAIM` et ACK réel.
-3. Après validation inter-processus seulement, préparer deux agents autonomes sur Debian et Ubuntu.
-4. Exécuter une campagne multi-VM où les deux VM émettent réellement `PROPOSE`/`REFUSE` et reçoivent `AWARD`/`REJECT`.
-5. Ne pas présenter les anciennes campagnes de consommateurs Redis comme cette preuve.
+1. `ma_20260909T160812Z_34016` pour la matrice A/B/C/D et le pipeline 8/8;
+2. `redis_cnp_20260909T162814Z_47940` pour les trois processus sur l'hôte local;
+3. `multivm_cnp_20260909T202632Z_37592` pour Debian/Ubuntu, 15 refus et une réattribution après échec.
 
-Document de référence déjà produit : `docs/MULTI_AGENT_GAP_ANALYSIS.md`.
+Ne pas réexécuter ces campagnes sans nouvelle demande. L'extension encore légitime est un test `XPENDING/XAUTOCLAIM` avec arrêt forcé d'un agent invité après effet persistant et avant ACK. Tant qu'il n'existe pas, conserver la résilience post-traitement multi-VM au statut `PARTIELLEMENT CORRIGÉ`.
 
-Critère de sortie de la prochaine phase : traces Redis montrant la négociation inter-processus, puis traces machine/OS pour Debian et Ubuntu. Tant qu'elles n'existent pas, conserver le statut `NON ÉVALUÉ`.
+Les identifiants VM sont stockés sous chiffrement DPAPI dans `.secrets/`; ne jamais les ajouter à Git ni les recopier dans un rapport.
 
 ## ACTION LATEX CONSERVÉE POUR REPRISE ULTÉRIEURE
 
