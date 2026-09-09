@@ -1,5 +1,17 @@
 # Modification log
 
+## 2026-09-09 — Audit d'intégration dans le mémoire
+
+- État des chapitres contrôlé sans réécriture du manuscrit.
+- Écart confirmé entre l'ancienne campagne à 525 ACK / le benchmark à 60 tâches et les
+  nouveaux résultats Contract Net.
+- Stratégie d'intégration enregistrée dans
+  `revision_reports/MULTI_AGENT_RESULTS_INTEGRATION_AUDIT.md`.
+- Répertoire obligatoire des prochaines compilations fixé à
+  `E:\Cours\TFE\ARIEL_LOGMINER_MEMOIRE_FINAL`, avec sortie sous `build/`.
+- `COMPILATION.md` corrigé pour privilégier la chaîne directe MiKTeX tant que Perl n'est pas
+  disponible pour `latexmk`.
+
 ## 2026-09-09 — Clôture Redis inter-processus et multi-VM
 
 - `RedisContractNetTransport`, `RedisContractNetCoordinator` et `RedisIdempotencyStore` ajoutés.

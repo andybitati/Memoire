@@ -1,5 +1,17 @@
 # NEXT ACTION
 
+## RÈGLE DE COMPILATION — À CONSERVER
+
+Toutes les prochaines compilations doivent utiliser
+`E:\Cours\TFE\ARIEL_LOGMINER_MEMOIRE_FINAL` comme répertoire de travail de la commande.
+Le PDF et les fichiers auxiliaires restent produits sous `build/`. Ne pas compiler depuis
+la racine `E:\Cours\TFE`.
+
+Avant la prochaine compilation complète, intégrer ou écarter explicitement les nouveaux
+résultats multi-agents selon
+`revision_reports/MULTI_AGENT_RESULTS_INTEGRATION_AUDIT.md` afin de ne pas stabiliser un
+PDF dont le résumé et les chapitres 3 à 7 décrivent encore l'ancienne campagne.
+
 ## PROCHAINE ACTION EXACTE — MISSION MULTI-AGENTS
 
 La phase demandée est terminée. Les runs de référence sont :
