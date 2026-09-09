@@ -30,6 +30,8 @@ PDF final : **NON DISPONIBLE DANS CET ENVIRONNEMENT**. Les exécutables `pdflate
 - retrait des affirmations non traçables CIC-DDoS2019 du corpus de résultats ;
 - séparation explicite des campagnes Redis locale et VirtualBox multi-VM ;
 - conservation des limites de preuve dans les rapports d'évidence.
+- passe de rédaction humanisée : `revision_reports/HUMANIZATION_PASS.md` ;
+- contrôle UTF-8 complet des fichiers textuels du dossier final.
 
 ## Limites conservées
 
