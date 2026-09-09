@@ -1,12 +1,34 @@
 \documentclass[12pt,a4paper,oneside]{report}
 
+% ============================================================
+% ENCODAGE ET LANGUE
+% ============================================================
+
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
 \usepackage{lmodern}
 \usepackage{microtype}
+
+% ============================================================
+% MISE EN PAGE
+% ============================================================
+
 \usepackage{geometry}
+\geometry{margin=2.5cm}
+
 \usepackage{setspace}
+\onehalfspacing
+
+\usepackage{ragged2e}
+\raggedbottom
+
+\setlength{\emergencystretch}{4em}
+
+% ============================================================
+% FIGURES, TABLEAUX ET MATHÉMATIQUES
+% ============================================================
+
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{array}
@@ -14,93 +36,190 @@
 \usepackage{longtable}
 \usepackage{float}
 \usepackage{xcolor}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ============================================================
+% TIKZ
+% ============================================================
+
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit}
-\usepackage{hyperref}
+\usetikzlibrary{
+    arrows.meta,
+    positioning,
+    shapes.geometric,
+    fit
+}
+
+% ============================================================
+% LISTES ET URL
+% ============================================================
+
+\usepackage{enumitem}
 \usepackage{url}
 \usepackage[strings]{underscore}
-\usepackage{amsmath}
-\usepackage{enumitem}
-\usepackage{caption}
-\usepackage{fancyhdr}
-\usepackage{tocbibind}
-\usepackage{ragged2e}
 
-
-\geometry{margin=2.5cm}
-\onehalfspacing
-\raggedbottom
-\setlength{\emergencystretch}{4em}
 \Urlmuskip=0mu plus 2mu
+
+% ============================================================
+% TABLE DES MATIÈRES ET HYPERLIENS
+% ============================================================
+
+\usepackage{tocbibind}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdftitle={
+        Détection autonome et distribuée d'anomalies
+        dans les journaux système et réseau
+    },
+    pdfauthor={MARHEGANE BITATI André Olivier},
+    pdfsubject={Mémoire d'Ingénieur Civil Électricien},
+    pdfkeywords={
+        cybersécurité,
+        logs,
+        détection d'anomalies,
+        agents,
+        Redis,
+        machine learning,
+        Ariel Logminer
+    }
+}
+
 \setcounter{tocdepth}{2}
 \setcounter{secnumdepth}{3}
 
-\hypersetup{
-colorlinks=true,
-linkcolor=black,
-citecolor=black,
-urlcolor=blue
+% ============================================================
+% CHEMINS DES FIGURES
+% ============================================================
+
+\graphicspath{
+    {figures/}
+    {captures/}
+    {figures/dashboard/}
 }
 
-\graphicspath{{figures/}{captures/}}
+% ============================================================
+% COMMANDES DU MÉMOIRE
+% ============================================================
 
 \newcommand{\logminer}{Logminer}
-\newcommand{\universite}{UNIVERSITÉ DE KINSHASA}
-\newcommand{\faculte}{FACULTÉ POLYTECHNIQUE}
-\newcommand{\departement}{DÉPARTEMENT DE GÉNIE ÉLECTRIQUE ET INFORMATIQUE}
+
+\newcommand{\universite}{
+    UNIVERSITÉ DE KINSHASA
+}
+
+\newcommand{\faculte}{
+    FACULTÉ POLYTECHNIQUE
+}
+
+\newcommand{\departement}{
+    DÉPARTEMENT DE GÉNIE ÉLECTRIQUE ET INFORMATIQUE
+}
+
+% ============================================================
+% EN-TÊTES ET PIEDS DE PAGE
+% ============================================================
+
+\usepackage{fancyhdr}
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small Mémoire Logminer}
-\fancyfoot[C]{\thepage}
+
+\fancyhead[L]{
+    \small Ariel \logminer
+}
+
+\fancyfoot[C]{
+    \thepage
+}
+
 \renewcommand{\headrulewidth}{0.4pt}
+
 \setlength{\headheight}{15pt}
 
+% ============================================================
+% DOCUMENT
+% ============================================================
+
 \begin{document}
+
 \sloppy
 
+% ============================================================
+% PAGE DE GARDE
+% ============================================================
+
 \begin{titlepage}
+
 \centering
 
-{\Large\bfseries \universite\par}
+{\Large\bfseries
+\universite
+\par}
+
 \vspace{0.2cm}
 
 \IfFileExists{captures/unikin_logo.png}
-{\includegraphics[width=3cm]{unikin_logo.png}\par\vspace{0.8cm}}
+{
+    \includegraphics[width=3cm]{unikin_logo.png}
+    \par
+    \vspace{0.8cm}
+}
 {}
 
-{\large\bfseries \faculte\par}
+{\large\bfseries
+\faculte
+\par}
+
 \vspace{0.2cm}
 
-{\large\bfseries \departement\par}
+{\large\bfseries
+\departement
+\par}
+
 \vspace{0.8cm}
 
 {\Large
-Mémoire présenté et défendu en vue de l'obtention du titre d'Ingénieur Civil Électricien
+Mémoire présenté et défendu en vue de l'obtention du titre
+d'Ingénieur Civil Électricien
 \par}
 
 \vspace{0.4cm}
 
-{\large Orientation : Informatique\par}
-
-\vspace{1.0cm}
-
-{\huge\bfseries
-Détection autonome et distribuée d'anomalies dans les journaux systèmes et réseaux à l'aide d'agents intelligents multitâches
+{\large
+Orientation : Informatique
 \par}
 
-\vspace{0.35cm}
+\vspace{1cm}
+
+{\huge\bfseries
+Détection autonome et distribuée d'anomalies
+dans les journaux système et réseau
+à l'aide d'agents intelligents multitâches
+\par}
+
+\vspace{0.4cm}
 
 {\Large
-Conception et évaluation locale du prototype Ariel \logminer
+Conception et évaluation locale du prototype
+Ariel \logminer
 \par}
 
 \vfill
 
 {\small
+
 \noindent
 \begin{minipage}[t]{0.47\textwidth}
+
 \RaggedRight
+
 \textbf{Par :}\\
 MARHEGANE BITATI André Olivier
 
@@ -108,10 +227,13 @@ MARHEGANE BITATI André Olivier
 
 \textbf{Promotion :}\\
 2ICE-IN
+
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.47\textwidth}
+
 \RaggedRight
+
 \textbf{Directeur :}\\
 Prof. Dr Ir. KYANDOGHERE KYAMAKYA Jean Vianney
 
@@ -120,69 +242,286 @@ Prof. Dr Ir. KYANDOGHERE KYAMAKYA Jean Vianney
 \textbf{Co-directeurs :}\\
 Dr KAMBALE WITESYAVWIRWA Vianney\\
 Ir. civ. MUGISHA MUHIRE Jean-Pierre
+
 \end{minipage}
+
 }
 
-\vspace{0.4cm}
 \vfill
 
-{\large ANNÉE ACADÉMIQUE : 2025--2026\par}
+{\large
+ANNÉE ACADÉMIQUE : 2025--2026
+\par}
 
 \end{titlepage}
+
+% ============================================================
+% PAGES LIMINAIRES
+% ============================================================
 
 \pagenumbering{roman}
 
 \include{frontmatter/epigraphe}
+
 \include{frontmatter/dedicace}
+
 \include{frontmatter/remerciements}
+
 \include{frontmatter/declaration_ia}
+
+% ============================================================
+% RÉSUMÉ
+% ============================================================
 
 \chapter*{Résumé}
 \addcontentsline{toc}{chapter}{Résumé}
 
-Ce mémoire présente \logminer{}, un prototype local multi-agents destiné à la détection d'anomalies candidates dans des journaux systèmes et réseaux hétérogènes. Le système organise la collecte, le parsing, la normalisation, le routage multimodèle, la détection, la corrélation, l'audit, la mémoire adaptative et la visualisation. Les termes \textit{autonome}, \textit{distribué} et \textit{agents intelligents multitâches} sont employés dans un sens opérationnel : sélection des tâches selon une politique explicite, répartition locale multiprocessus via Redis Streams, mémoire locale et persistante, heartbeat et handlers multiples. L'objectif n'est pas de proposer un détecteur universel ni un SOC industriel, mais de valider une chaîne complète transformant des journaux hétérogènes en événements normalisés, anomalies candidates et incidents exploitables.
+Ce mémoire présente Ariel \logminer{}, un prototype modulaire destiné à
+l'analyse de journaux système et réseau hétérogènes et à la production
+d'anomalies candidates pouvant être examinées par un analyste.
+L'architecture associe parsing, normalisation, routage par famille,
+détection, corrélation, mémoire persistante, audit, communication entre
+agents et visualisation. Les notions d'autonomie et de distribution sont
+employées dans un sens strictement logiciel et expérimental :
+l'autonomie correspond à l'orchestration automatique de traitements
+selon des règles et des capacités déclarées, tandis que la distribution
+est validée dans un environnement local et multi-VM de laboratoire.
+Le prototype n'est donc présenté ni comme un détecteur universel ni
+comme un SOC industriel.
 
-L'évaluation combine des journaux Windows, des exports Wazuh, des journaux Linux/auth, HDFS, BGL et CICIDS2017. Les holdouts stricts donnent F1 = 0,826251 pour Linux/auth et F1 macro = 0,157744 pour CICIDS2017. Une comparaison contrôlée sur CICIDS2017 oppose une partition aléatoire à cinq holdouts par fichier/scénario associés aux graines 42--46. Une comparaison complémentaire de modèles légers porte le meilleur F1 strict CICIDS2017 à 0,233670 avec LogisticRegression, sans supprimer la fragilité inter-scénarios.
+L'évaluation met particulièrement en évidence l'influence du protocole
+expérimental sur les performances. Sur CICIDS2017, un Random Forest
+évalué avec une séparation aléatoire stratifiée obtient un F1 moyen de
 
-Les sorties non supervisées sont rapportées comme des anomalies candidates, notamment 3 676 signaux parmi 122 563 événements Wazuh. Sur HDFS/BGL, une validation complémentaire fondée sur Drain3, utilisant des modèles de messages, des fenêtres temporelles et une séparation entraînement--test, montre une progression modérée sur HDFS et une séparabilité très favorable sur BGL, sans constituer une preuve de généralisation universelle.
+\[
+0{,}995142 \pm 0{,}001013,
+\]
 
-Les benchmarks locaux indiquent une durée moyenne du workflow de 8,2012 secondes sur 10 micro-lots de 8 537 lignes et de 9,3300 secondes lors de la campagne CPU/RAM de 30 cycles. La campagne Redis locale de six heures valide 8 508 tâches uniques, aucune tâche finale en attente et 709 reprises après des pannes simulées. Une campagne distincte multi-VM supervisée d'une heure, exécutée avec Debian et Ubuntu sous VirtualBox, valide la consommation d'un flux Redis commun en laboratoire ; elle ne constitue pas une preuve d'industrialisation. Une comparaison contrôlée entre l'architecture monolithique et l'architecture à base d'agents ne montre pas de gain de débit sur de petits volumes, mais permet de mesurer le surcoût d'orchestration et la capacité de reprise après panne.
+avec un intervalle de confiance à 95\,\% de
 
-Les résultats montrent la faisabilité d'une approche locale, légère et interprétable pour l'analyse de journaux hétérogènes. La mémoire adaptative constitue une capitalisation auditable des historiques et des décisions de l'analyste ; une boucle complète d'apprentissage actif reste une perspective. Les principales limites concernent notamment la consolidation d'un déploiement multi-machine sécurisé, la réduction mesurée des faux positifs, l'apprentissage continu contrôlé et l'industrialisation dans un environnement SOC.
+\[
+[0{,}993884\,;\,0{,}996400],
+\]
+
+pour cinq graines. Lorsque cinq scénarios sont successivement tenus hors
+entraînement, le F1 macro tombe à
+
+\[
+0{,}157744.
+\]
+
+Le scénario DDoS conserve un F1 de $0{,}778774$, tandis que PortScan,
+Bot, Infiltration et WebAttacks révèlent des performances très faibles
+ou nulles au seuil retenu. La comparaison de cinq modèles légers montre
+que Logistic Regression obtient le meilleur F1 macro, soit
+$0{,}233670$, alors que HistGradientBoosting obtient une PR-AUC macro de
+$0{,}567697$. Ces résultats indiquent qu'un changement de modèle
+améliore certaines métriques sans supprimer la fragilité inter-scénarios.
+
+Pour HDFS et BGL, le protocole final sépare strictement entraînement,
+validation et test. Drain3 est ajusté uniquement sur l'entraînement puis
+gelé avant les deux partitions suivantes. Avec la méthode Histogram, le
+F1 obtenu est de $0{,}269307$ sur HDFS et de $0{,}913698$ sur BGL.
+Ces résultats doivent être interprétés respectivement avec la granularité
+des labels HDFS et avec le fort déplacement de templates observé sur
+BGL.
+
+La validation multiformat produit $5\,001$ sorties normalisées sur
+$7\,001$ unités lues ; les voies générales HDFS et BGL restent
+incomplètes dans cette campagne. Le routeur attribue correctement
+$80$ fichiers sur $81$ dans son corpus dérivé, avec une exactitude de
+$0{,}987654$ et un F1 macro de $0{,}883598$. Cette bonne attribution
+n'entraîne toutefois pas un gain prédictif systématique des modèles
+spécialisés.
+
+Le benchmark contrôlé montre également que l'architecture à agents
+n'améliore pas le débit à la charge testée : le monolithe atteint
+$1{,}6357$ tâche/s contre $1{,}5715$ tâche/s pour les agents. Leur intérêt
+principal réside donc dans la modularité, la séparation des
+responsabilités, l'audit et les mécanismes de reprise.
+
+La campagne multi-VM principale valide $525$ entrées lues et acquittées
+par un consumer group Redis, avec un lag et un pending finaux nuls.
+Cette observation constitue une preuve de transport distribué en
+laboratoire et non une démonstration de haute disponibilité
+industrielle. Le corrélateur, évalué sur un corpus synthétique contrôlé,
+obtient une précision de $0{,}764706$, un rappel de $0{,}866667$ et un
+F1 pairwise de $0{,}812500$.
+
+Enfin, une procédure de mise à jour contrôlée des modèles est validée de
+bout en bout avec une promotion, un rejet pour dégradation et un rejet
+pour amélioration inférieure au seuil minimal.
+
+Les cinq hypothèses de recherche sont finalement partiellement
+soutenues. Les cinq premières questions de recherche reçoivent des
+réponses partielles, tandis que la méthode d'évaluation reçoit une
+réponse forte dans le périmètre du prototype. La contribution principale
+d'Ariel \logminer{} réside ainsi dans l'intégration architecturale et
+méthodologique d'une chaîne locale, modulaire, auditable et
+expérimentalement traçable pour l'analyse de journaux hétérogènes.
+
+\bigskip
+
+\noindent
+\textbf{Mots-clés :}
+cybersécurité, journaux système, journaux réseau, détection d'anomalies,
+agents intelligents, Redis Streams, routage, corrélation, apprentissage
+automatique, reproductibilité.
+
+% ============================================================
+% ABSTRACT
+% ============================================================
 
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
 
-This thesis presents \logminer{}, a modular prototype for anomaly detection in heterogeneous system and network logs. The system combines log collection, parsing, normalization, family-aware routing, detection, correlation, auditing, adaptive memory, and visualization. The terms \textit{autonomous}, \textit{distributed}, and \textit{intelligent multi-task agents} are used in an operational sense: explicit task-selection policies, local multiprocess distribution through Redis Streams, local and persistent memory, heartbeat mechanisms, and multiple handlers. The objective is not to propose a universal detector or an industrial SOC platform, but to validate a local end-to-end processing chain that transforms heterogeneous logs into normalized events, anomaly candidates, and analyst-readable incidents.
+This thesis presents Ariel \logminer{}, a modular prototype for the
+analysis of heterogeneous system and network logs and the production of
+candidate anomalies that can subsequently be inspected by an analyst.
+The architecture combines parsing, normalization, family-aware routing,
+detection, correlation, persistent memory, auditing, agent communication,
+and visualization. Autonomy and distribution are deliberately used in a
+restricted software and experimental sense: autonomy refers to the
+automatic orchestration of processing tasks according to explicit rules
+and declared capabilities, while distribution is validated in local and
+multi-VM laboratory environments. The prototype is therefore neither
+presented as a universal anomaly detector nor as an industrial SOC
+platform.
 
-The evaluation combines local Windows logs, Wazuh exports, Linux/auth logs, HDFS, BGL, and CICIDS2017. Strict holdout protocols yield F1 = 0.826251 for Linux/auth and macro F1 = 0.157744 for CICIDS2017. A controlled CICIDS2017 comparison contrasts a random stratified split with five file/scenario holdouts associated with seeds 42--46. A complementary comparison of lightweight models raises the best strict CICIDS2017 F1-score to 0.233670 with LogisticRegression, without removing the inter-scenario fragility.
+The evaluation particularly highlights the influence of the experimental
+protocol on measured performance. On CICIDS2017, a Random Forest evaluated
+with a stratified random split reaches a mean F1-score of
 
-Unsupervised outputs are reported as anomaly candidates, including 3,676 signals among 122,563 Wazuh events. For HDFS and BGL, an additional Drain3-based validation using message templates, temporal windows, and a train--test split shows moderate improvement on HDFS and highly favorable separability on BGL, without providing evidence of universal generalization.
+\[
+0.995142 \pm 0.001013,
+\]
 
-Local benchmarks report a mean workflow duration of 8.2012 seconds over 10 micro-batches of 8,537 lines and 9.3300 seconds during the 30-cycle CPU/RAM campaign. The local six-hour Redis campaign validates 8,508 unique completed tasks, no tasks pending at completion, and 709 successful recoveries after simulated failures. A distinct supervised one-hour multi-VM laboratory campaign, executed with Debian and Ubuntu under VirtualBox, validates consumption of a shared Redis stream; it is not evidence of industrial deployment. A controlled comparison between the monolithic architecture and the agent-based architecture does not show a throughput improvement on small workloads, but quantifies orchestration overhead and demonstrates failure-recovery capability.
+with a 95\% confidence interval of
 
-The results support the feasibility of a local, lightweight, and interpretable approach to heterogeneous log analysis. Adaptive memory is treated as an auditable accumulation of execution histories and analyst decisions, while a complete active-learning loop remains future work. The main limitations include consolidating a secured multi-machine deployment, measured false-positive reduction, controlled continuous learning, and industrial-scale deployment within a SOC environment.
+\[
+[0.993884;\,0.996400],
+\]
 
+over five seeds. When five scenarios are successively held out from
+training, the macro F1-score falls to
+
+\[
+0.157744.
+\]
+
+The DDoS scenario retains an F1-score of $0.778774$, whereas PortScan,
+Bot, Infiltration, and WebAttacks exhibit very low or null performance at
+the selected decision threshold. A comparison of five lightweight
+models shows that Logistic Regression achieves the highest macro
+F1-score, $0.233670$, while HistGradientBoosting reaches a macro PR-AUC
+of $0.567697$. Changing the classifier therefore improves some metrics
+without eliminating inter-scenario fragility.
+
+For HDFS and BGL, the final protocol strictly separates training,
+validation, and test partitions. Drain3 is fitted only on the training
+partition and frozen before validation and test. With the Histogram
+method, the resulting F1-score is $0.269307$ on HDFS and $0.913698$ on
+BGL. These values must respectively be interpreted in light of the HDFS
+label granularity and the substantial template distribution shift
+observed in BGL.
+
+The multi-format validation produces $5,001$ normalized outputs from
+$7,001$ input units. The generic HDFS and BGL paths remain incomplete in
+this campaign. The router correctly assigns $80$ out of $81$ files in
+its derived corpus, with an accuracy of $0.987654$ and a macro F1-score
+of $0.883598$. This routing performance, however, does not systematically
+translate into better predictive performance for specialized models.
+
+The controlled architecture benchmark also shows that agents do not
+increase throughput at the tested workload. The monolithic execution
+reaches $1.6357$ task/s, compared with $1.5715$ task/s for the agent-based
+execution. The value of the agent architecture therefore lies primarily
+in modularity, separation of responsibilities, auditing, and targeted
+task-recovery mechanisms.
+
+The main multi-VM campaign records $525$ entries read and acknowledged
+by a Redis consumer group, with zero final lag and zero pending entries.
+This provides laboratory evidence of distributed message consumption but
+does not demonstrate industrial high availability. The correlation
+mechanism, evaluated on a controlled synthetic corpus, obtains a
+precision of $0.764706$, a recall of $0.866667$, and a pairwise F1-score
+of $0.812500$.
+
+Finally, the controlled model-update procedure is exercised end to end
+through one promotion, one rejection due to degradation, and one
+rejection because the improvement remains below the minimum threshold.
+
+All five research hypotheses are ultimately partially supported. The
+first five research questions receive partial answers, while the
+evaluation methodology receives a strong answer within the prototype
+scope. Ariel \logminer{} therefore contributes primarily an
+architectural and methodological framework for a local, modular,
+auditable, and experimentally traceable heterogeneous-log analysis
+pipeline.
+
+\bigskip
+
+\noindent
+\textbf{Keywords:}
+cybersecurity, system logs, network logs, anomaly detection,
+intelligent agents, Redis Streams, routing, correlation,
+machine learning, reproducibility.
+
+% ============================================================
+% TABLES PRÉLIMINAIRES
+% ============================================================
 
 \tableofcontents
+
 \listoffigures
+
 \listoftables
 
 \include{frontmatter/acronymes}
 
+% ============================================================
+% CORPS DU MÉMOIRE
+% ============================================================
+
 \clearpage
 \pagenumbering{arabic}
 
+% Introduction générale non numérotée
 \include{chapters/chapitre1_introduction}
+
+% Chapitre 1
 \include{chapters/chapitre2_etat_art}
+
+% Chapitre 2
 \include{chapters/chapitre3_modele_propose}
+
+% Chapitre 3
 \include{chapters/chapitre4_implementation}
+
+% Chapitre 4
 \include{chapters/chapitre5_resultats}
+
+% Chapitre 5
 \include{chapters/chapitre6_approfondissements_scientifiques}
+
+% Chapitre 6
 \include{chapters/chapitre6_discussion}
+
+% Chapitre 7
 \include{chapters/chapitre7_reproductibilite_deploiement}
+
+% Conclusion générale non numérotée
 \include{chapters/chapitre6_conclusion}
+
+% ============================================================
+% ANNEXES
+% ============================================================
+
 \include{chapters/annexes}
+
+% ============================================================
+% BIBLIOGRAPHIE
+% ============================================================
 
 \bibliographystyle{plain}
 \bibliography{references}

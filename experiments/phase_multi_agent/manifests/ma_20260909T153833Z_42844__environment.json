@@ -1,0 +1,26 @@
+{
+  "run_id": "ma_20260909T153833Z_42844",
+  "created_at": "2026-09-09T15:38:46.044831+00:00",
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 142 Stepping 10, GenuineIntel",
+  "logical_processors": 8,
+  "physical_cores": 4,
+  "ram_bytes": 8425529344,
+  "arguments": {
+    "loads": "4",
+    "repetitions": 1,
+    "workers": 3,
+    "base_seed": 731941,
+    "skip_end_to_end": false
+  },
+  "agent_message_fields": [
+    "run_id",
+    "source",
+    "target",
+    "message_type",
+    "payload",
+    "status",
+    "timestamp"
+  ]
+}

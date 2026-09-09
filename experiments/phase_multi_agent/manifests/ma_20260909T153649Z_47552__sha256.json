@@ -1,0 +1,126 @@
+{
+  "run_id": "ma_20260909T153649Z_47552",
+  "created_at": "2026-09-09T15:37:10.464050+00:00",
+  "files": [
+    {
+      "path": "experiments/phase_multi_agent/aggregated/ma_20260909T153649Z_47552__statistics.csv",
+      "bytes": 7210,
+      "sha256": "abe1931497cee5ed72253467a1e33abcd03c089810ad84a64fb1231c0bfa17dc"
+    },
+    {
+      "path": "experiments/phase_multi_agent/figures/ma_20260909T153649Z_47552/01_throughput_vs_load.png",
+      "bytes": 39027,
+      "sha256": "0b68e96e35bf6b78fe5f3d3223b7c4d655e6a64f654b42dfd7b04f28284d3301"
+    },
+    {
+      "path": "experiments/phase_multi_agent/figures/ma_20260909T153649Z_47552/02_p95_latency_vs_load.png",
+      "bytes": 35112,
+      "sha256": "3b20609b7c48daab3cc4d5178847aeb6d7254b1aa612c1da62e8bb1571c15849"
+    },
+    {
+      "path": "experiments/phase_multi_agent/figures/ma_20260909T153649Z_47552/03_cpu_vs_load.png",
+      "bytes": 39367,
+      "sha256": "819840881a07667088b6152843f0d697430c42af38dbe9eed2af1df4a308c137"
+    },
+    {
+      "path": "experiments/phase_multi_agent/figures/ma_20260909T153649Z_47552/04_rss_vs_load.png",
+      "bytes": 41328,
+      "sha256": "cbdd306d46aa6d07882dea4773f080cfc6a52a293212baf393d837c89e385bba"
+    },
+    {
+      "path": "experiments/phase_multi_agent/figures/ma_20260909T153649Z_47552/05_messages_per_task.png",
+      "bytes": 34723,
+      "sha256": "3474ce8a8356f2b471da1dfaf8e6397d269bf137f33df49e8412444c4d9a6f3a"
+    },
+    {
+      "path": "experiments/phase_multi_agent/figures/ma_20260909T153649Z_47552/06_jain_fairness.png",
+      "bytes": 38241,
+      "sha256": "aa84e23f64b82863f4b9f712dd9f7e7d0708b143ac7e50f369c2bbe941a59913"
+    },
+    {
+      "path": "experiments/phase_multi_agent/figures/ma_20260909T153649Z_47552/07_memory_ablation.png",
+      "bytes": 32444,
+      "sha256": "6d4aa8e07f6720f513569f872cc64d8843e38078659cf25833195d41778068c2"
+    },
+    {
+      "path": "experiments/phase_multi_agent/figures/ma_20260909T153649Z_47552/08_recovery_idempotency.png",
+      "bytes": 40588,
+      "sha256": "7e8ca6d25afbcd52e9772dbcd355fa8a563afb3ec1302f45f55bc6c26d4a6787"
+    },
+    {
+      "path": "experiments/phase_multi_agent/figures/ma_20260909T153649Z_47552/09_agent_utility_over_time.png",
+      "bytes": 68370,
+      "sha256": "c3a5affe10c3bd4adcc576a523ac069a2bd48653a8894938a4692b3ce3a6b329"
+    },
+    {
+      "path": "experiments/phase_multi_agent/figures/ma_20260909T153649Z_47552/10_end_to_end_pipeline.png",
+      "bytes": 45496,
+      "sha256": "89c42b1786b76bdceae5ea8e27abd00826013dd014d507483b52d5d26b81ea76"
+    },
+    {
+      "path": "experiments/phase_multi_agent/logs/ma_20260909T153649Z_47552__representative_cnp_messages.jsonl",
+      "bytes": 129422,
+      "sha256": "b70d33b54a0d53523322dc598fed0d0dacb1a7a43453221c6745c1f421f4445d"
+    },
+    {
+      "path": "experiments/phase_multi_agent/manifests/ma_20260909T153649Z_47552__environment.json",
+      "bytes": 682,
+      "sha256": "e1d1041dd9b0c7b37e7cc06ded4b1b7c9711daa830bf5a584e2b2e6d0158de34"
+    },
+    {
+      "path": "experiments/phase_multi_agent/raw/ma_20260909T153649Z_47552__adaptation.csv",
+      "bytes": 10314,
+      "sha256": "70454810b97715ba48e31e29a60abcb50cf6c083081c664c4d33fd5367258dad"
+    },
+    {
+      "path": "experiments/phase_multi_agent/raw/ma_20260909T153649Z_47552__end_to_end.json",
+      "bytes": 11056,
+      "sha256": "db5869e5a7cbe39cccb2bee1a4788e3f83b253dd859170a5ba73389e3ac12fca"
+    },
+    {
+      "path": "experiments/phase_multi_agent/raw/ma_20260909T153649Z_47552__end_to_end_outputs/2ad0416f7e8c47198391d450d7c24b8e_anomalies.csv",
+      "bytes": 946,
+      "sha256": "5035fdc176c999a4b705a3e878a93ca9259ab62a620a805cf213c363a9c5802a"
+    },
+    {
+      "path": "experiments/phase_multi_agent/raw/ma_20260909T153649Z_47552__end_to_end_outputs/2ad0416f7e8c47198391d450d7c24b8e_incidents.csv",
+      "bytes": 194,
+      "sha256": "e916d7b5e29df1d6fa4fd781cddf4ce75efc399901be505ee515e4eb2b782b93"
+    },
+    {
+      "path": "experiments/phase_multi_agent/raw/ma_20260909T153649Z_47552__end_to_end_outputs/e2e_incidents_explicit.csv",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "experiments/phase_multi_agent/raw/ma_20260909T153649Z_47552__end_to_end_outputs/e2e_parsed.csv",
+      "bytes": 694,
+      "sha256": "c82fbdce4ca631b6b93fcea444b1c101b20a264a8ce7b6f94277f4b492f0dc71"
+    },
+    {
+      "path": "experiments/phase_multi_agent/raw/ma_20260909T153649Z_47552__recovery.json",
+      "bytes": 469,
+      "sha256": "304500e58a6f49498dfa3d6e7451a1615db48e725b3e6ec41c0ae4fd670de3ac"
+    },
+    {
+      "path": "experiments/phase_multi_agent/raw/ma_20260909T153649Z_47552__recovery_idempotency.sqlite3",
+      "bytes": 12288,
+      "sha256": "9545bf04d84d8c5e7a6862892334311cf9b26e8128b04f38460d7c60953c3212"
+    },
+    {
+      "path": "experiments/phase_multi_agent/raw/ma_20260909T153649Z_47552__runs.csv",
+      "bytes": 1392,
+      "sha256": "7d66de8eac7f380a210df6a84116e9ea96632bf0471d73b79b43214cc750ee57"
+    },
+    {
+      "path": "experiments/phase_multi_agent/raw/ma_20260909T153649Z_47552__task_latencies.csv",
+      "bytes": 4493,
+      "sha256": "78fef88d4ac609ea091cdde2f075be4255dfc2f605d13b2c45de18750a827ecd"
+    },
+    {
+      "path": "experiments/phase_multi_agent/reports/ma_20260909T153649Z_47552__summary.md",
+      "bytes": 1613,
+      "sha256": "3cc1ad26820ea4e59616a09db24277cd2b744b2251284f4fdccf8eee7e67883c"
+    }
+  ]
+}

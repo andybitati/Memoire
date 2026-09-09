@@ -1,115 +1,1357 @@
-\chapter{Etat de l'art}
+\chapter{État de l'art et fondements}
+\label{chap:etat-art}
 
-\section{Journalisation systeme et reseau}
-La journalisation consiste a enregistrer les evenements produits par un systeme, une application ou un equipement reseau. Les journaux peuvent documenter des authentifications, erreurs, acces aux fichiers, requetes web, changements de configuration ou alertes de securite. Le guide NIST SP 800-92 souligne l'importance de la collecte, de la conservation, de l'analyse et de la protection des journaux dans une strategie de securite \cite{nist80092}.
+\section{Introduction}
 
-Les formats sont nombreux. Le protocole syslog structure les messages systemes selon une logique d'horodatage, d'hote, de severite et de contenu \cite{rfc5424}. Windows Event Log encode les evenements dans un format propre aux systemes Microsoft. Apache produit des lignes textuelles d'acces et d'erreur. Les outils SIEM/HIDS comme Wazuh enrichissent les evenements avec des regles, niveaux de severite, agents et groupes. Les datasets reseau comme CICIDS2017 et UNSW-NB15 fournissent plutot des flux tabulaires avec des caracteristiques numeriques.
+L'analyse des journaux système et réseau se situe à l'intersection de plusieurs domaines :
+administration des systèmes, cybersécurité, traitement de données, apprentissage automatique
+et ingénierie logicielle. La détection d'une activité inhabituelle ne dépend pas uniquement
+de la qualité d'un classifieur. Elle suppose également de disposer de données exploitables,
+d'identifier correctement leur structure, de choisir un traitement compatible avec leur
+nature, de conserver le contexte utile et de restituer les résultats sous une forme qui
+permette leur vérification.
 
-Cette heterogeneite rend difficile une detection unifiee. Avant toute detection, il faut donc parser les journaux, extraire les champs utiles et les normaliser dans un schema commun.
+Cette observation explique la diversité des travaux consacrés à l'analyse automatisée des
+journaux. Certaines approches privilégient les règles et les signatures ; d'autres reposent
+sur des modèles statistiques ou d'apprentissage automatique. Une autre famille de travaux
+s'intéresse au parsing des messages, notamment lorsque les événements sont semi-structurés.
+Les recherches plus récentes exploitent des séquences, des représentations sémantiques ou
+des architectures profondes afin de tenir compte du contexte entre événements. En parallèle,
+les systèmes de sécurité opérationnels introduisent des préoccupations supplémentaires :
+distribution des traitements, audit, corrélation, persistance, gestion des erreurs et
+interaction avec l'analyste.
 
-\section{Detection d'intrusion et detection d'anomalies}
-La detection d'intrusion vise a identifier des activites malveillantes ou non autorisees. Denning a propose un modele fonde sur l'observation des traces d'audit et la detection de deviations par rapport a un comportement attendu \cite{denning1987intrusion}. Axelsson a ensuite propose une taxonomie des systemes de detection d'intrusion, distinguant notamment les approches par signatures et les approches par anomalies \cite{axelsson2000intrusion}.
+L'objectif de ce chapitre n'est donc pas d'établir un catalogue d'algorithmes. Il consiste
+à examiner les principales solutions utiles au problème étudié, à identifier leurs forces
+et leurs limites, puis à situer précisément le besoin auquel répond le prototype
+\logminer{}. L'analyse est organisée autour de cinq questions : comment représenter des
+journaux hétérogènes, comment détecter les événements atypiques, comment choisir ou
+orchestrer plusieurs traitements, comment conserver suffisamment de contexte pour
+l'analyse, et comment évaluer une telle chaîne sans confondre performance expérimentale
+et efficacité opérationnelle.
 
-La detection d'anomalies cherche a reperer des observations rares, inattendues ou eloignees d'un comportement normal. Chandola et al. classent les anomalies en anomalies ponctuelles, contextuelles et collectives \cite{chandola2009anomaly}. Dans les journaux, une anomalie peut etre une erreur isolee, une sequence inhabituelle, une activite rare d'un utilisateur ou un pic d'evenements.
+\section{Journaux système et réseau}
 
-\section{Approches classiques}
-Les approches classiques reposent souvent sur des regles, des seuils, des signatures ou des statistiques simples. Elles sont interpretable et operationnelles, mais elles capturent surtout des comportements connus. Des outils comme fail2ban peuvent reagir a des echecs repetes d'authentification en appliquant un bannissement IP. Des plateformes HIDS/SIEM comme OSSEC ou Wazuh utilisent des decoders, regles et correlations pour produire des alertes.
+\subsection{Rôle des journaux dans la cybersécurité}
 
-Ces outils restent essentiels en production, mais ils peuvent generer des faux positifs et demandent une configuration adaptee. Ils detectent difficilement des comportements nouveaux si aucune regle ne les couvre. Le prototype \logminer{} se positionne donc comme un complement analytique, non comme un remplacement de ces outils.
+Un journal est une trace produite par un système, une application, un service ou un
+équipement afin de rendre observable une partie de son activité. Selon la source, un
+événement peut décrire une authentification, une erreur, une modification de configuration,
+un accès à une ressource, une connexion réseau, l'exécution d'un processus ou le
+déclenchement d'une règle de sécurité.
 
-\section{Machine learning pour la detection}
-Les methodes de machine learning permettent d'apprendre des frontieres ou des comportements a partir de donnees. Les modeles supervises, comme RandomForest, necessitent des donnees labelisees. Ils peuvent produire de tres bons scores sur des datasets tabulaires, mais dependent fortement de la qualite des labels et de la stabilite des distributions. Les methodes non supervisees, comme Isolation Forest, identifient plutot des points rares sans disposer de labels. Leurs sorties doivent etre interpretees comme des anomalies candidates.
+La journalisation constitue une composante essentielle de la supervision et de l'audit.
+Le guide NIST SP 800-92 présente la gestion des logs comme un processus couvrant notamment
+leur génération, leur transmission, leur stockage, leur analyse et leur conservation
+\cite{nist80092}. Une organisation qui conserve des événements sans disposer de mécanismes
+permettant de les rechercher, de les rapprocher ou de les interpréter ne bénéficie donc
+que partiellement de la valeur de ces traces.
 
-Buczak et Guven recensent de nombreuses methodes de machine learning appliquees a la cybersecurite \cite{buczak2016survey}. Khraisat et al. soulignent l'importance des datasets, de l'evaluation et des limites liees aux environnements reels \cite{khraisat2019survey}. Sommer et Paxson mettent en garde contre l'utilisation de machine learning hors du monde ferme des datasets experimentaux \cite{sommer2010outside}. Cette prudence guide l'interpretation des resultats de ce memoire.
+Dans le domaine de la sécurité, les journaux jouent plusieurs rôles. Ils peuvent servir à
+identifier une activité anormale pendant son déroulement, à reconstruire une chronologie
+après un incident, à vérifier le respect de certaines politiques ou encore à fournir des
+éléments à une investigation. Cette multiplicité des usages impose de préserver non
+seulement le contenu technique d'un événement, mais également son contexte : source,
+horodatage, hôte, utilisateur, service concerné, niveau de sévérité et relation éventuelle
+avec d'autres observations.
 
-RandomForest occupe une place importante dans les experimentations supervisees car il combine plusieurs arbres de decision afin de reduire la variance et d'ameliorer la robustesse \cite{breiman2001random}. Ce type de modele est bien adapte aux donnees tabulaires issues de flux reseau ou de journaux deja transformes en variables numeriques. Il demande moins de pretraitement que certains modeles lineaires et donne souvent de bons resultats avec un effort de parametrage raisonnable. Cette facilite d'utilisation ne supprime cependant pas les precautions necessaires : un modele peut apprendre des specificites du dataset, voire des biais introduits par la collecte ou la preparation.
+\subsection{Hétérogénéité des sources}
 
-Isolation Forest est utilise pour la partie non supervisee car il repose sur une idee compatible avec la detection d'anomalies : les observations rares sont souvent plus faciles a isoler que les observations normales \cite{liu2008isolation}. D'autres methodes non supervisees existent, notamment Local Outlier Factor, One-Class SVM ou k-means utilise comme baseline de regroupement \cite{breunig2000lof,scholkopf2001estimating,macqueen1967kmeans}. Elles ne produisent pas toutes le meme type de signal. Certaines capturent une densite locale, d'autres une frontiere globale, d'autres une distance a un centre. Cette diversite justifie la comparaison experimentale plutot qu'un choix purement theorique.
+La difficulté apparaît dès que plusieurs familles de journaux doivent être analysées dans
+une même chaîne. Un événement Windows, une ligne syslog, un accès Apache et un flux réseau
+ne possèdent ni la même structure ni les mêmes variables.
 
-\section{Deep learning et analyse de logs}
-Les approches profondes ont marque l'analyse de logs, notamment avec des modeles de sequences. DeepLog utilise des reseaux recurrentiels pour apprendre les sequences normales d'evenements et detecter des deviations \cite{du2017deeplog}. D'autres travaux exploitent des templates, embeddings ou architectures de type Transformer. Ces methodes sont puissantes, mais elles demandent souvent des volumes importants, une preparation fine des sequences et des ressources plus elevees.
+Le protocole syslog fournit un format destiné au transport et à la représentation de
+messages provenant de systèmes et d'équipements différents \cite{rfc5424}. Il structure
+notamment des informations d'en-tête et un contenu de message. Cette standardisation
+n'implique toutefois pas que toutes les applications produisent des événements possédant
+la même sémantique.
 
-Le prototype \logminer{} privilegie une approche plus legere : normalisation, routage par famille, modeles specialises et dashboard d'audit. Le deep learning est donc considere comme une perspective ou un point de comparaison, plutot que comme le coeur de l'implementation.
+Les environnements Windows utilisent leurs propres mécanismes de journalisation. Les
+événements peuvent être organisés par canal, fournisseur, niveau, identifiant et données
+associées. À l'inverse, de nombreux journaux Linux restent textuels ou semi-structurés.
+Les serveurs web utilisent encore d'autres structures, généralement orientées autour des
+requêtes, des codes de réponse et des ressources consultées.
 
-La litterature recente sur les logs montre aussi l'importance du parsing automatique et de la representation sequentielle. LogAnomaly combine par exemple des informations sequentielles et quantitatives afin de detecter des comportements atypiques dans des logs non structures \cite{meng2019loganomaly}. Ces methodes sont pertinentes lorsque l'ordre des evenements porte une information essentielle, comme dans des systemes distribues ou des services applicatifs complexes. Leur integration dans \logminer{} demanderait une evolution du pipeline vers des fenetres temporelles, des templates de messages et une gestion plus explicite des sequences.
+Les plateformes HIDS et SIEM ajoutent un niveau d'enrichissement. Un événement peut y être
+accompagné d'un identifiant de règle, d'une catégorie, d'un niveau de sévérité, d'un agent
+ou d'informations extraites par un décodeur. Les données de détection réseau sont souvent
+encore différentes : elles peuvent être représentées sous forme de flux et de
+caractéristiques numériques calculées à partir de paquets ou de sessions.
 
-\section{Travaux recents sur les representations de logs}
-Depuis 2021, l'analyse automatique de logs s'est rapprochee des modeles de langage et des representations semantiques. LogBERT applique une logique BERT auto-supervisee aux sequences de logs, avec prediction masquee et apprentissage du comportement normal \cite{guo2021logbert}. SSDLog propose une approche semi-supervisee de type enseignant--etudiant afin de limiter la dependance aux labels complets \cite{lu2023ssdlog}. LTAnomaly combine representations multi-echelles, informations semantiques, valeurs de composants, LSTM et Transformer sur HDFS et BGL \cite{han2023ltanomaly}. Ces travaux montrent que l'etat de l'art ne se limite plus aux premiers reseaux recurrents : il s'oriente vers des representations plus riches, capables de combiner sequence, contexte et semantique.
+Cette diversité explique pourquoi la notion de ``log'' ne doit pas être réduite à une simple
+ligne de texte. Dans une architecture multi-source, la première difficulté est de construire
+une représentation suffisamment commune pour permettre certaines opérations transversales,
+sans supprimer les attributs spécifiques nécessaires aux traitements spécialisés.
 
-Cette evolution ne rend pas automatiquement obsolete une approche plus legere. Elle precise plutot son perimetre. \logminer{} ne revendique pas de battre ces modeles profonds sur les benchmarks de logs systemes. Sa contribution est d'integrer parsing, routage, detection, correlation et visualisation dans une chaine auditable. Les resultats HDFS/BGL fondes sur Drain3 et fenetres doivent donc etre lus comme une consolidation du protocole de representation, pas comme une substitution aux architectures Transformer specialisees.
+\subsection{Typologie utile pour une chaîne d'analyse}
 
-Les methodes recentes insistent aussi sur le parsing moderne. LogSL formule le parsing comme une tache auto-supervisee afin d'ameliorer la robustesse face aux formats heterogenes et au manque de labels \cite{cao2024logsl}. SemantiLog illustre la tendance a utiliser la similarite semantique pour rapprocher des messages de logs au-dela de leur forme textuelle exacte \cite{shavit2024semantilog}. Ces travaux soutiennent le choix d'ajouter Drain3 dans \logminer{} : l'extraction de templates n'est pas un detail de pretraitement, mais une etape qui influence directement la qualite de la detection.
+Pour le problème étudié dans ce mémoire, quatre catégories sont particulièrement
+importantes.
 
-\section{Parsing et normalisation}
-Le parsing transforme des lignes brutes en champs exploitables. Des methodes comme Drain structurent les messages en templates pour faciliter l'analyse \cite{he2016drain}. Dans \logminer, le parsing est multi-format et vise d'abord a conserver les informations essentielles : timestamp, source, hote, utilisateur, categorie, message, severite et champs numeriques si disponibles.
+La première regroupe les \textbf{journaux système}. Ils décrivent notamment
+l'authentification, les services, les processus, les erreurs et les événements propres au
+système d'exploitation. Ils sont utiles pour détecter des comportements inhabituels sur un
+hôte, mais présentent souvent une forte dépendance au système et au contexte d'exécution.
 
-La normalisation est un enjeu central. Elle permet de traiter de maniere coherente des journaux issus de sources differentes. Sans schema commun, il serait difficile de router les evenements, de comparer les modeles ou d'afficher les resultats dans un tableau de bord unique.
+La deuxième catégorie correspond aux \textbf{journaux applicatifs}. Leur contenu dépend de
+l'application observée. Un serveur web, une base de données et un service métier ne
+produisent pas les mêmes événements. L'analyse doit par conséquent éviter de supposer qu'un
+ensemble unique de variables représente convenablement toutes les applications.
 
-Les travaux sur le parsing automatique rappellent qu'un journal n'est pas seulement une chaine de caracteres. Il contient souvent une partie stable, correspondant au template, et une partie variable, correspondant aux parametres. Les benchmarks de parsing montrent que la qualite de cette separation influence directement les analyses ulterieures \cite{zhu2019logparser}. Dans ce memoire, l'objectif n'est pas de remplacer les parseurs specialises par un extracteur universel, mais de combiner des parseurs controles avec une strategie de conservation des entrees inconnues.
+La troisième catégorie couvre les \textbf{événements de sécurité enrichis}. Ils sont
+produits ou transformés par des outils de supervision. Leur intérêt réside dans la présence
+d'informations déjà interprétées : règles, niveaux, catégories ou indications sur la source.
+Ils ne sont cependant pas exempts de faux positifs et ne constituent pas nécessairement une
+vérité terrain.
 
-\section{Datasets et evaluation en detection d'intrusion}
-Les datasets jouent un role central dans l'evaluation des systemes de detection. Ils permettent de comparer des methodes et de disposer de labels lorsque les journaux reels n'en fournissent pas. CICIDS2017 a ete propose pour produire un trafic plus representatif que certains jeux anciens, avec plusieurs scenarios d'attaque et des caracteristiques de flux reseau \cite{sharafaldin2018cicids}. UNSW-NB15 a egalement ete construit pour evaluer les systemes de detection d'intrusion sur un melange de trafic normal et d'attaques \cite{moustafa2015unsw}.
+La quatrième catégorie regroupe les \textbf{données de trafic ou de flux réseau}. Dans les
+datasets utilisés pour l'apprentissage automatique, elles sont souvent représentées sous
+forme tabulaire. Elles se prêtent particulièrement bien aux modèles supervisés, mais leur
+structure est très différente de celle d'un message système textuel.
 
-Ces datasets sont utiles, mais ils ne doivent pas etre confondus avec la realite complete d'une infrastructure. Ils representent un contexte de collecte, des attaques choisies, des outils de generation et une convention de labellisation. Les scores obtenus sur ces donnees mesurent donc la performance dans un cadre experimental donne. Cette nuance est importante lorsque les F1-scores sont tres eleves : un resultat proche de 1 peut indiquer un modele performant, mais aussi un dataset dont les classes sont fortement separables.
+Cette typologie montre déjà une limite d'une approche uniforme : deux sources peuvent
+participer au même objectif de détection tout en nécessitant des prétraitements, des
+caractéristiques et des modèles distincts.
 
-Pour les journaux systemes comme HDFS ou BGL, l'evaluation pose un autre probleme. Les anomalies peuvent dependre d'une sequence, d'une fenetre temporelle ou d'un comportement collectif. Un modele ligne par ligne peut donc etre insuffisant. Les approches fondees sur templates et sequences sont souvent plus adaptees, mais elles augmentent la complexite du pipeline. Dans ce memoire, ces datasets servent a montrer a la fois la capacite du prototype a traiter des logs publics et les limites des features legeres lorsque la structure sequentielle devient dominante.
+\section{Détection d'intrusion et détection d'anomalies}
 
-\section{Systemes multi-agents pour la securite}
-Les architectures multi-agents ont ete explorees pour la detection d'intrusion distribuee. AAFID propose par exemple une architecture fondee sur des agents autonomes collectant et analysant des evenements locaux avant aggregation \cite{balasubramaniyan1998aafid}. Dans ce memoire, le terme agent designe des modules logiciels specialises et cooperants. Il ne s'agit pas d'agents cognitifs autonomes au sens fort, mais d'une decomposition fonctionnelle permettant modularite, audit et evolution.
+\subsection{Fondements de la détection d'intrusion}
 
-La litterature recente sur la cyberdefense autonome rappelle toutefois qu'un agent operationnel ne peut pas etre defini uniquement par son nom. Les revues contemporaines sur la defense cyber autonome soulignent des exigences d'explicabilite, de coordination, de gouvernance, de test dans des environnements realistes et de controle des actions \cite{vyas2026acnd}. Dans ce memoire, les agents de \logminer{} sont donc qualifies avec prudence : ils disposent d'une politique de choix, d'une memoire locale, d'un heartbeat, de handlers multiples et d'une capacite de reprise via Redis Streams, mais ils ne prennent pas de contre-mesures autonomes sur l'infrastructure.
+La détection d'intrusion consiste à analyser l'activité d'un système ou d'un réseau afin
+d'identifier des événements susceptibles de correspondre à un comportement non autorisé.
+Les travaux de Denning constituent l'une des références historiques importantes du domaine.
+Le modèle proposé repose sur l'exploitation de traces d'audit et sur l'identification de
+déviations par rapport à des profils de comportement \cite{denning1987intrusion}.
 
-\section{Architectures distribuees, federes et robustesse temporelle}
-Les travaux recents en IDS federes montrent un mouvement vers l'apprentissage decentralise, motive par la confidentialite des donnees, la diversite des organisations et le cout du transfert de donnees brutes \cite{khraisat2024federatedids,makris2025fids}. Ces approches sont proches des besoins de securite operationnelle, mais elles soulevent des problemes de donnees non identiquement distribuees, de cout de communication, d'empoisonnement, d'agregation et de gouvernance des participants.
+Axelsson distingue plusieurs dimensions permettant de classifier les IDS, notamment les
+sources d'information utilisées et les principes de détection \cite{axelsson2000intrusion}.
+Une distinction particulièrement utile oppose les approches fondées sur des connaissances
+d'attaques connues aux approches fondées sur la recherche de comportements anormaux.
 
-Un autre axe contemporain concerne la derive conceptuelle. Les systemes de detection doivent rester utiles lorsque les comportements normaux, les attaques, les volumes et les features changent dans le temps \cite{shyaa2024conceptdrift}. Cette question est directement liee a l'apprentissage continu, aux seuils adaptatifs et a la validation humaine. Dans \logminer{}, la derive n'est pas encore traitee comme un module complet ; elle apparait comme une limite scientifique et comme une perspective de consolidation par suivi temporel, recalibrage et decisions analyste.
+Une détection par connaissance peut être très efficace lorsqu'une signature ou une règle
+décrit précisément un comportement attendu. Son principal avantage est l'interprétabilité :
+la raison du déclenchement est généralement explicite. La difficulté survient lorsqu'un
+comportement malveillant ne correspond à aucune règle disponible ou lorsque la règle est
+trop générale et génère de nombreux faux positifs.
 
-\section{Synthese comparative}
-La litterature montre que la detection d'anomalies dans les logs necessite un equilibre entre performance, interpretabilite et robustesse operationnelle. Les outils a regles sont matures et explicables. Les modeles supervises peuvent etre performants sur datasets labelises. Les modeles non supervises sont utiles pour signaler des comportements rares mais doivent etre interpretes avec contexte. Les approches profondes sont prometteuses mais plus couteuses et souvent plus complexes a deployer localement.
+La détection d'anomalies adopte une logique différente. Elle tente d'identifier des
+observations qui s'écartent de ce qui est considéré comme normal ou fréquent. Cette
+approche est intéressante face à des comportements inconnus, mais elle ne fournit pas
+directement leur signification en matière de sécurité.
 
-\logminer{} s'inscrit dans cet espace comme une architecture integratrice : elle combine parsing, normalisation, routage multi-modeles, detection legere, correlation et dashboard. Sa contribution principale est l'organisation exploitable de la chaine, plutot qu'un nouvel algorithme de detection isole.
+\subsection{Nature des anomalies}
+
+Chandola et al. distinguent les anomalies ponctuelles, contextuelles et collectives
+\cite{chandola2009anomaly}. Cette classification est particulièrement pertinente pour les
+journaux.
+
+Une \textbf{anomalie ponctuelle} correspond à une observation qui paraît inhabituelle prise
+isolément. Il peut s'agir, par exemple, d'une valeur extrêmement élevée ou d'un type
+d'événement rarement observé.
+
+Une \textbf{anomalie contextuelle} devient anormale en fonction de son contexte. Une
+connexion administrative peut être parfaitement normale à certaines heures et plus
+suspecte dans un contexte différent.
+
+Une \textbf{anomalie collective} apparaît lorsqu'un ensemble d'événements devient
+inhabituel alors que chaque événement pris séparément peut sembler normal. Cette catégorie
+est particulièrement importante dans l'analyse de séquences de logs et dans la corrélation
+d'événements.
+
+La conséquence pratique est importante : la sortie d'un détecteur d'anomalies ne doit pas
+être automatiquement interprétée comme une attaque. Un changement de configuration, une
+maintenance ou une hausse légitime de la charge peuvent également produire des observations
+rares. La détection constitue donc souvent une étape de priorisation avant l'analyse
+humaine ou avant une corrélation plus large.
+
+\subsection{Détection et décision}
+
+Dans une architecture de cybersécurité, trois niveaux doivent être distingués.
+
+Le premier est le \textbf{signal technique}. Il peut s'agir d'un score, d'une règle
+déclenchée ou d'une observation inhabituelle.
+
+Le deuxième correspond à l'\textbf{alerte ou anomalie candidate}. Le signal est suffisamment
+important pour être conservé, enrichi ou présenté à l'analyste.
+
+Le troisième niveau est celui de l'\textbf{incident confirmé}. Il suppose une interprétation
+supplémentaire à partir de plusieurs éléments de preuve.
+
+Cette séparation est importante pour \logminer{}. Le prototype vise à détecter, prioriser
+et rapprocher des anomalies candidates. La confirmation d'une intrusion reste une décision
+qui dépend de la qualité de la vérité terrain, du contexte disponible et, lorsque
+nécessaire, de l'analyste.
+
+\section{Approches fondées sur les règles et les signatures}
+
+\subsection{Principe}
+
+Les approches à règles décrivent explicitement des conditions conduisant à la génération
+d'une alerte. Elles peuvent s'appuyer sur un motif textuel, une valeur, une fréquence,
+une séquence connue ou la combinaison de plusieurs champs.
+
+Leur principal avantage est leur transparence. Lorsqu'une règle est déclenchée, il est
+généralement possible d'expliquer quelles conditions ont été satisfaites. Cette propriété
+est particulièrement importante dans un environnement opérationnel où les décisions doivent
+pouvoir être auditées.
+
+Les signatures sont également efficaces lorsque le comportement malveillant est connu et
+suffisamment stable. Les IDS et HIDS opérationnels exploitent largement ce mécanisme.
+
+\subsection{Limites}
+
+Cette approche dépend cependant de la qualité et de la couverture des règles. Une signature
+ne peut pas détecter directement un comportement qu'elle ne représente pas. Les règles
+doivent également être adaptées au contexte : une activité inhabituelle sur un serveur peut
+être normale sur un autre.
+
+Un second problème concerne le bruit. Une règle trop générale peut produire un grand nombre
+de faux positifs, ce qui augmente la charge d'analyse. À l'inverse, une règle trop restrictive
+peut manquer certains événements pertinents.
+
+La maintenance constitue une autre limite. Les règles doivent évoluer avec les applications,
+les comportements d'attaque et l'infrastructure. Elles restent donc indispensables dans de
+nombreux contextes, mais elles ne résolvent pas à elles seules le problème de la détection
+de comportements nouveaux.
+
+\subsection{Complémentarité avec les approches fondées sur les données}
+
+L'intérêt de l'apprentissage automatique n'est pas nécessairement de remplacer les règles.
+Dans une architecture intégrée, les deux approches peuvent remplir des fonctions différentes.
+Une règle fournit une interprétation forte lorsqu'un comportement connu est identifié. Un
+modèle statistique peut, quant à lui, attirer l'attention sur une observation inhabituelle
+pour laquelle aucune signature explicite n'existe.
+
+Cette complémentarité justifie le positionnement de \logminer{} : le prototype n'est pas
+présenté comme un substitut aux plateformes HIDS ou SIEM établies. Il étudie plutôt
+l'intégration de mécanismes analytiques supplémentaires dans une chaîne où les sorties
+restent auditables et soumises à interprétation.
+
+\section{Apprentissage automatique pour la cybersécurité}
+
+\subsection{Apprentissage supervisé}
+
+L'apprentissage supervisé suppose que les observations disponibles sont associées à des
+labels. Le modèle apprend une fonction reliant des caractéristiques d'entrée à une classe
+ou à une valeur cible.
+
+Dans le domaine de la cybersécurité, cette approche est largement étudiée pour la
+classification de trafic et la détection d'intrusion. Buczak et Guven recensent de
+nombreuses techniques de machine learning appliquées à ce domaine
+\cite{buczak2016survey}. Khraisat et al. soulignent également la diversité des méthodes,
+des datasets et des critères d'évaluation utilisés dans les IDS
+\cite{khraisat2019survey}.
+
+Les modèles supervisés présentent un avantage évident : lorsque la vérité terrain est de
+bonne qualité, leur performance peut être mesurée directement au moyen de métriques telles
+que la précision, le rappel ou le F1-score. Ils peuvent également apprendre des frontières
+de décision complexes à partir de nombreuses caractéristiques.
+
+Leur principale faiblesse réside cependant dans leur dépendance aux données d'entraînement.
+Un score élevé n'indique pas nécessairement qu'un modèle saura reconnaître un comportement
+différent de ceux rencontrés pendant l'apprentissage. Cette question devient critique
+lorsque la construction du jeu de test permet au modèle de retrouver des observations très
+proches de celles du jeu d'entraînement.
+
+\subsection{Random Forest et modèles d'ensemble}
+
+Random Forest est un ensemble d'arbres de décision introduit par Breiman
+\cite{breiman2001random}. Chaque arbre est construit sur une partie des données et une
+sélection de variables ; les prédictions sont ensuite agrégées.
+
+Le modèle est particulièrement adapté aux données tabulaires. Il peut représenter des
+relations non linéaires, exploiter des variables possédant des échelles différentes et
+demande généralement moins de transformations que certaines méthodes linéaires.
+
+Cette facilité d'utilisation ne doit toutefois pas être confondue avec une garantie de
+généralisation. Un ensemble d'arbres peut apprendre très efficacement les particularités
+d'un dataset. Si certaines caractéristiques sont fortement associées à un scénario de
+collecte plutôt qu'au phénomène de sécurité recherché, le modèle peut obtenir d'excellentes
+performances sans pour autant apprendre une règle transférable.
+
+Cette limite justifie la présence de plusieurs protocoles d'évaluation dans le travail
+expérimental de ce mémoire.
+
+\subsection{Modèles linéaires}
+
+La régression logistique constitue une approche plus simple. Elle estime une combinaison
+linéaire des variables et transforme cette combinaison en probabilité de classe. Son
+intérêt réside dans sa relative simplicité, son coût de calcul limité et la possibilité
+d'examiner l'influence des variables.
+
+Dans un problème où les classes sont approximativement séparables par une frontière
+linéaire après transformation des caractéristiques, un tel modèle peut être compétitif.
+À l'inverse, il peut être limité lorsque les interactions entre variables sont fortement
+non linéaires.
+
+Les modèles linéaires constituent ainsi un point de comparaison utile. Leur présence dans
+une évaluation évite d'attribuer systématiquement une bonne performance à un modèle plus
+complexe lorsque les données pourraient être séparées par une structure plus simple.
+
+\subsection{Gradient boosting et arbres supplémentaires}
+
+Les méthodes de boosting construisent progressivement plusieurs estimateurs afin de
+corriger les erreurs des précédents. Elles peuvent fournir d'excellentes performances sur
+des données tabulaires, mais introduisent également des paramètres supplémentaires et une
+sensibilité à la configuration.
+
+Extra Trees suit une logique proche des ensembles d'arbres, mais introduit davantage
+d'aléatoire dans la construction des séparations. Sa comparaison avec Random Forest est
+intéressante lorsque l'on cherche à déterminer si les performances sont liées à un choix
+particulier d'ensemble d'arbres ou à des propriétés plus générales du dataset.
+
+Dans \logminer{}, l'intérêt de ces modèles n'est pas de désigner un algorithme universel
+pour la cybersécurité. La comparaison de plusieurs familles doit plutôt permettre
+d'identifier les compromis entre F1, rappel, PR-AUC et stabilité selon les scénarios.
+
+\section{Apprentissage non supervisé et détection de valeurs atypiques}
+
+\subsection{Motivation}
+
+Dans de nombreux environnements, la majorité des journaux ne possède pas de label
+permettant de distinguer exactement activité normale et activité malveillante. Produire
+manuellement une vérité terrain complète peut être coûteux ou impossible.
+
+Les approches non supervisées tentent de contourner cette difficulté en modélisant la
+structure des observations sans utiliser directement une classe cible. Leur sortie doit
+cependant être interprétée avec prudence : elles identifient généralement des points rares,
+des régions de faible densité ou des observations éloignées d'un comportement majoritaire.
+
+\subsection{Isolation Forest}
+
+Isolation Forest repose sur l'idée que des observations rares peuvent être isolées avec
+moins de séparations que des observations situées au cœur de la distribution
+\cite{liu2008isolation}. Le modèle construit des arbres aléatoires et utilise la profondeur
+nécessaire pour isoler une observation comme information sur son caractère atypique.
+
+Cette méthode possède plusieurs avantages pour un prototype local : coût relativement
+modéré, absence de labels obligatoires et capacité à fonctionner avec de nombreuses
+variables numériques.
+
+Sa sortie reste néanmoins un score d'anomalie. Le modèle n'explique pas automatiquement
+pourquoi un événement est malveillant et ne remplace pas une règle de sécurité ou une
+investigation.
+
+\subsection{Local Outlier Factor}
+
+Local Outlier Factor compare la densité locale d'une observation avec celle de ses voisins
+\cite{breunig2000lof}. Une observation peut être considérée comme anormale lorsqu'elle se
+trouve dans une région significativement moins dense que son voisinage.
+
+Cette logique est utile lorsque plusieurs régimes normaux coexistent, car une valeur peut
+être atypique globalement tout en étant cohérente avec un sous-groupe local.
+
+La méthode dépend toutefois du choix du voisinage et peut devenir coûteuse lorsque le
+volume de données augmente.
+
+\subsection{One-Class SVM}
+
+One-Class SVM cherche à estimer une frontière entourant une région considérée comme normale
+\cite{scholkopf2001estimating}. Les observations situées à l'extérieur de cette région
+sont considérées comme atypiques.
+
+La méthode peut représenter des frontières non linéaires au moyen de noyaux, mais son
+réglage peut être délicat sur des ensembles de grande taille. Sa performance dépend
+également fortement de la représentation des données.
+
+\subsection{Méthodes statistiques simples}
+
+Les seuils fondés sur des statistiques de référence demeurent utiles comme baselines.
+Un z-score, un intervalle interquartile ou un histogramme appris sur une période considérée
+comme normale peuvent mettre en évidence des valeurs inhabituelles sans nécessiter un
+modèle complexe.
+
+Leur simplicité facilite l'audit. Un analyste peut comprendre pourquoi une valeur dépasse
+un seuil. Cette propriété explique pourquoi des méthodes simples restent pertinentes,
+notamment lorsqu'elles sont intégrées à une chaîne où les sorties sont ensuite corrélées
+avec d'autres informations.
+
+Leur principale faiblesse est la sensibilité au choix de la fenêtre de référence et à la
+stabilité de la distribution. Un seuil valable pendant une période peut devenir inadapté
+lorsque la charge ou le comportement normal évolue.
+
+\section{Problème du déséquilibre des classes}
+
+Les datasets de cybersécurité sont fréquemment déséquilibrés : les événements normaux
+peuvent être beaucoup plus nombreux que certains types d'attaques. Dans ces conditions,
+l'accuracy peut donner une impression trompeuse de performance.
+
+Supposons par exemple qu'un ensemble contienne 99\,\% d'événements normaux. Un classifieur
+qui prédit systématiquement la classe normale obtiendra 99\,\% d'accuracy tout en étant
+incapable de détecter la moindre attaque.
+
+Cette situation explique l'importance de métriques telles que la précision, le rappel, le
+F1-score, le MCC et l'aire sous la courbe précision--rappel. Leur définition détaillée est
+présentée dans le chapitre méthodologique ; dans l'état de l'art, le point essentiel est
+que la qualité d'un détecteur ne peut pas être résumée par une seule mesure.
+
+Le rappel renseigne sur la capacité à retrouver les éléments positifs, tandis que la
+précision indique quelle proportion des détections positives correspond réellement à la
+classe recherchée. Dans un contexte opérationnel, ces deux dimensions sont importantes :
+un rappel faible laisse passer des événements, alors qu'une précision faible peut augmenter
+fortement le nombre d'alertes inutiles.
+
+\section{Datasets et validité des évaluations}
+
+\subsection{Rôle des datasets publics}
+
+Les datasets publics permettent de comparer des méthodes dans des conditions
+documentées. Ils jouent un rôle important dans la recherche parce qu'ils fournissent des
+données accessibles, des labels et des protocoles pouvant être reproduits.
+
+Ils ne représentent toutefois jamais parfaitement la diversité de tous les réseaux et de
+tous les systèmes. Un dataset est le résultat d'un environnement, d'une période, d'une
+méthode de collecte et d'un ensemble de scénarios.
+
+Sommer et Paxson mettent en garde contre l'application naïve de méthodes de machine
+learning issues d'un environnement expérimental à des réseaux réels
+\cite{sommer2010outside}. Cette remarque reste centrale : la qualité d'un modèle dépend
+autant du protocole d'évaluation que de l'algorithme.
+
+\subsection{CICIDS2017}
+
+CICIDS2017 est un dataset conçu par le Canadian Institute for Cybersecurity afin de
+représenter du trafic bénin et plusieurs catégories d'attaques dans un environnement
+contrôlé \cite{sharafaldin2018cicids}. Les données sont notamment disponibles sous forme
+de flux décrits par des caractéristiques numériques.
+
+Ce type de corpus est adapté à l'évaluation de modèles supervisés. Sa richesse permet
+d'examiner plusieurs scénarios, mais elle introduit également une question méthodologique :
+une séparation aléatoire des lignes peut conduire à placer dans les ensembles
+d'entraînement et de test des observations provenant de contextes très proches.
+
+Lorsque l'objectif est d'étudier la généralisation, une séparation par scénario peut donc
+apporter une information complémentaire. Le modèle doit alors reconnaître une classe ou
+un comportement dans un contexte moins proche des exemples utilisés pendant
+l'entraînement.
+
+Cette distinction entre \textit{performance sur une partition aléatoire} et
+\textit{performance hors scénario d'entraînement} constitue l'un des points importants du
+protocole expérimental retenu dans ce mémoire.
+
+\subsection{HDFS}
+
+Le corpus HDFS est largement utilisé dans la littérature sur l'analyse de logs de systèmes
+distribués. Xu et al. ont étudié la détection de problèmes à grande échelle à partir de
+journaux de console \cite{xu2009hdfs}.
+
+Une particularité importante de HDFS est la notion de bloc. Plusieurs messages peuvent
+être associés au même identifiant de bloc, et la vérité terrain est liée au comportement
+de la trace correspondante. Cette propriété distingue HDFS d'un dataset tabulaire où
+chaque ligne serait indépendamment étiquetée.
+
+L'utilisation de ce dataset demande donc de préciser l'unité d'analyse. Une évaluation
+au niveau événement et une évaluation au niveau bloc ne répondent pas exactement à la
+même question.
+
+\subsection{BGL}
+
+Le dataset BGL provient de journaux du supercalculateur Blue Gene/L du Lawrence Livermore
+National Laboratory. Oliner et Stearley l'ont notamment utilisé dans leur étude de
+journaux de supercalculateurs \cite{oliner2007bgl}.
+
+BGL présente un intérêt différent de CICIDS2017. Il s'agit de messages système et non de
+flux réseau tabulaires. Leur analyse implique généralement une étape de parsing ou de
+représentation des messages avant d'appliquer une méthode de détection.
+
+Cette différence justifie la présence de plusieurs pipelines expérimentaux dans
+\logminer{}. Un modèle adapté à CICIDS2017 n'est pas directement applicable aux messages
+BGL.
+
+\subsection{Loghub}
+
+Loghub rassemble plusieurs datasets de journaux largement utilisés dans la recherche
+\cite{zhu2023loghub}. Cette collection facilite la comparaison d'approches de parsing et
+de détection sur des sources hétérogènes.
+
+Son intérêt dépasse la simple disponibilité de fichiers. La diversité des systèmes
+représentés rappelle qu'un résultat obtenu sur un corpus ne doit pas automatiquement être
+généralisé à tous les autres. Les formats, le vocabulaire, la structure et les mécanismes
+de génération des événements peuvent différer fortement.
+
+\section{Parsing automatique des journaux}
+
+\subsection{Pourquoi parser les messages}
+
+De nombreux journaux contiennent à la fois une partie relativement stable et des valeurs
+variables. Considérons deux messages :
+
+\begin{quote}
+\texttt{Failed password for user alice from 10.0.0.15}
+\end{quote}
+
+et
+
+\begin{quote}
+\texttt{Failed password for user bob from 10.0.0.21}
+\end{quote}
+
+Les deux lignes décrivent le même type d'événement, mais certains paramètres changent.
+Une représentation utile peut chercher à extraire un template tel que :
+
+\begin{quote}
+\texttt{Failed password for user <*> from <*>}
+\end{quote}
+
+Cette opération réduit la diversité lexicale et facilite la construction de statistiques
+ou de séquences d'événements.
+
+\subsection{Drain}
+
+Drain est une méthode de parsing en ligne conçue pour extraire des templates de messages
+de logs \cite{he2016drain}. Son principe repose sur un arbre de profondeur fixe permettant
+d'orienter rapidement les messages vers un groupe compatible.
+
+La méthode est intéressante pour plusieurs raisons. Elle peut traiter les événements
+progressivement, ne nécessite pas un apprentissage supervisé complexe et produit des
+templates relativement faciles à interpréter.
+
+Le parsing n'est cependant pas une étape neutre. Si deux messages différents sont fusionnés
+dans un même template, de l'information peut être perdue. À l'inverse, si des paramètres
+variables ne sont pas correctement reconnus, un même type d'événement peut être fragmenté
+en de nombreux templates.
+
+\subsection{Importance du protocole d'apprentissage du parseur}
+
+Lorsqu'un parseur adaptatif apprend de nouveaux templates pendant l'évaluation, une fuite
+méthodologique peut apparaître. Le parseur bénéficie alors indirectement d'informations
+présentes dans le test.
+
+Pour une évaluation stricte, il est préférable de distinguer une phase pendant laquelle
+l'état du parseur est construit et une phase pendant laquelle cet état est utilisé sans
+adaptation supplémentaire. Cette séparation est particulièrement importante lorsque les
+templates sont ensuite utilisés comme caractéristiques d'entrée d'un détecteur.
+
+Les travaux comparatifs sur les parseurs de logs montrent que le choix du parseur peut
+modifier les représentations produites \cite{zhu2019logparser}. La qualité de cette étape
+doit donc être considérée comme une composante du protocole expérimental et non comme un
+simple détail d'implémentation.
+
+\section{Normalisation de journaux hétérogènes}
+
+\subsection{Objectif de la normalisation}
+
+Le parsing et la normalisation répondent à deux questions différentes. Le parsing cherche
+à comprendre la structure d'une source. La normalisation cherche à présenter certaines
+informations selon une représentation commune.
+
+Dans une architecture multi-source, des champs génériques peuvent notamment représenter :
+
+\begin{itemize}
+    \item l'horodatage ;
+    \item la source ;
+    \item l'hôte ;
+    \item le type ou la catégorie de l'événement ;
+    \item la sévérité ;
+    \item le message ;
+    \item les informations nécessaires au traitement spécialisé.
+\end{itemize}
+
+Le principal avantage est de permettre aux composants aval de recevoir une enveloppe
+relativement cohérente, même lorsque la structure d'origine est différente.
+
+\subsection{Risque de perte d'information}
+
+Une normalisation trop agressive peut cependant supprimer des informations importantes.
+Un champ spécifique à Windows, à Wazuh ou à une application peut ne pas avoir
+d'équivalent direct dans le schéma commun.
+
+Deux stratégies peuvent être envisagées.
+
+La première consiste à imposer un schéma strict et à abandonner les champs qui n'y entrent
+pas. Cette solution simplifie fortement les traitements, mais peut appauvrir les données.
+
+La seconde repose sur un \textbf{noyau commun extensible}. Les informations partagées sont
+placées dans les champs normalisés, tandis que les informations spécifiques restent
+accessibles dans une structure complémentaire ou dans la source conservée.
+
+Cette seconde approche est plus adaptée à un prototype orienté audit. Elle réduit la
+tentation de considérer le schéma normalisé comme une représentation exhaustive de
+l'événement original.
+
+\subsection{Normalisation et robustesse réelle}
+
+La présence d'un schéma commun ne suffit pas à démontrer qu'un système supporte
+universellement plusieurs formats. Il faut vérifier que chaque adaptateur transforme
+effectivement les entrées attendues et mesurer les cas d'échec.
+
+Cette distinction entre \textit{capacité prévue par l'architecture} et
+\textit{capacité effectivement observée} est importante dans le présent mémoire. La
+validation multiformat doit donc être interprétée comme une expérience fonctionnelle et
+non comme une garantie abstraite de compatibilité avec tout type de log.
+
+\section{Analyse séquentielle des journaux}
+
+\subsection{Importance de l'ordre des événements}
+
+De nombreuses anomalies ne peuvent pas être comprises à partir d'un événement isolé.
+L'ordre des messages apporte alors une information essentielle.
+
+Un échec d'authentification unique peut être banal. Une séquence rapide de centaines
+d'échecs provenant de la même source possède une signification différente. De même, une
+erreur de service suivie de plusieurs redémarrages peut indiquer un comportement qui ne
+serait pas visible en examinant chaque ligne séparément.
+
+Les méthodes séquentielles cherchent à exploiter cette dépendance.
+
+\subsection{DeepLog}
+
+DeepLog utilise un réseau récurrent de type LSTM afin d'apprendre les séquences normales
+de templates de logs \cite{du2017deeplog}. Le modèle prédit les événements susceptibles
+d'apparaître à partir de ceux qui précèdent. Une observation qui s'écarte de cette
+prédiction peut être considérée comme suspecte.
+
+L'intérêt de cette approche est de représenter explicitement le contexte temporel. Elle est
+particulièrement adaptée lorsque les journaux suivent des workflows ou des séquences
+répétitives.
+
+Elle introduit également plusieurs contraintes : choix de la taille des fenêtres,
+construction correcte des séquences, besoin de données suffisantes et coût de calcul
+supérieur à celui de certaines méthodes statistiques.
+
+\subsection{LogAnomaly}
+
+LogAnomaly combine des informations séquentielles et quantitatives afin de détecter des
+anomalies dans des logs non structurés \cite{meng2019loganomaly}. L'approche illustre une
+évolution importante du domaine : la représentation d'un événement ne doit pas
+nécessairement être limitée à l'identifiant d'un template.
+
+Les valeurs quantitatives, la fréquence et le contexte peuvent compléter la structure
+séquentielle. Cette idée est pertinente pour les systèmes où plusieurs dimensions
+contribuent simultanément à l'anomalie.
+
+\subsection{LogBERT}
+
+Les architectures Transformer ont également été adaptées aux journaux. LogBERT utilise
+une approche inspirée de BERT pour modéliser des séquences de logs et identifier des
+comportements anormaux \cite{guo2021logbert}.
+
+Ce type de méthode possède un potentiel important pour représenter des relations
+complexes entre événements. Il augmente néanmoins les exigences relatives aux données,
+au calcul et au protocole de préparation.
+
+Dans le contexte de \logminer{}, ces approches servent surtout à situer le prototype par
+rapport aux méthodes spécialisées de l'état de l'art. Le travail privilégie des mécanismes
+plus légers et s'intéresse davantage à l'intégration de plusieurs étapes qu'à la recherche
+du meilleur modèle profond sur un benchmark unique.
+
+\section{Représentation sémantique et évolution récente de l'analyse de logs}
+
+L'évolution des méthodes de traitement automatique du langage a progressivement influencé
+l'analyse des logs. Un template représente efficacement la structure syntaxique d'un
+message, mais il ne capture pas toujours sa signification.
+
+Deux messages différents peuvent par exemple décrire des erreurs conceptuellement proches
+sans partager de nombreux termes. À l'inverse, des messages lexicalement voisins peuvent
+correspondre à des contextes opérationnels différents.
+
+Les travaux contemporains cherchent donc à exploiter des représentations capables de
+capturer à la fois la structure, la séquence et une partie de la sémantique. Cette
+orientation est particulièrement intéressante lorsque le vocabulaire évolue ou lorsque
+plusieurs applications décrivent des situations similaires avec des formulations
+différentes.
+
+Pour un prototype léger, l'adoption immédiate de telles architectures n'est pas toujours
+nécessaire. Leur intérêt dans l'état de l'art est surtout de montrer les limites d'un
+pipeline reposant uniquement sur des variables tabulaires ou des fréquences. Elles
+constituent une perspective pertinente lorsque l'objectif devient l'analyse de séquences
+longues et de messages fortement dépendants du contexte.
+
+\section{Systèmes multi-agents}
+
+\subsection{Concept général}
+
+Un système multi-agent décompose un problème entre plusieurs entités capables d'exécuter
+des tâches et de communiquer. Dans sa forme la plus générale, un agent peut posséder un
+état, des objectifs, des capacités et un mécanisme de décision.
+
+Les premières architectures distribuées de détection ont déjà exploré cette logique.
+AAFID, par exemple, repose sur une architecture d'agents autonomes pour la détection
+d'intrusion \cite{balasubramaniyan1998aafid}. La motivation principale est de répartir
+les fonctions et de réduire la dépendance à un composant unique réalisant toutes les
+analyses.
+
+\subsection{Intérêt architectural}
+
+Une architecture à agents peut apporter plusieurs avantages.
+
+Le premier est la \textbf{séparation des responsabilités}. Un composant peut être chargé
+du parsing, un autre du routage et un autre d'une méthode de détection.
+
+Le deuxième est l'\textbf{extensibilité}. Ajouter un nouveau type de traitement peut être
+plus simple lorsqu'il possède un contrat d'entrée et de sortie explicite.
+
+Le troisième est l'\textbf{auditabilité}. Lorsque les tâches et les échanges sont
+identifiables, il devient possible de reconstruire le chemin suivi par un traitement.
+
+Le quatrième est la \textbf{reprise}. Un mécanisme de file ou de stream peut permettre de
+réattribuer une tâche non acquittée après l'arrêt d'un worker.
+
+\subsection{Coût de l'orchestration}
+
+Ces avantages ne signifient pas qu'une architecture multi-agent est automatiquement plus
+rapide.
+
+La sérialisation des messages, l'écriture dans un bus, les changements de contexte, les
+heartbeats, la persistance et les mécanismes d'acquittement introduisent un coût.
+À faible volume, ce surcoût peut être supérieur au bénéfice apporté par le parallélisme.
+
+La bonne question n'est donc pas : ``les agents sont-ils plus performants ?'', mais plutôt :
+``quels bénéfices architecturaux fournissent-ils et à quel coût ?''.
+
+Cette distinction est importante pour l'évaluation de \logminer{}. La modularité et la
+traçabilité constituent des propriétés de conception ; le débit et la consommation de
+ressources doivent, eux, être mesurés expérimentalement.
+
+\section{Bus de messages et distribution des tâches}
+
+\subsection{Découplage des composants}
+
+Un bus de messages permet à un producteur et à un consommateur de communiquer sans
+nécessairement s'exécuter au même moment ni dans le même processus.
+
+Dans une architecture d'analyse de logs, ce découplage peut être utile lorsque plusieurs
+workers traitent des tâches différentes. Le producteur publie une unité de travail, tandis
+qu'un consommateur compatible la récupère.
+
+Cette organisation facilite la distribution, mais introduit des questions de fiabilité :
+comment savoir qu'une tâche a été traitée ? Que se passe-t-il lorsqu'un worker s'arrête
+après avoir récupéré une tâche ? Comment distinguer un message métier d'un identifiant
+propre au transport ?
+
+\subsection{Acquittement}
+
+L'acquittement est un mécanisme essentiel dans une file fiable. Un message lu n'est pas
+nécessairement un message traité avec succès. Il doit donc être possible de distinguer au
+minimum :
+
+\begin{itemize}
+    \item le message disponible ;
+    \item le message livré à un consommateur ;
+    \item le message en attente de confirmation ;
+    \item le message acquitté.
+\end{itemize}
+
+Cette distinction possède une conséquence méthodologique importante. Compter le nombre de
+messages acquittés permet d'évaluer le fonctionnement du transport, mais ne suffit pas à
+affirmer que toutes les opérations métier associées ont réussi.
+
+Dans le chapitre expérimental, cette nuance est conservée lors de l'analyse des campagnes
+multi-VM.
+
+\subsection{Tolérance aux pannes}
+
+La présence d'un mécanisme de reprise ne suffit pas non plus à démontrer une haute
+disponibilité complète.
+
+Une architecture réellement hautement disponible doit considérer plusieurs scénarios :
+arrêt d'un worker, panne du broker, partition réseau, duplication de messages, indisponibilité
+du stockage, redémarrage simultané de plusieurs composants et restauration de l'état.
+
+Une expérience portant sur l'un de ces scénarios apporte une preuve locale pour le
+mécanisme étudié ; elle ne doit pas être généralisée à toutes les formes de panne.
+
+Cette distinction entre \textit{reprise démontrée} et \textit{haute disponibilité} guide
+le positionnement de \logminer{}.
+
+\section{Routage et spécialisation des traitements}
+
+\subsection{Pourquoi router les données}
+
+L'hétérogénéité des sources suggère qu'un même traitement ne convient pas forcément à
+toutes les données. Le routage consiste à identifier la famille d'une entrée puis à choisir
+un pipeline compatible.
+
+Le choix peut s'appuyer sur plusieurs indices :
+
+\begin{itemize}
+    \item extension du fichier ;
+    \item noms de colonnes ;
+    \item présence de champs caractéristiques ;
+    \item structure des lignes ;
+    \item vocabulaire ;
+    \item métadonnées de la source.
+\end{itemize}
+
+Cette étape peut être considérée comme une forme de classification de la source, mais son
+objectif n'est pas nécessairement de produire une décision probabiliste.
+
+\subsection{Spécialisation et performance}
+
+Il serait tentant de supposer qu'un modèle spécialisé est toujours meilleur qu'un modèle
+global. Cette hypothèse n'est pas garantie.
+
+Un modèle global dispose de davantage de données et peut apprendre certaines structures
+partagées. Un modèle spécialisé voit un domaine plus homogène mais peut disposer de moins
+d'observations.
+
+Le routage peut donc avoir une valeur architecturale même lorsque la spécialisation
+n'améliore pas systématiquement la métrique prédictive. Il évite notamment d'appliquer un
+pipeline incompatible à une source.
+
+Cette distinction entre \textbf{bonne orientation du traitement} et
+\textbf{gain de performance du modèle spécialisé} est reprise dans l'évaluation
+expérimentale.
+
+\section{Corrélation d'événements}
+
+\subsection{Du signal isolé à l'incident potentiel}
+
+Une anomalie isolée fournit souvent peu de contexte. Plusieurs signaux rapprochés dans le
+temps ou associés à la même source peuvent en revanche décrire une situation plus
+cohérente.
+
+La corrélation cherche à regrouper ou à relier ces événements à partir de critères tels que :
+
+\begin{itemize}
+    \item proximité temporelle ;
+    \item adresse source ou destination ;
+    \item hôte ;
+    \item utilisateur ;
+    \item type d'événement ;
+    \item ressource concernée ;
+    \item identifiant commun.
+\end{itemize}
+
+Le résultat peut être un cluster, une chaîne d'événements ou un incident candidat.
+
+\subsection{Difficultés de la corrélation}
+
+Deux erreurs principales peuvent se produire.
+
+La première est la \textbf{fragmentation}. Des événements appartenant au même phénomène
+sont séparés dans plusieurs groupes.
+
+La deuxième est la \textbf{fusion incorrecte}. Des événements indépendants sont regroupés
+parce qu'ils partagent des caractéristiques trop générales.
+
+Le choix de la fenêtre temporelle et des clés utilisées influence directement ces deux
+erreurs. Une fenêtre trop courte favorise la fragmentation ; une fenêtre trop longue peut
+favoriser la fusion.
+
+La qualité d'un mécanisme de corrélation doit donc être évaluée indépendamment de la
+performance du détecteur qui produit les anomalies en entrée.
+
+\section{Mémoire persistante et feedback humain}
+
+\subsection{Rôle de la mémoire}
+
+Un système d'analyse peut bénéficier de la conservation des décisions antérieures. Une
+mémoire persistante peut enregistrer :
+
+\begin{itemize}
+    \item les exécutions ;
+    \item les erreurs ;
+    \item les anomalies observées ;
+    \item les validations de l'analyste ;
+    \item les versions des modèles ;
+    \item les décisions de promotion ou de rejet.
+\end{itemize}
+
+Cette mémoire améliore principalement la traçabilité. Elle permet de retrouver comment une
+décision a été produite et de conserver des informations qui pourront être réutilisées lors
+d'une analyse ultérieure.
+
+\subsection{Human-in-the-loop}
+
+Dans un système de cybersécurité, l'intervention humaine reste particulièrement importante
+lorsque les sorties proviennent de méthodes non supervisées ou de règles approximatives.
+
+L'analyste peut confirmer qu'un signal mérite une investigation, le rejeter comme faux
+positif ou modifier sa classification. Cette décision possède une valeur que le système
+peut conserver.
+
+Le feedback ne doit toutefois pas être confondu avec un apprentissage automatique immédiat.
+Modifier directement un modèle à partir de chaque décision utilisateur pourrait introduire
+des dérives ou propager une erreur.
+
+Une approche contrôlée consiste plutôt à accumuler les retours, entraîner éventuellement
+un candidat hors ligne, puis comparer ce candidat au modèle courant avant toute promotion.
+
+\section{Mise à jour et gouvernance des modèles}
+
+\subsection{Besoin d'évolution}
+
+Le comportement d'un système évolue dans le temps. Les applications changent, de nouvelles
+versions sont installées, les utilisateurs modifient leurs habitudes et de nouveaux types
+d'événements apparaissent.
+
+Un modèle entraîné une fois pour toutes peut donc devenir progressivement moins adapté.
+
+Cette évolution est souvent décrite par la notion de dérive de distribution ou de dérive
+conceptuelle.
+
+\subsection{Mise à jour contrôlée}
+
+Une stratégie prudente distingue plusieurs objets :
+
+\begin{enumerate}
+    \item le modèle actuellement utilisé ;
+    \item le dataset servant à entraîner un candidat ;
+    \item le modèle candidat ;
+    \item le jeu servant à la comparaison ;
+    \item la règle de promotion.
+\end{enumerate}
+
+Cette organisation évite qu'un nouvel entraînement remplace automatiquement un modèle
+fonctionnel.
+
+Une règle simple peut par exemple imposer qu'un candidat améliore une métrique minimale
+avant d'être promu. Si l'amélioration est insuffisante ou négative, le modèle existant est
+conservé.
+
+L'intérêt principal est la gouvernance : la décision devient reproductible et auditable.
+Elle ne constitue toutefois pas une preuve qu'un système est capable d'apprendre de manière
+autonome et continue en production.
+
+\section{Tableaux de bord et exploitabilité par l'analyste}
+
+\subsection{Rôle de la visualisation}
+
+Une chaîne de détection peut produire plusieurs informations : source, horodatage, score,
+type d'anomalie, sévérité, modèle utilisé, événements corrélés et statut de validation.
+
+Sans mécanisme de restitution, ces informations restent difficiles à exploiter.
+
+Le tableau de bord doit permettre à l'analyste de passer d'une vue agrégée à une vue plus
+détaillée. Il peut notamment faciliter :
+
+\begin{itemize}
+    \item le filtrage des événements ;
+    \item l'inspection d'une anomalie ;
+    \item la consultation du contexte ;
+    \item l'examen des incidents candidats ;
+    \item l'accès aux informations d'audit ;
+    \item l'enregistrement d'une décision.
+\end{itemize}
+
+\subsection{Fonctionnalité et utilisabilité}
+
+Le fait qu'une interface affiche correctement les informations ne démontre pas qu'elle
+améliore le travail humain.
+
+Une évaluation d'utilisabilité nécessiterait par exemple des utilisateurs représentatifs,
+des scénarios, des tâches, des mesures de temps, des erreurs ou un questionnaire adapté.
+
+Il faut donc distinguer :
+
+\begin{itemize}
+    \item la \textbf{validation fonctionnelle} de l'interface ;
+    \item l'\textbf{évaluation ergonomique ou utilisateur}.
+\end{itemize}
+
+Dans le périmètre actuel de \logminer{}, le tableau de bord relève principalement de la
+première catégorie.
+
+\section{Reproductibilité et traçabilité expérimentale}
+
+\subsection{Importance de la reproductibilité}
+
+Une expérience de machine learning ne peut pas être interprétée correctement si les
+conditions d'exécution sont inconnues.
+
+Les éléments importants comprennent notamment :
+
+\begin{itemize}
+    \item origine des données ;
+    \item prétraitement ;
+    \item variables utilisées ;
+    \item partitions ;
+    \item graines aléatoires ;
+    \item paramètres ;
+    \item versions des bibliothèques ;
+    \item métriques ;
+    \item scripts ;
+    \item artefacts produits.
+\end{itemize}
+
+Cette exigence devient encore plus importante lorsque plusieurs campagnes utilisent des
+protocoles différents.
+
+\subsection{Traçabilité des données}
+
+La traçabilité d'un dataset comporte plusieurs niveaux.
+
+Identifier le nom d'un dataset public ne prouve pas automatiquement que la copie locale
+correspond exactement à la distribution officielle. Une vérification plus forte peut
+reposer sur le hash du fichier ou sur une comparaison sémantique lorsque les formats de
+distribution diffèrent.
+
+À l'inverse, une donnée collectée localement ne doit pas recevoir artificiellement une
+source publique. Sa traçabilité repose plutôt sur la documentation du système, du mode de
+collecte, du format, de la période et du prétraitement.
+
+Les données synthétiques doivent également être identifiées explicitement. Leur intérêt
+est de construire des scénarios contrôlés, mais elles ne doivent pas être confondues avec
+une observation naturelle d'incidents opérationnels.
+
+\subsection{Traçabilité des résultats}
+
+Un score présenté dans un mémoire doit pouvoir être relié à une campagne déterminée.
+
+Cette relation peut être représentée sous la forme :
+
+\begin{center}
+\textit{résultat}
+$\longrightarrow$
+\textit{expérience}
+$\longrightarrow$
+\textit{configuration}
+$\longrightarrow$
+\textit{données}
+$\longrightarrow$
+\textit{artefacts}.
+\end{center}
+
+Une telle chaîne réduit le risque de conserver dans le document un résultat issu d'un
+ancien protocole alors qu'une expérience plus rigoureuse l'a remplacé.
+
+\section{Comparaison des principales familles d'approches}
+
+Le tableau~\ref{tab:comparaison-familles} résume les principales approches discutées et
+leur relation avec les besoins du présent travail.
 
 \begin{table}[H]
 \centering
-\caption{Synthese comparative des familles d'approches}
-\label{tab:etat-art-comparaison}
+\caption{Comparaison des principales familles d'approches pour l'analyse de journaux}
+\label{tab:comparaison-familles}
 \scriptsize
-\begin{tabularx}{\textwidth}{p{2.8cm}p{3.5cm}p{3.5cm}X}
+\begin{tabularx}{\textwidth}{p{2.6cm}p{3.6cm}p{3.6cm}X}
 \toprule
-\textbf{Approche} & \textbf{Forces} & \textbf{Limites} & \textbf{Positionnement de \logminer} \\
+\textbf{Approche} &
+\textbf{Atouts} &
+\textbf{Limites principales} &
+\textbf{Intérêt pour \logminer{}} \\
 \midrule
-Regles et signatures & Interpretables, rapides, bien adaptees aux attaques connues. & Dependent de regles maintenues et detectent mal l'inconnu. & Complement analytique, sans remplacer Wazuh ou OSSEC. \\
-Seuils statistiques & Simples a comprendre et faciles a deployer. & Sensibles au contexte et aux changements de charge. & Utilises comme repere, mais enrichis par correlation et routage. \\
-Machine learning supervise & Bons scores sur donnees labelisees et distributions stables. & Besoin de labels fiables et risque de surapprentissage aux datasets. & Utilise pour Linux/auth et CICIDS2017. \\
-Machine learning non supervise & Utile sans labels et capable de signaler des comportements rares. & Produit des anomalies candidates, pas des preuves d'intrusion. & Utilise avec interpretation contextuelle et validation analyste. \\
-Deep learning & Puissant pour sequences complexes et grands volumes. & Plus couteux, plus difficile a expliquer et a deployer localement. & Discute comme perspective, non comme coeur du prototype. \\
-Transformers et representations semantiques & Capturent mieux le contexte, la sequence et la similarite de messages. & Demandent un protocole de sequence, des ressources et une evaluation stricte. & Servent de positionnement contemporain pour HDFS/BGL et les perspectives. \\
-IDS federes et drift-aware & Repondent aux contraintes de confidentialite, decentralisation et evolution temporelle. & Complexite de gouvernance, donnees non-IID, securite de l'agregation et validation longue. & Positionnes comme prolongement multi-machine et apprentissage continu, pas comme resultat deja prouve. \\
+
+Règles et signatures &
+Interprétation directe, faible coût et bonne efficacité sur les comportements connus. &
+Maintenance nécessaire ; couverture limitée face aux comportements non décrits. &
+Complémentarité avec les anomalies candidates et conservation de la validation humaine. \\
+
+Méthodes statistiques &
+Simples, auditables et légères. &
+Sensibles au choix de la référence, aux seuils et aux changements de distribution. &
+Baselines et méthodes adaptées à certains journaux agrégés ou structurés. \\
+
+Apprentissage supervisé &
+Mesure directe des performances lorsque les labels sont disponibles ; modèles efficaces sur données tabulaires. &
+Dépendance aux labels et à la distribution d'entraînement ; risque de résultats trop favorables avec certains splits. &
+Évaluation de plusieurs modèles sur des flux réseau labellisés avec plusieurs protocoles. \\
+
+Apprentissage non supervisé &
+Applicable sans vérité terrain complète ; utile pour rechercher des observations rares. &
+Une anomalie n'est pas nécessairement une attaque ; choix du seuil souvent délicat. &
+Production d'anomalies candidates ensuite contextualisées et corrélées. \\
+
+Parsing par templates &
+Réduction de la variabilité textuelle et représentation structurée des messages. &
+Erreurs possibles de fusion ou fragmentation ; protocole d'apprentissage du parseur important. &
+Préparation des journaux système et étude de HDFS/BGL avec un état de parsing contrôlé. \\
+
+Modèles séquentiels &
+Exploitation de l'ordre des événements et du contexte. &
+Préparation des séquences et coût plus élevés ; dépendance à la fenêtre. &
+Référence de l'état de l'art et perspective pour des analyses plus riches. \\
+
+Architecture multi-agent &
+Modularité, séparation des responsabilités, possibilité de reprise et d'extension. &
+Surcoût de communication et d'orchestration ; ne garantit pas une amélioration du débit. &
+Organisation des composants du prototype et expérimentation de la distribution des tâches. \\
+
+Corrélation &
+Réduction de la fragmentation de l'analyse et création d'un contexte incident. &
+Risque de fusion excessive ou de fragmentation selon les règles et fenêtres. &
+Regroupement d'anomalies candidates dans des scénarios contrôlés. \\
+
+Mémoire et feedback &
+Traçabilité des décisions et possibilité de réutiliser l'historique. &
+Le feedback humain peut être bruité ; mise à jour automatique risquée. &
+Mémoire persistante et procédure contrôlée d'évaluation d'un modèle candidat. \\
+
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\section{Limites identifiees dans l'etat de l'art}
-Trois limites structurent le besoin auquel repond ce memoire. La premiere est l'heterogeneite : les journaux ne partagent pas naturellement un format, une granularite ni une semantique commune. La deuxieme est la dependance aux labels : les datasets publics permettent de mesurer des scores, mais les environnements reels disposent rarement de labels exhaustifs et fiables. La troisieme est l'exploitabilite : un detecteur peut produire un score exact sans fournir a l'analyste le contexte necessaire pour agir.
+Cette comparaison montre qu'aucune famille ne couvre seule l'ensemble du problème. Les
+règles apportent une forte interprétabilité, mais nécessitent des connaissances préalables.
+Les modèles supervisés sont mesurables lorsqu'une vérité terrain existe, mais leur
+généralisation doit être vérifiée. Les méthodes non supervisées répondent au manque de
+labels, au prix d'une interprétation plus prudente. Les architectures séquentielles
+exploitent un contexte riche, mais augmentent la complexité. Enfin, les systèmes
+multi-agents et les bus de messages répondent à un problème d'organisation logicielle et
+non directement à un problème de précision statistique.
 
-Ces limites motivent une approche integratrice. Le prototype met l'accent sur la chaine complete : acquisition, parsing, normalisation, routage, detection, correlation, visualisation et audit. Le choix est volontairement pragmatique : construire une base fonctionnelle, mesurable et extensible avant d'ajouter des mecanismes plus complexes.
+\section{Comparaison de travaux représentatifs}
 
-\section{Typologie detaillee des journaux exploites}
-Les journaux systemes et reseaux ne constituent pas une famille homogene. Un premier groupe correspond aux journaux d'exploitation produits par les systemes d'exploitation. Les journaux Windows enregistrent les evenements de securite, d'application et de systeme. Les journaux Linux, notamment les journaux d'authentification, decrivent les connexions, echecs de mot de passe, changements d'utilisateur et activites liees aux services. Ces journaux sont utiles pour suivre les comportements d'administration et les tentatives d'acces.
+Le tableau~\ref{tab:travaux-representatifs} replace quelques travaux importants selon
+l'objet qu'ils étudient. Il ne cherche pas à établir un classement des méthodes, car leurs
+protocoles et leurs objectifs diffèrent.
 
-Un deuxieme groupe concerne les journaux applicatifs. Les acces Apache, les erreurs applicatives ou les traces de services web decrivent les interactions entre utilisateurs, applications et ressources exposees. Ils peuvent signaler des comportements suspects comme une frequence inhabituelle de requetes, des erreurs repetitives, des codes HTTP atypiques ou des chemins sensibles. Leur interpretation demande souvent de relier les champs techniques a un contexte applicatif.
+\begin{table}[H]
+\centering
+\caption{Travaux représentatifs et limites pertinentes pour ce mémoire}
+\label{tab:travaux-representatifs}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.4cm}p{1.3cm}p{3cm}p{3.4cm}X}
+\toprule
+\textbf{Travail} &
+\textbf{Année} &
+\textbf{Objet principal} &
+\textbf{Apport} &
+\textbf{Limite ou différence par rapport au présent travail} \\
+\midrule
 
-Un troisieme groupe concerne les plateformes de securite. Wazuh, OSSEC ou d'autres outils de type HIDS/SIEM ne produisent pas seulement des journaux bruts ; ils enrichissent les evenements par des regles, niveaux de severite, identifiants d'agents et categories. Ces donnees sont interessantes car elles combinent deja une interpretation securite avec des metadonnees operationnelles. Elles permettent aussi de comparer une detection analytique avec des signaux produits par un outil etabli.
+Denning \cite{denning1987intrusion} &
+1987 &
+Détection d'intrusion &
+Modèle fondateur utilisant les traces d'audit et les profils de comportement. &
+Cadre conceptuel ; ne traite pas l'intégration logicielle multi-source étudiée ici. \\
 
-Un quatrieme groupe concerne les flux reseau et datasets tabulaires. CICIDS2017 et UNSW-NB15 ne ressemblent pas a des logs textuels classiques. Ils representent des flux par des caracteristiques numeriques. Ces donnees sont bien adaptees aux modeles supervises, mais elles demandent une interpretation differente de celle des journaux textuels. Elles sont utiles pour mesurer des performances, mais elles ne remplacent pas l'analyse des journaux systemes reels.
+AAFID \cite{balasubramaniyan1998aafid} &
+1998 &
+IDS distribué à agents &
+Distribution fonctionnelle de la détection entre agents. &
+Architecture historiquement différente des mécanismes modernes de streaming et du pipeline multi-format du prototype. \\
 
-\section{Enjeux de normalisation}
-La normalisation est un probleme central car elle permet de rendre comparables des sources qui ne le sont pas naturellement. Sans normalisation, chaque format impose son propre traitement, son propre affichage et ses propres filtres. Avec un schema commun, le systeme peut manipuler les notions de temps, source, severite, categorie, utilisateur, message, score et decision de maniere transversale.
+Isolation Forest \cite{liu2008isolation} &
+2008 &
+Détection non supervisée &
+Isolation efficace des observations rares. &
+Produit un score d'anomalie sans interprétation de sécurité complète. \\
 
-Cependant, normaliser ne signifie pas appauvrir. Un mauvais schema commun peut effacer des details importants. Le choix adopte dans ce memoire consiste donc a definir un noyau commun tout en conservant les champs specifiques dans les metadonnees. Cette strategie preserve la richesse des sources originales et permet d'enrichir progressivement les parseurs sans rompre la compatibilite avec le dashboard.
+DeepLog \cite{du2017deeplog} &
+2017 &
+Détection séquentielle &
+Apprentissage LSTM de séquences normales de templates. &
+Approche spécialisée sur les séquences ; plus complexe que les traitements légers privilégiés ici. \\
 
-\section{Critere d'exploitabilite analyste}
-Un systeme de detection n'est pas seulement evalue par ses scores. Il doit etre exploitable par un humain. L'analyste doit comprendre la source de l'alerte, la raison du signalement, la severite estimee, le contexte temporel et les actions deja prises. L'exploitabilite devient donc un critere de conception au meme titre que la performance.
+CICIDS2017 \cite{sharafaldin2018cicids} &
+2018 &
+Dataset d'intrusion réseau &
+Trafic bénin et attaques avec caractéristiques de flux. &
+La validité d'un score dépend fortement de la manière dont les partitions sont constituées. \\
 
-Dans la litterature, cette dimension est parfois sous-estimee. Beaucoup de travaux presentent des resultats sous forme de precision, rappel ou F1-score, mais montrent peu comment ces resultats sont utilises dans une interface de decision. Le present memoire prend en compte ce manque en integrant le dashboard et l'audit comme composants de l'architecture, et non comme simples ajouts visuels.
+LogAnomaly \cite{meng2019loganomaly} &
+2019 &
+Anomalies dans logs &
+Combinaison de dimensions séquentielles et quantitatives. &
+Approche centrée sur la modélisation des séquences, non sur une chaîne opérationnelle multi-source complète. \\
 
+LogBERT \cite{guo2021logbert} &
+2021 &
+Modélisation Transformer &
+Représentation auto-supervisée de séquences de logs. &
+Exigences de données et de calcul supérieures ; objectif différent de l'intégration légère étudiée ici. \\
+
+Loghub \cite{zhu2023loghub} &
+2023 &
+Collection de datasets &
+Mise à disposition de plusieurs corpus de logs utilisés par la recherche. &
+Fournit les données et benchmarks ; ne constitue pas une architecture intégrée d'analyse. \\
+
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La lecture de ces travaux confirme que les contributions de la littérature sont souvent
+spécialisées. Certaines améliorent la détection, d'autres le parsing, la représentation ou
+la distribution. Cette spécialisation est scientifiquement légitime, mais laisse ouverte
+la question de leur articulation dans une chaîne de traitement commune.
+
+\section{Lacunes identifiées dans la littérature}
+
+L'analyse précédente fait apparaître plusieurs lacunes directement liées au problème
+étudié.
+
+\subsection{Fragmentation des fonctions}
+
+Une grande partie des travaux de machine learning se concentre sur la performance du
+détecteur. Les données sont supposées disponibles sous une forme déjà exploitable, tandis
+que le parsing, la normalisation, la distribution, la conservation de l'audit ou la
+présentation à l'analyste sont traités séparément.
+
+À l'inverse, les outils opérationnels intègrent de nombreuses fonctions d'ingénierie, mais
+n'ont pas nécessairement pour objectif de fournir un cadre expérimental permettant de
+comparer plusieurs protocoles et plusieurs modèles.
+
+Il existe donc un espace entre le \textbf{prototype algorithmique} et la
+\textbf{plateforme opérationnelle complète}. C'est dans cet espace que se situe
+\logminer{}.
+
+\subsection{Hétérogénéité insuffisamment considérée dans les évaluations}
+
+De nombreux travaux évaluent leur méthode sur une famille précise de données. Cette
+stratégie est adaptée à la mesure d'un algorithme, mais elle ne répond pas à la question
+de l'intégration de sources possédant des structures différentes.
+
+Une chaîne multi-source doit non seulement détecter, mais également déterminer quel
+prétraitement et quel modèle sont compatibles avec l'entrée.
+
+Le routage et les adaptateurs deviennent alors des composants scientifiques et techniques
+à évaluer, et non de simples détails de programmation.
+
+\subsection{Confusion possible entre score et généralisation}
+
+Un score élevé sur un dataset ne signifie pas automatiquement que le modèle saura
+fonctionner dans un contexte différent.
+
+Cette limite est connue dans la littérature sur l'application du machine learning à la
+sécurité \cite{sommer2010outside}. Elle motive l'utilisation de protocoles d'évaluation qui
+tentent de séparer davantage les contextes d'entraînement et de test.
+
+Dans le présent travail, la comparaison entre partition aléatoire et holdout par scénario
+s'inscrit directement dans cette problématique.
+
+\subsection{Évaluation incomplète des propriétés architecturales}
+
+L'architecture multi-agent est souvent associée à la distribution, à la flexibilité ou à
+la robustesse. Ces propriétés ne doivent cependant pas être confondues.
+
+La modularité peut être observée dans la structure du logiciel. Le débit nécessite une
+mesure. La reprise exige un scénario de panne. La haute disponibilité demanderait encore
+d'autres expériences.
+
+Une contribution importante consiste donc à associer chaque revendication à un type de
+preuve approprié.
+
+\subsection{Place de l'analyste}
+
+Une anomalie détectée n'est utile que si elle peut être comprise et replacée dans un
+contexte. Les travaux centrés uniquement sur une métrique ne décrivent pas toujours la
+manière dont le signal est transmis à l'utilisateur.
+
+L'intégration d'une interface, d'un audit et d'un mécanisme de feedback ne garantit pas
+l'utilisabilité, mais elle permet au moins de fermer la chaîne entre détection technique
+et décision humaine.
+
+\section{Positionnement scientifique d'Ariel Logminer}
+
+À la lumière de l'état de l'art, \logminer{} peut être positionné comme un
+\textbf{prototype d'intégration et d'expérimentation pour l'analyse de journaux
+hétérogènes}.
+
+Sa contribution principale n'est pas la proposition d'un nouvel algorithme de détection.
+Le prototype assemble plusieurs fonctions qui sont souvent étudiées séparément :
+
+\begin{itemize}
+    \item ingestion de sources différentes ;
+    \item parsing ;
+    \item normalisation ;
+    \item identification de la famille d'entrée ;
+    \item routage vers un traitement ;
+    \item utilisation de plusieurs modèles ;
+    \item génération d'anomalies candidates ;
+    \item corrélation ;
+    \item persistance ;
+    \item audit ;
+    \item feedback ;
+    \item mise à jour contrôlée ;
+    \item visualisation.
+\end{itemize}
+
+Cette intégration s'accompagne d'une démarche expérimentale destinée à éviter plusieurs
+surinterprétations fréquentes.
+
+Premièrement, les performances de détection sont toujours rattachées au dataset et au
+protocole correspondant.
+
+Deuxièmement, les anomalies non supervisées ne sont pas présentées comme des attaques
+confirmées.
+
+Troisièmement, le routage correct d'une source n'est pas confondu avec une amélioration
+automatique des performances du modèle spécialisé.
+
+Quatrièmement, la distribution par agents n'est pas supposée améliorer le débit ; son coût
+doit être mesuré.
+
+Cinquièmement, une campagne multi-VM de laboratoire ne constitue pas une preuve de
+scalabilité industrielle.
+
+Enfin, la mémoire et la procédure de promotion d'un modèle candidat sont présentées comme
+des mécanismes contrôlés et auditables, non comme un apprentissage continu autonome en
+production.
+
+Le positionnement peut être résumé par le tableau~\ref{tab:positionnement-logminer}.
+
+\begin{table}[H]
+\centering
+\caption{Positionnement scientifique d'Ariel Logminer}
+\label{tab:positionnement-logminer}
+\small
+\begin{tabularx}{\textwidth}{p{3.4cm}X X}
+\toprule
+\textbf{Dimension} &
+\textbf{Ce que le prototype cherche à démontrer} &
+\textbf{Ce qu'il ne revendique pas} \\
+\midrule
+
+Hétérogénéité &
+Traitement d'un ensemble documenté de formats et représentation commune partielle. &
+Compatibilité universelle avec tout format de journal. \\
+
+Détection &
+Évaluation de plusieurs approches dans des protocoles explicitement définis. &
+Détecteur universel ou meilleur modèle pour tout environnement. \\
+
+Routage &
+Orientation d'une source vers une famille de traitement compatible. &
+Gain prédictif systématique grâce à la spécialisation. \\
+
+Agents &
+Modularité, séparation des responsabilités, échanges et mécanismes de reprise ciblés. &
+Accélération automatique du traitement ou autonomie cognitive. \\
+
+Distribution &
+Fonctionnement multiprocessus et validation multi-VM de laboratoire. &
+Scalabilité industrielle, multi-site ou haute disponibilité complète. \\
+
+Corrélation &
+Capacité à regrouper des anomalies dans des scénarios contrôlés. &
+Validation sur incidents SOC réels à grande échelle. \\
+
+Mémoire &
+Persistance de l'historique et support d'une procédure contrôlée. &
+Apprentissage continu totalement autonome en production. \\
+
+Dashboard &
+Restitution fonctionnelle des informations et support de validation. &
+Amélioration d'utilisabilité démontrée par une étude utilisateur. \\
+
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Synthèse du chapitre}
+
+L'état de l'art met en évidence une évolution progressive des techniques d'analyse de
+journaux. Les premières approches de détection se sont largement appuyées sur des règles,
+des signatures et des profils statistiques. Le machine learning a ensuite permis
+d'exploiter des données labellisées ou non labellisées afin d'identifier des relations plus
+complexes. Dans l'analyse de logs, le parsing automatique et les modèles séquentiels ont
+montré l'importance de représenter non seulement chaque événement, mais également sa
+structure et son contexte.
+
+Ces avancées ne résolvent cependant pas toutes les difficultés d'une chaîne d'analyse
+multi-source. Les journaux restent hétérogènes, les datasets expérimentaux ne représentent
+pas tous les environnements, les performances dépendent du protocole de séparation et les
+modèles non supervisés fournissent généralement des anomalies candidates plutôt que des
+incidents confirmés.
+
+Sur le plan logiciel, la modularité, la distribution, la corrélation, la persistance et la
+visualisation soulèvent des questions différentes de celles de la seule classification.
+Une architecture multi-agent peut améliorer la séparation des responsabilités sans
+nécessairement améliorer le débit. Une reprise après panne peut être démontrée dans un
+scénario précis sans constituer une preuve de haute disponibilité. De même, une interface
+fonctionnelle ne prouve pas à elle seule une amélioration de l'utilisabilité.
+
+Ces constats conduisent à la lacune retenue pour ce mémoire : il existe un intérêt à
+étudier une chaîne cohérente capable d'intégrer plusieurs familles de journaux, plusieurs
+mécanismes de détection et plusieurs fonctions d'exploitation tout en associant chaque
+revendication à une preuve expérimentale adaptée.
+
+Le chapitre suivant présente le modèle proposé et l'architecture finale d'Ariel Logminer.
+Il montre comment les besoins identifiés dans l'état de l'art sont traduits en composants,
+contrats de communication, mécanismes de routage, traitements de détection, mémoire,
+corrélation et audit.

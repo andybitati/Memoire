@@ -1,0 +1,16 @@
+{
+  "run_id": "ma_20260909T153649Z_47552",
+  "transport": "controlled_pending_queue",
+  "crash_point": "after_persistent_result_before_ack",
+  "first_agent": "recovery-agent-a",
+  "recovery_agent": "recovery-agent-b",
+  "first_status": "ok",
+  "recovery_status": "ok",
+  "idempotency_replayed": true,
+  "persistent_effects": 1,
+  "duplicate_effects": 0,
+  "recovered_tasks": 1,
+  "recovery_latency_sec": 0.007197,
+  "pending_final": 0,
+  "lag_final": 0
+}

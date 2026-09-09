@@ -1,52 +1,1890 @@
-\chapter{Approfondissements scientifiques}
+\chapter{Validité scientifique et analyse des résultats}
+\label{chap:validite}
 
-\section{Role du chapitre}
-Ce chapitre concentre l'analyse methodologique du memoire. Il ne repete pas les resultats du chapitre precedent et ne remplace pas la discussion generale. Son role est de preciser ce que les experiences permettent de conclure, ce qu'elles ne permettent pas de conclure, et comment les termes ambitieux du titre doivent etre compris.
+\section{Introduction}
 
-\section{Lecture methodologique des scores supervises}
-Les scores supervises doivent toujours etre lus avec leur protocole. Les protocoles exploratoires donnent des valeurs elevees sur Linux/auth et CICIDS2017. Les holdouts plus stricts donnent cependant F1 = 0,826251, 0,157827 et 0,997577. Le resultat CICIDS2017 est le plus instructif : la comparaison controlee montre qu'a features, hyperparametres, tailles et seeds apparies, le F1 passe de 0,999260 en split aleatoire stratifie a 0,157827 sur cinq holdouts fichier/scenario associes aux graines 42--46.
+Le chapitre précédent a présenté les résultats expérimentaux du prototype Ariel
+\logminer{}. Ces résultats montrent simultanément des comportements favorables, des
+fragilités et plusieurs échecs. Leur valeur scientifique ne dépend toutefois pas seulement
+des valeurs numériques obtenues. Elle dépend aussi de la manière dont les expériences ont
+été construites, des informations auxquelles les modèles ont eu accès, de la représentativité
+des données et de la portée réelle des mesures.
 
-Cette experience ne signifie pas que CICIDS2017 est inutilisable ni qu'un autre modele echouerait necessairement. Elle montre que le RandomForest utilise dans cette configuration apprend fortement des signatures propres aux fichiers ou scenarios vus pendant l'entrainement. L'analyse par fichier precise le phenomene : DDoS reste partiellement detecte, PortScan presque pas, et Bot, Infiltration et WebAttacks ne sont pas retrouves dans les echantillons de test. L'ecart-type eleve ne doit donc pas etre interprete comme une simple variabilite due aux seeds ; il reflete surtout l'heterogeneite des scenarios tenus hors entrainement. Pour cette raison, le score exploratoire de 0,997163 n'est jamais utilise seul comme resultat principal.
+Un F1 élevé peut être peu informatif si des informations du test interviennent pendant
+l'apprentissage. À l'inverse, un score plus faible peut être scientifiquement plus utile
+lorsqu'il provient d'un protocole où l'entraînement, la validation et le test sont réellement
+séparés. De la même manière, réussir à acquitter des messages dans Redis ne signifie pas
+que l'ensemble du système possède une haute disponibilité industrielle. La nature de la
+preuve doit donc rester cohérente avec la revendication qui lui est associée.
 
-Une passe complementaire compare plusieurs candidats legers sur les memes holdouts : RandomForest, ExtraTrees, HistGradientBoosting, LogisticRegression et SGDLogistic. Le meilleur F1 moyen est obtenu par LogisticRegression avec 0,233670, contre 0,157827 pour RandomForest. Ce gain est utile pour ameliorer le resultat strict, mais il ne suffit pas a conclure que le probleme est resolu : certains scenarios restent presque ou totalement non detectes. La lecture retenue est donc que le choix du modele compte, mais que la dependance au changement de distribution demeure le facteur dominant.
+Ce chapitre analyse la validité des résultats selon quatre dimensions principales :
 
-L'ancienne branche DDoS et l'archive historique mal identifiee sont exclues du corpus scientifique final. Le dataset UNSW-NB15 n'est pas fusionne avec CICIDS2017 et aucune performance issue de cette branche n'est utilisee pour etayer les conclusions.
+\begin{enumerate}
+    \item la \textbf{validité interne}, qui examine si le protocole permet réellement
+    d'attribuer les observations aux facteurs étudiés ;
 
-\section{HDFS/BGL et risque de fuite}
-Les premiers essais HDFS/BGL ont une valeur d'integration, mais ils ne constituent pas une validation robuste lorsque le seuil ou la contamination depend du jeu evalue. Utiliser implicitement l'information du test pour regler un hyperparametre peut surestimer fortement le F1, en particulier sur BGL. Le memoire ne presente donc pas ces scores exploratoires comme preuve principale.
+    \item la \textbf{validité externe}, qui porte sur la possibilité de généraliser les
+    observations au-delà des données et environnements utilisés ;
 
-La correction apportee est la branche Drain3 train--test : extraction de templates, fenetres temporelles, separation des ensembles et evaluation sur test. Cette version rend le protocole plus coherent avec la litterature sur les logs sequentiels. Elle reste toutefois limitee : HDFS demeure difficile, BGL reste tres favorable sur le split local, et une validation plus forte demanderait repetitions de splits, seuil fixe sur validation et comparaison a des modeles sequentiels specialises.
+    \item la \textbf{validité de construit}, qui vérifie si les métriques et événements
+    mesurés représentent bien les concepts annoncés ;
 
-\section{Agents, parsing et portee du titre}
-Le terme agent intelligent est employe dans un sens operationnel. Les agents disposent de capacites declarees, d'une memoire locale, d'un heartbeat, d'une politique de choix et de handlers multiples. La memoire adaptative ajoute une capitalisation persistante de certains historiques et retours analyste, mais elle ne transforme pas les agents en agents cognitifs autonomes capables de planification generale ou d'apprentissage par renforcement. La contribution se situe donc dans l'orchestration logicielle auditable et l'adaptation comportementale controlee, pas dans une nouvelle architecture agentique d'IA generale.
+    \item la \textbf{validité statistique}, qui concerne le nombre de répétitions,
+    la variabilité, les intervalles de confiance et les limites des comparaisons.
+\end{enumerate}
 
-Le parsing doit etre compris de la meme maniere. Le prototype sait reconnaitre plusieurs familles controlees, extraire des champs utiles et conserver les lignes inconnues ou incompletes. Il ne demontre pas une adaptation autonome illimitee a tout format nouveau. Sa robustesse vient surtout de la degradation controlee : ne pas perdre silencieusement l'information lorsque le format sort du cadre connu.
+Une cinquième dimension, la \textbf{traçabilité}, est également étudiée. Elle ne constitue
+pas une catégorie classique de validité au même titre que les précédentes, mais elle est
+essentielle dans ce travail : une conclusion doit pouvoir être reliée aux données,
+paramètres, scripts et artefacts qui l'ont produite.
 
-La distribution doit etre lue en deux niveaux. La campagne Redis de six heures montre une repartition locale multi-processus et une reprise de taches non acquittees sur l'hote Windows. Une validation separee sous VirtualBox montre ensuite que Debian et Ubuntu peuvent consommer un stream Redis commun heberge sur l'hote, avec notamment 525 taches lues et acquittees par le groupe Redis pendant une campagne supervisee d'une heure. Une comparaison controlee monolithique-versus-agents a ete ajoutee sur les memes taches et le meme volume : elle ne montre pas de gain de debit sur petit volume, mais elle quantifie l'overhead d'orchestration et confirme la reprise d'une tache simulee comme non acquittee. La modularite et la tracabilite sont soutenues par la conception logicielle et les mecanismes d'audit ; la resilience locale et la distribution de laboratoire disposent, elles, de preuves experimentales distinctes.
+L'objectif n'est pas de supprimer toutes les limites. Aucun protocole expérimental ne peut
+représenter intégralement un environnement opérationnel. L'objectif est plutôt
+d'identifier ces limites, de déterminer quelles mesures ont été prises pour les réduire et
+de préciser le risque résiduel qui subsiste.
 
-\section{Synthese des risques de validite}
+\section{Cadre d'analyse de la validité}
+
+\subsection{Validité interne}
+
+La validité interne répond à la question :
+
+\begin{quote}
+\textit{Le protocole permet-il d'affirmer que le résultat observé correspond réellement
+au phénomène que l'expérience cherche à mesurer ?}
+\end{quote}
+
+Dans ce mémoire, les principales menaces sont :
+
+\begin{itemize}
+    \item fuite d'information entre entraînement et test ;
+    \item ajustement du prétraitement sur le test ;
+    \item choix du seuil à partir du test ;
+    \item utilisation involontaire des labels pendant la constitution des partitions ;
+    \item dépendance entre observations supposées indépendantes ;
+    \item changement simultané de plusieurs facteurs dans une comparaison.
+\end{itemize}
+
+\subsection{Validité externe}
+
+La validité externe concerne la capacité à transférer une observation vers d'autres
+situations.
+
+Elle pose notamment les questions suivantes :
+
+\begin{itemize}
+    \item les datasets utilisés représentent-ils les journaux rencontrés ailleurs ?
+    \item les scénarios d'attaque représentent-ils des menaces futures ?
+    \item les performances locales peuvent-elles être extrapolées à un SOC ?
+    \item une validation sur deux machines virtuelles représente-t-elle un système distribué
+    industriel ?
+\end{itemize}
+
+La réponse est rarement binaire. Un résultat peut posséder une bonne validité dans le
+périmètre du prototype tout en ayant une validité externe limitée.
+
+\subsection{Validité de construit}
+
+La validité de construit vérifie l'adéquation entre ce qui est mesuré et le concept annoncé.
+
+Quelques exemples sont particulièrement importants pour Ariel \logminer{} :
+
+\begin{center}
+ACK Redis
+$\neq$
+succès métier complet,
+\end{center}
+
+\begin{center}
+anomalie statistique
+$\neq$
+attaque confirmée,
+\end{center}
+
+\begin{center}
+route correcte
+$\neq$
+meilleure performance prédictive,
+\end{center}
+
+\begin{center}
+dashboard fonctionnel
+$\neq$
+dashboard ergonomiquement validé.
+\end{center}
+
+Cette distinction joue un rôle central dans la rédaction finale.
+
+\subsection{Validité statistique}
+
+La validité statistique concerne notamment :
+
+\begin{itemize}
+    \item le nombre d'exécutions ;
+    \item la variabilité entre seeds ;
+    \item le caractère déterministe ou stochastique d'une méthode ;
+    \item les intervalles de confiance ;
+    \item la comparabilité des groupes ;
+    \item la présence ou non de tests inférentiels.
+\end{itemize}
+
+Une moyenne calculée sur cinq seeds possède une signification différente d'une valeur issue
+d'une seule exécution déterministe.
+
+Le manuscrit doit donc toujours conserver le $N$ associé à une mesure lorsque cette
+information influence son interprétation.
+
+\section{Synthèse générale des menaces}
+
+Le tableau~\ref{tab:validite-synthese} résume les principales menaces identifiées, les
+mesures prises et les limites restantes.
+
 \begin{table}[H]
 \centering
-\caption{Risques methodologiques et formulation retenue}
-\label{tab:risques-methodologiques}
+\caption{Principales menaces à la validité et mesures de contrôle}
+\label{tab:validite-synthese}
 \scriptsize
-\begin{tabularx}{\textwidth}{p{3.2cm}p{4.2cm}X}
+\begin{tabularx}{\textwidth}{p{3cm}p{3.4cm}p{3.8cm}X}
 \toprule
-\textbf{Point critique} & \textbf{Risque} & \textbf{Formulation retenue} \\
+\textbf{Menace} &
+\textbf{Risque} &
+\textbf{Mesure de contrôle} &
+\textbf{Limite résiduelle} \\
 \midrule
-Scores supervises & Confusion entre score exploratoire et generalisation. & Les scores sont associes a leur protocole ; CICIDS2017 est accompagne du holdout controle. \\
-Branche DDoS historique / UNSW & Attribution dataset ambigue. & Les sources sont separees ; la branche DDoS historique est exclue du corpus final. \\
-HDFS/BGL & Fuite par seuil ou contamination. & Les premiers scores sont exploratoires ; Drain3 train--test devient la lecture principale. \\
-Dashboard & Confusion entre validation fonctionnelle et evaluation utilisateur. & Les captures prouvent le fonctionnement ; une user study reste hors perimetre. \\
-Wazuh/Fail2ban & Comparaison abusive avec des outils matures. & \logminer{} est presente comme couche analytique complementaire, pas comme substitut. \\
-Agents intelligents & Sur-promesse sur l'autonomie ou le debit. & Agents logiciels multi-taches avec orchestration ; comparaison controlee mesurant surtout overhead et reprise, pas acceleration brute. \\
-Memoire adaptative & Confusion entre feedback conserve, reduction mesuree des faux positifs et reentrainement automatique. & Memoire persistante auditable pour priorisation et contexte ; reduction reelle des faux positifs et apprentissage adaptatif complet non encore demontres. \\
-Scalabilite & Campagne locale de six heures et validation VirtualBox d'une heure ne suffisent pas pour une preuve industrielle. & Les mesures documentent la faisabilite locale et inter-machines de laboratoire ; la scalabilite SOC multi-site securisee reste une perspective. \\
+
+Fuite train--test &
+Scores artificiellement favorables. &
+Splits séparés ; scaler train-only ; Drain3 train-only ; seuil choisi sur validation. &
+Tous les protocoles historiques ne possédaient pas ce niveau de contrôle ; seuls les
+protocoles finaux sont retenus. \\
+
+Sensibilité au split &
+Performance dépendante de la constitution du test. &
+Comparaison random/holdout par scénario CICIDS2017. &
+Cinq scénarios fixes seulement. \\
+
+Variabilité stochastique &
+Résultat dépendant d'une seed. &
+Seeds 42 à 46 pour plusieurs campagnes. &
+$N=5$ reste limité. \\
+
+Méthodes déterministes &
+Absence de mesure de dispersion. &
+Annonce explicite de $N=1$. &
+Impossible d'estimer une variance empirique de la méthode dans cette configuration. \\
+
+Labels HDFS &
+Confusion entre anomalie d'un bloc et anomalie d'une ligne. &
+Séparation des \texttt{block\_id} entre partitions. &
+Évaluation partiellement événementielle alors que la vérité est liée au bloc. \\
+
+Distribution BGL &
+Test très différent du train. &
+État Drain3 gelé et analyse des templates inconnus. &
+89,808\,\% de templates test inconnus. \\
+
+Chunks du routeur &
+Pseudo-réplication possible. &
+Vérité fixée avant routage ; noms neutralisés. &
+Chunks issus d'une même source et donc dépendants. \\
+
+Multi-VM &
+Extrapolation abusive vers la production. &
+Description exacte du laboratoire et des ACK. &
+Redis unique, NAT, VirtualBox et relances supervisées. \\
+
+Corrélation synthétique &
+Surestimation d'une performance opérationnelle. &
+Vérité séparée et évaluation pairwise exhaustive. &
+Pas d'incidents SOC réels annotés. \\
+
+Dashboard &
+Confusion entre fonction et ergonomie. &
+Description limitée aux fonctions observées. &
+Aucune étude utilisateur. \\
+
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\section{Exploitation scientifique prioritaire}
-Les resultats les plus utiles pour la suite sont ceux qui isolent une question scientifique claire. La comparaison controlee CICIDS2017 montre l'effet du protocole de separation. L'ablation global-versus-familles sur cinq graines montre que le routage ne domine pas automatiquement un modele global en espace commun. La branche Drain3 montre que les logs sequentiels demandent une representation plus riche que la ligne brute.
+\section{Validité de l'expérience CICIDS2017}
 
-Les prolongements doivent donc suivre trois axes : etendre les comparaisons controlees a d'autres familles, tester des splits temporels ou multi-environnements, et transformer la memoire adaptative actuelle en boucle de reentrainement controlee fondee sur le feedback analyste du dashboard. Cette boucle devra surveiller le concept drift, comparer tout nouveau modele a un modele courant sur un jeu de validation gele, puis conserver l'ancien modele pour retour arriere.
+\subsection{Risque lié au split aléatoire}
+
+La première menace observée sur CICIDS2017 concerne la séparation aléatoire.
+
+Lorsque les observations d'une même population sont distribuées aléatoirement entre
+entraînement et test, les deux ensembles peuvent rester très proches dans leur structure.
+
+Le modèle peut alors apprendre des régularités propres au contexte de collecte.
+
+Dans le protocole final, Random Forest obtient :
+
+\[
+F_1=0{,}995142\pm0{,}001013
+\]
+
+sur la séparation aléatoire stratifiée.
+
+Cette valeur montre que le modèle distingue très efficacement les classes lorsque train
+et test proviennent du même pool mélangé.
+
+Elle ne permet pas à elle seule de répondre à la question suivante :
+
+\begin{quote}
+\textit{Le modèle reconnaît-il correctement un scénario qui n'a pas été représenté pendant
+l'entraînement ?}
+\end{quote}
+
+C'est précisément le rôle du holdout par scénario.
+
+\subsection{Contrôle par holdout}
+
+Le protocole holdout retire successivement un scénario complet du train.
+
+Dans ces conditions, le F1 macro devient :
+
+\[
+0{,}157744.
+\]
+
+La différence est suffisamment importante pour modifier l'interprétation générale de
+l'expérience.
+
+Le contrôle aléatoire démontre une bonne séparabilité dans la distribution mélangée.
+
+Le holdout démontre une fragilité lorsqu'une famille de scénario est exclue.
+
+Les deux résultats ne s'annulent pas. Ils mesurent deux propriétés différentes.
+
+\subsection{Effet des seeds}
+
+Les seeds 42 à 46 sont utilisées afin de vérifier qu'un résultat particulier ne dépend pas
+uniquement d'un tirage.
+
+Le faible écart-type observé pour le contrôle random indique une bonne stabilité
+conditionnelle :
+
+\[
+\sigma_{F_1}=0{,}001013.
+\]
+
+Dans les holdouts, la principale variation vient davantage des scénarios que des seeds.
+
+Cette observation renforce l'idée que le déplacement entre scénarios constitue une
+difficulté plus importante que l'aléa associé aux cinq tirages considérés.
+
+Il faut toutefois rester prudent : cinq seeds ne représentent pas l'ensemble possible des
+configurations aléatoires.
+
+\subsection{Sous-échantillonnage}
+
+Le protocole limite le train et le test à des tailles maximales par classe et ne parcourt
+qu'un nombre borné de chunks par fichier.
+
+Cette décision réduit le coût d'exécution et permet de répéter les campagnes dans un
+environnement local.
+
+Elle introduit cependant une limite :
+
+\begin{quote}
+les résultats correspondent aux sous-échantillons définis par le protocole et non à une
+analyse exhaustive de chaque ligne disponible dans l'ensemble du dataset.
+\end{quote}
+
+La présence de cinq seeds réduit partiellement la dépendance à un échantillon unique, mais
+elle ne supprime pas cette limitation.
+
+\subsection{Caractéristiques et fuite potentielle}
+
+Les colonnes possédant un risque élevé de mémorisation du contexte sont exclues de
+l'entrée :
+
+\begin{itemize}
+    \item identifiants ;
+    \item IP ;
+    \item timestamp ;
+    \item label ;
+    \item index.
+\end{itemize}
+
+Cette décision réduit le risque qu'un modèle apprenne directement des informations
+équivalentes à l'identité du scénario.
+
+Elle ne garantit pas que les 78 caractéristiques restantes soient indépendantes du
+contexte de collecte. Certaines caractéristiques réseau peuvent naturellement varier entre
+scénarios.
+
+\subsection{Standardisation des modèles linéaires}
+
+Pour Logistic Regression et SGDLogistic, le \texttt{StandardScaler} est ajusté sur le train
+uniquement.
+
+Mathématiquement, pour une variable $x$, la transformation est :
+
+\[
+z
+=
+\frac{x-\mu_{\mathrm{train}}}
+{\sigma_{\mathrm{train}}}.
+\]
+
+Les paramètres $\mu_{\mathrm{train}}$ et $\sigma_{\mathrm{train}}$ ne sont donc pas estimés
+à partir du test.
+
+Cette séparation évite une forme courante de fuite de données.
+
+\section{Validité de la comparaison des cinq modèles}
+
+\subsection{Comparabilité}
+
+La campagne multi-modèles réutilise :
+
+\begin{itemize}
+    \item les mêmes scénarios ;
+    \item les mêmes seeds ;
+    \item le même principe d'échantillonnage ;
+    \item les mêmes caractéristiques.
+\end{itemize}
+
+Cette construction améliore la comparabilité.
+
+Les différences observées sont donc moins susceptibles de provenir d'un changement de
+dataset entre deux modèles.
+
+\subsection{Absence de domination universelle}
+
+Logistic Regression obtient :
+
+\[
+F_{1,\mathrm{macro}}=0{,}233670,
+\]
+
+alors que HistGradientBoosting obtient :
+
+\[
+\mathrm{PR\mbox{-}AUC}_{\mathrm{macro}}=0{,}567697.
+\]
+
+Ces résultats montrent que la notion de ``meilleur modèle'' dépend de la métrique.
+
+Il serait donc méthodologiquement incorrect de produire un classement universel à partir
+d'un seul score.
+
+\subsection{Échec commun sur Bot}
+
+L'absence de vrais positifs pour Bot avec plusieurs candidats suggère que la difficulté
+n'est pas uniquement liée au choix du classifieur.
+
+Cette convergence négative renforce la crédibilité du constat.
+
+Cependant, elle ne permet pas d'identifier causalement la raison de l'échec.
+
+Plusieurs facteurs peuvent contribuer :
+
+\begin{itemize}
+    \item différence de distribution ;
+    \item caractéristiques insuffisamment informatives ;
+    \item représentation différente du scénario ;
+    \item seuil ;
+    \item absence de phénomènes comparables dans le train.
+\end{itemize}
+
+Une nouvelle expérience serait nécessaire pour distinguer ces hypothèses.
+
+\section{Validité du protocole HDFS/BGL}
+
+\subsection{Problème méthodologique initial}
+
+L'analyse de journaux semi-structurés introduit un risque supplémentaire par rapport aux
+données tabulaires.
+
+Un parseur tel que Drain3 apprend des templates.
+
+Si le parseur continue d'apprendre pendant le test, le test influence directement la
+représentation utilisée pour sa propre évaluation.
+
+De même, si les statistiques de fréquence ou les seuils sont calculés en observant le test,
+l'indépendance de l'évaluation est compromise.
+
+Le protocole final a été reconstruit afin de limiter ces problèmes.
+
+\subsection{Séparation Train--Validation--Test}
+
+Les plages sont :
+
+\[
+0\text{--}60\,\%\quad\text{Train},
+\]
+
+\[
+60\text{--}80\,\%\quad\text{Validation},
+\]
+
+\[
+80\text{--}100\,\%\quad\text{Test}.
+\]
+
+Les données sont donc séparées avant le réglage des méthodes.
+
+La validation possède une fonction propre :
+
+\begin{quote}
+choisir les paramètres nécessaires sans utiliser le test.
+\end{quote}
+
+Le test n'intervient qu'après la fixation du pipeline.
+
+\subsection{Drain3 gelé}
+
+Drain3 est ajusté sur le train.
+
+Pour les ensembles suivants, le parseur applique uniquement une recherche de correspondance
+avec les templates appris.
+
+Cela garantit qu'un template nouveau observé dans le test ne devient pas automatiquement
+une nouvelle connaissance du parseur avant l'évaluation.
+
+L'état gelé augmente donc la validité interne.
+
+\subsection{Statistiques calculées sur le train}
+
+Les fréquences de templates et de sources utilisées comme référence proviennent du train.
+
+Lorsqu'un scaler est nécessaire, il est ajusté sur les observations normales du train.
+
+Le test ne contribue donc pas à définir ce qui est considéré comme normal.
+
+\subsection{Sélection du seuil}
+
+Le seuil est choisi sur la validation.
+
+Cette étape est particulièrement importante pour une méthode d'anomalie.
+
+Supposons un score $s(x)$ et un seuil $\tau$ :
+
+\[
+\hat{y}
+=
+\begin{cases}
+1 & \text{si } s(x)\geq\tau,\\
+0 & \text{sinon}.
+\end{cases}
+\]
+
+Si $\tau$ était optimisé directement sur le test, le F1 final serait biaisé en faveur du
+jeu utilisé pour l'évaluation.
+
+Le protocole évite ce problème en fixant $\tau$ à partir de la validation.
+
+\section{Particularité de HDFS}
+
+\subsection{Unité de vérité terrain}
+
+La principale limitation de HDFS concerne la granularité des labels.
+
+La vérité terrain est associée au bloc ou à la trace identifiée par
+\texttt{block\_id}.
+
+Un bloc peut comporter plusieurs messages.
+
+Le fait qu'un bloc soit déclaré anormal ne signifie pas nécessairement que chaque message
+de ce bloc constitue individuellement une anomalie équivalente.
+
+\subsection{Conséquence sur l'évaluation}
+
+L'évaluation finale manipule néanmoins plusieurs représentations au niveau événement.
+
+Cette différence entre :
+
+\[
+\text{unité de label}
+\]
+
+et :
+
+\[
+\text{unité de prédiction}
+\]
+
+constitue une menace de validité de construit.
+
+Le F1 HDFS :
+
+\[
+0{,}269307
+\]
+
+doit donc être interprété comme la performance obtenue dans la représentation événementielle
+utilisée par le protocole, avec propagation de l'information de vérité issue des blocs.
+
+Il ne constitue pas une mesure définitive d'une détection au niveau trace.
+
+\subsection{Contrôle des blocs entre partitions}
+
+Le protocole vérifie qu'aucun \texttt{block\_id} n'est partagé entre les partitions après
+déduplication.
+
+Cette mesure réduit un risque majeur : retrouver dans le test des événements appartenant
+exactement au même bloc qu'un bloc déjà observé pendant l'entraînement.
+
+Elle améliore donc la validité interne même si la question de granularité du label reste
+ouverte.
+
+\section{Particularité de BGL}
+
+\subsection{Absence d'anomalies dans le train}
+
+Le train BGL du protocole final ne contient pas d'anomalies.
+
+Cette structure peut convenir à une approche cherchant à apprendre un fonctionnement normal.
+
+Elle signifie cependant que l'expérience ne mesure pas la capacité d'un modèle à apprendre
+plusieurs types d'anomalies à partir d'exemples labellisés.
+
+\subsection{Templates inconnus}
+
+Le résultat le plus important pour la validité externe de BGL est la proportion de templates
+test inconnus :
+
+\[
+89{,}808\,\%.
+\]
+
+Cela signifie qu'une très grande partie des structures présentes dans le test n'a pas été
+observée dans le train par Drain3.
+
+Cette situation correspond à un déplacement de distribution important.
+
+\subsection{Interprétation du F1}
+
+Histogram obtient :
+
+\[
+F_1=0{,}913698.
+\]
+
+Ce score élevé doit être analysé conjointement avec le déplacement de templates.
+
+Il peut indiquer que la nouveauté structurelle fournit une information très discriminante
+dans le protocole.
+
+Il ne suffit pas à démontrer que la méthode identifierait correctement des anomalies dans
+un environnement où les templates normaux évoluent fréquemment.
+
+Une modification légitime d'une application pourrait également produire des templates
+nouveaux.
+
+\subsection{Conclusion de validité pour BGL}
+
+La formulation la plus prudente est donc :
+
+\begin{quote}
+\textit{BGL présente une forte séparabilité dans le protocole strict évalué, dans un contexte
+où le test possède un déplacement important de templates par rapport au train.}
+\end{quote}
+
+Cette formulation conserve à la fois le résultat positif et sa principale limite.
+
+\section{Comparaison ancien protocole et protocole strict}
+
+Il peut être tentant de comparer directement les résultats d'un ancien protocole avec ceux
+du protocole strict afin d'estimer l'effet d'une seule correction.
+
+Cette interprétation serait incorrecte.
+
+Plusieurs éléments ont changé simultanément :
+
+\begin{itemize}
+    \item découpage Train--Validation--Test ;
+    \item comportement de Drain3 ;
+    \item calcul des statistiques ;
+    \item sélection du seuil ;
+    \item représentation des fenêtres ;
+    \item contrôles de séparation.
+\end{itemize}
+
+La comparaison ne constitue donc pas une ablation causale.
+
+On peut affirmer :
+
+\begin{quote}
+\textit{le protocole final contrôle mieux les risques de fuite identifiés},
+\end{quote}
+
+mais pas :
+
+\begin{quote}
+\textit{la baisse ou la hausse du F1 est causée uniquement par le gel de Drain3}.
+\end{quote}
+
+Une véritable étude causale nécessiterait de modifier une seule dimension à la fois.
+
+\section{Validité de la validation multiformat}
+
+\subsection{Ce que mesure l'expérience}
+
+La campagne multiformat mesure principalement la capacité fonctionnelle des adaptateurs.
+
+Elle répond à la question :
+
+\begin{quote}
+\textit{une unité provenant de cette source traverse-t-elle effectivement la voie de lecture,
+de parsing et de normalisation du pipeline courant ?}
+\end{quote}
+
+Elle ne mesure pas la performance d'un détecteur.
+
+\subsection{Couverture}
+
+Le résultat global est :
+
+\[
+5\,001/7\,001
+\]
+
+unités normalisées.
+
+Ce taux ne doit pas être interprété comme une probabilité de succès sur un nouveau format.
+
+Les huit voies ne constituent pas un échantillon statistique aléatoire de tous les formats
+de journaux existants.
+
+\subsection{Hétérogénéité des cas}
+
+Les voies n'ont pas toutes le même volume ni la même nature.
+
+Apache est notamment représenté par un seul exemple synthétique.
+
+HDFS et BGL disposent de 1\,000 unités chacun mais n'en normalisent aucune dans la voie
+générale.
+
+Ainsi, agréger toutes les observations dans un taux unique masque la structure réelle des
+résultats.
+
+La présentation par source doit donc accompagner le résultat global.
+
+\subsection{Conservation du brut}
+
+La campagne montre également que la conservation exacte du message original n'est pas
+universelle.
+
+Cette observation limite directement H1.
+
+Le prototype fournit un mécanisme de normalisation et conserve de nombreuses informations
+utiles à l'audit, mais la propriété suivante n'est pas démontrée :
+
+\begin{quote}
+``tout événement conserve exactement son brut d'origine dans toutes les voies.''
+\end{quote}
+
+Cette revendication doit donc rester absente du mémoire.
+
+\section{Validité du routeur}
+
+\subsection{Résultat apparent}
+
+Le routeur obtient :
+
+\[
+80/81
+\]
+
+décisions correctes, soit :
+
+\[
+\mathrm{Accuracy}=0{,}987654.
+\]
+
+Ce résultat démontre qu'il reconnaît très bien les familles dans le corpus préparé.
+
+\subsection{Dépendance des chunks}
+
+Le corpus de 81 fichiers est construit à partir de neuf sources.
+
+Plusieurs fichiers correspondent donc à des chunks issus d'une même source originale.
+
+Deux chunks provenant du même fichier peuvent partager :
+
+\begin{itemize}
+    \item les mêmes colonnes ;
+    \item la même organisation ;
+    \item le même vocabulaire ;
+    \item la même structure générale.
+\end{itemize}
+
+Les 81 décisions ne doivent donc pas être interprétées comme 81 sources indépendantes.
+
+Il existe une forme de dépendance intra-source.
+
+\subsection{Métadonnées révélatrices}
+
+Même lorsque les noms sont neutralisés, certaines caractéristiques structurelles peuvent
+révéler directement la famille.
+
+Par exemple, la présence d'un ensemble caractéristique de colonnes peut suffire à identifier
+un dataset réseau.
+
+Cette propriété n'est pas un défaut du routeur : utiliser la structure est précisément une
+partie de son objectif.
+
+Elle limite simplement la conclusion à :
+
+\begin{quote}
+\textit{identification fonctionnelle de la famille dans le corpus testé}
+\end{quote}
+
+et non :
+
+\begin{quote}
+\textit{classification sémantique générale de tout log inconnu}.
+\end{quote}
+
+\subsection{Confidence non calibrée}
+
+La confidence est une marge heuristique.
+
+Aucune procédure de calibration telle qu'une régression isotone ou un calibrage probabiliste
+n'est utilisée.
+
+La valeur ne doit donc pas être interprétée comme une probabilité correcte.
+
+Cette précision relève directement de la validité de construit.
+
+\section{Validité de l'ablation global versus spécialisé}
+
+La comparaison entre modèle global et modèle spécialisé cherche à déterminer si le
+routage apporte un bénéfice prédictif.
+
+Deux résultats correctement traçables montrent :
+
+\[
+\Delta F_1=+0{,}000201
+\]
+
+pour CICIDS et :
+
+\[
+\Delta F_1=-0{,}003050
+\]
+
+pour Linux/auth.
+
+Les signes opposés suffisent à réfuter l'idée d'un gain systématique dans les cas observés.
+
+Cette conclusion est descriptive.
+
+Le nombre de familles est trop limité pour établir une loi générale sur tous les systèmes
+de routage spécialisé.
+
+La contribution principale du routeur reste donc l'organisation correcte du pipeline et
+la prévention de certaines incompatibilités.
+
+\section{Validité du benchmark monolithe/agents}
+
+\subsection{Comparaison contrôlée}
+
+Le benchmark utilise 60 tâches dans chacun des trois modes.
+
+La même unité de travail est utilisée afin de permettre une comparaison cohérente des
+durées.
+
+Le débit observé est :
+
+\[
+1{,}6357~\mathrm{tâche/s}
+\]
+
+pour le monolithe,
+
+contre :
+
+\[
+1{,}5715~\mathrm{tâche/s}
+\]
+
+pour les agents.
+
+La conclusion locale est donc directe :
+
+\begin{quote}
+à cette charge, les agents n'améliorent pas le débit.
+\end{quote}
+
+\subsection{Validité externe}
+
+Ce résultat ne permet pas d'affirmer que les agents seront toujours plus lents.
+
+Le benchmark porte sur :
+
+\begin{itemize}
+    \item une machine ;
+    \item une charge de 60 tâches ;
+    \item une configuration précise ;
+    \item un degré de parallélisme particulier.
+\end{itemize}
+
+Avec une charge plus importante ou des tâches plus coûteuses, la relation entre surcoût
+d'orchestration et parallélisme pourrait changer.
+
+La conclusion correcte reste donc conditionnelle :
+
+\begin{quote}
+\textit{aucun gain de débit n'est observé dans la charge testée.}
+\end{quote}
+
+\subsection{CPU}
+
+Les valeurs CPU dépassent parfois 100\,\%.
+
+Elles sont exprimées relativement à un cœur logique équivalent.
+
+Sur une machine multicœur, une valeur supérieure à 100\,\% ne signifie donc pas une mesure
+impossible.
+
+Cette unité doit rester explicite dans les tableaux.
+
+\subsection{RSS}
+
+La RSS maximale mesure la mémoire résidente maximale du processus ou de l'ensemble observé
+selon la campagne.
+
+Elle n'est pas identique à :
+
+\begin{itemize}
+    \item la mémoire totale du système ;
+    \item la mémoire virtuelle ;
+    \item la consommation mémoire universelle d'une architecture agent.
+\end{itemize}
+
+Les valeurs sont spécifiques à l'environnement testé.
+
+\section{Validité de la campagne multi-VM}
+
+\subsection{Nature de la preuve}
+
+La campagne multi-VM démontre que :
+
+\begin{itemize}
+    \item deux VM peuvent atteindre le même Redis ;
+    \item deux workers peuvent appartenir au consumer group ;
+    \item les entrées peuvent être consommées ;
+    \item les messages peuvent être acquittés ;
+    \item le pending et le lag peuvent revenir à zéro.
+\end{itemize}
+
+Cette preuve est réelle mais limitée.
+
+\subsection{ACK et succès métier}
+
+La campagne principale produit :
+
+\[
+525
+\]
+
+entrées lues et acquittées.
+
+Un acquittement signifie que le worker a confirmé le message au niveau du mécanisme Redis.
+
+Il serait incorrect d'en déduire automatiquement que 525 traitements métier complexes ont
+tous produit un résultat final correct.
+
+L'équivalence :
+
+\[
+\mathrm{ACK}
+=
+\mathrm{succès\ applicatif}
+\]
+
+n'est pas démontrée.
+
+\subsection{Redis unique}
+
+L'architecture expérimentale utilise un serveur Redis central unique.
+
+Une panne de ce serveur supprimerait le bus de messages de la topologie testée.
+
+La campagne ne démontre donc pas une haute disponibilité du broker.
+
+\subsection{VirtualBox et NAT}
+
+Les deux machines virtuelles utilisent VirtualBox et un réseau NAT.
+
+Cela permet de reproduire une séparation entre workers.
+
+Cela ne représente toutefois pas :
+
+\begin{itemize}
+    \item deux sites distants ;
+    \item un réseau WAN ;
+    \item des liens présentant latence et pertes réalistes ;
+    \item un environnement hostile ;
+    \item un cluster physique.
+\end{itemize}
+
+La validité externe du scénario distribué reste donc limitée au laboratoire.
+
+\subsection{Relances supervisées}
+
+Certaines interruptions liées à \texttt{guestcontrol} ont nécessité une intervention
+supervisée.
+
+La campagne ne peut donc pas être décrite comme entièrement autonome pendant toute sa
+durée.
+
+Cette transparence ne retire pas sa valeur à l'expérience : les workers et le stream ont
+réellement été exécutés sur les VM.
+
+Elle précise simplement le niveau d'automatisation observé.
+
+\section{Validité de la résilience}
+
+\subsection{Scénario testé}
+
+Le scénario de récupération démontré correspond à une tâche prise par Debian avant
+traitement/ACK puis récupérée par Ubuntu.
+
+Cette expérience soutient un mécanisme de reprise pour cette fenêtre particulière.
+
+\subsection{Scénario non testé : traitement puis perte de l'ACK}
+
+Un scénario différent est :
+
+\begin{enumerate}
+    \item le worker reçoit la tâche ;
+    \item le traitement métier réussit ;
+    \item une écriture externe est effectuée ;
+    \item le worker s'arrête avant ACK ;
+    \item Redis considère toujours la tâche comme pending ;
+    \item un autre worker la reprend.
+\end{enumerate}
+
+Dans ce cas, l'opération métier peut être exécutée deux fois si elle n'est pas idempotente.
+
+Cette fenêtre n'est pas évaluée.
+
+Le mémoire ne doit donc pas revendiquer une idempotence générale.
+
+\subsection{Autres pannes non évaluées}
+
+Les campagnes ne couvrent pas systématiquement :
+
+\begin{itemize}
+    \item interruption complète de Redis ;
+    \item partition réseau ;
+    \item corruption du stockage ;
+    \item messages dupliqués ;
+    \item panne simultanée de plusieurs workers ;
+    \item basculement automatique du broker.
+\end{itemize}
+
+Ces scénarios appartiennent aux perspectives de résilience.
+
+\section{Validité de la corrélation}
+
+\subsection{Avantage du corpus synthétique}
+
+Le corpus synthétique possède une propriété utile : la vérité de regroupement est connue.
+
+Il est donc possible de calculer exactement les paires correctes et incorrectes.
+
+Avec 16 anomalies :
+
+\[
+\binom{16}{2}=120
+\]
+
+paires sont évaluées.
+
+Le calcul pairwise est exhaustif dans ce corpus.
+
+\subsection{Limite de représentativité}
+
+Les événements ont été conçus pour contenir :
+
+\begin{itemize}
+    \item six incidents vrais ;
+    \item plusieurs groupes stables ;
+    \item un cas de fragmentation ;
+    \item un cas de fusion ;
+    \item du bruit.
+\end{itemize}
+
+Cette structure offre une bonne validité interne pour vérifier la logique du corrélateur.
+
+Elle possède cependant une validité externe limitée.
+
+Un SOC réel peut contenir :
+
+\begin{itemize}
+    \item milliers d'événements ;
+    \item horodatages imparfaits ;
+    \item identités ambiguës ;
+    \item NAT ;
+    \item données manquantes ;
+    \item plusieurs utilisateurs ;
+    \item événements simultanés ;
+    \item attaques longues ;
+    \item chaînes multi-hôtes.
+\end{itemize}
+
+Le F1 pairwise :
+
+\[
+0{,}812500
+\]
+
+ne doit donc pas être extrapolé à ces environnements.
+
+\subsection{Fragmentation et fusion}
+
+La campagne révèle les deux erreurs classiques :
+
+\begin{itemize}
+    \item fragmentation ;
+    \item fusion.
+\end{itemize}
+
+Cette observation améliore la validité de l'analyse, car elle empêche de résumer le
+corrélateur uniquement par son nombre final de groupes.
+
+Un système pourrait produire exactement six groupes tout en regroupant mal les événements.
+
+L'évaluation pairwise apporte une mesure plus informative.
+
+\section{Validité de la mise à jour contrôlée}
+
+\subsection{Preuve fonctionnelle}
+
+Les trois cas construits testent explicitement :
+
+\begin{itemize}
+    \item promotion ;
+    \item rejet ;
+    \item gain insuffisant.
+\end{itemize}
+
+Le mécanisme de décision est donc réellement parcouru de bout en bout.
+
+Les hashes et backups améliorent la traçabilité de la procédure.
+
+\subsection{Cas construits}
+
+Les trois configurations ne constituent cependant pas trois situations indépendantes
+prélevées aléatoirement dans une exploitation réelle.
+
+Elles reposent sur des relations entre modèles déjà connues grâce aux campagnes
+précédentes.
+
+L'objectif de cette expérience est principalement fonctionnel :
+
+\begin{quote}
+\textit{vérifier que chaque branche de décision fonctionne correctement.}
+\end{quote}
+
+Elle ne permet pas d'estimer la fréquence à laquelle une promotion ou un rejet surviendrait
+en production.
+
+\subsection{Seuil de 0,02}
+
+Le seuil :
+
+\[
+\delta_{\min}=0{,}02
+\]
+
+est une règle de gouvernance du scénario expérimental.
+
+Il ne doit pas être présenté comme une valeur universellement optimale.
+
+Un contexte opérationnel pourrait choisir un seuil différent en fonction :
+
+\begin{itemize}
+    \item du coût d'un faux positif ;
+    \item du coût d'un faux négatif ;
+    \item de la stabilité recherchée ;
+    \item de la métrique utilisée ;
+    \item du coût de redéploiement.
+\end{itemize}
+
+\section{Validité de la mémoire persistante}
+
+L'architecture contient une mémoire persistante et des informations historiques.
+
+Cependant, aucune expérience finale ne compare directement :
+
+\[
+\text{mémoire activée}
+\]
+
+à :
+
+\[
+\text{mémoire désactivée}
+\]
+
+sur le même protocole afin d'isoler son effet causal.
+
+Il est donc possible d'affirmer que :
+
+\begin{quote}
+\textit{la mémoire existe et intervient dans certaines décisions prévues par le code},
+\end{quote}
+
+mais pas que :
+
+\begin{quote}
+\textit{la mémoire améliore quantitativement la priorisation de X\,\%}.
+\end{quote}
+
+Cette distinction explique pourquoi l'hypothèse H5 reste partiellement soutenue.
+
+\section{Validité du dashboard}
+
+\subsection{Preuve fonctionnelle}
+
+Les captures et le code du dashboard permettent de montrer plusieurs fonctions :
+
+\begin{itemize}
+    \item consultation ;
+    \item filtrage ;
+    \item détails ;
+    \item audit ;
+    \item ressources ;
+    \item feedback selon les vues disponibles.
+\end{itemize}
+
+Cette preuve suffit à établir l'existence fonctionnelle de l'interface.
+
+\subsection{Absence d'étude utilisateur}
+
+Aucune campagne n'a recruté un groupe d'utilisateurs pour mesurer :
+
+\begin{itemize}
+    \item temps de réalisation d'une tâche ;
+    \item taux d'erreur ;
+    \item compréhension ;
+    \item satisfaction ;
+    \item charge cognitive ;
+    \item préférence entre interfaces.
+\end{itemize}
+
+Le mémoire ne peut donc pas affirmer que l'interface bleue :
+
+\begin{itemize}
+    \item améliore la productivité ;
+    \item réduit le temps d'investigation ;
+    \item est plus intuitive ;
+    \item réduit la charge cognitive.
+\end{itemize}
+
+Ces questions nécessitent une étude dédiée.
+
+\section{Validité des données locales}
+
+\subsection{Différence entre données publiques et locales}
+
+Une source locale n'a pas besoin d'avoir une origine publique.
+
+Sa validité dépend plutôt de la documentation de son acquisition.
+
+Les informations pertinentes comprennent :
+
+\begin{itemize}
+    \item système source ;
+    \item type de journal ;
+    \item format ;
+    \item mode d'export ;
+    \item période lorsque disponible ;
+    \item anonymisation ;
+    \item transformations appliquées.
+\end{itemize}
+
+\subsection{Labels locaux}
+
+Lorsqu'un fichier local est présenté comme labellisé, il faut distinguer :
+
+\begin{itemize}
+    \item label produit par un outil ;
+    \item label construit manuellement ;
+    \item label provenant d'une vérité terrain expérimentale.
+\end{itemize}
+
+Ces catégories ne possèdent pas la même force.
+
+Un niveau de sévérité Wazuh, par exemple, n'est pas automatiquement une vérité terrain
+d'attaque.
+
+\subsection{Anomalies Wazuh}
+
+Lorsque des méthodes non supervisées produisent des signaux sur un export Wazuh, ces
+signaux doivent rester décrits comme :
+
+\begin{quote}
+anomalies candidates.
+\end{quote}
+
+Sans validation indépendante, leur nombre ne fournit ni un taux d'attaque ni un taux de
+faux positif.
+
+\section{Traçabilité des datasets publics}
+
+\subsection{Identification de la source}
+
+La première étape consiste à identifier la source publique du dataset :
+
+\begin{itemize}
+    \item institution ;
+    \item publication ;
+    \item description ;
+    \item fichier ou corpus correspondant.
+\end{itemize}
+
+Cette identification permet de savoir ce que la copie locale est supposée représenter.
+
+\subsection{Correspondance de la copie locale}
+
+Une deuxième question est distincte :
+
+\begin{quote}
+\textit{la copie locale utilisée correspond-elle exactement à la distribution publique ?}
+\end{quote}
+
+Plusieurs niveaux de preuve peuvent exister :
+
+\begin{itemize}
+    \item même nom seulement ;
+    \item même nombre de lignes ;
+    \item même structure ;
+    \item correspondance sémantique ;
+    \item hash identique.
+\end{itemize}
+
+Le mémoire doit utiliser le statut établi dans le rapport final de traçabilité pour chaque
+dataset.
+
+Il ne doit pas transformer une ressemblance en identité bit-à-bit.
+
+\section{Validité statistique des campagnes}
+
+\subsection{N=5}
+
+Plusieurs campagnes stochastiques utilisent cinq seeds.
+
+La moyenne est :
+
+\[
+\bar{x}
+=
+\frac{1}{N}
+\sum_{i=1}^{N}x_i.
+\]
+
+L'écart-type échantillonnal est :
+
+\[
+s
+=
+\sqrt{
+\frac{1}{N-1}
+\sum_{i=1}^{N}
+(x_i-\bar{x})^2
+}.
+\]
+
+Lorsque $N\geq2$, l'intervalle de confiance de Student peut être écrit :
+
+\[
+\bar{x}
+\pm
+t_{0.975,N-1}
+\frac{s}{\sqrt{N}}.
+\]
+
+Avec $N=5$, cet intervalle renseigne sur la dispersion observée entre les cinq répétitions
+dans le protocole.
+
+Il ne doit pas être interprété comme une garantie de performance future sur n'importe quel
+dataset.
+
+\subsection{N=1}
+
+Histogram est déterministe dans les résultats HDFS/BGL retenus.
+
+Les valeurs :
+
+\[
+0{,}269307
+\]
+
+et :
+
+\[
+0{,}913698
+\]
+
+correspondent donc à une exécution déterministe par configuration.
+
+Il serait scientifiquement incorrect d'écrire :
+
+\[
+0{,}913698\pm0{,}00
+\]
+
+comme si un écart-type avait été mesuré.
+
+Le bon format est :
+
+\begin{quote}
+F1 = 0,913698, $N=1$ déterministe.
+\end{quote}
+
+\subsection{Pseudo-réplication}
+
+Un grand nombre de lignes ne signifie pas nécessairement un grand nombre de répétitions
+indépendantes.
+
+C'est notamment le cas du routeur :
+
+\[
+81 \text{ fichiers}
+\]
+
+proviennent de :
+
+\[
+9 \text{ sources}.
+\]
+
+Traiter les 81 chunks comme 81 datasets indépendants conduirait à une pseudo-réplication.
+
+Cette différence doit être préservée dans les statistiques.
+
+\subsection{Absence de tests inférentiels globaux}
+
+Le travail final utilise principalement des statistiques descriptives.
+
+Aucun test global du type :
+
+\begin{itemize}
+    \item ANOVA généralisée ;
+    \item Friedman global ;
+    \item comparaison multiple corrigée ;
+    \item modèle hiérarchique ;
+\end{itemize}
+
+n'est utilisé pour démontrer une supériorité statistique générale.
+
+Les formulations suivantes doivent donc être évitées :
+
+\begin{quote}
+``le modèle A est significativement supérieur à tous les modèles'' ;
+\end{quote}
+
+ou :
+
+\begin{quote}
+``les agents sont statistiquement plus coûteux dans tous les contextes''.
+\end{quote}
+
+Les résultats sont décrits comme observations dans les protocoles réalisés.
+
+\section{Validité des métriques utilisées}
+
+\subsection{Accuracy}
+
+L'accuracy peut être trompeuse lorsque la classe positive est rare.
+
+Elle doit donc être accompagnée de précision, rappel, F1 ou d'autres métriques adaptées.
+
+\subsection{F1}
+
+Le F1 dépend d'un seuil.
+
+Deux modèles possédant des capacités de classement similaires peuvent obtenir des F1 très
+différents si les seuils ne sont pas adaptés de la même manière.
+
+Le cas PortScan illustre directement cette difficulté.
+
+\subsection{PR-AUC}
+
+La PR-AUC renseigne davantage sur la qualité du classement lorsque la classe positive est
+rare.
+
+Elle ne fixe toutefois pas le seuil opérationnel.
+
+Une PR-AUC élevée n'implique donc pas automatiquement un bon rappel au seuil retenu.
+
+\subsection{MCC}
+
+Le MCC utilise les quatre termes de la matrice de confusion.
+
+Il complète le F1 dans les situations déséquilibrées.
+
+Cependant, comme toute métrique agrégée, il ne remplace pas l'inspection de $TP$, $FP$,
+$TN$ et $FN$ lorsqu'une classe critique est entièrement manquée.
+
+\section{Validité de construit des concepts du titre}
+
+\subsection{Autonome}
+
+Le mot \textit{autonome} est soutenu par l'orchestration automatique de plusieurs tâches.
+
+Il ne signifie pas :
+
+\begin{itemize}
+    \item intelligence générale ;
+    \item décision de sécurité indépendante de tout humain ;
+    \item apprentissage continu autonome ;
+    \item auto-réparation complète.
+\end{itemize}
+
+La validité du terme repose donc sur une définition opérationnelle limitée.
+
+\subsection{Distribué}
+
+Le caractère distribué est démontré par :
+
+\begin{itemize}
+    \item workers séparés ;
+    \item Redis Streams ;
+    \item exécution sur deux VM de laboratoire.
+\end{itemize}
+
+Il ne démontre pas :
+
+\begin{itemize}
+    \item plusieurs sites géographiques ;
+    \item haute disponibilité ;
+    \item cluster de production ;
+    \item scalabilité industrielle.
+\end{itemize}
+
+\subsection{Intelligent}
+
+Le terme \textit{intelligent} correspond ici à des composants capables de sélectionner,
+router et exécuter plusieurs handlers à partir d'informations d'état, de règles et de
+modèles.
+
+Il ne constitue pas une revendication d'intelligence cognitive.
+
+\subsection{Multitâche}
+
+Le caractère multitâche est plus directement observable.
+
+Les agents et workers possèdent plusieurs handlers et peuvent être sollicités pour des
+types d'opérations distincts.
+
+Cette propriété est une caractéristique logicielle, non une performance d'apprentissage
+automatique.
+
+\section{Niveaux de preuve}
+
+Pour éviter de traiter toutes les affirmations comme équivalentes, quatre niveaux de preuve
+peuvent être distingués dans le mémoire.
+
+\subsection{Niveau 1 : implémenté}
+
+Une fonction existe dans le code.
+
+Cela suffit pour affirmer son implémentation.
+
+Cela ne suffit pas à affirmer son efficacité.
+
+\subsection{Niveau 2 : fonctionnellement testé}
+
+Une fonction a été réellement exécutée dans un scénario observable.
+
+Exemples :
+
+\begin{itemize}
+    \item promotion/rejet de modèles ;
+    \item routage de fichiers ;
+    \item ACK Redis ;
+    \item affichage du dashboard.
+\end{itemize}
+
+\subsection{Niveau 3 : quantitativement évalué}
+
+Une métrique ou une mesure explicite existe.
+
+Exemples :
+
+\begin{itemize}
+    \item F1 ;
+    \item PR-AUC ;
+    \item débit ;
+    \item RSS ;
+    \item pairwise F1.
+\end{itemize}
+
+\subsection{Niveau 4 : généralisation démontrée}
+
+Ce niveau nécessiterait des preuves sur des environnements suffisamment divers, indépendants
+et réalistes.
+
+Le prototype n'atteint pas ce niveau pour la majorité de ses fonctions.
+
+Cette distinction explique pourquoi certaines affirmations restent volontairement
+prudentes malgré un fonctionnement logiciel réel.
+
+\section{Matrice expérience--preuve--limite}
+
+Le tableau~\ref{tab:preuve-limite} synthétise la force de preuve principale de chaque
+expérience.
+
+\begin{table}[H]
+\centering
+\caption{Force de preuve et limite principale des expériences finales}
+\label{tab:preuve-limite}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{3cm}p{3.1cm}p{4cm}X}
+\toprule
+\textbf{Expérience} &
+\textbf{Force principale} &
+\textbf{Ce qu'elle démontre} &
+\textbf{Ce qu'elle ne démontre pas} \\
+\midrule
+
+CICIDS random &
+Quantitative, $N=5$. &
+Bonne séparabilité dans un pool aléatoire. &
+Généralisation à un scénario inédit. \\
+
+CICIDS holdout &
+Quantitative, 5 scénarios $\times$ 5 seeds. &
+Fragilité inter-scénarios. &
+Performance sur toutes les menaces futures. \\
+
+Cinq modèles &
+Quantitative, 125 runs. &
+Effet du choix du modèle dans les mêmes holdouts. &
+Existence d'un meilleur modèle universel. \\
+
+HDFS strict &
+Quantitative, protocole gelé. &
+Performance événementielle dans le protocole train/validation/test. &
+Détection optimale au niveau bloc. \\
+
+BGL strict &
+Quantitative, protocole gelé. &
+Forte séparabilité observée. &
+Robustesse à toute nouveauté normale. \\
+
+Multiformat &
+Fonctionnelle quantitative. &
+Couverture réelle des adaptateurs testés. &
+Compatibilité avec tout format. \\
+
+Routeur &
+Fonctionnelle quantitative. &
+Bonne attribution dans le corpus dérivé. &
+Généralisation à toute source externe. \\
+
+Monolithe/agents &
+Benchmark contrôlé. &
+Coût observé à 60 tâches. &
+Comportement à grande échelle. \\
+
+Multi-VM &
+Preuve de laboratoire. &
+Consommation/ACK sur deux VM. &
+Haute disponibilité ou multi-site. \\
+
+Corrélation &
+Quantitative synthétique. &
+Qualité pairwise sur scénarios contrôlés. &
+Performance sur incidents SOC réels. \\
+
+Mise à jour &
+Fonctionnelle end-to-end. &
+Promotion et rejets selon une politique. &
+Apprentissage continu autonome. \\
+
+Dashboard &
+Fonctionnelle visuelle. &
+Interface intégrée au prototype. &
+Utilisabilité ou gain de productivité. \\
+
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Conséquences sur les hypothèses}
+
+L'analyse de validité explique pourquoi aucune des cinq hypothèses ne peut être déclarée
+entièrement validée.
+
+\subsection{H1}
+
+La normalisation fonctionne pour plusieurs sources mais échoue dans deux voies importantes
+du test multiformat.
+
+La conservation exacte du brut n'est pas universelle.
+
+H1 est donc seulement partiellement soutenue.
+
+\subsection{H2}
+
+La modularité, l'audit et un scénario de reprise sont démontrés.
+
+Le benchmark n'observe cependant aucun gain de débit et les scénarios de résilience restent
+limités.
+
+H2 est partiellement soutenue.
+
+\subsection{H3}
+
+Le routeur fonctionne correctement dans le corpus dérivé.
+
+L'ablation ne montre pas de bénéfice prédictif systématique.
+
+H3 est partiellement soutenue.
+
+\subsection{H4}
+
+Plusieurs modèles légers fournissent des résultats utiles selon les datasets.
+
+D'autres scénarios produisent des F1 nuls ou très faibles.
+
+La validation humaine n'est pas mesurée expérimentalement.
+
+H4 est partiellement soutenue.
+
+\subsection{H5}
+
+La mémoire, l'audit et la mise à jour contrôlée existent.
+
+Le bénéfice causal de la mémoire n'est pas isolé et aucun apprentissage autonome continu
+n'est démontré.
+
+H5 est partiellement soutenue.
+
+\section{Conséquences sur les questions de recherche}
+
+Les menaces à la validité conduisent également à qualifier les réponses aux questions de
+recherche.
+
+\begin{table}[H]
+\centering
+\caption{Statut des réponses aux questions de recherche après analyse de validité}
+\label{tab:qr-validite}
+\small
+\begin{tabularx}{\textwidth}{p{1.4cm}p{3cm}X}
+\toprule
+\textbf{QR} &
+\textbf{Statut} &
+\textbf{Justification principale} \\
+\midrule
+
+QR1 &
+Réponse partielle &
+Plusieurs formats normalisés, mais couverture incomplète et brut non universellement
+préservé. \\
+
+QR2 &
+Réponse partielle &
+Architecture multi-agent et audit démontrés ; portée de robustesse limitée et débit non
+amélioré. \\
+
+QR3 &
+Réponse partielle &
+Routeur fonctionnel dans le corpus dérivé ; bénéfice prédictif systématique absent. \\
+
+QR4 &
+Réponse partielle &
+Interface fonctionnelle ; aucune étude utilisateur. \\
+
+QR5 &
+Réponse partielle &
+Mémoire et mise à jour contrôlée implémentées ; effet causal de la mémoire non mesuré. \\
+
+QR6 &
+Réponse forte dans le périmètre du prototype &
+Protocoles, seeds, métriques, hashes, ressources et artefacts documentés. \\
+
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Améliorations méthodologiques possibles}
+
+Les limites identifiées indiquent directement les expériences qui renforceraient le plus la
+validité du travail.
+
+\subsection{Évaluation HDFS au niveau bloc}
+
+Une extension importante consisterait à agréger les prédictions par \texttt{block\_id} puis
+à comparer directement la décision au label du bloc.
+
+Cette expérience alignerait :
+
+\[
+\text{unité de prédiction}
+=
+\text{unité de vérité terrain}.
+\]
+
+Elle réduirait la principale menace de construit du protocole HDFS.
+
+\subsection{Corpus externe pour le routeur}
+
+Le routeur pourrait être évalué sur des fichiers provenant de sources entièrement
+indépendantes de celles utilisées pour construire ses heuristiques.
+
+Cela réduirait :
+
+\begin{itemize}
+    \item la dépendance des chunks ;
+    \item l'effet de la structure spécifique des neuf sources ;
+    \item le risque de sur-adaptation aux métadonnées disponibles.
+\end{itemize}
+
+\subsection{Idempotence}
+
+Une expérience ciblée pourrait provoquer volontairement une panne après l'effet métier mais
+avant l'ACK.
+
+Elle permettrait de mesurer les duplications et de vérifier l'existence d'un identifiant
+idempotent.
+
+\subsection{Mémoire ON/OFF}
+
+Une véritable ablation de la mémoire pourrait comparer :
+
+\[
+\text{mémoire OFF}
+\]
+
+et :
+
+\[
+\text{mémoire ON}
+\]
+
+sur le même ensemble de tâches et avec les mêmes seeds.
+
+Une métrique de priorité, répétition ou qualité de sélection permettrait alors de mesurer
+son effet causal.
+
+\subsection{Étude utilisateur}
+
+Le dashboard pourrait être évalué avec un protocole utilisateur comprenant :
+
+\begin{itemize}
+    \item tâches standardisées ;
+    \item plusieurs participants ;
+    \item temps d'exécution ;
+    \item erreurs ;
+    \item questionnaire d'utilisabilité.
+\end{itemize}
+
+Une telle expérience permettrait de passer d'une validation fonctionnelle à une évaluation
+ergonomique.
+
+\subsection{Corrélation sur données réelles annotées}
+
+Un corpus d'incidents réels possédant une vérité de regroupement permettrait d'étudier la
+performance du corrélateur dans un environnement beaucoup plus complexe.
+
+Cette extension est particulièrement importante avant toute revendication d'utilisation
+dans un SOC.
+
+\section{Évaluation globale de la validité}
+
+L'analyse du chapitre permet de distinguer trois niveaux de solidité.
+
+Le premier niveau concerne les propriétés les mieux démontrées.
+
+Il comprend notamment :
+
+\begin{itemize}
+    \item existence de l'architecture modulaire ;
+    \item exécution de plusieurs agents et transports ;
+    \item comparaison contrôlée random/holdout CICIDS ;
+    \item campagne multi-modèles ;
+    \item protocole HDFS/BGL avec Drain3 train-only ;
+    \item mise à jour contrôlée de bout en bout ;
+    \item routeur fonctionnel sur son corpus ;
+    \item mesures de ressources ;
+    \item production d'artefacts traçables.
+\end{itemize}
+
+Le deuxième niveau concerne les propriétés partiellement soutenues.
+
+Il comprend :
+
+\begin{itemize}
+    \item normalisation multiformat ;
+    \item robustesse des agents ;
+    \item bénéfice du routage spécialisé ;
+    \item intérêt opérationnel de la mémoire ;
+    \item corrélation applicable à des scénarios plus réalistes.
+\end{itemize}
+
+Le troisième niveau correspond aux propriétés non démontrées et qui doivent rester des
+perspectives :
+
+\begin{itemize}
+    \item haute disponibilité ;
+    \item scalabilité industrielle ;
+    \item multi-site ;
+    \item apprentissage continu autonome ;
+    \item validation SOC réelle ;
+    \item amélioration ergonomique mesurée du dashboard.
+\end{itemize}
+
+Cette hiérarchie protège la cohérence du mémoire.
+
+Elle permet de conserver une contribution significative sans transformer des possibilités
+techniques en résultats scientifiques.
+
+\section{Synthèse du chapitre}
+
+L'analyse de validité montre que la contribution expérimentale d'Ariel \logminer{} ne
+réside pas uniquement dans les valeurs obtenues, mais également dans la mise en place de
+protocoles permettant de distinguer plusieurs niveaux de preuve.
+
+Sur CICIDS2017, la comparaison entre random et holdout montre que la constitution du test
+modifie profondément la conclusion. Le split aléatoire produit un F1 très élevé et stable,
+alors que les scénarios tenus hors entraînement révèlent une généralisation faible et très
+hétérogène. La comparaison de cinq modèles confirme qu'un changement d'algorithme améliore
+certaines métriques sans supprimer cette fragilité.
+
+Pour HDFS et BGL, le protocole final renforce la validité interne en séparant train,
+validation et test, en ajustant Drain3 uniquement sur le train et en sélectionnant le seuil
+sur la validation. HDFS conserve néanmoins une limite importante liée à la granularité de
+sa vérité terrain. BGL présente, pour sa part, un déplacement très important de templates
+entre train et test, ce qui impose une lecture prudente de son F1 élevé.
+
+La validation multiformat démontre une couverture réelle mais incomplète. Le routeur est
+très performant dans son corpus dérivé, mais les chunks ne sont pas des sources
+indépendantes et la marge de routage n'est pas une probabilité calibrée. Le benchmark
+monolithe/agents montre clairement que la modularité n'apporte pas automatiquement un gain
+de débit.
+
+La campagne multi-VM constitue une preuve réelle de laboratoire pour le transport Redis,
+mais son Redis unique, le NAT, VirtualBox et les relances supervisées interdisent toute
+extrapolation vers une haute disponibilité industrielle. La reprise est démontrée pour un
+scénario avant traitement/ACK, tandis que l'idempotence après effet métier reste ouverte.
+
+Le corrélateur est évalué de manière quantitative sur une vérité synthétique contrôlée.
+Cette expérience démontre son comportement dans le corpus construit mais ne remplace pas
+une validation sur incidents réels. De même, le dashboard est fonctionnel sans avoir fait
+l'objet d'une étude utilisateur.
+
+Enfin, l'analyse statistique distingue explicitement les campagnes répétées de celles
+reposant sur une seule exécution déterministe. Aucun test inférentiel global n'est utilisé
+pour créer artificiellement une supériorité statistique.
+
+Ces limites conduisent à un positionnement scientifique précis : Ariel \logminer{} est un
+prototype modulaire dont plusieurs mécanismes sont démontrés dans un environnement local
+et de laboratoire, tandis que certaines propriétés restent partielles ou doivent encore
+faire l'objet d'expériences complémentaires.
+
+Le chapitre suivant dépasse l'analyse méthodologique pour discuter la signification de ces
+résultats : contribution réelle de l'architecture, intérêt des agents malgré leur surcoût,
+portée du routage, rôle des modèles légers, limites de la normalisation et positionnement
+d'Ariel \logminer{} par rapport à la littérature.

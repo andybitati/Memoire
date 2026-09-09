@@ -1,62 +1,909 @@
 \chapter*{CONCLUSION GÉNÉRALE}
 \addcontentsline{toc}{chapter}{CONCLUSION GÉNÉRALE}
+\label{chap:conclusion-generale}
 
-\section{Bilan du travail}
-Ce memoire a presente \logminer, un prototype d'agents intelligents multi-taches pour la detection et la priorisation d'anomalies candidates dans des journaux systemes et reseaux heterogenes. Le travail a couvert l'analyse des formats de logs, la conception d'une architecture modulaire et multi-agents, l'implementation d'un pipeline complet, la mise en place d'un dashboard et l'evaluation sur plusieurs familles de donnees.
+% Les sections de la conclusion générale sont volontairement non numérotées
+% afin d'éviter une numérotation de type 7.1, 7.2, etc.
 
-Le prototype valide une chaine complete allant de la collecte a la visualisation. Les journaux sont parses, normalises, routes vers une famille, traites par un modele compatible, puis transformes en anomalies candidates et incidents fonctionnellement exploitables par un analyste. Cette approche evite de reduire le probleme a un simple score de detection.
+\section*{Bilan général}
+\addcontentsline{toc}{section}{Bilan général}
 
-\section{Verification des objectifs}
-Les objectifs definis dans le document directeur sont couverts. Les types de journaux ont ete identifies et categorises. Les techniques classiques et modernes ont ete analysees. Une architecture d'agents specialises a ete proposee et implementee. Des mecanismes d'apprentissage supervises et non supervises ont ete integres, ainsi qu'une memoire adaptative permettant de capitaliser les executions, les erreurs et les decisions analyste. Un dashboard a ete realise. Le systeme a ete teste sur des journaux locaux, des exports Wazuh et plusieurs datasets publics. Enfin, les performances ont ete evaluees par F1-score, latence, ressources, ablation global-versus-familles et comparaison operationnelle encadree.
+Ce mémoire s'est intéressé à la conception et à l'évaluation d'Ariel \logminer{}, un
+prototype destiné à l'analyse de journaux système et réseau hétérogènes à travers une
+architecture modulaire fondée sur plusieurs composants et agents spécialisés.
 
-\section{Reponse aux questions de recherche}
-Les questions de recherche formulees dans l'introduction peuvent etre refermees explicitement. La normalisation est validee au niveau du prototype par un schema commun conservant les informations utiles a l'audit. L'organisation en agents logiciels specialises est validee fonctionnellement : elle apporte surtout modularite, tracabilite, observabilite et reprise locale des taches, sans garantir un meilleur debit sur de petits volumes. La selection automatique du modele est validee comme mecanisme architectural, car le routage par famille evite d'appliquer indistinctement un modele unique a des donnees differentes, meme si les resultats ne prouvent pas une superiorite predictive systematique.
+Le problème de départ ne se limitait pas à détecter une anomalie dans un dataset. Il
+consistait à déterminer comment organiser une chaîne capable de recevoir des sources
+différentes, de les parser, de les normaliser lorsque cela est possible, de sélectionner un
+traitement compatible, d'appliquer plusieurs méthodes de détection, de rapprocher certains
+signaux, de conserver les décisions et de présenter les résultats à un analyste.
 
-Le dashboard repond fonctionnellement au besoin de consultation, de filtrage et de validation des anomalies candidates, mais son utilisabilite aupres d'analystes reels n'a pas encore ete mesuree par une etude utilisateur formelle. La memoire persistante est validee partiellement : elle conserve les decisions, erreurs, durees et validations utiles a l'audit, a l'adaptation progressive du comportement des agents et a la mise a jour controlee des modeles. La priorisation a ete implementee sous la forme de mecanismes de selection tenant compte de la famille des journaux, de l'historique des traitements et de certains retours enregistres ; son efficacite propre n'a toutefois pas fait l'objet d'une evaluation quantitative independante. Enfin, le protocole d'evaluation combine precision, rappel, F1-score, latence, CPU/RAM, captures fonctionnelles, scripts et comparaisons controlees, avec des resultats qui restent limites aux donnees et environnements testes.
+Cette perspective a conduit à placer l'architecture et l'intégration au centre du travail.
+Ariel \logminer{} ne propose pas un nouvel algorithme universel de machine learning. Sa
+contribution principale réside dans la construction d'un cadre logiciel reliant plusieurs
+fonctions qui sont souvent étudiées séparément : ingestion, parsing, normalisation,
+routage, détection, corrélation, mémoire, audit, communication entre agents, gouvernance
+des modèles et visualisation.
 
-\section{Apports}
-Les apports principaux sont :
+L'évaluation a volontairement dépassé la simple démonstration fonctionnelle. Plusieurs
+campagnes ont été mises en place afin de confronter les différents composants du prototype
+à des protocoles adaptés à leur nature.
+
+Les modèles supervisés ont été évalués sur CICIDS2017 selon une séparation aléatoire puis
+selon des holdouts par scénario. Les journaux HDFS et BGL ont fait l'objet d'un protocole
+dans lequel Drain3 est ajusté exclusivement sur l'entraînement avant d'être gelé. La chaîne
+multiformat a été testée sur plusieurs familles de sources. Le routeur a été évalué sur un
+corpus local dérivé. Une comparaison contrôlée a opposé une exécution monolithique à une
+architecture à agents. Redis Streams a ensuite été utilisé dans un laboratoire multi-VM.
+Enfin, la corrélation et la mise à jour contrôlée des modèles ont fait l'objet de campagnes
+spécifiques.
+
+Cette démarche a produit des résultats favorables, mais également plusieurs résultats
+négatifs. Leur conservation est essentielle pour comprendre la portée réelle du prototype.
+
+\section*{Retour sur la problématique}
+\addcontentsline{toc}{section}{Retour sur la problématique}
+
+La problématique de ce mémoire reposait sur un constat : les journaux utilisés en
+cybersécurité sont hétérogènes par leur format, leur structure, leur granularité et leur
+signification. Une approche fondée sur un traitement unique devient rapidement difficile à
+maintenir lorsqu'elle doit intégrer simultanément des événements Windows, des journaux
+Linux, des exports de plateformes de sécurité, des messages applicatifs et des données de
+flux réseau.
+
+À cette hétérogénéité s'ajoutent plusieurs difficultés.
+
+La première concerne la représentation. Un même schéma ne peut pas nécessairement conserver
+toutes les propriétés particulières de chaque source.
+
+La deuxième concerne le choix du traitement. Un modèle entraîné sur des caractéristiques
+réseau tabulaires n'est pas directement applicable à des messages système textuels.
+
+La troisième concerne la généralisation. Une excellente performance obtenue sur une
+séparation aléatoire ne garantit pas qu'un modèle conserve la même efficacité lorsqu'il
+rencontre un scénario absent de l'entraînement.
+
+La quatrième concerne l'architecture. La distribution des responsabilités entre plusieurs
+composants apporte de la modularité, mais introduit également un coût d'orchestration.
+
+La cinquième concerne l'exploitation. Un signal produit par un modèle n'a de valeur que s'il
+peut être contextualisé, audité et, si nécessaire, soumis à une validation humaine.
+
+Les résultats du travail confirment que ces difficultés ne peuvent pas être traitées
+indépendamment.
+
+Ariel \logminer{} fournit une réponse architecturale à cette problématique en séparant les
+responsabilités tout en maintenant une chaîne commune. La réponse expérimentale reste
+toutefois partielle : certaines voies fonctionnent correctement, tandis que d'autres
+montrent encore des limitations importantes.
+
+\section*{Réponse à la question centrale}
+\addcontentsline{toc}{section}{Réponse à la question centrale}
+
+La question centrale cherchait à déterminer comment concevoir un prototype autonome,
+distribué au sens logiciel, modulaire et exploitable par un analyste, capable de détecter
+et de prioriser des anomalies candidates dans des journaux système et réseau hétérogènes.
+
+Les travaux réalisés permettent d'apporter une réponse concrète, mais limitée au périmètre
+du prototype.
+
+Il est possible de construire une telle chaîne en séparant les principales responsabilités
+et en faisant communiquer les composants au moyen de contrats explicites.
+
+Dans Ariel \logminer{}, cette organisation prend notamment la forme de :
+
 \begin{itemize}
-  \item une architecture modulaire claire et extensible ;
-  \item une normalisation commune pour des journaux heterogenes ;
-  \item un routage multi-modeles auditable ;
-  \item une preuve locale d'agents distribues via Redis Streams, avec 8 508 taches terminees et 709 reprises de taches non acquittees pendant six heures ;
-  \item une premiere memoire adaptative auditable, fondee sur l'historique des agents, la memoire du superviseur et les decisions analyste ;
-  \item une evaluation multi-source combinant logs systemes, SIEM, reseau et scenarios de robustesse ;
-  \item un dashboard permettant l'analyse, les filtres, les decisions et l'audit ;
-  \item un pack de reproduction comprenant figures, tableaux, captures et CSV.
+    \item parseurs et adaptateurs ;
+    \item normalisation ;
+    \item routage par famille ;
+    \item registre de modèles ;
+    \item méthodes supervisées et non supervisées ;
+    \item agents disposant de capacités spécialisées ;
+    \item bus local et Redis Streams ;
+    \item mécanisme de corrélation ;
+    \item mémoire persistante ;
+    \item audit ;
+    \item procédure de mise à jour contrôlée ;
+    \item interface destinée à l'analyste.
 \end{itemize}
 
-\section{Limites}
-Plusieurs limites doivent etre reconnues. D'abord, la distribution validee reste locale et multi-processus : Redis Streams prouve la repartition de taches et la reprise apres panne dans l'environnement experimental, mais ne constitue pas encore une preuve de scalabilite industrielle multi-machine. Ensuite, les anomalies non supervisees restent des signaux candidats. Elles doivent etre interpretees par correlation, contexte et validation humaine.
+Le terme \textit{autonome} doit toutefois être compris comme une autonomie
+d'orchestration logicielle. Le prototype peut sélectionner et exécuter plusieurs
+traitements selon des règles, des capacités et des états connus. Il ne s'agit pas d'une
+autonomie cognitive générale ni d'un système capable de prendre seul toutes les décisions
+de cybersécurité.
 
-Les scores tres eleves obtenus sur certains datasets supervises doivent aussi etre interpretes selon leur protocole. Ils valident le comportement du modele dans le cadre experimental, mais ne prouvent pas une generalisation automatique a toutes les infrastructures. La memoire adaptative mise en place reste une capitalisation d'historique et de feedback ; elle ne constitue pas encore une boucle complete de reentrainement, de detection de derive et de promotion automatique de nouveaux modeles. Enfin, l'exploitabilite du dashboard est fonctionnelle, mais son utilisabilite reelle, la reduction mesuree des faux positifs et l'apprentissage continu restent des axes ouverts.
+Le terme \textit{distribué} correspond à une séparation entre workers et à une validation
+multi-VM de laboratoire. Il ne constitue pas une démonstration de haute disponibilité,
+de fonctionnement multi-site ou de scalabilité industrielle.
 
-\section{Perspectives}
-Les perspectives principales sont les suivantes :
-\begin{enumerate}
-  \item etendre a d'autres familles la comparaison controlee entre split aleatoire et holdout temporel, fichier ou scenario, deja conduite sur CICIDS2017 avec memes features, memes hyperparametres, memes tailles d'echantillon et memes graines ;
-  \item prolonger le protocole controle global-versus-familles par davantage de graines et des splits temporels, par fichier ou par scenario, avec latence et memoire ;
-  \item consolider le deploiement multi-machine au-dela de la preuve VirtualBox de laboratoire, avec workers Redis, files persistantes, supervision explicite et securisation des communications ;
-  \item ajouter des tests de charge sur plusieurs jours, au-dela de la campagne locale de six heures et de la campagne multi-VM supervisee d'une heure ;
-  \item transformer la memoire adaptative en boucle d'apprentissage actif a partir des decisions analyste, avec surveillance du concept drift et promotion controlee des nouveaux modeles ;
-  \item consolider l'usage de Drain3 sur HDFS/BGL, repeter les splits et comparer avec des modeles sequentiels plus specialises ;
-  \item reduire les faux positifs par calibration des seuils et contexte temporel ;
-  \item relier les incidents a des tactiques MITRE ATT\&CK ;
-  \item produire une integration plus stricte avec un SIEM existant.
-\end{enumerate}
+Enfin, l'exploitabilité correspond à la présence d'une chaîne allant jusqu'à la
+présentation des résultats et à la possibilité de maintenir l'analyste dans le processus.
+Aucune étude utilisateur ne permet cependant de mesurer quantitativement l'effet du
+dashboard sur la qualité ou la rapidité d'une investigation.
 
-\section{Conclusion generale}
-\logminer{} montre qu'une architecture locale, modulaire et interpretable peut soutenir la detection et la priorisation d'anomalies candidates dans des journaux heterogenes. Sa force principale n'est pas de remplacer les outils existants, mais d'organiser une chaine coherentement auditable entre logs bruts, modeles specialises, anomalies candidates, incidents et decisions analyste.
+La réponse à la question centrale est donc \textbf{partielle mais expérimentalement
+documentée}.
 
-Le prototype constitue ainsi une base solide pour un systeme de cyber-audit leger adapte aux environnements disposant de ressources limitees. Les resultats obtenus justifient une poursuite vers la scalabilite, l'integration SOC et l'apprentissage continu. La memoire adaptative amorce cette trajectoire en conservant les traces utiles aux cycles suivants, tout en gardant une interpretation controlee des alertes produites.
+\section*{Réponse aux questions de recherche}
+\addcontentsline{toc}{section}{Réponse aux questions de recherche}
 
-Le caractere autonome de \logminer{} doit donc etre compris dans le sens operationnel defini au debut du memoire : orientation des journaux, selection de traitements, routage vers les modeles disponibles et execution de taches sans intervention manuelle constante. Les agents intelligents multi-taches correspondent, quant a eux, a des agents logiciels dotes de capacites declarees, de handlers specialises, d'une memoire locale, d'un heartbeat et d'une politique de selection des taches. L'intelligence demontree est une orchestration adaptative et verifiable, non une autonomie decisionnelle complete.
+\subsection*{QR1 --- Comment construire un schéma de normalisation rapprochant journaux
+système, réseau et SIEM sans perdre l'information nécessaire ?}
 
-Le travail realise montre aussi l'importance d'une demarche equilibree. Dans le domaine de la cybersecurite, il serait tentant de reduire la valeur d'un systeme a un score de detection. Le memoire montre au contraire que la detection depend d'une chaine complete : collecte, parsing, normalisation, routage, modele, correlation, visualisation et audit. Chacune de ces etapes peut renforcer ou affaiblir le resultat final. L'apport de \logminer{} est donc de rendre cette chaine visible et experimentable.
+La conception d'un noyau commun permet de rapprocher plusieurs familles de journaux et
+d'offrir aux composants transversaux une représentation plus cohérente.
 
-Les resultats supervises confirment l'interet des modeles specialises lorsque des labels sont disponibles. Les resultats non supervises montrent l'utilite d'une exploration par anomalies candidates lorsque les labels manquent. Les benchmarks de duree et de ressources indiquent qu'un traitement local par micro-lots est possible sur des volumes moderes. Les captures du dashboard montrent que les sorties ne restent pas limitees a des fichiers techniques, mais deviennent consultables par un analyste.
+La campagne multiformat montre néanmoins que cette capacité reste incomplète.
 
-La contribution principale reste l'integration architecturale rigoureuse de ces elements. Le prototype ne remplace pas Wazuh, OSSEC, fail2ban ou une pile SIEM complete. Il propose une couche analytique complementaire, adaptee a l'experimentation, a la pedagogie et a une organisation souhaitant progresser vers une meilleure exploitation de ses journaux. Cette couche pourra etre renforcee par des splits comparatifs plus stricts, des parseurs supplementaires, des modeles sequentiels, une reduction des faux positifs, une anonymisation des donnees et une validation distribuee.
+Sur 7\,001 unités lues :
 
-Ainsi, le memoire atteint son objectif principal : demontrer la faisabilite d'une detection d'anomalies modulaire, interpretable, priorisee et reproductible sur des journaux heterogenes. Les limites identifiees ne constituent pas un echec du prototype ; elles definissent le programme logique des travaux futurs.
+\[
+5\,001
+\]
+
+ont produit une sortie normalisée.
+
+Les voies HDFS et BGL du pipeline général ont chacune produit :
+
+\[
+0/1\,000
+\]
+
+sortie normalisée dans l'expérience considérée.
+
+La conservation exacte du message brut n'est pas non plus universellement démontrée.
+
+La réponse à QR1 est donc \textbf{partielle}.
+
+\subsection*{QR2 --- Comment organiser des agents spécialisés dans une architecture
+modulaire, auditable et extensible ?}
+
+Le prototype démontre qu'il est possible de séparer plusieurs responsabilités entre
+composants et agents spécialisés.
+
+Le contrat métier \texttt{AgentMessage} définit une structure commune contenant :
+
+\begin{itemize}
+    \item \texttt{run\_id} ;
+    \item \texttt{source} ;
+    \item \texttt{target} ;
+    \item \texttt{message\_type} ;
+    \item \texttt{payload} ;
+    \item \texttt{status} ;
+    \item \texttt{timestamp}.
+\end{itemize}
+
+Le transport Redis reste distinct de ce contrat métier.
+
+La campagne multi-VM confirme également que plusieurs workers peuvent consommer des tâches
+à partir d'un stream commun.
+
+En revanche, le benchmark montre que cette organisation ne fournit pas automatiquement un
+gain de débit.
+
+Le monolithe atteint :
+
+\[
+1{,}6357~\text{tâche/s},
+\]
+
+contre :
+
+\[
+1{,}5715~\text{tâche/s}
+\]
+
+pour le mode agents dans le benchmark à 60 tâches.
+
+La valeur de l'architecture à agents réside donc surtout dans la modularité, la séparation
+des responsabilités, l'audit et la possibilité de reprise de certaines tâches.
+
+La réponse à QR2 est \textbf{partielle}.
+
+\subsection*{QR3 --- Comment sélectionner automatiquement un modèle adapté à la famille
+traitée ?}
+
+Le routeur fournit une solution fonctionnelle à cette question.
+
+Sur le corpus dérivé final, il attribue correctement :
+
+\[
+80/81
+\]
+
+fichiers.
+
+L'exactitude observée est :
+
+\[
+0{,}987654.
+\]
+
+Ce résultat montre qu'il est possible d'orienter automatiquement plusieurs familles vers
+un traitement compatible dans le corpus étudié.
+
+Cependant, l'expérience de spécialisation montre que le bon routage n'entraîne pas
+systématiquement un meilleur F1.
+
+Sur CICIDS, le delta est légèrement positif :
+
+\[
+\Delta F_1=+0{,}000201.
+\]
+
+Sur Linux/auth, il devient :
+
+\[
+\Delta F_1=-0{,}003050.
+\]
+
+L'intérêt du routeur est donc principalement architectural et fonctionnel.
+
+La réponse à QR3 est \textbf{partielle}.
+
+\subsection*{QR4 --- Comment présenter les anomalies dans un tableau de bord permettant
+compréhension, filtrage et validation ?}
+
+Le prototype dispose d'une interface permettant d'afficher une vue générale, de consulter
+les alertes, d'inspecter des incidents candidats et d'accéder à des informations
+techniques ou d'audit.
+
+L'interface retenue dans le travail final permet donc de fermer la chaîne entre production
+automatique des signaux et inspection humaine.
+
+Le dashboard constitue toutefois une preuve fonctionnelle.
+
+Aucun protocole utilisateur ne mesure :
+
+\begin{itemize}
+    \item le temps d'investigation ;
+    \item le taux d'erreur ;
+    \item la facilité d'apprentissage ;
+    \item la satisfaction ;
+    \item la charge cognitive.
+\end{itemize}
+
+La réponse à QR4 est donc \textbf{partielle}.
+
+\subsection*{QR5 --- Comment exploiter une mémoire persistante pour améliorer la
+priorisation et organiser la mise à jour contrôlée ?}
+
+La mémoire persistante permet de conserver des informations sur les exécutions, les
+erreurs, les décisions et les retours disponibles.
+
+Cette information est utilisée par plusieurs composants du prototype et soutient
+notamment l'audit et la gouvernance des modèles.
+
+La procédure de mise à jour contrôlée a été exécutée de bout en bout.
+
+Les trois différences observées sont :
+
+\[
++0{,}067845,
+\]
+
+\[
+-0{,}063163,
+\]
+
+et :
+
+\[
++0{,}009016.
+\]
+
+Dans le troisième cas, le gain reste inférieur au seuil minimal :
+
+\[
+0{,}009016<0{,}02,
+\]
+
+ce qui conduit volontairement au rejet du candidat.
+
+La procédure de promotion/rejet est donc fonctionnelle.
+
+En revanche, aucune ablation n'isole quantitativement l'effet de la mémoire sur la qualité
+de la priorisation.
+
+La réponse à QR5 reste \textbf{partielle}.
+
+\subsection*{QR6 --- Comment évaluer le prototype par métriques, captures, latence et
+ressources ?}
+
+Cette question reçoit la réponse la plus solide du travail.
+
+L'évaluation associe :
+
+\begin{itemize}
+    \item plusieurs datasets et familles de journaux ;
+    \item plusieurs modèles ;
+    \item cinq seeds pour les campagnes stochastiques principales ;
+    \item splits random et holdout ;
+    \item train, validation et test séparés pour HDFS/BGL ;
+    \item F1, précision, rappel, PR-AUC, MCC et FPR ;
+    \item matrices de confusion ;
+    \item mesures CPU ;
+    \item mesures de mémoire ;
+    \item débit ;
+    \item états Redis ;
+    \item hashes ;
+    \item ledger expérimental ;
+    \item résultats bruts CSV et JSON ;
+    \item campagnes multi-VM ;
+    \item validation pairwise de la corrélation.
+\end{itemize}
+
+La réponse à QR6 est donc \textbf{forte dans le périmètre du prototype}.
+
+\section*{Vérification de l'objectif général}
+\addcontentsline{toc}{section}{Vérification de l'objectif général}
+
+L'objectif général était de concevoir, implémenter et évaluer un prototype modulaire capable
+de traiter plusieurs familles de journaux et de produire des anomalies candidates
+exploitables dans une chaîne auditée.
+
+Cet objectif est atteint au niveau d'un prototype expérimental.
+
+L'architecture est conçue.
+
+Les principaux composants logiciels sont implémentés.
+
+Les traitements ont fait l'objet de campagnes quantitatives et fonctionnelles.
+
+La chaîne inclut :
+
+\begin{itemize}
+    \item acquisition ;
+    \item parsing ;
+    \item normalisation ;
+    \item routage ;
+    \item détection ;
+    \item corrélation ;
+    \item mémoire ;
+    \item audit ;
+    \item bus ;
+    \item dashboard.
+\end{itemize}
+
+La portée de cet objectif doit cependant rester limitée au niveau démontré.
+
+Le travail n'établit pas que toutes les sources existantes peuvent être normalisées, que
+tous les scénarios de sécurité peuvent être détectés ou que l'architecture est prête pour
+une exploitation industrielle.
+
+\section*{Vérification des objectifs spécifiques}
+\addcontentsline{toc}{section}{Vérification des objectifs spécifiques}
+
+Les objectifs spécifiques peuvent être regroupés selon les contributions principales.
+
+\subsection*{Caractérisation des sources}
+
+Les principales catégories de journaux utilisées dans le travail ont été identifiées et
+leurs différences de structure ont été prises en compte.
+
+\textbf{Objectif atteint dans le périmètre des sources étudiées.}
+
+\subsection*{Normalisation}
+
+Un schéma et plusieurs adaptateurs ont été construits.
+
+La campagne multiformat montre toutefois une couverture incomplète.
+
+\textbf{Objectif partiellement atteint.}
+
+\subsection*{Architecture modulaire}
+
+Les responsabilités principales ont été séparées et associées à des composants et agents
+identifiables.
+
+\textbf{Objectif atteint au niveau du prototype.}
+
+\subsection*{Routage}
+
+Le routeur a été implémenté et évalué.
+
+Il obtient 80 décisions correctes sur 81 dans le corpus dérivé.
+
+\textbf{Objectif atteint fonctionnellement dans le corpus étudié.}
+
+\subsection*{Détection}
+
+Plusieurs modèles supervisés, non supervisés et statistiques ont été intégrés ou évalués.
+
+Les performances varient fortement selon le dataset et le protocole.
+
+\textbf{Objectif atteint fonctionnellement, avec performances dépendantes du scénario.}
+
+\subsection*{Corrélation}
+
+Le corrélateur a été évalué sur un corpus synthétique possédant une vérité de regroupement.
+
+Le F1 pairwise obtenu est :
+
+\[
+0{,}812500.
+\]
+
+\textbf{Objectif atteint dans un scénario synthétique contrôlé.}
+
+\subsection*{Mémoire et gouvernance}
+
+La mémoire, l'audit et la procédure de mise à jour sont implémentés.
+
+Le bénéfice causal de la mémoire n'est cependant pas quantifié.
+
+\textbf{Objectif partiellement atteint.}
+
+\subsection*{Interface}
+
+Une interface permet la consultation des signaux, incidents et informations associées.
+
+\textbf{Objectif fonctionnel atteint ; utilisabilité non évaluée.}
+
+\subsection*{Évaluation}
+
+Les principales fonctions ont été associées à des protocoles et à des artefacts
+identifiables.
+
+\textbf{Objectif largement atteint dans le périmètre expérimental.}
+
+\section*{Statut final des hypothèses}
+\addcontentsline{toc}{section}{Statut final des hypothèses}
+
+\subsection*{H1 --- Normalisation de journaux hétérogènes}
+
+L'hypothèse prévoyait qu'un noyau commun puisse rapprocher les journaux sans supprimer les
+informations nécessaires.
+
+Plusieurs voies fonctionnent, mais la campagne multiformat reste incomplète et la
+préservation exacte du brut n'est pas universelle.
+
+\begin{center}
+\boxed{\text{H1 : PARTIELLEMENT SOUTENUE}}
+\end{center}
+
+\subsection*{H2 --- Agents spécialisés}
+
+La modularité, la séparation des responsabilités, l'audit et un scénario de reprise sont
+démontrés.
+
+L'architecture à agents n'améliore cependant pas le débit dans le benchmark retenu et la
+robustesse industrielle n'est pas établie.
+
+\begin{center}
+\boxed{\text{H2 : PARTIELLEMENT SOUTENUE}}
+\end{center}
+
+\subsection*{H3 --- Routage par famille}
+
+Le routeur fonctionne correctement sur le corpus dérivé.
+
+Aucun gain prédictif systématique n'est observé lorsque des modèles spécialisés sont
+comparés à des traitements plus globaux.
+
+\begin{center}
+\boxed{\text{H3 : PARTIELLEMENT SOUTENUE}}
+\end{center}
+
+\subsection*{H4 --- Intérêt des modèles légers}
+
+Plusieurs modèles légers fournissent de bons résultats dans certains scénarios.
+
+D'autres scénarios restent très difficiles, avec plusieurs F1 nuls ou faibles.
+
+Les modèles légers présentent donc un intérêt réel mais conditionnel.
+
+\begin{center}
+\boxed{\text{H4 : PARTIELLEMENT SOUTENUE}}
+\end{center}
+
+\subsection*{H5 --- Mémoire persistante et évolution}
+
+La mémoire et la mise à jour contrôlée sont implémentées.
+
+L'effet causal de la mémoire sur la priorisation n'est pas isolé, et aucun apprentissage
+continu autonome en production n'est démontré.
+
+\begin{center}
+\boxed{\text{H5 : PARTIELLEMENT SOUTENUE}}
+\end{center}
+
+\section*{Principaux résultats scientifiques}
+\addcontentsline{toc}{section}{Principaux résultats scientifiques}
+
+Plusieurs résultats méritent d'être retenus.
+
+Le premier est l'effet très important du protocole de séparation sur CICIDS2017.
+
+Le contrôle random fournit :
+
+\[
+F_1=0{,}995142\pm0{,}001013,
+\]
+
+avec un intervalle de confiance à 95\,\% :
+
+\[
+[0{,}993884\,;\,0{,}996400].
+\]
+
+Le holdout par scénario conduit à :
+
+\[
+F_{1,\mathrm{macro}}=0{,}157744.
+\]
+
+Cette différence montre que la performance élevée dans un split aléatoire ne doit pas être
+confondue avec une capacité de généralisation à des scénarios absents de l'entraînement.
+
+Le deuxième résultat concerne la comparaison de modèles.
+
+Logistic Regression obtient le meilleur F1 macro parmi les cinq candidats :
+
+\[
+0{,}233670,
+\]
+
+alors que HistGradientBoosting obtient une PR-AUC macro de :
+
+\[
+0{,}567697.
+\]
+
+Aucun modèle ne domine donc toutes les métriques.
+
+Le troisième résultat concerne HDFS et BGL.
+
+Dans le protocole strict, Histogram obtient :
+
+\[
+F_1=0{,}269307
+\]
+
+sur HDFS, et :
+
+\[
+F_1=0{,}913698
+\]
+
+sur BGL.
+
+Ces valeurs doivent être accompagnées de leurs contextes respectifs : granularité de label
+HDFS et très forte proportion de templates inconnus dans le test BGL.
+
+Le quatrième résultat concerne le pipeline multiformat :
+
+\[
+5\,001/7\,001
+\]
+
+unités normalisées.
+
+Cette observation empêche toute revendication de compatibilité universelle.
+
+Le cinquième résultat concerne le routeur :
+
+\[
+80/81
+\]
+
+fichiers correctement attribués dans le corpus dérivé.
+
+Le sixième résultat concerne l'architecture multi-agent.
+
+À 60 tâches, le monolithe conserve un meilleur débit que les agents.
+
+Le septième résultat concerne la validation multi-VM.
+
+Le run principal termine avec :
+
+\[
+525
+\]
+
+entrées lues et acquittées,
+
+\[
+\mathrm{lag}=0
+\]
+
+et :
+
+\[
+\mathrm{pending}=0.
+\]
+
+Cette campagne constitue une preuve de laboratoire de distribution du transport.
+
+Le huitième résultat concerne la corrélation :
+
+\[
+F_1=0{,}812500
+\]
+
+sur les 120 paires du corpus synthétique.
+
+Enfin, la mise à jour contrôlée démontre une promotion et deux formes de rejet, ce qui
+confirme le fonctionnement de la politique de gouvernance.
+
+\section*{Résultats négatifs à retenir}
+\addcontentsline{toc}{section}{Résultats négatifs à retenir}
+
+Les résultats négatifs constituent également des enseignements.
+
+Premièrement, plusieurs scénarios CICIDS ne sont pratiquement pas détectés lorsqu'ils sont
+tenus hors entraînement.
+
+Deuxièmement, cinq modèles différents ne résolvent pas le scénario Bot dans le protocole
+retenu.
+
+Troisièmement, HDFS reste difficile dans la représentation utilisée.
+
+Quatrièmement, les adaptateurs HDFS et BGL du pipeline multiformat général ne produisent
+aucune sortie normalisée dans la campagne finale.
+
+Cinquièmement, le routage spécialisé ne garantit pas une amélioration des performances
+prédictives.
+
+Sixièmement, l'architecture à agents introduit un surcoût dans la charge mesurée.
+
+Septièmement, le corrélateur produit encore des cas de fragmentation et de fusion.
+
+Ces résultats montrent qu'un prototype scientifique gagne à être évalué sur ses points de
+rupture plutôt qu'uniquement dans les configurations où il réussit.
+
+\section*{Contributions finales du mémoire}
+\addcontentsline{toc}{section}{Contributions finales du mémoire}
+
+\subsection*{Contribution architecturale}
+
+La contribution principale est une architecture modulaire reliant plusieurs étapes du
+traitement de journaux dans une chaîne commune.
+
+Cette architecture sépare les responsabilités et distingue notamment le contrat métier des
+agents des mécanismes propres au transport Redis ou MQTT.
+
+\subsection*{Contribution méthodologique}
+
+La deuxième contribution concerne le protocole expérimental.
+
+Le travail introduit notamment :
+
+\begin{itemize}
+    \item holdouts par scénario ;
+    \item répétitions multi-seeds ;
+    \item scaler train-only ;
+    \item Drain3 train-only ;
+    \item validation séparée pour le choix du seuil ;
+    \item test gelé ;
+    \item distinction entre méthodes stochastiques et déterministes ;
+    \item conservation des résultats négatifs ;
+    \item artefacts de traçabilité.
+\end{itemize}
+
+Cette contribution constitue l'un des enseignements les plus importants du mémoire.
+
+\subsection*{Contribution logicielle}
+
+Le prototype matérialise l'architecture dans un système exécutable comprenant notamment :
+
+\begin{itemize}
+    \item pipeline ;
+    \item adaptateurs ;
+    \item routeur ;
+    \item modèles ;
+    \item agents ;
+    \item Redis ;
+    \item MQTT ;
+    \item corrélateur ;
+    \item mémoire ;
+    \item audit ;
+    \item API ;
+    \item dashboard ;
+    \item gouvernance des modèles.
+\end{itemize}
+
+\subsection*{Contribution expérimentale}
+
+Les différentes fonctions ont été évaluées à travers plusieurs campagnes indépendantes et
+complémentaires.
+
+Cette diversité permet de ne pas réduire la validation du prototype à une simple métrique
+de classification.
+
+\subsection*{Contribution opérationnelle au niveau du prototype}
+
+Le travail fournit une chaîne allant jusqu'à une interface destinée à l'analyste et
+intègre des mécanismes de persistance et d'audit.
+
+Cette contribution reste volontairement qualifiée : elle concerne le niveau du prototype
+et non une exploitation industrielle certifiée.
+
+\section*{Limites générales}
+\addcontentsline{toc}{section}{Limites générales}
+
+Les principales limites du travail doivent être conservées avec la conclusion.
+
+Les résultats CICIDS reposent sur un sous-échantillonnage contrôlé et cinq scénarios fixes.
+Ils ne représentent pas toutes les menaces futures.
+
+HDFS conserve une divergence entre la granularité de ses labels et certaines unités
+d'évaluation.
+
+BGL présente un déplacement très important entre les templates du train et ceux du test.
+
+Certaines méthodes déterministes ne sont exécutées qu'une seule fois.
+
+Les adaptateurs multiformat possèdent des niveaux de maturité différents.
+
+Le corpus du routeur est dérivé de neuf sources et ses chunks ne sont pas indépendants.
+
+La validation multi-VM repose sur VirtualBox, NAT et un Redis central unique. Certaines
+relances sont supervisées.
+
+La résilience après effet métier mais avant ACK n'a pas été testée.
+
+Les interruptions de Redis et partitions réseau ne sont pas couvertes.
+
+La corrélation est évaluée sur des scénarios synthétiques.
+
+Le dashboard ne fait pas l'objet d'une étude utilisateur.
+
+Le bénéfice causal de la mémoire persistante sur la priorisation n'est pas mesuré.
+
+Aucun test inférentiel global n'est utilisé pour établir une supériorité statistique
+générale.
+
+Ces limites définissent le domaine dans lequel les résultats peuvent être raisonnablement
+interprétés.
+
+\section*{Perspectives}
+\addcontentsline{toc}{section}{Perspectives}
+
+Les perspectives découlent directement des limites observées.
+
+\subsection*{Amélioration de la généralisation}
+
+La priorité n'est pas d'améliorer davantage le F1 du split aléatoire CICIDS, déjà très
+élevé.
+
+Elle consiste plutôt à améliorer les performances sur les scénarios réellement exclus de
+l'entraînement.
+
+Plusieurs axes peuvent être étudiés :
+
+\begin{itemize}
+    \item adaptation de domaine ;
+    \item caractéristiques plus invariantes ;
+    \item calibration des scores ;
+    \item détection open-set ;
+    \item méthodes robustes au déplacement de distribution ;
+    \item apprentissage sur plusieurs domaines.
+\end{itemize}
+
+\subsection*{Analyse HDFS au niveau bloc}
+
+Une extension importante consiste à agréger les décisions par \texttt{block\_id} afin de
+faire correspondre plus directement l'unité de prédiction à l'unité de vérité terrain.
+
+\subsection*{Renforcement du pipeline multiformat}
+
+Les adaptateurs HDFS et BGL du pipeline général doivent être raccordés correctement aux
+traitements spécifiques déjà utilisés dans le protocole strict.
+
+La couverture doit ensuite être mesurée sur des corpus supplémentaires.
+
+\subsection*{Évaluation externe du routeur}
+
+Le routeur devrait être confronté à des sources entièrement nouvelles, non utilisées dans
+la construction de ses heuristiques.
+
+Cette expérience permettrait de mesurer sa capacité de généralisation au-delà des neuf
+sources du corpus actuel.
+
+\subsection*{Résilience et idempotence}
+
+Les futurs tests devraient couvrir :
+
+\begin{itemize}
+    \item panne après traitement mais avant ACK ;
+    \item duplications ;
+    \item idempotence ;
+    \item interruption Redis ;
+    \item partitions réseau ;
+    \item redondance du broker ;
+    \item basculement automatique.
+\end{itemize}
+
+\subsection*{Corrélation sur incidents réels}
+
+La corrélation devrait être évaluée sur un corpus réel possédant une vérité terrain
+d'incidents ou sur des scénarios plus complexes reproduisant plusieurs hôtes et plusieurs
+sources.
+
+\subsection*{Étude utilisateur}
+
+Une étude auprès d'analystes permettrait de mesurer l'effet réel du dashboard sur :
+
+\begin{itemize}
+    \item vitesse de lecture ;
+    \item exactitude des décisions ;
+    \item compréhension ;
+    \item ergonomie ;
+    \item charge cognitive.
+\end{itemize}
+
+\subsection*{Évaluation causale de la mémoire}
+
+Une campagne comparant mémoire activée et mémoire désactivée dans les mêmes conditions
+permettrait de déterminer si l'historique améliore réellement la priorisation ou la
+sélection des tâches.
+
+\subsection*{Déploiement à plus grande échelle}
+
+Enfin, un environnement physique ou cloud composé de plusieurs machines indépendantes
+permettrait de mesurer :
+
+\begin{itemize}
+    \item latence ;
+    \item débit ;
+    \item saturation ;
+    \item nombre de workers ;
+    \item résilience ;
+    \item coût du broker ;
+    \item consommation de ressources.
+\end{itemize}
+
+Cette extension constituerait une nouvelle étape entre le prototype de laboratoire et une
+architecture opérationnelle.
+
+\section*{Conclusion finale}
+\addcontentsline{toc}{section}{Conclusion finale}
+
+Ariel \logminer{} démontre qu'il est possible d'intégrer dans un même prototype plusieurs
+fonctions nécessaires à l'analyse de journaux hétérogènes : parsing, normalisation,
+routage, détection, corrélation, mémoire, audit, orchestration distribuée et restitution à
+l'analyste.
+
+Le travail montre également qu'une architecture fonctionnelle ne doit pas être confondue
+avec une architecture universellement performante.
+
+La forte différence entre les résultats CICIDS obtenus avec un split aléatoire et ceux
+issus des holdouts par scénario constitue l'illustration la plus claire de cette
+distinction. Elle rappelle que la manière dont une expérience est construite influence
+directement la portée de ses conclusions.
+
+Les résultats HDFS/BGL renforcent cette observation : un protocole plus strict peut fournir
+des performances plus modestes tout en améliorant leur crédibilité. La validation
+multiformat montre que plusieurs formats sont effectivement traités mais que la couverture
+reste partielle. Le routeur remplit efficacement sa fonction d'orientation dans le corpus
+étudié sans garantir un gain prédictif systématique.
+
+L'architecture multi-agent apporte de la modularité, de la traçabilité et des mécanismes de
+distribution, mais le benchmark montre explicitement que ces avantages possèdent un coût.
+La validation multi-VM établit une distribution logicielle réelle dans un laboratoire sans
+permettre d'extrapoler vers une haute disponibilité industrielle.
+
+La corrélation, la mémoire, la mise à jour contrôlée et le dashboard complètent la chaîne
+en rapprochant les résultats du processus d'analyse. Leur niveau de validation reste
+cependant différent selon les fonctions.
+
+Au terme de cette étude, les cinq hypothèses sont partiellement soutenues. Les cinq
+premières questions de recherche reçoivent des réponses partielles, tandis que la sixième
+reçoit une réponse forte dans le périmètre expérimental.
+
+La contribution la plus importante du travail est finalement double.
+
+Sur le plan technique, Ariel \logminer{} fournit une architecture logicielle complète et
+modulaire permettant d'étudier plusieurs familles de journaux et plusieurs modes de
+traitement.
+
+Sur le plan scientifique, le mémoire montre qu'une évaluation crédible doit conserver les
+échecs, distinguer les niveaux de preuve et éviter de généraliser au-delà de ce que les
+protocoles démontrent réellement.
+
+Ariel \logminer{} doit ainsi être considéré comme une base expérimentale fonctionnelle et
+évolutive pour l'étude de l'analyse distribuée de journaux, plutôt que comme un système SOC
+industriel achevé. Cette position définit à la fois la contribution actuelle du travail et
+le point de départ des développements futurs.
