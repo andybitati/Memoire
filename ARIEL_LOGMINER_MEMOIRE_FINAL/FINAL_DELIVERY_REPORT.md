@@ -33,6 +33,10 @@ PDF final : **NON DISPONIBLE DANS CET ENVIRONNEMENT**. Les exécutables `pdflate
 - passe de rédaction humanisée : `revision_reports/HUMANIZATION_PASS.md` ;
 - contrôle UTF-8 complet des fichiers textuels du dossier final.
 
+## Blocage dashboard
+
+Le code du dashboard bleu est identifié, mais les captures présentes sont rouge-or. La capture automatisée n'a pas pu être produite faute de Playwright disponible hors cache et d'accès npm. Voir `revision_reports/DASHBOARD_BLOCKER.md`. Le dossier n'est donc pas déclaré prêt pour ZIP manuel.
+
 ## Limites conservées
 
 - La copie BGL locale n'est pas démontrée bit-à-bit avec l'archive publique.
@@ -40,4 +44,4 @@ PDF final : **NON DISPONIBLE DANS CET ENVIRONNEMENT**. Les exécutables `pdflate
 - L'origine du fichier `linux_auth_logs_labeled.csv` reste partiellement documentée.
 - La compilation PDF et les avertissements LaTeX finaux restent à vérifier sur une machine disposant de la toolchain.
 
-Le dossier est prêt pour revue manuelle et compilation externe. Aucun ZIP n'est créé ici.
+Le dossier est prêt pour revue manuelle et compilation externe, mais reste bloqué pour la livraison finale tant que le dashboard bleu et la compilation PDF ne sont pas vérifiés. Aucun ZIP n'est créé ici.
