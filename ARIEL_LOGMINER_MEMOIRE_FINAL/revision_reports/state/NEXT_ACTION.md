@@ -1,5 +1,27 @@
 # NEXT ACTION
 
+## PROCHAINE ACTION EXACTE — REPRISE COMPILATION
+
+Ne pas refaire la première passe pdfLaTeX et ne pas rescanner le dépôt.
+
+1. Depuis `ARIEL_LOGMINER_MEMOIRE_FINAL/build`, exécuter :
+
+```powershell
+& 'C:\Users\aoliv\AppData\Local\Programs\MiKTeX\miktex\bin\x64\bibtex.exe' --include-directory=.. main
+```
+
+2. Depuis `ARIEL_LOGMINER_MEMOIRE_FINAL`, exécuter deux fois :
+
+```powershell
+& 'C:\Users\aoliv\AppData\Local\Programs\MiKTeX\miktex\bin\x64\pdflatex.exe' -enable-installer -interaction=nonstopmode -file-line-error -halt-on-error -output-directory=build main.tex
+```
+
+3. Vérifier dans `build/main.log` : citations indéfinies, références indéfinies, erreurs et warnings sévères.
+4. Relever le nombre final de pages.
+5. Après succès seulement, copier/renommer `build/main.pdf` en `build/Memoire_Ariel_Logminer_Final.pdf`.
+
+Warnings déjà observés à examiner après stabilisation : commandes d'accent signalées en mode mathématique, nombreuses boîtes `Underfull`, et `Infinite glue shrinkage` dans `chapters/annexes.tex` autour de la ligne 1153.
+
 Phase: FINAL DELIVERY PREPARATION
 
 Experiment: Aucun

@@ -1,5 +1,22 @@
 # SESSION HANDOFF
 
+## HANDOFF COMPILATION — 2026-09-09
+
+La rédaction et les modifications du dossier final sont présentes. La compilation a réellement démarré avec MiKTeX.
+
+État exact :
+
+- `latexmk` ne fonctionne pas sans Perl ; utiliser directement BibTeX et pdfLaTeX.
+- `babel-french` est maintenant reconnu après mise à jour de l'index MiKTeX.
+- La référence d'image cassée `dashboard_annexe_console_soc.png` a été remplacée dans `chapters/annexes.tex` par `dashboard_vue_ensemble.png`.
+- `build/main.pdf` existe après la première passe et compte 293 pages.
+- La bibliographie n'est pas encore produite : le premier appel BibTeX a été lancé depuis le mauvais répertoire.
+- Reprendre exactement avec la commande BibTeX inscrite dans `NEXT_ACTION.md`, depuis le dossier `build/`, puis effectuer deux passes pdfLaTeX.
+- Ne pas supprimer les changements non liés actuellement présents dans le worktree.
+- Aucun processus de compilation ou de dashboard n'est actif.
+
+Fichiers à lire à la reprise : `CURRENT_STATE.md`, `NEXT_ACTION.md`, `build/main.log` et uniquement le fichier signalé par la prochaine erreur éventuelle.
+
 ## Mission
 
 Consolidation expérimentale finale du mémoire Ariel Logminer, sans réécriture.

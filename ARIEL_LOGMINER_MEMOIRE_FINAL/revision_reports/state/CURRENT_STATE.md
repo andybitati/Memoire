@@ -1,5 +1,20 @@
 # CURRENT STATE
 
+## CHECKPOINT DE REPRISE — 2026-09-09
+
+- MiKTeX détecté dans `C:\Users\aoliv\AppData\Local\Programs\MiKTeX\miktex\bin\x64\`.
+- `latexmk.exe` est présent, mais inutilisable tant que Perl n'est pas installé.
+- Compilation directe avec `pdflatex.exe` fonctionnelle.
+- Première erreur rencontrée : image absente `dashboard_annexe_console_soc.png` dans `chapters/annexes.tex`.
+- Correction appliquée : référence remplacée par l'image existante `dashboard_vue_ensemble.png`.
+- Première passe pdfLaTeX réussie : `build/main.pdf`, 293 pages, 2 560 255 octets.
+- BibTeX lancé depuis la racine : échec, car les fichiers auxiliaires inclus sont relatifs à `build/`.
+- La relance BibTeX correcte depuis `build/` n'a pas été exécutée, l'autorisation ayant été refusée/interrompue.
+- Tous les processus `pdflatex`, `latexmk`, `bibtex`, `perl` et `node` ont ensuite été arrêtés à la demande de l'utilisateur.
+- État courant : aucune commande longue en cours.
+
+CURRENT PDF PAGE COUNT: 293 (première passe, bibliographie et références non stabilisées)
+
 Last update: 2026-09-08
 Git commit: 844d76b (checkpoint final PHASE 12)
 Active phase: PHASE 13A COMPLETE — FINAL DELIVERY PREPARATION
