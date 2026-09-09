@@ -1,5 +1,23 @@
 # SESSION HANDOFF
 
+## HANDOFF MISSION MULTI-AGENTS — 2026-09-09 16:12
+
+Mission active : implémenter et évaluer une architecture réellement multi-agents légère, avec Contract Net, mémoire ON/OFF, idempotence et comparaison A/B/C/D.
+
+État exact :
+
+- Le prompt maître a été lu complètement.
+- L’audit ciblé du code et des scripts a été effectué avec Graphify et lecture directe.
+- `docs/MULTI_AGENT_GAP_ANALYSIS.md` a été créé avant toute modification du noyau, conformément à la mission.
+- `AgentMessage` reste un contrat à sept champs; toutes les nouvelles métadonnées doivent rester dans `payload`.
+- Le noyau autonome est désormais implémenté dans `contract_net.py`, `idempotency.py` et `intelligent_runtime.py`.
+- Sept tests unitaires couvrent le contrat de message, les six refus, le CNP, la mémoire et la reprise idempotente; ils réussissent tous.
+- Prochaine étape : construire puis exécuter la campagne A/B/C/D et les expériences complémentaires.
+- Ne pas réécrire le mémoire avant la production de nouveaux résultats.
+- Préserver toutes les modifications préexistantes visibles dans `ARIEL_LOGMINER_MEMOIRE_FINAL/`.
+
+Fichiers à lire à la reprise : `docs/MULTI_AGENT_GAP_ANALYSIS.md`, `src/logminer/agents/bus.py`, `src/logminer/agents/intelligent_runtime.py` et `NEXT_ACTION.md`.
+
 ## HANDOFF COMPILATION — 2026-09-09
 
 La rédaction et les modifications du dossier final sont présentes. La compilation a réellement démarré avec MiKTeX.

@@ -29,8 +29,10 @@ from uuid import uuid4
 
 try:
     from .bus import MessageBus
+    from .idempotency import SQLiteIdempotencyStore
 except ImportError:  # pragma: no cover - compatibility with direct script execution
     from agents.bus import MessageBus
+    from agents.idempotency import SQLiteIdempotencyStore
 
 
 TaskHandler = Callable[["AgentTask", "AgentContext"], Dict[str, Any]]
@@ -49,6 +51,59 @@ class AgentCapability:
 
     def supports(self, task_type: str) -> bool:
         return task_type in self.task_types or "*" in self.task_types
+
+
+@dataclass(frozen=True)
+class AgentPolicyWeights:
+    """Poids configurables du score d'utilité local, sans prétention d'optimalité."""
+
+    capability: float = 0.30
+    history: float = 0.20
+    model: float = 0.20
+    availability: float = 0.15
+    load: float = 0.10
+    latency: float = 0.05
+
+    def __post_init__(self) -> None:
+        values = asdict(self)
+        if any(float(value) < 0.0 for value in values.values()):
+            raise ValueError("Les poids de politique doivent être positifs ou nuls")
+        if abs(sum(float(value) for value in values.values()) - 1.0) > 1e-9:
+            raise ValueError("La somme des poids de politique doit être égale à 1")
+
+    @classmethod
+    def from_mapping(cls, values: dict[str, Any] | None) -> "AgentPolicyWeights":
+        if not values:
+            return cls()
+        return cls(**{field_name: float(values[field_name]) for field_name in asdict(cls()) if field_name in values})
+
+
+@dataclass(frozen=True)
+class AgentPerception:
+    """Instantané local utilisé pour évaluer un appel à propositions."""
+
+    agent_id: str
+    healthy: bool
+    active_tasks: int
+    max_parallel_tasks: int
+    load_ratio: float
+    available_models: tuple[str, ...]
+    available_dependencies: tuple[str, ...]
+    memory_enabled: bool
+    observed_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+
+@dataclass(frozen=True)
+class BidEvaluation:
+    """Décision locale normalisée produite pour une tâche."""
+
+    task_id: str
+    agent_id: str
+    accepted: bool
+    utility: float
+    components: dict[str, float]
+    reasons: tuple[str, ...]
+    refusal_reason: str = ""
 
 
 @dataclass
@@ -144,10 +199,7 @@ class AgentMemory:
     def reliability(self, task_type: str) -> float:
         successes = float(self.successes_by_type.get(task_type, 0))
         errors = float(self.errors_by_type.get(task_type, 0))
-        total = successes + errors
-        if total == 0:
-            return 0.5
-        return successes / total
+        return (successes + 1.0) / (successes + errors + 2.0)
 
     def average_duration(self, task_type: str) -> float | None:
         durations = self.durations_by_type.get(task_type) or []
@@ -341,6 +393,13 @@ class MultiTaskIntelligentAgent:
         memory_path: str | Path | None = None,
         workspace: str | Path = ".",
         max_parallel_tasks: int | None = None,
+        policy_weights: AgentPolicyWeights | dict[str, Any] | None = None,
+        minimum_utility: float = 0.0,
+        memory_enabled: bool = True,
+        healthy: bool = True,
+        available_models: Iterable[str] | None = None,
+        available_dependencies: Iterable[str] | None = None,
+        idempotency_store: SQLiteIdempotencyStore | None = None,
     ):
         self.agent_id = agent_id
         self.capabilities = list(capabilities)
@@ -351,6 +410,19 @@ class MultiTaskIntelligentAgent:
         self.memory = self._load_memory()
         self.max_parallel_tasks = max_parallel_tasks or max((cap.max_parallel for cap in self.capabilities), default=1)
         self.run_id = bus.run_id if bus is not None else uuid4().hex
+        self.policy_weights = (
+            policy_weights
+            if isinstance(policy_weights, AgentPolicyWeights)
+            else AgentPolicyWeights.from_mapping(policy_weights)
+        )
+        self.minimum_utility = max(0.0, min(float(minimum_utility), 1.0))
+        self.memory_enabled = bool(memory_enabled)
+        self.healthy = bool(healthy)
+        self.available_models = set(available_models or {"*"})
+        self.available_dependencies = set(available_dependencies or {"*"})
+        self.idempotency_store = idempotency_store
+        self._state_lock = Lock()
+        self._active_task_ids: set[str] = set()
 
     def _load_memory(self) -> AgentMemory:
         if self.memory_path is None or not self.memory_path.exists():
@@ -388,6 +460,7 @@ class MultiTaskIntelligentAgent:
                 "memory": asdict(self.memory),
                 "policy_snapshot": self.policy_snapshot(),
                 "max_parallel_tasks": self.max_parallel_tasks,
+                "operational_state": asdict(self.perceive()),
             },
         )
 
@@ -411,6 +484,123 @@ class MultiTaskIntelligentAgent:
         if task.required_capability:
             return any(capability.name == task.required_capability for capability in self.capabilities)
         return any(capability.supports(task.task_type) for capability in self.capabilities)
+
+    @staticmethod
+    def _required_values(payload: dict[str, Any], key: str) -> set[str]:
+        raw = payload.get(key, [])
+        if isinstance(raw, str):
+            return {raw} if raw else set()
+        return {str(value) for value in raw if str(value)} if isinstance(raw, (list, tuple, set)) else set()
+
+    @staticmethod
+    def _available(required: set[str], available: set[str]) -> bool:
+        return not required or "*" in available or required.issubset(available)
+
+    def perceive(self, task: AgentTask | None = None) -> AgentPerception:
+        """Observe l'état local; la tâche est acceptée pour une API perception-action stable."""
+
+        del task
+        with self._state_lock:
+            active_tasks = len(self._active_task_ids)
+        maximum = max(1, int(self.max_parallel_tasks))
+        return AgentPerception(
+            agent_id=self.agent_id,
+            healthy=self.healthy,
+            active_tasks=active_tasks,
+            max_parallel_tasks=maximum,
+            load_ratio=min(1.0, active_tasks / maximum),
+            available_models=tuple(sorted(self.available_models)),
+            available_dependencies=tuple(sorted(self.available_dependencies)),
+            memory_enabled=self.memory_enabled,
+        )
+
+    def evaluate(self, task: AgentTask) -> BidEvaluation:
+        """Évalue localement un CFP et retourne une proposition ou un refus motivé."""
+
+        perception = self.perceive(task)
+        if not self.can_handle(task):
+            return BidEvaluation(task.task_id, self.agent_id, False, 0.0, {}, (), "capability_missing")
+        required_models = self._required_values(task.payload, "required_models")
+        if not self._available(required_models, self.available_models):
+            return BidEvaluation(task.task_id, self.agent_id, False, 0.0, {}, (), "model_missing")
+        required_dependencies = self._required_values(task.payload, "required_dependencies")
+        if not self._available(required_dependencies, self.available_dependencies):
+            return BidEvaluation(task.task_id, self.agent_id, False, 0.0, {}, (), "dependency_unavailable")
+        if not perception.healthy:
+            return BidEvaluation(task.task_id, self.agent_id, False, 0.0, {}, (), "agent_unhealthy")
+        if perception.active_tasks >= perception.max_parallel_tasks:
+            return BidEvaluation(task.task_id, self.agent_id, False, 0.0, {}, (), "agent_overloaded")
+
+        matching = [capability for capability in self.capabilities if capability.supports(task.task_type)]
+        if task.required_capability:
+            matching = [capability for capability in matching if capability.name == task.required_capability]
+        best = max(matching, key=lambda capability: capability.confidence)
+        average_duration = self.memory.average_duration(task.task_type) if self.memory_enabled else None
+        components = {
+            "capability": max(0.0, min(float(best.confidence), 1.0)),
+            "history": self.memory.reliability(task.task_type) if self.memory_enabled else 0.5,
+            "model": 1.0,
+            "availability": max(0.0, 1.0 - perception.load_ratio),
+            "load": max(0.0, 1.0 - perception.load_ratio),
+            "latency": 0.5 if average_duration is None else 1.0 / (1.0 + max(0.0, average_duration)),
+        }
+        utility = sum(
+            float(getattr(self.policy_weights, component)) * value
+            for component, value in components.items()
+        )
+        utility = max(0.0, min(utility, 1.0))
+        reasons = tuple(f"{name}={value:.6f}" for name, value in components.items())
+        if utility < self.minimum_utility:
+            return BidEvaluation(
+                task.task_id,
+                self.agent_id,
+                False,
+                round(utility, 6),
+                components,
+                reasons,
+                "low_expected_utility",
+            )
+        return BidEvaluation(task.task_id, self.agent_id, True, round(utility, 6), components, reasons)
+
+    def compute_bid(self, task: AgentTask) -> float:
+        """Retourne l'utilité locale d'une tâche, dans l'intervalle [0, 1]."""
+
+        return self.evaluate(task).utility
+
+    def propose(self, task: AgentTask) -> BidEvaluation:
+        return self.evaluate(task)
+
+    def refuse(self, task: AgentTask) -> str:
+        evaluation = self.evaluate(task)
+        return evaluation.refusal_reason
+
+    def accept(self, task: AgentTask) -> bool:
+        """Réserve localement une place après attribution du contrat."""
+
+        with self._state_lock:
+            if not self.healthy or len(self._active_task_ids) >= max(1, self.max_parallel_tasks):
+                return False
+            self._active_task_ids.add(task.task_id)
+        return True
+
+    def _start_task(self, task: AgentTask) -> bool:
+        with self._state_lock:
+            already_reserved = task.task_id in self._active_task_ids
+            if not already_reserved:
+                self._active_task_ids.add(task.task_id)
+        return already_reserved
+
+    def _finish_task(self, task: AgentTask) -> None:
+        with self._state_lock:
+            self._active_task_ids.discard(task.task_id)
+
+    def learn(self, result: TaskResult) -> None:
+        """Met à jour la mémoire seulement lorsque le mode mémoire est actif."""
+
+        if not self.memory_enabled:
+            return
+        self.memory.record(result)
+        self.save_memory()
 
     def score_task(self, task: AgentTask) -> tuple[float, list[str]]:
         score = float(task.priority)
@@ -462,6 +652,7 @@ class MultiTaskIntelligentAgent:
         return scored[: max(1, limit or self.max_parallel_tasks)]
 
     def execute_task(self, task: AgentTask, score: float = 0.0, reasons: list[str] | None = None) -> TaskResult:
+        self._start_task(task)
         started = datetime.now(timezone.utc).isoformat()
         timer = perf_counter()
         context = AgentContext(
@@ -475,9 +666,35 @@ class MultiTaskIntelligentAgent:
             "agent.task.started",
             {"task": asdict(task), "decision_score": score, "decision_reasons": reasons or []},
         )
+        idempotency_key = str(task.payload.get("idempotency_key") or "")
+        key_reserved = False
         try:
-            handler = self.handlers[task.task_type]
-            output = handler(task, context)
+            replayed_output: dict[str, Any] | None = None
+            if self.idempotency_store is not None and idempotency_key:
+                reservation, previous = self.idempotency_store.reserve(
+                    idempotency_key,
+                    owner=self.agent_id,
+                    task_id=task.task_id,
+                )
+                if reservation == "completed" and previous is not None:
+                    replayed_output = {**previous.result, "_idempotency_replayed": True}
+                elif reservation == "in_progress":
+                    raise RuntimeError("idempotency_key_in_progress")
+                else:
+                    key_reserved = True
+
+            if replayed_output is None:
+                handler = self.handlers[task.task_type]
+                output = handler(task, context)
+                if self.idempotency_store is not None and idempotency_key:
+                    self.idempotency_store.complete(
+                        idempotency_key,
+                        owner=self.agent_id,
+                        task_id=task.task_id,
+                        result=output,
+                    )
+            else:
+                output = replayed_output
             result = TaskResult(
                 task_id=task.task_id,
                 task_type=task.task_type,
@@ -485,11 +702,13 @@ class MultiTaskIntelligentAgent:
                 status="ok",
                 output=output,
                 started_at=started,
-                elapsed_sec=round(perf_counter() - timer, 4),
+                elapsed_sec=round(perf_counter() - timer, 6),
                 decision_score=score,
                 decision_reasons=list(reasons or []),
             )
         except Exception as exc:
+            if key_reserved and self.idempotency_store is not None and idempotency_key:
+                self.idempotency_store.release_failed(idempotency_key, owner=self.agent_id)
             result = TaskResult(
                 task_id=task.task_id,
                 task_type=task.task_type,
@@ -497,12 +716,13 @@ class MultiTaskIntelligentAgent:
                 status="error",
                 error=str(exc),
                 started_at=started,
-                elapsed_sec=round(perf_counter() - timer, 4),
+                elapsed_sec=round(perf_counter() - timer, 6),
                 decision_score=score,
                 decision_reasons=list(reasons or []),
             )
-        self.memory.record(result)
-        self.save_memory()
+        finally:
+            self._finish_task(task)
+        self.learn(result)
         self.publish_state(
             "agent.task.completed" if result.status == "ok" else "agent.task.failed",
             {"result": asdict(result)},

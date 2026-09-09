@@ -1,5 +1,31 @@
 # CURRENT STATE
 
+## CHECKPOINT MULTI-AGENTS — 2026-09-09 16:12
+
+- Nouvelle mission active : transformation contrôlée de Logminer en système multi-agents autonome léger.
+- Instructions maîtres lues intégralement depuis la pièce jointe `63dc1591-cb90-451c-88c5-99904f561af9/pasted-text.txt`.
+- Requêtes Graphify exécutées sur le bus, les agents, le superviseur, la mémoire, Redis, la reprise et les expériences existantes.
+- Audit préalable terminé et enregistré dans `docs/MULTI_AGENT_GAP_ANALYSIS.md`.
+- Fait central : le code actuel fournit des agents multi-capacités et une sélection locale, mais pas de négociation Contract Net entre agents.
+- Fait central : `AgentMessage` contient exactement sept champs et ne doit pas être étendu.
+- Fait central : la reprise actuelle couvre un crash après lecture et avant traitement, pas le crash après effet persistant et avant ACK.
+- Aucune modification du noyau multi-agents n’a encore été appliquée à ce checkpoint.
+- Prochaine phase : primitives Contract Net, politique locale normalisée, état agent et idempotence persistante, puis tests.
+- Les changements préexistants du mémoire restent hors périmètre et ne doivent pas être annulés.
+- Compilation LaTeX suspendue à sa première passe réussie; reprise BibTeX conservée plus bas dans les fichiers d’état.
+
+## CHECKPOINT IMPLÉMENTATION — 2026-09-09 16:22
+
+- `src/logminer/agents/contract_net.py` créé : cycle `CFP`, `PROPOSE`, `REFUSE`, `AWARD`, `REJECT`, `ACCEPT`, `RESULT`, `FAIL`, `FEEDBACK`.
+- `src/logminer/agents/idempotency.py` créé : registre SQLite transactionnel partagé.
+- `src/logminer/agents/intelligent_runtime.py` étendu sans modifier `AgentMessage` : état local, utilité normalisée, refus explicites, mémoire ON/OFF et fiabilité de Laplace.
+- Configuration ajoutée dans `experiments/phase_multi_agent/configs/agent_policy.json`.
+- Tests ajoutés dans `tests/test_true_multi_agent.py`.
+- Validation : 7 tests sur 7 réussis avec `python -m unittest discover -s tests -p "test_*.py" -v`.
+- Le test de reprise simule exactement un résultat durable sans ACK puis une reprise par un second agent; l’effet métier reste unique.
+- `graphify update .` tenté après modification : échec maintenu avec `[WinError 5] Accès refusé`; le code et les tests ne sont pas affectés.
+- Prochaine phase : campagne expérimentale A/B/C/D, mémoire ON/OFF, adaptation, reprise et pipeline bout en bout.
+
 ## CHECKPOINT DE REPRISE — 2026-09-09
 
 - MiKTeX détecté dans `C:\Users\aoliv\AppData\Local\Programs\MiKTeX\miktex\bin\x64\`.
@@ -15,11 +41,11 @@
 
 CURRENT PDF PAGE COUNT: 293 (première passe, bibliographie et références non stabilisées)
 
-Last update: 2026-09-08
+Last update: 2026-09-09
 Git commit: 844d76b (checkpoint final PHASE 12)
 Active phase: PHASE 13A COMPLETE — FINAL DELIVERY PREPARATION
-Active experiment: Aucun
-Status: COMPLETE — FINAL DELIVERY FOLDER CREATED
+Active experiment: Phase multi-agents — audit préalable terminé
+Status: IN PROGRESS — MULTI-AGENT IMPLEMENTATION
 
 ## Completed
 

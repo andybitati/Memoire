@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "description": "Poids initiaux imposés pour l'expérience; ils ne sont ni appris ni présentés comme optimaux.",
+  "weights": {
+    "capability": 0.30,
+    "history": 0.20,
+    "model": 0.20,
+    "availability": 0.15,
+    "load": 0.10,
+    "latency": 0.05
+  },
+  "minimum_utility": 0.0,
+  "refusal_reasons": [
+    "capability_missing",
+    "model_missing",
+    "agent_overloaded",
+    "agent_unhealthy",
+    "low_expected_utility",
+    "dependency_unavailable"
+  ]
+}
