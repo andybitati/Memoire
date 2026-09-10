@@ -546,7 +546,9 @@ def route_dataframe(
 
     if frame.empty:
         raise ValueError("Le routeur ne peut pas évaluer un tableau vide.")
-    scores, reasons = _score_dataframe(frame.copy(), path=None)
+    normalized = frame.copy()
+    normalized.columns = [str(column).strip().lstrip("\ufeff") for column in normalized.columns]
+    scores, reasons = _score_dataframe(normalized, path=None)
     priority = ["windows", "hdfs", "bgl", "wazuh", "network_cicids", "network", "linux_auth", "linux", "fallback"]
     sorted_scores = sorted(priority, key=lambda family: scores.get(family, 0), reverse=True)
     family = sorted_scores[0]

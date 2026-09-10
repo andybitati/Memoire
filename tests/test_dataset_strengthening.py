@@ -19,6 +19,7 @@ from dataset_strengthening_common import select_threshold, sha256_file  # noqa: 
 from logminer.agents.bus import AgentMessage  # noqa: E402
 from logminer.agents.contract_net import ContractNetCoordinator  # noqa: E402
 from logminer.agents.intelligent_runtime import AgentCapability, AgentTask, MultiTaskIntelligentAgent  # noqa: E402
+from logminer.agents.model_router import route_dataframe  # noqa: E402
 from logminer.parsers.bgl import Parser as BglParser  # noqa: E402
 from logminer.parsers.hdfs import Parser as HdfsParser  # noqa: E402
 from run_bgl_known_unknown_strengthening import group_masks  # noqa: E402
@@ -93,6 +94,22 @@ def test_router_sources_are_unique_and_not_chunks() -> None:
     assert len(paths) == len(set(paths))
     assert all("chunk" not in source_id.lower() for source_id in ids)
     assert all("chunk" not in path.lower() for path in paths)
+
+
+def test_route_dataframe_normalizes_cicids_header_whitespace() -> None:
+    frame = pd.DataFrame(
+        {
+            " Destination Port": [80],
+            " Flow Duration": [100],
+            " Total Fwd Packets": [3],
+            " Total Backward Packets": [2],
+            " Flow Bytes/s": [42],
+            " Flow Packets/s": [5],
+            " Label": ["BENIGN"],
+        }
+    )
+    route = route_dataframe(frame)
+    assert route["family"] == "network_cicids"
 
 
 def test_multiformat_text_selection_does_not_duplicate(tmp_path: Path) -> None:

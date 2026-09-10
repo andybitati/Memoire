@@ -27,6 +27,14 @@ Dernière mise à jour : 2026-09-10.
   LogisticRegression `0,5566145428`. Les dates et jours servent uniquement au
   split. Les échantillons sont équilibrés et les graines restent corrélées par
   leur pool parent commun; cette limite doit être conservée.
+- Routeur indépendant : le premier run `router_independent_20260910T092757Z`
+  conserve l’échec des huit fichiers CICIDS causé par les espaces des en-têtes.
+  Après correction et test de régression (13/13 tests réussis), le run final
+  `router_independent_20260910T093225Z` traite 31 fichiers, 9 groupes et zéro
+  erreur. Accuracy `0,9032258065`, macro-F1 `0,7777777778`, accuracy des
+  familles connues `1,0`. Les trois sources open-set sont toutes routées
+  `network`; leur taux de rejet est `0,0`. La marge est un score heuristique,
+  pas une probabilité calibrée.
 
 ## Incident d’outillage conservé
 
@@ -35,7 +43,7 @@ Cet échec d’indexation ne modifie ni le code expérimental ni les données.
 
 ## Prochaine action exacte
 
-Exécuter `scripts/run_router_independent_strengthening.py`, valider ses
-artefacts et sa méthodologie, puis seulement passer au multiformat équilibré.
+Exécuter `scripts/run_multiformat_balanced_strengthening.py`, valider ses
+artefacts et sa méthodologie, puis seulement passer au replay multi-source CNP.
 
 Le mémoire `ARIEL_LOGMINER_MEMOIRE_FINAL` n’a pas été modifié par cette mission.

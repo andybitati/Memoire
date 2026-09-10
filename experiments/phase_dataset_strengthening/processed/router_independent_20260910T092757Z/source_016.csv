@@ -1,0 +1,402 @@
+﻿_index,_id,_version,_score,_source.predecoder.hostname,_source.predecoder.program_name,_source.predecoder.timestamp,_source.agent.ip,_source.agent.name,_source.agent.id,_source.manager.name,_source.data.uid,_source.data.dstuser,_source.rule.mail,_source.rule.level,_source.rule.pci_dss,_source.rule.hipaa,_source.rule.tsc,_source.rule.description,_source.rule.groups,_source.rule.nist_800_53,_source.rule.gdpr,_source.rule.firedtimes,_source.rule.mitre.technique,_source.rule.mitre.id,_source.rule.mitre.tactic,_source.rule.id,_source.rule.gpg13,_source.decoder.parent,_source.decoder.name,_source.full_log,_source.input.type,_source.@timestamp,_source.location,_source.id,_source.timestamp,_source.data.srcip,_source.data.srcport,_source.syscheck.uname_after,_source.syscheck.mtime_after,_source.syscheck.size_after,_source.syscheck.gid_after,_source.syscheck.mode,_source.syscheck.path,_source.syscheck.sha1_after,_source.syscheck.gname_after,_source.syscheck.uid_after,_source.syscheck.perm_after,_source.syscheck.event,_source.syscheck.md5_after,_source.syscheck.sha256_after,_source.syscheck.inode_after,_source.data.srcuser,_source.data.tty,_source.data.pwd,_source.data.command,_source.decoder.ftscomment,_source.syscheck.size_before,_source.syscheck.md5_before,_source.syscheck.sha256_before,_source.syscheck.changed_attributes,_source.syscheck.sha1_before,_source.syscheck.mtime_before,_source.data.extra_data,_source.data.status,_source.data.file,_source.data.title,_source.data.euid,_source.data.logname,_source.data.audit.pid,_source.data.audit.id,_source.data.audit.type,_source.data.audit.command
+wazuh-alerts-4.x-2023.10.20,jMBgTosBpjjGT_ibfNgr,1,1,sohaib-virtual-machine,sshd,Oct 20 23:37:04,192.168.40.131,machine-2,002,ubuntu,0,sohaib(uid=1000),false,3,"[""10.2.5""]","[""164.312.b""]","[""CC6.8"",""CC7.2"",""CC7.3""]",PAM: Login session opened.,"[""pam"",""syslog"",""authentication_success""]","[""AU.14"",""AC.7""]","[""IV_32.2""]",2,"[""Valid Accounts""]","[""T1078""]","[""Defense Evasion"",""Persistence"",""Privilege Escalation"",""Initial Access""]",5501,"[""7.8"",""7.9""]",pam,pam,Oct 20 23:37:04 sohaib-virtual-machine sshd[3949]: pam_unix(sshd:session): session opened for user sohaib(uid=1000) by (uid=0),log,"Oct 20, 2023 @ 18:37:04.077",/var/log/auth.log,1697827024.8714764,"Oct 20, 2023 @ 18:37:04.077", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,jcBgTosBpjjGT_ibfNgr,1,1,sohaib-virtual-machine,sshd,Oct 20 23:37:04,192.168.40.131,machine-2,002,ubuntu, ,sohaib,false,3,"[""10.2.5""]","[""164.312.b""]","[""CC6.8"",""CC7.2"",""CC7.3""]",sshd: authentication success.,"[""syslog"",""sshd"",""authentication_success""]","[""AU.14"",""AC.7""]","[""IV_32.2""]",1,"[""Valid Accounts"",""Remote Services""]","[""T1078"",""T1021""]","[""Defense Evasion"",""Persistence"",""Privilege Escalation"",""Initial Access"",""Lateral Movement""]",5715,"[""7.1"",""7.2""]",sshd,sshd,Oct 20 23:37:04 sohaib-virtual-machine sshd[3949]: Accepted password for sohaib from 192.168.204.1 port 61328 ssh2,log,"Oct 20, 2023 @ 18:37:04.071",/var/log/auth.log,1697827024.8715226,"Oct 20, 2023 @ 18:37:04.071",192.168.204.1,61328, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,ksBhTosBpjjGT_ibethL,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,5,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",File added to the system.,"[""ossec"",""syscheck"",""syscheck_entry_added"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",2, , , ,554,"[""4.11""]", ,syscheck_new_entry,"File '/tmp/.X1-lock' added
+Mode: realtime
+",log,"Oct 20, 2023 @ 18:38:08.694",syscheck,1697827088.8717572,"Oct 20, 2023 @ 18:38:08.694", , ,sohaib,2023-10-20T18:38:10,11,1000,realtime,/tmp/.X1-lock,8ceee1fc7295a4e45609f617ba76c70f4d666539,sohaib,1000,r--r--r--,added,c4f3d64a6509c9fbd949d65ae915f835,0933371f657cc04f8e9ff0c057ee0df484c9a15d1653124831cee54e98afd1cf,547126, , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,psBtTosBpjjGT_ibkNiS,1,1,sohaib-virtual-machine,sudo,Oct 20 23:51:21,192.168.40.131,machine-2,002,ubuntu, ,root,false,3,"[""10.2.5"",""10.2.2""]","[""164.312.b""]","[""CC6.8"",""CC7.2"",""CC7.3""]",Successful sudo to ROOT executed.,"[""syslog"",""sudo""]","[""AU.14"",""AC.7"",""AC.6""]","[""IV_32.2""]",1,"[""Sudo and Sudo Caching""]","[""T1548.003""]","[""Privilege Escalation"",""Defense Evasion""]",5402,"[""7.6"",""7.8"",""7.13""]",sudo,sudo,Oct 20 23:51:21 sohaib-virtual-machine sudo:   sohaib : TTY=pts/0 ; PWD=/home/sohaib ; USER=root ; COMMAND=/bin/bash,log,"Oct 20, 2023 @ 18:51:20.251",/var/log/auth.log,1697827880.8722108,"Oct 20, 2023 @ 18:51:20.251", , , , , , , , , , , , , , , , ,sohaib,pts/0,/home/sohaib,/bin/bash,First time user executed the sudo command, , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,i8BfTosBpjjGT_ib-diz,1,1,sohaib-virtual-machine,systemd,Oct 20 23:36:24,192.168.40.131,machine-2,002,ubuntu,0,sohaib(uid=1000),false,3,"[""10.2.5""]","[""164.312.b""]","[""CC6.8"",""CC7.2"",""CC7.3""]",PAM: Login session opened.,"[""pam"",""syslog"",""authentication_success""]","[""AU.14"",""AC.7""]","[""IV_32.2""]",1,"[""Valid Accounts""]","[""T1078""]","[""Defense Evasion"",""Persistence"",""Privilege Escalation"",""Initial Access""]",5501,"[""7.8"",""7.9""]",pam,pam,Oct 20 23:36:24 sohaib-virtual-machine systemd: pam_unix(systemd-user:session): session opened for user sohaib(uid=1000) by (uid=0),log,"Oct 20, 2023 @ 18:36:23.583",/var/log/auth.log,1697826983.8714297,"Oct 20, 2023 @ 18:36:23.583", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,mMBjTosBpjjGT_ibYtjb,1,1,sohaib-virtual-machine,systemd,Oct 20 23:40:11,192.168.40.131,machine-2,002,ubuntu, , ,false,5, , , ,Systemd: Service exited due to a failure.,"[""local"",""systemd""]", ,"[""IV_35.7.d""]",5, , , ,40704,"[""4.3""]", ,systemd,"Oct 20 23:40:11 sohaib-virtual-machine systemd[3972]: tracker-extract-3.service: Main process exited, code=exited, status=1/FAILURE",log,"Oct 20, 2023 @ 18:40:09.768",/var/log/syslog,1697827209.8718916,"Oct 20, 2023 @ 18:40:09.768", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,lcBiTosBpjjGT_ibi9jl,1,1,sohaib-virtual-machine,systemd,Oct 20 23:39:12,192.168.40.131,machine-2,002,ubuntu, , ,false,5, , , ,Systemd: Service exited due to a failure.,"[""local"",""systemd""]", ,"[""IV_35.7.d""]",4, , , ,40704,"[""4.3""]", ,systemd,"Oct 20 23:39:12 sohaib-virtual-machine systemd[3972]: tracker-extract-3.service: Main process exited, code=exited, status=1/FAILURE",log,"Oct 20, 2023 @ 18:39:12.011",/var/log/syslog,1697827152.8718589,"Oct 20, 2023 @ 18:39:12.011", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,rMBuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",2,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '61900' to '74587'
+Old md5sum was: 'e4a144f5973f5ed84c98c85fcd514894'
+New md5sum is : '2d26b2e0f8069ddbcec18a86545549f6'
+Old sha1sum was: '26ebed9d2a5eca0d264ae73c9038ba5f3b2feb30'
+New sha1sum is : 'b9d66d55e0d2aa79255d864f17ec5b7c27d5f8a2'
+Old sha256sum was: 'f7d70bc3cae1644afa000b79c082f9fd91460fb0f1c14c66eab1d763ab65ca05'
+New sha256sum is : '092c3ec61d8c8813ba5c9225b27029ca1d8ded0bba16005c04ec1822a0f32a7e'
+",log,"Oct 20, 2023 @ 18:52:22.594",syscheck,1697827942.8725935,"Oct 20, 2023 @ 18:52:22.594", , ,root,2023-10-20T18:52:24,74587,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,b9d66d55e0d2aa79255d864f17ec5b7c27d5f8a2,root,0,rw-r--r--,modified,2d26b2e0f8069ddbcec18a86545549f6,092c3ec61d8c8813ba5c9225b27029ca1d8ded0bba16005c04ec1822a0f32a7e,547124, , , , , ,61900,e4a144f5973f5ed84c98c85fcd514894,f7d70bc3cae1644afa000b79c082f9fd91460fb0f1c14c66eab1d763ab65ca05,"[""size"",""md5"",""sha1"",""sha256""]",26ebed9d2a5eca0d264ae73c9038ba5f3b2feb30, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,rsBuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",4,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '115813' to '127436'
+Old md5sum was: 'e734147fab97b6025186c88538f41ae8'
+New md5sum is : '98ce7421c6c5700d7115809149087ed9'
+Old sha1sum was: '5e4f88f33ed7a97a77faaa810de139cd5317dac3'
+New sha1sum is : 'ce38e3c9aaf5f0ce99171e90c3b5dba4eee6692b'
+Old sha256sum was: '55aa1209d4323257680c143e1ddf7610c69ef2dc2211938a304afaf9f56405c3'
+New sha256sum is : 'd434bda14c539032bbc0fc574b1ae60c9ec61adc2994f976b5f49cc64ec4e391'
+",log,"Oct 20, 2023 @ 18:52:22.621",syscheck,1697827942.8728379,"Oct 20, 2023 @ 18:52:22.621", , ,root,2023-10-20T18:52:24,127436,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,ce38e3c9aaf5f0ce99171e90c3b5dba4eee6692b,root,0,rw-r--r--,modified,98ce7421c6c5700d7115809149087ed9,d434bda14c539032bbc0fc574b1ae60c9ec61adc2994f976b5f49cc64ec4e391,547124, , , , , ,115813,e734147fab97b6025186c88538f41ae8,55aa1209d4323257680c143e1ddf7610c69ef2dc2211938a304afaf9f56405c3,"[""size"",""md5"",""sha1"",""sha256""]",5e4f88f33ed7a97a77faaa810de139cd5317dac3, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,r8BuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",5,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '98897' to '115813'
+Old md5sum was: '6373f2d34768dd6de1a66679ea8898b1'
+New md5sum is : 'e734147fab97b6025186c88538f41ae8'
+Old sha1sum was: '5cfdf1e8972da4b5d860a7521e9971f326a2a246'
+New sha1sum is : '5e4f88f33ed7a97a77faaa810de139cd5317dac3'
+Old sha256sum was: '3bfcab295f1ebfc5f2bf683ba81c733e960a7a306e2ff8b10d54f4bc328c2bd2'
+New sha256sum is : '55aa1209d4323257680c143e1ddf7610c69ef2dc2211938a304afaf9f56405c3'
+",log,"Oct 20, 2023 @ 18:52:22.621",syscheck,1697827942.8729604,"Oct 20, 2023 @ 18:52:22.621", , ,root,2023-10-20T18:52:24,115813,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,5e4f88f33ed7a97a77faaa810de139cd5317dac3,root,0,rw-r--r--,modified,e734147fab97b6025186c88538f41ae8,55aa1209d4323257680c143e1ddf7610c69ef2dc2211938a304afaf9f56405c3,547124, , , , , ,98897,6373f2d34768dd6de1a66679ea8898b1,3bfcab295f1ebfc5f2bf683ba81c733e960a7a306e2ff8b10d54f4bc328c2bd2,"[""size"",""md5"",""sha1"",""sha256""]",5cfdf1e8972da4b5d860a7521e9971f326a2a246, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,sMBuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",6,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '74587' to '94668'
+Old md5sum was: '2d26b2e0f8069ddbcec18a86545549f6'
+New md5sum is : 'ac1c5ed9e48ad565aa975c63826ad1b1'
+Old sha1sum was: 'b9d66d55e0d2aa79255d864f17ec5b7c27d5f8a2'
+New sha1sum is : '32cfaead2021acdd0b5e444b924587d63f551c70'
+Old sha256sum was: '092c3ec61d8c8813ba5c9225b27029ca1d8ded0bba16005c04ec1822a0f32a7e'
+New sha256sum is : 'a15abda0a17fe2b0d7c9febdd9af80e78372e10e952d84dd547476b2586ba8c1'
+",log,"Oct 20, 2023 @ 18:52:22.617",syscheck,1697827942.8730828,"Oct 20, 2023 @ 18:52:22.617", , ,root,2023-10-20T18:52:24,94668,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,32cfaead2021acdd0b5e444b924587d63f551c70,root,0,rw-r--r--,modified,ac1c5ed9e48ad565aa975c63826ad1b1,a15abda0a17fe2b0d7c9febdd9af80e78372e10e952d84dd547476b2586ba8c1,547124, , , , , ,74587,2d26b2e0f8069ddbcec18a86545549f6,092c3ec61d8c8813ba5c9225b27029ca1d8ded0bba16005c04ec1822a0f32a7e,"[""size"",""md5"",""sha1"",""sha256""]",b9d66d55e0d2aa79255d864f17ec5b7c27d5f8a2, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,ssBuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",8,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '127436' to '152810'
+Old md5sum was: '98ce7421c6c5700d7115809149087ed9'
+New md5sum is : 'd59a2b949f83b6a90c5259b21eef2015'
+Old sha1sum was: 'ce38e3c9aaf5f0ce99171e90c3b5dba4eee6692b'
+New sha1sum is : '7529a82c88339e681909225cc1f4b393926724d7'
+Old sha256sum was: 'd434bda14c539032bbc0fc574b1ae60c9ec61adc2994f976b5f49cc64ec4e391'
+New sha256sum is : '0b13f9f2be715420af6c04a0c0f48a330383e5147315a73cf252638a18d78663'
+",log,"Oct 20, 2023 @ 18:52:22.674",syscheck,1697827942.8732865,"Oct 20, 2023 @ 18:52:22.674", , ,root,2023-10-20T18:52:24,152810,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,7529a82c88339e681909225cc1f4b393926724d7,root,0,rw-r--r--,modified,d59a2b949f83b6a90c5259b21eef2015,0b13f9f2be715420af6c04a0c0f48a330383e5147315a73cf252638a18d78663,547124, , , , , ,127436,98ce7421c6c5700d7115809149087ed9,d434bda14c539032bbc0fc574b1ae60c9ec61adc2994f976b5f49cc64ec4e391,"[""size"",""md5"",""sha1"",""sha256""]",ce38e3c9aaf5f0ce99171e90c3b5dba4eee6692b, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,tMBuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",10,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '192972' to '205659'
+Old md5sum was: '7fa6fbfe31d71794902596e539f35882'
+New md5sum is : '0bdb925a7c84984ef4daa4988310c676'
+Old sha1sum was: '1da04188bb5bb0832d97085e0fe67894652cf9f0'
+New sha1sum is : '312c6755757884cf44a2274f1040df9f26b404b7'
+Old sha256sum was: 'c32b99926b612c32ce309e6fcb81a1a9a7fa24b33891a5863adb4d84ed856ec2'
+New sha256sum is : 'd222f6dc9c8c47d3d4677589fe5fbe484745cc1a7c924343e9e897c35f5302d7'
+",log,"Oct 20, 2023 @ 18:52:22.776",syscheck,1697827942.8735315,"Oct 20, 2023 @ 18:52:22.776", , ,root,2023-10-20T18:52:24,205659,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,312c6755757884cf44a2274f1040df9f26b404b7,root,0,rw-r--r--,modified,0bdb925a7c84984ef4daa4988310c676,d222f6dc9c8c47d3d4677589fe5fbe484745cc1a7c924343e9e897c35f5302d7,547124, , , , , ,192972,7fa6fbfe31d71794902596e539f35882,c32b99926b612c32ce309e6fcb81a1a9a7fa24b33891a5863adb4d84ed856ec2,"[""size"",""md5"",""sha1"",""sha256""]",1da04188bb5bb0832d97085e0fe67894652cf9f0, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,uMBuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",14,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '225740' to '242124'
+Old md5sum was: '8efd45114c998dc685534242a9e303ea'
+New md5sum is : '2af5fa751d31abd772dc07887444289e'
+Old sha1sum was: 'b1a09d45e7103cd8879db496e7ef382d836cece9'
+New sha1sum is : '3b7f35af7e78646bb305106b6902e6ead61a3599'
+Old sha256sum was: '937fd342992a266834c7f12b106b2e5aefee7d34eb1e555afd648a34087d6724'
+New sha256sum is : 'd748dc84982606c5e121f6db9a98a5eceb5a2db8c7e837da6b151a6ffc068a7d'
+",log,"Oct 20, 2023 @ 18:52:22.908",syscheck,1697827942.8740215,"Oct 20, 2023 @ 18:52:22.908", , ,root,2023-10-20T18:52:24,242124,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,3b7f35af7e78646bb305106b6902e6ead61a3599,root,0,rw-r--r--,modified,2af5fa751d31abd772dc07887444289e,d748dc84982606c5e121f6db9a98a5eceb5a2db8c7e837da6b151a6ffc068a7d,547124, , , , , ,225740,8efd45114c998dc685534242a9e303ea,937fd342992a266834c7f12b106b2e5aefee7d34eb1e555afd648a34087d6724,"[""size"",""md5"",""sha1"",""sha256""]",b1a09d45e7103cd8879db496e7ef382d836cece9, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,ucBuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",15,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '242124' to '258508'
+Old md5sum was: '2af5fa751d31abd772dc07887444289e'
+New md5sum is : 'a416820af3143c32996f32f46afb5682'
+Old sha1sum was: '3b7f35af7e78646bb305106b6902e6ead61a3599'
+New sha1sum is : '83d376d82b47c796bece044a774421c4c8513f66'
+Old sha256sum was: 'd748dc84982606c5e121f6db9a98a5eceb5a2db8c7e837da6b151a6ffc068a7d'
+New sha256sum is : '98f79b012152652a8111dd4f3848a66cd9ce4b69bd90207f526b8e896bf1ea4c'
+",log,"Oct 20, 2023 @ 18:52:22.943",syscheck,1697827942.8741440,"Oct 20, 2023 @ 18:52:22.943", , ,root,2023-10-20T18:52:24,258508,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,83d376d82b47c796bece044a774421c4c8513f66,root,0,rw-r--r--,modified,a416820af3143c32996f32f46afb5682,98f79b012152652a8111dd4f3848a66cd9ce4b69bd90207f526b8e896bf1ea4c,547124, , , , , ,242124,2af5fa751d31abd772dc07887444289e,d748dc84982606c5e121f6db9a98a5eceb5a2db8c7e837da6b151a6ffc068a7d,"[""size"",""md5"",""sha1"",""sha256""]",3b7f35af7e78646bb305106b6902e6ead61a3599, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,usBuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",16,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '258508' to '274892'
+Old md5sum was: 'a416820af3143c32996f32f46afb5682'
+New md5sum is : '1865db3163f0af7bc6b1b1151cd873b4'
+Old sha1sum was: '83d376d82b47c796bece044a774421c4c8513f66'
+New sha1sum is : '3329e25d3319ef4e2516891fa2442b2a162dc090'
+Old sha256sum was: '98f79b012152652a8111dd4f3848a66cd9ce4b69bd90207f526b8e896bf1ea4c'
+New sha256sum is : '41948866a73bcf2804429774693704078dc914ffdbb41c9cd446b8e9b18bbb7d'
+",log,"Oct 20, 2023 @ 18:52:22.975",syscheck,1697827942.8742665,"Oct 20, 2023 @ 18:52:22.975", , ,root,2023-10-20T18:52:24,274892,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,3329e25d3319ef4e2516891fa2442b2a162dc090,root,0,rw-r--r--,modified,1865db3163f0af7bc6b1b1151cd873b4,41948866a73bcf2804429774693704078dc914ffdbb41c9cd446b8e9b18bbb7d,547124, , , , , ,258508,a416820af3143c32996f32f46afb5682,98f79b012152652a8111dd4f3848a66cd9ce4b69bd90207f526b8e896bf1ea4c,"[""size"",""md5"",""sha1"",""sha256""]",83d376d82b47c796bece044a774421c4c8513f66, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,vMBuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",18,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '291276' to '307660'
+Old md5sum was: '34912e51f71eccb56bedf9a26f8f5174'
+New md5sum is : '22d4a8dde92d0e72d56f26641e33e278'
+Old sha1sum was: '0e0e639e7ed34e33c756ed685941ed472f8a1b1e'
+New sha1sum is : '2e01f8eb75bb46701aeab42e969b30e29d4042f4'
+Old sha256sum was: '86859a0ffe56369c1bf8dd04eacaeb5d0928db5f1837669b50068112bf267c93'
+New sha256sum is : 'c2a03606a204e2066cecd264b3c69c909b94af8bef4ede9b421838c381b3363b'
+",log,"Oct 20, 2023 @ 18:52:23.044",syscheck,1697827943.8745185,"Oct 20, 2023 @ 18:52:23.044", , ,root,2023-10-20T18:52:25,307660,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,2e01f8eb75bb46701aeab42e969b30e29d4042f4,root,0,rw-r--r--,modified,22d4a8dde92d0e72d56f26641e33e278,c2a03606a204e2066cecd264b3c69c909b94af8bef4ede9b421838c381b3363b,547124, , , , , ,291276,34912e51f71eccb56bedf9a26f8f5174,86859a0ffe56369c1bf8dd04eacaeb5d0928db5f1837669b50068112bf267c93,"[""size"",""md5"",""sha1"",""sha256""]",0e0e639e7ed34e33c756ed685941ed472f8a1b1e, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,vcBuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",19,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '307660' to '324044'
+Old md5sum was: '22d4a8dde92d0e72d56f26641e33e278'
+New md5sum is : '0a80065d0abe1eaaf2d508bfc94e3f8c'
+Old sha1sum was: '2e01f8eb75bb46701aeab42e969b30e29d4042f4'
+New sha1sum is : 'd31d14ade5b0378775183c3c89a3669710838127'
+Old sha256sum was: 'c2a03606a204e2066cecd264b3c69c909b94af8bef4ede9b421838c381b3363b'
+New sha256sum is : 'b44b29159ed98a7bedfa33553a1ca1deb42d129bf374b182ad42a195dcda27e3'
+",log,"Oct 20, 2023 @ 18:52:23.078",syscheck,1697827943.8746410,"Oct 20, 2023 @ 18:52:23.078", , ,root,2023-10-20T18:52:25,324044,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,d31d14ade5b0378775183c3c89a3669710838127,root,0,rw-r--r--,modified,0a80065d0abe1eaaf2d508bfc94e3f8c,b44b29159ed98a7bedfa33553a1ca1deb42d129bf374b182ad42a195dcda27e3,547124, , , , , ,307660,22d4a8dde92d0e72d56f26641e33e278,c2a03606a204e2066cecd264b3c69c909b94af8bef4ede9b421838c381b3363b,"[""size"",""md5"",""sha1"",""sha256""]",2e01f8eb75bb46701aeab42e969b30e29d4042f4, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,w8BuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",25,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '405964' to '422348'
+Old md5sum was: 'f1f26f35f5fb0b7f61e2df09bf1281f6'
+New md5sum is : 'a4d29d5c1c94cea07ae7541e58fff459'
+Old sha1sum was: '34b492157debf6fb6d76d8eafd3a3b1f6742c8e2'
+New sha1sum is : '2bb971311c9f8abd8d802f8eb8a6f06db1fd7896'
+Old sha256sum was: '4103785a7da2a4eb237b3dca8c4ee6e56dd6d0986828dfa8a2c6fdfe927723ba'
+New sha256sum is : '943170d0a4f5a7908adac6cfb869f662e872770ab5d635f60ed0090f591ed048'
+",log,"Oct 20, 2023 @ 18:52:23.298",syscheck,1697827943.8753760,"Oct 20, 2023 @ 18:52:23.298", , ,root,2023-10-20T18:52:25,422348,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,2bb971311c9f8abd8d802f8eb8a6f06db1fd7896,root,0,rw-r--r--,modified,a4d29d5c1c94cea07ae7541e58fff459,943170d0a4f5a7908adac6cfb869f662e872770ab5d635f60ed0090f591ed048,547124, , , , , ,405964,f1f26f35f5fb0b7f61e2df09bf1281f6,4103785a7da2a4eb237b3dca8c4ee6e56dd6d0986828dfa8a2c6fdfe927723ba,"[""size"",""md5"",""sha1"",""sha256""]",34b492157debf6fb6d76d8eafd3a3b1f6742c8e2, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,xsBuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",28,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '455116' to '471500'
+Old md5sum was: '53b5673986ff4c5e2f2e69b8229e2b93'
+New md5sum is : '95175574ff30290d07c194f7ded20457'
+Old sha1sum was: 'f760d2a8023f4fc96894b042de75bd287529333c'
+New sha1sum is : 'd00fa9043cab77a8cba06c7a5a712c6f184a5558'
+Old sha256sum was: '1d35c6f4df264e460611f85d9dcaf118aaa48c05848ee6a9ee323da683f1c7c4'
+New sha256sum is : '5b5d35e8ae9bc3bd59bb8aff75684c5953c584166a0c71bafc97afc6fbadf825'
+",log,"Oct 20, 2023 @ 18:52:23.390",syscheck,1697827943.8757435,"Oct 20, 2023 @ 18:52:23.390", , ,root,2023-10-20T18:52:25,471500,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,d00fa9043cab77a8cba06c7a5a712c6f184a5558,root,0,rw-r--r--,modified,95175574ff30290d07c194f7ded20457,5b5d35e8ae9bc3bd59bb8aff75684c5953c584166a0c71bafc97afc6fbadf825,547124, , , , , ,455116,53b5673986ff4c5e2f2e69b8229e2b93,1d35c6f4df264e460611f85d9dcaf118aaa48c05848ee6a9ee323da683f1c7c4,"[""size"",""md5"",""sha1"",""sha256""]",f760d2a8023f4fc96894b042de75bd287529333c, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,ysBuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",32,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,mtime,md5,sha1,sha256
+Size changed from '520652' to '540938'
+Old modification time was: '1697827945', now it is '1692081969'
+Old md5sum was: 'd66a593ae659df9ef9f145f6c1d0b7af'
+New md5sum is : '33d8d15487ed6c4d1e76cac98818024a'
+Old sha1sum was: '6c89621428f01737c4230f4ffe44300b22fbee68'
+New sha1sum is : '16f26a3f7c91047d10b9dba681fc1f0b380bcaa0'
+Old sha256sum was: 'a95210d647421713e0d8c98c64c0e9088aeebcbf6d20adc4d101aa4612f9e01b'
+New sha256sum is : '75bb1240f2299fb171498c83ccd4d1519fb611746aecf678f16b6f74a1e1c86c'
+",log,"Oct 20, 2023 @ 18:52:23.546",syscheck,1697827943.8762335,"Oct 20, 2023 @ 18:52:23.546", , ,root,2023-08-15T06:46:09,540938,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,16f26a3f7c91047d10b9dba681fc1f0b380bcaa0,root,0,rw-r--r--,modified,33d8d15487ed6c4d1e76cac98818024a,75bb1240f2299fb171498c83ccd4d1519fb611746aecf678f16b6f74a1e1c86c,547124, , , , , ,520652,d66a593ae659df9ef9f145f6c1d0b7af,a95210d647421713e0d8c98c64c0e9088aeebcbf6d20adc4d101aa4612f9e01b,"[""size"",""mtime"",""md5"",""sha1"",""sha256""]",6c89621428f01737c4230f4ffe44300b22fbee68,2023-10-20T18:52:25, , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,X8F1TosBpjjGT_ib_HVn,1,1,sohaib-virtual-machine,kernel,Oct 21 00:00:31,192.168.40.131,machine-2,002,ubuntu, , ,false,3, , , ,Apparmor DENIED,"[""local"",""syslog"",""apparmor""]", , ,2, , , ,52002, ,kernel,kernel,"Oct 21 00:00:31 sohaib-virtual-machine kernel: [ 4689.307963] audit: type=1400 audit(1697828431.010:79): apparmor=""DENIED"" operation=""capable"" class=""cap"" profile=""/usr/sbin/cupsd"" pid=5189 comm=""cupsd"" capability=12  capname=""net_admin""",log,"Oct 20, 2023 @ 19:00:31.001",/var/log/kern.log,1697828431.8765646,"Oct 20, 2023 @ 19:00:31.001", , , , , , , , , , , , , , , , , , , , , , , , , , , ,capable,DENIED, , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,YcF2TosBpjjGT_ibbnXJ,1,1, , , ,192.168.40.130,machine-1,001,ubuntu, , ,false,3,"[""10.5.2"",""10.5.5""]","[""164.312.b""]","[""CC6.1"",""CC7.2"",""CC7.3"",""PI1.4"",""PI1.5"",""CC7.1"",""CC8.1""]",Log file rotated.,"[""ossec""]","[""AU.9""]","[""II_5.1.f"",""IV_35.7.d""]",1, , , ,591,"[""10.1""]", ,ossec,ossec: File rotated (inode changed): '/var/log/apache2/access.log'.,log,"Oct 20, 2023 @ 19:00:57.606",logcollector,1697828457.8766553,"Oct 20, 2023 @ 19:00:57.606", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.22,NdwgV4sBymTONJJolYic,1,1, , , , ,ubuntu,000,ubuntu, , ,false,7,"[""10.6.1""]", , ,Host-based anomaly detection event (rootcheck).,"[""ossec"",""rootcheck""]", ,"[""IV_35.7.d""]",1, , , ,510, , ,rootcheck,Trojaned version of file '/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic).,log,"Oct 22, 2023 @ 11:22:13.895",rootcheck,1697973733.994,"Oct 22, 2023 @ 11:22:13.895", , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,/bin/diff,Trojaned version of file detected., , , , , , 
+wazuh-alerts-4.x-2023.10.22,N9wgV4sBymTONJJologN,1,1, , , , ,ubuntu,000,ubuntu, , ,false,3,"[""10.6.1""]","[""164.312.b""]","[""CC7.2"",""CC7.3""]",Wazuh server started.,"[""ossec""]","[""AU.6""]","[""IV_35.7.d""]",1, , , ,502,"[""10.1""]", ,ossec,ossec: Manager started.,log,"Oct 22, 2023 @ 11:22:21.706",wazuh-monitord,1697973741.1747,"Oct 22, 2023 @ 11:22:21.706", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.22,ALEyV4sBvnhsX403cDBN,1,1, , , , ,ubuntu,000,ubuntu, , ,false,7,"[""10.6.1""]", , ,Host-based anomaly detection event (rootcheck).,"[""ossec"",""rootcheck""]", ,"[""IV_35.7.d""]",2, , , ,510, , ,rootcheck,Trojaned version of file '/usr/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic).,log,"Oct 22, 2023 @ 11:38:04.057",rootcheck,1697974684.2365,"Oct 22, 2023 @ 11:38:04.057", , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,/usr/bin/diff,Trojaned version of file detected., , , , , , 
+wazuh-alerts-4.x-2023.10.20,jsBgTosBpjjGT_ibttjP,1,1,sohaib-virtual-machine,kernel,Oct 20 23:37:21,192.168.40.131,machine-2,002,ubuntu, , ,false,3, , , ,Apparmor DENIED,"[""local"",""syslog"",""apparmor""]", , ,1, , , ,52002, ,kernel,kernel,"Oct 20 23:37:21 sohaib-virtual-machine kernel: [ 3299.580077] audit: type=1400 audit(1697827041.229:78): apparmor=""DENIED"" operation=""capable"" class=""cap"" profile=""/snap/snapd/20290/usr/lib/snapd/snap-confine"" pid=3983 comm=""snap-confine"" capability=12  capname=""net_admin""",log,"Oct 20, 2023 @ 18:37:20.833",/var/log/syslog,1697827040.8715701,"Oct 20, 2023 @ 18:37:20.833", , , , , , , , , , , , , , , , , , , , , , , , , , , ,capable,DENIED, , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,j8BgTosBpjjGT_ibttjP,1,1,sohaib-virtual-machine,kernel,Oct 20 23:37:21,192.168.40.131,machine-2,002,ubuntu, , ,false,3, , , ,Apparmor DENIED,"[""local"",""syslog"",""apparmor""]", , ,2, , , ,52002, ,kernel,kernel,"Oct 20 23:37:21 sohaib-virtual-machine kernel: [ 3299.580077] audit: type=1400 audit(1697827041.229:78): apparmor=""DENIED"" operation=""capable"" class=""cap"" profile=""/snap/snapd/20290/usr/lib/snapd/snap-confine"" pid=3983 comm=""snap-confine"" capability=12  capname=""net_admin""",log,"Oct 20, 2023 @ 18:37:20.900",/var/log/kern.log,1697827040.8716127,"Oct 20, 2023 @ 18:37:20.900", , , , , , , , , , , , , , , , , , , , , , , , , , , ,capable,DENIED, , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,kcBhTosBpjjGT_ibethL,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,5,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",File added to the system.,"[""ossec"",""syscheck"",""syscheck_entry_added"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",1, , , ,554,"[""4.11""]", ,syscheck_new_entry,"File '/tmp/.X0-lock' added
+Mode: realtime
+",log,"Oct 20, 2023 @ 18:38:08.427",syscheck,1697827088.8716882,"Oct 20, 2023 @ 18:38:08.427", , ,sohaib,2023-10-20T18:38:10,11,1000,realtime,/tmp/.X0-lock,8ceee1fc7295a4e45609f617ba76c70f4d666539,sohaib,1000,r--r--r--,added,c4f3d64a6509c9fbd949d65ae915f835,0933371f657cc04f8e9ff0c057ee0df484c9a15d1653124831cee54e98afd1cf,547122, , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,msBjTosBpjjGT_ibxNiV,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",File deleted.,"[""ossec"",""syscheck"",""syscheck_entry_deleted"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",1,"[""File Deletion"",""Data Destruction""]","[""T1070.004"",""T1485""]","[""Defense Evasion"",""Impact""]",553,"[""4.11""]", ,syscheck_deleted,"File '/tmp/server-0.xkm' deleted
+Mode: realtime
+",log,"Oct 20, 2023 @ 18:40:41.230",syscheck,1697827241.8719940,"Oct 20, 2023 @ 18:40:41.230", , ,sohaib,2023-10-20T18:40:42,10144,1000,realtime,/tmp/server-0.xkm,bab6af91b5d5580c53893506b1859c2451879ed1,sohaib,1000,rw-rw-r--,deleted,06cd46560f4dc484cc2a15df0f15e76d,fc9d5a1ad76099cc37f41185edca9700f55aef8a3ae20e9c899d687e6b8f9287,547124, , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,pMBtTosBpjjGT_ibkNiS,1,1,sohaib-virtual-machine,sudo,Oct 20 23:51:18,192.168.40.131,machine-2,002,ubuntu,1000,sohaib,false,5,"[""10.2.4"",""10.2.5""]","[""164.312.b""]","[""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",PAM: User login failed.,"[""pam"",""syslog"",""authentication_failed""]","[""AU.14"",""AC.7""]","[""IV_35.7.d"",""IV_32.2""]",2,"[""Password Guessing""]","[""T1110.001""]","[""Credential Access""]",5503,"[""7.8""]", ,pam,Oct 20 23:51:18 sohaib-virtual-machine sudo: pam_unix(sudo:auth): authentication failure; logname=sohaib uid=1000 euid=0 tty=/dev/pts/0 ruser=sohaib rhost=  user=sohaib,log,"Oct 20, 2023 @ 18:51:16.235",/var/log/auth.log,1697827876.8721087,"Oct 20, 2023 @ 18:51:16.235", , , , , , , , , , , , , , , , ,sohaib,/dev/pts/0, , , , , , , , , , , , , ,0,sohaib, , , , 
+wazuh-alerts-4.x-2023.10.20,pcBtTosBpjjGT_ibkNiS,1,1,sohaib-virtual-machine,sudo,Oct 20 23:51:21,192.168.40.131,machine-2,002,ubuntu,1000,root(uid=0),false,3,"[""10.2.5""]","[""164.312.b""]","[""CC6.8"",""CC7.2"",""CC7.3""]",PAM: Login session opened.,"[""pam"",""syslog"",""authentication_success""]","[""AU.14"",""AC.7""]","[""IV_32.2""]",4,"[""Valid Accounts""]","[""T1078""]","[""Defense Evasion"",""Persistence"",""Privilege Escalation"",""Initial Access""]",5501,"[""7.8"",""7.9""]",pam,pam,Oct 20 23:51:21 sohaib-virtual-machine sudo: pam_unix(sudo:session): session opened for user root(uid=0) by sohaib(uid=1000),log,"Oct 20, 2023 @ 18:51:20.252",/var/log/auth.log,1697827880.8721650,"Oct 20, 2023 @ 18:51:20.252", , , , , , , , , , , , , , , , ,sohaib, , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,p8BuTosBpjjGT_ibFNjt,1,1,sohaib-virtual-machine,sudo,Oct 20 23:51:50,192.168.40.131,machine-2,002,ubuntu, ,root,false,3,"[""10.2.5""]","[""164.312.b""]","[""CC6.8"",""CC7.2"",""CC7.3""]",PAM: Login session closed.,"[""pam"",""syslog""]","[""AU.14"",""AC.7""]","[""IV_32.2""]",1, , , ,5502,"[""7.8"",""7.9""]",pam,pam,Oct 20 23:51:50 sohaib-virtual-machine sudo: pam_unix(sudo:session): session closed for user root,log,"Oct 20, 2023 @ 18:51:50.363",/var/log/auth.log,1697827910.8722617,"Oct 20, 2023 @ 18:51:50.363", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,qcBuTosBpjjGT_ibdtjD,1,1,sohaib-virtual-machine,sudo,Oct 20 23:52:15,192.168.40.131,machine-2,002,ubuntu,1000,root(uid=0),false,3,"[""10.2.5""]","[""164.312.b""]","[""CC6.8"",""CC7.2"",""CC7.3""]",PAM: Login session opened.,"[""pam"",""syslog"",""authentication_success""]","[""AU.14"",""AC.7""]","[""IV_32.2""]",5,"[""Valid Accounts""]","[""T1078""]","[""Defense Evasion"",""Persistence"",""Privilege Escalation"",""Initial Access""]",5501,"[""7.8"",""7.9""]",pam,pam,Oct 20 23:52:15 sohaib-virtual-machine sudo: pam_unix(sudo:session): session opened for user root(uid=0) by sohaib(uid=1000),log,"Oct 20, 2023 @ 18:52:14.482",/var/log/auth.log,1697827934.8723517,"Oct 20, 2023 @ 18:52:14.482", , , , , , , , , , , , , , , , ,sohaib, , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,qsBuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,5,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",File added to the system.,"[""ossec"",""syscheck"",""syscheck_entry_added"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",4, , , ,554,"[""4.11""]", ,syscheck_new_entry,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' added
+Mode: realtime
+",log,"Oct 20, 2023 @ 18:52:22.565",syscheck,1697827942.8723975,"Oct 20, 2023 @ 18:52:22.565", , ,root,2023-10-20T18:52:24,405,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,afda2e1a4a8c1a8474f9b036de50b17c421337f8,root,0,rw-r--r--,added,e2ec81ebbe2bb8c52b09a270b8a6df41,b1a5dd123a801e7f31927e68c157aee59ff92615d41b5bb822720407b2faf761,547124, , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,q8BuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",1,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '405' to '61900'
+Old md5sum was: 'e2ec81ebbe2bb8c52b09a270b8a6df41'
+New md5sum is : 'e4a144f5973f5ed84c98c85fcd514894'
+Old sha1sum was: 'afda2e1a4a8c1a8474f9b036de50b17c421337f8'
+New sha1sum is : '26ebed9d2a5eca0d264ae73c9038ba5f3b2feb30'
+Old sha256sum was: 'b1a5dd123a801e7f31927e68c157aee59ff92615d41b5bb822720407b2faf761'
+New sha256sum is : 'f7d70bc3cae1644afa000b79c082f9fd91460fb0f1c14c66eab1d763ab65ca05'
+",log,"Oct 20, 2023 @ 18:52:22.594",syscheck,1697827942.8724715,"Oct 20, 2023 @ 18:52:22.594", , ,root,2023-10-20T18:52:24,61900,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,26ebed9d2a5eca0d264ae73c9038ba5f3b2feb30,root,0,rw-r--r--,modified,e4a144f5973f5ed84c98c85fcd514894,f7d70bc3cae1644afa000b79c082f9fd91460fb0f1c14c66eab1d763ab65ca05,547124, , , , , ,405,e2ec81ebbe2bb8c52b09a270b8a6df41,b1a5dd123a801e7f31927e68c157aee59ff92615d41b5bb822720407b2faf761,"[""size"",""md5"",""sha1"",""sha256""]",afda2e1a4a8c1a8474f9b036de50b17c421337f8, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,rcBuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",3,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '94668' to '98897'
+Old md5sum was: 'ac1c5ed9e48ad565aa975c63826ad1b1'
+New md5sum is : '6373f2d34768dd6de1a66679ea8898b1'
+Old sha1sum was: '32cfaead2021acdd0b5e444b924587d63f551c70'
+New sha1sum is : '5cfdf1e8972da4b5d860a7521e9971f326a2a246'
+Old sha256sum was: 'a15abda0a17fe2b0d7c9febdd9af80e78372e10e952d84dd547476b2586ba8c1'
+New sha256sum is : '3bfcab295f1ebfc5f2bf683ba81c733e960a7a306e2ff8b10d54f4bc328c2bd2'
+",log,"Oct 20, 2023 @ 18:52:22.621",syscheck,1697827942.8727157,"Oct 20, 2023 @ 18:52:22.621", , ,root,2023-10-20T18:52:24,98897,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,5cfdf1e8972da4b5d860a7521e9971f326a2a246,root,0,rw-r--r--,modified,6373f2d34768dd6de1a66679ea8898b1,3bfcab295f1ebfc5f2bf683ba81c733e960a7a306e2ff8b10d54f4bc328c2bd2,547124, , , , , ,94668,ac1c5ed9e48ad565aa975c63826ad1b1,a15abda0a17fe2b0d7c9febdd9af80e78372e10e952d84dd547476b2586ba8c1,"[""size"",""md5"",""sha1"",""sha256""]",32cfaead2021acdd0b5e444b924587d63f551c70, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,scBuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",7,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size
+Size changed from '152810' to '160204'
+",log,"Oct 20, 2023 @ 18:52:22.674",syscheck,1697827942.8732050,"Oct 20, 2023 @ 18:52:22.674", , ,root,2023-10-20T18:52:24,160204,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,7529a82c88339e681909225cc1f4b393926724d7,root,0,rw-r--r--,modified,d59a2b949f83b6a90c5259b21eef2015,0b13f9f2be715420af6c04a0c0f48a330383e5147315a73cf252638a18d78663,547124, , , , , ,152810, , ,"[""size""]", , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,s8BuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",9,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '160204' to '192972'
+Old md5sum was: 'd59a2b949f83b6a90c5259b21eef2015'
+New md5sum is : '7fa6fbfe31d71794902596e539f35882'
+Old sha1sum was: '7529a82c88339e681909225cc1f4b393926724d7'
+New sha1sum is : '1da04188bb5bb0832d97085e0fe67894652cf9f0'
+Old sha256sum was: '0b13f9f2be715420af6c04a0c0f48a330383e5147315a73cf252638a18d78663'
+New sha256sum is : 'c32b99926b612c32ce309e6fcb81a1a9a7fa24b33891a5863adb4d84ed856ec2'
+",log,"Oct 20, 2023 @ 18:52:22.718",syscheck,1697827942.8734090,"Oct 20, 2023 @ 18:52:22.718", , ,root,2023-10-20T18:52:24,192972,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,1da04188bb5bb0832d97085e0fe67894652cf9f0,root,0,rw-r--r--,modified,7fa6fbfe31d71794902596e539f35882,c32b99926b612c32ce309e6fcb81a1a9a7fa24b33891a5863adb4d84ed856ec2,547124, , , , , ,160204,d59a2b949f83b6a90c5259b21eef2015,0b13f9f2be715420af6c04a0c0f48a330383e5147315a73cf252638a18d78663,"[""size"",""md5"",""sha1"",""sha256""]",7529a82c88339e681909225cc1f4b393926724d7, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,tcBuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",11,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '205659' to '214117'
+Old md5sum was: '0bdb925a7c84984ef4daa4988310c676'
+New md5sum is : 'd9c47095d64f93367dd4499032789ce5'
+Old sha1sum was: '312c6755757884cf44a2274f1040df9f26b404b7'
+New sha1sum is : '52c32e5de7eb5611aeb455c6f03d5971d8e45170'
+Old sha256sum was: 'd222f6dc9c8c47d3d4677589fe5fbe484745cc1a7c924343e9e897c35f5302d7'
+New sha256sum is : 'c721ca09927a7468612f3e6dc6acabdf2c6e233807f25dc013644311656c2413'
+",log,"Oct 20, 2023 @ 18:52:22.828",syscheck,1697827942.8736540,"Oct 20, 2023 @ 18:52:22.828", , ,root,2023-10-20T18:52:24,214117,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,52c32e5de7eb5611aeb455c6f03d5971d8e45170,root,0,rw-r--r--,modified,d9c47095d64f93367dd4499032789ce5,c721ca09927a7468612f3e6dc6acabdf2c6e233807f25dc013644311656c2413,547124, , , , , ,205659,0bdb925a7c84984ef4daa4988310c676,d222f6dc9c8c47d3d4677589fe5fbe484745cc1a7c924343e9e897c35f5302d7,"[""size"",""md5"",""sha1"",""sha256""]",312c6755757884cf44a2274f1040df9f26b404b7, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,tsBuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",12,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '214117' to '218346'
+Old md5sum was: 'd9c47095d64f93367dd4499032789ce5'
+New md5sum is : 'aea435518b93f063c23422f807d34181'
+Old sha1sum was: '52c32e5de7eb5611aeb455c6f03d5971d8e45170'
+New sha1sum is : 'bd2cb4f9d2436521fd0254d63f46b4ed458bfc0b'
+Old sha256sum was: 'c721ca09927a7468612f3e6dc6acabdf2c6e233807f25dc013644311656c2413'
+New sha256sum is : '576f9eb030065408313d5542238fc43a69930b5251c33fc3071d753d9747483e'
+",log,"Oct 20, 2023 @ 18:52:22.854",syscheck,1697827942.8737765,"Oct 20, 2023 @ 18:52:22.854", , ,root,2023-10-20T18:52:24,218346,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,bd2cb4f9d2436521fd0254d63f46b4ed458bfc0b,root,0,rw-r--r--,modified,aea435518b93f063c23422f807d34181,576f9eb030065408313d5542238fc43a69930b5251c33fc3071d753d9747483e,547124, , , , , ,214117,d9c47095d64f93367dd4499032789ce5,c721ca09927a7468612f3e6dc6acabdf2c6e233807f25dc013644311656c2413,"[""size"",""md5"",""sha1"",""sha256""]",52c32e5de7eb5611aeb455c6f03d5971d8e45170, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,u8BuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",17,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,mtime,md5,sha1,sha256
+Size changed from '274892' to '291276'
+Old modification time was: '1697827944', now it is '1697827945'
+Old md5sum was: '1865db3163f0af7bc6b1b1151cd873b4'
+New md5sum is : '34912e51f71eccb56bedf9a26f8f5174'
+Old sha1sum was: '3329e25d3319ef4e2516891fa2442b2a162dc090'
+New sha1sum is : '0e0e639e7ed34e33c756ed685941ed472f8a1b1e'
+Old sha256sum was: '41948866a73bcf2804429774693704078dc914ffdbb41c9cd446b8e9b18bbb7d'
+New sha256sum is : '86859a0ffe56369c1bf8dd04eacaeb5d0928db5f1837669b50068112bf267c93'
+",log,"Oct 20, 2023 @ 18:52:23.007",syscheck,1697827943.8743890,"Oct 20, 2023 @ 18:52:23.007", , ,root,2023-10-20T18:52:25,291276,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,0e0e639e7ed34e33c756ed685941ed472f8a1b1e,root,0,rw-r--r--,modified,34912e51f71eccb56bedf9a26f8f5174,86859a0ffe56369c1bf8dd04eacaeb5d0928db5f1837669b50068112bf267c93,547124, , , , , ,274892,1865db3163f0af7bc6b1b1151cd873b4,41948866a73bcf2804429774693704078dc914ffdbb41c9cd446b8e9b18bbb7d,"[""size"",""mtime"",""md5"",""sha1"",""sha256""]",3329e25d3319ef4e2516891fa2442b2a162dc090,2023-10-20T18:52:24, , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,vsBuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",20,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '324044' to '340428'
+Old md5sum was: '0a80065d0abe1eaaf2d508bfc94e3f8c'
+New md5sum is : '616b6b3eac0e09c1c5081ddace3346c7'
+Old sha1sum was: 'd31d14ade5b0378775183c3c89a3669710838127'
+New sha1sum is : '1bf147d2afdfa91e654c7c3d90f660df025efe64'
+Old sha256sum was: 'b44b29159ed98a7bedfa33553a1ca1deb42d129bf374b182ad42a195dcda27e3'
+New sha256sum is : 'ff21bc4c7f66ff7a3842567f54ea53fb9bab74935976b2f8d2c690ede31b8427'
+",log,"Oct 20, 2023 @ 18:52:23.110",syscheck,1697827943.8747635,"Oct 20, 2023 @ 18:52:23.110", , ,root,2023-10-20T18:52:25,340428,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,1bf147d2afdfa91e654c7c3d90f660df025efe64,root,0,rw-r--r--,modified,616b6b3eac0e09c1c5081ddace3346c7,ff21bc4c7f66ff7a3842567f54ea53fb9bab74935976b2f8d2c690ede31b8427,547124, , , , , ,324044,0a80065d0abe1eaaf2d508bfc94e3f8c,b44b29159ed98a7bedfa33553a1ca1deb42d129bf374b182ad42a195dcda27e3,"[""size"",""md5"",""sha1"",""sha256""]",d31d14ade5b0378775183c3c89a3669710838127, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,v8BuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",21,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '340428' to '356812'
+Old md5sum was: '616b6b3eac0e09c1c5081ddace3346c7'
+New md5sum is : 'b2453e5c81973c2b4c31e230edb65692'
+Old sha1sum was: '1bf147d2afdfa91e654c7c3d90f660df025efe64'
+New sha1sum is : '590b23542ca331dad81d06f110cca11c24e555ee'
+Old sha256sum was: 'ff21bc4c7f66ff7a3842567f54ea53fb9bab74935976b2f8d2c690ede31b8427'
+New sha256sum is : 'df5ee82fa91b3d7c30334420dde15807bdd432c09d47f4b5694e34c472d04af7'
+",log,"Oct 20, 2023 @ 18:52:23.141",syscheck,1697827943.8748860,"Oct 20, 2023 @ 18:52:23.141", , ,root,2023-10-20T18:52:25,356812,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,590b23542ca331dad81d06f110cca11c24e555ee,root,0,rw-r--r--,modified,b2453e5c81973c2b4c31e230edb65692,df5ee82fa91b3d7c30334420dde15807bdd432c09d47f4b5694e34c472d04af7,547124, , , , , ,340428,616b6b3eac0e09c1c5081ddace3346c7,ff21bc4c7f66ff7a3842567f54ea53fb9bab74935976b2f8d2c690ede31b8427,"[""size"",""md5"",""sha1"",""sha256""]",1bf147d2afdfa91e654c7c3d90f660df025efe64, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,wMBuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",22,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '356812' to '373196'
+Old md5sum was: 'b2453e5c81973c2b4c31e230edb65692'
+New md5sum is : '42774e2f10a32823125215b8639f2714'
+Old sha1sum was: '590b23542ca331dad81d06f110cca11c24e555ee'
+New sha1sum is : '09cbdfb0b7b39b2c98bf8c05d35f7ad5df3db165'
+Old sha256sum was: 'df5ee82fa91b3d7c30334420dde15807bdd432c09d47f4b5694e34c472d04af7'
+New sha256sum is : '1c6943af2813fc415d0f42e00654fca736bed6ac2f74ce487267f5c0b50d32c5'
+",log,"Oct 20, 2023 @ 18:52:23.190",syscheck,1697827943.8750085,"Oct 20, 2023 @ 18:52:23.190", , ,root,2023-10-20T18:52:25,373196,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,09cbdfb0b7b39b2c98bf8c05d35f7ad5df3db165,root,0,rw-r--r--,modified,42774e2f10a32823125215b8639f2714,1c6943af2813fc415d0f42e00654fca736bed6ac2f74ce487267f5c0b50d32c5,547124, , , , , ,356812,b2453e5c81973c2b4c31e230edb65692,df5ee82fa91b3d7c30334420dde15807bdd432c09d47f4b5694e34c472d04af7,"[""size"",""md5"",""sha1"",""sha256""]",590b23542ca331dad81d06f110cca11c24e555ee, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,XsF1TosBpjjGT_ib_HVn,1,1,sohaib-virtual-machine,kernel,Oct 21 00:00:31,192.168.40.131,machine-2,002,ubuntu, , ,false,3, , , ,Apparmor DENIED,"[""local"",""syslog"",""apparmor""]", , ,1, , , ,52002, ,kernel,kernel,"Oct 21 00:00:31 sohaib-virtual-machine kernel: [ 4689.307963] audit: type=1400 audit(1697828431.010:79): apparmor=""DENIED"" operation=""capable"" class=""cap"" profile=""/usr/sbin/cupsd"" pid=5189 comm=""cupsd"" capability=12  capname=""net_admin""",log,"Oct 20, 2023 @ 19:00:30.953",/var/log/syslog,1697828430.8765256,"Oct 20, 2023 @ 19:00:30.953", , , , , , , , , , , , , , , , , , , , , , , , , , , ,capable,DENIED, , , , , , , , 
+wazuh-alerts-4.x-2023.10.22,gekbV4sB1H5kHWqbaTYq,1,1, , , , ,ubuntu,000,ubuntu, , ,false,3,"[""10.6.1""]","[""164.312.b""]","[""CC7.2"",""CC7.3""]",Wazuh server started.,"[""ossec""]","[""AU.6""]","[""IV_35.7.d""]",1, , , ,502,"[""10.1""]", ,ossec,ossec: Manager started.,log,"Oct 22, 2023 @ 11:14:02.632",wazuh-monitord,1697973242.750,"Oct 22, 2023 @ 11:14:02.632", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.22,gukbV4sB1H5kHWqbaTZR,1,1, , , , ,ubuntu,000,ubuntu, , ,false,7,"[""10.6.1""]", , ,Host-based anomaly detection event (rootcheck).,"[""ossec"",""rootcheck""]", ,"[""IV_35.7.d""]",1, , , ,510, , ,rootcheck,Trojaned version of file '/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic).,log,"Oct 22, 2023 @ 11:13:57.138",rootcheck,1697973237.0,"Oct 22, 2023 @ 11:13:57.138", , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,/bin/diff,Trojaned version of file detected., , , , , , 
+wazuh-alerts-4.x-2023.10.22,NtwgV4sBymTONJJolYic,1,1, , , , ,ubuntu,000,ubuntu, , ,false,7,"[""10.6.1""]", , ,Host-based anomaly detection event (rootcheck).,"[""ossec"",""rootcheck""]", ,"[""IV_35.7.d""]",2, , , ,510, , ,rootcheck,Trojaned version of file '/usr/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic).,log,"Oct 22, 2023 @ 11:22:14.084",rootcheck,1697973734.1366,"Oct 22, 2023 @ 11:22:14.084", , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,/usr/bin/diff,Trojaned version of file detected., , , , , , 
+wazuh-alerts-4.x-2023.10.22,AbEyV4sBvnhsX403cDCE,1,1, , , , ,ubuntu,000,ubuntu, , ,false,3,"[""10.6.1""]","[""164.312.b""]","[""CC7.2"",""CC7.3""]",Wazuh server started.,"[""ossec""]","[""AU.6""]","[""IV_35.7.d""]",1, , , ,502,"[""10.1""]", ,ossec,ossec: Manager started.,log,"Oct 22, 2023 @ 11:38:12.834",wazuh-monitord,1697974692.2746,"Oct 22, 2023 @ 11:38:12.834", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,kMBhTosBpjjGT_ibGNiU,1,1,sohaib-virtual-machine,systemd,Oct 20 23:37:40,192.168.40.131,machine-2,002,ubuntu, , ,false,5, , , ,Systemd: Service exited due to a failure.,"[""local"",""systemd""]", ,"[""IV_35.7.d""]",2, , , ,40704,"[""4.3""]", ,systemd,"Oct 20 23:37:40 sohaib-virtual-machine systemd[3972]: tracker-extract-3.service: Main process exited, code=exited, status=1/FAILURE",log,"Oct 20, 2023 @ 18:37:40.503",/var/log/syslog,1697827060.8716555,"Oct 20, 2023 @ 18:37:40.503", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,k8BiTosBpjjGT_ibA9gY,1,1,sohaib-virtual-machine,systemd,Oct 20 23:38:46,192.168.40.131,machine-2,002,ubuntu, , ,false,5, , , ,Systemd: Service exited due to a failure.,"[""local"",""systemd""]", ,"[""IV_35.7.d""]",3, , , ,40704,"[""4.3""]", ,systemd,"Oct 20 23:38:46 sohaib-virtual-machine systemd[3972]: tracker-extract-3.service: Main process exited, code=exited, status=1/FAILURE",log,"Oct 20, 2023 @ 18:38:45.027",/var/log/syslog,1697827125.8718262,"Oct 20, 2023 @ 18:38:45.027", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,mcBjTosBpjjGT_ibxNiV,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,5,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",File added to the system.,"[""ossec"",""syscheck"",""syscheck_entry_added"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",3, , , ,554,"[""4.11""]", ,syscheck_new_entry,"File '/tmp/server-0.xkm' added
+Mode: realtime
+",log,"Oct 20, 2023 @ 18:40:40.850",syscheck,1697827240.8719243,"Oct 20, 2023 @ 18:40:40.850", , ,sohaib,2023-10-20T18:40:42,10144,1000,realtime,/tmp/server-0.xkm,bab6af91b5d5580c53893506b1859c2451879ed1,sohaib,1000,rw-rw-r--,added,06cd46560f4dc484cc2a15df0f15e76d,fc9d5a1ad76099cc37f41185edca9700f55aef8a3ae20e9c899d687e6b8f9287,547124, , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,nMBkTosBpjjGT_ibdNh5,1,1,sohaib-virtual-machine,pkexec,Oct 20 23:41:27,192.168.40.131,machine-2,002,ubuntu,1000,root(uid=0),false,3,"[""10.2.5""]","[""164.312.b""]","[""CC6.8"",""CC7.2"",""CC7.3""]",PAM: Login session opened.,"[""pam"",""syslog"",""authentication_success""]","[""AU.14"",""AC.7""]","[""IV_32.2""]",3,"[""Valid Accounts""]","[""T1078""]","[""Defense Evasion"",""Persistence"",""Privilege Escalation"",""Initial Access""]",5501,"[""7.8"",""7.9""]",pam,pam,Oct 20 23:41:27 sohaib-virtual-machine pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by (uid=1000),log,"Oct 20, 2023 @ 18:41:26.439",/var/log/auth.log,1697827286.8720629,"Oct 20, 2023 @ 18:41:26.439", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,qMBuTosBpjjGT_ibdtjD,1,1,sohaib-virtual-machine,sudo,Oct 20 23:52:15,192.168.40.131,machine-2,002,ubuntu, ,root,false,3,"[""10.2.5"",""10.2.2""]","[""164.312.b""]","[""CC6.8"",""CC7.2"",""CC7.3""]",Successful sudo to ROOT executed.,"[""syslog"",""sudo""]","[""AU.14"",""AC.7"",""AC.6""]","[""IV_32.2""]",2,"[""Sudo and Sudo Caching""]","[""T1548.003""]","[""Privilege Escalation"",""Defense Evasion""]",5402,"[""7.6"",""7.8"",""7.13""]",sudo,sudo,Oct 20 23:52:15 sohaib-virtual-machine sudo:   sohaib : TTY=pts/0 ; PWD=/home/sohaib ; USER=root ; COMMAND=/bin/bash,log,"Oct 20, 2023 @ 18:52:14.436",/var/log/auth.log,1697827934.8723008,"Oct 20, 2023 @ 18:52:14.436", , , , , , , , , , , , , , , , ,sohaib,pts/0,/home/sohaib,/bin/bash,First time user executed the sudo command, , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,t8BuTosBpjjGT_ibdtjD,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",13,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '218346' to '225740'
+Old md5sum was: 'aea435518b93f063c23422f807d34181'
+New md5sum is : '8efd45114c998dc685534242a9e303ea'
+Old sha1sum was: 'bd2cb4f9d2436521fd0254d63f46b4ed458bfc0b'
+New sha1sum is : 'b1a09d45e7103cd8879db496e7ef382d836cece9'
+Old sha256sum was: '576f9eb030065408313d5542238fc43a69930b5251c33fc3071d753d9747483e'
+New sha256sum is : '937fd342992a266834c7f12b106b2e5aefee7d34eb1e555afd648a34087d6724'
+",log,"Oct 20, 2023 @ 18:52:22.869",syscheck,1697827942.8738990,"Oct 20, 2023 @ 18:52:22.869", , ,root,2023-10-20T18:52:24,225740,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,b1a09d45e7103cd8879db496e7ef382d836cece9,root,0,rw-r--r--,modified,8efd45114c998dc685534242a9e303ea,937fd342992a266834c7f12b106b2e5aefee7d34eb1e555afd648a34087d6724,547124, , , , , ,218346,aea435518b93f063c23422f807d34181,576f9eb030065408313d5542238fc43a69930b5251c33fc3071d753d9747483e,"[""size"",""md5"",""sha1"",""sha256""]",bd2cb4f9d2436521fd0254d63f46b4ed458bfc0b, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,wcBuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",23,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '373196' to '389580'
+Old md5sum was: '42774e2f10a32823125215b8639f2714'
+New md5sum is : 'b35985d2de3cde9759ac45b0d22a2abb'
+Old sha1sum was: '09cbdfb0b7b39b2c98bf8c05d35f7ad5df3db165'
+New sha1sum is : 'd8b698ec4e312dc2fe128af9eaf9bb491c24b211'
+Old sha256sum was: '1c6943af2813fc415d0f42e00654fca736bed6ac2f74ce487267f5c0b50d32c5'
+New sha256sum is : '888ce42cd2e3048af0f8ddeba742d938e1f4403fa59e8b051207360bd2444bb1'
+",log,"Oct 20, 2023 @ 18:52:23.206",syscheck,1697827943.8751310,"Oct 20, 2023 @ 18:52:23.206", , ,root,2023-10-20T18:52:25,389580,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,d8b698ec4e312dc2fe128af9eaf9bb491c24b211,root,0,rw-r--r--,modified,b35985d2de3cde9759ac45b0d22a2abb,888ce42cd2e3048af0f8ddeba742d938e1f4403fa59e8b051207360bd2444bb1,547124, , , , , ,373196,42774e2f10a32823125215b8639f2714,1c6943af2813fc415d0f42e00654fca736bed6ac2f74ce487267f5c0b50d32c5,"[""size"",""md5"",""sha1"",""sha256""]",09cbdfb0b7b39b2c98bf8c05d35f7ad5df3db165, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,wsBuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",24,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '389580' to '405964'
+Old md5sum was: 'b35985d2de3cde9759ac45b0d22a2abb'
+New md5sum is : 'f1f26f35f5fb0b7f61e2df09bf1281f6'
+Old sha1sum was: 'd8b698ec4e312dc2fe128af9eaf9bb491c24b211'
+New sha1sum is : '34b492157debf6fb6d76d8eafd3a3b1f6742c8e2'
+Old sha256sum was: '888ce42cd2e3048af0f8ddeba742d938e1f4403fa59e8b051207360bd2444bb1'
+New sha256sum is : '4103785a7da2a4eb237b3dca8c4ee6e56dd6d0986828dfa8a2c6fdfe927723ba'
+",log,"Oct 20, 2023 @ 18:52:23.250",syscheck,1697827943.8752535,"Oct 20, 2023 @ 18:52:23.250", , ,root,2023-10-20T18:52:25,405964,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,34b492157debf6fb6d76d8eafd3a3b1f6742c8e2,root,0,rw-r--r--,modified,f1f26f35f5fb0b7f61e2df09bf1281f6,4103785a7da2a4eb237b3dca8c4ee6e56dd6d0986828dfa8a2c6fdfe927723ba,547124, , , , , ,389580,b35985d2de3cde9759ac45b0d22a2abb,888ce42cd2e3048af0f8ddeba742d938e1f4403fa59e8b051207360bd2444bb1,"[""size"",""md5"",""sha1"",""sha256""]",d8b698ec4e312dc2fe128af9eaf9bb491c24b211, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,xMBuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",26,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '422348' to '438732'
+Old md5sum was: 'a4d29d5c1c94cea07ae7541e58fff459'
+New md5sum is : '52faaa1598c1689b3b6ad72c1657d0dc'
+Old sha1sum was: '2bb971311c9f8abd8d802f8eb8a6f06db1fd7896'
+New sha1sum is : '50d2d659703b9e08c244acab9cbe3a36047b0f14'
+Old sha256sum was: '943170d0a4f5a7908adac6cfb869f662e872770ab5d635f60ed0090f591ed048'
+New sha256sum is : 'bfefb60bb8fe81fc3bb381814bca059de5033a90f22c8783f5c7bc5296c44399'
+",log,"Oct 20, 2023 @ 18:52:23.345",syscheck,1697827943.8754985,"Oct 20, 2023 @ 18:52:23.345", , ,root,2023-10-20T18:52:25,438732,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,50d2d659703b9e08c244acab9cbe3a36047b0f14,root,0,rw-r--r--,modified,52faaa1598c1689b3b6ad72c1657d0dc,bfefb60bb8fe81fc3bb381814bca059de5033a90f22c8783f5c7bc5296c44399,547124, , , , , ,422348,a4d29d5c1c94cea07ae7541e58fff459,943170d0a4f5a7908adac6cfb869f662e872770ab5d635f60ed0090f591ed048,"[""size"",""md5"",""sha1"",""sha256""]",2bb971311c9f8abd8d802f8eb8a6f06db1fd7896, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,xcBuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",27,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '438732' to '455116'
+Old md5sum was: '52faaa1598c1689b3b6ad72c1657d0dc'
+New md5sum is : '53b5673986ff4c5e2f2e69b8229e2b93'
+Old sha1sum was: '50d2d659703b9e08c244acab9cbe3a36047b0f14'
+New sha1sum is : 'f760d2a8023f4fc96894b042de75bd287529333c'
+Old sha256sum was: 'bfefb60bb8fe81fc3bb381814bca059de5033a90f22c8783f5c7bc5296c44399'
+New sha256sum is : '1d35c6f4df264e460611f85d9dcaf118aaa48c05848ee6a9ee323da683f1c7c4'
+",log,"Oct 20, 2023 @ 18:52:23.390",syscheck,1697827943.8756210,"Oct 20, 2023 @ 18:52:23.390", , ,root,2023-10-20T18:52:25,455116,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,f760d2a8023f4fc96894b042de75bd287529333c,root,0,rw-r--r--,modified,53b5673986ff4c5e2f2e69b8229e2b93,1d35c6f4df264e460611f85d9dcaf118aaa48c05848ee6a9ee323da683f1c7c4,547124, , , , , ,438732,52faaa1598c1689b3b6ad72c1657d0dc,bfefb60bb8fe81fc3bb381814bca059de5033a90f22c8783f5c7bc5296c44399,"[""size"",""md5"",""sha1"",""sha256""]",50d2d659703b9e08c244acab9cbe3a36047b0f14, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,x8BuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",29,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '471500' to '487884'
+Old md5sum was: '95175574ff30290d07c194f7ded20457'
+New md5sum is : 'df1623b57ed0871ee695ee433e41684d'
+Old sha1sum was: 'd00fa9043cab77a8cba06c7a5a712c6f184a5558'
+New sha1sum is : '83f558b129edc9c01f51e3bd58ec368c8d4f2abb'
+Old sha256sum was: '5b5d35e8ae9bc3bd59bb8aff75684c5953c584166a0c71bafc97afc6fbadf825'
+New sha256sum is : '4e3c347b4a49e853eb1edbca3b7000fbbc566f106dc87870e035cb1d14b8250b'
+",log,"Oct 20, 2023 @ 18:52:23.438",syscheck,1697827943.8758660,"Oct 20, 2023 @ 18:52:23.438", , ,root,2023-10-20T18:52:25,487884,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,83f558b129edc9c01f51e3bd58ec368c8d4f2abb,root,0,rw-r--r--,modified,df1623b57ed0871ee695ee433e41684d,4e3c347b4a49e853eb1edbca3b7000fbbc566f106dc87870e035cb1d14b8250b,547124, , , , , ,471500,95175574ff30290d07c194f7ded20457,5b5d35e8ae9bc3bd59bb8aff75684c5953c584166a0c71bafc97afc6fbadf825,"[""size"",""md5"",""sha1"",""sha256""]",d00fa9043cab77a8cba06c7a5a712c6f184a5558, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,yMBuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",30,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '487884' to '504268'
+Old md5sum was: 'df1623b57ed0871ee695ee433e41684d'
+New md5sum is : '0b42ce648ce2cc22ec39d51dc6924f72'
+Old sha1sum was: '83f558b129edc9c01f51e3bd58ec368c8d4f2abb'
+New sha1sum is : 'b4d122e3cffc3505abb38b961983e7adc4d4fdcb'
+Old sha256sum was: '4e3c347b4a49e853eb1edbca3b7000fbbc566f106dc87870e035cb1d14b8250b'
+New sha256sum is : '4686c8051ad682cd1dd65eecfd807a6162537012949161875e2821bee851f422'
+",log,"Oct 20, 2023 @ 18:52:23.444",syscheck,1697827943.8759885,"Oct 20, 2023 @ 18:52:23.444", , ,root,2023-10-20T18:52:25,504268,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,b4d122e3cffc3505abb38b961983e7adc4d4fdcb,root,0,rw-r--r--,modified,0b42ce648ce2cc22ec39d51dc6924f72,4686c8051ad682cd1dd65eecfd807a6162537012949161875e2821bee851f422,547124, , , , , ,487884,df1623b57ed0871ee695ee433e41684d,4e3c347b4a49e853eb1edbca3b7000fbbc566f106dc87870e035cb1d14b8250b,"[""size"",""md5"",""sha1"",""sha256""]",83f558b129edc9c01f51e3bd58ec368c8d4f2abb, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,ycBuTosBpjjGT_ibeti3,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",31,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z' modified
+Mode: realtime
+Changed attributes: size,md5,sha1,sha256
+Size changed from '504268' to '520652'
+Old md5sum was: '0b42ce648ce2cc22ec39d51dc6924f72'
+New md5sum is : 'd66a593ae659df9ef9f145f6c1d0b7af'
+Old sha1sum was: 'b4d122e3cffc3505abb38b961983e7adc4d4fdcb'
+New sha1sum is : '6c89621428f01737c4230f4ffe44300b22fbee68'
+Old sha256sum was: '4686c8051ad682cd1dd65eecfd807a6162537012949161875e2821bee851f422'
+New sha256sum is : 'a95210d647421713e0d8c98c64c0e9088aeebcbf6d20adc4d101aa4612f9e01b'
+",log,"Oct 20, 2023 @ 18:52:23.495",syscheck,1697827943.8761110,"Oct 20, 2023 @ 18:52:23.495", , ,root,2023-10-20T18:52:25,520652,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f.7z,6c89621428f01737c4230f4ffe44300b22fbee68,root,0,rw-r--r--,modified,d66a593ae659df9ef9f145f6c1d0b7af,a95210d647421713e0d8c98c64c0e9088aeebcbf6d20adc4d101aa4612f9e01b,547124, , , , , ,504268,0b42ce648ce2cc22ec39d51dc6924f72,4686c8051ad682cd1dd65eecfd807a6162537012949161875e2821bee851f422,"[""size"",""md5"",""sha1"",""sha256""]",b4d122e3cffc3505abb38b961983e7adc4d4fdcb, , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,y8BuTosBpjjGT_ib3Nho,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,5,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",File added to the system.,"[""ossec"",""syscheck"",""syscheck_entry_added"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",5, , , ,554,"[""4.11""]", ,syscheck_new_entry,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f' added
+Mode: realtime
+",log,"Oct 20, 2023 @ 18:52:46.628",syscheck,1697827966.8763630,"Oct 20, 2023 @ 18:52:46.628", , ,root,2023-10-20T18:52:48,1486848,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f,fa6a40d3fc5cd4d975a01e298179a0b36aa02d4e,root,0,rw-r--r--,added,8309ef02bec30b1e69815b5134ee1f43,0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f,547134, , , , , , , , , , , , , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,zMBuTosBpjjGT_ib3Nho,1,1, , , ,192.168.40.131,machine-2,002,ubuntu, , ,false,7,"[""11.5""]","[""164.312.c.1"",""164.312.c.2""]","[""PI1.4"",""PI1.5"",""CC6.1"",""CC6.8"",""CC7.2"",""CC7.3""]",Integrity checksum changed.,"[""ossec"",""syscheck"",""syscheck_entry_modified"",""syscheck_file""]","[""SI.7""]","[""II_5.1.f""]",33,"[""Stored Data Manipulation""]","[""T1565.001""]","[""Impact""]",550,"[""4.11""]", ,syscheck_integrity_changed,"File '/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f' modified
+Mode: realtime
+Changed attributes: size,mtime
+Size changed from '1486848' to '1706936'
+Old modification time was: '1697827968', now it is '1625205252'
+",log,"Oct 20, 2023 @ 18:52:46.674",syscheck,1697827966.8764371,"Oct 20, 2023 @ 18:52:46.674", , ,root,2021-07-02T05:54:12,1706936,0,realtime,/tmp/0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f,fa6a40d3fc5cd4d975a01e298179a0b36aa02d4e,root,0,rw-r--r--,modified,8309ef02bec30b1e69815b5134ee1f43,0bff46518b35ddfe37f4a7820286aab829d81f1480d9eeca5aaedc9ceda6724f,547134, , , , , ,1486848, , ,"[""size"",""mtime""]", ,2023-10-20T18:52:48, , , , , , , , , , 
+wazuh-alerts-4.x-2023.10.20,YMF2TosBpjjGT_ibMXXW,1,1, , , ,192.168.40.130,machine-1,001,ubuntu, , ,false,3,"[""10.6.1""]","[""164.312.b""]","[""CC7.2"",""CC7.3""]",Auditd: SELinux permission check.,"[""audit"",""audit_selinux""]","[""AU.6""]","[""IV_30.1.g"",""IV_35.7.d""]",1, , , ,80730, , ,auditd,"type=AVC msg=audit(1697828443.328:265): apparmor=""DENIED"" operation=""capable"" class=""cap"" profile=""/usr/sbin/cupsd"" pid=4550 comm=""cupsd"" capability=12  capname=""net_admin""",log,"Oct 20, 2023 @ 19:00:41.721",/var/log/audit/audit.log,1697828441.8766038,"Oct 20, 2023 @ 19:00:41.721", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,4550,265,AVC,cupsd
+wazuh-alerts-4.x-2023.10.22,g-kbV4sB1H5kHWqbaTZR,1,1, , , , ,ubuntu,000,ubuntu, , ,false,7,"[""10.6.1""]", , ,Host-based anomaly detection event (rootcheck).,"[""ossec"",""rootcheck""]", ,"[""IV_35.7.d""]",2, , , ,510, , ,rootcheck,Trojaned version of file '/usr/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic).,log,"Oct 22, 2023 @ 11:13:57.661",rootcheck,1697973237.370,"Oct 22, 2023 @ 11:13:57.661", , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,/usr/bin/diff,Trojaned version of file detected., , , , , , 
+wazuh-alerts-4.x-2023.10.22,_7EyV4sBvnhsX403cC9N,1,1, , , , ,ubuntu,000,ubuntu, , ,false,7,"[""10.6.1""]", , ,Host-based anomaly detection event (rootcheck).,"[""ossec"",""rootcheck""]", ,"[""IV_35.7.d""]",1, , , ,510, , ,rootcheck,Trojaned version of file '/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic).,log,"Oct 22, 2023 @ 11:38:03.823",rootcheck,1697974683.1992,"Oct 22, 2023 @ 11:38:03.823", , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,/bin/diff,Trojaned version of file detected., , , , , , 
