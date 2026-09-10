@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "phase": "phase_final_scientific_consolidation",
+  "frozen_before_execution": true,
+  "manuscript_editing": false,
+  "seeds": [42, 43, 44, 45, 46],
+  "p1": {
+    "dataset": "official_CSE-CIC-IDS2018",
+    "train_day": "2018-02-15",
+    "test_day": "2018-02-16",
+    "model": "LogisticRegression_with_train_only_StandardScaler",
+    "negative_control": "train_label_permutation",
+    "negative_control_guard": {
+      "max_f1": 0.75,
+      "max_pr_auc": 0.75
+    },
+    "single_feature_count": 78,
+    "ablation_levels": [0, 1, 3, 5, 10],
+    "ablation_ranking_source": "absolute_coefficients_from_training_fit_only",
+    "dominant_feature_f1_drop": 0.10
+  },
+  "p2": {
+    "route_path_signal": false,
+    "calibration": "leave_one_known_family_out_pseudo_open_validation",
+    "calibration_data": "known_sources_only",
+    "final_open_set_sources_used_for_calibration": false,
+    "final_open_set_count": 3,
+    "margin_name": "decision_margin"
+  },
+  "p3": {
+    "campaign": "multisource_cnp_model_inference",
+    "conditions": ["H", "M"],
+    "unsupported_policy": "REFUSE_or_explicit_fallback",
+    "global_predictive_metric_across_incompatible_labels": false
+  },
+  "p4": {
+    "resampling_unit": "block_id",
+    "bootstrap_replicates": 1000,
+    "positive_leave_one_out": 29,
+    "aggregator": "mean",
+    "threshold": 1.2729429339548877,
+    "threshold_frozen": true,
+    "threshold_refit_in_bootstrap": false
+  }
+}
