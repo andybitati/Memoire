@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "unit": "one_original_file_one_observation",
+  "sample_rows": 200,
+  "path_signal": "disabled_route_dataframe_path_none",
+  "sources": [
+    {"source_id": "win_app_live", "source_group": "windows_host_current", "path": "data/raw/windows_events/Application.evtx", "adapter": "windows_evtx", "true_family": "windows"},
+    {"source_id": "win_system_live", "source_group": "windows_host_current", "path": "data/raw/windows_events/System.evtx", "adapter": "windows_evtx", "true_family": "windows"},
+    {"source_id": "win_security_admin", "source_group": "windows_host_current", "path": "data/raw/windows_events_admin/Security.evtx", "adapter": "windows_evtx", "true_family": "windows"},
+    {"source_id": "win_app_20260518", "source_group": "windows_host_snapshots", "path": "data/raw/windows_events/20260518_101329/Application.evtx", "adapter": "windows_evtx", "true_family": "windows"},
+    {"source_id": "win_system_20260518", "source_group": "windows_host_snapshots", "path": "data/raw/windows_events/20260518_101329/System.evtx", "adapter": "windows_evtx", "true_family": "windows"},
+    {"source_id": "win_app_20260529", "source_group": "windows_host_snapshots", "path": "data/raw/windows_events/20260529_102842/Application.evtx", "adapter": "windows_evtx", "true_family": "windows"},
+    {"source_id": "win_system_20260529", "source_group": "windows_host_snapshots", "path": "data/raw/windows_events/20260529_102842/System.evtx", "adapter": "windows_evtx", "true_family": "windows"},
+
+    {"source_id": "linux_auth_balanced", "source_group": "linux_auth_generated_corpus", "path": "data/raw/Datasets/linux_auth_logs_full(balanced).csv", "adapter": "csv", "true_family": "linux_auth"},
+    {"source_id": "linux_auth_unbalanced", "source_group": "linux_auth_generated_corpus", "path": "data/raw/Datasets/linux_auth_logs_full(new_unbalanced).csv", "adapter": "csv", "true_family": "linux_auth"},
+    {"source_id": "linux_auth_multiple", "source_group": "linux_auth_generated_corpus", "path": "data/raw/Datasets/linux_auth_logs_multiple_anomalies.csv", "adapter": "csv", "true_family": "linux_auth"},
+    {"source_id": "linux_2k", "source_group": "loghub_linux", "path": "data/raw/Datasets/Linux_2k.log", "adapter": "linux_text", "true_family": "linux"},
+
+    {"source_id": "wazuh_oct_01_05", "source_group": "wazuh_october_exports", "path": "data/raw/Datasets/01-05-October.csv", "adapter": "csv", "true_family": "wazuh"},
+    {"source_id": "wazuh_oct_05_p1", "source_group": "wazuh_october_exports", "path": "data/raw/Datasets/05-October-P1.csv", "adapter": "csv", "true_family": "wazuh"},
+    {"source_id": "wazuh_oct_05_p2", "source_group": "wazuh_october_exports", "path": "data/raw/Datasets/05-October-P2.csv", "adapter": "csv", "true_family": "wazuh"},
+    {"source_id": "wazuh_oct_06_20", "source_group": "wazuh_october_exports", "path": "data/raw/Datasets/06-20-October.csv", "adapter": "csv", "true_family": "wazuh"},
+    {"source_id": "wazuh_oct_20_22", "source_group": "wazuh_october_exports", "path": "data/raw/Datasets/20-22-October.csv", "adapter": "csv", "true_family": "wazuh"},
+    {"source_id": "wazuh_oct_20_p1", "source_group": "wazuh_october_exports", "path": "data/raw/Datasets/20-October-P1.csv", "adapter": "csv", "true_family": "wazuh"},
+    {"source_id": "wazuh_oct_20_p2", "source_group": "wazuh_october_exports", "path": "data/raw/Datasets/20-October-P2.csv", "adapter": "csv", "true_family": "wazuh"},
+
+    {"source_id": "hdfs_loghub", "source_group": "loghub_hdfs_v1", "path": "data/raw/Datasets/HDFS_1/HDFS.log", "adapter": "hdfs_text", "true_family": "hdfs"},
+    {"source_id": "bgl_loghub", "source_group": "loghub_bgl", "path": "data/raw/Datasets/BGL/BGL.log", "adapter": "bgl_text", "true_family": "bgl"},
+
+    {"source_id": "cicids_monday", "source_group": "cicids2017", "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Monday-WorkingHours.pcap_ISCX.csv", "adapter": "csv", "true_family": "network_cicids"},
+    {"source_id": "cicids_tuesday", "source_group": "cicids2017", "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Tuesday-WorkingHours.pcap_ISCX.csv", "adapter": "csv", "true_family": "network_cicids"},
+    {"source_id": "cicids_wednesday", "source_group": "cicids2017", "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Wednesday-workingHours.pcap_ISCX.csv", "adapter": "csv", "true_family": "network_cicids"},
+    {"source_id": "cicids_thursday_web", "source_group": "cicids2017", "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv", "adapter": "csv", "true_family": "network_cicids"},
+    {"source_id": "cicids_thursday_infiltration", "source_group": "cicids2017", "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv", "adapter": "csv", "true_family": "network_cicids"},
+    {"source_id": "cicids_friday_morning", "source_group": "cicids2017", "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Morning.pcap_ISCX.csv", "adapter": "csv", "true_family": "network_cicids"},
+    {"source_id": "cicids_friday_portscan", "source_group": "cicids2017", "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv", "adapter": "csv", "true_family": "network_cicids"},
+    {"source_id": "cicids_friday_ddos", "source_group": "cicids2017", "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv", "adapter": "csv", "true_family": "network_cicids"},
+
+    {"source_id": "open_cloud_service", "source_group": "local_open_set_fixtures", "path": "data/raw/Datasets/Dataset_csv/cloud_service_log.csv", "adapter": "csv", "true_family": "unknown_family"},
+    {"source_id": "open_dns", "source_group": "local_open_set_fixtures", "path": "data/raw/Datasets/Dataset_csv/DNS_Logs_logs.csv", "adapter": "csv", "true_family": "unknown_family"},
+    {"source_id": "open_virtualization", "source_group": "local_open_set_fixtures", "path": "data/raw/Datasets/Dataset_csv/virtualization_log.csv", "adapter": "csv", "true_family": "unknown_family"}
+  ]
+}

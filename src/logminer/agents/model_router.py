@@ -532,6 +532,38 @@ def route_model(
     }
 
 
+def route_dataframe(
+    frame: pd.DataFrame,
+    *,
+    models: dict[str, str | Path] | None = None,
+) -> dict[str, object]:
+    """Route un tableau sans exploiter son chemin ou son nom de fichier.
+
+    Cette entrée publique est destinée aux évaluations où le nom de la source
+    constituerait une fuite de famille. Elle applique exactement le même score
+    explicable que :func:`route_model`, mais avec ``path=None``.
+    """
+
+    if frame.empty:
+        raise ValueError("Le routeur ne peut pas évaluer un tableau vide.")
+    scores, reasons = _score_dataframe(frame.copy(), path=None)
+    priority = ["windows", "hdfs", "bgl", "wazuh", "network_cicids", "network", "linux_auth", "linux", "fallback"]
+    sorted_scores = sorted(priority, key=lambda family: scores.get(family, 0), reverse=True)
+    family = sorted_scores[0]
+    confidence = scores.get(sorted_scores[0], 0) - scores.get(sorted_scores[1], 0)
+    model_map = dict(MODEL_DEFAULTS)
+    if models:
+        model_map.update({key: str(value) for key, value in models.items() if value})
+    return {
+        "family": family,
+        "model": str(model_map[family]),
+        "kind": "dataframe",
+        "scores": scores,
+        "confidence": confidence,
+        "reasons": reasons,
+    }
+
+
 def _default_output(input_path: Path, suffix: str) -> Path:
     """Construit un nom de sortie stable pour le mode `--detect`."""
 

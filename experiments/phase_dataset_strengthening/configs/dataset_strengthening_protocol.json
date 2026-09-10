@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-09-10",
+  "status": "FROZEN_BEFORE_EXECUTION",
+  "principle": "lightweight_models_strict_protocols_no_old_artifact_overwrite",
+  "hdfs_block": {
+    "raw": "data/raw/Datasets/HDFS_1/HDFS.log",
+    "labels": "data/raw/Datasets/HDFS_1/anomaly_label.csv",
+    "split_unit": "block_id_ordered_by_first_raw_log_occurrence",
+    "split_ratios": [0.6, 0.2, 0.2],
+    "sample_blocks": {"train": 6000, "validation": 2000, "test": 2000},
+    "sample_seed": 42,
+    "drain3": {"fit": "train_only", "inference": "match_only", "sim_th": 0.4, "depth": 4, "max_children": 100},
+    "event_score": "histogram_template_source_severity_rarity",
+    "aggregators": ["maximum", "mean", "abnormal_ratio"],
+    "selection_partition": "validation_only",
+    "selection_tiebreak": ["lower_fpr", "higher_mcc", "higher_threshold"]
+  },
+  "bgl_known_unknown": {
+    "prepared_events": "data/processed/final_experiments_2026/phase_3/prepared",
+    "feature_bundle": "data/processed/final_experiments_2026/phase_3/prepared/bgl_feature_bundle.npz",
+    "known_rule": "drain_cluster_id_nonzero",
+    "groups": ["ALL", "KNOWN_TEMPLATE", "UNKNOWN_TEMPLATE"],
+    "models": ["Histogram", "UnknownTemplateBaseline"],
+    "threshold_partition": "validation_only"
+  },
+  "cicids_temporal": {
+    "directory": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE",
+    "train_days": ["Monday", "Tuesday", "Wednesday", "Thursday"],
+    "test_day": "Friday",
+    "split_signal_use": "file_day_only_not_feature",
+    "features": 78,
+    "non_finite": 0,
+    "clip": [-1000000000000.0, 1000000000000.0],
+    "seeds": [42, 43, 44, 45, 46],
+    "max_train_per_class": 10000,
+    "max_test_per_class": 10000,
+    "models": ["RandomForest", "LogisticRegression"],
+    "linear_scaler": "StandardScaler_fit_train_only"
+  },
+  "router_independent": {
+    "unit": "one_original_file_or_independent_source",
+    "sample_rows": 200,
+    "neutral_derived_filename": true,
+    "report_source_group": true,
+    "open_set_label": "unknown_family",
+    "confidence": "heuristic_score_margin_not_calibrated_probability"
+  },
+  "multiformat_balanced": {
+    "target_units_per_source": 1000,
+    "selection": "first_source_order_without_duplication",
+    "sources": ["windows_event", "linux_auth", "wazuh", "syslog", "apache", "hdfs", "bgl", "network_tabular"],
+    "metrics": ["read", "parsed", "normalized", "failed", "lost", "fallback", "mandatory_field_completeness"]
+  },
+  "multisource_cnp_e2e": {
+    "target_units_per_source": 200,
+    "sources": ["windows_event", "linux_auth", "wazuh", "syslog", "apache", "hdfs", "bgl", "network_tabular"],
+    "transport": "local_contract_net_with_real_agents",
+    "agent_message_fields": 7,
+    "ground_truth_policy": "never_fabricate",
+    "required_trace": ["end_to_end_run_id", "source_id", "task_id", "contract_id", "agent_id", "model", "status", "latency"]
+  },
+  "external_dataset": {
+    "status": "DEFERRED_UNTIL_PHASES_1_TO_6_COMPLETE",
+    "allowed": ["CSE-CIC-IDS2018", "UNSW-NB15_OFFICIAL_NEW_DOWNLOAD"],
+    "forbidden": ["data/raw/Datasets/UNSWNB15.zip"]
+  }
+}

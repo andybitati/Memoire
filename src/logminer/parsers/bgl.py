@@ -1,30 +1,83 @@
-# Source Generated with Decompyle++
-# File: bgl.cpython-311.pyc (Python 3.11)
+"""Parseur léger pour le journal Blue Gene/L publié dans Loghub."""
 
-'''Parseur BGL (BlueGene/L).'''
+from __future__ import annotations
+
 import re
-import os
 from datetime import datetime, timezone
-from typing import Iterable
-from common import clean, make_pbar, norm_sev
+
 from writer import emit
-BGL_HDR_RE = re.compile('^\\s*[-*]?\\s*(?P<eid>\\d+)\\s+\\d{4}\\.\\d{2}\\.\\d{2}\\s+\\S+\\s+(?P<ts>\\d{4}-\\d{2}-\\d{2}-\\d{2}\\.\\d{2}\\.\\d{2}\\.\\d+)\\s+(?P<src>\\S+)\\s+RAS\\s+(?P<subsys>\\S+)\\s+(?P<sev>[A-Za-z]+)\\s+(?P<rest>.*)$')
-BGL_FALLBACK = re.compile('^(?P<ts>\\d{4}-\\d{2}-\\d{2}-\\d{2}\\.\\d{2}\\.\\d{2}\\.\\d+)\\s+(?:(?P<src>\\S+)\\s+)?RAS\\s+(?P<subsys>\\S+)\\s+(?P<sev>[A-Za-z]+)\\s+(?P<rest>.*)$')
 
-def iso_from_bgl_ts(ts = None):
-    
+
+BGL_RE = re.compile(
+    r"^(?P<label>\S+)\s+(?P<epoch>\d+)\s+(?P<date>\d{4}\.\d{2}\.\d{2})\s+"
+    r"(?P<location>\S+)\s+(?P<timestamp>\d{4}-\d{2}-\d{2}-\d{2}\.\d{2}\.\d{2}\.\d+)\s+"
+    r"(?P<node>\S+)\s+RAS\s+(?P<component>\S+)\s+(?P<severity>\S+)\s*(?P<message>.*)$"
+)
+
+
+def _timestamp(value: str) -> str:
     try:
-        return datetime.strptime(ts, '%Y-%m-%d-%H.%M.%S.%f').replace(tzinfo = timezone.utc).isoformat()
-    except Exception:
-        return ''
+        return datetime.strptime(value, "%Y-%m-%d-%H.%M.%S.%f").replace(tzinfo=timezone.utc).isoformat()
+    except ValueError:
+        return ""
 
+
+def _severity(value: str) -> str:
+    upper = str(value or "").upper()
+    return {"WARN": "WARNING", "ERR": "ERROR", "FATAL": "CRITICAL"}.get(upper, upper)
 
 
 class Parser:
-    subtype = 'bgl'
-    
-    def parse(self = None, path = None, writer = None, sep = ('path', str, 'sep', str, 'split_rows', int, 'progress_every', int, 'use_tqdm', bool, 'debug', bool, 'return', Iterable[str]), *, split_rows, progress_every, use_tqdm, debug):
-        pass
-    # WARNING: Decompyle incomplete
+    subtype = "bgl"
 
+    def parse(
+        self,
+        path: str,
+        writer,
+        sep: str = ";",
+        split_rows: int = 0,
+        progress_every: int = 0,
+        use_tqdm: bool = False,
+        debug: bool = False,
+    ) -> None:
+        del sep, split_rows, progress_every, use_tqdm, debug
+        with open(path, "r", encoding="utf-8", errors="ignore") as handle:
+            for lineno, line in enumerate(handle, start=1):
+                raw = line.rstrip("\r\n")
+                if not raw.strip():
+                    continue
+                match = BGL_RE.match(raw)
+                if match is None:
+                    emit(
+                        writer,
+                        {
+                            "dataset": "bgl",
+                            "subtype": self.subtype,
+                            "filepath": path,
+                            "lineno": lineno,
+                            "category": "system",
+                            "subcategory": "bgl_unparsed",
+                            "message": raw,
+                        },
+                    )
+                    continue
 
+                groups = match.groupdict()
+                emit(
+                    writer,
+                    {
+                        "dataset": "bgl",
+                        "subtype": self.subtype,
+                        "filepath": path,
+                        "lineno": lineno,
+                        "timestamp_iso": _timestamp(groups["timestamp"]),
+                        "severity": _severity(groups["severity"]),
+                        "event": groups["label"],
+                        "source": groups["component"],
+                        "component": groups["component"],
+                        "host": groups["node"],
+                        "category": "system",
+                        "subcategory": "bgl",
+                        "message": groups["message"].strip(),
+                    },
+                )
