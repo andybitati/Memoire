@@ -24,6 +24,12 @@ from logminer.parsers.bgl import Parser as BglParser  # noqa: E402
 from logminer.parsers.hdfs import Parser as HdfsParser  # noqa: E402
 from run_bgl_known_unknown_strengthening import group_masks  # noqa: E402
 from run_cicids_temporal_strengthening import candidate_models, temporal_files  # noqa: E402
+from run_external_csecicids2018_strengthening import (  # noqa: E402
+    candidate_models as external_candidate_models,
+    feature_columns as external_feature_columns,
+    seed_sample as external_seed_sample,
+)
+from run_external_csecicids2018_sensitivity import deduplicate_unambiguous  # noqa: E402
 from run_hdfs_block_strengthening import assign_templates, fit_frozen_drain, make_full_splits  # noqa: E402
 from run_multiformat_validation import select_text_lines  # noqa: E402
 
@@ -198,3 +204,73 @@ def test_temporal_files_are_disjoint() -> None:
     train, test = temporal_files(directory)
     assert {path.resolve() for path in train}.isdisjoint({path.resolve() for path in test})
     assert all(path.name.lower().startswith("friday") for path in test)
+
+
+def test_external_protocol_uses_distinct_official_objects_without_test_selection() -> None:
+    config = json.loads(
+        (ROOT / "experiments/phase_dataset_strengthening/configs/external_csecicids2018_protocol.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    train = config["partition"]["train"]
+    test = config["partition"]["test"]
+    assert config["official_bucket"] == "s3://cse-cic-ids2018/"
+    assert train["object_key"] != test["object_key"]
+    assert train["day"] != test["day"]
+    assert train["url"].startswith("https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/")
+    assert test["url"].startswith("https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/")
+    assert config["model_or_threshold_selection_on_test"] is False
+    assert config["decision_threshold"] == 0.5
+
+
+def test_external_features_exclude_timestamp_label_and_identifiers(tmp_path: Path) -> None:
+    header = "Flow ID,Src IP,Dst IP,Timestamp,Dst Port,Flow Duration,Label\n"
+    train = tmp_path / "train.csv"
+    test = tmp_path / "test.csv"
+    train.write_text(header, encoding="utf-8")
+    test.write_text(header, encoding="utf-8")
+    columns, differences = external_feature_columns(train, test)
+    assert columns == ["Dst Port", "Flow Duration"]
+    assert differences == {"train_only": [], "test_only": []}
+
+
+def test_external_scaler_is_fitted_on_train_only() -> None:
+    model = external_candidate_models(42)["LogisticRegression"]
+    x_train = pd.DataFrame({"a": [-2.0, 2.0], "b": [1.0, 1.0]})
+    y_train = pd.Series([0, 1])
+    x_test = pd.DataFrame({"a": [1000.0, 2000.0], "b": [500.0, 700.0]})
+    model.fit(x_train, y_train)
+    _ = model.predict(x_test)
+    np.testing.assert_allclose(model.named_steps["scale"].mean_, x_train.mean().to_numpy())
+
+
+def test_external_seed_sample_has_no_duplicate_source_rows() -> None:
+    pool = pd.DataFrame(
+        {
+            "feature": np.arange(40),
+            "target": [0] * 20 + [1] * 20,
+            "__source_row": np.arange(40),
+            "__priority": np.linspace(0, 1, 40),
+        }
+    )
+    sample = external_seed_sample(pool, per_class=10, seed=42)
+    assert len(sample) == 20
+    assert sample["__source_row"].is_unique
+    assert sample["target"].value_counts().to_dict() == {0: 10, 1: 10}
+
+
+def test_external_deduplication_drops_ambiguous_feature_vectors() -> None:
+    frame = pd.DataFrame(
+        {
+            "a": [1, 1, 2, 3, 3],
+            "b": [4, 4, 5, 6, 6],
+            "target": [0, 0, 1, 0, 1],
+            "__source_row": np.arange(5),
+            "__priority": np.linspace(0, 1, 5),
+        }
+    )
+    result, audit = deduplicate_unambiguous(frame, ["a", "b"])
+    assert len(result) == 2
+    assert set(result["a"]) == {1, 2}
+    assert audit["conflicting_hashes"] == 1
+    assert audit["conflicting_rows_dropped"] == 2

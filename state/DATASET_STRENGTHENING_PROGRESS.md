@@ -9,7 +9,7 @@ Dernière mise à jour : 2026-09-10.
 - Implémentation des campagnes HDFS, BGL, CICIDS temporel, routeur indépendant,
   multiformat équilibré et replay multi-source CNP.
 - Parseurs légers HDFS et BGL raccordés au pipeline commun.
-- Quatorze garde-fous automatiques exécutés après les campagnes : **14/14 réussis**.
+- Dix-neuf garde-fous automatiques exécutés après les campagnes : **19/19 réussis**.
 - Preuve JUnit : `experiments/phase_dataset_strengthening/logs/pre_experiment_tests.xml`.
 - Preuve JUnit finale :
   `experiments/phase_dataset_strengthening/logs/final_dataset_strengthening_tests.xml`.
@@ -56,8 +56,20 @@ Dernière mise à jour : 2026-09-10.
   automatique, dix figures et manifeste SHA-256 produits.
 - Validation finale : les six campagnes prioritaires satisfont tous les
   contrôles; `all_six_priority_campaigns_valid = true`.
-- Dataset externe optionnel : **NON EXÉCUTÉ**. Le transfert vers un jeu externe
-  officiel supplémentaire reste **NON DÉMONTRÉ**.
+- Dataset externe optionnel : run principal
+  `external_csecicids2018_20260910T230136Z` terminé sur deux CSV téléchargés
+  directement depuis le bucket AWS officiel CSE-CIC-IDS2018. Le 15 février
+  sert au train et le 16 février au test, avec 78 caractéristiques et cinq
+  graines. F1 moyen LogisticRegression `0,9992120133`; RandomForest
+  `0,4013747437`, avec une forte variabilité.
+- Sensibilité exploratoire aux vecteurs répétés : run
+  `external_csecicids2018_sensitivity_20260910T231423Z`. Aucun vecteur exact
+  n’est commun aux deux jours. Après déduplication des deux pools, F1 moyen
+  LogisticRegression `0,9988632299` et RandomForest `0,5472257978`.
+- La comparaison méthodologique sur un dataset officiel indépendant est
+  désormais partiellement soutenue. Transfert direct des poids CICIDS2017 :
+  **NON DÉMONTRÉ**. Généralisation à toutes les attaques CSE-CIC-IDS2018 :
+  **NON DÉMONTRÉ**.
 - Contrôle UTF-8 ciblé des livrables et artefacts textuels : aucun fichier
   invalide et aucun motif de mojibake détecté.
 
@@ -69,7 +81,7 @@ Cet échec d’indexation ne modifie ni le code expérimental ni les données.
 ## Prochaine action exacte
 
 Transmettre à la phase de rédaction uniquement les recommandations et les
-preuves validées du rapport final. Ne pas présenter le replay CNP comme une
-évaluation prédictive et ne pas revendiquer de transfert externe.
+preuves validées. Ne pas présenter le replay CNP comme une évaluation
+prédictive, ni la campagne CSE-CIC-IDS2018 comme un transfert direct de poids.
 
 Le mémoire `ARIEL_LOGMINER_MEMOIRE_FINAL` n’a pas été modifié par cette mission.

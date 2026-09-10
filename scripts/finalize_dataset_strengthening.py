@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Valide les six campagnes, produit la figure 10 et le manifeste final."""
+"""Valide les campagnes datasets, produit la figure 10 et le manifeste final."""
 
 from __future__ import annotations
 
@@ -52,6 +52,11 @@ def validations() -> tuple[list[dict[str, Any]], dict[str, Any]]:
     trace = pd.read_csv(trace_path)
     messages = [json.loads(line) for line in messages_path.read_text(encoding="utf-8").splitlines() if line]
     ledger = latest_ledger()
+    external_summary_path = PHASE_ROOT / "aggregated/external_csecicids2018_summary.csv"
+    external_manifest_candidates = list(PHASE_ROOT.glob("manifests/external_csecicids2018_[0-9]*_manifest.json"))
+    external_summary = pd.read_csv(external_summary_path) if external_summary_path.exists() else pd.DataFrame()
+    external_manifest = load_json(max(external_manifest_candidates, key=lambda path: path.stat().st_mtime_ns)) if external_manifest_candidates else {}
+    external_raw_candidates = list(PHASE_ROOT.glob("raw/external_csecicids2018_[0-9]*_metrics.csv"))
 
     checks = {
         "hdfs": {
@@ -110,16 +115,31 @@ def validations() -> tuple[list[dict[str, Any]], dict[str, Any]]:
             "limitation_explicit": e2e["ground_truth"].startswith("not fabricated"),
         },
         "external_dataset": {
-            "completed": False,
-            "protocol_assertions": False,
-            "input_hashes": False,
-            "raw_evidence": False,
-            "figure": False,
-            "limitation_explicit": True,
+            "completed": ledger.get("dataset_07_external_csecicids2018", {}).get("status") == "COMPLETED",
+            "protocol_assertions": bool(external_manifest)
+            and all(
+                (
+                    external_manifest["audit"]["assertions"]["partitions_are_distinct_files"],
+                    external_manifest["audit"]["assertions"]["timestamps_excluded"],
+                    not external_manifest["audit"]["assertions"]["model_or_threshold_selection_on_test"],
+                    external_manifest["audit"]["assertions"]["sampling_without_replacement"],
+                    external_manifest["audit"]["assertions"]["official_content_lengths_match"],
+                )
+            ),
+            "input_hashes": bool(external_manifest)
+            and all(len(source.get("sha256", "")) == 64 for source in external_manifest.get("sources", []))
+            and len(external_manifest.get("sources", [])) == 2,
+            "raw_evidence": bool(external_summary_path.exists())
+            and set(external_summary.get("model", [])) == {"RandomForest", "LogisticRegression"}
+            and set(external_summary.get("f1_n", pd.Series(dtype=int)).astype(int)) == {5}
+            and bool(external_raw_candidates)
+            and len(pd.read_csv(max(external_raw_candidates, key=lambda path: path.stat().st_mtime_ns))) == 10,
+            "figure": (PHASE_ROOT / "figures/dataset_11_external_csecicids2018.png").exists(),
+            "limitation_explicit": (PHASE_ROOT / "reports/CSECICIDS2018_EXTERNAL_ANALYSIS.md").exists(),
         },
     }
     rows = [{"element": key, **{name: int(bool(value)) for name, value in values.items()}} for key, values in checks.items()]
-    facts = {"hdfs": hdfs, "bgl": bgl, "cicids": cicids.to_dict(orient="records"), "router": router, "multiformat": multiformat.to_dict(orient="records"), "e2e": e2e, "trace_path": relative(trace_path), "messages_path": relative(messages_path), "checks": checks}
+    facts = {"hdfs": hdfs, "bgl": bgl, "cicids": cicids.to_dict(orient="records"), "router": router, "multiformat": multiformat.to_dict(orient="records"), "e2e": e2e, "external": external_summary.to_dict(orient="records"), "trace_path": relative(trace_path), "messages_path": relative(messages_path), "checks": checks}
     return rows, facts
 
 
@@ -147,6 +167,7 @@ def claim_matrix(facts: dict[str, Any], output: Path) -> None:
     cicids = {row["model"]: row for row in facts["cicids"]}
     router = facts["router"]
     e2e = facts["e2e"]
+    external = {row["model"]: row for row in facts["external"]}
     lines = [
         "# Matrice claim–evidence — renforcement des datasets",
         "",
@@ -158,7 +179,7 @@ def claim_matrix(facts: dict[str, Any], output: Path) -> None:
         f"| Le routeur reconnaît les familles connues sur des fichiers non chunkés | 31 fichiers / 9 groupes | une observation par fichier, aucun signal de chemin | known accuracy `{router['known_accuracy']:.6f}` ; 0 erreur | dépendance intra-groupe ; open-set rejection `{router['unknown_rejection_rate']:.6f}` | PARTIELLEMENT SOUTENU |",
         "| HDFS/BGL passent par le pipeline multiformat commun | 8 sources | maximum 1 000/source sans duplication | 7 001/7 001 parsées et normalisées ; HDFS/BGL 1 000/1 000 | Apache N=1 synthétique ; complétude variable ; pas de préservation brute universelle | SOUTENU |",
         f"| Les vrais agents CNP traitent plusieurs familles avec une trace unitaire | 8 sources | 1 401 tâches CNP déterministes | `{e2e['input_count']}` entrées, `{e2e['error_count']}` erreur, 11 408 messages à 7 champs | détecteur candidat heuristique ; aucune vérité terrain prédictive fabriquée | SOUTENU |",
-        "| Les conclusions réseau se transfèrent à un dataset officiel externe | Dataset externe | nouveau téléchargement officiel requis | aucune campagne | Parquet locaux non admissibles comme preuve indépendante | NON ÉVALUÉ |",
+        f"| La supériorité méthodologique de LogisticRegression sur RandomForest se retrouve sur un dataset officiel externe | CSE-CIC-IDS2018 | 15 février train, 16 février test, scénarios DoS disjoints, cinq graines | F1 LR `{external['LogisticRegression']['f1_mean']:.6f}` vs RF `{external['RandomForest']['f1_mean']:.6f}` ; deux objets AWS officiels avec SHA-256 | aucun transfert direct des poids CICIDS2017 ; deux jours DoS ; pools équilibrés et corrélés | PARTIELLEMENT SOUTENU |",
     ]
     output.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -171,6 +192,7 @@ def manifest() -> dict[str, Any]:
     for pattern in (
         "scripts/*dataset_strengthening*.py",
         "scripts/run_*strengthening.py",
+        "scripts/run_external_csecicids2018_*.py",
         "docs/datasets/*.md",
     ):
         included.update(path for path in ROOT.glob(pattern) if path.is_file())
@@ -181,6 +203,13 @@ def manifest() -> dict[str, Any]:
     router = load_json(PHASE_ROOT / "configs/router_independent_sources.json")
     source_paths = {ROOT / item["source"] for item in multiformat["formats"]} | {ROOT / item["path"] for item in router["sources"]}
     source_paths.add(ROOT / "data/raw/Datasets/HDFS_1/anomaly_label.csv")
+    external_config_path = PHASE_ROOT / "configs/external_csecicids2018_protocol.json"
+    if external_config_path.exists():
+        external_config = load_json(external_config_path)
+        source_paths.update(
+            ROOT / external_config["partition"][partition]["local_path"]
+            for partition in ("train", "test")
+        )
     included.update(path for path in source_paths if path.exists())
     files = []
     for path in sorted(included, key=lambda item: relative(item)):
@@ -204,7 +233,9 @@ def main() -> int:
     figure_path = PHASE_ROOT / "figures/dataset_10_dataset_evidence_matrix.png"
     claim_path = ROOT / "dataset_strengthening_claim_evidence_matrix.md"
     write_csv(matrix_path, rows)
-    write_json(validation_path, {"generated_at": utc_now(), "checks": facts["checks"], "all_six_priority_campaigns_valid": all(all(values.values()) for key, values in facts["checks"].items() if key != "external_dataset"), "external_dataset": "NON EXÉCUTÉ"})
+    six_valid = all(all(values.values()) for key, values in facts["checks"].items() if key != "external_dataset")
+    external_valid = all(facts["checks"]["external_dataset"].values())
+    write_json(validation_path, {"generated_at": utc_now(), "checks": facts["checks"], "all_six_priority_campaigns_valid": six_valid, "all_priority_and_external_campaigns_valid": six_valid and external_valid, "external_dataset": "COMPLETED" if external_valid else "NON EXÉCUTÉ"})
     evidence_figure(rows, figure_path)
     claim_matrix(facts, claim_path)
     write_json(PHASE_ROOT / "manifests/SHA256_MANIFEST.json", manifest())

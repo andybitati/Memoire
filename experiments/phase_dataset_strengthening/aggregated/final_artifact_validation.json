@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-10T10:24:02.881534+00:00",
+  "generated_at": "2026-09-10T23:27:23.338158+00:00",
   "checks": {
     "hdfs": {
       "completed": true,
@@ -50,14 +50,15 @@
       "limitation_explicit": true
     },
     "external_dataset": {
-      "completed": false,
-      "protocol_assertions": false,
-      "input_hashes": false,
-      "raw_evidence": false,
-      "figure": false,
+      "completed": true,
+      "protocol_assertions": true,
+      "input_hashes": true,
+      "raw_evidence": true,
+      "figure": true,
       "limitation_explicit": true
     }
   },
   "all_six_priority_campaigns_valid": true,
-  "external_dataset": "NON EXÉCUTÉ"
+  "all_priority_and_external_campaigns_valid": true,
+  "external_dataset": "COMPLETED"
 }

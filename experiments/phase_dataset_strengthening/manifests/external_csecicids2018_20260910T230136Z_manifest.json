@@ -1,0 +1,188 @@
+{
+  "run_id": "external_csecicids2018_20260910T230136Z",
+  "dataset": "CSE-CIC-IDS2018",
+  "official_page": "https://www.unb.ca/cic/datasets/ids-2018.html",
+  "official_bucket": "s3://cse-cic-ids2018/",
+  "config": {
+    "path": "experiments/phase_dataset_strengthening/configs/external_csecicids2018_protocol.json",
+    "sha256": "e7888c7b53322a51d86cc3c5cf83166e36fc969a7c37c9c20bd6981ee4ebfa38"
+  },
+  "sources": [
+    {
+      "partition": "train",
+      "path": "data/raw/external/CSE-CIC-IDS2018/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/Processed%20Traffic%20Data%20for%20ML%20Algorithms/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "object_key": "Processed Traffic Data for ML Algorithms/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "size_bytes": 375945899,
+      "sha256": "fa2947a8256d81ee9103ae16139d62d0e17aa23e696ee80d9e76fb51c01c9c4b",
+      "etag_head": "eb1dc2ec76efe09c8995f28bfa4c8656-23"
+    },
+    {
+      "partition": "test",
+      "path": "data/raw/external/CSE-CIC-IDS2018/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/Processed%20Traffic%20Data%20for%20ML%20Algorithms/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "object_key": "Processed Traffic Data for ML Algorithms/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "size_bytes": 333723605,
+      "sha256": "1a4919faa0c49c7af97230b0c2d076eba23ee6dd81103a3801d51ac316355d8b",
+      "etag_head": "e68ef27c09c98ba91fe3c6b1108a18b9-20"
+    }
+  ],
+  "protocol": {
+    "schema_version": 1,
+    "experiment_id": "dataset_07_external_csecicids2018",
+    "dataset": "CSE-CIC-IDS2018",
+    "official_page": "https://www.unb.ca/cic/datasets/ids-2018.html",
+    "official_bucket": "s3://cse-cic-ids2018/",
+    "accessed_at": "2026-09-10",
+    "question": "Les conclusions relatives à la fragilité hors distribution des modèles légers sur CICIDS2017 sont-elles également observées sur un corpus réseau officiel indépendant ?",
+    "partition": {
+      "type": "day_and_attack_scenario_holdout",
+      "train": {
+        "day": "2018-02-15",
+        "expected_scenarios": [
+          "DoS-GoldenEye",
+          "DoS-Slowloris"
+        ],
+        "object_key": "Processed Traffic Data for ML Algorithms/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+        "url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/Processed%20Traffic%20Data%20for%20ML%20Algorithms/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+        "content_length_head": 375945899,
+        "etag_head": "eb1dc2ec76efe09c8995f28bfa4c8656-23",
+        "local_path": "data/raw/external/CSE-CIC-IDS2018/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv"
+      },
+      "test": {
+        "day": "2018-02-16",
+        "expected_scenarios": [
+          "DoS-SlowHTTPTest",
+          "DoS-Hulk"
+        ],
+        "object_key": "Processed Traffic Data for ML Algorithms/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+        "url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/Processed%20Traffic%20Data%20for%20ML%20Algorithms/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+        "content_length_head": 333723605,
+        "etag_head": "e68ef27c09c98ba91fe3c6b1108a18b9-20",
+        "local_path": "data/raw/external/CSE-CIC-IDS2018/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv"
+      }
+    },
+    "sampling": {
+      "method": "priority_reservoir_full_file_scan",
+      "pool_per_class": 50000,
+      "sample_per_class_per_seed": 10000,
+      "pool_seeds": {
+        "train": 3042,
+        "test": 4042
+      },
+      "evaluation_seeds": [
+        42,
+        43,
+        44,
+        45,
+        46
+      ],
+      "replacement": false,
+      "note": "Les cinq répétitions partagent les pools parents figés et ne représentent pas cinq acquisitions indépendantes."
+    },
+    "features": {
+      "mode": "numeric_intersection_train_test",
+      "excluded": [
+        "Label",
+        "Timestamp",
+        "Flow ID",
+        "Source IP",
+        "Destination IP",
+        "Src IP",
+        "Dst IP"
+      ],
+      "non_finite": 0,
+      "clip": [
+        -1000000000000.0,
+        1000000000000.0
+      ],
+      "timestamp_is_feature": false
+    },
+    "models": {
+      "RandomForest": {
+        "n_estimators": 120,
+        "max_depth": 28,
+        "min_samples_leaf": 2,
+        "class_weight": "balanced",
+        "n_jobs": 1
+      },
+      "LogisticRegression": {
+        "standard_scaler": "fit_train_only",
+        "max_iter": 1000,
+        "class_weight": "balanced",
+        "solver": "lbfgs"
+      }
+    },
+    "decision_threshold": 0.5,
+    "model_or_threshold_selection_on_test": false,
+    "metrics": [
+      "precision",
+      "recall",
+      "f1",
+      "pr_auc",
+      "mcc",
+      "fpr",
+      "tp",
+      "fp",
+      "tn",
+      "fn"
+    ],
+    "interpretation_limit": "Ce protocole teste un holdout temporel et de scénarios à l’intérieur de CSE-CIC-IDS2018. Il ne démontre ni un transfert direct des poids appris sur CICIDS2017 ni une validité industrielle."
+  },
+  "audit": {
+    "feature_count": 78,
+    "feature_differences": {
+      "train_only": [],
+      "test_only": []
+    },
+    "train": {
+      "rows_scanned": 1048575,
+      "header_rows_dropped": 0,
+      "label_counts": {
+        "Benign": 996077,
+        "DoS attacks-GoldenEye": 41508,
+        "DoS attacks-Slowloris": 10990
+      },
+      "pool_counts": {
+        "0": 50000,
+        "1": 50000
+      }
+    },
+    "test": {
+      "rows_scanned": 1048574,
+      "header_rows_dropped": 1,
+      "label_counts": {
+        "DoS attacks-SlowHTTPTest": 139890,
+        "DoS attacks-Hulk": 461912,
+        "Benign": 446772
+      },
+      "pool_counts": {
+        "0": 50000,
+        "1": 50000
+      }
+    },
+    "assertions": {
+      "partitions_are_distinct_files": true,
+      "timestamps_excluded": true,
+      "model_or_threshold_selection_on_test": false,
+      "sampling_without_replacement": true,
+      "official_content_lengths_match": true
+    }
+  },
+  "pool_artifacts": [
+    {
+      "path": "experiments/phase_dataset_strengthening/processed/external_csecicids2018_20260910T230136Z_train_pool.csv.gz",
+      "sha256": "8cada8131373deff826bd106732a0fed28d553714d0a0cc61fce02108d0db48c"
+    },
+    {
+      "path": "experiments/phase_dataset_strengthening/processed/external_csecicids2018_20260910T230136Z_test_pool.csv.gz",
+      "sha256": "452e6688fd114b3f6206a796aeb38e85d3cbdece75d84688c9f0d8f3e17636b4"
+    }
+  ],
+  "result_artifacts": [
+    "experiments/phase_dataset_strengthening/raw/external_csecicids2018_20260910T230136Z_metrics.csv",
+    "experiments/phase_dataset_strengthening/aggregated/external_csecicids2018_summary.csv",
+    "experiments/phase_dataset_strengthening/figures/dataset_11_external_csecicids2018.png",
+    "experiments/phase_dataset_strengthening/reports/CSECICIDS2018_EXTERNAL_ANALYSIS.md"
+  ]
+}

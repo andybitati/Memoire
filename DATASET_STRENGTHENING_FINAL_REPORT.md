@@ -1,6 +1,6 @@
 # Rapport final — renforcement scientifique des datasets d’Ariel Logminer
 
-Date de clôture : 10 septembre 2026  
+Date de clôture : 11 septembre 2026  
 Périmètre : nouvelles preuves sous `experiments/phase_dataset_strengthening/`  
 Mémoire modifié : **NON**
 
@@ -15,6 +15,8 @@ La mission a cherché à aligner unité de vérité et unité de prédiction, s�
 ## 3. Sources et provenance
 
 HDFS est la seule grande source de cette phase dont le journal et les labels ont été vérifiés bit à bit contre une archive officielle dont le MD5 publié a été retrouvé. Linux_2k correspond également exactement au fichier officiel Loghub. CICIDS2017 concorde fortement par noms, structure, dimensions et contenu local, mais son identité binaire avec un nouveau téléchargement officiel est **NON DÉMONTRÉE**. BGL est identifié comme corpus Loghub ; l’identité binaire de la copie locale est **NON DÉMONTRÉE**. Windows, Linux/auth et Wazuh sont des sources locales et ne doivent pas être présentés comme des copies de datasets publics.
+
+Deux CSV CSE-CIC-IDS2018 ont ensuite été téléchargés directement depuis le bucket public officiel `s3://cse-cic-ids2018/`. Leurs tailles correspondent aux réponses HTTP officielles et leurs nouveaux SHA-256 locaux sont consignés dans le manifeste du run. Aucun ancien fichier UNSW local n’a été réutilisé.
 
 Les détails sont isolés dans `docs/datasets/`. La provenance reste séparée de toute mesure de performance.
 
@@ -82,11 +84,24 @@ Le routeur recommande les artefacts indiqués dans le tableau. La détection eff
 
 ## 10. Dataset externe éventuel
 
-Statut : **NON EXÉCUTÉ**. Aucun nouveau téléchargement officiel n’a été effectué. Les Parquet locaux attribués à UNSW-NB15 n’établissent pas une nouvelle provenance indépendante et l’ancien `UNSWNB15.zip` est explicitement exclu. Le transfert des conclusions CICIDS vers un dataset réseau officiel externe reste **NON DÉMONTRÉ**.
+Statut : **COMPLETED**. Le run `external_csecicids2018_20260910T230136Z` utilise deux objets CSE-CIC-IDS2018 téléchargés directement depuis le bucket AWS officiel. Le 15 février 2018 sert exclusivement à l’apprentissage : `996 077` flux Benign, `41 508` GoldenEye et `10 990` Slowloris. Le test du 16 février contient `446 772` flux Benign, `139 890` SlowHTTPTest et `461 912` Hulk. Un en-tête répété du test est écarté.
+
+Les 78 caractéristiques numériques communes excluent le label, le timestamp et les identifiants textuels. Cinq graines tirent sans remise 10 000 observations par classe dans des pools parents figés de 50 000 par classe. Le seuil `0,5` et les hyperparamètres sont fixés avant le test.
+
+| Modèle | N | F1 moyen | Écart-type F1 | PR-AUC | MCC | Rappel | FPR |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| RandomForest | 5 | 0,401375 | 0,198722 | 0,721546 | 0,018009 | 0,419240 | 0,447880 |
+| LogisticRegression | 5 | 0,999212 | 0,001316 | 0,999358 | 0,998424 | 1,000000 | 0,001580 |
+
+RandomForest varie fortement selon la graine, avec un F1 compris entre `0,129605` et `0,622379`. LogisticRegression reste entre `0,996860` et `0,999850`.
+
+L’analyse exploratoire post hoc `external_csecicids2018_sensitivity_20260910T231423Z` mesure les vecteurs répétés. Les pools contiennent `96 150/100 000` vecteurs uniques dans le train et `75 675/100 000` dans le test, sans vecteur exact commun aux deux journées et sans conflit de labels. Après déduplication des deux partitions, les F1 moyens valent `0,998863` pour LogisticRegression et `0,547226` pour RandomForest. Les répétitions internes ne suffisent donc pas à expliquer la performance linéaire.
+
+La conclusion méthodologique « LogisticRegression dépasse RandomForest sous ce holdout » se retrouve sur un dataset officiel indépendant de CICIDS2017. En revanche, aucun poids appris sur CICIDS2017 n’est transféré : le transfert direct inter-datasets reste **NON DÉMONTRÉ**.
 
 ## 11. Statistiques
 
-Les intervalles de confiance ne sont calculés que pour CICIDS, où `N=5`. Ils utilisent la moyenne, l’écart-type d’échantillon et l’approximation normale `1,96 × s/√N`. HDFS, BGL, routeur, multiformat et CNP sont des runs uniques : aucun IC n’est rapporté. Les statistiques CICIDS incluent moyenne, écart-type d’échantillon, médiane, minimum, maximum et IC 95 % dans `cicids_temporal_summary.csv`.
+Les intervalles de confiance sont calculés pour CICIDS2017 et CSE-CIC-IDS2018, où `N=5`. Ils utilisent la moyenne, l’écart-type d’échantillon et l’approximation normale `1,96 × s/√N`. Les répétitions partagent dans les deux cas des pools parents et ne constituent pas des acquisitions indépendantes. HDFS, BGL, routeur, multiformat et CNP sont des runs uniques : aucun IC n’est rapporté. Les résumés stochastiques incluent moyenne, écart-type d’échantillon, médiane, minimum, maximum et IC 95 %.
 
 ## 12. Résultats négatifs
 
@@ -97,11 +112,12 @@ Les intervalles de confiance ne sont calculés que pour CICIDS, où `N=5`. Ils u
 - La complétude Wazuh est nulle pour le timestamp dans l’échantillon courant.
 - Apache ne fournit qu’une ligne synthétique.
 - Le replay CNP n’exécute pas les modèles entraînés recommandés par le routeur ; il exécute une règle candidate légère.
+- RandomForest est très instable sur le holdout CSE-CIC-IDS2018 : F1 moyen `0,401375`, écart-type `0,198722` et FPR moyen `0,447880`.
 - `graphify update .` échoue avec `[WinError 5] Accès refusé` après extraction.
 
 ## 13. Limites
 
-Les campagnes restent locales et ne simulent pas un SOC industriel. Plusieurs sources partagent un même environnement. Les pools CICIDS sont équilibrés et les cinq graines partagent un parent commun. HDFS bloc repose sur un sous-échantillon stratifié dont le test ne contient que 29 blocs anormaux. L’identité officielle de BGL et CICIDS demeure incomplète. Les métriques de parsing ne garantissent ni fidélité sémantique parfaite ni conservation intégrale du brut. Le CNP local démontre des décisions et traces, pas une tolérance aux pannes supplémentaire ni un gain de débit.
+Les campagnes restent locales et ne simulent pas un SOC industriel. Plusieurs sources partagent un même environnement. Les pools CICIDS sont équilibrés et les cinq graines partagent un parent commun. HDFS bloc repose sur un sous-échantillon stratifié dont le test ne contient que 29 blocs anormaux. L’identité officielle de BGL et CICIDS demeure incomplète. CSE-CIC-IDS2018 n’est évalué que sur deux journées et quatre sous-scénarios DoS ; les échantillons équilibrés ne reproduisent pas la prévalence opérationnelle. Son analyse de déduplication est post hoc. Les métriques de parsing ne garantissent ni fidélité sémantique parfaite ni conservation intégrale du brut. Le CNP local démontre des décisions et traces, pas une tolérance aux pannes supplémentaire ni un gain de débit.
 
 ## 14. Impact sur H1–H5
 
@@ -110,7 +126,7 @@ Les campagnes restent locales et ne simulent pas un SOC industriel. Plusieurs so
 | H1 | HDFS/BGL rejoignent le pipeline et 7 001/7 001 unités sont normalisées, mais la complétude et le brut ne sont pas universels | PARTIELLEMENT SOUTENUE |
 | H2 | 1 401 décisions CNP multi-source sont traçables avec offres et refus ; aucune nouvelle preuve de gain de débit ou de robustesse aux pannes | PARTIELLEMENT SOUTENUE |
 | H3 | Les familles connues sont reconnues sur 31 fichiers, mais l’open-set échoue 3/3 et les neuf groupes limitent l’indépendance | PARTIELLEMENT SOUTENUE |
-| H4 | Les modèles légers sont informatifs sous protocoles stricts, y compris par leurs échecs ; utilité humaine et opérationnelle non évaluées | PARTIELLEMENT SOUTENUE |
+| H4 | Les modèles légers sont informatifs sous protocoles stricts sur CICIDS2017 et CSE-CIC-IDS2018, y compris par l’instabilité négative du RandomForest ; utilité humaine et opérationnelle non évaluées | PARTIELLEMENT SOUTENUE |
 | H5 | Cette phase n’isole aucun effet causal supplémentaire de la mémoire | PARTIELLEMENT SOUTENUE, inchangée |
 
 ## 15. Impact sur QR1–QR6
@@ -122,7 +138,7 @@ Les campagnes restent locales et ne simulent pas un SOC industriel. Plusieurs so
 | QR3 | Le routage fichier sans chunks est fort sur familles connues, mais le rejet inconnu est nul | RÉPONSE PARTIELLE |
 | QR4 | Aucun test utilisateur ou résultat nouveau | RÉPONSE PARTIELLE, inchangée |
 | QR5 | Aucun gain causal de mémoire nouveau | RÉPONSE PARTIELLE, inchangée |
-| QR6 | Protocoles gelés, tests, hashes, résultats négatifs et dix figures renforcent la reproductibilité | RÉPONSE FORTE dans le périmètre laboratoire |
+| QR6 | Protocoles gelés, tests, hashes, résultats négatifs et onze figures renforcent la reproductibilité | RÉPONSE FORTE dans le périmètre laboratoire |
 
 ## 16. Affirmations désormais soutenables
 
@@ -133,12 +149,14 @@ Les campagnes restent locales et ne simulent pas un SOC industriel. Plusieurs so
 - Le routeur reconnaît toutes les familles connues du corpus de 31 fichiers, sous neuf groupes de provenance.
 - Les adaptateurs courants parsèrent et normalisent les 7 001 unités sélectionnées, dont HDFS/BGL.
 - Les vrais agents CNP ont traité 1 401 unités multi-source avec des offres, refus, attributions et résultats auditables.
+- Sur le holdout officiel CSE-CIC-IDS2018 du 15 vers le 16 février, LogisticRegression surpasse RandomForest parmi les deux candidats testés ; cette observation résiste à une analyse exploratoire sans vecteurs répétés.
 
 ## 17. Affirmations toujours non démontrées
 
 - Généralisation industrielle ou SOC : **NON DÉMONTRÉ**.
 - Rejet fiable de sources inconnues par le routeur : **NON DÉMONTRÉ**.
-- Transfert CICIDS vers un dataset réseau officiel indépendant : **NON DÉMONTRÉ**.
+- Transfert direct des poids appris sur CICIDS2017 vers CSE-CIC-IDS2018 : **NON DÉMONTRÉ**.
+- Généralisation à l’ensemble des attaques de CSE-CIC-IDS2018 : **NON DÉMONTRÉ**.
 - Préservation brute universelle et complétude universelle du schéma : **NON DÉMONTRÉ**.
 - Gain prédictif systématique du routage : **NON DÉMONTRÉ**.
 - Gain de débit, haute disponibilité ou tolérance aux pannes apportés par ce replay CNP : **NON DÉMONTRÉ**.
@@ -146,7 +164,7 @@ Les campagnes restent locales et ne simulent pas un SOC industriel. Plusieurs so
 
 ## 18. Artefacts
 
-Les configurations sont dans `experiments/phase_dataset_strengthening/configs/`, les résultats unitaires dans `raw/`, les données préparées dans `processed/`, les résumés dans `aggregated/`, les dix figures dans `figures/`, les rapports HDFS/BGL dans `reports/`, les cartes dans `docs/datasets/` et les ledgers append-only dans `experiments/phase_dataset_strengthening/LEDGER.csv` et `state/EXPERIMENT_LEDGER.csv`.
+Les configurations sont dans `experiments/phase_dataset_strengthening/configs/`, les résultats unitaires dans `raw/`, les données préparées dans `processed/`, les résumés dans `aggregated/`, les onze figures dans `figures/`, les rapports HDFS/BGL/CSE-CIC-IDS2018 dans `reports/`, les cartes dans `docs/datasets/` et les ledgers append-only dans `experiments/phase_dataset_strengthening/LEDGER.csv` et `state/EXPERIMENT_LEDGER.csv`.
 
 La matrice claim–evidence est `dataset_strengthening_claim_evidence_matrix.md`. La validation machine est `aggregated/final_artifact_validation.json`.
 
@@ -164,14 +182,29 @@ Le manifeste `experiments/phase_dataset_strengthening/manifests/SHA256_MANIFEST.
 .venv-hdfs-bgl\Scripts\python.exe scripts\run_router_independent_strengthening.py
 .venv-hdfs-bgl\Scripts\python.exe scripts\run_multiformat_balanced_strengthening.py
 .venv-hdfs-bgl\Scripts\python.exe scripts\run_multisource_cnp_e2e_strengthening.py --workers 1
+.venv-hdfs-bgl\Scripts\python.exe scripts\run_external_csecicids2018_strengthening.py
+.venv-hdfs-bgl\Scripts\python.exe scripts\run_external_csecicids2018_sensitivity.py
 .venv-hdfs-bgl\Scripts\python.exe scripts\finalize_dataset_strengthening.py
 ```
+
+Les deux objets externes ont été récupérés sans authentification depuis le
+bucket officiel avec `curl.exe -L --fail --retry 3 --continue-at -`, vers les
+chemins suivants :
+
+```text
+data/raw/external/CSE-CIC-IDS2018/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv
+data/raw/external/CSE-CIC-IDS2018/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+```
+
+Les URL exactes, `Content-Length`, ETag multipart et SHA-256 sont conservés
+dans `configs/external_csecicids2018_protocol.json` et dans le manifeste du
+run. Les données brutes sont exclues de Git en raison de leur taille.
 
 Dans cette session, les commandes ont été préfixées par `rtk` conformément aux instructions du dépôt.
 
 ## 21. Recommandations de modification du mémoire
 
-Le mémoire ne doit être modifié qu’à partir des artefacts ci-dessus. Le chapitre 5 devrait distinguer clairement les résultats historiques des nouveaux protocoles, ajouter la granularité bloc HDFS, la décomposition BGL, le holdout temporel CICIDS, `N=31 fichiers / 9 groupes` pour le routeur, les couvertures par source et le replay CNP. Les chapitres 3 et 8 devraient préciser que l’enveloppe CNP transporte ses métadonnées dans `payload`, que le détecteur du replay est une règle candidate et que la marge du routeur n’est pas calibrée. Les annexes devraient référencer les cartes, manifests, commandes et hashes. Le résumé et la conclusion ne doivent ni présenter ces résultats comme industriels ni transformer des anomalies candidates en vérité terrain.
+Le mémoire ne doit être modifié qu’à partir des artefacts ci-dessus. Le chapitre 5 devrait distinguer clairement les résultats historiques des nouveaux protocoles, ajouter la granularité bloc HDFS, la décomposition BGL, le holdout temporel CICIDS, le holdout CSE-CIC-IDS2018, `N=31 fichiers / 9 groupes` pour le routeur, les couvertures par source et le replay CNP. La campagne externe doit être présentée comme une comparaison méthodologique sur deux journées DoS, jamais comme un transfert direct de modèle ni comme une généralisation industrielle. Les chapitres 3 et 8 devraient préciser que l’enveloppe CNP transporte ses métadonnées dans `payload`, que le détecteur du replay est une règle candidate et que la marge du routeur n’est pas calibrée. Les annexes devraient référencer les cartes, manifests, commandes et hashes. Le résumé et la conclusion ne doivent ni présenter ces résultats comme industriels ni transformer des anomalies candidates en vérité terrain.
 
 | Critique du jury | Avant | Nouvelle action | Résultat | Après |
 | --- | --- | --- | --- | --- |
@@ -181,4 +214,4 @@ Le mémoire ne doit être modifié qu’à partir des artefacts ci-dessus. Le ch
 | routeur pseudo-réplication | 9 sources/81 chunks | 31 fichiers, 9 groupes, sans signal de chemin | known accuracy 1,0 ; rejet open-set 0,0 | PARTIELLEMENT CORRIGÉ |
 | multiformat incomplet | 5 001/7 001 | adaptateurs HDFS/BGL et couverture par source | 7 001/7 001 ; Apache N=1 ; complétude variable | PARTIELLEMENT CORRIGÉ |
 | pipeline en silos | campagnes séparées | E2E multi-source CNP | 1 401/1 401 succès, mais détecteur candidat plutôt que modèles routés | PARTIELLEMENT CORRIGÉ |
-| validité externe | limitée | dataset externe officiel requis | aucune campagne admissible | NON EXÉCUTÉ |
+| validité externe | limitée | deux objets CSE-CIC-IDS2018 officiels, jours/scénarios disjoints | LR F1 0,999212 ; RF F1 0,401375 ; aucune copie inter-jour exacte | PARTIELLEMENT CORRIGÉ |
