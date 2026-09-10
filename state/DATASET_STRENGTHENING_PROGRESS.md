@@ -9,8 +9,10 @@ Dernière mise à jour : 2026-09-10.
 - Implémentation des campagnes HDFS, BGL, CICIDS temporel, routeur indépendant,
   multiformat équilibré et replay multi-source CNP.
 - Parseurs légers HDFS et BGL raccordés au pipeline commun.
-- Douze garde-fous automatiques exécutés avant les campagnes : **12/12 réussis**.
+- Quatorze garde-fous automatiques exécutés après les campagnes : **14/14 réussis**.
 - Preuve JUnit : `experiments/phase_dataset_strengthening/logs/pre_experiment_tests.xml`.
+- Preuve JUnit finale :
+  `experiments/phase_dataset_strengthening/logs/final_dataset_strengthening_tests.xml`.
 - Dry-runs validés : CICIDS (78 features, 5 seeds), routeur (31 fichiers,
   9 groupes), multiformat (8 sources), CNP E2E (7 champs `AgentMessage`).
 - HDFS block-level : run `ds_hdfs_block_20260910T081756Z`, 575 061 blocs
@@ -43,6 +45,21 @@ Dernière mise à jour : 2026-09-10.
   `1000/1000`. Le routage de lot final identifie BGL correctement. Les taux de
   complétude restent propres à chaque famille et ne démontrent pas une
   préservation brute universelle.
+- Replay multi-source CNP : run `multisource_cnp_20260910T095810Z`, `1401`
+  unités lues, normalisées, routées et évaluées sans erreur; `122` candidats
+  et `2` incidents heuristiques ont été produits. Les `11 408` messages
+  respectent exactement les sept champs du contrat `AgentMessage` et partagent
+  un seul `run_id`. La détection exécutée est la règle légère
+  `e2e_lightweight_candidate_rule_v1`; ce replay ne constitue donc pas une
+  évaluation prédictive des artefacts de modèles recommandés par le routeur.
+- Cartes de données, matrice revendication--preuve, rapport final, validation
+  automatique, dix figures et manifeste SHA-256 produits.
+- Validation finale : les six campagnes prioritaires satisfont tous les
+  contrôles; `all_six_priority_campaigns_valid = true`.
+- Dataset externe optionnel : **NON EXÉCUTÉ**. Le transfert vers un jeu externe
+  officiel supplémentaire reste **NON DÉMONTRÉ**.
+- Contrôle UTF-8 ciblé des livrables et artefacts textuels : aucun fichier
+  invalide et aucun motif de mojibake détecté.
 
 ## Incident d’outillage conservé
 
@@ -51,8 +68,8 @@ Cet échec d’indexation ne modifie ni le code expérimental ni les données.
 
 ## Prochaine action exacte
 
-Exécuter `scripts/run_multisource_cnp_e2e_strengthening.py`, valider toutes les
-traces et les sept champs `AgentMessage`, puis produire les cartes de données,
-le manifeste global et le rapport final.
+Transmettre à la phase de rédaction uniquement les recommandations et les
+preuves validées du rapport final. Ne pas présenter le replay CNP comme une
+évaluation prédictive et ne pas revendiquer de transfert externe.
 
 Le mémoire `ARIEL_LOGMINER_MEMOIRE_FINAL` n’a pas été modifié par cette mission.
