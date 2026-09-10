@@ -21,6 +21,12 @@ Dernière mise à jour : 2026-09-10.
   `UnknownTemplateBaseline` `0,2778848006`; tous les vrais positifs Histogram
   sont dans le groupe inconnu, tandis que la baseline produit 14 994 faux
   positifs.
+- CICIDS temporal holdout : run `cicids_temporal_20260910T083015Z`, 78
+  caractéristiques, fichiers lundi--jeudi train et vendredi test, cinq graines
+  sur un pool parent figé. F1 moyen RandomForest `0,4374291751`, F1 moyen
+  LogisticRegression `0,5566145428`. Les dates et jours servent uniquement au
+  split. Les échantillons sont équilibrés et les graines restent corrélées par
+  leur pool parent commun; cette limite doit être conservée.
 
 ## Incident d’outillage conservé
 
@@ -29,7 +35,7 @@ Cet échec d’indexation ne modifie ni le code expérimental ni les données.
 
 ## Prochaine action exacte
 
-Exécuter `scripts/run_cicids_temporal_strengthening.py`, valider ses artefacts
-et sa méthodologie, puis seulement passer au routeur indépendant.
+Exécuter `scripts/run_router_independent_strengthening.py`, valider ses
+artefacts et sa méthodologie, puis seulement passer au multiformat équilibré.
 
 Le mémoire `ARIEL_LOGMINER_MEMOIRE_FINAL` n’a pas été modifié par cette mission.

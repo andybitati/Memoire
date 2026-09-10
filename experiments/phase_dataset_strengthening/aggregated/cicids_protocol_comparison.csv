@@ -1,0 +1,5 @@
+﻿protocol,model,n,f1,pr_auc,mcc,recall,fpr,comparability
+Random stratifié (historique),RandomForest,5,0.9951423171211558,0.9997230309089996,0.9903051686722764,0.99365,0.0033499999999999,question_statistique_différente
+Holdout scénario (historique),RandomForest,25,0.1577441435122294,0.5568963686635914,0.1443661522793429,0.12854,0.0001099999999999,question_statistique_différente
+Holdout temporel lundi-jeudi→vendredi,LogisticRegression,5,0.5566145428322669,0.8714483141433746,0.43629777498206074,0.40096,0.03936,nouveau_protocole_temporel
+Holdout temporel lundi-jeudi→vendredi,RandomForest,5,0.4374291751209962,0.8307587751071814,0.39911241433182487,0.28062,0.0024000000000000002,nouveau_protocole_temporel
