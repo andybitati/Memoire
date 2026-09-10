@@ -1,0 +1,57 @@
+﻿experiment_id,format,field,source_column,n_present,n_normalized,completeness_rate,status,run_id,source_id
+e5_multiformat_windows_event,Windows Event,timestamp,timestamp_iso,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,windows_event
+e5_multiformat_windows_event,Windows Event,source,source,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,windows_event
+e5_multiformat_windows_event,Windows Event,host,host,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,windows_event
+e5_multiformat_windows_event,Windows Event,family,subtype,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,windows_event
+e5_multiformat_windows_event,Windows Event,category,category,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,windows_event
+e5_multiformat_windows_event,Windows Event,severity,severity,999,1000,0.999,MEASURED,multiformat_balanced_20260910T094422Z,windows_event
+e5_multiformat_windows_event,Windows Event,message,message,979,1000,0.979,MEASURED,multiformat_balanced_20260910T094422Z,windows_event
+e5_multiformat_linux_auth,Linux/auth tabulaire,timestamp,timestamp,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,linux_auth
+e5_multiformat_linux_auth,Linux/auth tabulaire,source,service,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,linux_auth
+e5_multiformat_linux_auth,Linux/auth tabulaire,host,server,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,linux_auth
+e5_multiformat_linux_auth,Linux/auth tabulaire,family,,0,1000,0.0,MEASURED,multiformat_balanced_20260910T094422Z,linux_auth
+e5_multiformat_linux_auth,Linux/auth tabulaire,category,,0,1000,0.0,MEASURED,multiformat_balanced_20260910T094422Z,linux_auth
+e5_multiformat_linux_auth,Linux/auth tabulaire,severity,,0,1000,0.0,MEASURED,multiformat_balanced_20260910T094422Z,linux_auth
+e5_multiformat_linux_auth,Linux/auth tabulaire,message,comment,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,linux_auth
+e5_multiformat_wazuh,Wazuh/Elastic CSV,timestamp,timestamp_iso,0,1000,0.0,MEASURED,multiformat_balanced_20260910T094422Z,wazuh
+e5_multiformat_wazuh,Wazuh/Elastic CSV,source,source,999,1000,0.999,MEASURED,multiformat_balanced_20260910T094422Z,wazuh
+e5_multiformat_wazuh,Wazuh/Elastic CSV,host,host,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,wazuh
+e5_multiformat_wazuh,Wazuh/Elastic CSV,family,subtype,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,wazuh
+e5_multiformat_wazuh,Wazuh/Elastic CSV,category,category,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,wazuh
+e5_multiformat_wazuh,Wazuh/Elastic CSV,severity,severity,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,wazuh
+e5_multiformat_wazuh,Wazuh/Elastic CSV,message,message,943,1000,0.943,MEASURED,multiformat_balanced_20260910T094422Z,wazuh
+e5_multiformat_syslog,Syslog Linux,timestamp,timestamp_iso,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,syslog
+e5_multiformat_syslog,Syslog Linux,source,source,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,syslog
+e5_multiformat_syslog,Syslog Linux,host,host,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,syslog
+e5_multiformat_syslog,Syslog Linux,family,subtype,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,syslog
+e5_multiformat_syslog,Syslog Linux,category,category,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,syslog
+e5_multiformat_syslog,Syslog Linux,severity,severity,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,syslog
+e5_multiformat_syslog,Syslog Linux,message,message,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,syslog
+e5_multiformat_apache,Apache access,timestamp,timestamp_iso,1,1,1.0,MEASURED,multiformat_balanced_20260910T094422Z,apache
+e5_multiformat_apache,Apache access,source,source,1,1,1.0,MEASURED,multiformat_balanced_20260910T094422Z,apache
+e5_multiformat_apache,Apache access,host,host,0,1,0.0,MEASURED,multiformat_balanced_20260910T094422Z,apache
+e5_multiformat_apache,Apache access,family,subtype,1,1,1.0,MEASURED,multiformat_balanced_20260910T094422Z,apache
+e5_multiformat_apache,Apache access,category,category,1,1,1.0,MEASURED,multiformat_balanced_20260910T094422Z,apache
+e5_multiformat_apache,Apache access,severity,severity,1,1,1.0,MEASURED,multiformat_balanced_20260910T094422Z,apache
+e5_multiformat_apache,Apache access,message,message,1,1,1.0,MEASURED,multiformat_balanced_20260910T094422Z,apache
+e5_multiformat_hdfs,HDFS,timestamp,timestamp_iso,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,hdfs
+e5_multiformat_hdfs,HDFS,source,source,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,hdfs
+e5_multiformat_hdfs,HDFS,host,host,0,1000,0.0,MEASURED,multiformat_balanced_20260910T094422Z,hdfs
+e5_multiformat_hdfs,HDFS,family,subtype,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,hdfs
+e5_multiformat_hdfs,HDFS,category,category,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,hdfs
+e5_multiformat_hdfs,HDFS,severity,severity,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,hdfs
+e5_multiformat_hdfs,HDFS,message,message,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,hdfs
+e5_multiformat_bgl,BGL,timestamp,timestamp_iso,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,bgl
+e5_multiformat_bgl,BGL,source,source,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,bgl
+e5_multiformat_bgl,BGL,host,host,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,bgl
+e5_multiformat_bgl,BGL,family,subtype,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,bgl
+e5_multiformat_bgl,BGL,category,category,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,bgl
+e5_multiformat_bgl,BGL,severity,severity,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,bgl
+e5_multiformat_bgl,BGL,message,message,1000,1000,1.0,MEASURED,multiformat_balanced_20260910T094422Z,bgl
+e5_multiformat_network_tabular,Flux réseau tabulaires,timestamp,,0,1000,0.0,MEASURED,multiformat_balanced_20260910T094422Z,network_tabular
+e5_multiformat_network_tabular,Flux réseau tabulaires,source,,0,1000,0.0,MEASURED,multiformat_balanced_20260910T094422Z,network_tabular
+e5_multiformat_network_tabular,Flux réseau tabulaires,host,,0,1000,0.0,MEASURED,multiformat_balanced_20260910T094422Z,network_tabular
+e5_multiformat_network_tabular,Flux réseau tabulaires,family,,0,1000,0.0,MEASURED,multiformat_balanced_20260910T094422Z,network_tabular
+e5_multiformat_network_tabular,Flux réseau tabulaires,category,,0,1000,0.0,MEASURED,multiformat_balanced_20260910T094422Z,network_tabular
+e5_multiformat_network_tabular,Flux réseau tabulaires,severity,,0,1000,0.0,MEASURED,multiformat_balanced_20260910T094422Z,network_tabular
+e5_multiformat_network_tabular,Flux réseau tabulaires,message,,0,1000,0.0,MEASURED,multiformat_balanced_20260910T094422Z,network_tabular

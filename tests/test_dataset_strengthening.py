@@ -112,6 +112,30 @@ def test_route_dataframe_normalizes_cicids_header_whitespace() -> None:
     assert route["family"] == "network_cicids"
 
 
+def test_route_dataframe_ignores_empty_common_schema_columns() -> None:
+    frame = pd.DataFrame(
+        {
+            "dataset": ["bgl"],
+            "subtype": ["bgl"],
+            "event": ["-"],
+            "source": ["KERNEL"],
+            "component": ["KERNEL"],
+            "severity": ["INFO"],
+            "host": ["R02-M1"],
+            "message": ["instruction cache parity error corrected"],
+            "recno": [""],
+            "session": [""],
+            "src_ip": [""],
+            "dst_ip": [""],
+            "src_port": [""],
+            "dst_port": [""],
+            "proto": [""],
+        }
+    )
+    route = route_dataframe(frame)
+    assert route["family"] == "bgl"
+
+
 def test_multiformat_text_selection_does_not_duplicate(tmp_path: Path) -> None:
     source = tmp_path / "source.log"
     source.write_text("one\ntwo\nthree\n", encoding="utf-8")

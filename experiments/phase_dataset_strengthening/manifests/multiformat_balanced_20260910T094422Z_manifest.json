@@ -1,0 +1,63 @@
+{
+  "run_id": "multiformat_balanced_20260910T094422Z",
+  "config_sha256": "f0f40b654740cbdf3b578aeb733837d3c8b08d78c688a63e73457e76353e5885",
+  "selection_duplicates": 0,
+  "sources": [
+    {
+      "source_id": "windows_event",
+      "path": "data/samples/Application.evtx",
+      "sha256": "7585ee27c6089ee2e83cf68ceed2ba5b63ac630ba78c3aca4a88a033f6d4ed20",
+      "normalized_path": "experiments/phase_dataset_strengthening/processed/multiformat_balanced_20260910T094422Z/normalized/windows_event.csv",
+      "normalized_sha256": "e33adca1ce0bcc86c7c3519829d6d1c5f62120bdf6a406e0d2d6a534e798fc1a"
+    },
+    {
+      "source_id": "linux_auth",
+      "path": "data/raw/Datasets/linux_auth_logs_labeled.csv",
+      "sha256": "fa5f0a3e9532c16320a290fa1e626b632318a577b4bf00025c2063540144d38f",
+      "normalized_path": "experiments/phase_dataset_strengthening/processed/multiformat_balanced_20260910T094422Z/normalized/linux_auth.csv",
+      "normalized_sha256": "0974cad87640891ef698aa5d82701fc24db7142b6cd5bcf5efc4ffaff50c8b98"
+    },
+    {
+      "source_id": "wazuh",
+      "path": "data/raw/Datasets/06-20-October.csv",
+      "sha256": "fd20eb2c552d7090dc3eede662f0185a256ddb1253107ef9c045fb398d577e29",
+      "normalized_path": "experiments/phase_dataset_strengthening/processed/multiformat_balanced_20260910T094422Z/normalized/wazuh.csv",
+      "normalized_sha256": "668dbd38f907147c98ba48fff367ac5873e882975a003bdaa9f5fcf88c4a26d8"
+    },
+    {
+      "source_id": "syslog",
+      "path": "data/raw/Datasets/Linux_2k.log",
+      "sha256": "b3e20bc1afe732ab1bf3ed1de4bf9c809e4194e02f7dea911d918e5342e8e173",
+      "normalized_path": "experiments/phase_dataset_strengthening/processed/multiformat_balanced_20260910T094422Z/normalized/syslog.csv",
+      "normalized_sha256": "7033445fd4fe5ab26e15f74ce5dc9b99f80a3736957e225737e9d2603f1da9ef"
+    },
+    {
+      "source_id": "apache",
+      "path": "data/processed/robustness_scalability_inputs/apache_access.log",
+      "sha256": "795ff201d7a354d429de197f97dce1ee70701296a85cde137b0381dc11a9ecd4",
+      "normalized_path": "experiments/phase_dataset_strengthening/processed/multiformat_balanced_20260910T094422Z/normalized/apache.csv",
+      "normalized_sha256": "570487e80be20845517c5720871490b211036e2922c0ab7f8228855170712a84"
+    },
+    {
+      "source_id": "hdfs",
+      "path": "data/raw/Datasets/HDFS_1/HDFS.log",
+      "sha256": "0783096174d7832c618337f9609e06e04abd86ddd7089b3c12b407e63bfebc52",
+      "normalized_path": "experiments/phase_dataset_strengthening/processed/multiformat_balanced_20260910T094422Z/normalized/hdfs.csv",
+      "normalized_sha256": "b399dc0ed958b8237228b073c1ac0501bf53cf891d8103b67f8347a152564206"
+    },
+    {
+      "source_id": "bgl",
+      "path": "data/raw/Datasets/BGL/BGL.log",
+      "sha256": "666130b15ef44eb32fd02bd053e6c6e007c37696b5e7e8b9d8e45b729876a5d2",
+      "normalized_path": "experiments/phase_dataset_strengthening/processed/multiformat_balanced_20260910T094422Z/normalized/bgl.csv",
+      "normalized_sha256": "d2dbca6de13ee6daeee3de0fb96ca475ae0f4e8dd2fa9ff29c209d14e694e342"
+    },
+    {
+      "source_id": "network_tabular",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv",
+      "sha256": "6ff1580f5f81c0ae28a26f7631721018577f5f7c5e0feac28b795fcfe7b411ee",
+      "normalized_path": "experiments/phase_dataset_strengthening/processed/multiformat_balanced_20260910T094422Z/normalized/network_tabular.csv",
+      "normalized_sha256": "cf666693d52176e42fe3cb2866c82949734ac23cbe788d693afef4920db43488"
+    }
+  ]
+}

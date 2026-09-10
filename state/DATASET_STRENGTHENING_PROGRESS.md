@@ -29,12 +29,20 @@ Dernière mise à jour : 2026-09-10.
   leur pool parent commun; cette limite doit être conservée.
 - Routeur indépendant : le premier run `router_independent_20260910T092757Z`
   conserve l’échec des huit fichiers CICIDS causé par les espaces des en-têtes.
-  Après correction et test de régression (13/13 tests réussis), le run final
-  `router_independent_20260910T093225Z` traite 31 fichiers, 9 groupes et zéro
+  Après deux corrections et 14/14 tests réussis, le run final
+  `router_independent_20260910T094257Z` traite 31 fichiers, 9 groupes et zéro
   erreur. Accuracy `0,9032258065`, macro-F1 `0,7777777778`, accuracy des
   familles connues `1,0`. Les trois sources open-set sont toutes routées
   `network`; leur taux de rejet est `0,0`. La marge est un score heuristique,
   pas une probabilité calibrée.
+- Multiformat équilibré : le premier run a révélé que les colonnes standard
+  vides biaisaient le routage BGL vers Windows. Ce run est conservé. Après
+  correction, le run final `multiformat_balanced_20260910T094422Z` lit, parse
+  et normalise `7001/7001` unités sans duplication ni perte : 1000 pour chaque
+  source sauf Apache (`N=1`, fixture synthétique). HDFS et BGL atteignent chacun
+  `1000/1000`. Le routage de lot final identifie BGL correctement. Les taux de
+  complétude restent propres à chaque famille et ne démontrent pas une
+  préservation brute universelle.
 
 ## Incident d’outillage conservé
 
@@ -43,7 +51,8 @@ Cet échec d’indexation ne modifie ni le code expérimental ni les données.
 
 ## Prochaine action exacte
 
-Exécuter `scripts/run_multiformat_balanced_strengthening.py`, valider ses
-artefacts et sa méthodologie, puis seulement passer au replay multi-source CNP.
+Exécuter `scripts/run_multisource_cnp_e2e_strengthening.py`, valider toutes les
+traces et les sept champs `AgentMessage`, puis produire les cartes de données,
+le manifeste global et le rapport final.
 
 Le mémoire `ARIEL_LOGMINER_MEMOIRE_FINAL` n’a pas été modifié par cette mission.

@@ -323,7 +323,11 @@ def _score_dataframe(df: pd.DataFrame, path: Path | None = None) -> tuple[dict[s
     # Signal principal: le nom des colonnes. C'est le plus stable pour les CSV
     # deja structures comme UNSW, tcpdump converti ou Windows normalise.
     for family, expected_columns in FAMILY_COLUMNS.items():
-        matched = lower_columns & expected_columns
+        matched = {
+            column
+            for column in lower_columns & expected_columns
+            if _non_empty_ratio(df, lower_to_original[column]) >= 0.05
+        }
         if matched:
             scores[family] += len(matched) * 8
             reasons.append(f"colonnes {family}: " + ",".join(sorted(matched)[:8]))
