@@ -422,6 +422,60 @@ La séparation n'interdit pas qu'un même processus exécute plusieurs responsab
 un scénario local. Elle définit plutôt des frontières logiques. Ces frontières deviennent
 particulièrement utiles lorsqu'une partie du pipeline est exécutée par plusieurs workers.
 
+\subsection{Architecture multi-agents réellement utilisée}
+
+Le chemin multi-agents évalué s'appuie sur \texttt{MultiTaskIntelligentAgent} et
+\texttt{ContractNetCoordinator}. Le premier regroupe plusieurs capacités et handlers, observe son
+état local, calcule une offre ou un refus et conserve un feedback lorsque la mémoire est
+activée. Le second enregistre les agents, diffuse les appels à propositions, compare les
+utilités reçues, attribue la tâche, rejette les autres offres et écrit la trace du cycle.
+Le coordinateur ne calcule donc pas l'utilité à la place des agents.
+
+Les variantes de transport et de persistance sont séparées du contrat métier :
+\texttt{LocalMessageBus} et \texttt{RedisMessageBus} transportent les messages ;
+\texttt{RedisContractNetCoordinator} et \texttt{RedisContractNetTransport} réalisent la négociation
+inter-processus ; \texttt{SQLiteIdempotencyStore} et \texttt{RedisIdempotencyStore} empêchent une
+réexécution contrôlée lorsqu'une clé a déjà produit un résultat. Cette organisation permet
+de tester le même protocole en local, sur plusieurs processus et dans deux machines
+virtuelles.
+
+Le cycle de négociation est :
+
+\begin{center}
+\textit{CFP} $\rightarrow$ \textit{PROPOSE/REFUSE}
+$\rightarrow$ \textit{AWARD/REJECT} $\rightarrow$ \textit{ACCEPT}
+$\rightarrow$ \textit{RESULT/FAIL} $\rightarrow$ \textit{FEEDBACK}.
+\end{center}
+
+La politique initiale fixe l'utilité expérimentale à
+\[
+U=0{,}30C+0{,}20H+0{,}20M+0{,}15A+0{,}10L+0{,}05T,
+\]
+avec des composantes bornées entre 0 et 1. La fiabilité historique est calculée par
+$H_i=(s_i+1)/(s_i+f_i+2)$. Les poids sont configurables et fixés avant les campagnes ;
+ils ne sont pas appris et ne sont pas présentés comme optimaux.
+
+Le superviseur historique reste disponible comme architecture centralisée de comparaison.
+Il ne doit pas être confondu avec le chemin autonome évalué, dans lequel les agents
+proposent ou refusent localement avant l'attribution.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/final/fig_architecture_multi_agent_global.png}
+\caption{Architecture multi-agents effectivement évaluée. Le diagramme relie les sources,
+la normalisation, le routage, le Contract Net, le transport Redis et les artefacts de preuve ;
+il ne constitue pas une spécification de déploiement industriel.}
+\label{fig:architecture-multi-agent-finale}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/final/fig_contract_net_sequence.png}
+\caption{Séquence Contract Net observée dans les campagnes locales et Redis. Les branches
+\textit{REFUSE} et \textit{FAIL} sont conservées pour rendre visibles les reprises contrôlées.}
+\label{fig:contract-net-sequence-finale}
+\end{figure}
+
 \section{Cycle de vie d'une donnée}
 
 \subsection{Niveau 1 : source brute}

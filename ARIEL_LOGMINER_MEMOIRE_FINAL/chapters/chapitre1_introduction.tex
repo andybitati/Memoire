@@ -51,11 +51,19 @@ Ces difficultés conduisent à considérer la détection d'anomalies dans les jo
 
 Le titre du mémoire emploie les termes \textit{autonome}, \textit{distribuée} et \textit{agents intelligents multitâches}. Leur signification doit être précisée afin d'éviter de leur attribuer une portée supérieure à celle effectivement étudiée.
 
-Dans ce travail, l'\textbf{autonomie} désigne la capacité du logiciel à enchaîner certains traitements sans intervention manuelle à chaque étape. Le prototype peut notamment identifier une source, orienter une tâche, sélectionner un traitement disponible, exécuter une détection, produire une sortie et enregistrer des informations d'audit selon des règles définies. Cette autonomie est donc une autonomie d'orchestration logicielle. Elle ne correspond ni à une intelligence générale ni à la capacité de prendre de manière indépendante une décision définitive concernant un incident de sécurité.
+Dans ce travail, un \textbf{agent} désigne une entité logicielle disposant de capacités, d'un état propre, d'une politique locale de décision et d'une mémoire. Il peut percevoir une tâche, évaluer sa capacité à la traiter, proposer ou refuser son exécution, puis exécuter un handler et intégrer un feedback. Cette définition est opérationnelle : elle renvoie au code et aux traces de décision du prototype, non à une entité cognitive.
 
-Le caractère \textbf{distribué} renvoie à la décomposition de la chaîne en composants ou workers pouvant échanger des tâches au moyen d'un mécanisme de messagerie. L'architecture permet une exécution multiprocessus et fait l'objet d'une validation multi-VM de laboratoire autour de Redis Streams. Le terme ne signifie pas que le prototype constitue une architecture industrielle géographiquement distribuée, hautement disponible ou conçue pour un SOC multi-site.
+L'\textbf{autonomie} désigne la capacité d'un agent à prendre localement certaines décisions d'offre, de refus et d'exécution sans affectation impérative systématique par un superviseur central. Elle ne correspond ni à une intelligence générale ni à un apprentissage continu autonome en production.
 
-Un \textbf{agent intelligent multitâche} est ici un composant logiciel spécialisé disposant de capacités déclarées, d'un état, d'un mécanisme de communication, d'informations de mémoire, d'un heartbeat et de handlers permettant de réaliser plusieurs opérations. Le qualificatif \textit{intelligent} se rapporte à la sélection et à l'orchestration de traitements selon le contexte disponible. Il ne suppose pas de raisonnement autonome général.
+Le qualificatif \textbf{intelligent} renvoie ici à une adaptation opérationnelle interprétable fondée sur l'état, les capacités, l'historique, la compatibilité du modèle, la disponibilité, la charge et la latence. La politique expérimentale initiale utilise une utilité configurable :
+\[
+U=0{,}30C+0{,}20H+0{,}20M+0{,}15A+0{,}10L+0{,}05T,
+\]
+où les composantes sont normalisées entre 0 et 1 et où $H_i=(s_i+1)/(s_i+f_i+2)$. Ces poids sont fixés avant les campagnes ; ils ne sont pas présentés comme optimaux.
+
+Un agent est \textbf{multitâche} lorsqu'il peut prendre en charge plusieurs types de tâches au moyen de plusieurs handlers compatibles. Le protocole Contract Net explicite la séquence CFP, PROPOSE ou REFUSE, AWARD ou REJECT, ACCEPT, RESULT ou FAIL, puis FEEDBACK.
+
+Le caractère \textbf{distribué} renvoie à l'exécution de plusieurs processus et, dans la validation retenue, de deux machines virtuelles communiquant via un Redis centralisé sur l'hôte de laboratoire. Le terme ne signifie pas que le prototype constitue une architecture industrielle géographiquement distribuée, hautement disponible ou conçue pour un SOC multi-site.
 
 Enfin, le terme \textbf{anomalie} doit être distingué de celui d'\textbf{attaque}. Une anomalie désigne une observation ou un ensemble d'observations que le mécanisme de détection considère comme inhabituel selon le modèle ou la règle utilisés. Une attaque implique une interprétation de sécurité plus forte et nécessite une vérité terrain, une règle explicite ou une investigation. Cette distinction structure la manière dont les résultats non supervisés sont présentés dans l'ensemble du mémoire.
 

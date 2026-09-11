@@ -575,13 +575,14 @@ Elle ne constitue pas une probabilité calibrée.
 
 \section{Résultat de référence}
 
-Le routeur obtient :
+Le routeur historique obtient :
 
 \[
 80/81
 \]
 
-décisions correctes.
+décisions correctes ; le contrôle open-set final rejette 3/3 inconnus sans faux rejet parmi
+28 connus.
 
 L'exactitude est :
 
@@ -1114,8 +1115,8 @@ Drain3 train-only puis état gelé. &
 La comparaison avec les anciens protocoles n'est pas une ablation causale. \\
 
 La normalisation multi-source fonctionne partiellement. &
-5\,001 normalisées sur 7\,001. &
-HDFS/BGL à 0/1\,000 dans la voie générale. \\
+7\,001 lues, parsées et normalisées sur 7\,001. &
+La complétude des champs et la conservation du brut restent dépendantes de l'adaptateur. \\
 
 Le routeur fonctionne sur le corpus dérivé. &
 80/81 décisions correctes. &
@@ -1130,8 +1131,8 @@ Non soutenu : 1,5715 contre 1,6357 tâche/s. &
 Benchmark limité à 60 tâches. \\
 
 La distribution multi-VM fonctionne en laboratoire. &
-525 entrées lues/acquittées ; lag et pending nuls. &
-VirtualBox, NAT, Redis unique et relances supervisées. \\
+60/60 tâches ; Debian/Ubuntu 30/30 ; 15 refus ; 1 échec contrôlé ; 1 réattribution. &
+VirtualBox, NAT, Redis unique et replay idempotent sans effet dupliqué. \\
 
 Une reprise avant traitement/ACK est possible. &
 Campagne de récupération Debian vers Ubuntu. &

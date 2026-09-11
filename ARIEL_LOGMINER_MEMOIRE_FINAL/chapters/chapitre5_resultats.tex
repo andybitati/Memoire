@@ -699,6 +699,15 @@ particulière.
 \end{center}
 }{}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.96\textwidth]{figures/final/fig_cicids_protocol_comparison.png}
+\caption{Comparaison des protocoles CICIDS2017 à partir des cinq seeds disponibles.
+La séparation aléatoire et les holdouts ne mesurent pas la même capacité de généralisation ;
+la figure soutient l'interprétation méthodologique du chapitre.}
+\label{fig:cicids-protocol-comparison-final}
+\end{figure}
+
 \section{Comparaison de cinq modèles sur les holdouts CICIDS2017}
 
 \subsection{Objectif}
@@ -825,6 +834,15 @@ classifieur sans examiner les données.
 \footnotesize Source : auteur, à partir des résultats expérimentaux de ce travail.
 \end{center}
 }{}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{figures/final/fig_cicids_model_comparison.png}
+\caption{Comparaison des cinq candidats CICIDS2017 sur le holdout par scénario.
+Les valeurs sont les moyennes des cinq seeds ; la figure permet de distinguer le meilleur
+F1 macro du meilleur PR-AUC macro.}
+\label{fig:cicids-model-comparison-final}
+\end{figure}
 
 \subsection{Conclusion de la comparaison}
 
@@ -970,47 +988,58 @@ Les méthodes déterministes sont évaluées avec :
 N=1.
 \]
 
-\section{Résultats HDFS}
+\section{Résultats HDFS au niveau bloc}
 
-Dans le protocole strict, la meilleure valeur de F1 documentée pour HDFS est obtenue avec
-la méthode Histogram :
-
-\[
-F_1=0{,}269307.
-\]
-
-La matrice correspondante comporte notamment :
+La granularité principale retenue pour HDFS est désormais \texttt{block\_id}, c'est-à-dire l'unité
+sur laquelle la vérité terrain est définie. Le parseur Drain3 est ajusté sur le train puis
+gelé ; les partitions de validation et de test utilisent uniquement un appariement aux
+templates existants. L'agrégateur est la moyenne des scores d'événements d'un bloc et le
+seuil est choisi sur la validation :
 
 \[
-TP=68,
-\qquad
-FP=319,
+\tau_{\mathrm{val}}=1.2729429339548877.
 \]
 
-pour 118 anomalies dans le test considéré.
+Sur le test gelé de 2\,000 blocs, dont 29 positifs, Histogram obtient :
 
-Le F1 est donc relativement faible.
+\[
+F_1=0{,}892308,
+\qquad TP=29,\ FP=7,\ TN=1964,\ FN=0.
+\]
 
-Ce résultat ne doit pas être considéré comme un échec méthodologique. Au contraire, il est
-obtenu après avoir empêché le parseur et le réglage du seuil d'utiliser le test.
+Le rappel vaut donc 1 dans ce test, mais le faible nombre de blocs positifs impose une
+lecture prudente. Un bootstrap descriptif de 1\,000 réplications par \texttt{block\_id} donne une
+médiane de F1 de $0{,}894737$ et un intervalle percentile
+$[0{,}800000\,;\,0{,}961039]$. Les 29 retraits d'un bloc positif donnent tous un F1 de
+$0{,}888889$ ; cette stabilité du rappel ne supprime pas la variabilité globale. Le F1
+observé au niveau bloc vaut donc $0{,}892308$ sur le test gelé, tandis que l'analyse
+bootstrap met en évidence une variabilité non négligeable liée notamment au faible nombre
+de blocs positifs.
 
-Il fournit ainsi une estimation plus crédible du comportement de la méthode dans le
-protocole retenu.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{figures/final/fig_hdfs_event_vs_block.png}
+\caption{HDFS : comparaison entre l'ancien protocole événementiel et le protocole final au
+niveau bloc. La valeur historique n'est pas un benchmark équivalent ; le niveau bloc est
+aligné sur la définition de la vérité terrain.}
+\label{fig:hdfs-event-block-final}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{figures/final/fig_hdfs_bootstrap_distribution.png}
+\caption{Distribution bootstrap du F1 HDFS au niveau bloc (1\,000 réplications par
+\texttt{block\_id}). La médiane et l'intervalle empirique rendent visible l'incertitude
+associée au faible nombre de blocs positifs.}
+\label{fig:hdfs-bootstrap-final}
+\end{figure}
 
 \subsection{Particularité des labels HDFS}
 
-La vérité terrain originale de HDFS est associée aux blocs ou traces identifiés par
-\texttt{block\_id}.
-
-L'évaluation finale utilise cependant des représentations au niveau événement dans plusieurs
-étapes.
-
-Cette différence d'unité constitue une limite méthodologique importante.
-
-Une ligne marquée par l'appartenance à un bloc anormal ne signifie pas nécessairement que
-chaque événement de ce bloc est individuellement anormal de la même manière.
-
-Cette question sera reprise dans le chapitre consacré à la validité scientifique.
+La réagrégation au niveau \texttt{block\_id} évite d'interpréter chaque événement d'un bloc
+anormal comme une anomalie indépendante. Les statistiques rapportées sont descriptives et
+ne constituent pas une preuve d'indépendance entre blocs ni une généralisation à tous les
+journaux HDFS.
 
 \section{Résultats BGL}
 
@@ -1041,6 +1070,30 @@ Deux particularités doivent être conservées dans l'interprétation :
 Le comportement du détecteur dépend donc fortement du déplacement de distribution et de la
 manière dont la nouveauté des templates est représentée.
 
+Une baseline qui déclare toute observation dont le template est inconnu comme anomalie
+obtient seulement un F1 de $0{,}277885$. Le F1 de Histogram ne peut donc pas être expliqué
+par la seule nouveauté des templates. Toutefois, tous les vrais positifs observés se
+trouvent dans le groupe \texttt{UNKNOWN\_TEMPLATE} et le groupe \texttt{KNOWN\_TEMPLATE} ne contient
+aucune anomalie dans cette partition. Le rappel sur des anomalies à template connu reste
+donc \textbf{INFORMATION À VÉRIFIER}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{figures/final/fig_bgl_known_unknown.png}
+\caption{BGL : F1 d'Histogram selon que le template est connu ou inconnu au train. Le
+groupe connu ne comporte aucune anomalie dans cette partition ; la figure ne permet donc
+pas d'estimer un rappel d'anomalies connues.}
+\label{fig:bgl-known-unknown-final}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{figures/final/fig_bgl_histogram_vs_unknown_baseline.png}
+\caption{BGL : Histogram comparé au baseline qui déclare toute observation inconnue comme
+anomalie. L'écart montre que la nouveauté seule n'explique pas tout le score observé.}
+\label{fig:bgl-baseline-final}
+\end{figure}
+
 \section{Comparaison HDFS/BGL}
 
 Le tableau~\ref{tab:hdfs-bgl-strict} résume les meilleurs résultats stricts retenus.
@@ -1059,10 +1112,10 @@ Le tableau~\ref{tab:hdfs-bgl-strict} résume les meilleurs résultats stricts re
 \midrule
 
 HDFS &
-Histogram &
-$0{,}269307$ &
-Vérité terrain associée au bloc/trace alors que plusieurs étapes sont évaluées au niveau
-événement. \\
+Histogram, agrégation par \texttt{block\_id} &
+$0{,}892308$ &
+2\,000 blocs test, 29 positifs ; intervalle bootstrap descriptif et aucune indépendance
+statistique revendiquée. \\
 
 BGL &
 Histogram &
@@ -1282,62 +1335,35 @@ fonctions.
 
 \subsection{Résultat global}
 
-Au total :
+Au total, les compteurs finaux donnent :
 
 \[
-7\,001
+\text{lues}=7\,001,\qquad
+\text{parsées}=7\,001,\qquad
+\text{normalisées}=7\,001.
 \]
 
-unités sont lues.
-
-Parmi elles :
-
-\[
-5\,001
-\]
-
-produisent une sortie normalisée.
-
-Ainsi :
-
-\[
-2\,000
-\]
-
-unités ne sont pas normalisées dans les voies évaluées.
-
-Le taux de normalisation global observé vaut donc approximativement :
-
-\[
-\frac{5\,001}{7\,001}
-\approx 71{,}4\,\%.
-\]
-
-Cette valeur est descriptive du corpus de test et non une estimation de la robustesse sur
-tout format possible.
+La couverture de la chaîne d'adaptateurs est donc de $7\,001/7\,001$ pour cette
+campagne. Cette couverture ne signifie ni que tous les champs sont renseignés ni que le
+message brut est conservé intégralement pour chaque format.
 
 \subsection{HDFS et BGL}
 
-Les deux principales pertes correspondent aux voies HDFS et BGL :
+Les contrôles par voie donnent également :
 
 \[
-\mathrm{HDFS}: 0/1\,000,
+\mathrm{HDFS}: 1\,000/1\,000,
 \]
 
 \[
-\mathrm{BGL}: 0/1\,000.
+\mathrm{BGL}: 1\,000/1\,000.
 \]
 
-Cette observation est importante parce que ces datasets sont malgré tout traités dans le
-protocole expérimental strict du chapitre.
-
-Les deux constats ne sont pas contradictoires.
-
-Le pipeline strict HDFS/BGL utilise une préparation spécifique avec Drain3. La voie
-multiformat générale utilise les adaptateurs applicatifs existants.
-
-Le résultat montre donc que l'intégration de HDFS/BGL dans le pipeline général reste
-incomplète, même si une expérimentation scientifique spécifique existe pour ces données.
+Ces résultats concernent la campagne multiformat finale et ne doivent pas être mélangés
+avec les sorties historiques de la voie exploratoire. Le pipeline strict HDFS/BGL et la
+voie multiformat utilisent des adaptateurs et des représentations distincts ; la
+couverture de lecture/parsing/normalisation ne remplace donc pas l'évaluation prédictive
+au niveau bloc ou au niveau template.
 
 \subsection{Conservation exacte du message}
 
@@ -1375,6 +1401,15 @@ deux échecs importants.
 \footnotesize Source : auteur, à partir des résultats expérimentaux de ce travail.
 \end{center}
 }{}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.96\textwidth]{figures/final/fig_multiformat_coverage_by_source.png}
+\caption{Couverture multiformat par source dans la campagne finale. Les compteurs de
+lecture, parsing et normalisation sont extraits du CSV ; Apache reste une fixture d'une
+seule ligne et la complétude des champs n'est pas assimilée à une équivalence sémantique.}
+\label{fig:multiformat-coverage-final}
+\end{figure}
 
 \section{Évaluation du routeur réel}
 
@@ -1463,6 +1498,26 @@ Elle ne constitue pas une probabilité.
 
 Aucune calibration probabiliste n'est réalisée dans ce protocole.
 
+\subsection{Contrôle open-set consolidé}
+
+Une seconde évaluation sépare l'attribution connue du rejet de sources inconnues. La
+politique est calibrée par validation leave-one-family-out en retirant à tour de rôle une
+famille connue ; les trois fichiers open-set finaux ne participent pas au réglage du
+seuil. La politique retenue est $\texttt{top\_score}\geq100$.
+
+Sur le test final gelé, les 28 fichiers connus sont tous acceptés correctement et les
+trois fichiers inconnus sont rejetés :
+
+\[
+\text{faux rejet connu}=0/28,\qquad
+\text{rejet inconnu}=3/3,\qquad
+\text{coverage}=0{,}903226.
+\]
+
+La marge \texttt{decision\_margin} demeure un score heuristique de séparation et non une
+probabilité calibrée. Ce résultat soutient le fonctionnement de la politique sur le
+corpus local testé ; il ne permet pas de conclure à un rejet open-set général.
+
 \IfFileExists{figures/router_confusion_matrix.png}{
 \begin{figure}[H]
 \centering
@@ -1475,6 +1530,15 @@ Aucune calibration probabiliste n'est réalisée dans ce protocole.
 \footnotesize Source : auteur, à partir des résultats expérimentaux de ce travail.
 \end{center}
 }{}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.88\textwidth]{figures/final/fig_router_open_set_tradeoff.png}
+\caption{Diagnostic du compromis open-set du routeur. Le seuil retenu sur la validation
+($\texttt{top\_score}\geq100$) rejette les trois fichiers inconnus du test sans faux rejet
+parmi les 28 fichiers connus ; la marge reste une heuristique non calibrée.}
+\label{fig:router-open-set-tradeoff-final}
+\end{figure}
 
 \section{Routage spécialisé et performance prédictive}
 
@@ -1534,6 +1598,94 @@ L'intérêt principal du routage est donc architectural :
     \item sélectionner un artefact compatible ;
     \item faciliter l'extension du pipeline.
 \end{itemize}
+
+\section{Contrôles complémentaires sur CSE-CIC-IDS2018}
+
+Le contrôle externe utilise le split documenté du 15 février 2018 vers le 16 février
+2018, 78 caractéristiques et cinq seeds. La régression logistique atteint un F1 moyen de
+$0{,}999212$, contre $0{,}401375$ pour Random Forest. Ce résultat est conservé avec les
+contrôles mono-caractéristique, d'ablation et de permutation ; il ne permet pas d'affirmer
+l'absence de fuite, mais il identifie les mécanismes testés et leurs effets.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.76\textwidth]{figures/final/fig_csecic_lr_vs_rf.png}
+\caption{CSE-CIC-IDS2018 : comparaison LR/RF sur le split 2018-02-15 vers 2018-02-16
+(cinq seeds).}
+\label{fig:csecic-lr-rf-final}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/final/fig_csecic_lr_coefficients.png}
+\caption{Dix coefficients de plus forte amplitude de la régression logistique CSE-CIC.
+Ils décrivent les associations apprises et ne constituent pas une interprétation causale.}
+\label{fig:csecic-coefficients-final}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{figures/final/fig_csecic_lr_single_feature.png}
+\caption{Scores F1 mono-caractéristique les plus élevés sur CSE-CIC (cinq seeds). La
+performance de Dst Port motive les contrôles de robustesse complémentaires.}
+\label{fig:csecic-single-feature-final}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.80\textwidth]{figures/final/fig_csecic_lr_ablation.png}
+\caption{Ablation CSE-CIC : évolution du F1 lorsque des caractéristiques sont retirées.}
+\label{fig:csecic-ablation-final}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.88\textwidth]{figures/final/fig_csecic_lr_label_permutation.png}
+\caption{Contrôle par permutation des labels d'entraînement sur les cinq seeds CSE-CIC.
+La dispersion observée limite toute lecture naïve du score nominal.}
+\label{fig:csecic-permutation-final}
+\end{figure}
+
+\section{Inférence réelle dans le pipeline CNP}
+
+La campagne consolidée reprend 1\,401 unités et compare deux conditions. La condition H
+utilise la règle légère historique ; la condition M charge l'artefact recommandé lorsqu'il
+est compatible avec le schéma observé. Chaque trace conserve le modèle recommandé, le
+modèle effectivement chargé, son hash, le marqueur d'inférence et le résultat de
+l'exécution.
+
+En condition H, les 1\,401 unités passent par la règle légère. En condition M, 1\,400
+unités font l'objet d'une inférence réelle et une unité Apache utilise le fallback
+heuristique explicitement enregistré. Aucune erreur ni réattribution n'est observée dans
+ce run. La latence moyenne vaut $0{,}105420$~s en M, contre $0{,}031027$~s en H ; les
+P95 correspondants sont $0{,}181044$~s et $0{,}068247$~s.
+
+Les refus CNP sont des refus de capacité d'agents non compatibles avec certaines tâches et
+ne sont pas des erreurs d'inférence. Une métrique prédictive globale n'est pas calculée.
+Linux/auth est la seule source sélectionnée contenant les deux classes nécessaires à une
+métrique descriptive : son F1 vaut $0{,}390244$. BGL et CICIDS ne comportent qu'une classe
+dans les 200 premières unités retenues et restent donc \textbf{NON ÉVALUÉS} pour cette
+métrique.
+
+La campagne démontre la continuité fonctionnelle entre routage, résolution d'artefact,
+chargement et inférence, au prix d'un coût temporel mesurable. Elle ne démontre ni un gain
+prédictif systématique ni une accuracy multi-source globale.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.94\textwidth]{figures/final/fig_e2e_real_model_coverage.png}
+\caption{Couverture des inférences réelles par source dans la condition M du CNP. Les
+1\,400 inférences réelles et l'unité Apache en fallback sont extraites de l'artefact final.}
+\label{fig:e2e-real-coverage-final}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.94\textwidth]{figures/final/fig_e2e_real_model_latency.png}
+\caption{Latence moyenne par source pour les conditions H (heuristique) et M (modèles
+réels). La figure décrit le compromis de la campagne et non une garantie de production.}
+\label{fig:e2e-real-latency-final}
+\end{figure}
 
 \section{Benchmark monolithique versus agents}
 
@@ -1681,6 +1833,15 @@ rapport au monolithe.}
 
 Ce résultat négatif doit être conservé.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.96\textwidth]{figures/final/fig_multi_agent_throughput_latency.png}
+\caption{Débit et latence du benchmark multi-agent (quatre architectures, quatre charges,
+dix répétitions par configuration). Les unités de ressources associées aux tableaux sont
+le pourcentage d'un cœur logique équivalent pour le CPU et la RSS en MiB.}
+\label{fig:multi-agent-throughput-latency-final}
+\end{figure}
+
 Le bénéfice de l'architecture multi-agent doit plutôt être recherché dans :
 
 \begin{itemize}
@@ -1704,6 +1865,36 @@ virtuelles peuvent consommer des tâches placées dans un stream Redis commun.
 L'expérience porte principalement sur le niveau transport et orchestration.
 
 Elle ne cherche pas à reproduire un SOC industriel.
+
+\subsection{Campagne multi-VM retenue}
+
+La campagne principale retenue pour le mémoire est
+\texttt{multivm\_cnp\_20260909T202632Z\_37592}. Elle exécute un agent Debian et un agent
+Ubuntu, avec un Redis centralisé sur l'hôte Windows du laboratoire. Les deux machines
+utilisent VirtualBox ; la durée exacte et les versions détaillées sont celles consignées
+dans le manifeste de la campagne et ne sont pas extrapolées au-delà de cet environnement.
+
+Le protocole soumet 60 tâches au réseau CNP, avec une répartition observée de 30 tâches
+par VM. Les traces contiennent 15 messages \texttt{REFUSE}, un \texttt{FAIL} contrôlé suivi d'une
+réattribution réussie et un replay idempotent exécuté par l'autre VM. Le replay ne produit
+aucun effet dupliqué dans le registre contrôlé. Le résultat est donc $60/60$ tâches
+terminées dans le scénario expérimenté.
+
+Cette campagne démontre une négociation et une exécution multi-VM de laboratoire. Redis
+reste un point central unique ; aucune haute disponibilité, tolérance aux partitions ou
+montée en charge industrielle n'est évaluée.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{figures/final/fig_multi_agent_task_distribution.png}
+\caption{Répartition des 60 tâches de la campagne multi-VM retenue. Chaque VM traite 30
+tâches ; les refus et la reprise contrôlée sont décrits dans le texte et le manifeste JSON.}
+\label{fig:multi-vm-task-distribution-final}
+\end{figure}
+
+La campagne historique de 525 entrées lues et acquittées est conservée plus loin comme
+contrôle de transport Redis. Elle ne remplace pas le run CNP retenu et ne doit pas être
+interprétée comme 525 succès applicatifs.
 
 \subsection{Configuration Redis}
 
@@ -2052,9 +2243,9 @@ Cinq modèles &
 LR : F1 macro $0{,}233670$ ; HGB : PR-AUC macro $0{,}567697$. &
 Aucun candidat ne domine toutes les métriques ni ne résout la fragilité générale. \\
 
-HDFS strict &
-Histogram : F1 $0{,}269307$, $N=1$. &
-Performance faible mais issue d'un protocole train/validation/test plus strict. \\
+HDFS block-level &
+Histogram : F1 $0{,}892308$, 29 positifs ; bootstrap médiane $0{,}894737$. &
+Résultat observé sur 2\,000 blocs ; intervalle descriptif variable et aucune indépendance revendiquée. \\
 
 BGL strict &
 Histogram : F1 $0{,}913698$, FPR $0{,}032016$, $N=1$. &
@@ -2065,9 +2256,9 @@ $\Delta=+0{,}067845$, $-0{,}063163$, $+0{,}009016<0{,}02$. &
 Les trois branches de gouvernance sont fonctionnelles. \\
 
 Multiformat &
-5\,001 normalisées sur 7\,001. &
-Pipeline fonctionnel sur plusieurs voies mais incomplet ; HDFS/BGL échouent dans cette
-voie générale. \\
+7\,001 lues, parsées et normalisées sur 7\,001. &
+Couverture de pipeline complète pour cette campagne ; la complétude des champs reste
+variable selon l'adaptateur. \\
 
 Routeur &
 80/81 ; accuracy $0{,}987654$ ; F1 macro $0{,}883598$. &
@@ -2077,9 +2268,9 @@ Monolithe/agents &
 1,6357 contre 1,5715 tâche/s. &
 À 60 tâches, les agents n'améliorent pas le débit. \\
 
-Multi-VM &
-525 entrées lues/acquittées ; lag 0 ; pending 0. &
-Preuve de laboratoire au niveau transport et workers. \\
+Multi-VM CNP &
+60/60 tâches ; Debian/Ubuntu 30/30 ; 15 refus ; 1 échec contrôlé ; 1 réattribution. &
+Négociation et reprise idempotente démontrées en laboratoire avec Redis central. \\
 
 Corrélation &
 Precision $0{,}764706$, recall $0{,}866667$, F1 $0{,}812500$. &
@@ -2100,7 +2291,7 @@ Plusieurs résultats positifs sont clairement établis :
     \item le protocole aléatoire CICIDS est reproductible sur cinq seeds ;
     \item le routeur attribue correctement 80 des 81 fichiers du corpus dérivé ;
     \item la mise à jour contrôlée exécute effectivement les trois décisions prévues ;
-    \item la campagne multi-VM aboutit à un lag et un pending nuls ;
+    \item la campagne CNP multi-VM termine 60/60 tâches avec une réattribution contrôlée ;
     \item la corrélation obtient un F1 pairwise supérieur à 0,8 dans son corpus synthétique ;
     \item BGL présente une bonne séparabilité dans le protocole strict retenu.
 \end{itemize}
@@ -2130,9 +2321,9 @@ ensemble de preuves, sans encore procéder à la discussion complète.
 
 \subsection*{QR1 --- Normalisation}
 
-La validation multiformat montre qu'un noyau commun fonctionne sur plusieurs formats, mais
-5\,001 unités seulement sont normalisées sur 7\,001, avec 0/1\,000 pour HDFS et BGL dans
-cette voie.
+La validation multiformat lit, parse et normalise 7\,001 unités sur 7\,001 dans la campagne
+finale. La couverture des champs et la conservation exacte du brut restent toutefois
+dépendantes de l'adaptateur.
 
 La réponse est donc nécessairement partielle.
 
@@ -2149,7 +2340,8 @@ reste hors du périmètre.
 
 \subsection*{QR3 --- Sélection automatique}
 
-Le routeur obtient 80/81 sur son corpus dérivé.
+Le routeur historique obtient 80/81 sur son corpus dérivé ; le contrôle open-set consolidé
+rejette 3/3 fichiers inconnus sans faux rejet parmi 28 fichiers connus.
 
 L'ablation montre en parallèle que cette bonne attribution ne conduit pas à un gain
 prédictif systématique.
@@ -2240,24 +2432,29 @@ fragilité observée.
 
 La seconde série d'expériences concerne les journaux HDFS et BGL. Le protocole final
 sépare strictement entraînement, validation et test, ajuste Drain3 uniquement sur le train
-et sélectionne le seuil sur la validation. Histogram obtient un F1 de $0{,}269307$ sur
-HDFS et $0{,}913698$ sur BGL. Ces résultats montrent qu'une préparation méthodologiquement
-plus stricte peut produire des scores moins spectaculaires mais plus interprétables.
+et sélectionne le seuil sur la validation. Au niveau bloc, Histogram obtient un F1 de
+$0{,}892308$ sur HDFS ; la médiane bootstrap vaut $0{,}894737$ avec un intervalle à
+95~\% de $[0{,}800000;0{,}961039]$. Sur BGL, le F1 atteint $0{,}913698$, mais toutes
+les anomalies du test appartiennent aux templates inconnus et le baseline
+\textit{UnknownTemplateBaseline} n'obtient que $0{,}277885$. Ces résultats doivent donc
+être interprétés conjointement avec la structure des jeux de test.
 
-La validation multiformat montre ensuite que l'architecture de normalisation reste
-partielle : 5\,001 unités sur 7\,001 sont normalisées, tandis que les voies HDFS et BGL
-échouent dans le pipeline général. Le routeur obtient 80 décisions correctes sur 81 dans
-un corpus dérivé, mais cette réussite n'implique pas un gain prédictif systématique des
-modèles spécialisés.
+La validation multiformat montre ensuite que l'architecture lit, parse et normalise
+7\,001 unités sur 7\,001. Cette couverture ne signifie pas que tous les champs sont
+équivalents entre sources : Apache n'est représenté que par une fixture d'une ligne et
+la conservation du brut reste dépendante de l'adaptateur. Le contrôle open-set du routeur
+rejette 3 fichiers inconnus sans faux rejet parmi 28 fichiers connus ; cette réussite
+n'implique pas un gain prédictif systématique des modèles spécialisés.
 
 Sur le plan architectural, le benchmark contrôlé montre que les agents n'améliorent pas le
 débit pour 60 tâches. Leur intérêt doit donc être recherché dans la modularité,
 l'orchestration et la reprise plutôt que dans une accélération automatique.
 
-La campagne multi-VM confirme que deux workers exécutés dans des VM distinctes peuvent
-consommer et acquitter les entrées d'un stream Redis commun. Le résultat principal porte
-sur 525 entrées lues et acquittées avec lag et pending nuls. Cette preuve reste limitée au
-laboratoire.
+La campagne multi-VM retenue confirme que deux workers exécutés dans des VM Debian et
+Ubuntu distinctes peuvent traiter 60 tâches, dont 30 par machine, avec 15 refus, un échec
+contrôlé et une réattribution réussie. La relecture idempotente n'a produit aucun effet
+dupliqué. Redis reste centralisé sur l'hôte de laboratoire ; cette preuve ne dépasse donc
+pas le périmètre expérimental local.
 
 Enfin, le corrélateur obtient un F1 pairwise de $0{,}812500$ sur un corpus synthétique
 contrôlé, tout en révélant des cas de fragmentation et de fusion. La mise à jour contrôlée

@@ -229,10 +229,10 @@ méthodologiquement plus propre.
 
 \subsection{HDFS : score faible mais informatif}
 
-Histogram obtient :
+Au niveau bloc, Histogram obtient :
 
 \[
-F_1=0{,}269307
+F_1=0{,}892308
 \]
 
 sur HDFS.
@@ -288,7 +288,7 @@ malveillante.
 Écrire :
 
 \[
-0{,}913698 > 0{,}269307
+0{,}913698 > 0{,}892308
 \]
 
 est mathématiquement correct.
@@ -411,13 +411,14 @@ considérée comme pleinement soutenue.
 
 \subsection{Performance du routeur}
 
-Le routeur obtient :
+Le routeur historique obtient :
 
 \[
 80/81
 \]
 
-décisions correctes dans le corpus dérivé.
+décisions correctes dans le corpus dérivé ; le contrôle open-set final rejette 3/3 inconnus
+sans faux rejet parmi 28 connus.
 
 Cette valeur montre que la logique actuelle identifie efficacement les familles représentées.
 
@@ -577,13 +578,13 @@ réfutation globale.
 La campagne multi-VM utilise deux systèmes invités distincts, Debian et Ubuntu, reliés au
 même Redis.
 
-Le run principal aboutit à :
+Le run historique de transport aboutit à :
 
 \[
 525
 \]
 
-entrées lues et acquittées.
+entrées lues et acquittées. Cette mesure Redis ne vaut pas 525 succès applicatifs.
 
 À la fin :
 
@@ -1471,8 +1472,9 @@ Le benchmark à 60 tâches constitue un résultat négatif important : les agent
 pas le débit. Leur intérêt réside davantage dans la modularité, la traçabilité et les
 mécanismes de reprise.
 
-La campagne multi-VM établit une distribution de laboratoire réelle avec 525 entrées lues
-et acquittées, mais elle ne démontre ni haute disponibilité ni fonctionnement multi-site.
+La campagne multi-VM retenue établit une distribution de laboratoire réelle de 60 tâches
+(30 Debian et 30 Ubuntu), avec une réattribution contrôlée et un replay idempotent sans
+effet dupliqué. Elle ne démontre ni haute disponibilité ni fonctionnement multi-site.
 Le corrélateur obtient un F1 pairwise de 0,812500 sur des scénarios synthétiques et révèle
 simultanément des cas de fragmentation et de fusion.
 

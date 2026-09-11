@@ -105,8 +105,25 @@ disponibles. \\
 \texttt{agents/bus.py} &
 Définition du contrat métier des messages et fonctions de communication associées. \\
 
+\texttt{intelligent\_runtime.py} &
+Implémentation de \texttt{MultiTaskIntelligentAgent}, de ses capacités, handlers, état local,
+offres, refus, exécution et mémoire. \\
+
+\texttt{contract\_net.py} &
+Implémentation de `ContractNetCoordinator`, du registre d'agents, des CFP, offres,
+attributions, rejets, résultats et feedbacks. \\
+
+\texttt{redis\_contract\_net.py} &
+Transport et coordination CNP inter-processus via \texttt{RedisContractNetTransport} et
+\texttt{RedisContractNetCoordinator}. \\
+
+\texttt{idempotency.py} &
+Stores `SQLiteIdempotencyStore` et `RedisIdempotencyStore` pour la réservation des clés,
+la reprise et la restitution d'un résultat déjà enregistré. \\
+
 \texttt{supervisor\_agent.py} et workers &
-Sélection, distribution, suivi et exécution de certaines tâches par les agents. \\
+Workflow centralisé de référence et exécution de certaines tâches ; il est distingué du
+chemin CNP multi-agents évalué. \\
 
 Audit et mémoire &
 Persistance des états, décisions, erreurs et informations nécessaires à la traçabilité. \\

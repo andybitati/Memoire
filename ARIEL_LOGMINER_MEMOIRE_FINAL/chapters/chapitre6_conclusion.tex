@@ -214,6 +214,9 @@ Sur le corpus dérivé final, il attribue correctement :
 
 fichiers.
 
+Le contrôle open-set consolidé rejette en outre 3/3 fichiers inconnus sans faux rejet
+parmi 28 fichiers connus.
+
 L'exactitude observée est :
 
 \[
@@ -555,10 +558,10 @@ Aucun modèle ne domine donc toutes les métriques.
 
 Le troisième résultat concerne HDFS et BGL.
 
-Dans le protocole strict, Histogram obtient :
+Dans le protocole strict final, Histogram obtient au niveau bloc :
 
 \[
-F_1=0{,}269307
+F_1=0{,}892308
 \]
 
 sur HDFS, et :
@@ -575,7 +578,7 @@ HDFS et très forte proportion de templates inconnus dans le test BGL.
 Le quatrième résultat concerne le pipeline multiformat :
 
 \[
-5\,001/7\,001
+7\,001/7\,001
 \]
 
 unités normalisées.
@@ -594,15 +597,17 @@ Le sixième résultat concerne l'architecture multi-agent.
 
 À 60 tâches, le monolithe conserve un meilleur débit que les agents.
 
-Le septième résultat concerne la validation multi-VM.
+Le septième résultat concerne la validation multi-VM retenue.
 
-Le run principal termine avec :
+Le run retenu termine avec :
 
 \[
-525
+60
 \]
 
-entrées lues et acquittées,
+ tâches terminées (30 Debian, 30 Ubuntu), avec une réattribution contrôlée et un replay
+idempotent sans effet dupliqué. La campagne historique de 525 entrées reste une preuve de
+transport Redis, pas de succès applicatifs.
 
 \[
 \mathrm{lag}=0

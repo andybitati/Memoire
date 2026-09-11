@@ -509,7 +509,8 @@ et :
 
 constitue une menace de validité de construit.
 
-Le F1 HDFS :
+L'ancien F1 HDFS événementiel, conservé uniquement comme référence historique non
+équivalente, vaut :
 
 \[
 0{,}269307
@@ -517,6 +518,9 @@ Le F1 HDFS :
 
 doit donc être interprété comme la performance obtenue dans la représentation événementielle
 utilisée par le protocole, avec propagation de l'information de vérité issue des blocs.
+
+Le protocole final au niveau bloc rapporte $F_1=0{,}892308$ et constitue la valeur retenue
+pour le résultat principal HDFS.
 
 Il ne constitue pas une mesure définitive d'une détection au niveau trace.
 
@@ -684,13 +688,14 @@ Cette revendication doit donc rester absente du mémoire.
 
 \subsection{Résultat apparent}
 
-Le routeur obtient :
+Le routeur historique obtient :
 
 \[
 80/81
 \]
 
-décisions correctes, soit :
+décisions correctes, soit ; le contrôle open-set final rejette 3/3 inconnus sans faux rejet
+parmi 28 connus.
 
 \[
 \mathrm{Accuracy}=0{,}987654.
@@ -877,7 +882,7 @@ Cette preuve est réelle mais limitée.
 
 \subsection{ACK et succès métier}
 
-La campagne principale produit :
+La campagne historique de transport produit :
 
 \[
 525
@@ -1313,13 +1318,19 @@ dataset.
 
 Histogram est déterministe dans les résultats HDFS/BGL retenus.
 
-Les valeurs :
+Les valeurs historiques événementielle HDFS et BGL étaient :
 
 \[
 0{,}269307
 \]
 
-et :
+Le protocole final au niveau bloc rapporte désormais :
+
+\[
+0{,}892308
+\]
+
+et BGL rapporte :
 
 \[
 0{,}913698

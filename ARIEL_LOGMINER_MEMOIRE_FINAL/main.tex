@@ -276,18 +276,15 @@ ANNÉE ACADÉMIQUE : 2025--2026
 \chapter*{Résumé}
 \addcontentsline{toc}{chapter}{Résumé}
 
-Ce mémoire présente Ariel \logminer{}, un prototype modulaire destiné à
-l'analyse de journaux système et réseau hétérogènes et à la production
-d'anomalies candidates pouvant être examinées par un analyste.
-L'architecture associe parsing, normalisation, routage par famille,
-détection, corrélation, mémoire persistante, audit, communication entre
-agents et visualisation. Les notions d'autonomie et de distribution sont
-employées dans un sens strictement logiciel et expérimental :
-l'autonomie correspond à l'orchestration automatique de traitements
-selon des règles et des capacités déclarées, tandis que la distribution
-est validée dans un environnement local et multi-VM de laboratoire.
-Le prototype n'est donc présenté ni comme un détecteur universel ni
-comme un SOC industriel.
+Ce mémoire présente Ariel \logminer{}, une architecture multi-agents légère
+et distribuée en laboratoire pour l'analyse de journaux système et réseau
+hétérogènes. Un agent est ici une entité logicielle dotée de capacités,
+d'un état, d'une mémoire et d'une politique locale ; il peut proposer,
+refuser puis exécuter une tâche au moyen de handlers compatibles. La
+négociation repose sur un protocole Contract Net explicite et sur un
+transport local ou Redis. L'autonomie et la distribution sont donc
+employées dans un sens logiciel et expérimental, sans prétendre à une
+intelligence générale ni à un SOC industriel.
 
 L'évaluation met particulièrement en évidence l'influence du protocole
 expérimental sur les performances. Sur CICIDS2017, un Random Forest
@@ -320,33 +317,45 @@ améliore certaines métriques sans supprimer la fragilité inter-scénarios.
 
 Pour HDFS et BGL, le protocole final sépare strictement entraînement,
 validation et test. Drain3 est ajusté uniquement sur l'entraînement puis
-gelé avant les deux partitions suivantes. Avec la méthode Histogram, le
-F1 obtenu est de $0{,}269307$ sur HDFS et de $0{,}913698$ sur BGL.
-Ces résultats doivent être interprétés respectivement avec la granularité
-des labels HDFS et avec le fort déplacement de templates observé sur
-BGL.
+gelé avant les deux partitions suivantes. Au niveau \texttt{block\_id}, Histogram
+atteint un F1 de $0{,}892308$ sur 2\,000 blocs HDFS, dont 29 positifs ;
+le bootstrap descriptif donne une médiane de $0{,}894737$ et un intervalle
+$[0{,}800000\,;\,0{,}961039]$. Sur BGL, le F1 vaut $0{,}913698$,
+mais 89,8081\,% des templates de test sont inconnus du train et la
+baseline « template inconnu » n'atteint que $0{,}277885$.
 
-La validation multiformat produit $5\,001$ sorties normalisées sur
-$7\,001$ unités lues ; les voies générales HDFS et BGL restent
-incomplètes dans cette campagne. Le routeur attribue correctement
-$80$ fichiers sur $81$ dans son corpus dérivé, avec une exactitude de
-$0{,}987654$ et un F1 macro de $0{,}883598$. Cette bonne attribution
-n'entraîne toutefois pas un gain prédictif systématique des modèles
-spécialisés.
+La validation multiformat lit, parse et normalise $7\,001/7\,001$ unités.
+Cette couverture de pipeline ne signifie pas que tous les champs sont
+complets ou que le brut est conservé de façon universelle. Une politique
+open-set calibrée uniquement sur les sources connues rejette $3/3$ fichiers
+inconnus sans faux rejet parmi $28$ fichiers connus ; la couverture est
+$0{,}903226$ et la marge de décision n'est pas une probabilité calibrée.
+Cette réussite de routage ne démontre pas un gain prédictif systématique.
 
-Le benchmark contrôlé montre également que l'architecture à agents
-n'améliore pas le débit à la charge testée : le monolithe atteint
-$1{,}6357$ tâche/s contre $1{,}5715$ tâche/s pour les agents. Leur intérêt
-principal réside donc dans la modularité, la séparation des
-responsabilités, l'audit et les mécanismes de reprise.
+Le benchmark contrôlé couvre quatre architectures, quatre charges et dix
+répétitions, soit $160$ runs et $264\,000$ traitements sans échec. Les
+architectures à agents ne sont toutefois pas plus rapides sur les
+microtâches : à 60 tâches, le monolithe atteint $1{,}6357$ tâche/s contre
+$1{,}5715$ pour les agents et $1{,}5267$ avec reprise. Leur intérêt est
+architectural : autonomie locale, négociation, séparation des
+responsabilités, réattribution, idempotence et auditabilité.
 
-La campagne multi-VM principale valide $525$ entrées lues et acquittées
-par un consumer group Redis, avec un lag et un pending finaux nuls.
-Cette observation constitue une preuve de transport distribué en
-laboratoire et non une démonstration de haute disponibilité
-industrielle. Le corrélateur, évalué sur un corpus synthétique contrôlé,
-obtient une précision de $0{,}764706$, un rappel de $0{,}866667$ et un
-F1 pairwise de $0{,}812500$.
+La campagne multi-VM retenue (\texttt{multivm\_cnp\_20260909T202632Z\_37592})
+exécute 60/60 tâches sur Debian et Ubuntu, réparties 30/30, avec Redis
+centralisé sur l'hôte de laboratoire. Elle comprend 15 refus, un échec
+contrôlé, une réattribution réussie et un replay idempotent sans effet
+dupliqué. Cette preuve reste une validation de laboratoire ; elle ne
+constitue pas une démonstration de haute disponibilité industrielle.
+Le corrélateur, évalué sur un corpus synthétique contrôlé, obtient une
+précision de $0{,}764706$, un rappel de $0{,}866667$ et un F1 pairwise de
+$0{,}812500$.
+
+Dans la campagne CNP multi-source consolidée, la condition M exécute
+réellement les artefacts compatibles sur $1400/1401$ unités, avec un seul
+fallback Apache et aucune erreur. Sa latence moyenne est de $0{,}105420$~s,
+contre $0{,}031027$~s pour la condition heuristique H. Aucune accuracy
+globale multi-source n'est fabriquée ; le F1 Linux/auth $0{,}390244$ reste
+descriptif sur la source sélectionnée.
 
 Enfin, une procédure de mise à jour contrôlée des modèles est validée de
 bout en bout avec une promotion, un rejet pour dégradation et un rejet
@@ -375,18 +384,15 @@ automatique, reproductibilité.
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
 
-This thesis presents Ariel \logminer{}, a modular prototype for the
-analysis of heterogeneous system and network logs and the production of
-candidate anomalies that can subsequently be inspected by an analyst.
-The architecture combines parsing, normalization, family-aware routing,
-detection, correlation, persistent memory, auditing, agent communication,
-and visualization. Autonomy and distribution are deliberately used in a
-restricted software and experimental sense: autonomy refers to the
-automatic orchestration of processing tasks according to explicit rules
-and declared capabilities, while distribution is validated in local and
-multi-VM laboratory environments. The prototype is therefore neither
-presented as a universal anomaly detector nor as an industrial SOC
-platform.
+This thesis presents Ariel \logminer{}, a lightweight multi-agent
+architecture distributed in a laboratory setting for heterogeneous system
+and network log analysis. An agent is defined as a software entity with
+declared capabilities, state, memory, and a local policy; it can propose,
+refuse, and execute tasks through compatible handlers. Negotiation follows
+an explicit Contract Net Protocol and communication may use a local bus or
+Redis. Autonomy and distribution are therefore used in a restricted
+software and experimental sense, without claiming general intelligence or
+an industrial SOC platform.
 
 The evaluation particularly highlights the influence of the experimental
 protocol on measured performance. On CICIDS2017, a Random Forest evaluated
@@ -419,33 +425,43 @@ without eliminating inter-scenario fragility.
 
 For HDFS and BGL, the final protocol strictly separates training,
 validation, and test partitions. Drain3 is fitted only on the training
-partition and frozen before validation and test. With the Histogram
-method, the resulting F1-score is $0.269307$ on HDFS and $0.913698$ on
-BGL. These values must respectively be interpreted in light of the HDFS
-label granularity and the substantial template distribution shift
-observed in BGL.
+partition and frozen before validation and test. At the \texttt{block\_id} level,
+Histogram reaches an F1-score of $0.892308$ on 2,000 HDFS blocks, with 29
+positive blocks; the descriptive bootstrap median is $0.894737$ with an
+interval of $[0.800000;0.961039]$. On BGL, F1 is $0.913698$, but 89.8081\%
+of test templates are unknown to training and the ``unknown template''
+baseline reaches only $0.277885$.
 
-The multi-format validation produces $5,001$ normalized outputs from
-$7,001$ input units. The generic HDFS and BGL paths remain incomplete in
-this campaign. The router correctly assigns $80$ out of $81$ files in
-its derived corpus, with an accuracy of $0.987654$ and a macro F1-score
-of $0.883598$. This routing performance, however, does not systematically
-translate into better predictive performance for specialized models.
+The multi-format validation reads, parses, and normalizes $7,001/7,001$
+units. This pipeline coverage does not imply complete fields or universal
+raw preservation. An open-set policy calibrated only on known sources
+rejects $3/3$ unknown files without falsely rejecting any of the 28 known
+files; coverage is $0.903226$, and the decision margin is not a calibrated
+probability. This routing success does not demonstrate a systematic
+predictive gain.
 
-The controlled architecture benchmark also shows that agents do not
-increase throughput at the tested workload. The monolithic execution
-reaches $1.6357$ task/s, compared with $1.5715$ task/s for the agent-based
-execution. The value of the agent architecture therefore lies primarily
-in modularity, separation of responsibilities, auditing, and targeted
-task-recovery mechanisms.
+The controlled architecture benchmark covers four architectures, four
+loads, and ten repetitions, yielding 160 runs and 264,000 treatments with
+no failure. Agent architectures are nevertheless not faster on
+microtasks: at 60 tasks, the monolith reaches $1.6357$ task/s, compared
+with $1.5715$ for agents and $1.5267$ with recovery. Their value is
+architectural: local autonomy, negotiation, separation of
+responsibilities, reassignment, idempotence, and auditability.
 
-The main multi-VM campaign records $525$ entries read and acknowledged
-by a Redis consumer group, with zero final lag and zero pending entries.
-This provides laboratory evidence of distributed message consumption but
-does not demonstrate industrial high availability. The correlation
-mechanism, evaluated on a controlled synthetic corpus, obtains a
-precision of $0.764706$, a recall of $0.866667$, and a pairwise F1-score
-of $0.812500$.
+The retained multi-VM campaign (\texttt{multivm\_cnp\_20260909T202632Z\_37592})
+executes 60/60 tasks on Debian and Ubuntu, split 30/30, with Redis
+centralized on the laboratory host. It includes 15 refusals, one
+controlled failure, one successful reassignment, and an idempotent replay
+with no duplicated effect. This remains laboratory validation and does not
+demonstrate industrial high availability. The correlation mechanism,
+evaluated on a controlled synthetic corpus, obtains a precision of
+$0.764706$, a recall of $0.866667$, and a pairwise F1-score of $0.812500$.
+
+In the consolidated multi-source CNP campaign, condition M actually runs
+compatible artifacts on $1400/1401$ units, with one Apache fallback and no
+error. Its mean latency is $0.105420$~s, compared with $0.031027$~s for
+the heuristic H condition. No global multi-source accuracy is fabricated;
+the Linux/auth F1 of $0.390244$ remains descriptive for the selected source.
 
 Finally, the controlled model-update procedure is exercised end to end
 through one promotion, one rejection due to degradation, and one
@@ -453,11 +469,11 @@ rejection because the improvement remains below the minimum threshold.
 
 All five research hypotheses are ultimately partially supported. The
 first five research questions receive partial answers, while the
-evaluation methodology receives a strong answer within the prototype
+evaluation methodology receives a strong answer within the laboratory
 scope. Ariel \logminer{} therefore contributes primarily an
 architectural and methodological framework for a local, modular,
 auditable, and experimentally traceable heterogeneous-log analysis
-pipeline.
+pipeline, rather than a new machine-learning algorithm.
 
 \bigskip
 
