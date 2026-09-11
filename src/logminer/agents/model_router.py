@@ -566,8 +566,53 @@ def route_dataframe(
         "kind": "dataframe",
         "scores": scores,
         "confidence": confidence,
+        "decision_margin": confidence,
         "reasons": reasons,
     }
+
+
+def apply_open_set_rejection(
+    route: dict[str, object],
+    policy: dict[str, float | int],
+) -> dict[str, object]:
+    """Applique un rejet explicable à une route déjà calculée.
+
+    La politique est optionnelle afin de préserver le comportement historique
+    fermé. Ses seuils doivent être calibrés en dehors de cette fonction. La
+    marge est un score heuristique de séparation, jamais une probabilité.
+    """
+
+    scores = {str(key): float(value) for key, value in dict(route["scores"]).items()}
+    priority = ["windows", "hdfs", "bgl", "wazuh", "network_cicids", "network", "linux_auth", "linux", "fallback"]
+    ranked = sorted(priority, key=lambda family: scores.get(family, 0.0), reverse=True)
+    top_score = scores.get(ranked[0], 0.0)
+    second_score = scores.get(ranked[1], 0.0)
+    decision_margin = top_score - second_score
+    compatible_rule_count = len(list(route.get("reasons", [])))
+    rejection_reasons: list[str] = []
+    if top_score < float(policy.get("min_top_score", 0.0)):
+        rejection_reasons.append("top_score_below_threshold")
+    if decision_margin < float(policy.get("min_decision_margin", 0.0)):
+        rejection_reasons.append("decision_margin_below_threshold")
+    if compatible_rule_count < int(policy.get("min_compatible_rules", 0)):
+        rejection_reasons.append("structural_compatibility_insufficient")
+    if ranked[0] == "fallback":
+        rejection_reasons.append("fallback_route")
+    rejected = bool(rejection_reasons)
+    result = dict(route)
+    result.update({
+        "original_family": str(route["family"]),
+        "family": "unknown" if rejected else str(route["family"]),
+        "model": None if rejected else route.get("model"),
+        "rejected": rejected,
+        "top_score": top_score,
+        "second_score": second_score,
+        "decision_margin": decision_margin,
+        "compatible_rule_count": compatible_rule_count,
+        "rejection_reasons": rejection_reasons,
+        "decision_margin_is_probability": False,
+    })
+    return result
 
 
 def _default_output(input_path: Path, suffix: str) -> Path:

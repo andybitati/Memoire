@@ -10,6 +10,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
+import numpy as np
+
 ROOT = Path(__file__).resolve().parents[1]
 PHASE_ROOT = ROOT / "experiments" / "phase_final_scientific_consolidation"
 CONFIG_PATH = PHASE_ROOT / "configs" / "final_scientific_consolidation_protocol.json"
@@ -61,8 +63,19 @@ def git_commit() -> str:
 def write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    temporary.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2, default=_json_default),
+        encoding="utf-8",
+    )
     temporary.replace(path)
+
+
+def _json_default(value: Any) -> Any:
+    if isinstance(value, np.generic):
+        return value.item()
+    if isinstance(value, Path):
+        return str(value)
+    raise TypeError(f"Objet non sérialisable en JSON : {type(value).__name__}")
 
 
 def write_csv(path: Path, rows: Iterable[dict[str, Any]], fieldnames: list[str] | None = None) -> None:
@@ -87,4 +100,3 @@ def append_ledger(**values: Any) -> None:
             if write_header:
                 writer.writeheader()
             writer.writerow(row)
-

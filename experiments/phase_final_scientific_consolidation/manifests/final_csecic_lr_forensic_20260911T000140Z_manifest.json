@@ -1,0 +1,102 @@
+{
+  "run_id": "final_csecic_lr_forensic_20260911T000140Z",
+  "experiment_id": "final_p1_csecicids2018_lr_forensic",
+  "status": "COMPLETED",
+  "config": {
+    "path": "experiments/phase_final_scientific_consolidation/configs/final_scientific_consolidation_protocol.json",
+    "sha256": "0b5c80d44568b1543d17dd9230653153b1e90b377debf3263c11257cee30b19f"
+  },
+  "principal_manifest": {
+    "path": "experiments/phase_dataset_strengthening/manifests/external_csecicids2018_20260910T230136Z_manifest.json",
+    "sha256": "967996e405ba888aaf7971bdeaceee65be0b2788e41bf5d8decc9bcf5869d411"
+  },
+  "inputs": [
+    {
+      "path": "experiments/phase_dataset_strengthening/processed/external_csecicids2018_20260910T230136Z_train_pool.csv.gz",
+      "sha256": "8cada8131373deff826bd106732a0fed28d553714d0a0cc61fce02108d0db48c"
+    },
+    {
+      "path": "experiments/phase_dataset_strengthening/processed/external_csecicids2018_20260910T230136Z_test_pool.csv.gz",
+      "sha256": "452e6688fd114b3f6206a796aeb38e85d3cbdece75d84688c9f0d8f3e17636b4"
+    }
+  ],
+  "raw_sources": [
+    {
+      "partition": "train",
+      "path": "data/raw/external/CSE-CIC-IDS2018/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/Processed%20Traffic%20Data%20for%20ML%20Algorithms/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "object_key": "Processed Traffic Data for ML Algorithms/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "size_bytes": 375945899,
+      "sha256": "fa2947a8256d81ee9103ae16139d62d0e17aa23e696ee80d9e76fb51c01c9c4b",
+      "etag_head": "eb1dc2ec76efe09c8995f28bfa4c8656-23"
+    },
+    {
+      "partition": "test",
+      "path": "data/raw/external/CSE-CIC-IDS2018/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/Processed%20Traffic%20Data%20for%20ML%20Algorithms/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "object_key": "Processed Traffic Data for ML Algorithms/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "size_bytes": 333723605,
+      "sha256": "1a4919faa0c49c7af97230b0c2d076eba23ee6dd81103a3801d51ac316355d8b",
+      "etag_head": "e68ef27c09c98ba91fe3c6b1108a18b9-20"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260911T000140Z_observed_metrics.csv",
+      "sha256": "17b0161f451e3040d1f31b0bddbc5012b60fa97a5f781bb2a91b794ce187b391"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260911T000140Z_label_permutation.csv",
+      "sha256": "4bb86d52096e6665d4c07d69eb2a268517d1b4fba0a6500445cd029ae9763337"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260911T000140Z_single_feature_by_seed.csv",
+      "sha256": "137fd6ef1a604413704960fef068e5e4cd339d9ba039b184c00509fa0c4e03e7"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260911T000140Z_coefficients_by_seed.csv",
+      "sha256": "a371212c8c0969d8e018760ab66af9aaf2be0c8884798a358a00f52448cd0a75"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260911T000140Z_ablation_by_seed.csv",
+      "sha256": "02b79a88cbf21aea0b6319551a98f0d57e3693b89de12b89533949fa78200581"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/external_csecicids2018_single_feature_scores.csv",
+      "sha256": "7d17706b321695f12bc4233b2178deeab75b3881b35a95249c78f686e5347533"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/external_csecicids2018_lr_coefficients.csv",
+      "sha256": "31c7a322f7bb31ded0f836358603c97b029eba070fb1a108f3dd0333f65a583a"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/external_csecicids2018_feature_ablation.csv",
+      "sha256": "9d21256af8e7047b13438fc79b350de1b3437ef5b81aa9e26f4d8bb5978bd6ec"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/external_csecicids2018_lr_forensic_summary.json",
+      "sha256": "a54c1ca83d3b10ff0f320a818cb33d1f64c8b294f7a9d3e5270c39e9b893ce60"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/reports/CSE_CIC_IDS2018_LR_FORENSIC_AUDIT.md",
+      "sha256": "0c6d372b30261a00f52c465902f719f033e12c20b1aad4d43f561c3b20757fd8"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_12_external_lr_coefficients.png",
+      "sha256": "a344523a200aef4e373b8072d69b65a10f65bcaf788bb5d419c82ed715669b5a"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_13_external_single_feature_scores.png",
+      "sha256": "e66703a99ccb543b81b3ef39be79861a2fbf704a1498ff36043f704011210f23"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_14_external_feature_ablation.png",
+      "sha256": "a520d6fcef9122a1181c2b6bfc93fe10bee8bba477a08e5f8b5cbbb5e69cbf8b"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_15_external_label_permutation.png",
+      "sha256": "1593705826f2db9bfec11e7ce7bd74da8d9f79912c0f91182c449831d1d10991"
+    }
+  ],
+  "conclusion": "B"
+}

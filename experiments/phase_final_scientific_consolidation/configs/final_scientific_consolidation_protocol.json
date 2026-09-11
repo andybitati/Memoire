@@ -25,7 +25,17 @@
     "calibration_data": "known_sources_only",
     "final_open_set_sources_used_for_calibration": false,
     "final_open_set_count": 3,
-    "margin_name": "decision_margin"
+    "margin_name": "decision_margin",
+    "candidate_min_top_scores": [0, 20, 40, 60, 80, 90, 100, 110, 120, 140, 160, 180, 200, 220],
+    "candidate_min_decision_margins": [0, 10, 20, 40, 60, 80, 100],
+    "candidate_min_compatible_rules": [0, 1, 2],
+    "selection_order": [
+      "maximize_pseudo_unknown_rejection_rate",
+      "minimize_false_rejection_rate_on_known",
+      "maximize_selective_accuracy",
+      "maximize_coverage",
+      "minimize_policy_complexity"
+    ]
   },
   "p3": {
     "campaign": "multisource_cnp_model_inference",

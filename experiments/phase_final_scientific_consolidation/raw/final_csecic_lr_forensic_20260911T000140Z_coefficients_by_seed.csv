@@ -1,0 +1,391 @@
+﻿seed,feature,coefficient,absolute_coefficient,coefficient_space
+42,Dst Port,-8.145921213483204,8.145921213483204,after_train_only_standardization
+42,Protocol,0.44714630423032176,0.44714630423032176,after_train_only_standardization
+42,Flow Duration,-0.6634560164070034,0.6634560164070034,after_train_only_standardization
+42,Tot Fwd Pkts,0.2695584659939572,0.2695584659939572,after_train_only_standardization
+42,Tot Bwd Pkts,-1.7339600004057074,1.7339600004057074,after_train_only_standardization
+42,TotLen Fwd Pkts,-0.9134792096226159,0.9134792096226159,after_train_only_standardization
+42,TotLen Bwd Pkts,-0.9608741633717385,0.9608741633717385,after_train_only_standardization
+42,Fwd Pkt Len Max,0.03398419108842321,0.03398419108842321,after_train_only_standardization
+42,Fwd Pkt Len Min,0.5077877456545428,0.5077877456545428,after_train_only_standardization
+42,Fwd Pkt Len Mean,0.656080395750353,0.656080395750353,after_train_only_standardization
+42,Fwd Pkt Len Std,0.790911870949296,0.790911870949296,after_train_only_standardization
+42,Bwd Pkt Len Max,0.39919765065284896,0.39919765065284896,after_train_only_standardization
+42,Bwd Pkt Len Min,-0.8817846936557703,0.8817846936557703,after_train_only_standardization
+42,Bwd Pkt Len Mean,-1.0093614570950316,1.0093614570950316,after_train_only_standardization
+42,Bwd Pkt Len Std,2.3180690710645844,2.3180690710645844,after_train_only_standardization
+42,Flow Byts/s,-0.3438667643577538,0.3438667643577538,after_train_only_standardization
+42,Flow Pkts/s,0.7121572343336664,0.7121572343336664,after_train_only_standardization
+42,Flow IAT Mean,0.19900472135845163,0.19900472135845163,after_train_only_standardization
+42,Flow IAT Std,0.1917251924766854,0.1917251924766854,after_train_only_standardization
+42,Flow IAT Max,0.009930513768160567,0.009930513768160567,after_train_only_standardization
+42,Flow IAT Min,-0.08319543305767932,0.08319543305767932,after_train_only_standardization
+42,Fwd IAT Tot,-0.943695397793243,0.943695397793243,after_train_only_standardization
+42,Fwd IAT Mean,0.29837384159910046,0.29837384159910046,after_train_only_standardization
+42,Fwd IAT Std,-0.3899996626027195,0.3899996626027195,after_train_only_standardization
+42,Fwd IAT Max,0.24791080528175408,0.24791080528175408,after_train_only_standardization
+42,Fwd IAT Min,0.4385272031069591,0.4385272031069591,after_train_only_standardization
+42,Bwd IAT Tot,-1.468609251991377,1.468609251991377,after_train_only_standardization
+42,Bwd IAT Mean,1.34203082560908,1.34203082560908,after_train_only_standardization
+42,Bwd IAT Std,1.0878526939905793,1.0878526939905793,after_train_only_standardization
+42,Bwd IAT Max,0.8990576655208046,0.8990576655208046,after_train_only_standardization
+42,Bwd IAT Min,0.916316842117407,0.916316842117407,after_train_only_standardization
+42,Fwd PSH Flags,-0.22462307302854917,0.22462307302854917,after_train_only_standardization
+42,Bwd PSH Flags,0.0,0.0,after_train_only_standardization
+42,Fwd URG Flags,0.0,0.0,after_train_only_standardization
+42,Bwd URG Flags,0.0,0.0,after_train_only_standardization
+42,Fwd Header Len,5.041866061319996,5.041866061319996,after_train_only_standardization
+42,Bwd Header Len,-0.9873659441471899,0.9873659441471899,after_train_only_standardization
+42,Fwd Pkts/s,0.803928620494078,0.803928620494078,after_train_only_standardization
+42,Bwd Pkts/s,-0.10891932367155271,0.10891932367155271,after_train_only_standardization
+42,Pkt Len Min,-0.44036748682135923,0.44036748682135923,after_train_only_standardization
+42,Pkt Len Max,2.23969532206513,2.23969532206513,after_train_only_standardization
+42,Pkt Len Mean,0.2967253823513579,0.2967253823513579,after_train_only_standardization
+42,Pkt Len Std,2.868064280839333,2.868064280839333,after_train_only_standardization
+42,Pkt Len Var,-3.3769844428580575,3.3769844428580575,after_train_only_standardization
+42,FIN Flag Cnt,0.463533309821274,0.463533309821274,after_train_only_standardization
+42,SYN Flag Cnt,-0.22462307302854917,0.22462307302854917,after_train_only_standardization
+42,RST Flag Cnt,-0.2494097447680512,0.2494097447680512,after_train_only_standardization
+42,PSH Flag Cnt,-6.917870350503393,6.917870350503393,after_train_only_standardization
+42,ACK Flag Cnt,-0.5143713303769499,0.5143713303769499,after_train_only_standardization
+42,URG Flag Cnt,-0.2707729578931586,0.2707729578931586,after_train_only_standardization
+42,CWE Flag Count,0.0,0.0,after_train_only_standardization
+42,ECE Flag Cnt,-0.2494097447680512,0.2494097447680512,after_train_only_standardization
+42,Down/Up Ratio,-0.42315558972654144,0.42315558972654144,after_train_only_standardization
+42,Pkt Size Avg,0.5517553953180524,0.5517553953180524,after_train_only_standardization
+42,Fwd Seg Size Avg,0.656080395750388,0.656080395750388,after_train_only_standardization
+42,Bwd Seg Size Avg,-1.0093614570950316,1.0093614570950316,after_train_only_standardization
+42,Fwd Byts/b Avg,0.0,0.0,after_train_only_standardization
+42,Fwd Pkts/b Avg,0.0,0.0,after_train_only_standardization
+42,Fwd Blk Rate Avg,0.0,0.0,after_train_only_standardization
+42,Bwd Byts/b Avg,0.0,0.0,after_train_only_standardization
+42,Bwd Pkts/b Avg,0.0,0.0,after_train_only_standardization
+42,Bwd Blk Rate Avg,0.0,0.0,after_train_only_standardization
+42,Subflow Fwd Pkts,0.2695584659939572,0.2695584659939572,after_train_only_standardization
+42,Subflow Fwd Byts,-0.9134792096226159,0.9134792096226159,after_train_only_standardization
+42,Subflow Bwd Pkts,-1.7339600004057074,1.7339600004057074,after_train_only_standardization
+42,Subflow Bwd Byts,-0.9608741633717385,0.9608741633717385,after_train_only_standardization
+42,Init Fwd Win Byts,0.8601429509441243,0.8601429509441243,after_train_only_standardization
+42,Init Bwd Win Byts,-0.4672677349780388,0.4672677349780388,after_train_only_standardization
+42,Fwd Act Data Pkts,-0.8613449540848835,0.8613449540848835,after_train_only_standardization
+42,Fwd Seg Size Min,8.550856984785552,8.550856984785552,after_train_only_standardization
+42,Active Mean,0.02954171103057846,0.02954171103057846,after_train_only_standardization
+42,Active Std,0.23783414685315044,0.23783414685315044,after_train_only_standardization
+42,Active Max,-0.26706945221700157,0.26706945221700157,after_train_only_standardization
+42,Active Min,-0.0967367910305556,0.0967367910305556,after_train_only_standardization
+42,Idle Mean,0.07813840965583599,0.07813840965583599,after_train_only_standardization
+42,Idle Std,-0.5244373118852027,0.5244373118852027,after_train_only_standardization
+42,Idle Max,0.26728645151262614,0.26728645151262614,after_train_only_standardization
+42,Idle Min,0.10528783979062231,0.10528783979062231,after_train_only_standardization
+43,Dst Port,-9.524221399093557,9.524221399093557,after_train_only_standardization
+43,Protocol,0.5079190984742379,0.5079190984742379,after_train_only_standardization
+43,Flow Duration,-0.8236537533974815,0.8236537533974815,after_train_only_standardization
+43,Tot Fwd Pkts,0.1317942496699369,0.1317942496699369,after_train_only_standardization
+43,Tot Bwd Pkts,-1.5127091775672776,1.5127091775672776,after_train_only_standardization
+43,TotLen Fwd Pkts,-0.16453922724118575,0.16453922724118575,after_train_only_standardization
+43,TotLen Bwd Pkts,-0.8164856441998508,0.8164856441998508,after_train_only_standardization
+43,Fwd Pkt Len Max,-0.19246408944147242,0.19246408944147242,after_train_only_standardization
+43,Fwd Pkt Len Min,0.2011046599639097,0.2011046599639097,after_train_only_standardization
+43,Fwd Pkt Len Mean,0.33931504665824186,0.33931504665824186,after_train_only_standardization
+43,Fwd Pkt Len Std,1.1673789857808972,1.1673789857808972,after_train_only_standardization
+43,Bwd Pkt Len Max,-0.30292533965498686,0.30292533965498686,after_train_only_standardization
+43,Bwd Pkt Len Min,-0.7437460323617332,0.7437460323617332,after_train_only_standardization
+43,Bwd Pkt Len Mean,-0.9659595165820516,0.9659595165820516,after_train_only_standardization
+43,Bwd Pkt Len Std,2.859418013738199,2.859418013738199,after_train_only_standardization
+43,Flow Byts/s,-1.2389529684561464,1.2389529684561464,after_train_only_standardization
+43,Flow Pkts/s,0.0864716695286887,0.0864716695286887,after_train_only_standardization
+43,Flow IAT Mean,0.35838263583860414,0.35838263583860414,after_train_only_standardization
+43,Flow IAT Std,0.25058167368398976,0.25058167368398976,after_train_only_standardization
+43,Flow IAT Max,-0.5580215143469297,0.5580215143469297,after_train_only_standardization
+43,Flow IAT Min,-0.18468497758123215,0.18468497758123215,after_train_only_standardization
+43,Fwd IAT Tot,-1.056491604249266,1.056491604249266,after_train_only_standardization
+43,Fwd IAT Mean,0.839112711357403,0.839112711357403,after_train_only_standardization
+43,Fwd IAT Std,-0.2176897536762929,0.2176897536762929,after_train_only_standardization
+43,Fwd IAT Max,0.06166193210345441,0.06166193210345441,after_train_only_standardization
+43,Fwd IAT Min,0.6896472623793476,0.6896472623793476,after_train_only_standardization
+43,Bwd IAT Tot,-2.3820568118041177,2.3820568118041177,after_train_only_standardization
+43,Bwd IAT Mean,2.0879615925592474,2.0879615925592474,after_train_only_standardization
+43,Bwd IAT Std,1.4681714526048653,1.4681714526048653,after_train_only_standardization
+43,Bwd IAT Max,0.6619613807721111,0.6619613807721111,after_train_only_standardization
+43,Bwd IAT Min,1.3105428032117852,1.3105428032117852,after_train_only_standardization
+43,Fwd PSH Flags,-0.22256171195370333,0.22256171195370333,after_train_only_standardization
+43,Bwd PSH Flags,0.0,0.0,after_train_only_standardization
+43,Fwd URG Flags,0.0,0.0,after_train_only_standardization
+43,Bwd URG Flags,0.0,0.0,after_train_only_standardization
+43,Fwd Header Len,4.110413140094054,4.110413140094054,after_train_only_standardization
+43,Bwd Header Len,-0.5391588055026936,0.5391588055026936,after_train_only_standardization
+43,Fwd Pkts/s,0.009471915684867053,0.009471915684867053,after_train_only_standardization
+43,Bwd Pkts/s,0.332678520913188,0.332678520913188,after_train_only_standardization
+43,Pkt Len Min,-0.24799909733418676,0.24799909733418676,after_train_only_standardization
+43,Pkt Len Max,1.8404431380728086,1.8404431380728086,after_train_only_standardization
+43,Pkt Len Mean,-0.23829961430012392,0.23829961430012392,after_train_only_standardization
+43,Pkt Len Std,2.5932017062441264,2.5932017062441264,after_train_only_standardization
+43,Pkt Len Var,-3.8113458150654473,3.8113458150654473,after_train_only_standardization
+43,FIN Flag Cnt,0.42969584562026136,0.42969584562026136,after_train_only_standardization
+43,SYN Flag Cnt,-0.22256171195370333,0.22256171195370333,after_train_only_standardization
+43,RST Flag Cnt,-0.251050689621614,0.251050689621614,after_train_only_standardization
+43,PSH Flag Cnt,-6.422169769628031,6.422169769628031,after_train_only_standardization
+43,ACK Flag Cnt,-0.660793568181778,0.660793568181778,after_train_only_standardization
+43,URG Flag Cnt,-0.04880768722674487,0.04880768722674487,after_train_only_standardization
+43,CWE Flag Count,0.0,0.0,after_train_only_standardization
+43,ECE Flag Cnt,-0.251050689621614,0.251050689621614,after_train_only_standardization
+43,Down/Up Ratio,-0.3842766875913751,0.3842766875913751,after_train_only_standardization
+43,Pkt Size Avg,0.35261939789291724,0.35261939789291724,after_train_only_standardization
+43,Fwd Seg Size Avg,0.3393150466582428,0.3393150466582428,after_train_only_standardization
+43,Bwd Seg Size Avg,-0.9659595165820516,0.9659595165820516,after_train_only_standardization
+43,Fwd Byts/b Avg,0.0,0.0,after_train_only_standardization
+43,Fwd Pkts/b Avg,0.0,0.0,after_train_only_standardization
+43,Fwd Blk Rate Avg,0.0,0.0,after_train_only_standardization
+43,Bwd Byts/b Avg,0.0,0.0,after_train_only_standardization
+43,Bwd Pkts/b Avg,0.0,0.0,after_train_only_standardization
+43,Bwd Blk Rate Avg,0.0,0.0,after_train_only_standardization
+43,Subflow Fwd Pkts,0.1317942496699369,0.1317942496699369,after_train_only_standardization
+43,Subflow Fwd Byts,-0.16453922724118575,0.16453922724118575,after_train_only_standardization
+43,Subflow Bwd Pkts,-1.5127091775672776,1.5127091775672776,after_train_only_standardization
+43,Subflow Bwd Byts,-0.8164856441998508,0.8164856441998508,after_train_only_standardization
+43,Init Fwd Win Byts,0.8789866306510955,0.8789866306510955,after_train_only_standardization
+43,Init Bwd Win Byts,-0.6734905430856528,0.6734905430856528,after_train_only_standardization
+43,Fwd Act Data Pkts,-0.14779807059106484,0.14779807059106484,after_train_only_standardization
+43,Fwd Seg Size Min,8.462960588971871,8.462960588971871,after_train_only_standardization
+43,Active Mean,0.025289826882634574,0.025289826882634574,after_train_only_standardization
+43,Active Std,0.11393641780430709,0.11393641780430709,after_train_only_standardization
+43,Active Max,-0.186105615412981,0.186105615412981,after_train_only_standardization
+43,Active Min,0.12775322614242032,0.12775322614242032,after_train_only_standardization
+43,Idle Mean,0.11171594939207674,0.11171594939207674,after_train_only_standardization
+43,Idle Std,-0.2584703334454498,0.2584703334454498,after_train_only_standardization
+43,Idle Max,0.510898140510116,0.510898140510116,after_train_only_standardization
+43,Idle Min,0.0771802687874473,0.0771802687874473,after_train_only_standardization
+44,Dst Port,-9.492021889737586,9.492021889737586,after_train_only_standardization
+44,Protocol,0.6608384369137303,0.6608384369137303,after_train_only_standardization
+44,Flow Duration,-0.9932682406070734,0.9932682406070734,after_train_only_standardization
+44,Tot Fwd Pkts,0.35770121979435276,0.35770121979435276,after_train_only_standardization
+44,Tot Bwd Pkts,-1.4678489453913839,1.4678489453913839,after_train_only_standardization
+44,TotLen Fwd Pkts,-1.1998262718311594,1.1998262718311594,after_train_only_standardization
+44,TotLen Bwd Pkts,-0.964967640487516,0.964967640487516,after_train_only_standardization
+44,Fwd Pkt Len Max,-0.48191246864104725,0.48191246864104725,after_train_only_standardization
+44,Fwd Pkt Len Min,0.29082172320803334,0.29082172320803334,after_train_only_standardization
+44,Fwd Pkt Len Mean,0.30364642611321585,0.30364642611321585,after_train_only_standardization
+44,Fwd Pkt Len Std,2.3689617603246,2.3689617603246,after_train_only_standardization
+44,Bwd Pkt Len Max,-0.05480671534906462,0.05480671534906462,after_train_only_standardization
+44,Bwd Pkt Len Min,-0.3780927460431842,0.3780927460431842,after_train_only_standardization
+44,Bwd Pkt Len Mean,-0.16806585866154808,0.16806585866154808,after_train_only_standardization
+44,Bwd Pkt Len Std,2.68363626142316,2.68363626142316,after_train_only_standardization
+44,Flow Byts/s,-1.163658557759611,1.163658557759611,after_train_only_standardization
+44,Flow Pkts/s,1.0643230823559757,1.0643230823559757,after_train_only_standardization
+44,Flow IAT Mean,0.18899283252156557,0.18899283252156557,after_train_only_standardization
+44,Flow IAT Std,0.2630837525783522,0.2630837525783522,after_train_only_standardization
+44,Flow IAT Max,-0.3649118940210817,0.3649118940210817,after_train_only_standardization
+44,Flow IAT Min,-0.19008736479843386,0.19008736479843386,after_train_only_standardization
+44,Fwd IAT Tot,-0.890127549785523,0.890127549785523,after_train_only_standardization
+44,Fwd IAT Mean,0.6963764917250376,0.6963764917250376,after_train_only_standardization
+44,Fwd IAT Std,-0.13137802263838508,0.13137802263838508,after_train_only_standardization
+44,Fwd IAT Max,0.2865648044474014,0.2865648044474014,after_train_only_standardization
+44,Fwd IAT Min,0.7769944409417651,0.7769944409417651,after_train_only_standardization
+44,Bwd IAT Tot,-1.9104761753867374,1.9104761753867374,after_train_only_standardization
+44,Bwd IAT Mean,1.1997380759449716,1.1997380759449716,after_train_only_standardization
+44,Bwd IAT Std,1.0111852519320694,1.0111852519320694,after_train_only_standardization
+44,Bwd IAT Max,0.5541750700061183,0.5541750700061183,after_train_only_standardization
+44,Bwd IAT Min,0.927544650640578,0.927544650640578,after_train_only_standardization
+44,Fwd PSH Flags,-0.4065394309457816,0.4065394309457816,after_train_only_standardization
+44,Bwd PSH Flags,0.0,0.0,after_train_only_standardization
+44,Fwd URG Flags,0.0,0.0,after_train_only_standardization
+44,Bwd URG Flags,0.0,0.0,after_train_only_standardization
+44,Fwd Header Len,3.8171913280562806,3.8171913280562806,after_train_only_standardization
+44,Bwd Header Len,-0.8261479146522357,0.8261479146522357,after_train_only_standardization
+44,Fwd Pkts/s,1.0167113338846037,1.0167113338846037,after_train_only_standardization
+44,Bwd Pkts/s,0.5541271486079556,0.5541271486079556,after_train_only_standardization
+44,Pkt Len Min,-0.345901512096652,0.345901512096652,after_train_only_standardization
+44,Pkt Len Max,1.3855125427670554,1.3855125427670554,after_train_only_standardization
+44,Pkt Len Mean,-0.05402689891190769,0.05402689891190769,after_train_only_standardization
+44,Pkt Len Std,2.7072917293925385,2.7072917293925385,after_train_only_standardization
+44,Pkt Len Var,-4.3339161832610325,4.3339161832610325,after_train_only_standardization
+44,FIN Flag Cnt,0.32149088035112167,0.32149088035112167,after_train_only_standardization
+44,SYN Flag Cnt,-0.4065394309457816,0.4065394309457816,after_train_only_standardization
+44,RST Flag Cnt,-0.3447804211820406,0.3447804211820406,after_train_only_standardization
+44,PSH Flag Cnt,-6.194627567839679,6.194627567839679,after_train_only_standardization
+44,ACK Flag Cnt,-0.4107553738816519,0.4107553738816519,after_train_only_standardization
+44,URG Flag Cnt,-0.48952904801410907,0.48952904801410907,after_train_only_standardization
+44,CWE Flag Count,0.0,0.0,after_train_only_standardization
+44,ECE Flag Cnt,-0.3447804211820406,0.3447804211820406,after_train_only_standardization
+44,Down/Up Ratio,-0.18270264499296443,0.18270264499296443,after_train_only_standardization
+44,Pkt Size Avg,0.40952818690390796,0.40952818690390796,after_train_only_standardization
+44,Fwd Seg Size Avg,0.30364642611319453,0.30364642611319453,after_train_only_standardization
+44,Bwd Seg Size Avg,-0.16806585866154808,0.16806585866154808,after_train_only_standardization
+44,Fwd Byts/b Avg,0.0,0.0,after_train_only_standardization
+44,Fwd Pkts/b Avg,0.0,0.0,after_train_only_standardization
+44,Fwd Blk Rate Avg,0.0,0.0,after_train_only_standardization
+44,Bwd Byts/b Avg,0.0,0.0,after_train_only_standardization
+44,Bwd Pkts/b Avg,0.0,0.0,after_train_only_standardization
+44,Bwd Blk Rate Avg,0.0,0.0,after_train_only_standardization
+44,Subflow Fwd Pkts,0.35770121979435276,0.35770121979435276,after_train_only_standardization
+44,Subflow Fwd Byts,-1.1998262718311594,1.1998262718311594,after_train_only_standardization
+44,Subflow Bwd Pkts,-1.4678489453913839,1.4678489453913839,after_train_only_standardization
+44,Subflow Bwd Byts,-0.964967640487516,0.964967640487516,after_train_only_standardization
+44,Init Fwd Win Byts,0.7533282940840956,0.7533282940840956,after_train_only_standardization
+44,Init Bwd Win Byts,-0.4561009562367275,0.4561009562367275,after_train_only_standardization
+44,Fwd Act Data Pkts,0.6998140908264425,0.6998140908264425,after_train_only_standardization
+44,Fwd Seg Size Min,8.403478026882315,8.403478026882315,after_train_only_standardization
+44,Active Mean,0.2709448071149777,0.2709448071149777,after_train_only_standardization
+44,Active Std,0.9327132214488096,0.9327132214488096,after_train_only_standardization
+44,Active Max,-0.4637197021367445,0.4637197021367445,after_train_only_standardization
+44,Active Min,0.001989365858531586,0.001989365858531586,after_train_only_standardization
+44,Idle Mean,0.13047575477346332,0.13047575477346332,after_train_only_standardization
+44,Idle Std,-0.014837094139227548,0.014837094139227548,after_train_only_standardization
+44,Idle Max,0.4046380314442726,0.4046380314442726,after_train_only_standardization
+44,Idle Min,0.12805225496175002,0.12805225496175002,after_train_only_standardization
+45,Dst Port,-8.72722290436014,8.72722290436014,after_train_only_standardization
+45,Protocol,0.306547695494176,0.306547695494176,after_train_only_standardization
+45,Flow Duration,-0.5802450530129903,0.5802450530129903,after_train_only_standardization
+45,Tot Fwd Pkts,-0.5764757658435854,0.5764757658435854,after_train_only_standardization
+45,Tot Bwd Pkts,-1.3581402892197483,1.3581402892197483,after_train_only_standardization
+45,TotLen Fwd Pkts,-1.1475944012276271,1.1475944012276271,after_train_only_standardization
+45,TotLen Bwd Pkts,-0.7910252623606417,0.7910252623606417,after_train_only_standardization
+45,Fwd Pkt Len Max,-0.8847000425512934,0.8847000425512934,after_train_only_standardization
+45,Fwd Pkt Len Min,0.5501640663411296,0.5501640663411296,after_train_only_standardization
+45,Fwd Pkt Len Mean,0.8403115137711675,0.8403115137711675,after_train_only_standardization
+45,Fwd Pkt Len Std,1.187552984314567,1.187552984314567,after_train_only_standardization
+45,Bwd Pkt Len Max,0.21983892836976826,0.21983892836976826,after_train_only_standardization
+45,Bwd Pkt Len Min,-0.6299363360800553,0.6299363360800553,after_train_only_standardization
+45,Bwd Pkt Len Mean,-0.7224399804554089,0.7224399804554089,after_train_only_standardization
+45,Bwd Pkt Len Std,2.4803752782513815,2.4803752782513815,after_train_only_standardization
+45,Flow Byts/s,-0.42070249782465224,0.42070249782465224,after_train_only_standardization
+45,Flow Pkts/s,0.6924230410370821,0.6924230410370821,after_train_only_standardization
+45,Flow IAT Mean,0.208147435772202,0.208147435772202,after_train_only_standardization
+45,Flow IAT Std,0.1850148070323318,0.1850148070323318,after_train_only_standardization
+45,Flow IAT Max,-0.2438481807487472,0.2438481807487472,after_train_only_standardization
+45,Flow IAT Min,0.018609919361236325,0.018609919361236325,after_train_only_standardization
+45,Fwd IAT Tot,-0.7333462375570929,0.7333462375570929,after_train_only_standardization
+45,Fwd IAT Mean,0.41976154486180883,0.41976154486180883,after_train_only_standardization
+45,Fwd IAT Std,-0.13410738730752722,0.13410738730752722,after_train_only_standardization
+45,Fwd IAT Max,0.08188714436804563,0.08188714436804563,after_train_only_standardization
+45,Fwd IAT Min,0.4900079613371594,0.4900079613371594,after_train_only_standardization
+45,Bwd IAT Tot,-1.3444345543689475,1.3444345543689475,after_train_only_standardization
+45,Bwd IAT Mean,1.1158942250704145,1.1158942250704145,after_train_only_standardization
+45,Bwd IAT Std,1.0146461894102234,1.0146461894102234,after_train_only_standardization
+45,Bwd IAT Max,0.6090950141901027,0.6090950141901027,after_train_only_standardization
+45,Bwd IAT Min,0.7102561742489117,0.7102561742489117,after_train_only_standardization
+45,Fwd PSH Flags,-0.2512637125071137,0.2512637125071137,after_train_only_standardization
+45,Bwd PSH Flags,0.0,0.0,after_train_only_standardization
+45,Fwd URG Flags,0.0,0.0,after_train_only_standardization
+45,Bwd URG Flags,0.0,0.0,after_train_only_standardization
+45,Fwd Header Len,4.375308896477229,4.375308896477229,after_train_only_standardization
+45,Bwd Header Len,-0.9202554733892327,0.9202554733892327,after_train_only_standardization
+45,Fwd Pkts/s,0.7790333451309571,0.7790333451309571,after_train_only_standardization
+45,Bwd Pkts/s,-0.07394076063648991,0.07394076063648991,after_train_only_standardization
+45,Pkt Len Min,-0.4781033609608429,0.4781033609608429,after_train_only_standardization
+45,Pkt Len Max,2.068845870773717,2.068845870773717,after_train_only_standardization
+45,Pkt Len Mean,0.19067319429080587,0.19067319429080587,after_train_only_standardization
+45,Pkt Len Std,3.0945996683577732,3.0945996683577732,after_train_only_standardization
+45,Pkt Len Var,-3.5470531854722216,3.5470531854722216,after_train_only_standardization
+45,FIN Flag Cnt,0.4524565658662752,0.4524565658662752,after_train_only_standardization
+45,SYN Flag Cnt,-0.2512637125071137,0.2512637125071137,after_train_only_standardization
+45,RST Flag Cnt,-0.18845157315811834,0.18845157315811834,after_train_only_standardization
+45,PSH Flag Cnt,-6.284748086250125,6.284748086250125,after_train_only_standardization
+45,ACK Flag Cnt,0.0033327528933646115,0.0033327528933646115,after_train_only_standardization
+45,URG Flag Cnt,-0.22200425457465195,0.22200425457465195,after_train_only_standardization
+45,CWE Flag Count,0.0,0.0,after_train_only_standardization
+45,ECE Flag Cnt,-0.18845157315811834,0.18845157315811834,after_train_only_standardization
+45,Down/Up Ratio,-0.5640334251931847,0.5640334251931847,after_train_only_standardization
+45,Pkt Size Avg,0.5131368223986879,0.5131368223986879,after_train_only_standardization
+45,Fwd Seg Size Avg,0.840311513771186,0.840311513771186,after_train_only_standardization
+45,Bwd Seg Size Avg,-0.7224399804554089,0.7224399804554089,after_train_only_standardization
+45,Fwd Byts/b Avg,0.0,0.0,after_train_only_standardization
+45,Fwd Pkts/b Avg,0.0,0.0,after_train_only_standardization
+45,Fwd Blk Rate Avg,0.0,0.0,after_train_only_standardization
+45,Bwd Byts/b Avg,0.0,0.0,after_train_only_standardization
+45,Bwd Pkts/b Avg,0.0,0.0,after_train_only_standardization
+45,Bwd Blk Rate Avg,0.0,0.0,after_train_only_standardization
+45,Subflow Fwd Pkts,-0.5764757658435854,0.5764757658435854,after_train_only_standardization
+45,Subflow Fwd Byts,-1.1475944012276271,1.1475944012276271,after_train_only_standardization
+45,Subflow Bwd Pkts,-1.3581402892197483,1.3581402892197483,after_train_only_standardization
+45,Subflow Bwd Byts,-0.7910252623606417,0.7910252623606417,after_train_only_standardization
+45,Init Fwd Win Byts,0.8900361321263847,0.8900361321263847,after_train_only_standardization
+45,Init Bwd Win Byts,-0.4181511585145696,0.4181511585145696,after_train_only_standardization
+45,Fwd Act Data Pkts,-0.4171380553670029,0.4171380553670029,after_train_only_standardization
+45,Fwd Seg Size Min,8.80896611867129,8.80896611867129,after_train_only_standardization
+45,Active Mean,-0.050222826173870506,0.050222826173870506,after_train_only_standardization
+45,Active Std,0.07873245171447463,0.07873245171447463,after_train_only_standardization
+45,Active Max,-0.12383936619420206,0.12383936619420206,after_train_only_standardization
+45,Active Min,-0.10482387816121384,0.10482387816121384,after_train_only_standardization
+45,Idle Mean,0.06869070832479976,0.06869070832479976,after_train_only_standardization
+45,Idle Std,-0.12056997205365563,0.12056997205365563,after_train_only_standardization
+45,Idle Max,0.24926894494696647,0.24926894494696647,after_train_only_standardization
+45,Idle Min,0.04204166485936945,0.04204166485936945,after_train_only_standardization
+46,Dst Port,-8.407565045433081,8.407565045433081,after_train_only_standardization
+46,Protocol,0.49764482319797765,0.49764482319797765,after_train_only_standardization
+46,Flow Duration,-1.2261754177286845,1.2261754177286845,after_train_only_standardization
+46,Tot Fwd Pkts,0.34356353130620004,0.34356353130620004,after_train_only_standardization
+46,Tot Bwd Pkts,-1.577350860449017,1.577350860449017,after_train_only_standardization
+46,TotLen Fwd Pkts,-0.8939139423897523,0.8939139423897523,after_train_only_standardization
+46,TotLen Bwd Pkts,-1.0687271513469665,1.0687271513469665,after_train_only_standardization
+46,Fwd Pkt Len Max,-0.6752359268067288,0.6752359268067288,after_train_only_standardization
+46,Fwd Pkt Len Min,0.46121057168996976,0.46121057168996976,after_train_only_standardization
+46,Fwd Pkt Len Mean,1.1299186405077097,1.1299186405077097,after_train_only_standardization
+46,Fwd Pkt Len Std,0.9749319468633976,0.9749319468633976,after_train_only_standardization
+46,Bwd Pkt Len Max,0.5365635475090281,0.5365635475090281,after_train_only_standardization
+46,Bwd Pkt Len Min,-0.4760335251768071,0.4760335251768071,after_train_only_standardization
+46,Bwd Pkt Len Mean,-0.5800208560720996,0.5800208560720996,after_train_only_standardization
+46,Bwd Pkt Len Std,2.452365080093829,2.452365080093829,after_train_only_standardization
+46,Flow Byts/s,-0.8548110315614037,0.8548110315614037,after_train_only_standardization
+46,Flow Pkts/s,1.0014134142840534,1.0014134142840534,after_train_only_standardization
+46,Flow IAT Mean,0.2493026426804185,0.2493026426804185,after_train_only_standardization
+46,Flow IAT Std,0.3023615396577486,0.3023615396577486,after_train_only_standardization
+46,Flow IAT Max,-0.4698771998775487,0.4698771998775487,after_train_only_standardization
+46,Flow IAT Min,-0.1738156859515271,0.1738156859515271,after_train_only_standardization
+46,Fwd IAT Tot,-1.2444057571036409,1.2444057571036409,after_train_only_standardization
+46,Fwd IAT Mean,0.8701858330551239,0.8701858330551239,after_train_only_standardization
+46,Fwd IAT Std,-0.11480996530612196,0.11480996530612196,after_train_only_standardization
+46,Fwd IAT Max,0.05027637562453661,0.05027637562453661,after_train_only_standardization
+46,Fwd IAT Min,0.8824893124461447,0.8824893124461447,after_train_only_standardization
+46,Bwd IAT Tot,-1.7668612362435636,1.7668612362435636,after_train_only_standardization
+46,Bwd IAT Mean,1.0375365855151482,1.0375365855151482,after_train_only_standardization
+46,Bwd IAT Std,1.2536506336835798,1.2536506336835798,after_train_only_standardization
+46,Bwd IAT Max,0.7887795078025198,0.7887795078025198,after_train_only_standardization
+46,Bwd IAT Min,0.7977122926489728,0.7977122926489728,after_train_only_standardization
+46,Fwd PSH Flags,-0.2666410891412585,0.2666410891412585,after_train_only_standardization
+46,Bwd PSH Flags,0.0,0.0,after_train_only_standardization
+46,Fwd URG Flags,0.0,0.0,after_train_only_standardization
+46,Bwd URG Flags,0.0,0.0,after_train_only_standardization
+46,Fwd Header Len,5.552363496191064,5.552363496191064,after_train_only_standardization
+46,Bwd Header Len,-0.4821463018762032,0.4821463018762032,after_train_only_standardization
+46,Fwd Pkts/s,1.138838078382562,1.138838078382562,after_train_only_standardization
+46,Bwd Pkts/s,-0.2135131189939211,0.2135131189939211,after_train_only_standardization
+46,Pkt Len Min,-0.46371489031858176,0.46371489031858176,after_train_only_standardization
+46,Pkt Len Max,1.6598020674686795,1.6598020674686795,after_train_only_standardization
+46,Pkt Len Mean,0.041824473278876576,0.041824473278876576,after_train_only_standardization
+46,Pkt Len Std,2.252144762859746,2.252144762859746,after_train_only_standardization
+46,Pkt Len Var,-3.300546573990331,3.300546573990331,after_train_only_standardization
+46,FIN Flag Cnt,0.3438991522669963,0.3438991522669963,after_train_only_standardization
+46,SYN Flag Cnt,-0.2666410891412585,0.2666410891412585,after_train_only_standardization
+46,RST Flag Cnt,-0.30617152008729215,0.30617152008729215,after_train_only_standardization
+46,PSH Flag Cnt,-6.315052818884454,6.315052818884454,after_train_only_standardization
+46,ACK Flag Cnt,-0.06694758468295986,0.06694758468295986,after_train_only_standardization
+46,URG Flag Cnt,-0.22200201453072826,0.22200201453072826,after_train_only_standardization
+46,CWE Flag Count,0.0,0.0,after_train_only_standardization
+46,ECE Flag Cnt,-0.30617152008729215,0.30617152008729215,after_train_only_standardization
+46,Down/Up Ratio,-0.15106691484477397,0.15106691484477397,after_train_only_standardization
+46,Pkt Size Avg,0.36646720824124135,0.36646720824124135,after_train_only_standardization
+46,Fwd Seg Size Avg,1.129918640507724,1.129918640507724,after_train_only_standardization
+46,Bwd Seg Size Avg,-0.5800208560720994,0.5800208560720994,after_train_only_standardization
+46,Fwd Byts/b Avg,0.0,0.0,after_train_only_standardization
+46,Fwd Pkts/b Avg,0.0,0.0,after_train_only_standardization
+46,Fwd Blk Rate Avg,0.0,0.0,after_train_only_standardization
+46,Bwd Byts/b Avg,0.0,0.0,after_train_only_standardization
+46,Bwd Pkts/b Avg,0.0,0.0,after_train_only_standardization
+46,Bwd Blk Rate Avg,0.0,0.0,after_train_only_standardization
+46,Subflow Fwd Pkts,0.34356353130620004,0.34356353130620004,after_train_only_standardization
+46,Subflow Fwd Byts,-0.8939139423897523,0.8939139423897523,after_train_only_standardization
+46,Subflow Bwd Pkts,-1.577350860449017,1.577350860449017,after_train_only_standardization
+46,Subflow Bwd Byts,-1.0687271513469665,1.0687271513469665,after_train_only_standardization
+46,Init Fwd Win Byts,0.7828417924334837,0.7828417924334837,after_train_only_standardization
+46,Init Bwd Win Byts,-0.8399493254882225,0.8399493254882225,after_train_only_standardization
+46,Fwd Act Data Pkts,-0.4123662723612089,0.4123662723612089,after_train_only_standardization
+46,Fwd Seg Size Min,8.293029971104977,8.293029971104977,after_train_only_standardization
+46,Active Mean,-0.08341078259922866,0.08341078259922866,after_train_only_standardization
+46,Active Std,0.6843391581190095,0.6843391581190095,after_train_only_standardization
+46,Active Max,-0.36422569695035917,0.36422569695035917,after_train_only_standardization
+46,Active Min,-0.3230952291273101,0.3230952291273101,after_train_only_standardization
+46,Idle Mean,0.13952662004570918,0.13952662004570918,after_train_only_standardization
+46,Idle Std,-0.10095407743137448,0.10095407743137448,after_train_only_standardization
+46,Idle Max,0.2895515232680813,0.2895515232680813,after_train_only_standardization
+46,Idle Min,0.17840413521986345,0.17840413521986345,after_train_only_standardization

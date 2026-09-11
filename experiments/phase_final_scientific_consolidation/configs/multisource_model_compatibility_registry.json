@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "frozen_before_execution": true,
+  "source_protocol": "first 200 raw units, or all units when the source contains fewer",
+  "entries": [
+    {
+      "source_family": "windows_event",
+      "recommended_model": "models/isolation_forest_windows_local.joblib",
+      "artifact_exists": true,
+      "feature_schema": "Logminer normalized event features aligned to artifact feature_columns",
+      "expected_input": "one normalized Windows EVTX record",
+      "output_type": "isolation_label_and_decision_score",
+      "compatible": true,
+      "reason_if_incompatible": ""
+    },
+    {
+      "source_family": "linux_auth",
+      "recommended_model": "models/random_forest_linux_auth.joblib",
+      "artifact_exists": true,
+      "feature_schema": "server, service, attempts, status, port, protocol, hour, weekday",
+      "expected_input": "one Linux/auth CSV row with aliases resolved by _linux_auth_features",
+      "output_type": "binary_label_and_positive_class_probability",
+      "compatible": true,
+      "reason_if_incompatible": ""
+    },
+    {
+      "source_family": "wazuh",
+      "recommended_model": "models/isolation_forest_wazuh.joblib",
+      "artifact_exists": true,
+      "feature_schema": "Logminer normalized event features aligned to artifact feature_columns",
+      "expected_input": "one Wazuh CSV row normalized as a Logminer event",
+      "output_type": "isolation_label_and_decision_score",
+      "compatible": true,
+      "reason_if_incompatible": ""
+    },
+    {
+      "source_family": "syslog",
+      "recommended_model": "models/isolation_forest_linux_colab.joblib",
+      "artifact_exists": true,
+      "feature_schema": "Logminer normalized event features aligned to artifact feature_columns",
+      "expected_input": "one normalized Linux/syslog line",
+      "output_type": "isolation_label_and_decision_score",
+      "compatible": true,
+      "reason_if_incompatible": ""
+    },
+    {
+      "source_family": "apache",
+      "recommended_model": "models/isolation_forest_fallback_colab.joblib",
+      "artifact_exists": true,
+      "feature_schema": "generic historical fallback schema",
+      "expected_input": "structured HTTP event",
+      "output_type": "not_executed",
+      "compatible": false,
+      "reason_if_incompatible": "The one-line fixture is carried as unparsed message text; HTTP fields expected for a methodologically defensible model call are absent."
+    },
+    {
+      "source_family": "hdfs",
+      "recommended_model": "models/isolation_forest_hdfs_colab.joblib",
+      "artifact_exists": true,
+      "feature_schema": "Logminer normalized HDFS event features aligned to artifact feature_columns",
+      "expected_input": "one normalized HDFS log event",
+      "output_type": "isolation_label_and_decision_score",
+      "compatible": true,
+      "reason_if_incompatible": ""
+    },
+    {
+      "source_family": "bgl",
+      "recommended_model": "models/isolation_forest_bgl_colab.joblib",
+      "artifact_exists": true,
+      "feature_schema": "Logminer normalized BGL event features aligned to artifact feature_columns",
+      "expected_input": "one normalized BGL log event",
+      "output_type": "isolation_label_and_decision_score",
+      "compatible": true,
+      "reason_if_incompatible": ""
+    },
+    {
+      "source_family": "network_tabular",
+      "recommended_model": "models/random_forest_network_cicids.joblib",
+      "artifact_exists": true,
+      "feature_schema": "78 CICIDS2017 numeric flow columns in artifact order",
+      "expected_input": "one CICIDS2017 MachineLearningCVE CSV row",
+      "output_type": "binary_label_and_positive_class_probability",
+      "compatible": true,
+      "reason_if_incompatible": ""
+    }
+  ]
+}

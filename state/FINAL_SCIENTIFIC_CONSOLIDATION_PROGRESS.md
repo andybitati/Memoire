@@ -14,10 +14,10 @@ Dernière mise à jour : 2026-09-11.
 
 - [x] Lecture des rapports, matrices, ledgers, architecture et scripts existants.
 - [x] Création de `docs/FINAL_SCIENTIFIC_GAP_ANALYSIS.md` limitée aux quatre points autorisés.
-- [ ] Protocoles P1–P4 figés et testés. Le protocole maître et P1 sont figés ; P2–P4 restent à matérialiser.
+- [ ] Protocoles P1–P4 figés et testés. P1–P3 sont matérialisés ; P4 reste à matérialiser.
 - [x] Script P1 créé et validation syntaxique réussie.
-- [ ] P1 exécuté.
-- [ ] P2 exécuté.
+- [x] P1 exécuté : run `final_csecic_lr_forensic_20260911T000140Z`, conclusion B. Un premier run échoué par sérialisation NumPy reste conservé dans le ledger.
+- [x] P2 exécuté : run `final_router_open_set_20260911T000746Z`, seuil `top_score=100` calibré sur pseudo-open connu uniquement ; rejet final 3/3, faux rejet connu 0/28.
 - [ ] P3 exécuté.
 - [ ] P4 exécuté.
 - [ ] Tests de non-régression exécutés.
@@ -32,3 +32,4 @@ Dernière mise à jour : 2026-09-11.
 - Conserver les résultats négatifs et les statuts `NON SOUTENU`, `NON ÉVALUÉ` et `INFORMATION À VÉRIFIER` lorsqu’ils s’appliquent.
 - Pour toute commande longue : un contrôle au plus toutes les 300 secondes.
 - `graphify update .` a de nouveau échoué avec `[WinError 5] Accès refusé` après l’ajout du script P1 ; cet échec n’affecte pas les artefacts expérimentaux.
+- Le registre P3 est figé : sept sources avec artefact compatible et Apache en fallback heuristique explicite. Un smoke test d’inférence réelle a réussi pour les sept artefacts.

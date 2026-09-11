@@ -1,0 +1,47 @@
+{
+  "run_id": "final_router_open_set_20260911T000746Z",
+  "policy": {
+    "min_top_score": 100.0,
+    "min_decision_margin": 0.0,
+    "min_compatible_rules": 0
+  },
+  "calibration": {
+    "method": "leave_one_known_family_out_pseudo_open",
+    "known_source_count": 28,
+    "known_family_count": 7,
+    "final_open_set_used_for_calibration": false,
+    "selected_validation_metrics": {
+      "min_top_score": 100.0,
+      "min_decision_margin": 0.0,
+      "min_compatible_rules": 0,
+      "validation_n": 196,
+      "known_n": 168,
+      "pseudo_open_n": 28,
+      "pseudo_unknown_rejection_rate": 1.0,
+      "false_rejection_rate_on_known": 0.0,
+      "known_accuracy": 1.0,
+      "coverage": 0.8571428571428571,
+      "selective_accuracy": 1.0
+    }
+  },
+  "final_test": {
+    "n": 31,
+    "known_n": 28,
+    "unknown_n": 3,
+    "known_accuracy": 1.0,
+    "known_macro_f1": 1.0,
+    "unknown_rejection_rate": 1.0,
+    "false_rejection_rate_on_known": 0.0,
+    "fallback_rate": 0.0,
+    "coverage": 0.9032258064516129,
+    "selective_accuracy": 1.0,
+    "overall_accuracy_with_unknown_class": 1.0
+  },
+  "final_open_set_sources": [
+    "open_cloud_service",
+    "open_dns",
+    "open_virtualization"
+  ],
+  "decision_margin_semantics": "score heuristique de séparation, non une probabilité",
+  "tradeoff_is_post_selection_diagnostic": true
+}
