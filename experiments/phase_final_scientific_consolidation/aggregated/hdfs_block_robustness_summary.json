@@ -1,0 +1,89 @@
+{
+  "run_id": "hdfs_block_robustness_20260911T002351Z",
+  "source_run_id": "ds_hdfs_block_20260910T081756Z",
+  "baseline": {
+    "n": 2000,
+    "prevalence": 0.0145,
+    "precision": 0.8055555555555556,
+    "recall": 1.0,
+    "f1": 0.8923076923076924,
+    "pr_auc": 0.8457719010169101,
+    "mcc": 0.8959322673375348,
+    "fpr": 0.0035514967021816335,
+    "tp": 29,
+    "fp": 7,
+    "tn": 1964,
+    "fn": 0,
+    "predicted_positive": 36,
+    "threshold": 1.2729429339548877
+  },
+  "test_blocks": 2000,
+  "test_positive_blocks": 29,
+  "aggregator": "mean",
+  "threshold": 1.2729429339548877,
+  "threshold_source": "source_run_validation_only",
+  "bootstrap": {
+    "resampling_unit": "block_id",
+    "replicates": 1000,
+    "seed": 20260911,
+    "descriptive_intervals": [
+      {
+        "metric": "f1",
+        "replicates": 1000,
+        "median": 0.8947368421052632,
+        "percentile_2_5": 0.8,
+        "percentile_97_5": 0.961038961038961,
+        "iqr": 0.052185292895720825
+      },
+      {
+        "metric": "precision",
+        "replicates": 1000,
+        "median": 0.8095238095238095,
+        "percentile_2_5": 0.6666666666666666,
+        "percentile_97_5": 0.925,
+        "iqr": 0.08530338849487784
+      },
+      {
+        "metric": "recall",
+        "replicates": 1000,
+        "median": 1.0,
+        "percentile_2_5": 1.0,
+        "percentile_97_5": 1.0,
+        "iqr": 0.0
+      },
+      {
+        "metric": "mcc",
+        "replicates": 1000,
+        "median": 0.897902953928349,
+        "percentile_2_5": 0.8140083150402295,
+        "percentile_97_5": 0.9610339991006598,
+        "iqr": 0.0487129814442856
+      },
+      {
+        "metric": "fpr",
+        "replicates": 1000,
+        "median": 0.0035496957403651115,
+        "percentile_2_5": 0.0015136226034308778,
+        "percentile_97_5": 0.006572295247724975,
+        "iqr": 0.0020129919672988994
+      }
+    ]
+  },
+  "leave_one_positive_out": {
+    "evaluations": 29,
+    "f1_min": 0.8888888888888888,
+    "f1_max": 0.8888888888888888,
+    "recall_min": 1.0,
+    "recall_max": 1.0
+  },
+  "stability_wording": "variable",
+  "assertions": {
+    "resampling_unit_is_block_id": true,
+    "threshold_frozen": true,
+    "threshold_refit_in_bootstrap": false,
+    "aggregator_refit_in_bootstrap": false,
+    "drain_state_unchanged": true,
+    "drain_cluster_count_unchanged": true,
+    "baseline_reproduces_source_f1": true
+  }
+}

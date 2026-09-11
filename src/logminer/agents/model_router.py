@@ -532,6 +532,7 @@ def route_model(
         "kind": kind,
         "scores": scores,
         "confidence": confidence,
+        "decision_margin": confidence,
         "reasons": reasons,
     }
 

@@ -4,7 +4,7 @@ Run : `final_csecic_lr_forensic_20260911T000140Z`. Protocole : 15 février 2018 
 
 ## Contrôle négatif par permutation
 
-La permutation porte uniquement sur `y_train`. Le F1 moyen est `0.339867`, la PR-AUC `0.744143` et le MCC `0.119281`. Les labels et caractéristiques de test restent inchangés.
+La permutation porte uniquement sur `y_train`. Le F1 moyen est `0.339867`, la PR-AUC `0.744143` et le MCC `0.119281`. Les labels et caractéristiques de test restent inchangés. Le F1 varie de `0,001199` à `0,574559`, tandis que la PR-AUC varie de `0,314599` à `0,997411`. Le contrôle négatif détruit donc la qualité de décision au seuil fixé, mais pas systématiquement le classement des scores. Cette instabilité est cohérente avec la domination de quelques variables mise en évidence par les deux contrôles suivants ; elle interdit de retenir la conclusion A.
 
 ## Baselines mono-feature
 

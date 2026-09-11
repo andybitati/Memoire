@@ -110,7 +110,10 @@ def load_artifact(entry: dict[str, Any]) -> tuple[dict[str, Any], float]:
         "model_type": artifact.get("model_type", type(artifact["model"]).__name__),
         "feature_count": len(artifact["feature_columns"]),
         "load_time_sec": elapsed,
-        "warnings": [str(item.message) for item in captured],
+        "warnings": [
+            {"message": message, "count": count}
+            for message, count in Counter(str(item.message) for item in captured).items()
+        ],
     }
     return artifact, elapsed
 
@@ -468,30 +471,36 @@ def main() -> int:
             for message in transcripts:
                 handle.write(json.dumps(message, ensure_ascii=False) + "\n")
 
-        candidate_rows: list[dict[str, Any]] = []
-        for row in all_traces:
-            if row["condition"] != "M" or not row["is_anomaly"]:
-                continue
-            fields = json.loads(row["normalized_fields_json"])
-            fields.update({
-                "end_to_end_run_id": current_run, "source_id": row["source_id"],
-                "task_id": row["task_id"], "contract_id": row["contract_id"],
-                "agent_id": row["agent_id"], "model": row["model_loaded"] or row["model_type"],
-                "is_anomaly": 1, "anomaly_score": row["score"], "anomaly_rank": len(candidate_rows) + 1,
-            })
-            candidate_rows.append(fields)
-        candidate_path = PHASE_ROOT / "processed" / f"{current_run}_candidate_anomalies.csv"
-        incident_path = PHASE_ROOT / "processed" / f"{current_run}_candidate_incidents.csv"
-        write_csv(candidate_path, candidate_rows, fieldnames=list(candidate_rows[0]) if candidate_rows else ["end_to_end_run_id", "source_id", "is_anomaly"])
-        if candidate_rows:
-            correlate_anomalies(candidate_path, incident_path, sep=",", window_minutes=15)
-            incident_count = len(pd.read_csv(incident_path))
-        else:
-            write_csv(incident_path, [], fieldnames=["incident_id", "event_count"])
-            incident_count = 0
+        condition_incidents: dict[str, int] = {}
+        candidate_artifacts: list[Path] = []
+        for condition in ("H", "M"):
+            candidate_rows: list[dict[str, Any]] = []
+            for row in all_traces:
+                if row["condition"] != condition or not row["is_anomaly"]:
+                    continue
+                fields = json.loads(row["normalized_fields_json"])
+                fields.update({
+                    "end_to_end_run_id": current_run, "condition": condition,
+                    "source_id": row["source_id"], "task_id": row["task_id"],
+                    "contract_id": row["contract_id"], "agent_id": row["agent_id"],
+                    "model": row["model_loaded"] or row["model_type"],
+                    "is_anomaly": 1, "anomaly_score": row["score"],
+                    "anomaly_rank": len(candidate_rows) + 1,
+                })
+                candidate_rows.append(fields)
+            candidate_path = PHASE_ROOT / "processed" / f"{current_run}_{condition}_candidate_anomalies.csv"
+            incident_path = PHASE_ROOT / "processed" / f"{current_run}_{condition}_candidate_incidents.csv"
+            write_csv(candidate_path, candidate_rows, fieldnames=list(candidate_rows[0]) if candidate_rows else ["end_to_end_run_id", "condition", "source_id", "is_anomaly"])
+            if candidate_rows:
+                correlate_anomalies(candidate_path, incident_path, sep=",", window_minutes=15)
+                condition_incidents[condition] = len(pd.read_csv(incident_path))
+            else:
+                write_csv(incident_path, [], fieldnames=["incident_id", "event_count"])
+                condition_incidents[condition] = 0
+            candidate_artifacts.extend([candidate_path, incident_path])
 
         summaries = [
-            condition_summary(condition, [row for row in all_traces if row["condition"] == condition], incident_count if condition == "M" else 0, condition_resources[condition])
+            condition_summary(condition, [row for row in all_traces if row["condition"] == condition], condition_incidents[condition], condition_resources[condition])
             for condition in ("H", "M")
         ]
         source_rows = per_source_summary(all_traces)
@@ -532,6 +541,9 @@ def main() -> int:
             "| Condition | Inférences modèle | Fallbacks heuristiques | Unsupported | Erreurs | Refus | Réattributions | Anomalies candidates | Incidents candidats | Latence moyenne (s) | P95 (s) |", "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
             f"| H | {h['model_inference_count']} | {h['heuristic_fallback_count']} | {h['unsupported_count']} | {h['errors']} | {h['refusals']} | {h['reassignments']} | {h['candidate_anomalies']} | {h['candidate_incidents']} | {h['latency_mean']:.6f} | {h['latency_p95']:.6f} |",
             f"| M | {m['model_inference_count']} | {m['heuristic_fallback_count']} | {m['unsupported_count']} | {m['errors']} | {m['refusals']} | {m['reassignments']} | {m['candidate_anomalies']} | {m['candidate_incidents']} | {m['latency_mean']:.6f} | {m['latency_p95']:.6f} |", "",
+            "## Ressources", "",
+            f"H : temps mur `{h['condition_wall_time_sec']:.6f} s`, temps processus `{h['condition_process_time_sec']:.6f} s`, RSS avant/après `{int(h['rss_before_bytes'])}`/`{int(h['rss_after_bytes'])}` octets. M : temps mur `{m['condition_wall_time_sec']:.6f} s`, temps processus `{m['condition_process_time_sec']:.6f} s`, RSS avant/après `{int(m['rss_before_bytes'])}`/`{int(m['rss_after_bytes'])}` octets.", "",
+            "Le RSS est un instantané du processus, pas un pic isolé par source. La condition M conserve les sept artefacts compatibles en cache ; la variation ne doit pas être interprétée comme une consommation stable en production.", "",
             "## Vérité terrain", "",
             "Aucune accuracy globale n’est calculée. Les métriques prédictives de M sont séparées par source lorsque l’unité et le label sont compatibles. Pour H, elles sont `NON ÉVALUÉ` car la règle historique utilise directement les labels disponibles sur les entrées labellisées ; les présenter comme prédictions serait circulaire.", "",
             "Les sorties sans vérité terrain restent des anomalies et incidents candidats. Elles ne constituent pas une accuracy.", "",
@@ -540,7 +552,7 @@ def main() -> int:
         ]
         report_path.write_text("\n".join(report_lines) + "\n", encoding="utf-8")
 
-        artifacts = [trace_path, messages_path, registry_output, model_load_path, candidate_path, incident_path, source_path, predictive_path, summary_path, snapshot_path, report_path, figure_coverage, figure_latency]
+        artifacts = [trace_path, messages_path, registry_output, model_load_path, *candidate_artifacts, source_path, predictive_path, summary_path, snapshot_path, report_path, figure_coverage, figure_latency]
         manifest_path = PHASE_ROOT / "manifests" / f"{current_run}_manifest.json"
         write_json(manifest_path, {
             "run_id": current_run, "status": "COMPLETED",

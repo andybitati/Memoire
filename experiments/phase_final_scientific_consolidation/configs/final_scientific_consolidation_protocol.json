@@ -46,10 +46,12 @@
   "p4": {
     "resampling_unit": "block_id",
     "bootstrap_replicates": 1000,
+    "bootstrap_seed": 20260911,
     "positive_leave_one_out": 29,
     "aggregator": "mean",
     "threshold": 1.2729429339548877,
     "threshold_frozen": true,
-    "threshold_refit_in_bootstrap": false
+    "threshold_refit_in_bootstrap": false,
+    "descriptive_stability_max_f1_interval_width": 0.15
   }
 }

@@ -1,0 +1,160 @@
+{
+  "run_id": "multisource_cnp_model_inference_20260911T001644Z",
+  "status": "SUPERSEDED",
+  "superseded_by": "multisource_cnp_model_inference_20260911T003432Z",
+  "supersession_reason": "Le calcul des incidents de la condition H était incomplet. Les fichiers raw propres à ce run sont conservés, mais les agrégats, figures et rapport à chemins stables ont été remplacés par le run définitif et ne doivent pas être validés à partir de ce manifeste historique.",
+  "config": {
+    "path": "experiments/phase_final_scientific_consolidation/configs/final_scientific_consolidation_protocol.json",
+    "sha256": "8ee55c4b596903012d06b3ac09018cabccb08c52ab97a2865eef00dc295ad50c"
+  },
+  "registry": {
+    "path": "experiments/phase_final_scientific_consolidation/configs/multisource_model_compatibility_registry.json",
+    "sha256": "38a450e58eb62b6860f4f65c85bd73f7e5df5e91ed108d96919d34bc75b0145d"
+  },
+  "sources": [
+    {
+      "source_id": "windows_event",
+      "path": "data/samples/Application.evtx",
+      "sha256": "7585ee27c6089ee2e83cf68ceed2ba5b63ac630ba78c3aca4a88a033f6d4ed20",
+      "selected_units": 200
+    },
+    {
+      "source_id": "linux_auth",
+      "path": "data/raw/Datasets/linux_auth_logs_labeled.csv",
+      "sha256": "fa5f0a3e9532c16320a290fa1e626b632318a577b4bf00025c2063540144d38f",
+      "selected_units": 200
+    },
+    {
+      "source_id": "wazuh",
+      "path": "data/raw/Datasets/06-20-October.csv",
+      "sha256": "fd20eb2c552d7090dc3eede662f0185a256ddb1253107ef9c045fb398d577e29",
+      "selected_units": 200
+    },
+    {
+      "source_id": "syslog",
+      "path": "data/raw/Datasets/Linux_2k.log",
+      "sha256": "b3e20bc1afe732ab1bf3ed1de4bf9c809e4194e02f7dea911d918e5342e8e173",
+      "selected_units": 200
+    },
+    {
+      "source_id": "apache",
+      "path": "data/processed/robustness_scalability_inputs/apache_access.log",
+      "sha256": "795ff201d7a354d429de197f97dce1ee70701296a85cde137b0381dc11a9ecd4",
+      "selected_units": 1
+    },
+    {
+      "source_id": "hdfs",
+      "path": "data/raw/Datasets/HDFS_1/HDFS.log",
+      "sha256": "0783096174d7832c618337f9609e06e04abd86ddd7089b3c12b407e63bfebc52",
+      "selected_units": 200
+    },
+    {
+      "source_id": "bgl",
+      "path": "data/raw/Datasets/BGL/BGL.log",
+      "sha256": "666130b15ef44eb32fd02bd053e6c6e007c37696b5e7e8b9d8e45b729876a5d2",
+      "selected_units": 200
+    },
+    {
+      "source_id": "network_tabular",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv",
+      "sha256": "6ff1580f5f81c0ae28a26f7631721018577f5f7c5e0feac28b795fcfe7b411ee",
+      "selected_units": 200
+    }
+  ],
+  "models": [
+    {
+      "path": "models/isolation_forest_windows_local.joblib",
+      "sha256": "64f87318a68f8c4d14066fd8353dba2bffa5af630a5d43bf7d8b20a8784f29b7",
+      "compatible": true
+    },
+    {
+      "path": "models/random_forest_linux_auth.joblib",
+      "sha256": "622d97930bf93e315dcb58722a5ec4de6b8e1a6e7d5d467b8e8074465a79cb9c",
+      "compatible": true
+    },
+    {
+      "path": "models/isolation_forest_wazuh.joblib",
+      "sha256": "c628ad2fcae457e8066ca8e856f9db27be34f358d8590451e190b0ea467c69de",
+      "compatible": true
+    },
+    {
+      "path": "models/isolation_forest_linux_colab.joblib",
+      "sha256": "433719c2f9aa02346b51a047319b34fc774cd1b4585308e477ca1c2a07a3f0c3",
+      "compatible": true
+    },
+    {
+      "path": "models/isolation_forest_fallback_colab.joblib",
+      "sha256": "9c7894a39dfcd127f51f356c8de6c3eb145582d23327b9cc4ca315ae74183414",
+      "compatible": false
+    },
+    {
+      "path": "models/isolation_forest_hdfs_colab.joblib",
+      "sha256": "e3d772e4d5a44731c17668a75adc9e9cd4bee5edf8d1835b2b53ef5ed7bb7538",
+      "compatible": true
+    },
+    {
+      "path": "models/isolation_forest_bgl_colab.joblib",
+      "sha256": "1200335316877aed46d81b4a77196c43a55bc99c45e6655808aeb74823862e2e",
+      "compatible": true
+    },
+    {
+      "path": "models/random_forest_network_cicids.joblib",
+      "sha256": "6e23127756780ef9ee333838054052a0e6ba0bd15f0a45691bd44022a582fcb8",
+      "compatible": true
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "experiments/phase_final_scientific_consolidation/raw/multisource_cnp_model_inference_20260911T001644Z_unit_trace.csv",
+      "sha256": "d6a86860a101b8ea4cb5c9d35ebf954ef937ef4b7f9d980761d7c2e8bff2468f"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/raw/multisource_cnp_model_inference_20260911T001644Z_cnp_messages.jsonl",
+      "sha256": "ba92180cddfadb02c4c2a71383e32c92b6ab3d3eda4f80117618f543c2cbe6e0"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/processed/multisource_model_compatibility_registry_observed.csv",
+      "sha256": "e3a1d837785edd27517f1dbca0757fc791683baf07cc0d3efa2daa329088e4e9"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/raw/multisource_cnp_model_inference_20260911T001644Z_model_load_audit.json",
+      "sha256": "c6bd92a45bbe92e9397b8197c4daebacbaa37f09d0fe38412bc5ad2731514669"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/processed/multisource_cnp_model_inference_20260911T001644Z_candidate_anomalies.csv",
+      "sha256": "77b3159bcc9045c5a9dfe2e0e34aca98245180df35c3ef80c1b7a31b8432f3f9"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/processed/multisource_cnp_model_inference_20260911T001644Z_candidate_incidents.csv",
+      "sha256": "0cee30e1f0a35e0b30dab5777f54af3394598cee54234bffb318bb54139b9366"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/multisource_cnp_model_inference_by_source.csv",
+      "sha256": "e2f551e428c834ca7bc545f0211f2e87a5ecbfe15bff62e4b11fa73e0e3abf01"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/multisource_cnp_model_predictive_metrics.csv",
+      "sha256": "9f9fa6dcdac6c524f3c47acfb3cd34b0252c3979b795348ebfdb493efd799bc4"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/multisource_cnp_model_inference_summary.json",
+      "sha256": "497eab5566c332c8ec124f03e79aaad2e16b5bf7d2b3e01184732ba6daa9fae8"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/multisource_cnp_model_api_dashboard_snapshot.json",
+      "sha256": "94c8027a3969f40ab895c12147bf10f7c0fc6d7b3de0ee7fcb47c81327bf0c7e"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/reports/MULTISOURCE_CNP_REAL_MODEL_INFERENCE.md",
+      "sha256": "53fb9bc730fc63a5a97effa33196687c6967085ebbdf3dba42452340a7131245"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_17_e2e_real_model_coverage.png",
+      "sha256": "d7b6e8e4884ddc0c893632d125dfedf41c954437e3b0859601377adfd487845b"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_18_e2e_real_model_latency.png",
+      "sha256": "93ff20894d46b6bf91f178b6d4a3562b688c1aedc05f65685c425048f64f2c03"
+    }
+  ]
+}
