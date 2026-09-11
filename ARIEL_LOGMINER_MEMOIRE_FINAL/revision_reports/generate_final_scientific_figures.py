@@ -62,24 +62,30 @@ def bar_labels(ax, bars, fmt="{:.3f}"):
 
 
 def architecture_figures() -> None:
-    fig, ax = plt.subplots(figsize=(13, 7))
-    ax.set_xlim(0, 13); ax.set_ylim(0, 7); ax.axis("off")
+    fig, ax = plt.subplots(figsize=(9, 9))
+    ax.set_xlim(0, 9); ax.set_ylim(0, 9); ax.axis("off")
     nodes = [
-        (0.4, 4.8, 2.5, 1.15, "Sources\nEVTX · CSV · logs", "#dbeafe"),
-        (3.45, 4.8, 2.6, 1.15, "Normalisation\nparse · schema · provenance", "#dcfce7"),
-        (6.65, 4.8, 2.4, 1.15, "Router\nopen-set · family", "#fef3c7"),
-        (9.65, 4.8, 2.7, 1.15, "Agents spécialisés\nHDFS · BGL · réseau", "#fee2e2"),
-        (3.5, 1.6, 2.6, 1.15, "Contract Net\nCFP → offres → attribution", "#ede9fe"),
-        (6.7, 1.6, 2.4, 1.15, "Redis Streams\nACK · reprise · idempotence", "#e0f2fe"),
-        (9.7, 1.6, 2.6, 1.15, "Preuves\nCSV · JSON · métriques", "#f3f4f6"),
+        (0.2, 6.8, 2.6, 1.35, "Sources\nEVTX · CSV\nlogs", "#dbeafe"),
+        (3.2, 6.8, 2.6, 1.35, "Normalisation\nparsing · schéma\nprovenance", "#dcfce7"),
+        (6.2, 6.8, 2.6, 1.35, "Routeur\nopen-set\nfamille", "#fef3c7"),
+        (0.2, 3.9, 2.6, 1.35, "Contract Net\nCFP · offres\nattribution", "#ede9fe"),
+        (3.2, 3.9, 2.6, 1.35, "Agents\ncapacités · refus\nhandlers", "#fee2e2"),
+        (6.2, 3.9, 2.6, 1.35, "Détection\nmodèle compatible\nou fallback", "#dcfce7"),
+        (0.2, 1.0, 2.6, 1.35, "Redis Streams\nACK · reprise\nidempotence", "#e0f2fe"),
+        (3.2, 1.0, 2.6, 1.35, "Corrélation\nanomalies vers\nincidents", "#fef3c7"),
+        (6.2, 1.0, 2.6, 1.35, "Preuves\nCSV · JSON\nmétriques", "#f3f4f6"),
     ]
     for x, y, w, h, text, color in nodes:
         ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.04,rounding_size=0.08",
                                     facecolor=color, edgecolor="#1f2937", linewidth=1.8))
-        ax.text(x + w / 2, y + h / 2, text, ha="center", va="center", weight="bold")
-    arrows = [((2.9, 5.38), (3.45, 5.38)), ((6.05, 5.38), (6.65, 5.38)),
-              ((9.05, 5.38), (9.65, 5.38)), ((7.85, 4.8), (7.85, 2.75)),
-              ((6.1, 2.18), (6.7, 2.18)), ((9.1, 2.18), (9.7, 2.18))]
+        ax.text(x + w / 2, y + h / 2, text, ha="center", va="center",
+                weight="bold", fontsize=14)
+    arrows = [
+        ((2.8, 7.48), (3.2, 7.48)), ((5.8, 7.48), (6.2, 7.48)),
+        ((7.5, 6.8), (1.5, 5.25)), ((2.8, 4.58), (3.2, 4.58)),
+        ((5.8, 4.58), (6.2, 4.58)), ((1.5, 3.9), (1.5, 2.35)),
+        ((7.5, 3.9), (4.5, 2.35)), ((5.8, 1.68), (6.2, 1.68)),
+    ]
     for start, end in arrows:
         ax.add_patch(FancyArrowPatch(start, end, arrowstyle="-|>", mutation_scale=18,
                                      linewidth=2.0, color="#374151"))

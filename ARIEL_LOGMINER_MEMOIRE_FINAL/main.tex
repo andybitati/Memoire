@@ -74,12 +74,9 @@
     linkcolor=black,
     citecolor=black,
     urlcolor=blue,
-    pdftitle={
-        Détection autonome et distribuée d'anomalies
-        dans les journaux système et réseau
-    },
+    pdftitle={Détection autonome et distribuée d’anomalies dans les journaux système et réseau à l’aide d’agents intelligents multitâches — Conception et évaluation locale du prototype Ariel Logminer},
     pdfauthor={MARHEGANE BITATI André Olivier},
-    pdfsubject={Mémoire d'Ingénieur Civil Électricien},
+    pdfsubject={Mémoire d’Ingénieur Civil Électricien},
     pdfkeywords={
         cybersécurité,
         logs,
@@ -91,7 +88,7 @@
     }
 }
 
-\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{1}
 \setcounter{secnumdepth}{3}
 
 % ============================================================
@@ -199,15 +196,15 @@ Orientation : Informatique
 \vspace{1cm}
 
 {\huge\bfseries
-Détection autonome et distribuée d'anomalies
+Détection autonome et distribuée d’anomalies
 dans les journaux système et réseau
-à l'aide d'agents intelligents multitâches
+à l’aide d’agents intelligents multitâches
 \par}
 
 \vspace{0.4cm}
 
 {\Large
-Conception et évaluation locale du prototype
+— Conception et évaluation locale du prototype
 Ariel \logminer
 \par}
 
@@ -324,6 +321,13 @@ $[0{,}800000\,;\,0{,}961039]$. Sur BGL, le F1 vaut $0{,}913698$,
 mais 89,8081\,% des templates de test sont inconnus du train et la
 baseline « template inconnu » n'atteint que $0{,}277885$.
 
+Sur CSE-CIC-IDS2018, une séparation entre le 15 et le 16 février donne
+un F1 moyen de $0{,}999212$ à la régression logistique contre
+$0{,}401375$ au Random Forest. L’audit montre cependant que
+\texttt{Dst Port} seul atteint $0{,}999720$ et que le retrait des dix
+premières caractéristiques ramène le F1 à $0{,}657859$. Le score principal
+est donc présenté comme fortement dépendant des variables et du scénario.
+
 La validation multiformat lit, parse et normalise $7\,001/7\,001$ unités.
 Cette couverture de pipeline ne signifie pas que tous les champs sont
 complets ou que le brut est conservé de façon universelle. Une politique
@@ -335,8 +339,7 @@ Cette réussite de routage ne démontre pas un gain prédictif systématique.
 Le benchmark contrôlé couvre quatre architectures, quatre charges et dix
 répétitions, soit $160$ runs et $264\,000$ traitements sans échec. Les
 architectures à agents ne sont toutefois pas plus rapides sur les
-microtâches : à 60 tâches, le monolithe atteint $1{,}6357$ tâche/s contre
-$1{,}5715$ pour les agents et $1{,}5267$ avec reprise. Leur intérêt est
+microtâches du protocole. Leur intérêt est
 architectural : autonomie locale, négociation, séparation des
 responsabilités, réattribution, idempotence et auditabilité.
 
@@ -357,14 +360,15 @@ contre $0{,}031027$~s pour la condition heuristique H. Aucune accuracy
 globale multi-source n'est fabriquée ; le F1 Linux/auth $0{,}390244$ reste
 descriptif sur la source sélectionnée.
 
-Enfin, une procédure de mise à jour contrôlée des modèles est validée de
-bout en bout avec une promotion, un rejet pour dégradation et un rejet
-pour amélioration inférieure au seuil minimal.
+Enfin, le dépôt contient une procédure de comparaison des modèles et un
+mode dry-run. Certaines branches sont testées, mais les artefacts finaux
+ne démontrent pas un cycle complet et répété de promotion et de rejet ;
+le bénéfice global de cette procédure reste non évalué.
 
 Les cinq hypothèses de recherche sont finalement partiellement
-soutenues. Les cinq premières questions de recherche reçoivent des
-réponses partielles, tandis que la méthode d'évaluation reçoit une
-réponse forte dans le périmètre du prototype. La contribution principale
+soutenues. Les trois premières questions reçoivent des réponses
+partielles renforcées, les quatrième et cinquième des réponses partielles,
+et la sixième une réponse forte dans le périmètre du laboratoire. La contribution principale
 d'Ariel \logminer{} réside ainsi dans l'intégration architecturale et
 méthodologique d'une chaîne locale, modulaire, auditable et
 expérimentalement traçable pour l'analyse de journaux hétérogènes.
@@ -432,6 +436,13 @@ interval of $[0.800000;0.961039]$. On BGL, F1 is $0.913698$, but 89.8081\%
 of test templates are unknown to training and the ``unknown template''
 baseline reaches only $0.277885$.
 
+On CSE-CIC-IDS2018, a February 15 versus February 16 split yields a mean
+F1-score of $0.999212$ for Logistic Regression and $0.401375$ for Random
+Forest. However, \texttt{Dst Port} alone reaches $0.999720$, while
+removing the ten leading features reduces F1 to $0.657859$. The primary
+score is therefore reported as strongly dependent on the features and
+scenario.
+
 The multi-format validation reads, parses, and normalizes $7,001/7,001$
 units. This pipeline coverage does not imply complete fields or universal
 raw preservation. An open-set policy calibrated only on known sources
@@ -443,8 +454,7 @@ predictive gain.
 The controlled architecture benchmark covers four architectures, four
 loads, and ten repetitions, yielding 160 runs and 264,000 treatments with
 no failure. Agent architectures are nevertheless not faster on
-microtasks: at 60 tasks, the monolith reaches $1.6357$ task/s, compared
-with $1.5715$ for agents and $1.5267$ with recovery. Their value is
+the protocol’s microtasks. Their value is
 architectural: local autonomy, negotiation, separation of
 responsibilities, reassignment, idempotence, and auditability.
 
@@ -463,14 +473,15 @@ error. Its mean latency is $0.105420$~s, compared with $0.031027$~s for
 the heuristic H condition. No global multi-source accuracy is fabricated;
 the Linux/auth F1 of $0.390244$ remains descriptive for the selected source.
 
-Finally, the controlled model-update procedure is exercised end to end
-through one promotion, one rejection due to degradation, and one
-rejection because the improvement remains below the minimum threshold.
+Finally, the repository contains a model-comparison procedure and a
+dry-run mode. Some branches are tested, but the final artifacts do not
+demonstrate a complete and repeated promotion/rejection cycle; its overall
+benefit remains unevaluated.
 
 All five research hypotheses are ultimately partially supported. The
-first five research questions receive partial answers, while the
-evaluation methodology receives a strong answer within the laboratory
-scope. Ariel \logminer{} therefore contributes primarily an
+first three research questions receive strengthened partial answers, the
+fourth and fifth receive partial answers, and the sixth receives a strong
+answer within the laboratory scope. Ariel \logminer{} therefore contributes primarily an
 architectural and methodological framework for a local, modular,
 auditable, and experimentally traceable heterogeneous-log analysis
 pipeline, rather than a new machine-learning algorithm.

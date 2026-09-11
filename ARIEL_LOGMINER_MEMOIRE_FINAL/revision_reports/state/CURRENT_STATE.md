@@ -1,5 +1,17 @@
 # CURRENT STATE
 
+## CHECKPOINT MÉMOIRE FINAL — 2026-09-11
+
+- Dossier de livraison : `ARIEL_LOGMINER_MEMOIRE_FINAL/` ; aucun ZIP n’a été créé.
+- Manuscrit restructuré et humanisé sans nouvel entraînement de modèle.
+- Chapitre des résultats : chapitre 5 ; conclusions et limites alignées sur les artefacts validés.
+- Dix-neuf figures finales sont présentes dans `figures/final/`, dont dix-sept insérées au chapitre 5 et deux figures d’architecture/protocole au chapitre 3.
+- Compilation MiKTeX/pdfLaTeX et BibTeX stabilisée : `build/main.pdf`, 140 pages, 5 723 803 octets.
+- Dernière passe pdfLaTeX réussie sans référence indéfinie, label dupliqué ni boîte débordante.
+- Contrôle UTF-8 : aucun motif de mojibake détecté dans les sources finales du manuscrit.
+- Rapports de clôture : `FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md`, `MODIFICATIONS_FINALES.md`, `LIMITES_SCIENTIFIQUES_RESTANTES.md` et `FIGURES_MODIFICATIONS_FINALES.md`.
+- Les avertissements résiduels concernent des boîtes sous-remplies dans certains tableaux et la notification de mise à jour MiKTeX ; ils n’interrompent pas la compilation.
+
 ## CHECKPOINT MULTI-VM DÉFINITIF — 2026-09-09 20:28 UTC
 
 - Run principal retenu : `ma_20260909T160812Z_34016`.
