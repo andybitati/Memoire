@@ -1,0 +1,110 @@
+{
+  "run_id": "multivm_cnp_20260909T202632Z_37592",
+  "namespace": "logminer:cnp:multivm_cnp_20260909T202632Z_37592",
+  "redis_url": "redis://localhost:6379/0",
+  "redis_server": "7.4.9",
+  "coordinator_host": "andy-aaron",
+  "registered_agents": {
+    "debian-alpha": {
+      "agent_id": "debian-alpha",
+      "run_id": "multivm_cnp_20260909T202632Z_37592",
+      "updated_at": "2026-09-09T20:27:04.601248+00:00",
+      "pid": 2787,
+      "host": "andy",
+      "os": "Linux-6.12.96+deb13-amd64-x86_64-with-glibc2.41",
+      "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+      "profile": "alpha",
+      "perception": {
+        "agent_id": "debian-alpha",
+        "healthy": true,
+        "active_tasks": 0,
+        "max_parallel_tasks": 1,
+        "load_ratio": 0.0,
+        "available_models": [
+          "*"
+        ],
+        "available_dependencies": [
+          "*"
+        ],
+        "memory_enabled": true,
+        "observed_at": "2026-09-09T20:27:04.601206+00:00"
+      }
+    },
+    "ubuntu-beta": {
+      "agent_id": "ubuntu-beta",
+      "run_id": "multivm_cnp_20260909T202632Z_37592",
+      "updated_at": "2026-09-09T20:27:04.802671+00:00",
+      "pid": 4305,
+      "host": "andy-VirtualBox",
+      "os": "Linux-5.4.0-70-generic-x86_64-with-glibc2.29",
+      "python": "3.8.10 (default, Mar 18 2025, 20:04:55) \n[GCC 9.4.0]",
+      "profile": "beta",
+      "perception": {
+        "agent_id": "ubuntu-beta",
+        "healthy": true,
+        "active_tasks": 0,
+        "max_parallel_tasks": 1,
+        "load_ratio": 0.0,
+        "available_models": [
+          "*"
+        ],
+        "available_dependencies": [
+          "*"
+        ],
+        "memory_enabled": true,
+        "observed_at": "2026-09-09T20:27:04.802603+00:00"
+      }
+    }
+  },
+  "registry_hosts": [
+    "andy",
+    "andy-VirtualBox"
+  ],
+  "tasks": 60,
+  "successful_tasks": 60,
+  "failed_tasks": 0,
+  "duration_sec": 2.712455,
+  "throughput_tasks_sec": 22.120187,
+  "latency_mean_ms": 45.120333,
+  "latency_median_ms": 40.6495,
+  "latency_p95_ms": 63.02985,
+  "latency_p99_ms": 111.10193,
+  "tasks_by_agent": {
+    "debian-alpha": 30,
+    "ubuntu-beta": 30
+  },
+  "message_counts": {
+    "agent.heartbeat": 2,
+    "CFP": 123,
+    "PROPOSE": 108,
+    "AWARD": 63,
+    "ACCEPT": 63,
+    "agent.task.started": 63,
+    "agent.task.completed": 62,
+    "RESULT": 62,
+    "REJECT": 45,
+    "FEEDBACK": 63,
+    "agent.task.failed": 1,
+    "FAIL": 1,
+    "REFUSE": 15
+  },
+  "reassignments": 1,
+  "distinct_result_pids": [
+    "2787",
+    "4305"
+  ],
+  "distinct_result_hosts": [
+    "andy",
+    "andy-VirtualBox"
+  ],
+  "idempotence": {
+    "first_agent": "debian-alpha",
+    "replay_agent": "ubuntu-beta",
+    "different_agents": true,
+    "replayed": true,
+    "persistent_effects": 1,
+    "duplicate_effects": 0,
+    "redis_completed_keys": 61
+  },
+  "status": "ok"
+}

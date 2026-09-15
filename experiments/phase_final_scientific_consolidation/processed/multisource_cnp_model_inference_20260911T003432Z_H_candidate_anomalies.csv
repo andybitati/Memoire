@@ -1,0 +1,252 @@
+﻿category,dst_port,event,host,message,proto,severity,source,subcategory,timestamp_iso,user,end_to_end_run_id,condition,source_id,task_id,contract_id,agent_id,model,is_anomaly,anomaly_score,anomaly_rank
+,,1008,andy-aaron,Service=BITS | Library=C:\Windows\System32\bitsperf.dll | Win32Error=2,,WARNING,Microsoft-Windows-Perflib,,2025-08-21T22:43:55.240263+00:00,S-1-5-21-3162627772-1273376818-3066158126-1001,multisource_cnp_model_inference_20260911T003432Z,H,windows_event,fb4c07170b9a4d84a9ea997b2485f790,b6485e9bfcc34807abb9431926d1efb8,agent-system,e2e_lightweight_candidate_rule_v1,1,0.65,1
+,,1008,andy-aaron,Service=ESENT | Library=C:\WINDOWS\system32\esentprf.dll | Win32Error=5,,WARNING,Microsoft-Windows-Perflib,,2025-08-21T22:43:55.257315+00:00,S-1-5-21-3162627772-1273376818-3066158126-1001,multisource_cnp_model_inference_20260911T003432Z,H,windows_event,16477414ea23416383bb4d55f65675eb,ce58b8ce52444c9b95d1791f9b3ffe9f,agent-system,e2e_lightweight_candidate_rule_v1,1,0.65,2
+,,1008,andy-aaron,Service=MSDTC | Library=C:\WINDOWS\system32\msdtcuiu.DLL | Win32Error=2147942402,,WARNING,Microsoft-Windows-Perflib,,2025-08-21T22:43:55.486652+00:00,S-1-5-21-3162627772-1273376818-3066158126-1001,multisource_cnp_model_inference_20260911T003432Z,H,windows_event,8e70eb514b694fb097394412762707b3,2f30ae63d280450cbcbf9075ed344dd1,agent-system,e2e_lightweight_candidate_rule_v1,1,0.65,3
+,,1023,andy-aaron,Library=C:\WINDOWS\system32\sysmain.dll | Win32Error=126,,ERROR,Microsoft-Windows-Perflib,,2025-08-21T22:43:55.709059+00:00,S-1-5-21-3162627772-1273376818-3066158126-1001,multisource_cnp_model_inference_20260911T003432Z,H,windows_event,193defa9eced4de89fa122ad789d55ad,64c516c2c4ac460a89d5e335fbd0f1fa,agent-system,e2e_lightweight_candidate_rule_v1,1,0.65,4
+,,1022,andy-aaron,Library=C:\Program Files (x86)\VMware\VMware Workstation\vmPerfmon.dll | Win32Error=193,,ERROR,Microsoft-Windows-Perflib,,2025-08-21T22:43:56.013308+00:00,S-1-5-21-3162627772-1273376818-3066158126-1001,multisource_cnp_model_inference_20260911T003432Z,H,windows_event,bf86897d8e534b7298df4527931f887c,f88463a4bbf64308bedd43ef95461d40,agent-system,e2e_lightweight_candidate_rule_v1,1,0.65,5
+,,1018,andy-aaron,Service=VMware,,ERROR,Microsoft-Windows-Perflib,,2025-08-21T22:43:56.013317+00:00,S-1-5-21-3162627772-1273376818-3066158126-1001,multisource_cnp_model_inference_20260911T003432Z,H,windows_event,b7bbb91901a54c84bc5befc142c96ed3,f29be333d4794a6aa19226a91d6bf56a,agent-system,e2e_lightweight_candidate_rule_v1,1,0.65,6
+,,1008,andy-aaron,Service=WmiApRpl | Library=C:\WINDOWS\system32\wbem\wmiaprpl.dll | Win32Error=21,,WARNING,Microsoft-Windows-Perflib,,2025-08-21T22:43:56.037674+00:00,S-1-5-21-3162627772-1273376818-3066158126-1001,multisource_cnp_model_inference_20260911T003432Z,H,windows_event,f90a3679276543708293e77852059d35,54a7d27724314f369a279cca1cb2bd74,agent-system,e2e_lightweight_candidate_rule_v1,1,0.65,7
+,2222,,web-sgp-02,User mysql executed sudo with elevated privileges,N/A,,sudo,,2026-07-04T02:02:01.657068,mysql,multisource_cnp_model_inference_20260911T003432Z,H,linux_auth,55879700d094481ba2ec0e940a5fe02e,23231ed7f97942dea4b50b574b55188c,agent-security,e2e_lightweight_candidate_rule_v1,1,1.0,8
+,49377,,backup-prk-01,Port scan detected from 163.113.118.232 on port 49377,TELNET,,login,,2024-02-07T10:13:10.598797,nginx,multisource_cnp_model_inference_20260911T003432Z,H,linux_auth,c78aa178843f4c28a53283fe82b5e4d8,ce42b41990c146fcaf3c1592deb474d2,agent-security,e2e_lightweight_candidate_rule_v1,1,1.0,9
+,22,,vpn-thr-02,Login from unusual server vpn-thr-02,RDP,,cron,,2026-09-29T23:23:57.548062,nginx,multisource_cnp_model_inference_20260911T003432Z,H,linux_auth,1e161f8ee6ab43f389717dbca7f8964c,6baa2fbb8ca745d6a0887be14b6ac4f0,agent-security,e2e_lightweight_candidate_rule_v1,1,1.0,10
+,80,,proxy-mow-01,Login from unusual server proxy-mow-01,TELNET,,ssh,,2023-10-02T11:33:55.236748,root,multisource_cnp_model_inference_20260911T003432Z,H,linux_auth,5ed2b10ab80040fa9ff3b78d355b32e1,f0c8c08cab8e499dbaae05f0d6fa831d,agent-security,e2e_lightweight_candidate_rule_v1,1,1.0,11
+,2222,,srv-tok-03,User www-data executed sudo with elevated privileges,N/A,,sudo,,2025-07-24T20:32:39.446898,www-data,multisource_cnp_model_inference_20260911T003432Z,H,linux_auth,79950dffd2634a118fb598799a6946cf,ce50fb1d63864e3a912ff867d0e87121,agent-security,e2e_lightweight_candidate_rule_v1,1,1.0,12
+,23859,,backup-prk-01,Port scan detected from 56.118.127.142 on port 23859,RDP,,login,,2024-11-03T16:09:28.112997,ubuntu,multisource_cnp_model_inference_20260911T003432Z,H,linux_auth,7e327bb7e3224a96a0dd394d4e7ae11d,17056a14dc62409390d86dba4b9cb60b,agent-security,e2e_lightweight_candidate_rule_v1,1,1.0,13
+,80,,backup-prk-01,Login from unusual server backup-prk-01,SSH2,,login,,2025-06-05T20:20:38.705145,admin,multisource_cnp_model_inference_20260911T003432Z,H,linux_auth,20523e4219cd472cb8fe82fb0e2a217b,730534379f0e481286fd73b6db24b795,agent-security,e2e_lightweight_candidate_rule_v1,1,1.0,14
+,22,,backup-prk-01,Login from unusual server backup-prk-01,RDP,,ssh,,2024-12-10T19:13:30.468848,ubuntu,multisource_cnp_model_inference_20260911T003432Z,H,linux_auth,b61340fd8a2c494691cb75874daabccf,01b38f10de394ad6ab85fe588b513ab5,agent-security,e2e_lightweight_candidate_rule_v1,1,1.0,15
+,22,,db-ber-01,Multiple failed login attempts for user www-data,N/A,,sudo,,2023-11-15T07:04:08.360541,www-data,multisource_cnp_model_inference_20260911T003432Z,H,linux_auth,852c52b208d3471cab9a0d4fe0b78153,767ec3c580664dd6af536c65317b12a9,agent-security,e2e_lightweight_candidate_rule_v1,1,1.0,16
+wazuh,,510,ubuntu,Trojaned version of file '/usr/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic)., ,WARNING,rootcheck,rootcheck,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,e173ba958f87471bae8bac03f841caa1,13507df13ae748528ba0184ee9c31789,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,17
+package,,2902,machine-1,2023-10-06 23:24:49 status installed linux-modules-extra-6.2.0-26-generic:amd64 6.2.0-26.26~22.04.1, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,12b829d994f6493f85e4dc106e778420,44e92677635148a5a38d17b6c34bf043,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,18
+authentication,,2501,machine-1,Oct  6 23:24:52 sohaib-virtual-machine gdm-password]: pam_unix(gdm-password:auth): authentication failure; logname= uid=0 euid=0 tty=/dev/tty1 ruser= rhost=  user=sohaib, ,WARNING, , ,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,da606c1c2dba46ab8c8988a7cb2a8477,c66447e6b5ad43d4b04352b8ec42c7b4,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,19
+file_integrity,,550,machine-1,"File '/etc/opt/kaspersky/klnagent/1103/1.0.0.0/NagentFlags/KLNAG_FLAGS_DETECT_REVERT_ID' modified
+Mode: scheduled
+Changed attributes: mtime,inode,md5,sha1,sha256
+Old modification time was: '1696529162', now it is '1696536226'
+Old inode was: '132851', now it is '132896'
+Old md5sum was: '82b64f6e8ee3835c4eb0babb394d5f6a'
+New md5sum is : 'a0711e9dfd26d2ba3cdd36d4d557cd73'
+Old sha1sum was: '317938fbe5671eeccee445fa8184fa08731bd43d'
+New sha1sum is : '4d0cc180e804d57cdecbc994213c175817474e9b'
+Old sha256sum was: '4f9d402a5ef58d3dfe14c39c6b047c412f4093f4269f73189a04fd36ef77216e'
+New sha256sum is : '6507f936a2fc6a88e310041d9367f42305647153ae93c757624f4d7ac9ae5293'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,fe08de7f3c9a4a9a93a171c0e9c2ac7e,08c02c379c5b43188775945f418ca280,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,20
+wazuh,,510,ubuntu,Trojaned version of file '/usr/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic)., ,WARNING,rootcheck,rootcheck,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,7a44487266e34848bb22aef3554078b5,dbffb23410be4260a6eb320348e239cf,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,21
+wazuh,,510,ubuntu,Trojaned version of file '/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic)., ,WARNING,rootcheck,rootcheck,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,1b09d94c8b6645bcb53423cb740f0a2f,324b2adefec54cf8bb24027c2c357915,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,22
+wazuh,,510,machine-1,Trojaned version of file '/usr/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic)., ,WARNING,rootcheck,rootcheck,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,0288577b5b3d4258aa51ff5c9d4f2ee7,fd830f6a26884b8ebe713a4c01c82bd4,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,23
+wazuh,,40704,machine-1,"Oct  7 22:16:09 sohaib-virtual-machine systemd[1115]: snap.snapd-desktop-integration.snapd-desktop-integration.service: Main process exited, code=exited, status=1/FAILURE", ,WARNING,systemd,systemd,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,c0f260cd70474e678027bc5f8e384f5e,a4052f25a2b84e7bb9eaa0c97d3d7afc,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,24
+wazuh,,510,ubuntu,Trojaned version of file '/usr/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic)., ,WARNING,rootcheck,rootcheck,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,968c62ea9eae47a58350fd2f2b99dfd1,8907b318ab4644e99342e2d1db9224fc,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,25
+wazuh,,510,ubuntu,Trojaned version of file '/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic)., ,WARNING,rootcheck,rootcheck,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,72274e4b9d42410ab4d072713ff372ec,869fbe847b734a48949a6d67d88692a0,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,26
+wazuh,,510,ubuntu,Trojaned version of file '/usr/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic)., ,WARNING,rootcheck,rootcheck,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,0ab061e72d2e4fe7b0d573091770b193,81f2ddb38b5641a2b1b6e696b88b31af,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,27
+package,,2904,machine-1,2023-10-08 00:34:54 status half-configured auditd:amd64 1:3.0.7-1build1, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,703306246057457eb277cbd1f8757843,1e9fa1e14fd04d29a4a074811f34c017,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,28
+package,,2902,machine-1,2023-10-08 00:34:59 status installed auditd:amd64 1:3.0.7-1build1, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,b576d4973b194fb693dd5559aa86441a,feb454d6f44140e4b3f605f11c514894,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,29
+package,,2902,machine-1,2023-10-08 00:35:01 status installed libc-bin:amd64 2.35-0ubuntu3.4, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,770c4b2381f241168c05dfeaf608df0a,435d6c02445443c6b25bff42e9b224b2,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,30
+wazuh,,510,machine-1,Trojaned version of file '/usr/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic)., ,WARNING,rootcheck,rootcheck,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,12df14d0930c468ca4e5efeecc737ddf,d589564756fd4caa856ae4b5ba450ca1,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,31
+wazuh,,40704,machine-1,"Oct  7 23:20:56 sohaib-virtual-machine systemd[1189]: snap.snapd-desktop-integration.snapd-desktop-integration.service: Main process exited, code=exited, status=1/FAILURE", ,WARNING,systemd,systemd,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,cc8911c5df1b423a88ccd4fa44e8dea4,39dbc562ec12496fa582cafc79df5ecf,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,32
+web_attack,,31164,machine-1,"192.168.204.1 - - [08/Oct/2023:00:25:01 +0500] ""GET /DVWA/vulnerabilities/sqli/?id=%27&Submit=Submit HTTP/1.1"" 500 295 ""http://192.168.204.130/DVWA/vulnerabilities/sqli/"" ""Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.55""",GET,WARNING,web-accesslog,web-accesslog,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,b482872547f04ce1a2410be38bfe6521,f9f7e470eb494db99df0fc7f54e61053,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,33
+wazuh,,510,ubuntu,Trojaned version of file '/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic)., ,WARNING,rootcheck,rootcheck,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,462c839ef040431cb83da812d4f7d6fe,abf8737c128145368883a67c2ea3a52c,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,34
+package,,2904,machine-1,2023-10-08 01:50:28 status half-configured p7zip:amd64 16.02+dfsg-8, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,40a9b97b356c4d038ca93f3ededfa4bc,da323c6a138c47f684ee90f3a4a76f7d,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,35
+package,,2902,machine-1,2023-10-08 01:50:28 status installed p7zip:amd64 16.02+dfsg-8, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,c8a547b459f7416ab380f81fc961c47e,6e4ce621a8a64b17bf62aad47184a39f,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,36
+wazuh,,202,machine-1,wazuh: Agent buffer: '90%'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,2a4d357a30f946ccaabd744dc49f579b,0dc7ba46f5ee4b8e87e2d95b0da1bec7,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,37
+wazuh,,203,machine-1,wazuh: Agent buffer: 'full'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,fbcd8405c1cf4efcbc970d5aa30fdbd2,a8713d54ec8246a38f94f2c2fc5c35d3,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,38
+wazuh,,203,machine-1,wazuh: Agent buffer: 'full'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,5e99ae0121c14536a8347624eb80e067,9c050d1ad99f4ba7980db7fd759db828,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,39
+wazuh,,202,machine-1,wazuh: Agent buffer: '90%'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,3cb11ed4f80f4a38b55e7a34a6841b96,219570f951314936a9c53d0ae3243b70,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,40
+wazuh,,202,machine-1,wazuh: Agent buffer: '90%'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,973fe18a18ec4b098135a247928593ef,4c53d6f7d8eb46c49eef0840a3caca58,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,41
+package,,2904,machine-1,2023-10-08 00:40:33 status half-configured libctf-nobfd0:amd64 2.38-4ubuntu2.3, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,74b86ff6520b4595afa491bf99c0c78e,c1b5121fed0641049645f5a184c075d1,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,42
+package,,2902,machine-1,2023-10-08 00:40:33 status installed libctf-nobfd0:amd64 2.38-4ubuntu2.3, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,77605c6cd5db48eda3fa5cf805a48a45,02c66beb7deb4eab898ebe53b964e5ce,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,43
+package,,2904,machine-1,2023-10-08 00:40:33 status half-configured binutils-x86-64-linux-gnu:amd64 2.38-4ubuntu2.3, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,edb3a7bd284a4934b36184d46983f743,29d8e6e05aec4e29baadfa61ce6b805a,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,44
+package,,2902,machine-1,2023-10-08 00:40:33 status installed binutils-x86-64-linux-gnu:amd64 2.38-4ubuntu2.3, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,12eccb6687de4097b62cfd1ebd8235f8,10cd2045d7ae4d999c251fb363d27388,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,45
+package,,2904,machine-1,2023-10-08 00:40:33 status half-configured man-db:amd64 2.10.2-1, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,1dbbf1b146734f2c96783d9c0f4767ba,1bbe1a4ded634128948510160843ddc3,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,46
+package,,2902,machine-1,2023-10-08 00:50:41 status installed vim:amd64 2:8.2.3995-1ubuntu2.11, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,60ab573deccc4667b250f98a14ab6afd,02f7fe4be8e648deaa3a4c78a37f70b1,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,47
+package,,2904,machine-1,2023-10-08 00:50:41 status half-configured man-db:amd64 2.10.2-1, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,b1b6136619e14e76b800593e749bc040,079cfbb97f884ea3b0025f34a7c2eb63,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,48
+wazuh,,202,machine-1,wazuh: Agent buffer: '90%'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,8c14286af8a24c25a8488da38ad6fa15,c5e7e85e0ade4ff489b5f21578971a73,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,49
+wazuh,,203,machine-1,wazuh: Agent buffer: 'full'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,e6c5c882baa64115addcbbb0ed59ac10,f46d193eb4744fb9acb81ed50f573de7,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,50
+wazuh,,510,machine-1,Trojaned version of file '/usr/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic)., ,WARNING,rootcheck,rootcheck,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,744a02e44d434e808a49b094c38a56d0,f30868d0ba7c4d099adefdb220b7cad7,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,51
+wazuh,,203,machine-1,wazuh: Agent buffer: 'full'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,410bb87650314cf8bff4f90b4360f729,f1f8e22ed6ac458298f06f004b9127cb,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,52
+wazuh,,203,machine-1,wazuh: Agent buffer: 'full'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,c6fd76a811cc43fb85cd186416f4b4a6,7acadd8e08c44857a1f5b68bf92c90cf,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,53
+wazuh,,202,machine-1,wazuh: Agent buffer: '90%'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,6d189ef2a7f942a68da80e0df3f72b32,7ac7a0cd60374133a65596011847adb7,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,54
+wazuh,,203,machine-1,wazuh: Agent buffer: 'full'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,5c3cb2a5e84f4af0a9e80ee78b686f8b,fca4aef53695430aa9fb56c133a77a3b,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,55
+wazuh,,203,machine-1,wazuh: Agent buffer: 'full'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,2982dd4049fa4db6b701d0bbcbb762d4,1f87a882f2a64d79b1f01e90f8049fbd,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,56
+wazuh,,203,machine-1,wazuh: Agent buffer: 'full'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,a9f1b1564e974bad8e65bb93248e24d3,b1eeef8405474a72aa5b3eee80c4fdc3,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,57
+wazuh,,202,machine-1,wazuh: Agent buffer: '90%'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,a518e8994560493b98e99469710e2abf,c75d052a395a4378a1e40e0bb9015924,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,58
+wazuh,,203,machine-1,wazuh: Agent buffer: 'full'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,07231e4cce0d46e589dd0b6db2476a00,b3144310099b4b3aa90865f9720b59a1,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,59
+wazuh,,203,machine-1,wazuh: Agent buffer: 'full'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,8c78247e6f1f4684a5f78d2248720f1f,f77ab4b3a47e483494cf810497939af1,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,60
+wazuh,,202,machine-1,wazuh: Agent buffer: '90%'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,36e353817f6d4e2fb1d6aeb9b6935c67,328f99cc6d004fc1bf1073cb54aa787d,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,61
+wazuh,,202,machine-1,wazuh: Agent buffer: '90%'., ,WARNING,wazuh,wazuh,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,4417c3978d0345399319944db7756054,49e5a35ff3e74005bf0279ec4b53faee,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,62
+wazuh,,510,machine-1,Trojaned version of file '/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic)., ,WARNING,rootcheck,rootcheck,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,5facf01219f74051b62a235b4016fb5b,10053555123e4ff6a914372429228715,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,63
+wazuh,,40704,machine-1,"Oct  8 02:02:35 sohaib-virtual-machine systemd[1261]: snap.snapd-desktop-integration.snapd-desktop-integration.service: Main process exited, code=exited, status=1/FAILURE", ,WARNING,systemd,systemd,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,763bd08162754411bf75923064f16c22,ee58e4ed225e49fcb52fceea16a6131a,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,64
+wazuh,,40704,machine-1,"Oct 12 23:48:26 sohaib-virtual-machine systemd[1252]: snap.snapd-desktop-integration.snapd-desktop-integration.service: Main process exited, code=exited, status=1/FAILURE", ,WARNING,systemd,systemd,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,2a222d401cb44270b1a27bf47fe1138f,6a3c0aa8d3db4831a1d8d0b005af4574,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,65
+wazuh,,40704,machine-1,"Oct 12 23:49:56 sohaib-virtual-machine systemd[1252]: xdg-permission-store.service: Main process exited, code=exited, status=1/FAILURE", ,WARNING,systemd,systemd,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,ab61933d35c34120a6614f508846d74a,dd7ba2c43ee1454fb64e82a268ec48f2,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,66
+wazuh,,40704,machine-1,"Oct 12 23:59:39 sohaib-virtual-machine systemd[2563]: org.gnome.SettingsDaemon.XSettings.service: Main process exited, code=exited, status=1/FAILURE", ,WARNING,systemd,systemd,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,de3df97f87d54a3d92359ed75b1f44f1,8af0b9aad08647e3b46e9d569da6d5ce,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,67
+wazuh,,40704,machine-1,"Oct 12 23:59:40 sohaib-virtual-machine systemd[2563]: org.gnome.SettingsDaemon.Wacom.service: Main process exited, code=exited, status=1/FAILURE", ,WARNING,systemd,systemd,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,5c1d776579694dc1bc55a56680a6d398,2b28204bf9304613bfadcc797afeb6a5,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,68
+wazuh,,40704,machine-1,"Oct 12 23:59:42 sohaib-virtual-machine systemd[2563]: org.gnome.SettingsDaemon.Power.service: Main process exited, code=exited, status=1/FAILURE", ,WARNING,systemd,systemd,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,ca27ed7761f745f187cca0f36696eac1,9508516650394277a4ac120b14369537,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,69
+wazuh,,40704,machine-1,"Oct 12 23:59:42 sohaib-virtual-machine systemd[2563]: xdg-desktop-portal-gtk.service: Main process exited, code=exited, status=1/FAILURE", ,WARNING,systemd,systemd,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,a2147d7019824f30b59e637ec27e1c4d,46cb1bc19e2b410d85eba5f324db22b7,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,70
+wazuh,,40704,machine-1,"Oct 12 23:59:58 sohaib-virtual-machine systemd[3916]: snap.snapd-desktop-integration.snapd-desktop-integration.service: Main process exited, code=exited, status=1/FAILURE", ,WARNING,systemd,systemd,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,75a021dc36cd4ad3a8e12018db304e60,7ab4809c7394444b98a3c5e571129f49,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,71
+wazuh,,40704,machine-1,"Oct 12 23:59:58 sohaib-virtual-machine systemd[2563]: xdg-permission-store.service: Main process exited, code=exited, status=1/FAILURE", ,WARNING,systemd,systemd,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,5b0e6d9c6c304e139ea695fe4d80739e,7cd02418f10942018fda4599900815d9,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,72
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,53a26895900f45a98b0fb15223557eb1,0c63a4f9bed042369e27b87d12879e11,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,73
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,6cca552ed1dc4bf687661e663d988785,3fe68643717e4525a8efb911ec01904f,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,74
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,a0490df4d6fe41c786bb6af0978610f7,27116b4cbbba464e8dc7fb6c16b7605e,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,75
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,7a46f14f13f2402ca6cf4277fbd73076,761b5794f4f54186906921d6301dec7e,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,76
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,35136334ac6d448b9d6a554b42a1f707,8cc6e65d48ff4ae4bced9843a88f8395,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,77
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,0bd2c1ac753e45a089d7ff84aeb38456,75c58d3dd4b04e1ea087a735159236e7,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,78
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,34facb09b9b340e086d1bfaa9cec2586,66d1cd9ca72343be90592edf4d0ae25d,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,79
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,ffd82d1b457d4e05b598a179d67e7ccc,27ae22ab518842448863661cfbfcc43f,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,80
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,35adc4ee962648629eebdf04f3fef604,3d00a2cfcbda4a4ebafcfcad4041a845,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,81
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,67a5ed8d02b04105821b4e170cdad0fc,2763168b20af433f8ffaa286907044c3,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,82
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,8fcc809031b242328917dd8a517aeff6,4fdbd6d376bc41458bb140b3d2681ffe,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,83
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,bf1aba1f88a74e63945fea7df593a74c,174370f89d2946aa83d803b2d116b3da,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,84
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,6d092aad304f449db2deed2aed80733b,b7e5eacba66b466eb68c42f2da473f4e,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,85
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,a6c596fe37b0436992d739d6108126d7,f563dcbbb544485ab93efdb6fbd17c23,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,86
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,c6a5cf356448420ca478f2fcad1b410b,d371dc0e651e46dcb5915a8d74a31edc,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,87
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,1a9e4d66dda44e719092749ffec67bf4,c44fdaa2ec1547c0bb093b171613ba85,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,88
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,3124959d34dd4aab913add897499dbb9,a966e9a0a11e49129292e33206c857a2,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,89
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,fb1d743f387749849827ee122dd29783,c1d576c4fdfb45ea9a95ff4b3839c067,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,90
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,84b655cf3a8e4c9087aee96678455b27,9b89a40d6e0044688418f4a343c294c4,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,91
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,340296bd600044a18c3810577ff848f9,0dae9b18bc7e425180ae1852278c4cd3,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,92
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,ba09556831d44751914e75996690bfb3,a12bd323bde645b983a87eef5b3fc779,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,93
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,512d3a7d7b2d48a69bd6ced66d0c8700,13b366b032be4e58b301acd857b93605,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,94
+security_configuration,,19007,machine-2, , ,WARNING,sca,sca,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,839ce95a44b14a2ca93d858dab55f4b2,1e6c20710d5945b5b26eada2cb14aaf6,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,95
+wazuh,,40704,machine-1,"Oct 15 09:09:08 sohaib-virtual-machine systemd[1158]: tracker-extract-3.service: Main process exited, code=exited, status=1/FAILURE", ,WARNING,systemd,systemd,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,c96f79ec495a4643a44f129ad2cca11e,7c5b4893b3014a6199fab277a08c44cd,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,96
+linux_audit,,80711,machine-1,"type=ANOM_ABEND msg=audit(1697383030.099:336): auid=4294967295 uid=0 gid=0 ses=4294967295 subj=unconfined pid=5732 comm=""kesl"" exe=""/var/opt/kaspersky/kesl/11.3.0.7441_1696162098/opt/kaspersky/kesl/libexec/kesl"" sig=6 res=1AUID=""unset"" UID=""root"" GID=""root""", ,ERROR,auditd,auditd,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,a34536917887425996997d314989176e,0197d24821b54c44973aabb222c33f4f,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,97
+package,,2904,machine-2,2023-10-15 21:04:33 status half-configured p7zip-full:amd64 16.02+dfsg-8, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,def1f919f2bf40e29d207ff63ded7f15,84cc553695eb4a08b105f9a9374fbf90,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,98
+wazuh,,510,machine-1,Trojaned version of file '/usr/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic)., ,WARNING,rootcheck,rootcheck,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,8718a2ff33f646238f2ec0aa0072f0b0,ee900a3fabbe47cbb69a9a4a1ef6865c,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,99
+wazuh,,510,machine-2,Trojaned version of file '/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic)., ,WARNING,rootcheck,rootcheck,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,d0d25ebb9ce043ae9269bb58b843f8c5,3d74213bfbbc44bf87af2f8030aba929,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,100
+wazuh,,510,machine-2,Trojaned version of file '/bin/diff' detected. Signature used: 'bash|^/bin/sh|file\.h|proc\.h|/dev/[^n]|^/bin/.*sh' (Generic)., ,WARNING,rootcheck,rootcheck,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,d63a983ea4e043d59df4fc566c52d097,9df07e7dc84e4cef9a0e0c15a5d294c0,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,101
+file_integrity,,554,machine-2,"File '/tmp/apt-dpkg-install-Afqvrh/6-linux-headers-6.2.0-34-generic_6.2.0-34.34~22.04.1_amd64.deb' added
+Mode: realtime
+", ,WARNING,syscheck_new_entry,syscheck_new_entry,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,07f75f5f205847f589d9a472dc3cd7d0,c037751ff31d4a23a74a326fc08d6681,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,102
+file_integrity,,554,machine-2,"File '/tmp/apt-dpkg-install-Afqvrh/5-linux-hwe-6.2-headers-6.2.0-34_6.2.0-34.34~22.04.1_all.deb' added
+Mode: realtime
+", ,WARNING,syscheck_new_entry,syscheck_new_entry,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,42dcb2d9506f4a71b9df42b66925eae4,48e3032c9ee0426cb79622a94c5ed614,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,103
+file_integrity,,554,machine-2,"File '/tmp/apt-dpkg-install-Afqvrh/4-linux-image-generic-hwe-22.04_6.2.0.34.34~22.04.11_amd64.deb' added
+Mode: realtime
+", ,WARNING,syscheck_new_entry,syscheck_new_entry,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,c6b80245af1c48f081c8037ad342833f,b3748110fccc4c9580bad4937756235a,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,104
+package,,2904,machine-2,2023-10-16 23:10:49 status half-configured libx11-6:amd64 2:1.7.5-1ubuntu0.2, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,49613c21e1a44bb9bf639dde8bb11183,2e834602ff35437989f715fd4baf2a82,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,105
+package,,2902,machine-2,2023-10-16 23:10:49 status installed libx11-6:amd64 2:1.7.5-1ubuntu0.3, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,a8097bcd99af4db2b8523892c82b1089,3dc3a5dc18f44e6d884da9d72ea3d69f,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,106
+package,,2902,machine-2,2023-10-16 23:10:49 status installed libc-bin:amd64 2.35-0ubuntu3.1, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,cdbbec829b334d6589ff3de695a047b7,8d4a1d8246404b74b2cebcb4dda769f4,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,107
+package,,2902,machine-2,2023-10-16 23:10:57 status installed libwbclient0:amd64 2:4.15.13+dfsg-0ubuntu1.5, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,fe8bee6a328e4e0e944485ef51a80a9f,7d0716c5e1a84dacaa3740394b287721,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,108
+package,,2904,machine-2,2023-10-16 23:10:57 status half-configured samba-libs:amd64 2:4.15.13+dfsg-0ubuntu1.5, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,6c6234b496db43e99aa9d6ef99b5fc74,3618e486594048afa127d8a870404a0d,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,109
+package,,2902,machine-2,2023-10-16 23:10:57 status installed libsmbclient:amd64 2:4.15.13+dfsg-0ubuntu1.5, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,faa264e97d7c4c378d4ceb40d210cc5b,b51fda262109456e9ae6fcedf4076cb6,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,110
+package,,2904,machine-2,2023-10-16 23:10:08 status half-configured vim-common:all 2:8.2.3995-1ubuntu2.12, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,89a0081c3f3c40db880e13194905e6e8,97a14a811163479686f8b11fc61a3130,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,111
+package,,2902,machine-2,2023-10-16 23:10:08 status installed vim-common:all 2:8.2.3995-1ubuntu2.12, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,3ca7da30daf04609b0acc5f57deba895,022e9d230af64952821a2c0256636245,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,112
+package,,2904,machine-2,2023-10-16 23:10:08 status half-configured vim-tiny:amd64 2:8.2.3995-1ubuntu2.12, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,231f71bd7803482a9c9307e7a4da34f3,19773af58dd24d7280a09262717ecbec,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,113
+package,,2904,machine-2,2023-10-16 23:10:10 status half-configured desktop-file-utils:amd64 0.26-1ubuntu3, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,cf2b6ce9bc6545b2926fd2552b8a6d28,e685ca91dae94918a5d8cb8e303dc9c7,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,114
+package,,2902,machine-2,2023-10-16 23:10:40 status installed libmagic1:amd64 1:5.41-3ubuntu0.1, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,1b18b8ee3a584ae7b4f3e4ba87025665,16d5dfad01ca4ee29fa3fcb85e44fe8e,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,115
+package,,2904,machine-2,2023-10-16 23:10:40 status half-configured libc-bin:amd64 2.35-0ubuntu3.1, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,567e642a940845c9afcd22c75281d54c,6332721cd1df48249ab79b0b3252ccae,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,116
+package,,2904,machine-2,2023-10-16 23:10:13 status half-configured gnome-menus:amd64 3.36.0-1ubuntu3, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,453bafadf8ff4789a96cbc8e4ea1ecb4,b0b692a6ab7a4fe58d02ea0421c8d244,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,117
+package,,2902,machine-2,2023-10-16 23:10:13 status installed gnome-menus:amd64 3.36.0-1ubuntu3, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,3d5489dd39bd4fcaa386153a1fe6360d,fcb5de11f1d74627ae778ba15b71eb21,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,118
+package,,2904,machine-2,2023-10-16 23:10:26 status half-configured xxd:amd64 2:8.2.3995-1ubuntu2.10, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,744bfae4488c4bf4b5ebf7c0acc26e6f,aba500972ccd49618127402943415be9,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,119
+package,,2902,machine-2,2023-10-16 23:10:40 status installed man-db:amd64 2.10.2-1, ,WARNING,dpkg-decoder,dpkg-decoder,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,4596d6c69c2944e588c173d0afceb214,3a3344a2494545c98aca43b9308a20f7,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,120
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/iorw.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049255', now it is '1048976'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,bba835e8c5ce4b17805863c8bdd834b1,b78ff63052bf4617aa7deb0d5c49c25f,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,121
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/mdraid1x.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049258', now it is '1048979'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,3a00d7072ccb4d46b5dd31c171ce7091,e83e5adaf79e42f79c12b9a6dba263ff,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,122
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/loadbios.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049263', now it is '1048984'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,3b4014136abd43389b627caacbb527cd,bb4688850b0c4ccab0365a5bcc3eb392,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,123
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/squash4.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049265', now it is '1048986'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,cbe3fb6a97a74c6eaa845ff3e3777400,3e2ecb5f27154a1d8161cb65071e9b65,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,124
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/gptsync.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049268', now it is '1048989'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,669054b0c5044e56bcc648b8b1c24f74,d48e4848b5074a55b8596f1f9555a62c,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,125
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/eval.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049269', now it is '1048990'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,04ce72da773742ee9aed72072bcfab96,5e325a316fa64bd29a8cf3651e629447,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,126
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/core.efi' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137075', now it is '1697479755'
+Old inode was: '1049452', now it is '1049454'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,d102e72ce2474f71b4bfc8b37debc970,8a77d15437ae445187d0109f0615ce8f,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,127
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/hashsum.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049280', now it is '1049001'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,5f98e42cb4c84b5496bc0f010edf1a29,89926e381d96437f8385cc8f83c64a4b,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,128
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/hfspluscomp.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049281', now it is '1049002'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,1d20dd182c2d4d6d99ed4ff325a4638b,15e7807a32b746c7a35a4017c0435a65,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,129
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/appleldr.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049282', now it is '1049003'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,3e084211b4e94141bc21ba98223191a6,92787703a5434075b0344bf506d6bca3,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,130
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/xnu_uuid.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049284', now it is '1049005'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,7390b5dfefb14813b7086d060ad8dc58,de0c63d2ca014e899052cf1505d3ae7e,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,131
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/trig.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049287', now it is '1049008'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,d863ccb44eaf4bfe83a954339396cf89,a42ba76a9e9245d2add1880a85e4b936,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,132
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/time.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049289', now it is '1049010'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,138b9b890808444ba43acc105e167d85,1f567f50d7fa49af9c40337d872f3e05,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,133
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/loadenv.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049292', now it is '1049013'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,461b69b3db8b490e9506f037d46913f2,4b0e16d1a8bd4e2c9308fca0bf2d1f45,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,134
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/ehci.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049294', now it is '1049015'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,a86f9a24e278427a9132343110b33e31,b592f430d11a4c1c876737beb672a440,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,135
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/gcry_crc.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049297', now it is '1049018'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,c4ae96b559f64558a8da26dd4a1385b8,dc1588e6ff2d47b9a4ef1dad57203f8e,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,136
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/diskfilter.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049298', now it is '1049019'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,c0eeeb516bc34f4790f623c78288225a,91ecbaf2cc1b468a80ef18469afd28be,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,137
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/efinet.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049299', now it is '1049020'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,53c44b216a254757a24c427f523e98ff,4481d76dd3c74643afa61424f4ccb775,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,138
+file_integrity,,550,machine-2,"File '/boot/grub/x86_64-efi/dm_nv.mod' modified
+Mode: scheduled
+Changed attributes: mtime,inode
+Old modification time was: '1696137074', now it is '1697479754'
+Old inode was: '1049310', now it is '1049031'
+", ,WARNING,syscheck_integrity_changed,syscheck_integrity_changed,, ,multisource_cnp_model_inference_20260911T003432Z,H,wazuh,69ef81ec341f4ddea30013b20755bae6,1d1c092d9d4a48d48ec19e555975c654,agent-security,e2e_lightweight_candidate_rule_v1,1,0.65,139

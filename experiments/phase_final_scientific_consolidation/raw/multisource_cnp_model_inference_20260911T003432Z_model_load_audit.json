@@ -1,0 +1,85 @@
+[
+  {
+    "artifact": "models/isolation_forest_windows_local.joblib",
+    "artifact_sha256": "64f87318a68f8c4d14066fd8353dba2bffa5af630a5d43bf7d8b20a8784f29b7",
+    "model_type": "isolation_forest",
+    "feature_count": 380,
+    "load_time_sec": 0.14417779992800206,
+    "warnings": []
+  },
+  {
+    "artifact": "models/random_forest_linux_auth.joblib",
+    "artifact_sha256": "622d97930bf93e315dcb58722a5ec4de6b8e1a6e7d5d467b8e8074465a79cb9c",
+    "model_type": "random_forest_linux_auth",
+    "feature_count": 8,
+    "load_time_sec": 4.008406299981289,
+    "warnings": []
+  },
+  {
+    "artifact": "models/isolation_forest_wazuh.joblib",
+    "artifact_sha256": "c628ad2fcae457e8066ca8e856f9db27be34f358d8590451e190b0ea467c69de",
+    "model_type": "isolation_forest",
+    "feature_count": 267,
+    "load_time_sec": 0.11469139996916056,
+    "warnings": []
+  },
+  {
+    "artifact": "models/isolation_forest_linux_colab.joblib",
+    "artifact_sha256": "433719c2f9aa02346b51a047319b34fc774cd1b4585308e477ca1c2a07a3f0c3",
+    "model_type": "isolation_forest",
+    "feature_count": 15,
+    "load_time_sec": 5.625117700081319,
+    "warnings": [
+      {
+        "message": "Trying to unpickle estimator ExtraTreeRegressor from version 1.6.1 when using version 1.7.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:\nhttps://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
+        "count": 201
+      },
+      {
+        "message": "Trying to unpickle estimator IsolationForest from version 1.6.1 when using version 1.7.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:\nhttps://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
+        "count": 1
+      }
+    ]
+  },
+  {
+    "artifact": "models/isolation_forest_hdfs_colab.joblib",
+    "artifact_sha256": "e3d772e4d5a44731c17668a75adc9e9cd4bee5edf8d1835b2b53ef5ed7bb7538",
+    "model_type": "isolation_forest",
+    "feature_count": 21,
+    "load_time_sec": 3.255414600018412,
+    "warnings": [
+      {
+        "message": "Trying to unpickle estimator ExtraTreeRegressor from version 1.6.1 when using version 1.7.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:\nhttps://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
+        "count": 201
+      },
+      {
+        "message": "Trying to unpickle estimator IsolationForest from version 1.6.1 when using version 1.7.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:\nhttps://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
+        "count": 1
+      }
+    ]
+  },
+  {
+    "artifact": "models/isolation_forest_bgl_colab.joblib",
+    "artifact_sha256": "1200335316877aed46d81b4a77196c43a55bc99c45e6655808aeb74823862e2e",
+    "model_type": "isolation_forest",
+    "feature_count": 15,
+    "load_time_sec": 0.9276635000715032,
+    "warnings": [
+      {
+        "message": "Trying to unpickle estimator ExtraTreeRegressor from version 1.6.1 when using version 1.7.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:\nhttps://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
+        "count": 201
+      },
+      {
+        "message": "Trying to unpickle estimator IsolationForest from version 1.6.1 when using version 1.7.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:\nhttps://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
+        "count": 1
+      }
+    ]
+  },
+  {
+    "artifact": "models/random_forest_network_cicids.joblib",
+    "artifact_sha256": "6e23127756780ef9ee333838054052a0e6ba0bd15f0a45691bd44022a582fcb8",
+    "model_type": "random_forest_cicids",
+    "feature_count": 78,
+    "load_time_sec": 0.3221767999930307,
+    "warnings": []
+  }
+]

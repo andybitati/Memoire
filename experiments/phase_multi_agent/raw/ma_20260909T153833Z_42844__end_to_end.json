@@ -1,0 +1,396 @@
+{
+  "run_id": "ma_20260909T153833Z_42844",
+  "end_to_end_run_id": "e2e-ma_20260909T153833Z_42844",
+  "expected_stages": 6,
+  "executed_stages": 6,
+  "successful_stages": 6,
+  "status": "ok",
+  "parsed_path": "E:\\Cours\\TFE\\experiments\\phase_multi_agent\\raw\\ma_20260909T153833Z_42844__end_to_end_outputs\\e2e_parsed.csv",
+  "anomalies_path": "E:\\Cours\\TFE\\experiments\\phase_multi_agent\\raw\\ma_20260909T153833Z_42844__end_to_end_outputs\\ad28933771a447b7a9f7fb0502b232e1_anomalies.csv",
+  "message_counts": {
+    "CFP": 6,
+    "PROPOSE": 18,
+    "REFUSE": 0,
+    "AWARD": 6,
+    "REJECT": 12,
+    "ACCEPT": 6,
+    "RESULT": 6,
+    "FAIL": 0,
+    "FEEDBACK": 6
+  },
+  "stages": [
+    {
+      "contract_id": "cfed4db0d1f7420a854df6d8e5545e95",
+      "task_id": "28baad24f9eb418d8250e7b9ed33a68f",
+      "status": "ok",
+      "winner": "e2e-alpha",
+      "proposals": {
+        "e2e-alpha": 0.863,
+        "e2e-beta": 0.827,
+        "e2e-gamma": 0.791
+      },
+      "refusals": {},
+      "result": {
+        "task_id": "28baad24f9eb418d8250e7b9ed33a68f",
+        "task_type": "discover.logs",
+        "agent_id": "e2e-alpha",
+        "status": "ok",
+        "output": {
+          "count": 1,
+          "selected": {
+            "path": "E:\\Cours\\TFE\\examples\\windows_event_sample.xml",
+            "kind": "win_event",
+            "size_bytes": 569,
+            "modified": "2026-05-15T12:54:30.515081+00:00",
+            "priority": 15
+          },
+          "candidates": [
+            {
+              "path": "E:\\Cours\\TFE\\examples\\windows_event_sample.xml",
+              "kind": "win_event",
+              "size_bytes": 569,
+              "modified": "2026-05-15T12:54:30.515081+00:00",
+              "priority": 15
+            }
+          ]
+        },
+        "error": "",
+        "started_at": "2026-09-09T15:38:36.572919+00:00",
+        "completed_at": "2026-09-09T15:38:37.290498+00:00",
+        "elapsed_sec": 0.717917,
+        "decision_score": 0.863,
+        "decision_reasons": [
+          "capability=0.960000",
+          "history=0.500000",
+          "model=1.000000",
+          "availability=1.000000",
+          "load=1.000000",
+          "latency=0.500000"
+        ]
+      },
+      "message_counts": {
+        "CFP": 1,
+        "PROPOSE": 3,
+        "REFUSE": 0,
+        "AWARD": 1,
+        "REJECT": 2,
+        "ACCEPT": 1,
+        "RESULT": 1,
+        "FAIL": 0,
+        "FEEDBACK": 1
+      },
+      "reassignments": 0,
+      "started_at": "2026-09-09T15:38:36.564387+00:00",
+      "completed_at": "2026-09-09T15:38:37.301569+00:00",
+      "elapsed_sec": 0.737606
+    },
+    {
+      "contract_id": "511c2dbacf124854843bc703c6244475",
+      "task_id": "ea671f2a2d1643f3ba1caf98e15c0eb5",
+      "status": "ok",
+      "winner": "e2e-beta",
+      "proposals": {
+        "e2e-alpha": 0.827,
+        "e2e-beta": 0.863,
+        "e2e-gamma": 0.827
+      },
+      "refusals": {},
+      "result": {
+        "task_id": "ea671f2a2d1643f3ba1caf98e15c0eb5",
+        "task_type": "parse.logs",
+        "agent_id": "e2e-beta",
+        "status": "ok",
+        "output": {
+          "produced": [
+            "E:\\Cours\\TFE\\experiments\\phase_multi_agent\\raw\\ma_20260909T153833Z_42844__end_to_end_outputs\\e2e_parsed.csv"
+          ],
+          "count": 1
+        },
+        "error": "",
+        "started_at": "2026-09-09T15:38:37.312662+00:00",
+        "completed_at": "2026-09-09T15:38:38.134480+00:00",
+        "elapsed_sec": 0.822624,
+        "decision_score": 0.863,
+        "decision_reasons": [
+          "capability=0.960000",
+          "history=0.500000",
+          "model=1.000000",
+          "availability=1.000000",
+          "load=1.000000",
+          "latency=0.500000"
+        ]
+      },
+      "message_counts": {
+        "CFP": 1,
+        "PROPOSE": 3,
+        "REFUSE": 0,
+        "AWARD": 1,
+        "REJECT": 2,
+        "ACCEPT": 1,
+        "RESULT": 1,
+        "FAIL": 0,
+        "FEEDBACK": 1
+      },
+      "reassignments": 0,
+      "started_at": "2026-09-09T15:38:37.302571+00:00",
+      "completed_at": "2026-09-09T15:38:38.143044+00:00",
+      "elapsed_sec": 0.840471
+    },
+    {
+      "contract_id": "76b5a527e8284e329f8717485e649f76",
+      "task_id": "cd0b52e51ae649c480438564705b25e3",
+      "status": "ok",
+      "winner": "e2e-gamma",
+      "proposals": {
+        "e2e-alpha": 0.791,
+        "e2e-beta": 0.827,
+        "e2e-gamma": 0.863
+      },
+      "refusals": {},
+      "result": {
+        "task_id": "cd0b52e51ae649c480438564705b25e3",
+        "task_type": "route.model",
+        "agent_id": "e2e-gamma",
+        "status": "ok",
+        "output": {
+          "family": "windows",
+          "model": "models/isolation_forest_windows_local.joblib",
+          "kind": "csv",
+          "scores": {
+            "windows": 205,
+            "hdfs": 16,
+            "bgl": 32,
+            "wazuh": 0,
+            "network": 40,
+            "network_cicids": 0,
+            "linux_auth": 0,
+            "linux": 42,
+            "fallback": 1
+          },
+          "confidence": 163,
+          "reasons": [
+            "colonnes windows: component,event,host,pid,recno,session,severity,source",
+            "colonnes hdfs: component,event",
+            "colonnes bgl: component,event,severity,source",
+            "colonnes network: dst_ip,dst_port,proto,src_ip,src_port",
+            "colonnes linux: host,message,pid,severity",
+            "marqueurs windows: windows,win_event,microsoft-windows,security-auditing",
+            "features windows=9",
+            "features linux=1"
+          ]
+        },
+        "error": "",
+        "started_at": "2026-09-09T15:38:38.152273+00:00",
+        "completed_at": "2026-09-09T15:38:38.971997+00:00",
+        "elapsed_sec": 0.818607,
+        "decision_score": 0.863,
+        "decision_reasons": [
+          "capability=0.960000",
+          "history=0.500000",
+          "model=1.000000",
+          "availability=1.000000",
+          "load=1.000000",
+          "latency=0.500000"
+        ]
+      },
+      "message_counts": {
+        "CFP": 1,
+        "PROPOSE": 3,
+        "REFUSE": 0,
+        "AWARD": 1,
+        "REJECT": 2,
+        "ACCEPT": 1,
+        "RESULT": 1,
+        "FAIL": 0,
+        "FEEDBACK": 1
+      },
+      "reassignments": 0,
+      "started_at": "2026-09-09T15:38:38.143044+00:00",
+      "completed_at": "2026-09-09T15:38:38.982571+00:00",
+      "elapsed_sec": 0.839367
+    },
+    {
+      "contract_id": "7b1c3be86caa4c8c965a974d7bdb041b",
+      "task_id": "ad28933771a447b7a9f7fb0502b232e1",
+      "status": "ok",
+      "winner": "e2e-alpha",
+      "proposals": {
+        "e2e-alpha": 0.863,
+        "e2e-beta": 0.827,
+        "e2e-gamma": 0.791
+      },
+      "refusals": {},
+      "result": {
+        "task_id": "ad28933771a447b7a9f7fb0502b232e1",
+        "task_type": "detect.anomalies",
+        "agent_id": "e2e-alpha",
+        "status": "ok",
+        "output": {
+          "route": {
+            "family": "windows",
+            "model": "models/isolation_forest_windows_local.joblib",
+            "kind": "csv",
+            "scores": {
+              "windows": 205,
+              "hdfs": 16,
+              "bgl": 32,
+              "wazuh": 0,
+              "network": 40,
+              "network_cicids": 0,
+              "linux_auth": 0,
+              "linux": 42,
+              "fallback": 1
+            },
+            "confidence": 163,
+            "reasons": [
+              "colonnes windows: component,event,host,pid,recno,session,severity,source",
+              "colonnes hdfs: component,event",
+              "colonnes bgl: component,event,severity,source",
+              "colonnes network: dst_ip,dst_port,proto,src_ip,src_port",
+              "colonnes linux: host,message,pid,severity",
+              "marqueurs windows: windows,win_event,microsoft-windows,security-auditing",
+              "features windows=9",
+              "features linux=1"
+            ]
+          },
+          "model_type": "isolation_forest",
+          "anomalies_csv": "E:\\Cours\\TFE\\experiments\\phase_multi_agent\\raw\\ma_20260909T153833Z_42844__end_to_end_outputs\\ad28933771a447b7a9f7fb0502b232e1_anomalies.csv",
+          "incidents_csv": "E:\\Cours\\TFE\\experiments\\phase_multi_agent\\raw\\ma_20260909T153833Z_42844__end_to_end_outputs\\ad28933771a447b7a9f7fb0502b232e1_incidents.csv",
+          "timings": {
+            "route_sec": 0.0375,
+            "detect_sec": 0.4088,
+            "correlate_sec": 0.0813,
+            "detect_and_correlate_sec": 0.4901
+          }
+        },
+        "error": "",
+        "started_at": "2026-09-09T15:38:38.994671+00:00",
+        "completed_at": "2026-09-09T15:38:40.602697+00:00",
+        "elapsed_sec": 1.607864,
+        "decision_score": 0.863,
+        "decision_reasons": [
+          "capability=0.960000",
+          "history=0.500000",
+          "model=1.000000",
+          "availability=1.000000",
+          "load=1.000000",
+          "latency=0.500000"
+        ]
+      },
+      "message_counts": {
+        "CFP": 1,
+        "PROPOSE": 3,
+        "REFUSE": 0,
+        "AWARD": 1,
+        "REJECT": 2,
+        "ACCEPT": 1,
+        "RESULT": 1,
+        "FAIL": 0,
+        "FEEDBACK": 1
+      },
+      "reassignments": 0,
+      "started_at": "2026-09-09T15:38:38.982571+00:00",
+      "completed_at": "2026-09-09T15:38:40.610122+00:00",
+      "elapsed_sec": 1.626977
+    },
+    {
+      "contract_id": "084ac42dc80740798777dd573b479f23",
+      "task_id": "e3e03401e7dc4c49ab465820390989ae",
+      "status": "ok",
+      "winner": "e2e-beta",
+      "proposals": {
+        "e2e-alpha": 0.827,
+        "e2e-beta": 0.863,
+        "e2e-gamma": 0.827
+      },
+      "refusals": {},
+      "result": {
+        "task_id": "e3e03401e7dc4c49ab465820390989ae",
+        "task_type": "correlate.incidents",
+        "agent_id": "e2e-beta",
+        "status": "ok",
+        "output": {
+          "incidents_csv": "E:\\Cours\\TFE\\experiments\\phase_multi_agent\\raw\\ma_20260909T153833Z_42844__end_to_end_outputs\\e2e_incidents_explicit.csv"
+        },
+        "error": "",
+        "started_at": "2026-09-09T15:38:40.620396+00:00",
+        "completed_at": "2026-09-09T15:38:41.413042+00:00",
+        "elapsed_sec": 0.792867,
+        "decision_score": 0.863,
+        "decision_reasons": [
+          "capability=0.960000",
+          "history=0.500000",
+          "model=1.000000",
+          "availability=1.000000",
+          "load=1.000000",
+          "latency=0.500000"
+        ]
+      },
+      "message_counts": {
+        "CFP": 1,
+        "PROPOSE": 3,
+        "REFUSE": 0,
+        "AWARD": 1,
+        "REJECT": 2,
+        "ACCEPT": 1,
+        "RESULT": 1,
+        "FAIL": 0,
+        "FEEDBACK": 1
+      },
+      "reassignments": 0,
+      "started_at": "2026-09-09T15:38:40.610669+00:00",
+      "completed_at": "2026-09-09T15:38:41.422580+00:00",
+      "elapsed_sec": 0.812081
+    },
+    {
+      "contract_id": "8bd9bad4fce14e2f8a08cb7e456960aa",
+      "task_id": "f7ad94863a7e485eb73e8bfec20fcdec",
+      "status": "ok",
+      "winner": "e2e-gamma",
+      "proposals": {
+        "e2e-alpha": 0.791,
+        "e2e-beta": 0.827,
+        "e2e-gamma": 0.863
+      },
+      "refusals": {},
+      "result": {
+        "task_id": "f7ad94863a7e485eb73e8bfec20fcdec",
+        "task_type": "feedback.apply",
+        "agent_id": "e2e-gamma",
+        "status": "ok",
+        "output": {
+          "feedback_csv": "E:\\Cours\\TFE\\experiments\\phase_multi_agent\\raw\\ma_20260909T153833Z_42844__end_to_end_outputs\\ad28933771a447b7a9f7fb0502b232e1_anomalies.csv",
+          "agent_id": "e2e-gamma"
+        },
+        "error": "",
+        "started_at": "2026-09-09T15:38:41.431182+00:00",
+        "completed_at": "2026-09-09T15:38:42.290095+00:00",
+        "elapsed_sec": 0.858877,
+        "decision_score": 0.863,
+        "decision_reasons": [
+          "capability=0.960000",
+          "history=0.500000",
+          "model=1.000000",
+          "availability=1.000000",
+          "load=1.000000",
+          "latency=0.500000"
+        ]
+      },
+      "message_counts": {
+        "CFP": 1,
+        "PROPOSE": 3,
+        "REFUSE": 0,
+        "AWARD": 1,
+        "REJECT": 2,
+        "ACCEPT": 1,
+        "RESULT": 1,
+        "FAIL": 0,
+        "FEEDBACK": 1
+      },
+      "reassignments": 0,
+      "started_at": "2026-09-09T15:38:41.422580+00:00",
+      "completed_at": "2026-09-09T15:38:42.298629+00:00",
+      "elapsed_sec": 0.875698
+    }
+  ]
+}

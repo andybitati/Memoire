@@ -1,0 +1,280 @@
+\chapter*{Introduction générale}
+
+\addcontentsline{toc}{chapter}{Introduction générale}
+
+% Les sections de l'introduction sont volontairement non numérotées afin
+% d'éviter une numérotation de type 0.1, 0.2, etc.
+
+\section*{Contexte général et justification du sujet}
+
+\addcontentsline{toc}{section}{Contexte général et justification du sujet}
+
+Les systèmes informatiques modernes produisent continuellement des traces de leur fonctionnement, de leurs interactions et des événements qui modifient leur état. Ces traces prennent des formes diverses : journaux système, journaux d'applications, journaux d'authentification, flux réseau, événements de sécurité ou encore alertes émises par des plateformes spécialisées. Elles constituent une source d'information essentielle pour l'administration des systèmes, l'audit, l'investigation numérique et la cybersécurité. Leur gestion ne se résume donc pas à leur conservation. Collecte, protection, analyse et exploitation doivent s'inscrire dans un processus cohérent de supervision \cite{nist80092}.
+
+Dans la pratique, ces données sont rarement homogènes. Un poste Windows produit par exemple des événements structurés dans Windows Event Log, alors qu'un serveur Linux enregistre une partie de son activité dans des messages textuels de type syslog. Un serveur web génère ses propres journaux d'accès et d'erreur. À cela s'ajoutent les événements enrichis par les HIDS ou les SIEM, qui introduisent des règles, des niveaux de sévérité et diverses métadonnées. Les flux réseau destinés à la détection d'intrusion sont encore différents : ils sont souvent représentés sous une forme tabulaire contenant des caractéristiques statistiques ou temporelles.
+
+Cette diversité est l'une des premières difficultés rencontrées lorsqu'on cherche à construire une chaîne d'analyse commune. Deux événements décrivant des situations proches peuvent ne partager ni les mêmes champs, ni la même structure, ni la même granularité temporelle. Des standards tels que syslog apportent une certaine homogénéité dans leur domaine d'application \cite{rfc5424}, mais ils ne constituent pas pour autant une représentation universelle des traces produites par les systèmes, les applications, les équipements réseau et les outils de sécurité. Une chaîne multi-source doit donc reconnaître l'origine des événements, extraire ce qui est pertinent et rapprocher les informations sans effacer les particularités propres à chaque source.
+
+Le volume pose une autre difficulté. L'analyse manuelle reste pertinente lorsqu'un analyste étudie un incident précis, mais elle devient rapidement difficile à maintenir lorsque le nombre de sources et d'événements augmente. Il ne s'agit plus seulement de lire davantage de lignes. Il faut identifier les événements qui méritent une attention particulière, rapprocher ceux qui semblent appartenir au même contexte et conserver suffisamment d'éléments pour permettre une vérification humaine ultérieure.
+
+La détection d'intrusion s'appuie depuis longtemps sur l'exploitation des traces d'audit et sur la recherche de comportements qui s'écartent d'un fonctionnement attendu \cite{denning1987intrusion}. Certaines approches recherchent des comportements connus à l'aide de signatures, tandis que d'autres tentent d'identifier des anomalies \cite{axelsson2000intrusion}. Cette seconde famille devient particulièrement intéressante lorsqu'il est impossible de décrire à l'avance tous les comportements indésirables. Elle impose cependant une prudence essentielle : ce qui est atypique n'est pas nécessairement malveillant.
+
+Dans ce mémoire, une sortie produite par un mécanisme de détection d'anomalies est donc considérée comme une \textit{anomalie candidate}. Elle constitue un signal à examiner dans son contexte, et non une preuve d'intrusion. Cette distinction est importante, car la littérature identifie plusieurs formes d'anomalies dont l'interprétation dépend fortement du contexte \cite{chandola2009anomaly}.
+
+L'apprentissage automatique apporte des outils supplémentaires pour exploiter ces données. Les modèles supervisés peuvent apprendre à distinguer plusieurs classes lorsque des exemples correctement étiquetés sont disponibles. Les méthodes non supervisées, de leur côté, recherchent des observations atypiques sans exiger nécessairement une vérité terrain complète. De nombreuses approches ont déjà été étudiées en cybersécurité \cite{buczak2016survey,khraisat2019survey}. Leur efficacité dépend toutefois de plusieurs éléments : qualité des données, déséquilibre des classes, protocole de séparation entre entraînement et test, mais aussi proximité réelle entre les données expérimentales et l'environnement dans lequel le modèle devrait être utilisé.
+
+Le choix de l'algorithme ne constitue donc qu'une partie du problème. Une détection exploitable doit s'insérer dans une chaîne où plusieurs fonctions coopèrent : acquisition des données, parsing, normalisation, routage vers un traitement compatible, détection, corrélation, conservation des décisions, audit et restitution à l'analyste. Un score élevé obtenu sur un jeu de données isolé ne suffit pas à couvrir l'ensemble de ces besoins.
+
+C'est dans cette perspective qu'a été développé \textit{Ariel Logminer}. Le prototype rassemble plusieurs mécanismes relativement légers dans une architecture commune afin d'analyser des journaux hétérogènes de manière reproductible et auditable. L'apport recherché concerne avant tout l'architecture, l'intégration des composants et leur évaluation expérimentale. Le travail ne prétend ni proposer une nouvelle théorie de l'apprentissage automatique ni introduire un algorithme universel de détection.
+
+Cette orientation répond aussi à une contrainte pratique. Déployer immédiatement une infrastructure complète de type SOC peut être difficile dans un contexte universitaire, expérimental ou dans une organisation disposant de moyens limités. Un prototype local offre au contraire un environnement contrôlé dans lequel il devient possible d'étudier séparément les mécanismes de la chaîne, de mesurer leur comportement et de comparer plusieurs choix d'architecture, de détection et de distribution.
+
+
+\section*{Problématique}
+
+\addcontentsline{toc}{section}{Problématique}
+
+L'analyse de journaux système et réseau pour la cybersécurité fait apparaître plusieurs difficultés qui ne peuvent pas être traitées indépendamment les unes des autres.
+
+La première tient naturellement à la représentation des données. Les journaux manipulés peuvent être structurés, semi-structurés ou entièrement textuels. Certains possèdent un schéma explicite ; d'autres nécessitent une phase de parsing avant que leurs informations essentielles deviennent exploitables. Appliquer exactement le même pipeline à toutes ces sources conduirait soit à perdre certaines informations, soit à multiplier les traitements spécifiques jusqu'à rendre la chaîne difficile à maintenir.
+
+Cette diversité se prolonge au niveau de la détection. Un modèle construit à partir de caractéristiques de flux réseau ne peut pas être appliqué tel quel à des événements Windows ou à des messages Linux. Même après transformation en représentations numériques, la signification des variables et leur distribution restent propres aux données d'origine. Le traitement retenu doit donc rester cohérent avec la famille de journaux analysée, en particulier lorsqu'une même application combine plusieurs méthodes supervisées et non supervisées.
+
+La question de la généralisation est encore plus délicate. Une performance obtenue sur une partition aléatoire peut être très différente de celle observée lorsque le test porte sur un scénario absent de l'entraînement. Sommer et Paxson ont notamment souligné les difficultés liées au transfert direct vers des réseaux opérationnels de résultats de machine learning obtenus dans des environnements contrôlés \cite{sommer2010outside}. Un score ne peut donc être interprété correctement qu'en connaissant le protocole qui l'a produit.
+
+L'organisation logicielle intervient ensuite. Rassembler collecte, détection, corrélation, mémoire et restitution dans un seul bloc simplifie parfois les premiers développements, mais complique l'évolution et l'audit du système. Une séparation entre composants spécialisés rend plus facile le remplacement d'un traitement, l'identification d'une décision et la reprise de certaines tâches. Elle introduit en contrepartie un coût d'orchestration qu'il faut mesurer plutôt que supposer négligeable.
+
+Un autre enjeu concerne directement l'analyste. Produire davantage de scores ne signifie pas nécessairement mieux assister une investigation. Les événements doivent pouvoir être filtrés, replacés dans leur contexte, rapprochés d'autres observations et soumis à une validation. La décision de sécurité ne doit donc pas être confondue avec la sortie brute d'un algorithme.
+
+À cela s'ajoute une exigence transversale : la vérifiabilité. Les données utilisées, les paramètres, les modèles, les partitions, les versions des dépendances et les résultats doivent être suffisamment documentés pour permettre de comprendre et, dans une mesure raisonnable, de reproduire les expériences. Cette exigence devient particulièrement importante lorsque le travail combine jeux de données publics, journaux collectés localement, exports d'outils de sécurité et scénarios synthétiques.
+
+Ces difficultés conduisent à considérer la détection d'anomalies non comme une simple opération de classification, mais comme une chaîne complète de traitement et de décision. La problématique du mémoire porte ainsi sur la conception d'une architecture capable de faire coopérer ces fonctions, tout en restant assez légère pour être évaluée localement, assez modulaire pour intégrer plusieurs traitements et suffisamment auditable pour que ses résultats puissent être interprétés et vérifiés.
+
+
+\section*{Positionnement et définition opérationnelle des termes}
+
+\addcontentsline{toc}{section}{Positionnement et définition opérationnelle des termes}
+
+Le titre du mémoire emploie les termes \textit{autonome}, \textit{distribuée} et \textit{agents intelligents multitâches}. Ces termes peuvent couvrir des réalités très différentes ; leur sens doit donc être précisé dans le cadre exact de ce travail.
+
+Un \textbf{agent} désigne ici une entité logicielle disposant de capacités déclarées, d'un état propre, d'une mémoire et d'une politique locale de décision. Lorsqu'une tâche lui est proposée, il peut évaluer sa capacité à la traiter, soumettre une proposition ou la refuser, puis exécuter un handler compatible et intégrer un retour d'expérience. Cette définition reste volontairement opérationnelle : elle renvoie au comportement du code et aux traces produites par le prototype, et non à une entité cognitive.
+
+L'\textbf{autonomie} correspond à la capacité de l'agent à prendre localement certaines décisions d'offre, de refus et d'exécution, sans recevoir pour chaque tâche une affectation impérative d'un superviseur central. Cette autonomie reste bornée par des règles et des paramètres configurés. Elle ne doit pas être assimilée à une intelligence générale ni à un apprentissage continu entièrement autonome en production.
+
+Le qualificatif \textbf{intelligent} renvoie, dans ce contexte, à une adaptation opérationnelle fondée sur plusieurs informations : état de l'agent, capacités disponibles, historique, compatibilité du modèle, disponibilité, charge et latence. La politique expérimentale initiale repose sur l'utilité configurable suivante :
+
+\[
+U = 0{,}30C + 0{,}20H + 0{,}20M + 0{,}15A + 0{,}10L + 0{,}05T,
+\]
+
+où les différentes composantes sont normalisées entre 0 et 1, avec
+
+\[
+H_i = \frac{s_i+1}{s_i+f_i+2}.
+\]
+
+Les poids sont fixés avant les campagnes expérimentales. Ils constituent des paramètres de fonctionnement et ne sont pas présentés comme une combinaison optimale.
+
+Un agent est dit \textbf{multitâche} lorsqu'il peut traiter plusieurs catégories de tâches à travers différents handlers compatibles. La négociation s'appuie sur un protocole Contract Net qui rend explicites les principales étapes de décision : CFP, PROPOSE ou REFUSE, AWARD ou REJECT, ACCEPT, RESULT ou FAIL, puis FEEDBACK.
+
+Le terme \textbf{distribué} renvoie à l'exécution de plusieurs processus et, dans l'expérience retenue, à l'utilisation de deux machines virtuelles communiquant au moyen d'un Redis centralisé sur l'hôte du laboratoire. Une architecture industrielle géographiquement distribuée, la haute disponibilité ou le fonctionnement d'un SOC multi-site ne font pas partie des propriétés évaluées.
+
+Enfin, une distinction est maintenue entre \textbf{anomalie} et \textbf{attaque}. Une anomalie correspond à une observation, ou à un ensemble d'observations, considéré comme inhabituel par le mécanisme utilisé. Parler d'attaque suppose une interprétation de sécurité plus forte, fondée sur une vérité terrain, une règle explicite ou une investigation. Les résultats issus des mécanismes non supervisés sont interprétés en respectant cette distinction.
+
+
+\section*{Question centrale et questions de recherche}
+
+\addcontentsline{toc}{section}{Question centrale et questions de recherche}
+
+Les difficultés précédentes conduisent à la question centrale suivante :
+
+\begin{quote}
+
+\textit{Comment concevoir un prototype autonome, distribué au sens logiciel, modulaire et exploitable par un analyste, capable de détecter et de prioriser des anomalies candidates dans des journaux système et réseau hétérogènes par traitements périodiques, par micro-lots et par agents multitâches ?}
+
+\end{quote}
+
+Cette question est examinée à travers six questions de recherche :
+
+\begin{enumerate}[label=\textbf{QR\arabic*.}, leftmargin=1.6cm]
+
+    \item Comment construire un schéma de normalisation rapprochant journaux système, réseau et SIEM sans perdre l'information nécessaire ?
+
+    \item Comment organiser des agents spécialisés dans une architecture modulaire, auditable et extensible ?
+
+    \item Comment sélectionner automatiquement un modèle adapté à la famille traitée ?
+
+    \item Comment présenter les anomalies dans un tableau de bord permettant compréhension, filtrage et validation ?
+
+    \item Comment exploiter une mémoire persistante pour améliorer la priorisation et organiser la mise à jour contrôlée ?
+
+    \item Comment évaluer le prototype par métriques, captures, latence et ressources ?
+
+\end{enumerate}
+
+Ces questions abordent le même système sous des angles complémentaires. La représentation des événements constitue le point de départ. Viennent ensuite l'organisation des agents et le choix du traitement correspondant à chaque famille de données. Le rôle de l'analyste est considéré à travers la restitution et la validation des anomalies, tandis que la mémoire introduit une dimension historique et un cadre pour l'évolution contrôlée des modèles. La dernière question porte sur les preuves nécessaires pour évaluer l'ensemble.
+
+Il serait donc insuffisant de réduire la réponse à une seule métrique de classification. L'architecture doit être confrontée à plusieurs types de données et évaluée à plusieurs niveaux : comportement des modèles, fonctionnement du pipeline, traitement de formats différents, routage, coût de l'orchestration, reprise de tâches, corrélation et reproductibilité.
+
+
+\section*{Hypothèses de recherche}
+
+\addcontentsline{toc}{section}{Hypothèses de recherche}
+
+Cinq hypothèses structurent les expériences. Elles constituent des propositions à confronter aux observations et ne préjugent pas de leur validation.
+
+\begin{description}[leftmargin=1.6cm, style=nextline]
+
+    \item[\textbf{H1.}]
+    Des journaux hétérogènes peuvent être rapprochés par un noyau commun sans supprimer les informations originales utiles à l'audit.
+
+    \item[\textbf{H2.}]
+    Des agents spécialisés peuvent améliorer modularité, traçabilité et robustesse par rapport à une chaîne monolithique.
+
+    \item[\textbf{H3.}]
+    Le routage par famille peut limiter les incompatibilités entre données, features et modèles.
+
+    \item[\textbf{H4.}]
+    Des modèles légers conservent un intérêt dans une chaîne locale reproductible avec métriques, corrélation et validation humaine.
+
+    \item[\textbf{H5.}]
+    Une mémoire persistante peut soutenir l'adaptation progressive, la priorisation et la mise à jour contrôlée.
+
+\end{description}
+
+H1 découle directement de l'hétérogénéité des formats. Elle sera examinée à partir du comportement des adaptateurs et du pipeline de normalisation. Il ne s'agit pas de supposer qu'un schéma unique puisse représenter parfaitement toutes les propriétés de toutes les sources, mais de déterminer si plusieurs journaux peuvent être rapprochés sans perdre les informations nécessaires à leur analyse et à leur audit.
+
+Avec H2, l'attention se déplace vers l'architecture. La modularité et la traçabilité peuvent être observées dans la conception et dans les traces d'exécution ; la robustesse, elle, nécessite des scénarios de reprise et de défaillance contrôlée. La comparaison avec une exécution plus monolithique permettra également de mesurer le prix de cette organisation.
+
+H3 porte sur le routage. Les familles de journaux ayant des structures et des variables différentes, orienter chaque source vers un traitement compatible devrait limiter certaines incohérences. Cette hypothèse ne suppose toutefois pas qu'un modèle spécialisé soit automatiquement supérieur à un modèle plus général. Compatibilité architecturale et gain prédictif seront donc examinés séparément.
+
+H4 concerne le choix de modèles relativement légers. Ce choix est cohérent avec le périmètre local du prototype et avec l'objectif de reproductibilité. Il ne constitue pas une affirmation de supériorité face aux architectures profondes. L'intérêt de ces modèles sera jugé à partir des données, du protocole expérimental, du coût de calcul, de l'interprétabilité et de leur intégration dans la chaîne.
+
+H5 introduit enfin la mémoire persistante. Celle-ci n'est pas considérée comme un mécanisme d'apprentissage continu capable de modifier spontanément les modèles en production. Son rôle consiste à conserver des informations sur les exécutions, les décisions, les erreurs et certains retours de l'analyste, tout en fournissant un support à une procédure de mise à jour contrôlée.
+
+
+\section*{Objectif général et objectifs spécifiques}
+
+\addcontentsline{toc}{section}{Objectif général et objectifs spécifiques}
+
+L'\textbf{objectif général} de ce travail est de concevoir, implémenter et évaluer un prototype modulaire, nommé \textit{Ariel Logminer}, destiné à la détection et à la priorisation d'anomalies candidates dans des journaux système et réseau hétérogènes. Le prototype organise une chaîne allant de l'acquisition ou de la lecture des données jusqu'à la restitution des résultats. Cette chaîne intègre la normalisation, le routage, la détection, la corrélation, la mémoire, l'audit et les mécanismes nécessaires à une validation humaine.
+
+Cet objectif général se décline en objectifs spécifiques :
+
+\begin{enumerate}
+
+    \item caractériser les principales familles de journaux utilisées dans le travail et identifier les contraintes liées à leur hétérogénéité ;
+
+    \item définir une représentation commune permettant au pipeline de manipuler plusieurs catégories de données tout en conservant les informations nécessaires à l'analyse ;
+
+    \item concevoir une architecture modulaire fondée sur des composants et agents spécialisés, avec des mécanismes explicites de communication, de suivi et d'audit ;
+
+    \item mettre en œuvre un mécanisme de routage capable d'orienter une source vers une famille et un traitement compatibles ;
+
+    \item intégrer des méthodes supervisées et non supervisées adaptées aux différents scénarios expérimentaux, sans supposer qu'un modèle unique convient à toutes les données ;
+
+    \item intégrer un mécanisme de corrélation afin de rapprocher plusieurs anomalies candidates lorsqu'elles présentent des relations temporelles ou contextuelles compatibles ;
+
+    \item mettre en place une mémoire persistante et une procédure contrôlée permettant de conserver les décisions et d'encadrer l'évaluation d'un modèle candidat avant son éventuelle promotion ;
+
+    \item proposer une interface permettant de consulter, filtrer et examiner les signaux produits par la chaîne, tout en maintenant la validation humaine dans le processus ;
+
+    \item évaluer le prototype à travers des protocoles documentés portant à la fois sur la qualité de détection, la robustesse fonctionnelle, le routage, le traitement multiformat, les ressources utilisées, l'orchestration et la distribution de laboratoire ;
+
+    \item documenter les données, paramètres, scripts et artefacts nécessaires pour rendre les expériences aussi vérifiables et reproductibles que le permet l'environnement étudié.
+
+\end{enumerate}
+
+Ces objectifs montrent le caractère transversal du travail. Certains concernent directement l'apprentissage automatique, d'autres relèvent davantage de l'architecture logicielle, du traitement des données ou de la validation expérimentale. Ariel Logminer cherche précisément à faire fonctionner ces dimensions dans une même chaîne.
+
+
+\section*{Démarche méthodologique}
+
+\addcontentsline{toc}{section}{Démarche méthodologique}
+
+La démarche retenue combine conception logicielle et expérimentation. Elle ne consiste pas à entraîner un modèle sur un jeu de données puis à généraliser son score à l'ensemble du système. Chaque fonction du prototype est évaluée avec des données et un protocole correspondant à la question étudiée.
+
+Le travail commence par l'établissement des fondements scientifiques et techniques nécessaires : journalisation, parsing, principales familles de détection d'anomalies, systèmes multi-agents, distribution des tâches, corrélation et restitution à l'analyste. Cette étude permet de préciser les fonctions attendues du prototype et, tout aussi important, les limites à ne pas dépasser dans l'interprétation des résultats.
+
+La conception de l'architecture s'appuie ensuite sur une séparation claire des responsabilités. Acquisition ou découverte des sources, parsing, normalisation, routage, détection, corrélation, mémoire, audit et restitution sont traités comme des fonctions distinctes. Les agents échangent au moyen d'un contrat métier explicite, tandis que le mécanisme de transport reste séparé. Ce choix évite de confondre la logique du traitement avec les détails propres au bus de messages.
+
+L'implémentation matérialise cette architecture sous la forme d'un pipeline, d'adaptateurs de données, d'agents, d'un registre de modèles, de mécanismes de communication, d'une couche de persistance, d'un système d'audit et d'un tableau de bord. Une pile logicielle exécutable localement a été privilégiée afin de conserver un niveau raisonnable de contrôle et de reproductibilité.
+
+Les données proviennent de plusieurs catégories qu'il est nécessaire de distinguer. Parmi les \textbf{jeux de données publics}, CICIDS2017 fournit des flux réseau comportant du trafic bénin et différents scénarios d'attaque dans un environnement contrôlé \cite{sharafaldin2018cicids}. HDFS est largement utilisé pour l'étude des anomalies dans les journaux de systèmes distribués \cite{xu2009hdfs}, tandis que BGL provient des journaux du supercalculateur Blue Gene/L \cite{oliner2007bgl}. Leur diffusion et leur emploi pour l'analyse automatisée de journaux sont également documentés dans Loghub \cite{zhu2023loghub}.
+
+Le protocole utilise aussi des \textbf{journaux collectés localement}, des \textbf{exports locaux d'outils de sécurité} et des \textbf{scénarios synthétiques contrôlés}. Ces catégories ne sont pas confondues. Une collecte locale n'est pas présentée comme un jeu de données public, et un scénario créé pour solliciter un mécanisme précis ne constitue pas une validation sur des incidents réels de SOC. La provenance des sources et des copies locales est conservée.
+
+Les expériences de détection suivent plusieurs protocoles. Pour CICIDS2017, l'étude compare notamment une séparation aléatoire stratifiée à des holdouts par scénario, sur plusieurs graines. L'objectif est d'observer dans quelle mesure la constitution des ensembles d'entraînement et de test modifie les performances. Une campagne complémentaire compare plusieurs modèles légers sur les mêmes scénarios afin de vérifier que les conclusions ne dépendent pas d'un seul algorithme.
+
+HDFS et BGL sont traités différemment. Entraînement, validation et test sont séparés explicitement. Le parsing par modèles de messages est ajusté uniquement sur l'entraînement, puis son état est gelé avant l'évaluation. Les seuils nécessaires aux méthodes sont choisis à partir de la validation et non du test final. Cette organisation limite l'utilisation involontaire d'informations provenant du test lors de la préparation des données.
+
+Toutes les expériences ne cherchent pas à mesurer la qualité d'un classifieur. La validation multiformat vérifie quelles sources traversent effectivement les adaptateurs et atteignent la représentation normalisée. Le routeur est évalué sur sa capacité à reconnaître la famille d'une entrée dans le corpus retenu. Un benchmark compare également une exécution monolithique à une exécution par agents afin de quantifier le coût de l'orchestration. Les campagnes Redis et multi-VM examinent, de leur côté, la consommation des tâches, leur acquittement et un scénario de reprise en laboratoire.
+
+La corrélation fait l'objet d'une expérience séparée, construite à partir de scénarios synthétiques dont le regroupement attendu est connu. Cette expérience mesure la capacité des règles à rapprocher correctement les événements dans le corpus contrôlé ; elle ne constitue pas une validation sur des incidents réels de SOC.
+
+Une procédure de mise à jour contrôlée complète le dispositif. Elle compare un modèle candidat au modèle courant à partir d'une métrique et d'un seuil définis. Les informations permettant de vérifier l'intégrité de la procédure sont conservées. Il s'agit d'un mécanisme de gouvernance expérimentale des modèles, et non d'un apprentissage continu autonome déjà déployé en production.
+
+Les preuves produites sont donc de plusieurs natures. Les métriques de classification décrivent le comportement des modèles lorsqu'une vérité terrain est disponible. Les mesures de débit, de CPU et de mémoire caractérisent certains coûts d'exécution. Les campagnes fonctionnelles vérifient la circulation réelle des données et des tâches. Les captures documentent les fonctions de l'interface, sans prétendre mesurer son utilisabilité. Les manifestes et empreintes servent enfin à relier les données et les artefacts aux expériences qui les ont produits.
+
+
+\section*{Contributions du travail}
+
+\addcontentsline{toc}{section}{Contributions du travail}
+
+Ariel Logminer n'introduit pas un nouvel algorithme d'apprentissage automatique. Son apport se situe ailleurs : dans l'organisation de plusieurs mécanismes au sein d'une même chaîne, dans leur confrontation à des données de nature différente et dans la manière dont leurs résultats sont documentés et évalués.
+
+Sur le plan \textbf{architectural}, le prototype sépare les principales fonctions du traitement des journaux : parsing, normalisation, routage, détection, corrélation, mémoire, audit et visualisation. Cette organisation permet de suivre plus clairement le passage d'une source brute vers un résultat inspectable.
+
+L'apport \textbf{méthodologique} tient surtout au protocole d'évaluation. Les conclusions ne reposent pas uniquement sur une partition aléatoire. Le travail étudie la sensibilité des résultats à des holdouts par scénario, compare plusieurs modèles et impose, pour HDFS et BGL, une séparation explicite entre entraînement, validation et test. L'objectif est de distinguer les résultats qui restent valables lorsque les conditions d'évaluation deviennent plus exigeantes.
+
+La dimension \textbf{logicielle} est concrétisée par un prototype fonctionnel intégrant des agents spécialisés, un routeur, plusieurs traitements de détection, une mémoire persistante, un mécanisme d'audit, une corrélation et une interface de consultation. L'architecture peut ainsi être observée dans son exécution, et non uniquement à travers un schéma conceptuel.
+
+Sur le plan \textbf{expérimental}, plusieurs campagnes ciblent des propriétés différentes : généralisation des modèles, traitement multiformat, routage, comparaison agents/monolithe, communication via Redis, exécution multi-VM, corrélation et mise à jour contrôlée. Les résultats positifs sont conservés, mais les résultats partiels ou négatifs le sont également lorsqu'ils permettent de préciser la portée réelle du système.
+
+Le prototype possède enfin une dimension \textbf{opérationnelle} limitée au cadre étudié. Les résultats sont associés à des mécanismes d'audit, de filtrage, de mémoire et de restitution qui maintiennent l'analyste dans la boucle de décision. Cette qualification décrit ce qui fonctionne dans le laboratoire ; elle ne constitue pas une certification du prototype comme plateforme SOC de production.
+
+Les expériences permettent ainsi de caractériser non seulement les performances, mais aussi leurs limites. Elles montrent notamment qu'une séparation aléatoire peut produire des résultats bien plus favorables qu'un holdout par scénario, qu'une architecture à agents introduit un coût mesurable et qu'un adaptateur peut rencontrer des limites sur certaines familles de données. Ces observations participent directement à la définition des propriétés réellement démontrées.
+
+
+\section*{Délimitations et portée du mémoire}
+
+\addcontentsline{toc}{section}{Délimitations et portée du mémoire}
+
+Ce travail porte sur la conception et l'évaluation d'un \textbf{prototype}. Cette qualification est importante, car elle fixe la portée des résultats présentés.
+
+Les expériences reposent sur un ensemble identifié de jeux de données publics, de journaux ou exports locaux et de scénarios synthétiques. Elles permettent de décrire le comportement du système sur ces sources. Elles ne permettent pas, à elles seules, d'établir que le même comportement serait observé dans tous les environnements informatiques.
+
+La distribution est étudiée dans une topologie de laboratoire. Redis Streams, plusieurs workers et plusieurs machines virtuelles servent à observer l'échange, l'attribution et la reprise de certaines tâches. La haute disponibilité, la scalabilité industrielle et l'exploitation multi-site ne sont pas évaluées.
+
+Le tableau de bord est validé sur ses fonctions : affichage, filtrage et consultation des résultats. L'utilisabilité au sens ergonomique reste en dehors du protocole expérimental. Aucun groupe d'analystes n'a été mobilisé pour mesurer le temps d'investigation, la charge cognitive ou la facilité d'utilisation.
+
+Les méthodes non supervisées produisent des anomalies candidates. Elles ne permettent pas, en l'absence de vérité terrain fiable, d'assimiler automatiquement chaque signal à une attaque ni d'estimer directement le nombre réel d'incidents.
+
+La mémoire persistante conserve des informations utiles aux décisions et aux exécutions, tandis que la procédure de mise à jour contrôlée fournit un cadre pour comparer un modèle candidat au modèle courant. L'automatisation complète du réentraînement, de la validation et du déploiement continu reste une perspective.
+
+Le choix de modèles relativement légers répond enfin au périmètre local de l'étude. Les architectures profondes spécialisées dans l'analyse séquentielle des journaux sont prises en compte dans l'état de l'art, mais leur comparaison exhaustive avec toutes les méthodes intégrées au prototype n'est pas l'objet principal du mémoire. L'attention est portée sur l'intégration, l'auditabilité, la diversité des sources et la qualité du protocole expérimental.
+
+Ces limites ne remettent pas en cause les résultats obtenus ; elles indiquent simplement jusqu'où ils peuvent être interprétés et quelles extensions nécessiteraient de nouvelles expériences.
+
+
+\section*{Organisation du mémoire}
+
+\addcontentsline{toc}{section}{Organisation du mémoire}
+
+Outre cette introduction et la conclusion générale, le mémoire est structuré en sept chapitres.
+
+Le \textbf{chapitre 1} présente l'état de l'art et les fondements nécessaires à la compréhension du travail. Il aborde la journalisation, la détection d'anomalies, les méthodes supervisées et non supervisées, le parsing des journaux, les architectures multi-agents, la distribution, la corrélation et les approches récentes pertinentes. Cette analyse sert également à préciser le positionnement scientifique d'Ariel Logminer.
+
+Le \textbf{chapitre 2} décrit le modèle proposé et l'architecture du prototype. Les composants, leurs responsabilités, les flux de traitement, le contrat de messages ainsi que les mécanismes de routage, de mémoire, d'audit, de corrélation et de mise à jour contrôlée y sont détaillés.
+
+Le \textbf{chapitre 3} passe de la conception à l'implémentation. Il présente l'organisation logicielle, les technologies retenues, les agents, les adaptateurs, le registre de modèles, les mécanismes de communication, la persistance et l'interface de consultation.
+
+Le \textbf{chapitre 4} constitue le cœur expérimental du mémoire. Il rassemble les sources de données, leur traçabilité, les métriques, les protocoles et les résultats des campagnes consacrées à CICIDS2017, HDFS/BGL, au traitement multiformat, au routeur, à la comparaison agents/monolithe, à la validation multi-VM, à la corrélation et à la mise à jour contrôlée.
+
+Le \textbf{chapitre 5} examine la validité scientifique des résultats. Les menaces à la validité interne, externe, statistique et de construit y sont discutées, de même que les limites liées aux jeux de données, aux labels, aux partitions et à l'environnement expérimental.
+
+Le \textbf{chapitre 6} revient sur les résultats pour les interpréter de manière transversale. Il les met en relation avec les questions de recherche, les hypothèses et la littérature, sans écarter les résultats négatifs ni les limites observées.
+
+Le \textbf{chapitre 7} rassemble les éléments nécessaires à la reproductibilité, au déploiement et à l'exploitation du prototype. Il décrit l'environnement, les configurations, les paramètres, les scripts, les artefacts et les précautions à prendre pour reproduire les campagnes dans le périmètre étudié.
+
+La \textbf{conclusion générale} reprend enfin les principaux résultats à la lumière de la problématique et des objectifs. Elle revient sur les questions de recherche et les hypothèses, distingue les contributions effectivement soutenues par les expériences et présente les limites ainsi que les prolongements possibles.

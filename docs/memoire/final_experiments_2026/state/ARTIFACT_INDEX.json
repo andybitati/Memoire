@@ -1,0 +1,864 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-09-08",
+  "active_phase": "PHASE 13A COMPLETE — FINAL DELIVERY PREPARATION",
+  "git_commit": "844d76b",
+  "phase_0_checkpoint_commit": "4db70f0",
+  "phase_1_checkpoint_commit": "265cdfb",
+  "phase_2_midpoint_checkpoint_commit": "73c421a",
+  "phase_2_checkpoint_commit": "6e07c3e",
+  "phase_12_checkpoint_commit": "844d76b",
+  "artifacts": [
+    {
+      "kind": "phase_checkpoint",
+      "path": "docs/memoire/final_experiments_2026/PHASE_13A_STARTED.md",
+      "status": "started"
+    },
+    {
+      "kind": "source_verifier",
+      "path": "scripts/verify_public_dataset_copies.py",
+      "status": "validated"
+    },
+    {
+      "kind": "source_verification",
+      "path": "docs/memoire/final_experiments_2026/public_dataset_copy_verification.csv",
+      "status": "partial",
+      "verified": ["HDFS.log", "anomaly_label.csv", "Linux_2k.log"]
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_13A_COMPLETED.md",
+      "status": "complete"
+    },
+    {
+      "kind": "delivery_folder",
+      "path": "ARIEL_LOGMINER_MEMOIRE_FINAL/",
+      "status": "created_static_audit_pending_pdf"
+    },
+    {
+      "kind": "state",
+      "path": "docs/memoire/final_experiments_2026/state/CURRENT_STATE.md",
+      "status": "active"
+    },
+    {
+      "kind": "state",
+      "path": "docs/memoire/final_experiments_2026/state/NEXT_ACTION.md",
+      "status": "active"
+    },
+    {
+      "kind": "ledger",
+      "path": "docs/memoire/final_experiments_2026/state/EXPERIMENT_LEDGER.csv",
+      "status": "active"
+    },
+    {
+      "kind": "decisions",
+      "path": "docs/memoire/final_experiments_2026/state/DECISIONS.md",
+      "status": "active"
+    },
+    {
+      "kind": "handoff",
+      "path": "docs/memoire/final_experiments_2026/state/SESSION_HANDOFF.md",
+      "status": "active"
+    },
+    {
+      "kind": "runner",
+      "path": "scripts/run_final_experiments.py",
+      "status": "validated_dry_run"
+    },
+    {
+      "kind": "config",
+      "path": "docs/memoire/final_experiments_2026/configs/cicids_final_protocol.json",
+      "status": "frozen"
+    },
+    {
+      "kind": "environment",
+      "path": "docs/memoire/final_experiments_2026/environment_final_experiments.json",
+      "status": "complete"
+    },
+    {
+      "kind": "dataset_manifest",
+      "path": "docs/memoire/final_experiments_2026/dataset_manifest_final.csv",
+      "status": "complete",
+      "entries": 11
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_0_COMPLETED.md",
+      "status": "complete"
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_1/e1_holdout_ddos_seed*.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_csv",
+      "path": "data/processed/final_experiments_2026/cicids_holdout_multiseed_raw.csv",
+      "status": "complete",
+      "runs": 25
+    },
+    {
+      "kind": "summary_csv",
+      "path": "data/processed/final_experiments_2026/cicids_holdout_multiseed_summary.csv",
+      "status": "complete"
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_cicids_holdout_multiseed_summary.md",
+      "status": "complete",
+      "completed_runs": 25,
+      "planned_runs": 25
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_1/e1_holdout_portscan_seed*.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_1/e1_holdout_bot_seed*.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_1/e1_holdout_infiltration_seed*.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_1/e1_holdout_webattacks_seed*.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_1/e1_random_stratified_seed*.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_csv",
+      "path": "data/processed/final_experiments_2026/cicids_random_multiseed_raw.csv",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "summary_csv",
+      "path": "data/processed/final_experiments_2026/cicids_random_multiseed_summary.csv",
+      "status": "complete"
+    },
+    {
+      "kind": "comparison_csv",
+      "path": "data/processed/final_experiments_2026/cicids_random_vs_holdout_summary.csv",
+      "status": "complete"
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_cicids_random_multiseed_summary.md",
+      "status": "complete"
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_1_COMPLETED.md",
+      "status": "complete"
+    },
+    {
+      "kind": "table",
+      "path": "docs/memoire/final_experiments_2026/tables/cicids_phase1_results.md",
+      "status": "complete"
+    },
+    {
+      "kind": "figures",
+      "path": "docs/memoire/final_experiments_2026/figures/cicids_*.png",
+      "status": "complete",
+      "count": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_ddos_seed*_randomforest.json",
+      "status": "complete_reused",
+      "runs": 5
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_cicids_model_multiseed_summary.md",
+      "status": "partial",
+      "completed_results": 80,
+      "planned_results": 125
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_ddos_seed*_extratrees.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "error_logs",
+      "path": "docs/memoire/final_experiments_2026/logs/e2_models_ddos_seed*_histgradientboosting.error.txt",
+      "status": "failed_attempts_preserved_then_retried",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_ddos_seed*_histgradientboosting.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_ddos_seed*_logisticregression.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_ddos_seed*_sgdlogistic.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_portscan_seed*_randomforest.json",
+      "status": "complete_reused",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_portscan_seed*_extratrees.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_portscan_seed*_histgradientboosting.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_portscan_seed*_logisticregression.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_portscan_seed*_sgdlogistic.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_bot_seed*_randomforest.json",
+      "status": "complete_reused",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_bot_seed*_extratrees.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_bot_seed*_histgradientboosting.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_bot_seed*_logisticregression.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_bot_seed*_sgdlogistic.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_infiltration_seed*_randomforest.json",
+      "status": "complete_reused",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_infiltration_seed*_extratrees.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_infiltration_seed*_histgradientboosting.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_infiltration_seed*_logisticregression.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_infiltration_seed*_sgdlogistic.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_webattacks_seed*_randomforest.json",
+      "status": "complete_reused",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_webattacks_seed*_extratrees.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_webattacks_seed*_histgradientboosting.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_webattacks_seed*_logisticregression.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_2/e2_models_webattacks_seed*_sgdlogistic.json",
+      "status": "complete",
+      "runs": 5
+    },
+    {
+      "kind": "summary",
+      "path": "data/processed/final_experiments_2026/cicids_model_scenario_summary.csv",
+      "status": "complete",
+      "rows": 25
+    },
+    {
+      "kind": "table",
+      "path": "docs/memoire/final_experiments_2026/tables/cicids_phase2_model_comparison.md",
+      "status": "complete"
+    },
+    {
+      "kind": "figures",
+      "path": "docs/memoire/final_experiments_2026/figures/cicids_modeles_*.png",
+      "status": "complete",
+      "files": 4
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_2_COMPLETED.md",
+      "status": "complete"
+    },
+    {
+      "kind": "config",
+      "path": "docs/memoire/final_experiments_2026/configs/strict_sequence_protocol.json",
+      "status": "frozen_before_run"
+    },
+    {
+      "kind": "runner",
+      "path": "scripts/run_strict_sequence_experiments.py",
+      "status": "validated_dry_run"
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_hdfs_bgl_strict_summary.md",
+      "status": "planned"
+    },
+    {
+      "kind": "environment",
+      "path": ".venv-final-experiments",
+      "status": "local_untracked_drain3_0.9.11"
+    },
+    {
+      "kind": "prepared_dataset",
+      "path": "data/processed/final_experiments_2026/phase_3/prepared/hdfs_*_events.csv",
+      "status": "complete",
+      "files": 3
+    },
+    {
+      "kind": "feature_bundle",
+      "path": "data/processed/final_experiments_2026/phase_3/prepared/hdfs_feature_bundle.npz",
+      "status": "complete",
+      "features": 19
+    },
+    {
+      "kind": "drain3_state",
+      "path": "data/processed/final_experiments_2026/drain3_train_state/hdfs_drain3_state.bin",
+      "status": "complete_train_only",
+      "sha256": "18bc825effd29a8c4cd957d41d9a4502a2e47f905738dd6b193017056905ebd2"
+    },
+    {
+      "kind": "preparation_report",
+      "path": "data/processed/final_experiments_2026/phase_3/prepared/hdfs_preparation.json",
+      "status": "complete"
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_3/e3_strict_hdfs_*.json",
+      "status": "complete",
+      "runs": 18
+    },
+    {
+      "kind": "summary",
+      "path": "data/processed/final_experiments_2026/hdfs_strict_drain3_summary.csv",
+      "status": "complete",
+      "rows": 6
+    },
+    {
+      "kind": "prepared_dataset",
+      "path": "data/processed/final_experiments_2026/phase_3/prepared/bgl_*_events.csv",
+      "status": "complete",
+      "files": 3
+    },
+    {
+      "kind": "feature_bundle",
+      "path": "data/processed/final_experiments_2026/phase_3/prepared/bgl_feature_bundle.npz",
+      "status": "complete",
+      "features": 19
+    },
+    {
+      "kind": "drain3_state",
+      "path": "data/processed/final_experiments_2026/drain3_train_state/bgl_drain3_state.bin",
+      "status": "complete_train_only",
+      "sha256": "43ef590469a379daf21f7b644b3fc2592ca66e74643353254e60659baf27db82"
+    },
+    {
+      "kind": "preparation_report",
+      "path": "data/processed/final_experiments_2026/phase_3/prepared/bgl_preparation.json",
+      "status": "complete"
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_3/e3_strict_bgl_*.json",
+      "status": "complete",
+      "runs": 18
+    },
+    {
+      "kind": "summary",
+      "path": "data/processed/final_experiments_2026/bgl_strict_drain3_summary.csv",
+      "status": "complete",
+      "rows": 6
+    },
+    {
+      "kind": "manifest",
+      "path": "data/processed/final_experiments_2026/drain3_template_manifest.json",
+      "status": "complete"
+    },
+    {
+      "kind": "comparison",
+      "path": "data/processed/final_experiments_2026/hdfs_bgl_old_vs_strict_protocol.csv",
+      "status": "complete",
+      "rows": 4
+    },
+    {
+      "kind": "table",
+      "path": "docs/memoire/final_experiments_2026/tables/hdfs_bgl_old_vs_strict_protocol.md",
+      "status": "complete"
+    },
+    {
+      "kind": "figures",
+      "path": "docs/memoire/final_experiments_2026/figures/hdfs_bgl_*.png",
+      "status": "complete",
+      "files": 2
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_3_COMPLETED.md",
+      "status": "complete"
+    },
+    {
+      "kind": "config",
+      "path": "docs/memoire/final_experiments_2026/configs/model_update_e2e_plan.json",
+      "status": "frozen_before_run"
+    },
+    {
+      "kind": "runner",
+      "path": "scripts/prepare_model_update_e2e.py",
+      "status": "import_validated"
+    },
+    {
+      "kind": "runner",
+      "path": "scripts/train_model_update_candidate.py",
+      "status": "import_validated"
+    },
+    {
+      "kind": "verifier",
+      "path": "scripts/verify_model_update_e2e.py",
+      "status": "import_validated"
+    },
+    {
+      "kind": "prepared_dataset",
+      "path": "data/processed/final_experiments_2026/phase_4/frozen_ddos_evaluation.csv",
+      "status": "frozen",
+      "sha256": "23019860997b8071e0922c52c1710e10b017adcc20f53121872e3875dc5a3126",
+      "rows": 8000
+    },
+    {
+      "kind": "preparation_report",
+      "path": "data/processed/final_experiments_2026/phase_4/model_update_preparation.json",
+      "status": "complete"
+    },
+    {
+      "kind": "models",
+      "path": "data/processed/final_experiments_2026/phase_4/cases/*/current.joblib",
+      "status": "current_before_decision_hashed",
+      "files": 3
+    },
+    {
+      "kind": "raw_report",
+      "path": "data/processed/final_experiments_2026/phase_4/model_update_end_to_end_report.json",
+      "status": "complete",
+      "comparisons": 3
+    },
+    {
+      "kind": "integrity_report",
+      "path": "data/processed/final_experiments_2026/phase_4/model_update_integrity_report.json",
+      "status": "complete_all_checks_passed"
+    },
+    {
+      "kind": "case_reports",
+      "path": "data/processed/final_experiments_2026/phase_4/model_update_*_case.json",
+      "status": "complete",
+      "files": 3
+    },
+    {
+      "kind": "audit",
+      "path": "data/processed/final_experiments_2026/phase_4/model_update_audit.jsonl",
+      "status": "complete_isolated",
+      "records": 1
+    },
+    {
+      "kind": "models",
+      "path": "data/processed/final_experiments_2026/phase_4/cases/*/candidate.joblib",
+      "status": "trained",
+      "files": 3
+    },
+    {
+      "kind": "backup",
+      "path": "data/processed/final_experiments_2026/phase_4/backups/*.joblib",
+      "status": "complete_hash_verified",
+      "files": 1
+    },
+    {
+      "kind": "summary_csv",
+      "path": "data/processed/final_experiments_2026/phase_4/model_update_decisions.csv",
+      "status": "complete",
+      "rows": 3
+    },
+    {
+      "kind": "table",
+      "path": "docs/memoire/final_experiments_2026/tables/model_update_end_to_end.md",
+      "status": "complete"
+    },
+    {
+      "kind": "figure",
+      "path": "docs/memoire/final_experiments_2026/figures/model_update_promotion_rejet.png",
+      "status": "complete_inspected"
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_model_update_e2e_summary.md",
+      "status": "complete"
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_4_COMPLETED.md",
+      "status": "complete"
+    },
+    {
+      "kind": "config",
+      "path": "docs/memoire/final_experiments_2026/configs/multiformat_validation_protocol.json",
+      "status": "frozen_before_run",
+      "formats": 8
+    },
+    {
+      "kind": "runner",
+      "path": "scripts/run_multiformat_validation.py",
+      "status": "validated_dry_run"
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/phase_5/e5_multiformat_*.json",
+      "status": "complete",
+      "runs": 8
+    },
+    {
+      "kind": "raw_detail",
+      "path": "data/processed/final_experiments_2026/multiformat_validation_raw.csv",
+      "status": "complete",
+      "rows": 7001
+    },
+    {
+      "kind": "summary",
+      "path": "data/processed/final_experiments_2026/multiformat_validation_summary.csv",
+      "status": "complete",
+      "rows": 8
+    },
+    {
+      "kind": "field_completeness",
+      "path": "data/processed/final_experiments_2026/multiformat_field_completeness.csv",
+      "status": "complete",
+      "rows": 56
+    },
+    {
+      "kind": "failures",
+      "path": "data/processed/final_experiments_2026/multiformat_failures.csv",
+      "status": "complete",
+      "rows": 2000
+    },
+    {
+      "kind": "table",
+      "path": "docs/memoire/final_experiments_2026/tables/validation_multiformat.md",
+      "status": "complete"
+    },
+    {
+      "kind": "figure",
+      "path": "docs/memoire/final_experiments_2026/figures/validation_multiformat.png",
+      "status": "complete_inspected"
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_multiformat_validation_summary.md",
+      "status": "complete"
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_5_COMPLETED.md",
+      "status": "complete"
+    },
+    {
+      "kind": "config",
+      "path": "docs/memoire/final_experiments_2026/configs/router_evaluation_protocol.json",
+      "status": "frozen_before_run",
+      "source_corpora": 9,
+      "expected_files": 81
+    },
+    {
+      "kind": "runner",
+      "path": "scripts/run_router_evaluation.py",
+      "status": "validated_dry_run"
+    },
+    {
+      "kind": "raw_runs",
+      "path": "data/processed/final_experiments_2026/router_evaluation_raw.csv",
+      "status": "complete",
+      "runs": 81
+    },
+    {
+      "kind": "metrics",
+      "path": "data/processed/final_experiments_2026/router_metrics_by_family.csv",
+      "status": "complete",
+      "families": 9
+    },
+    {
+      "kind": "confusion_matrix",
+      "path": "data/processed/final_experiments_2026/router_confusion_matrix.csv",
+      "status": "complete",
+      "cells": 81
+    },
+    {
+      "kind": "summary",
+      "path": "data/processed/final_experiments_2026/router_evaluation_summary.json",
+      "status": "complete"
+    },
+    {
+      "kind": "table",
+      "path": "docs/memoire/final_experiments_2026/tables/router_metrics_by_family.md",
+      "status": "complete"
+    },
+    {
+      "kind": "figure",
+      "path": "docs/memoire/final_experiments_2026/figures/router_confusion_matrix.png",
+      "status": "complete_inspected"
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_router_real_summary.md",
+      "status": "complete"
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_6_COMPLETED.md",
+      "status": "complete"
+    },
+    {
+      "kind": "audit_summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_resilience_complementary_summary.md",
+      "status": "complete_no_go"
+    },
+    {
+      "kind": "existing_evidence",
+      "path": "data/processed/vbox_redis_recovery_campaign.json",
+      "status": "audited_existing_not_modified",
+      "tasks_enqueued": 3,
+      "tasks_completed": 3,
+      "recovered_crashed_tasks": 1,
+      "pending_after": 0
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_7_COMPLETED.md",
+      "status": "complete_skipped"
+    },
+    {
+      "kind": "config",
+      "path": "docs/memoire/final_experiments_2026/configs/correlation_synthetic_protocol.json",
+      "status": "frozen_before_run",
+      "input_events": 19,
+      "anomalous_events": 16,
+      "true_incidents": 6
+    },
+    {
+      "kind": "runner",
+      "path": "scripts/run_correlation_synthetic_validation.py",
+      "status": "validated_dry_run"
+    },
+    {
+      "kind": "synthetic_input",
+      "path": "data/processed/final_experiments_2026/phase_8/correlation_synthetic_input.csv",
+      "status": "complete",
+      "events": 19,
+      "truth_columns_present": false
+    },
+    {
+      "kind": "ground_truth",
+      "path": "data/processed/final_experiments_2026/phase_8/correlation_synthetic_truth.csv",
+      "status": "complete_separate",
+      "anomalous_events": 16,
+      "true_incidents": 6
+    },
+    {
+      "kind": "raw_output",
+      "path": "data/processed/final_experiments_2026/phase_8/correlation_synthetic_incidents.csv",
+      "status": "complete",
+      "predicted_incidents": 6
+    },
+    {
+      "kind": "pairwise_detail",
+      "path": "data/processed/final_experiments_2026/phase_8/correlation_synthetic_pairs.csv",
+      "status": "complete",
+      "pairs": 120
+    },
+    {
+      "kind": "summary",
+      "path": "data/processed/final_experiments_2026/correlation_synthetic_summary.json",
+      "status": "complete",
+      "pairwise_f1": 0.8125
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_correlation_synthetic_summary.md",
+      "status": "complete"
+    },
+    {
+      "kind": "table",
+      "path": "docs/memoire/final_experiments_2026/tables/correlation_synthetic_metrics.md",
+      "status": "complete"
+    },
+    {
+      "kind": "figure",
+      "path": "docs/memoire/final_experiments_2026/figures/correlation_synthetic_metrics.png",
+      "status": "complete_inspected"
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_8_COMPLETED.md",
+      "status": "complete"
+    },
+    {
+      "kind": "config",
+      "path": "docs/memoire/final_experiments_2026/configs/transversal_statistics_protocol.json",
+      "status": "frozen_before_aggregation"
+    },
+    {
+      "kind": "runner",
+      "path": "scripts/build_transversal_statistics.py",
+      "status": "validated_dry_run"
+    },
+    {
+      "kind": "statistics",
+      "path": "data/processed/final_experiments_2026/transversal_repeated_statistics.csv",
+      "status": "complete",
+      "rows": 228
+    },
+    {
+      "kind": "effect_summary",
+      "path": "data/processed/final_experiments_2026/cicids_model_scenario_effects.csv",
+      "status": "complete_descriptive_only",
+      "rows": 4
+    },
+    {
+      "kind": "single_evaluations",
+      "path": "data/processed/final_experiments_2026/transversal_single_evaluations.csv",
+      "status": "complete_no_dispersion",
+      "rows": 20
+    },
+    {
+      "kind": "summary",
+      "path": "docs/memoire/final_experiments_2026/experiment_transversal_statistics_summary.md",
+      "status": "complete"
+    },
+    {
+      "kind": "table",
+      "path": "docs/memoire/final_experiments_2026/tables/transversal_statistics_key_results.md",
+      "status": "complete"
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_9_COMPLETED.md",
+      "status": "complete"
+    },
+    {
+      "kind": "claim_evidence_matrix",
+      "path": "docs/memoire/final_experiments_2026/final_claim_evidence_matrix.md",
+      "status": "complete",
+      "claims": 31
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_10_COMPLETED.md",
+      "status": "complete"
+    },
+    {
+      "kind": "hypothesis_matrix",
+      "path": "docs/memoire/final_experiments_2026/final_hypothesis_status.md",
+      "status": "complete",
+      "hypotheses": 5
+    },
+    {
+      "kind": "research_question_matrix",
+      "path": "docs/memoire/final_experiments_2026/final_research_questions_status.md",
+      "status": "complete",
+      "questions": 6
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_11_COMPLETED.md",
+      "status": "complete"
+    },
+    {
+      "kind": "final_report",
+      "path": "docs/memoire/final_experiments_2026/FINAL_EXPERIMENTAL_REPORT_FOR_LUNA.md",
+      "status": "complete",
+      "required_sections": 26
+    },
+    {
+      "kind": "phase_report",
+      "path": "docs/memoire/final_experiments_2026/PHASE_12_COMPLETED.md",
+      "status": "complete"
+    }
+  ]
+}

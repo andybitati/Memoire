@@ -1,0 +1,255 @@
+{
+  "run_id": "router_independent_20260910T094257Z",
+  "config_sha256": "7c02daa3be8ea8b8c0153583758c9e341dfead52876b5b7e7332b0f285e8be05",
+  "path_signal": "disabled",
+  "sources": [
+    {
+      "source_id": "win_app_live",
+      "source_group": "windows_host_current",
+      "path": "data/raw/windows_events/Application.evtx",
+      "sha256": "c67d5cde2677a6399298bf3488855e0a15cd4542f209cd85178c29b804280f26",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_001.csv",
+      "neutral_sha256": "061e3d53c8bf711166ed222f12bd40040d3d462edc99932b7b03a45597f9de35"
+    },
+    {
+      "source_id": "win_system_live",
+      "source_group": "windows_host_current",
+      "path": "data/raw/windows_events/System.evtx",
+      "sha256": "c65b9c8468426a1693e709a868662e9c9b245ce04459bc57e22e75a07a02260b",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_002.csv",
+      "neutral_sha256": "038d7ae0853a6c8348a0fea729f82d77eb556ee06e5831d635f5f7b08d6f19c5"
+    },
+    {
+      "source_id": "win_security_admin",
+      "source_group": "windows_host_current",
+      "path": "data/raw/windows_events_admin/Security.evtx",
+      "sha256": "1b73c91f0422871c3324fcdba4fe469b23f6c6b7f5bfc27a260001fd2aab7578",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_003.csv",
+      "neutral_sha256": "511833fc2c16ca511ce13c12f31f04b3462aad658de5ffd4ab87013528cae0c1"
+    },
+    {
+      "source_id": "win_app_20260518",
+      "source_group": "windows_host_snapshots",
+      "path": "data/raw/windows_events/20260518_101329/Application.evtx",
+      "sha256": "21cf1e2f3d579ad209466503a5a605c14d896881b01dd3f34ef48053d7682c32",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_004.csv",
+      "neutral_sha256": "061e3d53c8bf711166ed222f12bd40040d3d462edc99932b7b03a45597f9de35"
+    },
+    {
+      "source_id": "win_system_20260518",
+      "source_group": "windows_host_snapshots",
+      "path": "data/raw/windows_events/20260518_101329/System.evtx",
+      "sha256": "2cd19e937bf460a9e47859f296ee634f00f55f75d9cde89ca10fd8cadb7f0b0e",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_005.csv",
+      "neutral_sha256": "038d7ae0853a6c8348a0fea729f82d77eb556ee06e5831d635f5f7b08d6f19c5"
+    },
+    {
+      "source_id": "win_app_20260529",
+      "source_group": "windows_host_snapshots",
+      "path": "data/raw/windows_events/20260529_102842/Application.evtx",
+      "sha256": "975130f3a44a8c0cf8dc5a7001d1b9fea6b1b2469033d02ed74be5692d56b92e",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_006.csv",
+      "neutral_sha256": "72f21a3c29f90396114fd186f29077bdab49784f5cbda140b84322452d2e1ad9"
+    },
+    {
+      "source_id": "win_system_20260529",
+      "source_group": "windows_host_snapshots",
+      "path": "data/raw/windows_events/20260529_102842/System.evtx",
+      "sha256": "45035d676a821071929f44031a41d75413deebe9f1727505a1a445ee893c7e7c",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_007.csv",
+      "neutral_sha256": "e6cbfdd4bcc8b7df5b608139c10c787bb1d30320d55e29435b26319715901384"
+    },
+    {
+      "source_id": "linux_auth_balanced",
+      "source_group": "linux_auth_generated_corpus",
+      "path": "data/raw/Datasets/linux_auth_logs_full(balanced).csv",
+      "sha256": "4c70407474ed2978f48f020d836c38bbe62b602c766e959727f4c4342200f36b",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_008.csv",
+      "neutral_sha256": "7b5359b5322dbfb53352f6f23364486ed10220f58f3a6d30c4288fbb24c0af7f"
+    },
+    {
+      "source_id": "linux_auth_unbalanced",
+      "source_group": "linux_auth_generated_corpus",
+      "path": "data/raw/Datasets/linux_auth_logs_full(new_unbalanced).csv",
+      "sha256": "dbbbf855412e964025b56f82d9932abdae38ef52d98f39edb0979d194216c41f",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_009.csv",
+      "neutral_sha256": "cf97ed6e66e056d1c44ab6427d4163132dc7840459d2534b032528cfdf518194"
+    },
+    {
+      "source_id": "linux_auth_multiple",
+      "source_group": "linux_auth_generated_corpus",
+      "path": "data/raw/Datasets/linux_auth_logs_multiple_anomalies.csv",
+      "sha256": "4569c1709162c3a87b359edf91a3d14219ef4a359ea50ee804ed167dc3dabe20",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_010.csv",
+      "neutral_sha256": "15589ee87093cfff63d53afbf9105c8f3a0094fd969c870464fae38b65b31561"
+    },
+    {
+      "source_id": "linux_2k",
+      "source_group": "loghub_linux",
+      "path": "data/raw/Datasets/Linux_2k.log",
+      "sha256": "b3e20bc1afe732ab1bf3ed1de4bf9c809e4194e02f7dea911d918e5342e8e173",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_011.csv",
+      "neutral_sha256": "71d41ed680c90b7c3f0e7da243b168dea6ce0fb534719451049e7c8882211076"
+    },
+    {
+      "source_id": "wazuh_oct_01_05",
+      "source_group": "wazuh_october_exports",
+      "path": "data/raw/Datasets/01-05-October.csv",
+      "sha256": "0964fd2b7462c8b9eaa435a9881eacb8460b7a4b87cc697668478be1304fc81d",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_012.csv",
+      "neutral_sha256": "830c80e22e3bbb752374d90b20a1d70715c868a995b4345fafdf10d8d6ec2f71"
+    },
+    {
+      "source_id": "wazuh_oct_05_p1",
+      "source_group": "wazuh_october_exports",
+      "path": "data/raw/Datasets/05-October-P1.csv",
+      "sha256": "b061fce93eaf46babe36922517f1d333b1b129a22154b2dcc47248d20dc97b34",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_013.csv",
+      "neutral_sha256": "62f163ab72b9f81022744ef5c0ebd98bd81c8578b6affeb7e7204285ce280701"
+    },
+    {
+      "source_id": "wazuh_oct_05_p2",
+      "source_group": "wazuh_october_exports",
+      "path": "data/raw/Datasets/05-October-P2.csv",
+      "sha256": "a4fd7b871ceb96eb445ceb32fb5b16154c3ad729e0a758f3c7dafa93b9e32a97",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_014.csv",
+      "neutral_sha256": "b8304fc631b02bb1c19d3f7a7253c50a381998f3c6cafea38ba1fbe490eb2151"
+    },
+    {
+      "source_id": "wazuh_oct_06_20",
+      "source_group": "wazuh_october_exports",
+      "path": "data/raw/Datasets/06-20-October.csv",
+      "sha256": "fd20eb2c552d7090dc3eede662f0185a256ddb1253107ef9c045fb398d577e29",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_015.csv",
+      "neutral_sha256": "92a9f4373bfcf3c66d07bc7e453ea71b5a813df20ff487a691c0fe7b57bd9713"
+    },
+    {
+      "source_id": "wazuh_oct_20_22",
+      "source_group": "wazuh_october_exports",
+      "path": "data/raw/Datasets/20-22-October.csv",
+      "sha256": "e9d7078e99360e2717904fab16cc027ba296fa93f5386889976cb987f26d390e",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_016.csv",
+      "neutral_sha256": "dcbbfbc5a3394e0294fd7314f9058080fc09d582c2daac9c07921df6784ddef3"
+    },
+    {
+      "source_id": "wazuh_oct_20_p1",
+      "source_group": "wazuh_october_exports",
+      "path": "data/raw/Datasets/20-October-P1.csv",
+      "sha256": "2f9ecfbded799ede226796e3e73ba950619e13250c6435ee2604e234083c2dc1",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_017.csv",
+      "neutral_sha256": "29cf49feac0371911d228943f80337fdce73312709d80c5defb18ade6a2fa532"
+    },
+    {
+      "source_id": "wazuh_oct_20_p2",
+      "source_group": "wazuh_october_exports",
+      "path": "data/raw/Datasets/20-October-P2.csv",
+      "sha256": "c8095d9a37b64bdf89fee7b769f24a83a9a664537a0fc083cb38fd08cc815947",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_018.csv",
+      "neutral_sha256": "b23a5d81e354d14a2288b1f7f4f26caa9e5595e8b721befe27eb2fb9705c58c0"
+    },
+    {
+      "source_id": "hdfs_loghub",
+      "source_group": "loghub_hdfs_v1",
+      "path": "data/raw/Datasets/HDFS_1/HDFS.log",
+      "sha256": "0783096174d7832c618337f9609e06e04abd86ddd7089b3c12b407e63bfebc52",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_019.csv",
+      "neutral_sha256": "66bfd427ca8cef0350d737f93cf8fa9e5063fcb565aa7b7a1266946c772734ee"
+    },
+    {
+      "source_id": "bgl_loghub",
+      "source_group": "loghub_bgl",
+      "path": "data/raw/Datasets/BGL/BGL.log",
+      "sha256": "666130b15ef44eb32fd02bd053e6c6e007c37696b5e7e8b9d8e45b729876a5d2",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_020.csv",
+      "neutral_sha256": "c56c5815b39d45f23d0801bc69290bb63624a4b759ad387e405036faa5ac2b93"
+    },
+    {
+      "source_id": "cicids_monday",
+      "source_group": "cicids2017",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Monday-WorkingHours.pcap_ISCX.csv",
+      "sha256": "852c4beb34eda186f32561fa79df7a0747e92e1a6535b01270820dd9ffe17f34",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_021.csv",
+      "neutral_sha256": "93047c805b6dedbaeb3d7c0a24a231a10c43395707f5f175a93aaa7af2c74c85"
+    },
+    {
+      "source_id": "cicids_tuesday",
+      "source_group": "cicids2017",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Tuesday-WorkingHours.pcap_ISCX.csv",
+      "sha256": "52b8692ae8c7d2ed04671fe2b98335693c0a92c7ab157d8c8b534d6523080851",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_022.csv",
+      "neutral_sha256": "f42791e9130b5640701d768dc4454bbe5797cb922fbf58a24f7ac38269a764fe"
+    },
+    {
+      "source_id": "cicids_wednesday",
+      "source_group": "cicids2017",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Wednesday-workingHours.pcap_ISCX.csv",
+      "sha256": "893c27dc968bf7a8adef1689f90be55ca4a4dc3088fb63d6ff247ac56856df2a",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_023.csv",
+      "neutral_sha256": "fca99a64a045aa4d9bb292ccfd5ede38aa72036e4e7a2a5a4d50ca5198479538"
+    },
+    {
+      "source_id": "cicids_thursday_web",
+      "source_group": "cicids2017",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv",
+      "sha256": "d67066211fb1689c78406f1506f4c44704ecb92088353d5c96d96d6474eb819d",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_024.csv",
+      "neutral_sha256": "4d376480aa5cbd56d7ff1727497e57de1cdcaba1316032a5cb45b394fee2c74a"
+    },
+    {
+      "source_id": "cicids_thursday_infiltration",
+      "source_group": "cicids2017",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv",
+      "sha256": "6bcda3857c2504676034e3ea57762d38393cc734cb377a726bd5cb153961b1b5",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_025.csv",
+      "neutral_sha256": "f5e7d0f6b1f289fe431277c45fb7fd8cb76aa5e3e38d76150a84a16daf1d59c4"
+    },
+    {
+      "source_id": "cicids_friday_morning",
+      "source_group": "cicids2017",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Morning.pcap_ISCX.csv",
+      "sha256": "53a41c24d570ea83b7ac55b2e94df94e7a8216aeb80a2af0246b6bc8bb543000",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_026.csv",
+      "neutral_sha256": "1f199e863adf263a0c17052d748f32034daa55ec8eff5e1b0a0c995de46d7cb0"
+    },
+    {
+      "source_id": "cicids_friday_portscan",
+      "source_group": "cicids2017",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv",
+      "sha256": "ca1824c51bfbb7b3c72290a11be04366ba8815878c6a1cc5c44cb1cee269e99b",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_027.csv",
+      "neutral_sha256": "def8b28a3daa884fabb643834ec27174a2c03131d1916e1d153f97677ee9543d"
+    },
+    {
+      "source_id": "cicids_friday_ddos",
+      "source_group": "cicids2017",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv",
+      "sha256": "6ff1580f5f81c0ae28a26f7631721018577f5f7c5e0feac28b795fcfe7b411ee",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_028.csv",
+      "neutral_sha256": "3123aaab3eadb27ece48124b377ea858d075850a63fc8b8a018ce7f07864a949"
+    },
+    {
+      "source_id": "open_cloud_service",
+      "source_group": "local_open_set_fixtures",
+      "path": "data/raw/Datasets/Dataset_csv/cloud_service_log.csv",
+      "sha256": "538ea96672427e349863cf5e22575599e913a057203e2f29470771b9b1339cb4",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_029.csv",
+      "neutral_sha256": "bfec3f56125fc66694aee1c3b51e1ddf8ff64e14bd0c1c87663e353bf2d1ba21"
+    },
+    {
+      "source_id": "open_dns",
+      "source_group": "local_open_set_fixtures",
+      "path": "data/raw/Datasets/Dataset_csv/DNS_Logs_logs.csv",
+      "sha256": "66a0024fed9dae62fed7397575d9e564f61d67750cd4273995bd378991f1b0dd",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_030.csv",
+      "neutral_sha256": "0f8d82cc7c265ca094bf7fa1c916885e8786a2490139b2e1842c2580a2fbd519"
+    },
+    {
+      "source_id": "open_virtualization",
+      "source_group": "local_open_set_fixtures",
+      "path": "data/raw/Datasets/Dataset_csv/virtualization_log.csv",
+      "sha256": "59bd09dc1e77dbb89036bdad5a33af7a4bbf75db0e9e07a5cdcffdd423e4e251",
+      "neutral_path": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_031.csv",
+      "neutral_sha256": "1c9d4e888553c340510cd395c3529d596e44c9c6233433efdec0e9416c2159c4"
+    }
+  ]
+}

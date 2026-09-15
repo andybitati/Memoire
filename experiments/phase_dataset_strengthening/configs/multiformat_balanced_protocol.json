@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-09-10",
+  "selection_rule": "first records in source order; no duplication; maximum 1000; use all when fewer",
+  "target_events_per_source": 1000,
+  "formats": [
+    {"id": "windows_event", "display_name": "Windows Event", "source": "data/samples/Application.evtx", "source_sha256": "7585ee27c6089ee2e83cf68ceed2ba5b63ac630ba78c3aca4a88a033f6d4ed20", "source_status": "native_local_evtx", "adapter": "pipeline_evtx_sample", "expected_detector_kind": "win_event", "raw_unit": "EVTX record", "limit": 1000},
+    {"id": "linux_auth", "display_name": "Linux/auth tabulaire", "source": "data/raw/Datasets/linux_auth_logs_labeled.csv", "source_sha256": "fa5f0a3e9532c16320a290fa1e626b632318a577b4bf00025c2063540144d38f", "source_status": "local_labeled_csv", "adapter": "linux_auth_feature_preparation", "expected_detector_kind": "not_applicable", "raw_unit": "CSV data row", "limit": 1000},
+    {"id": "wazuh", "display_name": "Wazuh/Elastic CSV", "source": "data/raw/Datasets/06-20-October.csv", "source_sha256": "fd20eb2c552d7090dc3eede662f0185a256ddb1253107ef9c045fb398d577e29", "source_status": "local_wazuh_export_csv", "adapter": "wazuh_csv_normalizer", "expected_detector_kind": "not_applicable", "raw_unit": "CSV data row", "limit": 1000},
+    {"id": "syslog", "display_name": "Syslog Linux", "source": "data/raw/Datasets/Linux_2k.log", "source_sha256": "b3e20bc1afe732ab1bf3ed1de4bf9c809e4194e02f7dea911d918e5342e8e173", "source_status": "local_linux_log_corpus", "adapter": "pipeline_text_sample", "expected_detector_kind": "syslog", "raw_unit": "non-empty line", "limit": 1000},
+    {"id": "apache", "display_name": "Apache access", "source": "data/processed/robustness_scalability_inputs/apache_access.log", "source_sha256": "795ff201d7a354d429de197f97dce1ee70701296a85cde137b0381dc11a9ecd4", "source_status": "existing_synthetic_fixture_one_line", "adapter": "pipeline_text_sample", "expected_detector_kind": "apache", "raw_unit": "non-empty line", "limit": 1000},
+    {"id": "hdfs", "display_name": "HDFS", "source": "data/raw/Datasets/HDFS_1/HDFS.log", "source_sha256": "0783096174d7832c618337f9609e06e04abd86ddd7089b3c12b407e63bfebc52", "source_status": "verified_loghub_exact_local_source", "adapter": "pipeline_text_sample", "expected_detector_kind": "hdfs", "raw_unit": "non-empty line", "limit": 1000},
+    {"id": "bgl", "display_name": "BGL", "source": "data/raw/Datasets/BGL/BGL.log", "source_sha256": "666130b15ef44eb32fd02bd053e6c6e007c37696b5e7e8b9d8e45b729876a5d2", "source_status": "local_public_copy_exact_match_not_proven", "adapter": "pipeline_text_sample", "expected_detector_kind": "bgl", "raw_unit": "non-empty line", "limit": 1000},
+    {"id": "network_tabular", "display_name": "Flux réseau tabulaires", "source": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv", "source_sha256": "6ff1580f5f81c0ae28a26f7631721018577f5f7c5e0feac28b795fcfe7b411ee", "source_status": "local_cicids2017_csv_provenance_unverified", "adapter": "network_feature_preparation", "expected_detector_kind": "not_applicable", "raw_unit": "CSV data row", "limit": 1000}
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "generated_at": "2026-09-10T23:27:23.338158+00:00",
+  "checks": {
+    "hdfs": {
+      "completed": true,
+      "protocol_assertions": true,
+      "input_hashes": true,
+      "raw_evidence": true,
+      "figure": true,
+      "limitation_explicit": true
+    },
+    "bgl": {
+      "completed": true,
+      "protocol_assertions": true,
+      "input_hashes": true,
+      "raw_evidence": true,
+      "figure": true,
+      "limitation_explicit": true
+    },
+    "cicids_temporal": {
+      "completed": true,
+      "protocol_assertions": true,
+      "input_hashes": true,
+      "raw_evidence": true,
+      "figure": true,
+      "limitation_explicit": true
+    },
+    "router_independent": {
+      "completed": true,
+      "protocol_assertions": true,
+      "input_hashes": true,
+      "raw_evidence": true,
+      "figure": true,
+      "limitation_explicit": true
+    },
+    "multiformat": {
+      "completed": true,
+      "protocol_assertions": true,
+      "input_hashes": true,
+      "raw_evidence": true,
+      "figure": true,
+      "limitation_explicit": true
+    },
+    "multisource_cnp": {
+      "completed": true,
+      "protocol_assertions": true,
+      "input_hashes": true,
+      "raw_evidence": true,
+      "figure": true,
+      "limitation_explicit": true
+    },
+    "external_dataset": {
+      "completed": true,
+      "protocol_assertions": true,
+      "input_hashes": true,
+      "raw_evidence": true,
+      "figure": true,
+      "limitation_explicit": true
+    }
+  },
+  "all_six_priority_campaigns_valid": true,
+  "all_priority_and_external_campaigns_valid": true,
+  "external_dataset": "COMPLETED"
+}

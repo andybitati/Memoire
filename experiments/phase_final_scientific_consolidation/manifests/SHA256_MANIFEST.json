@@ -1,0 +1,642 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-11T00:50:13.681859+00:00",
+  "run_id": "final_scientific_consolidation_20260911T005002Z",
+  "self_excluded": "experiments/phase_final_scientific_consolidation/manifests/SHA256_MANIFEST.json",
+  "validation_excluded_to_avoid_circularity": "experiments/phase_final_scientific_consolidation/aggregated/final_artifact_validation.json",
+  "entries": [
+    {
+      "category": "report",
+      "path": "FINAL_CONSOLIDATED_CLAIM_EVIDENCE_MATRIX.md",
+      "size_bytes": 2172,
+      "sha256": "386b0448195c7a7f409bf689f52180bac2fdf1a75d267351bd363bdacfbdc1c1"
+    },
+    {
+      "category": "report",
+      "path": "FINAL_SCIENTIFIC_CONSOLIDATION_REPORT.md",
+      "size_bytes": 12295,
+      "sha256": "5f7988f0568fd8c2a854e9e927965621f1e30b2fe0d6d09dfc47c8107e764343"
+    },
+    {
+      "category": "artifact",
+      "path": "docs/FINAL_SCIENTIFIC_GAP_ANALYSIS.md",
+      "size_bytes": 1595,
+      "sha256": "9796ec612cc6df2869fd9387f03d513c1c31238873f9e718b66975d61288d136"
+    },
+    {
+      "category": "config",
+      "path": "experiments/phase_dataset_strengthening/configs/external_csecicids2018_protocol.json",
+      "size_bytes": 3326,
+      "sha256": "e7888c7b53322a51d86cc3c5cf83166e36fc969a7c37c9c20bd6981ee4ebfa38"
+    },
+    {
+      "category": "config",
+      "path": "experiments/phase_dataset_strengthening/configs/multiformat_balanced_protocol.json",
+      "size_bytes": 3182,
+      "sha256": "f0f40b654740cbdf3b578aeb733837d3c8b08d78c688a63e73457e76353e5885"
+    },
+    {
+      "category": "config",
+      "path": "experiments/phase_dataset_strengthening/configs/router_independent_sources.json",
+      "size_bytes": 6242,
+      "sha256": "7c02daa3be8ea8b8c0153583758c9e341dfead52876b5b7e7332b0f285e8be05"
+    },
+    {
+      "category": "processed",
+      "path": "experiments/phase_dataset_strengthening/processed/ds_hdfs_block_20260910T081756Z__hdfs_drain3_train_state.bin",
+      "size_bytes": 2144,
+      "sha256": "deb37a7c9feb396df2d9dde336e707b225ef508e439df9516f9457ef73d06ab7"
+    },
+    {
+      "category": "processed",
+      "path": "experiments/phase_dataset_strengthening/processed/ds_hdfs_block_20260910T081756Z__hdfs_selected_blocks.csv",
+      "size_bytes": 371848,
+      "sha256": "30a2975a2a63f5b73926fadc91497201d9d63e13eb8679c7d5f1b24d9a94b5fb"
+    },
+    {
+      "category": "processed",
+      "path": "experiments/phase_dataset_strengthening/processed/external_csecicids2018_20260910T230136Z_test_pool.csv.gz",
+      "size_bytes": 9282022,
+      "sha256": "452e6688fd114b3f6206a796aeb38e85d3cbdece75d84688c9f0d8f3e17636b4"
+    },
+    {
+      "category": "processed",
+      "path": "experiments/phase_dataset_strengthening/processed/external_csecicids2018_20260910T230136Z_train_pool.csv.gz",
+      "size_bytes": 12357815,
+      "sha256": "8cada8131373deff826bd106732a0fed28d553714d0a0cc61fce02108d0db48c"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_dataset_strengthening/raw/ds_hdfs_block_20260910T081756Z__hdfs_selected_events.csv.gz",
+      "size_bytes": 2923430,
+      "sha256": "4a7129836a0e98dcdf281135c5020f724ac1f1bd9e49a8b307900057bff5b2f7"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_dataset_strengthening/raw/router_independent_20260910T094257Z_routes.csv",
+      "size_bytes": 23740,
+      "sha256": "6360bfc908d033e00e34f48b8e1966784e145077cbd979f79dc5d040b40a759e"
+    },
+    {
+      "category": "artifact",
+      "path": "experiments/phase_final_scientific_consolidation/LEDGER.csv",
+      "size_bytes": 12636,
+      "sha256": "c1f2fa143e62204d1b85626c5afe9a5a60251676cc93f5890aaf0e7b569827e6"
+    },
+    {
+      "category": "aggregated",
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/.gitkeep",
+      "size_bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "category": "aggregated",
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/external_csecicids2018_feature_ablation.csv",
+      "size_bytes": 4431,
+      "sha256": "9d21256af8e7047b13438fc79b350de1b3437ef5b81aa9e26f4d8bb5978bd6ec"
+    },
+    {
+      "category": "aggregated",
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/external_csecicids2018_lr_coefficients.csv",
+      "size_bytes": 9355,
+      "sha256": "31c7a322f7bb31ded0f836358603c97b029eba070fb1a108f3dd0333f65a583a"
+    },
+    {
+      "category": "aggregated",
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/external_csecicids2018_lr_forensic_summary.json",
+      "size_bytes": 29276,
+      "sha256": "a54c1ca83d3b10ff0f320a818cb33d1f64c8b294f7a9d3e5270c39e9b893ce60"
+    },
+    {
+      "category": "aggregated",
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/external_csecicids2018_single_feature_scores.csv",
+      "size_bytes": 50401,
+      "sha256": "7d17706b321695f12bc4233b2178deeab75b3881b35a95249c78f686e5347533"
+    },
+    {
+      "category": "aggregated",
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/hdfs_block_bootstrap_summary.csv",
+      "size_bytes": 426,
+      "sha256": "a0ef440f6b06b89cb8333131e305a5410ab8c1b09eb5dae67428f793a315def5"
+    },
+    {
+      "category": "aggregated",
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/hdfs_block_robustness_summary.json",
+      "size_bytes": 2483,
+      "sha256": "80708cca8c6207e4aa13298fc4eaf90cc5bc4487d85da6cb5a82953156e3e4e7"
+    },
+    {
+      "category": "aggregated",
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/multisource_cnp_model_api_dashboard_snapshot.json",
+      "size_bytes": 7872,
+      "sha256": "dd03a2608a0fda980d52e9d43934fcfee7fbd1c3324283cbf73b6ad22227de07"
+    },
+    {
+      "category": "aggregated",
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/multisource_cnp_model_inference_by_source.csv",
+      "size_bytes": 1999,
+      "sha256": "7cea46e26b70d64b73e05df99dc17488d0ba98510e1d32091980211ed3c51f3a"
+    },
+    {
+      "category": "aggregated",
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/multisource_cnp_model_inference_summary.json",
+      "size_bytes": 13601,
+      "sha256": "953bbcdff8942d16378fba85c260080324ff313646b51cf1781e2735d2a5e209"
+    },
+    {
+      "category": "aggregated",
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/multisource_cnp_model_predictive_metrics.csv",
+      "size_bytes": 302,
+      "sha256": "9f9fa6dcdac6c524f3c47acfb3cd34b0252c3979b795348ebfdb493efd799bc4"
+    },
+    {
+      "category": "aggregated",
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/router_open_set_final_tradeoff_diagnostic.csv",
+      "size_bytes": 1555,
+      "sha256": "16ca654f7d48fba89fb61b75cca35aa156565fdc7c5144a2b9bfda21628b3cc8"
+    },
+    {
+      "category": "aggregated",
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/router_open_set_summary.json",
+      "size_bytes": 1390,
+      "sha256": "27851ef0c4934b002e82ecf1dbedbb546726e4c594eb71d20d4c884292c874d4"
+    },
+    {
+      "category": "aggregated",
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/router_open_set_validation_grid.csv",
+      "size_bytes": 26597,
+      "sha256": "09228a1aa7cbf6a47cf470eae3661a554612ab7913470b22aa93c2939fa0916f"
+    },
+    {
+      "category": "config",
+      "path": "experiments/phase_final_scientific_consolidation/configs/final_scientific_consolidation_protocol.json",
+      "size_bytes": 1979,
+      "sha256": "10bc91807bb734d5e714689a9a2805e6df7c4e8de05dc7a0b06d0bb2babf1681"
+    },
+    {
+      "category": "config",
+      "path": "experiments/phase_final_scientific_consolidation/configs/multisource_model_compatibility_registry.json",
+      "size_bytes": 3725,
+      "sha256": "38a450e58eb62b6860f4f65c85bd73f7e5df5e91ed108d96919d34bc75b0145d"
+    },
+    {
+      "category": "config",
+      "path": "experiments/phase_final_scientific_consolidation/configs/router_open_set_selected_policy.json",
+      "size_bytes": 581,
+      "sha256": "c8bbe1f738189d81d45083f390b6323b1ed35dfe551c9ea79c5e0cb7dce9184e"
+    },
+    {
+      "category": "figure",
+      "path": "experiments/phase_final_scientific_consolidation/figures/.gitkeep",
+      "size_bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "category": "figure",
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_12_external_lr_coefficients.png",
+      "size_bytes": 93291,
+      "sha256": "a344523a200aef4e373b8072d69b65a10f65bcaf788bb5d419c82ed715669b5a"
+    },
+    {
+      "category": "figure",
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_13_external_single_feature_scores.png",
+      "size_bytes": 89305,
+      "sha256": "e66703a99ccb543b81b3ef39be79861a2fbf704a1498ff36043f704011210f23"
+    },
+    {
+      "category": "figure",
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_14_external_feature_ablation.png",
+      "size_bytes": 108739,
+      "sha256": "a520d6fcef9122a1181c2b6bfc93fe10bee8bba477a08e5f8b5cbbb5e69cbf8b"
+    },
+    {
+      "category": "figure",
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_15_external_label_permutation.png",
+      "size_bytes": 38638,
+      "sha256": "1593705826f2db9bfec11e7ce7bd74da8d9f79912c0f91182c449831d1d10991"
+    },
+    {
+      "category": "figure",
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_16_router_open_set_tradeoff.png",
+      "size_bytes": 97349,
+      "sha256": "7c8a1f53fc9e3aaa409c43d607596b13b0dac88e99d307bbb494e85ae78e7430"
+    },
+    {
+      "category": "figure",
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_17_e2e_real_model_coverage.png",
+      "size_bytes": 69899,
+      "sha256": "d7b6e8e4884ddc0c893632d125dfedf41c954437e3b0859601377adfd487845b"
+    },
+    {
+      "category": "figure",
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_18_e2e_real_model_latency.png",
+      "size_bytes": 78151,
+      "sha256": "2799ec6a44fc35009ab00c963f24b188b823927495b0d56323374c72d172edb9"
+    },
+    {
+      "category": "figure",
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_19_hdfs_block_bootstrap.png",
+      "size_bytes": 46553,
+      "sha256": "b25a0c4f8017c36965b9ff3381cbec91a5fdb549afd8d41e945c3583090c5bf8"
+    },
+    {
+      "category": "figure",
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_20_hdfs_positive_sensitivity.png",
+      "size_bytes": 50334,
+      "sha256": "3837de7ec540e7378cbc8cddfd2dcdfaec6caef53a09eea9e29e8da98be98c2e"
+    },
+    {
+      "category": "artifact",
+      "path": "experiments/phase_final_scientific_consolidation/logs/.gitkeep",
+      "size_bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "category": "artifact",
+      "path": "experiments/phase_final_scientific_consolidation/logs/final_csecic_lr_forensic_20260910T235954Z_error.txt",
+      "size_bytes": 58,
+      "sha256": "69950d63c46691eb6c58380e5f7136f4b81a09e4d983e210dd0df6dcb3e6c323"
+    },
+    {
+      "category": "artifact",
+      "path": "experiments/phase_final_scientific_consolidation/logs/relevant_tests_junit.xml",
+      "size_bytes": 5259,
+      "sha256": "a24fc20ca751daaa346de8cf4b3c9598dd23d1a619c87ec045d0ef591052623f"
+    },
+    {
+      "category": "artifact",
+      "path": "experiments/phase_final_scientific_consolidation/manifests/.gitkeep",
+      "size_bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "category": "artifact",
+      "path": "experiments/phase_final_scientific_consolidation/manifests/final_csecic_lr_forensic_20260911T000140Z_manifest.json",
+      "size_bytes": 5493,
+      "sha256": "ae033300b8e12e799f001631193d9fdcab5ee142a6dafe0962e378fbf6640928"
+    },
+    {
+      "category": "artifact",
+      "path": "experiments/phase_final_scientific_consolidation/manifests/final_router_open_set_20260911T000746Z_manifest.json",
+      "size_bytes": 9082,
+      "sha256": "e6c0e0d44f783ffa639719b1245277675b105eb55f8671788b921177c7e70ff3"
+    },
+    {
+      "category": "artifact",
+      "path": "experiments/phase_final_scientific_consolidation/manifests/hdfs_block_robustness_20260911T002351Z_manifest.json",
+      "size_bytes": 2985,
+      "sha256": "8c656fdcb7b9cd5bc3aeed03992d49eda16152b7ddd8171c8cb35c7557338bbf"
+    },
+    {
+      "category": "artifact",
+      "path": "experiments/phase_final_scientific_consolidation/manifests/multisource_cnp_model_inference_20260911T001644Z_manifest.json",
+      "size_bytes": 7253,
+      "sha256": "e25e9ea775434c0562ea43c8c1e7237ea1b0caf806148e0730a034599a8ba01e"
+    },
+    {
+      "category": "artifact",
+      "path": "experiments/phase_final_scientific_consolidation/manifests/multisource_cnp_model_inference_20260911T003432Z_manifest.json",
+      "size_bytes": 7375,
+      "sha256": "700ec1f5981e2ed2d989f35c8754b2640f2d3f63256cdd94363618cf50f8ea05"
+    },
+    {
+      "category": "processed",
+      "path": "experiments/phase_final_scientific_consolidation/processed/.gitkeep",
+      "size_bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "category": "processed",
+      "path": "experiments/phase_final_scientific_consolidation/processed/hdfs_test_block_frozen_mean_scores.csv",
+      "size_bytes": 98698,
+      "sha256": "617aa627361f74d35f057ea029efcf973db9e16603fec253edc336fbf3acad26"
+    },
+    {
+      "category": "processed",
+      "path": "experiments/phase_final_scientific_consolidation/processed/multisource_cnp_model_inference_20260911T001644Z_candidate_anomalies.csv",
+      "size_bytes": 49040,
+      "sha256": "77b3159bcc9045c5a9dfe2e0e34aca98245180df35c3ef80c1b7a31b8432f3f9"
+    },
+    {
+      "category": "processed",
+      "path": "experiments/phase_final_scientific_consolidation/processed/multisource_cnp_model_inference_20260911T001644Z_candidate_incidents.csv",
+      "size_bytes": 11991,
+      "sha256": "0cee30e1f0a35e0b30dab5777f54af3394598cee54234bffb318bb54139b9366"
+    },
+    {
+      "category": "processed",
+      "path": "experiments/phase_final_scientific_consolidation/processed/multisource_cnp_model_inference_20260911T003432Z_H_candidate_anomalies.csv",
+      "size_bytes": 48240,
+      "sha256": "eaf9dfb997311c4621b20c95c31ebbff6fca825e9012e9e3eba2c76707cee4bf"
+    },
+    {
+      "category": "processed",
+      "path": "experiments/phase_final_scientific_consolidation/processed/multisource_cnp_model_inference_20260911T003432Z_H_candidate_incidents.csv",
+      "size_bytes": 5678,
+      "sha256": "01f85093f4946b9089ec0cd8d3b930988c0779635e4415dd6255509bcd10caaf"
+    },
+    {
+      "category": "processed",
+      "path": "experiments/phase_final_scientific_consolidation/processed/multisource_cnp_model_inference_20260911T003432Z_M_candidate_anomalies.csv",
+      "size_bytes": 49334,
+      "sha256": "b0b4c20c2abc9b8eb78eb45fcd32736ac1dbebf3dec4c7f06f6220e33af5c255"
+    },
+    {
+      "category": "processed",
+      "path": "experiments/phase_final_scientific_consolidation/processed/multisource_cnp_model_inference_20260911T003432Z_M_candidate_incidents.csv",
+      "size_bytes": 11991,
+      "sha256": "0cee30e1f0a35e0b30dab5777f54af3394598cee54234bffb318bb54139b9366"
+    },
+    {
+      "category": "processed",
+      "path": "experiments/phase_final_scientific_consolidation/processed/multisource_model_compatibility_registry_observed.csv",
+      "size_bytes": 2471,
+      "sha256": "e3a1d837785edd27517f1dbca0757fc791683baf07cc0d3efa2daa329088e4e9"
+    },
+    {
+      "category": "processed",
+      "path": "experiments/phase_final_scientific_consolidation/processed/router_open_set_validation_folds.csv",
+      "size_bytes": 13711,
+      "sha256": "8e365a57ce790610a028fea463727552257c65ecd6c336bce2c7fb2578b7546a"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/.gitkeep",
+      "size_bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260910T235954Z_ablation_by_seed.csv",
+      "size_bytes": 6388,
+      "sha256": "231b3ccc829de7f56f16f89cb19b97b2f21ea62ecdbb047b1df201be910f50b2"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260910T235954Z_coefficients_by_seed.csv",
+      "size_bytes": 33432,
+      "sha256": "a371212c8c0969d8e018760ab66af9aaf2be0c8884798a358a00f52448cd0a75"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260910T235954Z_label_permutation.csv",
+      "size_bytes": 1065,
+      "sha256": "c6bcbb9ec77bc42a3277e20d05d368f299d6e5936cb0fb7fc2d3b3bffc689243"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260910T235954Z_observed_metrics.csv",
+      "size_bytes": 984,
+      "sha256": "3035f540a92f6f78c631cc378aea3c9d3d70c0957452bd6eb69afcbc7fab8751"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260910T235954Z_single_feature_by_seed.csv",
+      "size_bytes": 70877,
+      "sha256": "c060bfe0e3869c70bea3416effd153114548a64281eedc60ab48f4b9284f93f6"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260911T000140Z_ablation_by_seed.csv",
+      "size_bytes": 6388,
+      "sha256": "02b79a88cbf21aea0b6319551a98f0d57e3693b89de12b89533949fa78200581"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260911T000140Z_coefficients_by_seed.csv",
+      "size_bytes": 33432,
+      "sha256": "a371212c8c0969d8e018760ab66af9aaf2be0c8884798a358a00f52448cd0a75"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260911T000140Z_label_permutation.csv",
+      "size_bytes": 1065,
+      "sha256": "4bb86d52096e6665d4c07d69eb2a268517d1b4fba0a6500445cd029ae9763337"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260911T000140Z_observed_metrics.csv",
+      "size_bytes": 984,
+      "sha256": "17b0161f451e3040d1f31b0bddbc5012b60fa97a5f781bb2a91b794ce187b391"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_csecic_lr_forensic_20260911T000140Z_single_feature_by_seed.csv",
+      "size_bytes": 70877,
+      "sha256": "137fd6ef1a604413704960fef068e5e4cd339d9ba039b184c00509fa0c4e03e7"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/final_router_open_set_20260911T000746Z_routes.csv",
+      "size_bytes": 4509,
+      "sha256": "b4da3f103c5925a9bf7840e15d0bbd54a93dd9c066b5c63d969cda43f00c85b4"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/hdfs_block_robustness_20260911T002351Z_bootstrap_replicates.csv",
+      "size_bytes": 156988,
+      "sha256": "2d6d1a0258e30d85ad80f4a1a9d8648de8ea04e84cb3991373b9955ac1837235"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/hdfs_block_robustness_20260911T002351Z_positive_leave_one_out.csv",
+      "size_bytes": 5252,
+      "sha256": "b22870c52c822d28bf63d0cddbdd7a5f796ccf48b6b86151dae0711bc4cb26f2"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/multisource_cnp_model_inference_20260911T001644Z_cnp_messages.jsonl",
+      "size_bytes": 21468883,
+      "sha256": "ba92180cddfadb02c4c2a71383e32c92b6ab3d3eda4f80117618f543c2cbe6e0"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/multisource_cnp_model_inference_20260911T001644Z_model_load_audit.json",
+      "size_bytes": 185070,
+      "sha256": "c6bd92a45bbe92e9397b8197c4daebacbaa37f09d0fe38412bc5ad2731514669"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/multisource_cnp_model_inference_20260911T001644Z_unit_trace.csv",
+      "size_bytes": 2321312,
+      "sha256": "d6a86860a101b8ea4cb5c9d35ebf954ef937ef4b7f9d980761d7c2e8bff2468f"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/multisource_cnp_model_inference_20260911T003432Z_cnp_messages.jsonl",
+      "size_bytes": 21469043,
+      "sha256": "08557c4da1f4592843363c731d14831667e0165996bd5abece08a65633d45a98"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/multisource_cnp_model_inference_20260911T003432Z_model_load_audit.json",
+      "size_bytes": 4191,
+      "sha256": "d75d8c1546ef6ab6d9841fa3190505a64e1794280201fd871e69b4bedcfb3401"
+    },
+    {
+      "category": "raw_result",
+      "path": "experiments/phase_final_scientific_consolidation/raw/multisource_cnp_model_inference_20260911T003432Z_unit_trace.csv",
+      "size_bytes": 2321401,
+      "sha256": "7fdd254f922b805bc465a102dbe3521155579071775d0b06fac252a4bce9df55"
+    },
+    {
+      "category": "report",
+      "path": "experiments/phase_final_scientific_consolidation/reports/.gitkeep",
+      "size_bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "category": "report",
+      "path": "experiments/phase_final_scientific_consolidation/reports/CSE_CIC_IDS2018_LR_FORENSIC_AUDIT.md",
+      "size_bytes": 3955,
+      "sha256": "7e588bfca1bc9475af0335e472e9b67d522015b846fce89af0b62bb089ee9f7c"
+    },
+    {
+      "category": "report",
+      "path": "experiments/phase_final_scientific_consolidation/reports/HDFS_BLOCK_ROBUSTNESS.md",
+      "size_bytes": 1189,
+      "sha256": "d44644030c3f97f8c1e1dffb8c349b676ff7bb1b5b6a0b49d7996eec1beea31e"
+    },
+    {
+      "category": "report",
+      "path": "experiments/phase_final_scientific_consolidation/reports/MEMOIRE_REVISION_RECOMMENDATIONS.md",
+      "size_bytes": 3357,
+      "sha256": "1baad4c0a7dbdc9a0477d456faaa36fd9e232dca89a8794d5a325c84768b25ab"
+    },
+    {
+      "category": "report",
+      "path": "experiments/phase_final_scientific_consolidation/reports/MULTISOURCE_CNP_REAL_MODEL_INFERENCE.md",
+      "size_bytes": 2236,
+      "sha256": "9758080cb56d56b351a9b35f78845905c8046059db7b76d334a09c2429c613a4"
+    },
+    {
+      "category": "report",
+      "path": "experiments/phase_final_scientific_consolidation/reports/ROUTER_OPEN_SET_EVALUATION.md",
+      "size_bytes": 1277,
+      "sha256": "894cd1c05e01f1cb5bf2c0436a171810b94cdd989b8dc88a3dd25083ef039404"
+    },
+    {
+      "category": "model",
+      "path": "models/isolation_forest_bgl_colab.joblib",
+      "size_bytes": 2867373,
+      "sha256": "1200335316877aed46d81b4a77196c43a55bc99c45e6655808aeb74823862e2e"
+    },
+    {
+      "category": "model",
+      "path": "models/isolation_forest_fallback_colab.joblib",
+      "size_bytes": 2143839,
+      "sha256": "9c7894a39dfcd127f51f356c8de6c3eb145582d23327b9cc4ca315ae74183414"
+    },
+    {
+      "category": "model",
+      "path": "models/isolation_forest_hdfs_colab.joblib",
+      "size_bytes": 3250255,
+      "sha256": "e3d772e4d5a44731c17668a75adc9e9cd4bee5edf8d1835b2b53ef5ed7bb7538"
+    },
+    {
+      "category": "model",
+      "path": "models/isolation_forest_linux_colab.joblib",
+      "size_bytes": 2631093,
+      "sha256": "433719c2f9aa02346b51a047319b34fc774cd1b4585308e477ca1c2a07a3f0c3"
+    },
+    {
+      "category": "model",
+      "path": "models/isolation_forest_wazuh.joblib",
+      "size_bytes": 520811,
+      "sha256": "c628ad2fcae457e8066ca8e856f9db27be34f358d8590451e190b0ea467c69de"
+    },
+    {
+      "category": "model",
+      "path": "models/isolation_forest_windows_local.joblib",
+      "size_bytes": 1755752,
+      "sha256": "64f87318a68f8c4d14066fd8353dba2bffa5af630a5d43bf7d8b20a8784f29b7"
+    },
+    {
+      "category": "model",
+      "path": "models/random_forest_linux_auth.joblib",
+      "size_bytes": 31877890,
+      "sha256": "622d97930bf93e315dcb58722a5ec4de6b8e1a6e7d5d467b8e8074465a79cb9c"
+    },
+    {
+      "category": "model",
+      "path": "models/random_forest_network_cicids.joblib",
+      "size_bytes": 3867444,
+      "sha256": "6e23127756780ef9ee333838054052a0e6ba0bd15f0a45691bd44022a582fcb8"
+    },
+    {
+      "category": "script",
+      "path": "scripts/final_consolidation_common.py",
+      "size_bytes": 3640,
+      "sha256": "8e12165f859f975809eaa4b043bf5f00f8aa211ee35270243bd7e38bc47cd5f2"
+    },
+    {
+      "category": "script",
+      "path": "scripts/finalize_scientific_consolidation.py",
+      "size_bytes": 31588,
+      "sha256": "34045aa688d041a0090a455c2039bf445bbff35bd362ac0e8a70ec99573a44a8"
+    },
+    {
+      "category": "script",
+      "path": "scripts/run_final_csecicids2018_lr_forensic.py",
+      "size_bytes": 21488,
+      "sha256": "98b774b354254aa30564b674c5eac3dcc05b4b21dbcf4d6ca602492262785438"
+    },
+    {
+      "category": "script",
+      "path": "scripts/run_hdfs_block_robustness.py",
+      "size_bytes": 15955,
+      "sha256": "edb75407407028e2bc3c1a07c338d09c146316344e0e3cc8098354070f6d396f"
+    },
+    {
+      "category": "script",
+      "path": "scripts/run_multisource_cnp_model_inference.py",
+      "size_bytes": 33707,
+      "sha256": "007212c1f0c86801300b10a428107e6c149b61257d04f155838bd5df0c342a1c"
+    },
+    {
+      "category": "script",
+      "path": "scripts/run_router_open_set_consolidation.py",
+      "size_bytes": 17872,
+      "sha256": "2659ef849894ec11351310679cdd48bf5cc04942faf909d7cbf2bc263e9f8a2a"
+    },
+    {
+      "category": "script",
+      "path": "src/logminer/agents/model_router.py",
+      "size_bytes": 44499,
+      "sha256": "051164be77045e2fc7391bbfdd17ba8f9f6c9775a5ce989cf204eae74b01dc56"
+    },
+    {
+      "category": "artifact",
+      "path": "state/EXPERIMENT_LEDGER.csv",
+      "size_bytes": 25512,
+      "sha256": "fccf21fd120c431e7e276d76884415a16386ac81806326e75149b6245757d0db"
+    },
+    {
+      "category": "artifact",
+      "path": "state/FINAL_SCIENTIFIC_CONSOLIDATION_PROGRESS.md",
+      "size_bytes": 3873,
+      "sha256": "4fdecf88e336142d4f9e976ec7854bc4c98089e436e82cf164a21936fe1fa19a"
+    }
+  ],
+  "external_raw_references": [
+    {
+      "partition": "train",
+      "path": "data/raw/external/CSE-CIC-IDS2018/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/Processed%20Traffic%20Data%20for%20ML%20Algorithms/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "object_key": "Processed Traffic Data for ML Algorithms/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "size_bytes": 375945899,
+      "sha256": "fa2947a8256d81ee9103ae16139d62d0e17aa23e696ee80d9e76fb51c01c9c4b",
+      "etag_head": "eb1dc2ec76efe09c8995f28bfa4c8656-23"
+    },
+    {
+      "partition": "test",
+      "path": "data/raw/external/CSE-CIC-IDS2018/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/Processed%20Traffic%20Data%20for%20ML%20Algorithms/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "object_key": "Processed Traffic Data for ML Algorithms/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "size_bytes": 333723605,
+      "sha256": "1a4919faa0c49c7af97230b0c2d076eba23ee6dd81103a3801d51ac316355d8b",
+      "etag_head": "e68ef27c09c98ba91fe3c6b1108a18b9-20"
+    }
+  ],
+  "entry_count": 102
+}

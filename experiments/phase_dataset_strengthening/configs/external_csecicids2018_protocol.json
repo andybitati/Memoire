@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "experiment_id": "dataset_07_external_csecicids2018",
+  "dataset": "CSE-CIC-IDS2018",
+  "official_page": "https://www.unb.ca/cic/datasets/ids-2018.html",
+  "official_bucket": "s3://cse-cic-ids2018/",
+  "accessed_at": "2026-09-10",
+  "question": "Les conclusions relatives à la fragilité hors distribution des modèles légers sur CICIDS2017 sont-elles également observées sur un corpus réseau officiel indépendant ?",
+  "partition": {
+    "type": "day_and_attack_scenario_holdout",
+    "train": {
+      "day": "2018-02-15",
+      "expected_scenarios": [
+        "DoS-GoldenEye",
+        "DoS-Slowloris"
+      ],
+      "object_key": "Processed Traffic Data for ML Algorithms/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/Processed%20Traffic%20Data%20for%20ML%20Algorithms/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "content_length_head": 375945899,
+      "etag_head": "eb1dc2ec76efe09c8995f28bfa4c8656-23",
+      "local_path": "data/raw/external/CSE-CIC-IDS2018/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv"
+    },
+    "test": {
+      "day": "2018-02-16",
+      "expected_scenarios": [
+        "DoS-SlowHTTPTest",
+        "DoS-Hulk"
+      ],
+      "object_key": "Processed Traffic Data for ML Algorithms/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "url": "https://cse-cic-ids2018.s3.ca-central-1.amazonaws.com/Processed%20Traffic%20Data%20for%20ML%20Algorithms/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "content_length_head": 333723605,
+      "etag_head": "e68ef27c09c98ba91fe3c6b1108a18b9-20",
+      "local_path": "data/raw/external/CSE-CIC-IDS2018/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv"
+    }
+  },
+  "sampling": {
+    "method": "priority_reservoir_full_file_scan",
+    "pool_per_class": 50000,
+    "sample_per_class_per_seed": 10000,
+    "pool_seeds": {
+      "train": 3042,
+      "test": 4042
+    },
+    "evaluation_seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "replacement": false,
+    "note": "Les cinq répétitions partagent les pools parents figés et ne représentent pas cinq acquisitions indépendantes."
+  },
+  "features": {
+    "mode": "numeric_intersection_train_test",
+    "excluded": [
+      "Label",
+      "Timestamp",
+      "Flow ID",
+      "Source IP",
+      "Destination IP",
+      "Src IP",
+      "Dst IP"
+    ],
+    "non_finite": 0,
+    "clip": [
+      -1000000000000.0,
+      1000000000000.0
+    ],
+    "timestamp_is_feature": false
+  },
+  "models": {
+    "RandomForest": {
+      "n_estimators": 120,
+      "max_depth": 28,
+      "min_samples_leaf": 2,
+      "class_weight": "balanced",
+      "n_jobs": 1
+    },
+    "LogisticRegression": {
+      "standard_scaler": "fit_train_only",
+      "max_iter": 1000,
+      "class_weight": "balanced",
+      "solver": "lbfgs"
+    }
+  },
+  "decision_threshold": 0.5,
+  "model_or_threshold_selection_on_test": false,
+  "metrics": [
+    "precision",
+    "recall",
+    "f1",
+    "pr_auc",
+    "mcc",
+    "fpr",
+    "tp",
+    "fp",
+    "tn",
+    "fn"
+  ],
+  "interpretation_limit": "Ce protocole teste un holdout temporel et de scénarios à l’intérieur de CSE-CIC-IDS2018. Il ne démontre ni un transfert direct des poids appris sur CICIDS2017 ni une validité industrielle."
+}

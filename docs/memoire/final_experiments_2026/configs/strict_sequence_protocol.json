@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-09-08",
+  "status": "FROZEN_BEFORE_LABEL_DISTRIBUTION_INSPECTION",
+  "datasets": {
+    "HDFS": {
+      "raw_log": "data/raw/Datasets/HDFS_1/HDFS.log",
+      "labels": "data/raw/Datasets/HDFS_1/anomaly_label.csv",
+      "total_rows_manifest": 11175629,
+      "observation_unit": "log event carrying a labelled block_id",
+      "group_key": "block_id",
+      "unlabelled_policy": "drop events without an extractable labelled block_id"
+    },
+    "BGL": {
+      "raw_log": "data/raw/Datasets/BGL/BGL.log",
+      "total_rows_manifest": 4747963,
+      "observation_unit": "raw log event",
+      "group_key": null,
+      "label_rule": "first token '-' is normal; every other marker is anomalous"
+    }
+  },
+  "split": {
+    "strategy": "disjoint chronological source ranges with centred contiguous samples",
+    "source_ranges": {
+      "train": [0.0, 0.6],
+      "validation": [0.6, 0.8],
+      "test": [0.8, 1.0]
+    },
+    "sample_centres": {
+      "train": 0.3,
+      "validation": 0.7,
+      "test": 0.9
+    },
+    "sample_rows_before_filtering": {
+      "train": 50000,
+      "validation": 20000,
+      "test": 20000
+    },
+    "selection_uses_labels": false,
+    "hdfs_group_overlap_policy": "retain train first, then remove from validation and test every block_id already present in an earlier split",
+    "test_is_evaluated_once_per_fitted_seed": true
+  },
+  "drain3": {
+    "python_environment": ".venv-final-experiments/Scripts/python.exe",
+    "version": "0.9.11",
+    "fit_partition": "train_only",
+    "inference_method": "TemplateMiner.match(full_search_strategy='always') without add_log_message",
+    "state_saved": true,
+    "state_reloaded_before_feature_extraction": true,
+    "parameters": {
+      "drain_sim_th": 0.4,
+      "drain_depth": 4,
+      "drain_max_children": 100,
+      "drain_max_clusters": null,
+      "parametrize_numeric_tokens": true,
+      "snapshot_compress_state": true
+    }
+  },
+  "features": {
+    "window_minutes": 30,
+    "window_direction": "past_only_within_partition",
+    "window_state_at_partition_boundary": "reset",
+    "template_frequency_source": "train_only",
+    "source_frequency_source": "train_only",
+    "unknown_template_id": 0,
+    "scaler_fit": "normal-labelled rows from train only",
+    "imputation": "finite zero after explicit feature construction",
+    "excluded": [
+      "label",
+      "raw line number",
+      "absolute timestamp",
+      "raw event identifier",
+      "block_id as numeric or categorical predictor"
+    ]
+  },
+  "methods": {
+    "IsolationForest": {
+      "stochastic": true,
+      "seeds": [42, 43, 44, 45, 46],
+      "n_estimators": 200,
+      "contamination": "auto",
+      "fit_rows": "normal-labelled train rows"
+    },
+    "ZScore": {
+      "stochastic": false,
+      "seeds": [42],
+      "score": "maximum absolute StandardScaler z-score"
+    },
+    "IQR": {
+      "stochastic": false,
+      "seeds": [42],
+      "score": "sum of normalized excursions outside 1.5 IQR bounds"
+    },
+    "Histogram": {
+      "stochastic": false,
+      "seeds": [42],
+      "score": "negative log frequency of template, source and severity learned on normal train"
+    },
+    "AutoencoderMLP": {
+      "stochastic": true,
+      "seeds": [42, 43, 44, 45, 46],
+      "hidden_units": "min(32, max(4, feature_count // 2))",
+      "max_iter": 80,
+      "early_stopping": true,
+      "max_fit_rows": 12000
+    },
+    "EnsembleTrainCalibrated": {
+      "stochastic": true,
+      "seeds": [42, 43, 44, 45, 46],
+      "components": ["IsolationForest", "ZScore", "IQR", "Histogram", "AutoencoderMLP"],
+      "calibration": "component empirical percentile using normal train scores only"
+    }
+  },
+  "threshold": {
+    "selection_partition": "validation_only",
+    "objective": "maximum F1",
+    "tie_breakers": ["minimum FPR", "maximum MCC", "highest threshold"],
+    "test_prevalence_used": false,
+    "test_score_distribution_used": false
+  },
+  "metrics": ["precision", "recall", "f1", "pr_auc", "mcc", "fpr", "tn", "fp", "fn", "tp"],
+  "limitations_frozen": [
+    "contiguous windows cover only a subset of each public log",
+    "HDFS evaluation is event-level although labels originate at block level",
+    "validation labels are used for threshold selection",
+    "the dedicated venv uses system-site scientific packages and is not intended to run Streamlit"
+  ]
+}

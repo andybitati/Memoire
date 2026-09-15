@@ -1,0 +1,155 @@
+\appendix
+\chapter{Contrats et traçabilité}
+
+\section{Structure exacte d’\texttt{AgentMessage}}
+
+La structure métier présentée dans le mémoire correspond aux sept champs de l’implémentation :
+
+\begin{verbatim}
+{
+  "run_id": "...",
+  "source": "...",
+  "target": "...",
+  "message_type": "...",
+  "payload": {...},
+  "status": "...",
+  "timestamp": "..."
+}
+\end{verbatim}
+
+Le contrat ne possède pas de champ \texttt{event\_id} de premier niveau. Les identifiants de tâche, de CFP, de tentative et d’idempotence sont placés dans \texttt{payload} lorsqu’ils sont nécessaires. Les identifiants Redis Streams, groupes de consommateurs, topics MQTT et accusés de réception appartiennent à l’enveloppe de transport.
+
+\section{Messages du protocole}
+
+\begin{table}[H]
+\centering
+\caption{Sémantique des messages Contract Net.}
+\label{tab:messages-cnp-annexe}
+\begin{tabularx}{\textwidth}{p{0.20\textwidth} X}
+\toprule
+\textbf{Type} & \textbf{Signification} \\
+\midrule
+\texttt{CFP} & Appel à propositions décrivant une tâche et ses contraintes. \\
+\texttt{PROPOSE} & Offre d’un agent compatible, accompagnée de son utilité. \\
+\texttt{REFUSE} & Refus explicite pour incompatibilité ou indisponibilité. \\
+\texttt{AWARD} & Attribution de la tâche à l’offre retenue. \\
+\texttt{REJECT} & Rejet d’une offre non sélectionnée. \\
+\texttt{ACCEPT} & Accusé de prise en charge par l’agent retenu. \\
+\texttt{RESULT} & Résultat d’une exécution réussie. \\
+\texttt{FAIL} & Échec explicite du traitement. \\
+\texttt{FEEDBACK} & Retour utilisable par la mémoire de l’agent. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Matrice résultats--preuves}
+
+\begin{longtable}{p{0.20\textwidth} p{0.18\textwidth} p{0.52\textwidth}}
+\caption{Traçabilité des résultats expérimentaux.}\label{tab:preuves-experimentales}\\
+\toprule
+\textbf{Élément} & \textbf{Valeur} & \textbf{Artefact principal} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Élément} & \textbf{Valeur} & \textbf{Artefact principal} \\
+\midrule
+\endhead
+CICIDS random RF & F1 0,995142 & \texttt{experiments/phase\_dataset\_strengthening/aggregated/cicids\_protocol\_comparison.csv} \\
+CICIDS scénario RF & F1 macro 0,157744 & Même synthèse, protocole holdout scénario. \\
+CICIDS temporel & RF 0,437429 ; LR 0,556615 & Même synthèse, lundi--jeudi vers vendredi. \\
+Sélection CICIDS & LR 0,233670 & \texttt{docs/memoire/pack\_redaction\_final/06\_reproductibilite\_preuves/cicids\_model\_candidates\_summary.csv} \\
+HDFS bloc & F1 0,892308 & \texttt{ds\_hdfs\_block\_20260910T081756Z\_\_hdfs\_block\_result.json} \\
+Bootstrap HDFS & médiane 0,894737 & \texttt{hdfs\_block\_robustness\_20260911T002351Z\_bootstrap\_replicates.csv} \\
+BGL Histogram & F1 0,913698 & \texttt{ds\_bgl\_known\_unknown\_20260910T082706Z\_\_bgl\_group\_metrics.csv} \\
+BGL baseline & F1 0,277885 & Même artefact, modèle \texttt{UnknownTemplateBaseline}. \\
+CSE-CIC-IDS2018 & LR 0,999212 ; RF 0,401375 & \texttt{external\_csecicids2018\_20260910T230136Z\_metrics.csv} \\
+Ablation CSE-CIC & top 10 retirées : 0,657859 & \texttt{external\_csecicids2018\_feature\_ablation.csv} \\
+Routeur open-set & rejet 3/3 ; faux rejet 0/28 & \texttt{router\_open\_set\_final\_tradeoff\_diagnostic.csv} \\
+Multiformat & $7\,001/7\,001$ & \texttt{multiformat\_balanced\_summary.csv} \\
+E2E modèles & $1\,400/1\,401$ & \texttt{multisource\_cnp\_model\_inference\_by\_source.csv} \\
+Benchmark A--D & 160 exécutions ; $264\,000$ tâches & \texttt{ma\_20260909T160812Z\_34016\_\_statistics.csv} \\
+Multi-VM & 60/60 ; 30/30 & \texttt{multivm\_cnp\_20260909T202632Z\_37592\_\_redis\_cnp\_multivm.json} \\
+Corrélation & F1 0,812500 & \texttt{data/processed/final\_experiments\_2026/correlation\_synthetic\_summary.json} \\
+\bottomrule
+\end{longtable}
+
+\section{Paramètres HDFS}
+
+\begin{table}[H]
+\centering
+\caption{Configuration HDFS vérifiée.}
+\label{tab:hdfs-parametres-annexe}
+\begin{tabularx}{\textwidth}{p{0.33\textwidth} X}
+\toprule
+\textbf{Paramètre} & \textbf{Valeur} \\
+\midrule
+Unité de split & \texttt{block\_id} ordonné par première apparition \\
+Proportions complètes & 60\,\% entraînement, 20\,\% validation, 20\,\% test \\
+Échantillons & $6\,000 / 2\,000 / 2\,000$ blocs \\
+Événements & $126\,368 / 37\,153 / 30\,948$ \\
+Blocs positifs & 194 / 70 / 29 \\
+Drain3 & train-only ; \texttt{match\_only} en validation/test \\
+Drain3 paramètres & \texttt{sim\_th=0.4}, profondeur 4, 100 enfants \\
+Représentation & score de rareté événementiel, agrégé par bloc \\
+Agrégateur final & moyenne \\
+Seuil gelé & $1{,}2729429339548877$, choisi sur validation \\
+Test & TP 29, FP 7, TN $1\,964$, FN 0 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Paramètres multi-VM}
+
+\begin{table}[H]
+\centering
+\caption{Configuration et observations de la campagne multi-VM retenue.}
+\label{tab:multivm-parametres-annexe}
+\small
+\begin{tabularx}{\textwidth}{p{0.28\textwidth} X}
+\toprule
+\textbf{Champ} & \textbf{Valeur} \\
+\midrule
+Run & \texttt{multivm\_cnp\_20260909T202632Z\_37592} \\
+Coordinateur & \texttt{andy-aaron} \\
+Transport & Redis 7.4.9 centralisé, base 0 \\
+Agent Debian & \texttt{debian-alpha}, Linux 6.12.96 Debian 13, Python 3.13.5 \\
+Agent Ubuntu & \texttt{ubuntu-beta}, Linux 5.4.0-70, Python 3.8.10 \\
+Parallélisme & un traitement simultané par agent \\
+Durée & 2,712455 s \\
+Tâches & 60 réussies sur 60 ; 30 par agent \\
+Décisions & 108 propositions, 15 refus, 63 attributions \\
+Reprise & un \texttt{FAIL} contrôlé, une réattribution \\
+Idempotence & un effet persistant, zéro effet dupliqué lors du replay \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Unités de performance}
+
+Le débit est exprimé en tâches par seconde. Les latences moyennes, médianes, p95 et p99 du benchmark A--D sont en millisecondes. \texttt{cpu\_time\_sec} est un temps CPU de processus en secondes. \texttt{cpu\_core\_equivalent\_percent} rapporte ce temps à la durée comme occupation équivalente d’un cœur ; \texttt{cpu\_machine\_normalized\_percent} divise cette valeur par le nombre de processeurs logiques. \texttt{rss\_peak\_mb} est le pic de mémoire résidente en mégaoctets.
+
+Les valeurs qui ne disposent pas de cette définition ne sont pas reprises dans le mémoire. Ces unités décrivent la machine locale du benchmark et ne constituent pas une mesure de consommation d’une infrastructure distribuée.
+
+\section{Statut de la mise à jour des modèles}
+
+\begin{table}[H]
+\centering
+\caption{Niveaux de preuve de la mise à jour contrôlée.}
+\label{tab:statut-model-update}
+\begin{tabularx}{\textwidth}{p{0.27\textwidth} p{0.22\textwidth} X}
+\toprule
+\textbf{Niveau} & \textbf{Statut} & \textbf{Interprétation} \\
+\midrule
+Code de comparaison & IMPLÉMENTÉ & Infrastructure présente dans le dépôt. \\
+Dry-run & TESTÉ & Décision simulable sans remplacement du modèle actif. \\
+Comparaison exécutée & PARTIEL & Certaines branches et candidats sont comparés. \\
+Promotion/rejet observé & NON ÉVALUÉ & Pas de cycle complet et répété démontré. \\
+Bénéfice après mise à jour & NON ÉVALUÉ & Aucune amélioration globale mesurée. \\
+Mise à jour autonome continue & PERSPECTIVE & Hors du prototype évalué. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Conditions d’interprétation des résultats}
+
+Le périmètre expérimental exclut la haute disponibilité Redis, la tolérance aux partitions, la sécurité opérationnelle complète et les performances à très grande échelle. Le routage open-set porte sur trois inconnus. Le F1 BGL ne fournit aucun rappel pour les anomalies à template connu. Le score CSE-CIC-IDS2018 dépend fortement de certaines caractéristiques. La mémoire influence une décision, mais n’améliore pas systématiquement les métriques. Aucune exactitude globale multi-source n’est disponible.

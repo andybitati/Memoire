@@ -1,0 +1,31 @@
+{
+  "run_id": "external_csecicids2018_sensitivity_20260910T231423Z",
+  "principal_run_id": "external_csecicids2018_20260910T230136Z",
+  "status": "post_hoc_exploratory_sensitivity",
+  "train_pool": {
+    "path": "experiments/phase_dataset_strengthening/processed/external_csecicids2018_20260910T230136Z_train_pool.csv.gz",
+    "sha256": "8cada8131373deff826bd106732a0fed28d553714d0a0cc61fce02108d0db48c"
+  },
+  "test_pool": {
+    "path": "experiments/phase_dataset_strengthening/processed/external_csecicids2018_20260910T230136Z_test_pool.csv.gz",
+    "sha256": "452e6688fd114b3f6206a796aeb38e85d3cbdece75d84688c9f0d8f3e17636b4"
+  },
+  "train_deduplication": {
+    "input_rows": 100000,
+    "unique_unambiguous_rows": 96150,
+    "conflicting_hashes": 0,
+    "conflicting_rows_dropped": 0
+  },
+  "test_deduplication": {
+    "input_rows": 100000,
+    "unique_unambiguous_rows": 75675,
+    "conflicting_hashes": 0,
+    "conflicting_rows_dropped": 0
+  },
+  "cross_partition_exact_feature_overlap": 0,
+  "conditions": [
+    "deduplicated_test_only",
+    "deduplicated_train_and_test"
+  ],
+  "result": "experiments/phase_dataset_strengthening/aggregated/external_csecicids2018_duplicate_sensitivity.csv"
+}

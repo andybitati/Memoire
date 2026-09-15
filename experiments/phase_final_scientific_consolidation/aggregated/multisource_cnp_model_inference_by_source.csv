@@ -1,0 +1,17 @@
+﻿condition,source,recommended_model,model_actually_executed,n,fallback,error,model_inference_count,latency_mean,latency_p95
+H,apache,models/isolation_forest_fallback_colab.joblib,NONE,1,1,0,0,0.007964,0.007964
+H,bgl,models/isolation_forest_bgl_colab.joblib,NONE,200,200,0,0,0.01811413,0.02243985
+H,hdfs,models/isolation_forest_hdfs_colab.joblib,NONE,200,200,0,0,0.016854295000000002,0.02275289999999998
+H,linux_auth,models/random_forest_linux_auth.joblib,NONE,200,200,0,0,0.025615995,0.03256489999999999
+H,network_tabular,models/random_forest_network_cicids.joblib,NONE,200,200,0,0,0.05939064,0.09788314999999981
+H,syslog,models/isolation_forest_linux_colab.joblib,NONE,200,200,0,0,0.008964915,0.011520599999999999
+H,wazuh,models/isolation_forest_wazuh.joblib,NONE,200,200,0,0,0.06594375000000001,0.1041202999999999
+H,windows_event,models/isolation_forest_windows_local.joblib,NONE,200,200,0,0,0.022420065,0.03027034999999997
+M,apache,models/isolation_forest_fallback_colab.joblib,NONE,1,1,0,0,0.009917,0.009917
+M,bgl,models/isolation_forest_bgl_colab.joblib,models/isolation_forest_bgl_colab.joblib,200,0,0,200,0.077917035,0.0888512
+M,hdfs,models/isolation_forest_hdfs_colab.joblib,models/isolation_forest_hdfs_colab.joblib,200,0,0,200,0.08989661,0.10525629999999993
+M,linux_auth,models/random_forest_linux_auth.joblib,models/random_forest_linux_auth.joblib,200,0,0,200,0.087492405,0.10516064999999997
+M,network_tabular,models/random_forest_network_cicids.joblib,models/random_forest_network_cicids.joblib,200,0,0,200,0.12242919499999999,0.14697244999999998
+M,syslog,models/isolation_forest_linux_colab.joblib,models/isolation_forest_linux_colab.joblib,200,0,0,200,0.08161903499999999,0.0655972
+M,wazuh,models/isolation_forest_wazuh.joblib,models/isolation_forest_wazuh.joblib,200,0,0,200,0.176674535,0.23811454999999976
+M,windows_event,models/isolation_forest_windows_local.joblib,models/isolation_forest_windows_local.joblib,200,0,0,200,0.10238938000000002,0.22756034999999988

@@ -323,7 +323,11 @@ def _score_dataframe(df: pd.DataFrame, path: Path | None = None) -> tuple[dict[s
     # Signal principal: le nom des colonnes. C'est le plus stable pour les CSV
     # deja structures comme UNSW, tcpdump converti ou Windows normalise.
     for family, expected_columns in FAMILY_COLUMNS.items():
-        matched = lower_columns & expected_columns
+        matched = {
+            column
+            for column in lower_columns & expected_columns
+            if _non_empty_ratio(df, lower_to_original[column]) >= 0.05
+        }
         if matched:
             scores[family] += len(matched) * 8
             reasons.append(f"colonnes {family}: " + ",".join(sorted(matched)[:8]))
@@ -528,8 +532,88 @@ def route_model(
         "kind": kind,
         "scores": scores,
         "confidence": confidence,
+        "decision_margin": confidence,
         "reasons": reasons,
     }
+
+
+def route_dataframe(
+    frame: pd.DataFrame,
+    *,
+    models: dict[str, str | Path] | None = None,
+) -> dict[str, object]:
+    """Route un tableau sans exploiter son chemin ou son nom de fichier.
+
+    Cette entrée publique est destinée aux évaluations où le nom de la source
+    constituerait une fuite de famille. Elle applique exactement le même score
+    explicable que :func:`route_model`, mais avec ``path=None``.
+    """
+
+    if frame.empty:
+        raise ValueError("Le routeur ne peut pas évaluer un tableau vide.")
+    normalized = frame.copy()
+    normalized.columns = [str(column).strip().lstrip("\ufeff") for column in normalized.columns]
+    scores, reasons = _score_dataframe(normalized, path=None)
+    priority = ["windows", "hdfs", "bgl", "wazuh", "network_cicids", "network", "linux_auth", "linux", "fallback"]
+    sorted_scores = sorted(priority, key=lambda family: scores.get(family, 0), reverse=True)
+    family = sorted_scores[0]
+    confidence = scores.get(sorted_scores[0], 0) - scores.get(sorted_scores[1], 0)
+    model_map = dict(MODEL_DEFAULTS)
+    if models:
+        model_map.update({key: str(value) for key, value in models.items() if value})
+    return {
+        "family": family,
+        "model": str(model_map[family]),
+        "kind": "dataframe",
+        "scores": scores,
+        "confidence": confidence,
+        "decision_margin": confidence,
+        "reasons": reasons,
+    }
+
+
+def apply_open_set_rejection(
+    route: dict[str, object],
+    policy: dict[str, float | int],
+) -> dict[str, object]:
+    """Applique un rejet explicable à une route déjà calculée.
+
+    La politique est optionnelle afin de préserver le comportement historique
+    fermé. Ses seuils doivent être calibrés en dehors de cette fonction. La
+    marge est un score heuristique de séparation, jamais une probabilité.
+    """
+
+    scores = {str(key): float(value) for key, value in dict(route["scores"]).items()}
+    priority = ["windows", "hdfs", "bgl", "wazuh", "network_cicids", "network", "linux_auth", "linux", "fallback"]
+    ranked = sorted(priority, key=lambda family: scores.get(family, 0.0), reverse=True)
+    top_score = scores.get(ranked[0], 0.0)
+    second_score = scores.get(ranked[1], 0.0)
+    decision_margin = top_score - second_score
+    compatible_rule_count = len(list(route.get("reasons", [])))
+    rejection_reasons: list[str] = []
+    if top_score < float(policy.get("min_top_score", 0.0)):
+        rejection_reasons.append("top_score_below_threshold")
+    if decision_margin < float(policy.get("min_decision_margin", 0.0)):
+        rejection_reasons.append("decision_margin_below_threshold")
+    if compatible_rule_count < int(policy.get("min_compatible_rules", 0)):
+        rejection_reasons.append("structural_compatibility_insufficient")
+    if ranked[0] == "fallback":
+        rejection_reasons.append("fallback_route")
+    rejected = bool(rejection_reasons)
+    result = dict(route)
+    result.update({
+        "original_family": str(route["family"]),
+        "family": "unknown" if rejected else str(route["family"]),
+        "model": None if rejected else route.get("model"),
+        "rejected": rejected,
+        "top_score": top_score,
+        "second_score": second_score,
+        "decision_margin": decision_margin,
+        "compatible_rule_count": compatible_rule_count,
+        "rejection_reasons": rejection_reasons,
+        "decision_margin_is_probability": False,
+    })
+    return result
 
 
 def _default_output(input_path: Path, suffix: str) -> Path:

@@ -1,0 +1,45 @@
+{
+  "run_id": "multivm_cnp_20260909T202632Z_37592",
+  "files": [
+    {
+      "path": "experiments/phase_multi_agent/logs/multivm_cnp_20260909T202632Z_37592__agent_messages.jsonl",
+      "bytes": 454848,
+      "sha256": "7f6f5157e498db534c181dda67f343c7b49d15189378062bee22ed5cda7ccaf0"
+    },
+    {
+      "path": "experiments/phase_multi_agent/raw/multivm_cnp_20260909T202632Z_37592__redis_cnp_multivm.json",
+      "bytes": 2968,
+      "sha256": "e242cdf0ba12f4e4d20fb270f32f340ca2d53573e2ece448665ff61a21ab5eeb"
+    },
+    {
+      "path": "experiments/phase_multi_agent/raw/multivm_cnp_20260909T202632Z_37592__redis_cnp_multivm_tasks.csv",
+      "bytes": 9920,
+      "sha256": "6bed9a705b3310fca9f4f2b1443d57b1b5b0cf8b9b5e4e42a38cddf9d80fbb12"
+    },
+    {
+      "path": "experiments/phase_multi_agent/reports/multivm_cnp_20260909T202632Z_37592__redis_cnp_multivm.md",
+      "bytes": 712,
+      "sha256": "17c38b5976927aaeac3a2cbe6c97d16e204a5020bd81c9bb5881db26fc0f78a7"
+    },
+    {
+      "path": "scripts/logminer_redis_cnp_agent.py",
+      "bytes": 7863,
+      "sha256": "6a4f58dad0f1208be312ac0c83f4bdc18c6534d01395c16ae1744efe5ba16a8c"
+    },
+    {
+      "path": "scripts/run_redis_cnp_multivm_campaign.py",
+      "bytes": 11880,
+      "sha256": "9cc013aeb7784e327f47b877daf9e59f1ae036c422c8e1bfb8934adfc12eb772"
+    },
+    {
+      "path": "src/logminer/agents/idempotency.py",
+      "bytes": 10322,
+      "sha256": "e7f18186dab1aa5e017ac353ab4a8ae3756b5ad2b544f1cc12273c74afa125c4"
+    },
+    {
+      "path": "src/logminer/agents/redis_contract_net.py",
+      "bytes": 11247,
+      "sha256": "016cb0b2399b2ca1256475fc37d280de66d05d2c3df2ce432ae81e1d0925b4de"
+    }
+  ]
+}

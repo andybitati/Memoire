@@ -1,0 +1,60 @@
+{
+  "run_id": "hdfs_block_robustness_20260911T002351Z",
+  "status": "COMPLETED",
+  "config": {
+    "path": "experiments/phase_final_scientific_consolidation/configs/final_scientific_consolidation_protocol.json",
+    "sha256": "10bc91807bb734d5e714689a9a2805e6df7c4e8de05dc7a0b06d0bb2babf1681"
+  },
+  "source_result": {
+    "path": "experiments/phase_dataset_strengthening/raw/ds_hdfs_block_20260910T081756Z__hdfs_block_result.json",
+    "sha256": "13ac929abc887ce2bba82b516d6234cf56412ecb6c5c1226c2b714712fc7f36d"
+  },
+  "input_artifacts": [
+    {
+      "path": "experiments/phase_dataset_strengthening/raw/ds_hdfs_block_20260910T081756Z__hdfs_selected_events.csv.gz",
+      "sha256": "4a7129836a0e98dcdf281135c5020f724ac1f1bd9e49a8b307900057bff5b2f7"
+    },
+    {
+      "path": "experiments/phase_dataset_strengthening/processed/ds_hdfs_block_20260910T081756Z__hdfs_drain3_train_state.bin",
+      "sha256": "deb37a7c9feb396df2d9dde336e707b225ef508e439df9516f9457ef73d06ab7"
+    },
+    {
+      "path": "experiments/phase_dataset_strengthening/processed/ds_hdfs_block_20260910T081756Z__hdfs_selected_blocks.csv",
+      "sha256": "30a2975a2a63f5b73926fadc91497201d9d63e13eb8679c7d5f1b24d9a94b5fb"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "experiments/phase_final_scientific_consolidation/processed/hdfs_test_block_frozen_mean_scores.csv",
+      "sha256": "617aa627361f74d35f057ea029efcf973db9e16603fec253edc336fbf3acad26"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/raw/hdfs_block_robustness_20260911T002351Z_bootstrap_replicates.csv",
+      "sha256": "2d6d1a0258e30d85ad80f4a1a9d8648de8ea04e84cb3991373b9955ac1837235"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/raw/hdfs_block_robustness_20260911T002351Z_positive_leave_one_out.csv",
+      "sha256": "b22870c52c822d28bf63d0cddbdd7a5f796ccf48b6b86151dae0711bc4cb26f2"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/hdfs_block_bootstrap_summary.csv",
+      "sha256": "a0ef440f6b06b89cb8333131e305a5410ab8c1b09eb5dae67428f793a315def5"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/aggregated/hdfs_block_robustness_summary.json",
+      "sha256": "80708cca8c6207e4aa13298fc4eaf90cc5bc4487d85da6cb5a82953156e3e4e7"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/reports/HDFS_BLOCK_ROBUSTNESS.md",
+      "sha256": "d44644030c3f97f8c1e1dffb8c349b676ff7bb1b5b6a0b49d7996eec1beea31e"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_19_hdfs_block_bootstrap.png",
+      "sha256": "b25a0c4f8017c36965b9ff3381cbec91a5fdb549afd8d41e945c3583090c5bf8"
+    },
+    {
+      "path": "experiments/phase_final_scientific_consolidation/figures/dataset_20_hdfs_positive_sensitivity.png",
+      "sha256": "3837de7ec540e7378cbc8cddfd2dcdfaec6caef53a09eea9e29e8da98be98c2e"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+﻿source_id,selected_agent,tasks,proposals,refusals,routed_models,success,fallback,errors,mean_latency_sec,p95_latency_sec
+apache,agent-network,1,1,2,models/isolation_forest_fallback_colab.joblib,1,1,0,0.020198,0.020198
+bgl,agent-system,200,200,400,models/isolation_forest_bgl_colab.joblib,200,0,0,0.040811375,0.06954244999999999
+hdfs,agent-system,200,200,400,models/isolation_forest_hdfs_colab.joblib,200,0,0,0.036222195000000006,0.06065225
+linux_auth,agent-security,200,200,400,models/random_forest_linux_auth.joblib,200,0,0,0.031836195,0.04658414999999999
+network_tabular,agent-network,200,200,400,models/random_forest_network_cicids.joblib,200,0,0,0.09667405000000001,0.14016649999999997
+syslog,agent-system,200,200,400,models/isolation_forest_linux_colab.joblib,200,0,0,0.019137205,0.029569799999999993
+wazuh,agent-security,200,200,400,models/isolation_forest_wazuh.joblib,200,0,0,0.155285665,0.2313744999999999
+windows_event,agent-system,200,400,200,models/isolation_forest_windows_local.joblib,200,0,0,0.070590065,0.18610554999999984

@@ -1,0 +1,126 @@
+```latex
+\chapter{Implémentation}
+
+\section{Organisation du prototype}
+
+L'implémentation Python reprend les frontières définies dans l'architecture présentée au chapitre précédent. Les modules d'ingestion assurent la lecture des sources, les adaptateurs construisent la représentation normalisée, le routeur identifie la famille de traitement et les agents exécutent les handlers correspondants. Les modules consacrés aux preuves enregistrent ensuite les résultats et les informations nécessaires à leur vérification.
+
+Cette organisation permet d'isoler une étape lorsqu'un comportement doit être diagnostiqué, sans devoir exécuter systématiquement toute la chaîne. Lors d'une campagne complète, les traitements restent néanmoins reliés par un même \texttt{run\_id}, ce qui permet de retrouver les opérations appartenant à une exécution donnée.
+
+Le prototype a été conçu pour rester relativement léger. En configuration locale, il peut fonctionner avec un bus en mémoire et une persistance SQLite. Redis intervient lorsque plusieurs processus ou plusieurs machines doivent partager les échanges et l'état d'idempotence. Le changement de transport ne modifie pas le contrat métier utilisé par les composants.
+
+
+\section{Environnement logiciel}
+
+Le cœur du prototype est développé en Python et s'appuie sur des bibliothèques courantes de manipulation de données et d'apprentissage automatique. Les traitements tabulaires réutilisent les transformations sauvegardées avec les paramètres employés pendant l'entraînement. Drain3 prend en charge le parsing incrémental des journaux textuels, tandis que FastAPI expose les opérations nécessaires au tableau de bord. Pour les campagnes distribuées, le transport des tâches repose sur Redis Streams.
+
+Les conditions d'exécution sont documentées au moyen des fichiers de dépendances, des commandes de campagne et des manifestes de preuves. Lorsqu'un algorithme ou une séparation des données comporte une composante aléatoire, les graines utilisées sont également enregistrées.
+
+Cette organisation améliore la reproductibilité des expériences, sans la rendre absolue. Celle-ci dépend encore de la disponibilité des jeux de données publics et, surtout, de l'accès à la même version des fichiers employés pendant les campagnes.
+
+
+\section{Adaptateurs multi-formats}
+
+Les adaptateurs intégrés au prototype couvrent plusieurs familles : HDFS, BGL, journaux Linux/auth, événements Windows, exports Wazuh, flux réseau tabulaires, syslog, JSONL, CEF/LEEF ainsi qu'une fixture Apache. Malgré leurs différences, ces adaptateurs suivent une logique commune : lecture de la source, validation minimale, parsing, puis normalisation.
+
+Une erreur rencontrée pendant cette chaîne n'est pas silencieusement ignorée. Elle est comptabilisée afin de distinguer les unités réellement traitées de celles qui n'ont pas pu traverser l'adaptateur.
+
+La campagne consacrée à la couverture multi-format porte sur $7\,001$ unités. HDFS et BGL y contribuent chacun pour $1\,000$ unités. Le cas Apache doit être interprété différemment : il repose sur une fixture synthétique d'une seule ligne, réutilisée par le protocole. Cette présence vérifie donc le fonctionnement de la voie Apache, mais elle n'est pas comparable à l'utilisation d'un corpus réel comportant plusieurs milliers d'événements.
+
+La normalisation expose les attributs communs nécessaires au routage, tout en conservant les champs propres à chaque format dans la charge structurée. Lorsqu'une source ne contient pas une adresse réseau, une sévérité ou un identifiant d'hôte, l'adaptateur n'invente pas de valeur équivalente.
+
+
+\section{Routeur et registre de modèles}
+
+Le routeur examine la structure d'un fichier ou d'un échantillon et calcule des scores pour les différentes familles connues. Il retient ensuite le candidat le mieux classé et conserve la marge qui le sépare des autres possibilités. Dans le protocole open-set, un seuil de score principal est fixé avant l'évaluation afin de permettre le rejet des entrées insuffisamment compatibles avec les familles connues.
+
+Une fois la famille déterminée, le registre fournit le modèle associé, son prétraitement ainsi que ses métadonnées. Cette séparation protège notamment contre l'utilisation d'un modèle sur un espace de caractéristiques qui ne lui correspond pas.
+
+Le registre conserve également la provenance de l'artefact chargé. Si aucun modèle compatible n'est disponible, ou si le routeur rejette l'entrée, le pipeline ne fabrique pas de prédiction. Un état explicite est enregistré à la place.
+
+
+\section{Implémentation des agents}
+
+La classe \texttt{MultiTaskIntelligentAgent} peut enregistrer plusieurs capacités et plusieurs handlers. Son état local contient les informations utilisées lors de la décision : disponibilité, charge, santé et mémoire. À la réception d'un appel, l'agent vérifie d'abord si la tâche est compatible avec ses capacités. Il peut alors proposer son exécution ou la refuser. Dans ce protocole, un refus constitue un comportement normal et non une exception.
+
+L'attribution locale est coordonnée par \texttt{ContractNetCoordinator}. Lorsque la négociation passe par Redis, \texttt{RedisContractNetCoordinator} s'appuie sur \texttt{RedisContractNetTransport}. Les deux chemins utilisent les types de messages décrits à la section~\ref{sec:agentmessage}. Les traces expérimentales distinguent propositions, refus, attributions, résultats et échecs afin de rendre le cycle observable.
+
+Pour les essais locaux, \texttt{LocalMessageBus} permet d'exécuter les échanges en mémoire et facilite les tests déterministes. \texttt{RedisMessageBus} est utilisé dès que la campagne implique plusieurs processus. Le transport reste toutefois neutre vis-à-vis de la compétence des agents : il déplace les messages, mais ne décide pas quel agent doit exécuter la tâche.
+
+
+\section{Idempotence et reprise}
+
+Deux mécanismes de persistance sont disponibles pour l'idempotence. \texttt{SQLiteIdempotencyStore} est adapté à l'exécution locale, tandis que \texttt{RedisIdempotencyStore} rend cet état accessible à plusieurs agents.
+
+Avant d'appliquer l'effet associé à une tâche, le worker vérifie sa clé logique. Lorsque l'opération se termine correctement, cette clé est enregistrée. Si la même tâche est rejouée par la suite, le système peut reconnaître qu'un effet a déjà été produit et éviter de le répéter. Le replay devient ainsi observable sans nécessairement provoquer un second effet.
+
+Cette protection a cependant une portée précise. Elle couvre les opérations effectivement instrumentées par le protocole et ne transforme pas toutes les interactions du système en transactions atomiques. Par exemple, un arrêt survenant après une opération externe non transactionnelle mais avant l'enregistrement de la clé demanderait une stratégie supplémentaire dans une version industrialisée.
+
+
+\section{Pipeline d'inférence}
+
+Deux conditions de bout en bout ont été instrumentées afin de distinguer le coût d'une décision légère de celui d'une inférence réelle.
+
+La condition H utilise une logique heuristique. La condition M charge au contraire les modèles réellement associés aux sources. Cette distinction est conservée dans les artefacts de campagne ; une latence obtenue avec le chemin heuristique ne peut donc pas être présentée comme le temps d'exécution d'un modèle réel.
+
+Pour chaque unité traitée, le pipeline enregistre la source, la voie empruntée, le statut final, la latence et l'utilisation éventuelle d'un fallback. Dans la campagne M, $1\,400$ unités sur $1\,401$ passent effectivement par une inférence de modèle. La fixture Apache constitue l'unique fallback. Aucun échec d'inférence n'est enregistré dans cet artefact.
+
+
+\section{Parsing HDFS et BGL}
+
+Le traitement de HDFS respecte une séparation préalable des données. Drain3 est ajusté à partir de la partie d'entraînement uniquement ; les templates et les séquences obtenus définissent alors la représentation utilisée par la suite. La validation sert au choix du seuil, puis l'état du parseur est gelé avant le test.
+
+Les scores produits au niveau événement sont ensuite agrégés par moyenne selon le \texttt{block\_id}. Ce choix est important, car les labels disponibles dans HDFS portent sur le bloc et non sur chaque ligne prise indépendamment.
+
+BGL suit un protocole différent, fondé sur des fenêtres. L'évaluation Histogram est complétée par une séparation entre templates connus et inconnus ainsi que par le baseline \texttt{UnknownTemplateBaseline}. Cette instrumentation permet de vérifier quelle part de la performance peut être liée à la simple nouveauté d'un template, plutôt que d'attribuer automatiquement l'ensemble du F1 à une modélisation plus générale de la dynamique des journaux.
+
+
+\section{Corrélation}
+
+La couche de corrélation reçoit les alertes déjà normalisées et applique des contraintes temporelles et contextuelles pour déterminer lesquelles peuvent appartenir au même ensemble. Lorsqu'un groupe est créé, il reçoit un identifiant d'incident distinct des identifiants utilisés pour les messages.
+
+Les événements sources restent référencés. Il devient ainsi possible de revenir du groupe corrélé vers les éléments qui l'ont constitué et de vérifier a posteriori pourquoi le rapprochement a été effectué.
+
+L'évaluation de cette couche utilise un corpus synthétique dans lequel les groupes attendus sont connus. Les incidents produits sont comparés à cette vérité de regroupement. Ce protocole isole le comportement du corrélateur ; il ne reproduit toutefois pas toute la diversité ni toutes les ambiguïtés que l'on rencontrerait dans un environnement SOC réel.
+
+
+\section{Mémoire et gouvernance}
+
+La mémoire des agents conserve des informations issues des traitements et des retours disponibles. Ces informations peuvent intervenir dans le calcul de l'utilité configurée. Pour vérifier leur effet, le benchmark compare des conditions exécutées avec mémoire activée et désactivée sur les mêmes niveaux de charge.
+
+La présence de cette fonctionnalité est donc testable indépendamment de son bénéfice. Si la mémoire ne produit pas de gain systématique sur une métrique, ce résultat doit rester visible plutôt que d'être interprété comme un défaut d'implémentation.
+
+La gouvernance des modèles suit la même logique. Le code permet d'évaluer un candidat et de simuler une décision en mode \textit{dry-run}, mais la mise à jour autonome en production reste hors du périmètre du prototype.
+
+Pour éviter de confondre présence du code et bénéfice démontré, l'audit distingue cinq niveaux de maturité expérimentale : existence de l'implémentation, test unitaire ou fonctionnel, comparaison effectivement exécutée, promotion observée et bénéfice mesuré après cette promotion. Les preuves actuellement disponibles ne couvrent pas l'ensemble de cette chaîne.
+
+
+\section{API, dashboard et audit}
+
+L'API expose les informations nécessaires au fonctionnement de l'interface : état des services, analyses, modèles disponibles, incidents et événements d'audit. Le dashboard consomme ces endpoints plutôt que d'accéder directement aux fichiers internes du prototype. Cette séparation limite le couplage entre l'interface et le stockage.
+
+Le tableau de bord sert avant tout à examiner les alertes, les incidents candidats et les éléments de preuve disponibles. Il constitue un support à l'analyse ; il ne remplace pas la validation humaine.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.94\textwidth]{dashboard_vue_ensemble.png}
+    \caption{Vue d'ensemble du tableau de bord. L'interface rassemble les volumes, états et alertes et relie une exécution à ses résultats. Sa validation est fonctionnelle et distincte de l'évaluation prédictive. Source : prototype local Ariel Logminer.}
+    \label{fig:dashboard-vue-ensemble}
+\end{figure}
+
+
+\section{Validation fonctionnelle}
+
+Les tests automatisés vérifient notamment les contrats, les transitions du protocole, le routage, les chemins de fallback et le replay idempotent. Ils sont complétés par les campagnes expérimentales, qui produisent des artefacts CSV et JSON destinés à l'analyse.
+
+Il faut toutefois distinguer deux types de conclusion. Un test fonctionnel réussi montre qu'un chemin du code produit le comportement attendu dans les conditions prévues. Il ne démontre pas qu'une méthode est statistiquement meilleure qu'une autre. Cette seconde question nécessite un protocole expérimental et des métriques adaptées.
+
+Les manifestes conservent la provenance des jeux de données ainsi que l'unité d'analyse retenue pour chaque campagne. Dans le cas du routeur open-set, les contrôles évitent également d'interpréter le score heuristique comme une probabilité calibrée. De la même manière, les expériences distribuées distinguent le fonctionnement du transport Redis de l'autonomie décisionnelle des agents.
+
+
+\section{Lien entre code et preuves}
+
+Chaque campagne possède un identifiant d'exécution et enregistre ses paramètres avec les résultats qu'elle produit. Cette liaison permet de retrouver l'origine d'une valeur sans dépendre d'une transcription manuelle.
+
+Les figures présentées dans le chapitre suivant sont générées directement à partir de ces artefacts CSV ou JSON. Un script commun centralise le style des graphiques, les unités et les sources utilisées. Cette organisation réduit le risque qu'un tableau, une figure et le texte du mémoire rapportent des valeurs différentes pour une même expérience.
+```

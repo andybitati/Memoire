@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "dataset": "CICIDS2017",
+  "input_directory": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE",
+  "scenario_files": {
+    "DDoS": "Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv",
+    "PortScan": "Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv",
+    "Bot": "Friday-WorkingHours-Morning.pcap_ISCX.csv",
+    "Infiltration": "Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv",
+    "WebAttacks": "Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv"
+  },
+  "seeds": [42, 43, 44, 45, 46],
+  "features": "All numeric CICIDS columns except Label, Flow ID, Source IP, Destination IP, Timestamp, SimillarHTTP and unnamed index columns; non-finite values replaced by 0 and values clipped to [-1e12, 1e12].",
+  "label_rule": "BENIGN=0; every other Label value=1",
+  "sampling": {
+    "max_train_per_class": 8000,
+    "max_test_per_class": 4000,
+    "chunksize": 100000,
+    "max_chunks_per_file": 2,
+    "holdout": "The complete scenario file is excluded from training; capped samples are collected independently from remaining files and held-out file.",
+    "random_control": "A fixed balanced pool of 12000 rows per class is built from all files, then split 2/3 train and 1/3 test with stratification for each seed.",
+    "random_pool_seed": 2026
+  },
+  "models": {
+    "RandomForest": {
+      "n_estimators": 100,
+      "max_depth": 28,
+      "min_samples_leaf": 2,
+      "class_weight": "balanced",
+      "n_jobs": 1
+    },
+    "ExtraTrees": {
+      "n_estimators": 140,
+      "max_depth": 32,
+      "min_samples_leaf": 2,
+      "class_weight": "balanced",
+      "n_jobs": 1
+    },
+    "HistGradientBoosting": {
+      "max_iter": 120,
+      "learning_rate": 0.08,
+      "max_leaf_nodes": 31,
+      "l2_regularization": 0.05
+    },
+    "LogisticRegression": {
+      "scaler": "StandardScaler fitted on train only",
+      "max_iter": 1000,
+      "class_weight": "balanced",
+      "solver": "lbfgs"
+    },
+    "SGDLogistic": {
+      "scaler": "StandardScaler fitted on train only",
+      "loss": "log_loss",
+      "alpha": 0.0001,
+      "max_iter": 1500,
+      "tol": 0.001,
+      "class_weight": "balanced"
+    }
+  },
+  "metrics": [
+    "accuracy",
+    "precision",
+    "recall",
+    "f1",
+    "pr_auc",
+    "mcc",
+    "fpr",
+    "tn",
+    "fp",
+    "fn",
+    "tp",
+    "train_time_sec",
+    "test_time_sec"
+  ],
+  "excluded_dataset": "The archive historically associated with F1=0.999965 is forbidden in these campaigns."
+}
+

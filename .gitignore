@@ -182,6 +182,10 @@ Ubuntu/
 # Virtualenv local
 .env
 .venv
+.venv-final-experiments/
+
+# Identifiants VM locaux chiffrés par Windows (DPAPI)
+.secrets/
 
 # Graphify knowledge graph
 graphify-out/cache/

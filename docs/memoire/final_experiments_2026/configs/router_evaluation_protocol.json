@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-09-08",
+  "status": "FROZEN_BEFORE_ROUTER_EXECUTION",
+  "objective": "evaluate_agents.model_router.route_model_on_neutral_named_files",
+  "unit": "derived CSV file routed once",
+  "chunk_rows": 100,
+  "max_chunks_per_source": 10,
+  "sample_rows": 100,
+  "truth_rule": "true_family is assigned from the source corpus before routing; chunk filenames are neutral",
+  "confidence_definition": "integer margin between the two largest routing scores; not a calibrated probability",
+  "sources": [
+    {
+      "id": "windows",
+      "true_family": "windows",
+      "source": "data/processed/final_experiments_2026/phase_5/normalized/windows_event.csv",
+      "source_sha256": "abdff73f6002afddbd28bc5dae78e80ebdbe78d0c4057f90432f14a94024ef96",
+      "sep": ";",
+      "max_rows": 1000
+    },
+    {
+      "id": "linux_auth",
+      "true_family": "linux_auth",
+      "source": "data/processed/final_experiments_2026/phase_5/normalized/linux_auth.csv",
+      "source_sha256": "0974cad87640891ef698aa5d82701fc24db7142b6cd5bcf5efc4ffaff50c8b98",
+      "sep": ",",
+      "max_rows": 1000
+    },
+    {
+      "id": "wazuh",
+      "true_family": "wazuh",
+      "source": "data/processed/final_experiments_2026/phase_5/normalized/wazuh.csv",
+      "source_sha256": "668dbd38f907147c98ba48fff367ac5873e882975a003bdaa9f5fcf88c4a26d8",
+      "sep": ";",
+      "max_rows": 1000
+    },
+    {
+      "id": "linux",
+      "true_family": "linux",
+      "source": "data/processed/final_experiments_2026/phase_5/normalized/syslog.csv",
+      "source_sha256": "3d04fcefb27b35948a38ed24f6469d14550a58fe475060ddf0dba225850a7917",
+      "sep": ";",
+      "max_rows": 1000
+    },
+    {
+      "id": "hdfs",
+      "true_family": "hdfs",
+      "source": "data/processed/final_experiments_2026/phase_3/prepared/hdfs_train_events.csv",
+      "source_sha256": "6e1f4eb7e866ab828a8631950e5ef4e98b76c1a6962c372c7dc7933652f17785",
+      "sep": ",",
+      "max_rows": 1000
+    },
+    {
+      "id": "bgl",
+      "true_family": "bgl",
+      "source": "data/processed/final_experiments_2026/phase_3/prepared/bgl_train_events.csv",
+      "source_sha256": "d8349e152019ba1374f41b71f14bc32f86f7f505044282a504a52111e7bde9c8",
+      "sep": ",",
+      "max_rows": 1000
+    },
+    {
+      "id": "network_cicids",
+      "true_family": "network_cicids",
+      "source": "data/processed/final_experiments_2026/phase_5/normalized/network_tabular.csv",
+      "source_sha256": "cf666693d52176e42fe3cb2866c82949734ac23cbe788d693afef4920db43488",
+      "sep": ",",
+      "max_rows": 1000
+    },
+    {
+      "id": "network_unsw",
+      "true_family": "network",
+      "source": "data/raw/Datasets/UNSW_NB15_testing-set.parquet",
+      "source_sha256": "a0270aeb2219aaa686551cdf6d4f94c4478b69f819225176149606cd1492d5e1",
+      "sep": "parquet",
+      "max_rows": 1000
+    },
+    {
+      "id": "apache",
+      "true_family": "network",
+      "source": "data/processed/final_experiments_2026/phase_5/normalized/apache.csv",
+      "source_sha256": "a3a21027fcbab65a81020675ffd974aa6a5b59be0ec4c35016eb8ae781c03d3a",
+      "sep": ";",
+      "max_rows": 1,
+      "limitation": "single existing synthetic fixture; router has no dedicated Apache family"
+    }
+  ]
+}

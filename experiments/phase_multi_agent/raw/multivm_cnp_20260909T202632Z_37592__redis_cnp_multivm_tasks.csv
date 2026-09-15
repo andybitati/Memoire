@@ -1,0 +1,61 @@
+task_id,task_type,winner,status,latency_ms,proposals,refusals,result_pid,result_host,reassignments
+multivm_cnp_20260909T202632Z_37592-task-0,parse.synthetic,debian-alpha,ok,52.525,"{""debian-alpha"": 0.86, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-1,route.synthetic,debian-alpha,ok,77.739,"{""debian-alpha"": 0.821, ""ubuntu-beta"": 0.863}",{},2787,andy,1
+multivm_cnp_20260909T202632Z_37592-task-2,detect.synthetic,ubuntu-beta,ok,45.424,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.839}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-3,correlate.synthetic,ubuntu-beta,ok,39.111,"{""ubuntu-beta"": 0.821}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-4,parse.synthetic,debian-alpha,ok,47.514,"{""debian-alpha"": 0.917637, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-5,route.synthetic,debian-alpha,ok,38.474,"{""debian-alpha"": 0.878714, ""ubuntu-beta"": 0.853739}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-6,detect.synthetic,ubuntu-beta,ok,40.698,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.896678}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-7,correlate.synthetic,ubuntu-beta,ok,37.395,"{""ubuntu-beta"": 0.878771}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-8,parse.synthetic,debian-alpha,ok,43.96,"{""debian-alpha"": 0.934312, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-9,route.synthetic,debian-alpha,ok,38.76,"{""debian-alpha"": 0.895436, ""ubuntu-beta"": 0.853739}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-10,detect.synthetic,ubuntu-beta,ok,39.137,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.913411}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-11,correlate.synthetic,ubuntu-beta,ok,36.942,"{""ubuntu-beta"": 0.895413}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-12,parse.synthetic,debian-alpha,ok,42.093,"{""debian-alpha"": 0.944383, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-13,route.synthetic,debian-alpha,ok,42.443,"{""debian-alpha"": 0.905451, ""ubuntu-beta"": 0.853739}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-14,detect.synthetic,ubuntu-beta,ok,45.778,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.923449}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-15,correlate.synthetic,ubuntu-beta,ok,41.022,"{""ubuntu-beta"": 0.905421}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-16,parse.synthetic,debian-alpha,ok,46.102,"{""debian-alpha"": 0.951057, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-17,route.synthetic,debian-alpha,ok,43.715,"{""debian-alpha"": 0.912119, ""ubuntu-beta"": 0.853739}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-18,detect.synthetic,ubuntu-beta,ok,43.677,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.930105}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-19,correlate.synthetic,ubuntu-beta,ok,159.112,"{""ubuntu-beta"": 0.912076}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-20,parse.synthetic,debian-alpha,ok,64.509,"{""debian-alpha"": 0.955819, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-21,route.synthetic,debian-alpha,ok,58.115,"{""debian-alpha"": 0.916869, ""ubuntu-beta"": 0.853739}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-22,detect.synthetic,ubuntu-beta,ok,62.952,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.934858}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-23,correlate.synthetic,ubuntu-beta,ok,53.943,"{""ubuntu-beta"": 0.916632}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-24,parse.synthetic,debian-alpha,ok,38.126,"{""debian-alpha"": 0.959351, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-25,route.synthetic,debian-alpha,ok,34.598,"{""debian-alpha"": 0.92041, ""ubuntu-beta"": 0.853739}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-26,detect.synthetic,ubuntu-beta,ok,37.571,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.938403}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-27,correlate.synthetic,ubuntu-beta,ok,35.111,"{""ubuntu-beta"": 0.920222}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-28,parse.synthetic,debian-alpha,ok,40.065,"{""debian-alpha"": 0.962146, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-29,route.synthetic,debian-alpha,ok,36.109,"{""debian-alpha"": 0.92321, ""ubuntu-beta"": 0.853739}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-30,detect.synthetic,ubuntu-beta,ok,38.806,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.941204}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-31,correlate.synthetic,ubuntu-beta,ok,35.432,"{""ubuntu-beta"": 0.923039}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-32,parse.synthetic,debian-alpha,ok,40.558,"{""debian-alpha"": 0.964383, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-33,route.synthetic,debian-alpha,ok,40.446,"{""debian-alpha"": 0.92544, ""ubuntu-beta"": 0.853739}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-34,detect.synthetic,ubuntu-beta,ok,42.783,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.94344}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-35,correlate.synthetic,ubuntu-beta,ok,37.841,"{""ubuntu-beta"": 0.925287}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-36,parse.synthetic,debian-alpha,ok,43.726,"{""debian-alpha"": 0.966209, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-37,route.synthetic,debian-alpha,ok,41.482,"{""debian-alpha"": 0.927263, ""ubuntu-beta"": 0.853739}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-38,detect.synthetic,ubuntu-beta,ok,37.697,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.945255}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-39,correlate.synthetic,ubuntu-beta,ok,33.656,"{""ubuntu-beta"": 0.927132}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-40,parse.synthetic,debian-alpha,ok,36.853,"{""debian-alpha"": 0.967719, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-41,route.synthetic,debian-alpha,ok,35.951,"{""debian-alpha"": 0.928779, ""ubuntu-beta"": 0.853739}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-42,detect.synthetic,ubuntu-beta,ok,44.535,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.946776}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-43,correlate.synthetic,ubuntu-beta,ok,36.464,"{""ubuntu-beta"": 0.928663}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-44,parse.synthetic,debian-alpha,ok,38.499,"{""debian-alpha"": 0.969013, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-45,route.synthetic,debian-alpha,ok,36.41,"{""debian-alpha"": 0.930065, ""ubuntu-beta"": 0.853739}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-46,detect.synthetic,ubuntu-beta,ok,47.437,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.948038}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-47,correlate.synthetic,ubuntu-beta,ok,37.968,"{""ubuntu-beta"": 0.929951}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-48,parse.synthetic,debian-alpha,ok,35.83,"{""debian-alpha"": 0.970126, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-49,route.synthetic,debian-alpha,ok,39.462,"{""debian-alpha"": 0.931175, ""ubuntu-beta"": 0.853739}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-50,detect.synthetic,ubuntu-beta,ok,40.601,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.949131}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-51,correlate.synthetic,ubuntu-beta,ok,34.821,"{""ubuntu-beta"": 0.931058}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-52,parse.synthetic,debian-alpha,ok,39.441,"{""debian-alpha"": 0.971083, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-53,route.synthetic,debian-alpha,ok,42.307,"{""debian-alpha"": 0.932129, ""ubuntu-beta"": 0.853739}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-54,detect.synthetic,ubuntu-beta,ok,42.216,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.95009}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-55,correlate.synthetic,ubuntu-beta,ok,54.853,"{""ubuntu-beta"": 0.932023}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-56,parse.synthetic,debian-alpha,ok,48.44,"{""debian-alpha"": 0.971922, ""ubuntu-beta"": 0.809}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-57,route.synthetic,debian-alpha,ok,53.252,"{""debian-alpha"": 0.932956, ""ubuntu-beta"": 0.853739}",{},2787,andy,0
+multivm_cnp_20260909T202632Z_37592-task-58,detect.synthetic,ubuntu-beta,ok,55.329,"{""debian-alpha"": 0.785, ""ubuntu-beta"": 0.950923}",{},4305,andy-VirtualBox,0
+multivm_cnp_20260909T202632Z_37592-task-59,correlate.synthetic,ubuntu-beta,ok,51.404,"{""ubuntu-beta"": 0.932852}","{""debian-alpha"": ""capability_missing""}",4305,andy-VirtualBox,0

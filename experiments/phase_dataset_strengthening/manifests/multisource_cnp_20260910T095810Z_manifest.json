@@ -1,0 +1,92 @@
+{
+  "run_id": "multisource_cnp_20260910T095810Z",
+  "config_sha256": "f0f40b654740cbdf3b578aeb733837d3c8b08d78c688a63e73457e76353e5885",
+  "sources": [
+    {
+      "source_id": "windows_event",
+      "path": "data/samples/Application.evtx",
+      "sha256": "7585ee27c6089ee2e83cf68ceed2ba5b63ac630ba78c3aca4a88a033f6d4ed20",
+      "selected_units": 200
+    },
+    {
+      "source_id": "linux_auth",
+      "path": "data/raw/Datasets/linux_auth_logs_labeled.csv",
+      "sha256": "fa5f0a3e9532c16320a290fa1e626b632318a577b4bf00025c2063540144d38f",
+      "selected_units": 200
+    },
+    {
+      "source_id": "wazuh",
+      "path": "data/raw/Datasets/06-20-October.csv",
+      "sha256": "fd20eb2c552d7090dc3eede662f0185a256ddb1253107ef9c045fb398d577e29",
+      "selected_units": 200
+    },
+    {
+      "source_id": "syslog",
+      "path": "data/raw/Datasets/Linux_2k.log",
+      "sha256": "b3e20bc1afe732ab1bf3ed1de4bf9c809e4194e02f7dea911d918e5342e8e173",
+      "selected_units": 200
+    },
+    {
+      "source_id": "apache",
+      "path": "data/processed/robustness_scalability_inputs/apache_access.log",
+      "sha256": "795ff201d7a354d429de197f97dce1ee70701296a85cde137b0381dc11a9ecd4",
+      "selected_units": 1
+    },
+    {
+      "source_id": "hdfs",
+      "path": "data/raw/Datasets/HDFS_1/HDFS.log",
+      "sha256": "0783096174d7832c618337f9609e06e04abd86ddd7089b3c12b407e63bfebc52",
+      "selected_units": 200
+    },
+    {
+      "source_id": "bgl",
+      "path": "data/raw/Datasets/BGL/BGL.log",
+      "sha256": "666130b15ef44eb32fd02bd053e6c6e007c37696b5e7e8b9d8e45b729876a5d2",
+      "selected_units": 200
+    },
+    {
+      "source_id": "network_tabular",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv",
+      "sha256": "6ff1580f5f81c0ae28a26f7631721018577f5f7c5e0feac28b795fcfe7b411ee",
+      "selected_units": 200
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "experiments/phase_dataset_strengthening/raw/multisource_cnp_20260910T095810Z_unit_trace.csv",
+      "sha256": "5484545b79cc7ee6ae14b2d2d22cb5b6a7a2ba005bf6f907034ee49ba38c5a6c"
+    },
+    {
+      "path": "experiments/phase_dataset_strengthening/raw/multisource_cnp_20260910T095810Z_cnp_messages.jsonl",
+      "sha256": "0b251e9799b4ebcfc780c2706a54c9811e3ac93bc408c5af7854f066a988a62d"
+    },
+    {
+      "path": "experiments/phase_dataset_strengthening/processed/multisource_cnp_20260910T095810Z_candidate_anomalies.csv",
+      "sha256": "b521cbdca352ea4ce344bb45ff5e19f1009b90a9051ffa7832a7ee2cb79ea5cd"
+    },
+    {
+      "path": "experiments/phase_dataset_strengthening/processed/multisource_cnp_20260910T095810Z_candidate_incidents.csv",
+      "sha256": "f8d4fa77049442fee62e7cfe073e7b419d7ac7ec7572d29ee6b87d7af11d0cff"
+    },
+    {
+      "path": "experiments/phase_dataset_strengthening/aggregated/multisource_cnp_e2e_summary.json",
+      "sha256": "c9703e0eb13a7acd332e954b668f16587534fca12f97bea81f228885a69da959"
+    },
+    {
+      "path": "experiments/phase_dataset_strengthening/aggregated/multisource_cnp_by_source.csv",
+      "sha256": "5ce98616babf0b3cfd963e2397176833f018cd1a88fd2353c23d2c8f6867db38"
+    },
+    {
+      "path": "experiments/phase_dataset_strengthening/aggregated/multisource_api_dashboard_snapshot.json",
+      "sha256": "3edd57580a3264e5b12f719168cafa61c2d8766a1d8ab5beddfe870ec03cd190"
+    },
+    {
+      "path": "experiments/phase_dataset_strengthening/figures/dataset_08_multisource_agent_distribution.png",
+      "sha256": "b472dc529550d27634f041ffaa7ed755fc9ba91dfe2ae4412ac5f604ec242249"
+    },
+    {
+      "path": "experiments/phase_dataset_strengthening/figures/dataset_09_multisource_pipeline_funnel.png",
+      "sha256": "dca3790a781702e17595b5a28999938da977a8cdb39049c99683ca8141f9c19c"
+    }
+  ]
+}

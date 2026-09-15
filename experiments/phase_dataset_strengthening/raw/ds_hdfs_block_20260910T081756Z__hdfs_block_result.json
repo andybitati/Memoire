@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "run_id": "ds_hdfs_block_20260910T081756Z",
+  "generated_at": "2026-09-10T08:25:40.494817+00:00",
+  "git_commit": "60327fe",
+  "protocol": {
+    "raw": "data/raw/Datasets/HDFS_1/HDFS.log",
+    "labels": "data/raw/Datasets/HDFS_1/anomaly_label.csv",
+    "split_unit": "block_id_ordered_by_first_raw_log_occurrence",
+    "split_ratios": [
+      0.6,
+      0.2,
+      0.2
+    ],
+    "sample_blocks": {
+      "train": 6000,
+      "validation": 2000,
+      "test": 2000
+    },
+    "sample_seed": 42,
+    "drain3": {
+      "fit": "train_only",
+      "inference": "match_only",
+      "sim_th": 0.4,
+      "depth": 4,
+      "max_children": 100
+    },
+    "event_score": "histogram_template_source_severity_rarity",
+    "aggregators": [
+      "maximum",
+      "mean",
+      "abnormal_ratio"
+    ],
+    "selection_partition": "validation_only",
+    "selection_tiebreak": [
+      "lower_fpr",
+      "higher_mcc",
+      "higher_threshold"
+    ]
+  },
+  "inputs": {
+    "raw": "data/raw/Datasets/HDFS_1/HDFS.log",
+    "raw_sha256": "0783096174d7832c618337f9609e06e04abd86ddd7089b3c12b407e63bfebc52",
+    "labels": "data/raw/Datasets/HDFS_1/anomaly_label.csv",
+    "labels_sha256": "1c711ed6c8848fc3243fb4d092f172f31d128c8a6ec7f26ebba72ab931885ed8",
+    "raw_lines": 11175629,
+    "labels_count": 575061,
+    "blocks_found": 575061,
+    "labels_without_observed_block": 0
+  },
+  "full_partition_counts": {
+    "train": 345036,
+    "validation": 115012,
+    "test": 115013
+  },
+  "selected_block_counts": {
+    "train": 6000,
+    "validation": 2000,
+    "test": 2000
+  },
+  "selected_event_counts": {
+    "train": 126368,
+    "validation": 37153,
+    "test": 30948
+  },
+  "selected_positive_blocks": {
+    "train": 194,
+    "validation": 70,
+    "test": 29
+  },
+  "assertions": {
+    "train_val_disjoint": true,
+    "train_test_disjoint": true,
+    "val_test_disjoint": true,
+    "selection_uses_test_for_threshold": false,
+    "selection_uses_test_for_aggregator": false,
+    "drain3_train_only": true
+  },
+  "diagnostics": {
+    "cross_split_lines_skipped": 0,
+    "multi_selected_block_lines": 0,
+    "unparsed_selected_lines": 0,
+    "multi_block_lines_in_full_source": 0
+  },
+  "drain3": {
+    "add_log_message_calls": 126368,
+    "fit_partition": "train_only",
+    "inference_method": "match_only",
+    "state_sha256_before_inference": "deb37a7c9feb396df2d9dde336e707b225ef508e439df9516f9457ef73d06ab7",
+    "cluster_count_before_inference": 28,
+    "state_sha256_after_inference": "deb37a7c9feb396df2d9dde336e707b225ef508e439df9516f9457ef73d06ab7",
+    "cluster_count_after_inference": 28,
+    "inference_updates": 0
+  },
+  "event_level": {
+    "threshold": 3.181118253462834,
+    "validation": {
+      "n": 37153,
+      "prevalence": 0.03458670901407693,
+      "precision": 0.6814516129032258,
+      "recall": 0.13151750972762646,
+      "f1": 0.22048271363339855,
+      "pr_auc": 0.1310632885620877,
+      "mcc": 0.29019208816295655,
+      "fpr": 0.0022025203524032562,
+      "tp": 169,
+      "fp": 79,
+      "tn": 35789,
+      "fn": 1116,
+      "predicted_positive": 248,
+      "threshold": 3.181118253462834
+    },
+    "test": {
+      "n": 30948,
+      "prevalence": 0.009790616518030244,
+      "precision": 0.6190476190476191,
+      "recall": 0.12871287128712872,
+      "f1": 0.21311475409836064,
+      "pr_auc": 0.09898034646136003,
+      "mcc": 0.2794656676629814,
+      "fpr": 0.0007831620166421928,
+      "tp": 39,
+      "fp": 24,
+      "tn": 30621,
+      "fn": 264,
+      "predicted_positive": 63,
+      "threshold": 3.181118253462834
+    }
+  },
+  "block_selection": {
+    "selected_aggregator": "mean",
+    "selected_threshold": 1.2729429339548877,
+    "validation_f1": 0.9395973154362416,
+    "test_f1": 0.8923076923076924
+  },
+  "historical_reference": {
+    "protocol": "strict_event_level_2026_phase_3",
+    "f1": 0.269307,
+    "equivalent_benchmark": false
+  },
+  "artifacts": [
+    "experiments/phase_dataset_strengthening/processed/ds_hdfs_block_20260910T081756Z__hdfs_full_block_partitions.txt.gz",
+    "experiments/phase_dataset_strengthening/processed/ds_hdfs_block_20260910T081756Z__hdfs_selected_blocks.csv",
+    "experiments/phase_dataset_strengthening/raw/ds_hdfs_block_20260910T081756Z__hdfs_selected_events.csv.gz",
+    "experiments/phase_dataset_strengthening/processed/ds_hdfs_block_20260910T081756Z__hdfs_drain3_train_state.bin",
+    "experiments/phase_dataset_strengthening/aggregated/ds_hdfs_block_20260910T081756Z__hdfs_block_aggregators.csv",
+    "experiments/phase_dataset_strengthening/aggregated/ds_hdfs_block_20260910T081756Z__hdfs_event_block_comparison.csv",
+    "experiments/phase_dataset_strengthening/figures/dataset_01_hdfs_event_vs_block.png",
+    "experiments/phase_dataset_strengthening/figures/dataset_02_hdfs_block_aggregators.png"
+  ]
+}
