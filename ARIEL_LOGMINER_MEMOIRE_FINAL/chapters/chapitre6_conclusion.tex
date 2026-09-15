@@ -1,19 +1,20 @@
-\chapter{Conclusion et perspectives}
+\chapter*{Conclusion générale et perspectives}
+\addcontentsline{toc}{chapter}{Conclusion générale et perspectives}
 
 \section{Bilan}
 
-Ce mémoire a conçu et évalué Ariel Logminer comme prototype multi-agent léger pour l’analyse de journaux système et réseau. Le travail n’introduit pas un nouvel algorithme de détection. Sa contribution principale est une architecture traçable qui relie normalisation, routage open-set, portefeuille de modèles, Contract Net, idempotence, corrélation et restitution.
+Ce mémoire a conçu et évalué Ariel Logminer, un prototype multi-agent léger pour l’analyse de journaux système et réseau. Sa contribution principale est une architecture traçable qui relie normalisation, routage open-set, portefeuille de modèles, Contract Net, idempotence, corrélation et restitution, plutôt qu’un nouvel algorithme de détection.
 
-L’évaluation a volontairement confronté les résultats favorables à des protocoles plus exigeants. Sur CICIDS2017, le F1 du Random Forest passe de 0,995142 sous séparation aléatoire à 0,157744 en holdout scénario et 0,437429 en séparation temporelle. Sur HDFS, l’unité bloc alignée sur le label atteint 0,892308, avec Drain3 ajusté sur l’entraînement seulement. Sur BGL, le F1 de 0,913698 est accompagné d’un taux de templates inconnus de 89,8081\,\% et d’un baseline à 0,277885.
+L’évaluation confronte plusieurs protocoles. Sur CICIDS2017, le F1 du Random Forest passe de $0{,}995142$ sous séparation aléatoire à $0{,}157744$ en holdout scénario et $0{,}437429$ en séparation temporelle. Sur HDFS, l’unité bloc alignée sur le label atteint $0{,}892308$, avec Drain3 ajusté sur l’entraînement seulement. Sur BGL, le F1 de $0{,}913698$ est associé à un taux de templates inconnus de $89{,}8081\,\%$ et à un baseline de $0{,}277885$.
 
-Les expériences d’architecture complètent ces résultats. Le routeur rejette trois fichiers inconnus sur trois sans rejeter les 28 connus au seuil gelé. La chaîne multi-format lit, parse et normalise 7,001 unités présentes. La condition avec modèles réels exécute 1,400 inférences sur 1,401. Enfin, deux VM Debian et Ubuntu terminent 60 tâches, avec quinze refus, un échec contrôlé, une réattribution et aucun effet dupliqué lors du replay.
+Les expériences d’architecture complètent ces résultats. Le routeur rejette trois fichiers inconnus sur trois sans rejeter les 28 connus au seuil gelé. La chaîne multiformat lit, parse et normalise $7\,001$ unités. La condition avec modèles réels exécute $1\,400$ inférences sur $1\,401$. Deux VM Debian et Ubuntu terminent en outre 60 tâches, avec quinze refus, un échec contrôlé, une réattribution et aucun effet dupliqué lors du replay.
 
 \section{Réponse aux questions de recherche}
 
 \begin{description}
   \item[QR1 -- partiellement renforcée.] Le schéma commun achemine toutes les unités du protocole multi-format et conserve leur provenance. La diversité de tous les formats possibles et la complétude de chaque champ ne sont pas démontrées.
   \item[QR2 -- partiellement renforcée.] Les agents sont organisés autour de capacités, handlers, état, mémoire et messages Contract Net auditables. Leur autonomie reste bornée par une utilité configurée et un coordinateur.
-  \item[QR3 -- partiellement renforcée.] Le routeur sélectionne un traitement compatible pour les 28 fichiers connus et rejette les trois inconnus du jeu final. Ce résultat porte sur neuf groupes et ne démontre pas un gain prédictif systématique.
+  \item[QR3 -- partiellement renforcée.] Le routeur sélectionne un traitement compatible pour les 28 fichiers connus et rejette les trois inconnus du jeu évalué. Ce résultat porte sur neuf groupes ; le gain prédictif n’est pas systématique.
   \item[QR4 -- partiellement soutenue.] Le dashboard permet de filtrer et d’inspecter anomalies, incidents et traces. Son utilisabilité n’a pas été mesurée auprès d’un groupe d’analystes.
   \item[QR5 -- partiellement soutenue.] La mémoire influence la décision dans des contrôles ciblés et le code de comparaison de modèles existe. Aucun gain systématique ni cycle complet de mise à jour autonome n’est évalué.
   \item[QR6 -- fortement soutenue dans le laboratoire.] L’évaluation combine métriques prédictives, couverture, latence, ressources, captures et artefacts. La campagne multi-VM complète cette méthode par la répartition, le refus, la reprise et l’idempotence.
@@ -23,36 +24,38 @@ Les expériences d’architecture complètent ces résultats. Le routeur rejette
 
 \begin{table}[H]
 \centering
-\caption{Statut final des hypothèses.}
+\caption{Statut des hypothèses.}
 \label{tab:statut-hypotheses}
 \begin{tabularx}{\textwidth}{p{0.12\textwidth} p{0.27\textwidth} X}
 \toprule
 \textbf{Hyp.} & \textbf{Statut} & \textbf{Justification} \\
 \midrule
-H1 & PARTIELLEMENT SOUTENUE & 7,001/7,001 unités présentes traitées ; couverture universelle non testée. \\
-H2 & PARTIELLEMENT SOUTENUE & Modularité, traçabilité, refus et reprise observés ; gain de performance non systématique. \\
-H3 & PARTIELLEMENT SOUTENUE & Routage compatible, rejet 3/3 et faux rejet 0/28 dans un jeu indépendant limité. \\
+H1 & PARTIELLEMENT SOUTENUE & $7\,001/7\,001$ unités présentes traitées ; couverture universelle non testée. \\
+H2 & PARTIELLEMENT SOUTENUE & Modularité, traçabilité, refus et reprise observés ; comparée à une exécution monolithique (section~6.4), l’architecture par agents n’apporte pas de gain de performance systématique. \\
+H3 & PARTIELLEMENT SOUTENUE & Routage compatible, rejet 3/3 et faux rejet 0/28 dans un jeu indépendant limité ; sur le plan prédictif, le gain apporté par le routage n’est pas systématique (cf.\ QR3). \\
 H4 & PARTIELLEMENT SOUTENUE & Modèles légers intégrés et évalués ; performances dépendantes des splits et des sources. \\
-H5 & PARTIELLEMENT SOUTENUE & Influence décisionnelle observée ; bénéfice et mise à jour continue non évalués. \\
+H5 & PARTIELLEMENT SOUTENUE & Influence décisionnelle observée ; bénéfice et mise à jour contrôlée non évalués. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \section{Apports scientifiques et techniques}
 
-Le premier apport est méthodologique : chaque score est rattaché à une question statistique. Cette discipline explique pourquoi plusieurs valeurs du même dataset coexistent sans contradiction. Elle conduit aussi à retenir le F1 bloc pour HDFS, à compléter BGL par un baseline et à auditer les variables de CSE-CIC-IDS2018.
+L’apport méthodologique rattache chaque score à une question statistique. Plusieurs valeurs d’un même jeu de données peuvent ainsi coexister sans contradiction. Ce cadre conduit à retenir le F1 bloc pour HDFS, à compléter BGL par un baseline et à auditer les variables de CSE-CIC-IDS2018.
 
-Le deuxième apport est architectural. \texttt{MultiTaskIntelligentAgent} matérialise capacité, état, mémoire et plusieurs handlers. Le Contract Net rend l’attribution explicite. Les bus local et Redis séparent logique métier et transport. Les magasins SQLite et Redis protègent les effets logiques rejoués.
+L’apport architectural repose sur \texttt{MultiTaskIntelligentAgent}, qui matérialise capacité, état, mémoire et plusieurs handlers. Le Contract Net rend l’attribution explicite. Les bus local et Redis séparent logique métier et transport. Les magasins SQLite et Redis protègent les effets logiques rejoués.
 
-Le troisième apport est expérimental. Le benchmark de 160 exécutions montre le coût du protocole au lieu de présumer un gain. La campagne multi-VM établit un fonctionnement inter-machine reproductible dans une topologie clairement décrite. L’exécution multi-source vérifie enfin que les modèles recommandés sont réellement appelés.
+L’apport expérimental comprend un benchmark de 160 exécutions qui mesure le coût du protocole, une campagne multi-VM qui établit le fonctionnement inter-machine dans une topologie décrite et une exécution multi-source qui vérifie l’appel effectif des modèles recommandés.
+
 
 \section{Limites}
 
-Les datasets et périodes restent limités. CICIDS2017 généralise mal aux scénarios tenus hors entraînement. CSE-CIC-IDS2018 dépend fortement de quelques variables. Le test HDFS contient 29 blocs positifs et le groupe BGL de templates connus n’en contient aucun. Le jeu open-set ne comporte que trois inconnus.
+Les jeux de données et périodes restent limités. CICIDS2017 généralise mal aux scénarios tenus hors entraînement. CSE-CIC-IDS2018 dépend fortement de quelques variables. Le test HDFS contient 29 blocs positifs et le groupe BGL de templates connus n’en contient aucun. Le jeu open-set ne comporte que trois inconnus.
 
 Le système distribué utilise un Redis central et deux VM sur une campagne courte. Aucune panne du broker, partition réseau ou charge durable n’est testée. Les mesures CPU et mémoire sont des métriques de processus local ; elles ne décrivent pas une infrastructure complète. Aucune exactitude globale multi-source n’est disponible.
 
-La mémoire ne procure pas de gain systématique dans le benchmark. La mise à jour contrôlée dispose de code et d’un dry-run, mais son bénéfice n’est pas évalué par une série de promotions et rejets observés. Ces limites interdisent de présenter le prototype comme une solution autonome de production.
+La mémoire ne procure pas de gain systématique dans le benchmark. La mise à jour contrôlée dispose de code et d’un mode dry-run, mais son bénéfice n’est pas évalué par une série de promotions et rejets observés. Le prototype ne correspond donc pas à une solution autonome de production.
+
 
 \section{Perspectives}
 
@@ -64,6 +67,6 @@ L’industrialisation requiert ensuite une réplication du transport, des tests 
 
 \section{Conclusion générale}
 
-Ariel Logminer montre qu’une analyse multi-source peut être organisée autour d’agents réellement décisionnels sans masquer le coût ni les limites de cette organisation. Le prototype sait normaliser, router, attribuer, exécuter, corréler et conserver les preuves. Ses résultats les plus crédibles sont ceux dont le protocole rend aussi visibles les faiblesses.
+Ariel Logminer montre qu’une analyse multi-source peut être organisée autour d’agents décisionnels dont le coût et les limites sont mesurés. Le prototype normalise, route, attribue, exécute, corrèle et conserve les preuves. Chaque résultat reste associé au protocole qui en fixe la portée.
 
-La conclusion centrale est donc mesurée : l’architecture est fonctionnelle et scientifiquement auditable dans le laboratoire étudié. Son efficacité prédictive et opérationnelle varie selon les données, les unités et les charges. Le passage à une exploitation industrielle demeure une perspective à valider, non une propriété acquise.
+L’architecture est fonctionnelle et auditable dans le laboratoire étudié. Son efficacité prédictive et opérationnelle varie selon les données, les unités et les charges. Une exploitation industrielle nécessiterait les validations supplémentaires décrites dans les perspectives.

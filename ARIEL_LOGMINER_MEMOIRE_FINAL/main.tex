@@ -97,6 +97,7 @@
 
 \graphicspath{
     {figures/}
+    {figures/final/}
     {captures/}
     {figures/dashboard/}
 }
@@ -145,6 +146,7 @@
 % ============================================================
 
 \begin{document}
+\hypersetup{pageanchor=false}
 
 \sloppy
 
@@ -257,6 +259,7 @@ ANNÉE ACADÉMIQUE : 2025--2026
 % ============================================================
 
 \pagenumbering{roman}
+\hypersetup{pageanchor=true}
 
 \include{frontmatter/epigraphe}
 
@@ -279,9 +282,9 @@ hétérogènes. Un agent est ici une entité logicielle dotée de capacités,
 d'un état, d'une mémoire et d'une politique locale ; il peut proposer,
 refuser puis exécuter une tâche au moyen de handlers compatibles. La
 négociation repose sur un protocole Contract Net explicite et sur un
-transport local ou Redis. L'autonomie et la distribution sont donc
-employées dans un sens logiciel et expérimental, sans prétendre à une
-intelligence générale ni à un SOC industriel.
+transport local ou Redis. L'autonomie et la distribution désignent ici
+des propriétés logicielles évaluées en laboratoire. L'intelligence générale
+et le fonctionnement d'un SOC industriel sont hors périmètre.
 
 L'évaluation met particulièrement en évidence l'influence du protocole
 expérimental sur les performances. Sur CICIDS2017, un Random Forest
@@ -312,7 +315,7 @@ $0{,}233670$, alors que HistGradientBoosting obtient une PR-AUC macro de
 $0{,}567697$. Ces résultats indiquent qu'un changement de modèle
 améliore certaines métriques sans supprimer la fragilité inter-scénarios.
 
-Pour HDFS et BGL, le protocole final sépare strictement entraînement,
+Pour HDFS et BGL, le protocole sépare strictement entraînement,
 validation et test. Drain3 est ajusté uniquement sur l'entraînement puis
 gelé avant les deux partitions suivantes. Au niveau \texttt{block\_id}, Histogram
 atteint un F1 de $0{,}892308$ sur 2\,000 blocs HDFS, dont 29 positifs ;
@@ -329,12 +332,13 @@ premières caractéristiques ramène le F1 à $0{,}657859$. Le score principal
 est donc présenté comme fortement dépendant des variables et du scénario.
 
 La validation multiformat lit, parse et normalise $7\,001/7\,001$ unités.
-Cette couverture de pipeline ne signifie pas que tous les champs sont
-complets ou que le brut est conservé de façon universelle. Une politique
+Ce résultat mesure la couverture fonctionnelle des formats testés ; il
+n'établit ni la complétude de tous les champs ni la conservation universelle
+du contenu brut. Une politique
 open-set calibrée uniquement sur les sources connues rejette $3/3$ fichiers
 inconnus sans faux rejet parmi $28$ fichiers connus ; la couverture est
 $0{,}903226$ et la marge de décision n'est pas une probabilité calibrée.
-Cette réussite de routage ne démontre pas un gain prédictif systématique.
+Le gain prédictif du routage spécialisé n'est pas systématique.
 
 Le benchmark contrôlé couvre quatre architectures, quatre charges et dix
 répétitions, soit $160$ runs et $264\,000$ traitements sans échec. Les
@@ -347,8 +351,8 @@ La campagne multi-VM retenue (\texttt{multivm\_cnp\_20260909T202632Z\_37592})
 exécute 60/60 tâches sur Debian et Ubuntu, réparties 30/30, avec Redis
 centralisé sur l'hôte de laboratoire. Elle comprend 15 refus, un échec
 contrôlé, une réattribution réussie et un replay idempotent sans effet
-dupliqué. Cette preuve reste une validation de laboratoire ; elle ne
-constitue pas une démonstration de haute disponibilité industrielle.
+dupliqué. La campagne valide ces mécanismes dans la topologie de laboratoire
+étudiée. La haute disponibilité industrielle n'a pas été évaluée.
 Le corrélateur, évalué sur un corpus synthétique contrôlé, obtient une
 précision de $0{,}764706$, un rappel de $0{,}866667$ et un F1 pairwise de
 $0{,}812500$.
@@ -356,16 +360,16 @@ $0{,}812500$.
 Dans la campagne CNP multi-source consolidée, la condition M exécute
 réellement les artefacts compatibles sur $1400/1401$ unités, avec un seul
 fallback Apache et aucune erreur. Sa latence moyenne est de $0{,}105420$~s,
-contre $0{,}031027$~s pour la condition heuristique H. Aucune accuracy
-globale multi-source n'est fabriquée ; le F1 Linux/auth $0{,}390244$ reste
-descriptif sur la source sélectionnée.
+contre $0{,}031027$~s pour la condition heuristique H. L'absence de labels
+homogènes exclut le calcul d'une exactitude globale multi-source ; le F1
+Linux/auth $0{,}390244$ reste descriptif de la source sélectionnée.
 
-Enfin, le dépôt contient une procédure de comparaison des modèles et un
-mode dry-run. Certaines branches sont testées, mais les artefacts finaux
-ne démontrent pas un cycle complet et répété de promotion et de rejet ;
-le bénéfice global de cette procédure reste non évalué.
+Le dépôt contient aussi une procédure de comparaison des modèles et un
+mode dry-run. Les tests couvrent certaines branches, mais pas un cycle
+complet et répété de promotion et de rejet. Le bénéfice global de cette
+procédure n'a pas été évalué.
 
-Les cinq hypothèses de recherche sont finalement partiellement
+Les cinq hypothèses de recherche sont partiellement
 soutenues. Les trois premières questions reçoivent des réponses
 partielles renforcées, les quatrième et cinquième des réponses partielles,
 et la sixième une réponse forte dans le périmètre du laboratoire. La contribution principale
@@ -394,9 +398,9 @@ and network log analysis. An agent is defined as a software entity with
 declared capabilities, state, memory, and a local policy; it can propose,
 refuse, and execute tasks through compatible handlers. Negotiation follows
 an explicit Contract Net Protocol and communication may use a local bus or
-Redis. Autonomy and distribution are therefore used in a restricted
-software and experimental sense, without claiming general intelligence or
-an industrial SOC platform.
+Redis. Autonomy and distribution refer here to software properties evaluated
+in a laboratory setting. General intelligence and operation as an industrial
+SOC platform are outside the evaluated scope.
 
 The evaluation particularly highlights the influence of the experimental
 protocol on measured performance. On CICIDS2017, a Random Forest evaluated
@@ -427,7 +431,7 @@ F1-score, $0.233670$, while HistGradientBoosting reaches a macro PR-AUC
 of $0.567697$. Changing the classifier therefore improves some metrics
 without eliminating inter-scenario fragility.
 
-For HDFS and BGL, the final protocol strictly separates training,
+For HDFS and BGL, the protocol strictly separates training,
 validation, and test partitions. Drain3 is fitted only on the training
 partition and frozen before validation and test. At the \texttt{block\_id} level,
 Histogram reaches an F1-score of $0.892308$ on 2,000 HDFS blocks, with 29
@@ -444,12 +448,12 @@ score is therefore reported as strongly dependent on the features and
 scenario.
 
 The multi-format validation reads, parses, and normalizes $7,001/7,001$
-units. This pipeline coverage does not imply complete fields or universal
-raw preservation. An open-set policy calibrated only on known sources
+units. This result measures functional coverage of the tested formats; it
+does not establish field completeness or universal preservation of raw data.
+An open-set policy calibrated only on known sources
 rejects $3/3$ unknown files without falsely rejecting any of the 28 known
 files; coverage is $0.903226$, and the decision margin is not a calibrated
-probability. This routing success does not demonstrate a systematic
-predictive gain.
+probability. Specialized routing yields no systematic predictive gain.
 
 The controlled architecture benchmark covers four architectures, four
 loads, and ten repetitions, yielding 160 runs and 264,000 treatments with
@@ -462,23 +466,23 @@ The retained multi-VM campaign (\texttt{multivm\_cnp\_20260909T202632Z\_37592})
 executes 60/60 tasks on Debian and Ubuntu, split 30/30, with Redis
 centralized on the laboratory host. It includes 15 refusals, one
 controlled failure, one successful reassignment, and an idempotent replay
-with no duplicated effect. This remains laboratory validation and does not
-demonstrate industrial high availability. The correlation mechanism,
+with no duplicated effect. The campaign validates these mechanisms in the
+laboratory topology; industrial high availability was not evaluated. The correlation mechanism,
 evaluated on a controlled synthetic corpus, obtains a precision of
 $0.764706$, a recall of $0.866667$, and a pairwise F1-score of $0.812500$.
 
 In the consolidated multi-source CNP campaign, condition M actually runs
 compatible artifacts on $1400/1401$ units, with one Apache fallback and no
 error. Its mean latency is $0.105420$~s, compared with $0.031027$~s for
-the heuristic H condition. No global multi-source accuracy is fabricated;
-the Linux/auth F1 of $0.390244$ remains descriptive for the selected source.
+the heuristic H condition. The lack of homogeneous labels precludes a global
+multi-source accuracy; the Linux/auth F1 of $0.390244$ remains descriptive
+of the selected source.
 
-Finally, the repository contains a model-comparison procedure and a
-dry-run mode. Some branches are tested, but the final artifacts do not
-demonstrate a complete and repeated promotion/rejection cycle; its overall
-benefit remains unevaluated.
+The repository also contains a model-comparison procedure and a dry-run mode.
+The tests cover some branches, but not a complete and repeated
+promotion/rejection cycle. Its overall benefit was not evaluated.
 
-All five research hypotheses are ultimately partially supported. The
+All five research hypotheses are partially supported. The
 first three research questions receive strengthened partial answers, the
 fourth and fifth receive partial answers, and the sixth receives a strong
 answer within the laboratory scope. Ariel \logminer{} therefore contributes primarily an
@@ -494,6 +498,135 @@ cybersecurity, system logs, network logs, anomaly detection,
 intelligent agents, Redis Streams, routing, correlation,
 machine learning, reproducibility.
 
+
+%=============================================================
+%Mokusé
+%=============================================================
+\chapter*{Bokuse}
+
+\addcontentsline{toc}{chapter}{Bokuse}
+
+Mémoire oyo ezali kolakisa Ariel \logminer{}, architecture moko ya
+multi-agents ya pete mpe oyo ekabolami na environnement ya laboratoire
+mpo na kosala analyse ya ba journaux ya système mpe ya réseau oyo ezali
+ya lolenge ndenge na ndenge. Agent moko ezali awa entité logicielle oyo
+ezali na makoki, état, mémoire mpe politique locale na yango ; ekoki
+kopesa proposition ya mosala, koboya yango, mpe na sima kosala yango na
+nzela ya ba handlers oyo ekokani na mosala yango. Négociation kati na
+ba agents etongami likolo ya protocole Contract Net oyo elimbolami
+polele, mpe transport ekoki kozala local to kosalema na nzela ya Redis.
+Autonomie mpe distribution ezali awa kolakisa bizaleli ya logiciel oyo
+emekami na laboratoire. Intelligence générale mpe fonctionnement ya SOC
+industriel ezali na libanda ya périmètre ya mosala oyo.
+
+Évaluation emonisi mingimingi influence ya protocole expérimental likolo
+ya performances. Na CICIDS2017, Random Forest oyo emekami na séparation
+aléatoire stratifiée ezwi F1 moyen ya
+
+\[
+0{,}995142 \pm 0{,}001013,
+\]
+
+na intervalle de confiance ya 95\,\% ya
+
+\[
+[0{,}993884\,;\,0{,}996400],
+\]
+
+mpo na ba graines mitano. Tango ba scénarios mitano elongolami moko na
+moko na entraînement, F1 macro ekiti kino
+
+\[
+0{,}157744.
+\]
+
+Scénario DDoS ebateli F1 ya $0{,}778774$, nzokande PortScan, Bot,
+Infiltration mpe WebAttacks emonisi performances ya se mingi to ya zéro
+na seuil oyo eponamaki. Comparaison ya ba modèles légers mitano emonisi
+ete Logistic Regression ezwi F1 macro ya malamu koleka, oyo ezali
+$0{,}233670$, nzokande HistGradientBoosting ezwi PR-AUC macro ya
+$0{,}567697$. Ba résultats oyo ezali kolakisa ete kobongola modèle ekoki
+kobongisa ba métriques mosusu, kasi elongolaka te fragilité oyo emonanaka
+kati na ba scénarios.
+
+Mpo na HDFS mpe BGL, protocole ekabolaka na ndenge ya makasi entraînement,
+validation mpe test. Drain3 ebongisami kaka na entraînement mpe na sima
+ekangami liboso ya kosalela ba partitions mibale oyo elandi. Na niveau
+\texttt{block\_id}, Histogram ekomi na F1 ya $0{,}892308$ na 2\,000 blocs
+HDFS, kati na yango 29 ezali positifs ; bootstrap descriptif epesi médiane
+ya $0{,}894737$ mpe intervalle
+$[0{,}800000\,;\,0{,}961039]$. Na BGL, F1 ezali $0{,}913698$, kasi
+89,8081\,\% ya ba templates ya test eyebanaki te na train, mpe baseline
+« template inconnu » ekomi kaka na $0{,}277885$.
+
+Na CSE-CIC-IDS2018, séparation kati na mokolo ya 15 mpe ya 16 février
+epesi F1 moyen ya $0{,}999212$ na régression logistique contre
+$0{,}401375$ na Random Forest. Audit emonisi nzokande ete
+\texttt{Dst Port} yango moko ekomi na $0{,}999720$, mpe tango ba
+caractéristiques zomi ya liboso elongolami, F1 ekiti kino
+$0{,}657859$. Na yango, score principal emonisami lokola résultat oyo
+etali mingi ba variables oyo eponami mpe scénario oyo esalelami.
+
+Validation multiformat etangi, eparse mpe enormalise
+$7\,001/7\,001$ unités. Résultat oyo ezali komeka couverture fonctionnelle
+ya ba formats oyo emekamaki ; ezali te kolakisa ete ba champs nyonso
+ezali complets, mpe ezali mpe te kolakisa ete contenu brut nyonso
+ebatelami na ndenge ya universel. Politique open-set oyo ecalibramaki
+kaka na ba sources oyo eyebani eboyi $3/3$ fichiers inconnus kozanga
+faux rejet kati na $28$ fichiers connus ; couverture ezali
+$0{,}903226$, mpe marge ya décision ezali te probabilité calibrée.
+Gain prédictif ya routage spécialisé ezalaka te systématique.
+
+Benchmark contrôlé esangisi architectures minei, charges minei mpe
+répétitions zomi, elingi koloba $160$ runs mpe $264\,000$ traitements
+kozanga échec. Kasi architectures oyo esalelaka ba agents ezali te
+mbangu koleka na ba microtâches ya protocole. Litomba na yango ezali
+mingimingi architecturale : autonomie locale, négociation, séparation
+ya ba responsabilités, réattribution, idempotence mpe auditabilité.
+
+Campagne multi-VM oyo eponamaki
+(\texttt{multivm\_cnp\_20260909T202632Z\_37592}) esali 60/60 tâches na
+Debian mpe Ubuntu, oyo ekabolami 30/30, na Redis centralisé na hôte ya
+laboratoire. Ezali na 15 refus, échec contrôlé moko, réattribution moko
+oyo elongaki mpe replay idempotent kozanga effet dupliqué. Campagne yango
+endimisi fonctionnement ya mécanismes oyo na topologie ya laboratoire
+oyo eyekolamaki. Haute disponibilité industrielle emekamaki te.
+
+Corrélateur, oyo emekamaki na corpus synthétique contrôlé, ezwi précision
+ya $0{,}764706$, rappel ya $0{,}866667$ mpe F1 pairwise ya
+$0{,}812500$.
+
+Na campagne CNP multi-source consolidée, condition M esali mpenza ba
+artefacts compatibles na $1400/1401$ unités, na fallback Apache moko
+kaka mpe kozanga erreur. Latence moyenne na yango ezali
+$0{,}105420$~s, contre $0{,}031027$~s mpo na condition heuristique H.
+Lokola ba labels homogènes ezali te, ekoki kosalema te calcul ya
+exactitude globale multi-source ; F1 Linux/auth ya $0{,}390244$ etikali
+kaka résultat descriptif ya source oyo eponamaki.
+
+Dépôt ezali mpe na procédure ya comparaison ya ba modèles mpe mode
+dry-run. Ba tests ezali ko couvrir ba branches mosusu, kasi ezali ko
+couvrir te cycle mobimba mpe oyo ezongelami mingi ya promotion mpe ya
+rejet. Litomba globale ya procédure oyo emekamaki te.
+
+Ba hypothèses mitano ya recherche esimbami kaka na ndambo. Ba questions
+misato ya liboso ezwi biyano partielles oyo esimbami makasi koleka,
+question ya minei mpe ya mitano ezwi biyano partielles, mpe question ya
+motoba ezwi eyano makasi na kati ya périmètre ya laboratoire.
+Contribution principale ya Ariel \logminer{} ezali bongo na intégration
+architecturale mpe méthodologique ya chaîne locale, modulaire, auditable
+mpe oyo ba expériences na yango ekoki kolandelama na ndenge ya polele
+mpo na analyse ya ba journaux hétérogènes.
+
+\bigskip
+
+\noindent
+
+\textbf{Maloba ya ntina :}
+
+cybersécurité, journaux système, journaux réseau, détection d'anomalies,
+agents intelligents, Redis Streams, routage, corrélation, apprentissage
+automatique, reproductibilité.
 % ============================================================
 % TABLES PRÉLIMINAIRES
 % ============================================================

@@ -2,48 +2,46 @@
 
 \section{Ce que montre l’évaluation}
 
-L’apport le plus solide d’Ariel Logminer ne réside pas dans le meilleur score prédictif. Il tient à la capacité de faire coexister des sources et des unités différentes tout en conservant des contrats et des preuves. Le routeur, le Contract Net, les magasins d’idempotence et les artefacts de campagne forment une chaîne inspectable. Cette propriété facilite l’analyse d’un résultat faible : il devient possible de déterminer si la difficulté vient du split, de la représentation, du modèle ou de l’orchestration.
+L’apport principal d’Ariel Logminer réside dans l’intégration de sources et d’unités différentes au sein d’une chaîne traçable. Le routeur, le Contract Net, les magasins d’idempotence et les artefacts de campagne rendent les traitements inspectables. Un résultat faible peut ainsi être rattaché à la partition, à la représentation, au modèle ou à l’orchestration.
 
-Les évaluations prédictives confirment précisément la nécessité de cette prudence. Sur CICIDS2017, la différence entre split aléatoire et holdout scénario dépasse largement la variation entre modèles. Sur HDFS, le passage de l’événement au bloc transforme l’interprétation parce que le bloc est l’unité annotée. Sur BGL, le baseline de nouveauté révèle que le F1 global ne peut pas être lu sans la proportion de templates inconnus.
+Les évaluations prédictives confirment l’importance du protocole. Sur CICIDS2017, la différence entre partition aléatoire et holdout scénario dépasse largement la variation entre modèles. Sur HDFS, le passage de l’événement au bloc transforme l’interprétation parce que le bloc est l’unité annotée. Sur BGL, le baseline de nouveauté montre que le F1 global dépend de la proportion de templates inconnus.
 
 \section{Valeur de la spécialisation}
 
 La spécialisation apporte d’abord une compatibilité technique. Un modèle tabulaire n’est pas appliqué directement à une séquence HDFS ; un parseur de templates n’est pas présenté comme classificateur de flux réseau. Le routeur automatise cette sélection et son rejet open-set évite une décision forcée pour les trois inconnus évalués.
 
-Le bénéfice prédictif est plus nuancé. L’ablation du routage ne montre pas de gain systématique des spécialistes pour toutes les familles et graines. La conclusion défendable est donc que le routage fonctionne et protège la compatibilité des pipelines. Pour démontrer une amélioration prédictive, il faudrait un benchmark où modèle global et modèles spécialisés partagent exactement données, caractéristiques, budget d’optimisation et splits externes.
+Le bénéfice prédictif est plus nuancé. L’ablation du routage ne montre pas de gain systématique des spécialistes pour toutes les familles et graines. Le routage assure la compatibilité des pipelines dans les cas évalués. La mesure d’une amélioration prédictive exigerait un benchmark où modèle global et modèles spécialisés partagent les mêmes données, caractéristiques, budgets d’optimisation et partitions externes.
 
 \section{Autonomie réelle mais bornée}
 
 Les agents implémentés ne se limitent pas à consommer une file. Ils possèdent plusieurs handlers, annoncent des capacités, perçoivent leur état, calculent une utilité et peuvent refuser. Les messages \texttt{PROPOSE}, \texttt{REFUSE}, \texttt{AWARD} et \texttt{REJECT} rendent la décision visible. La campagne multi-VM observe quinze refus, un échec contrôlé et une réattribution réussie.
 
-Cette autonomie reste déterministe et configurée. Les coefficients de l’utilité ne sont pas appris. Le coordinateur conserve la décision finale d’attribution. Parler d’un système pleinement auto-adaptatif dépasserait donc les preuves. Le terme « autonome » garde un sens précis : décision locale bornée dans un protocole explicite.
+Cette autonomie reste déterministe et configurée. Les coefficients de l’utilité ne sont pas appris et le coordinateur conserve la décision d’attribution. Le terme « autonome » désigne donc une décision locale bornée par un protocole explicite, non un système pleinement auto-adaptatif.
 
 \section{Coût de l’orchestration}
 
 Le benchmark A--D montre que les agents ne sont pas une optimisation gratuite. Sur les micro-tâches, le monolithe évite les messages, la sérialisation et la sélection des offres. Les architectures autonomes paient ce coût et la mémoire activée ne produit pas d’amélioration systématique.
 
-Ce résultat n’invalide pas l’architecture. Il distingue deux objectifs souvent confondus : minimiser le temps d’une opération élémentaire et rendre une décision distribuée observable. Ariel Logminer privilégie la modularité, le refus explicite, la reprise et la traçabilité. Une évaluation future sur des tâches d’inférence plus longues devrait mesurer si le coût fixe devient secondaire, mais aucune conclusion anticipée n’est ajoutée au présent mémoire.
+Ce résultat distingue deux objectifs : minimiser le temps d’une opération élémentaire et rendre une décision distribuée observable. Ariel Logminer privilégie la modularité, le refus explicite, la reprise et la traçabilité. Des tâches d’inférence plus longues permettraient de mesurer si le coût fixe devient secondaire.
 
 \section{Mémoire et apprentissage}
 
 La mémoire influence l’utilité de l’agent dans des scénarios contrôlés. Elle constitue donc un mécanisme fonctionnel d’adaptation comportementale. Le benchmark ne montre toutefois aucun gain systématique de débit, de latence ou d’équité. Son intérêt actuel est d’offrir un état auditable pour des politiques futures, non d’améliorer automatiquement les métriques.
 
-La gouvernance des modèles appelle la même distinction. Le dépôt contient le code de comparaison et le dry-run ; certaines branches sont testées. Une campagne complète de promotion et rejet, suivie d’une mesure avant/après sur jeu gelé, n’est pas documentée. La mise à jour contrôlée est partiellement implémentée, mais son bénéfice reste non évalué.
+La gouvernance des modèles requiert la même séparation entre mécanisme et bénéfice. Le dépôt contient le code de comparaison et le mode dry-run ; certaines branches sont testées. Aucune campagne complète de promotion et de rejet suivie d’une mesure avant/après sur un jeu gelé n’est documentée. Le bénéfice de la mise à jour contrôlée n’a donc pas été évalué.
 
 \section{Portée opérationnelle}
 
-La couverture multi-format et la campagne M montrent que la chaîne peut lire, normaliser et traiter plusieurs sources dans le laboratoire. Le dashboard donne accès aux états, alertes et incidents. Ces éléments forment un prototype utilisable pour l’expérimentation et la démonstration.
-
-Ils ne constituent pas un produit SOC. La topologie ne possède ni redondance Redis démontrée, ni contrôle d’accès complet, ni gestion industrielle des secrets, ni observabilité distribuée à longue durée. Les performances locales ne sont pas des objectifs de service. Le système doit être présenté comme une base d’ingénierie dont les frontières sont connues.
+La couverture multi-format et la campagne M montrent que la chaîne lit, normalise et traite plusieurs sources dans le laboratoire. Le tableau de bord donne accès aux états, alertes et incidents. Ces fonctions composent un prototype d’expérimentation. La topologie ne possède ni redondance Redis démontrée, ni contrôle d’accès complet, ni gestion industrielle des secrets, ni observabilité distribuée de longue durée ; elle ne correspond donc pas à un produit SOC.
 
 \section{Réponses transversales}
 
-Trois enseignements se dégagent. Premièrement, la traçabilité du protocole est une condition de la qualité scientifique : un score sans split ou unité est insuffisant. Deuxièmement, l’architecture multi-agent apporte une capacité d’attribution et de reprise, mais pas un gain de performance automatique. Troisièmement, les contrôles négatifs sont informatifs : la faiblesse du holdout CICIDS2017, l’absence de positifs BGL connus et l’instabilité sous permutation empêchent une présentation trop favorable.
+La traçabilité du protocole conditionne l’interprétation des scores : la partition et l’unité d’analyse doivent être explicites. L’architecture multi-agent apporte des mécanismes d’attribution et de reprise, sans gain de performance automatique. Les contrôles négatifs complètent ces constats : le faible F1 des holdouts CICIDS2017, l’absence de positifs parmi les templates BGL connus et l’instabilité sous permutation délimitent directement la portée des résultats.
 
-Le mémoire assume donc une contribution d’intégration. Il montre comment assembler et éprouver des briques connues en conservant la possibilité de réfuter une affirmation. Cette orientation est cohérente avec un travail d’ingénierie : la crédibilité du système vient autant de ses limites documentées que de ses chemins réussis.
+La contribution porte ainsi sur l’intégration et l’évaluation de briques connues dans une chaîne dont les affirmations restent vérifiables.
 
 \section{Priorités de prolongement}
 
 Les travaux les plus utiles seraient, dans l’ordre, d’élargir les tests open-set, d’exécuter des validations temporelles sur davantage de périodes, de constituer un corpus Apache réel et de mesurer le Contract Net sur des tâches représentatives. Une campagne de gouvernance devrait ensuite provoquer des candidats meilleurs et moins bons, observer promotion et rejet, puis mesurer l’effet sur un test gelé.
 
-L’industrialisation viendrait après ces contrôles scientifiques : réplication et basculement Redis, partitions réseau, sécurité des échanges, secrets, métriques opérationnelles et tests prolongés. Ces éléments sont des perspectives et non des propriétés actuelles d’Ariel Logminer.
+L’industrialisation requiert ensuite la réplication et le basculement Redis, des tests de partition réseau, la sécurité des échanges, la gestion des secrets, des métriques opérationnelles et des essais prolongés.

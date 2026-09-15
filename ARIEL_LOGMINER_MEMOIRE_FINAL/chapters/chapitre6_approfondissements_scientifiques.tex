@@ -1,69 +1,121 @@
+```latex
 \chapter{Validité scientifique}
 
 \section{Objet de l’analyse}
 
-Les résultats précédents couvrent des objets différents : performance prédictive, reconnaissance de format, exécution distribuée et corrélation. Leur validité ne peut pas être évaluée par un score unique. Ce chapitre examine les menaces internes, externes, de construit et statistiques, puis précise les conclusions qui résistent à ces contrôles.
+Les résultats présentés au chapitre précédent ne portent pas tous sur le même objet. Certains évaluent une performance prédictive, d’autres la reconnaissance d’un format, l’exécution distribuée ou encore la qualité de la corrélation. Il serait donc artificiel de chercher à les résumer par une seule mesure.
+
+Ce chapitre examine la solidité des conclusions selon quatre dimensions : validité interne, externe, de construit et statistique. L’objectif est moins de défendre chaque résultat que de préciser lesquels restent soutenus une fois leurs conditions d’obtention et leurs limites prises en compte.
+
 
 \section{Validité interne}
 
-La validité interne concerne le lien entre le protocole et le résultat observé. Le principal risque est une contamination entre entraînement et test. Sur HDFS, les blocs sont disjoints ; Drain3 apprend 28 clusters sur l’entraînement, puis utilise \texttt{match\_only}. Le hash de l’état reste identique avant et après l’inférence. L’agrégateur et le seuil sont sélectionnés sur validation. Ces assertions soutiennent l’absence des fuites précisément instrumentées.
+La validité interne porte sur le lien entre le protocole expérimental et le résultat observé. Une difficulté majeure réside dans le risque de contamination entre les données utilisées pour préparer le modèle et celles destinées à son évaluation.
 
-CICIDS2017 illustre un autre risque : un split aléatoire place des observations de même scénario dans les deux ensembles. Le score de 0,995142 reste correct pour cette question statistique, mais il ne peut pas servir de preuve de transfert. Les holdouts scénario et temporel sont les contrôles pertinents, avec des F1 nettement plus faibles.
+Dans HDFS, ce risque a été traité en séparant les blocs avant l’ajustement du parseur. Drain3 apprend 28 clusters uniquement sur l’entraînement, puis fonctionne en mode \texttt{match\_only} sur la validation et le test. Le hash de son état reste identique avant et après l’inférence. L’agrégateur ainsi que le seuil sont, eux aussi, choisis à partir de la validation et non du test. Ces contrôles permettent d’écarter les formes de fuite explicitement instrumentées dans ce pipeline.
 
-Sur CSE-CIC-IDS2018, le split par jour limite le mélange direct des lignes. Le score mono-feature de \texttt{Dst Port} et la chute après ablation montrent cependant une dépendance structurelle. Coefficients, permutation et retraits successifs n’identifient pas de fuite triviale correspondant aux mécanismes testés. Ils n’excluent pas un artefact propre aux journées ou à la génération du dataset.
+CICIDS2017 met en évidence un problème différent. Une partition aléatoire peut placer dans l’entraînement et le test des observations issues des mêmes scénarios. Dans ces conditions, le F1 de $0{,}995142$ reste correct pour la question posée par ce protocole, mais il ne décrit pas un transfert vers un scénario nouveau. Les holdouts par scénario et temporel répondent davantage à cette seconde question et produisent des performances nettement plus faibles.
 
-Le routeur open-set est calibré sur les sources connues seulement. Les trois fichiers inconnus ne servent pas au choix du seuil 100. Cette séparation protège l’évaluation immédiate, mais la taille du jeu inconnu reste trop faible pour caractériser toute nouveauté possible.
+Le cas de CSE-CIC-IDS2018 demande encore une autre lecture. La séparation par journée limite le mélange direct entre lignes d’entraînement et de test, mais le score obtenu avec \texttt{Dst Port} seul, ainsi que la chute observée après ablation, révèlent une dépendance importante à certaines caractéristiques. L’étude des coefficients, la permutation des labels et les retraits successifs ne mettent pas en évidence de fuite triviale parmi les mécanismes testés. Cela n’exclut toutefois pas l’existence d’un artefact lié aux journées sélectionnées ou au processus de génération du dataset.
+
+Pour le routeur open-set, le seuil 100 est calibré uniquement à partir des sources connues. Les trois fichiers inconnus ne participent pas au choix de ce seuil. L’évaluation immédiate reste donc séparée de la calibration. La faiblesse vient plutôt de la taille du jeu inconnu : trois exemples ne permettent pas de représenter l’ensemble des formes de nouveauté possibles.
+
 
 \section{Validité externe}
 
-Les datasets publics ne reproduisent pas la diversité d’un réseau d’entreprise contemporain. Les résultats CICIDS2017 et CSE-CIC-IDS2018 dépendent de scénarios construits et de caractéristiques de flux déjà calculées. Les scores ne se transfèrent donc pas automatiquement à d’autres capteurs, topologies ou périodes.
+La validité externe concerne la possibilité d’étendre les observations à d’autres contextes que ceux effectivement testés.
 
-HDFS et BGL représentent des systèmes particuliers. Le résultat HDFS porte sur 2,000 blocs de test et 29 positifs. Le bootstrap décrit la sensibilité à ce test, non une population universelle. Sur BGL, 89,8081\,\% des unités de test comportent un template inconnu ; un autre taux de nouveauté pourrait modifier fortement le résultat.
+Les datasets CICIDS2017 et CSE-CIC-IDS2018 reposent sur des scénarios construits et sur des caractéristiques de flux déjà extraites. Ils restent utiles pour comparer des protocoles dans un environnement contrôlé, mais leurs résultats ne peuvent pas être transférés automatiquement à d’autres capteurs, d’autres topologies ou d’autres périodes d’observation.
 
-La campagne multi-VM utilise deux systèmes Linux et un Redis central pendant 2,712455~s. Elle établit une distribution inter-machine et une reprise contrôlée. Elle ne couvre pas la haute disponibilité, les partitions, le multi-site, le vieillissement des agents ou une charge prolongée. Les conclusions restent volontairement locales.
+HDFS et BGL représentent eux aussi des contextes particuliers. Pour HDFS, l’évaluation finale porte sur $2\,000$ blocs dont seulement 29 sont positifs. Le bootstrap renseigne sur la sensibilité du F1 à cet échantillon ; il ne décrit pas une population universelle de systèmes distribués.
+
+BGL présente une autre particularité : $89{,}8081\,\%$ des unités de test utilisent un template absent de l’entraînement. Une modification de ce taux de nouveauté pourrait donc changer sensiblement les performances observées.
+
+La même prudence s’applique à la campagne multi-VM. Deux systèmes Linux participent à l’expérience avec un Redis central pendant $2{,}712455$~s. Cette campagne montre qu’une distribution inter-machine, un refus, une réattribution et un replay idempotent peuvent être observés dans cette topologie. Elle ne renseigne pas sur le comportement à long terme, les partitions réseau, le multi-site, le vieillissement des agents ou la haute disponibilité du broker.
+
 
 \section{Validité de construit}
 
-Une métrique n’est valable que si elle représente le concept annoncé. Sur HDFS, le label porte sur le bloc : le F1 événementiel n’est pas l’indicateur principal. Pour BGL, un F1 global sans groupe connu/inconnu confondrait anomalie et nouveauté de template. Pour le routeur, la \texttt{decision\_margin} est une marge heuristique, pas une confiance probabiliste.
+La validité de construit consiste à vérifier que la métrique employée représente bien la propriété annoncée.
 
-La couverture multi-format mesure trois opérations : lire, parser et normaliser les unités présentes. Elle ne mesure ni la complétude de chaque champ, ni la fidélité bit à bit au journal brut, ni la compatibilité avec toutes les implémentations d’un format. La fixture Apache d’une ligne doit rester visible dans l’interprétation.
+Dans HDFS, la vérité terrain est définie au niveau du bloc. Le F1 calculé au niveau événement ne peut donc pas être considéré comme l’indicateur principal de la tâche. L’agrégation par \texttt{block\_id} est nécessaire pour aligner la prédiction sur l’unité des labels.
 
-Le caractère multi-agent est évalué par des comportements : capacités, état, plusieurs handlers, propositions, refus, attributions et résultats. Le nombre de processus seul ne serait pas une preuve suffisante. De même, un replay idempotent protège un effet logique ; il ne démontre pas une transaction distribuée générale.
+Pour BGL, un F1 global utilisé sans distinction entre templates connus et inconnus masquerait une partie importante du phénomène observé. La séparation de ces groupes permet de voir que la nouveauté lexicale participe fortement à la structure du test.
 
-Enfin, l’exécution de modèles réels et la qualité de leurs prédictions sont deux construits distincts. La campagne M démontre 1,400 inférences effectives sur 1,401 unités, mais aucune exactitude globale n’est calculée en l’absence de labels homogènes.
+Le même principe vaut pour le routeur. La \texttt{decision\_margin} mesure un écart entre scores heuristiques ; elle ne représente pas une probabilité calibrée de bonne classification.
+
+La couverture multi-format possède elle aussi une définition précise. Elle vérifie la lecture, le parsing et la normalisation des unités effectivement présentes dans la campagne. Elle ne mesure ni la conservation bit à bit du journal original, ni la complétude de tous les champs, ni la compatibilité avec toutes les implémentations possibles d’un format. La présence d’une seule fixture Apache doit donc rester visible dans l’interprétation.
+
+Le caractère multi-agent ne se résume pas non plus au nombre de processus lancés. Dans ce travail, il est matérialisé par les capacités des agents, leur état local, la présence de plusieurs handlers et les comportements observés : proposition, refus, attribution, résultat ou échec. De la même manière, le replay idempotent montre qu’un effet logique instrumenté n’est pas dupliqué dans le scénario testé ; il ne transforme pas l’ensemble du système en transaction distribuée générale.
+
+Enfin, l’exécution effective d’un modèle et la qualité de sa prédiction sont deux propriétés distinctes. La campagne M établit que $1\,400$ inférences réelles sont réalisées sur $1\,401$ unités. Elle ne permet pas d’en déduire une exactitude globale, car les différentes sources ne partagent pas une vérité terrain homogène.
+
 
 \section{Validité statistique}
 
-Les campagnes CICIDS2017 et CSE-CIC-IDS2018 utilisent cinq graines, tandis que le benchmark A--D répète dix fois chaque combinaison. Ces répétitions documentent la dispersion, mais cinq graines restent insuffisantes pour décrire toutes les variations de scénario. L’écart-type élevé des holdouts CICIDS2017 doit être lu comme une hétérogénéité des attaques tenues hors apprentissage.
+La validité statistique dépend notamment du nombre de répétitions, de la variabilité observée et de l’unité choisie pour les calculs.
 
-Le bootstrap HDFS compte 1,000 réplications au niveau bloc, unité indépendante du test. Son intervalle empirique reflète le faible nombre de positifs. Il ne corrige pas un éventuel biais de sélection du corpus. BGL ne permet aucun rappel pour le groupe connu, car celui-ci ne contient aucun positif ; inscrire zéro comme rappel observé sans cette précision serait trompeur.
+Les expériences CICIDS2017 et CSE-CIC-IDS2018 utilisent cinq graines. Le benchmark des architectures A--D répète quant à lui chaque combinaison dix fois. Ces répétitions rendent la dispersion observable, sans couvrir pour autant toutes les variations possibles des scénarios.
 
-Le benchmark multi-agent mesure des micro-tâches. Le monolithe bénéficie d’un coût de coordination minimal, alors que le Contract Net écrit plusieurs messages par attribution. Une charge plus lourde pourrait déplacer le compromis, mais cette possibilité n’est pas un résultat. Les données présentes soutiennent seulement l’absence de gain systématique de C ou D sur le protocole exécuté.
+Cette limite est particulièrement visible dans les holdouts CICIDS2017. Leur écart-type élevé traduit des différences importantes de difficulté entre les attaques laissées hors entraînement. La moyenne doit donc être lue avec cette hétérogénéité.
+
+Sur HDFS, le bootstrap comprend $1\,000$ réplications effectuées au niveau \texttt{block\_id}, c’est-à-dire à l’unité utilisée par l’évaluation. L’intervalle obtenu reflète notamment le faible nombre de blocs positifs du test. Il ne corrige cependant pas un éventuel biais de sélection du corpus.
+
+BGL présente une difficulté différente : aucun positif n’est présent dans le groupe des templates connus. Il est donc impossible d’y calculer un rappel d’anomalies connues.
+
+Le benchmark multi-agent porte enfin sur des micro-tâches. Dans ce contexte, le monolithe profite d’un coût de coordination très faible, alors que le Contract Net exige plusieurs échanges pour une même attribution. Des tâches plus lourdes pourraient modifier ce compromis, mais cette possibilité relève d’une hypothèse à tester. Les résultats disponibles soutiennent seulement l’absence de gain systématique des architectures C et D dans le protocole effectivement exécuté.
+
 
 \section{Risques résiduels et mesures de contrôle}
 
+Le tableau~\ref{tab:risques-validite} rassemble les principaux risques qui demeurent après les contrôles réalisés.
+
 \begin{table}[H]
+
 \centering
+
 \caption{Principaux risques résiduels après consolidation.}
+
 \label{tab:risques-validite}
+
 \small
+
 \begin{tabularx}{\textwidth}{p{0.22\textwidth} p{0.31\textwidth} X}
+
 \toprule
+
 \textbf{Risque} & \textbf{Contrôle réalisé} & \textbf{Limite restante} \\
+
 \midrule
+
 Proximité train/test & Splits scénario, temporel et par bloc & Datasets publics et scénarios limités. \\
-Parsing contaminé & Drain3 train-only, état gelé & Vérifié pour le pipeline HDFS final. \\
+
+Parsing contaminé & Drain3 ajusté sur l'entraînement, état gelé & Vérifié pour le pipeline HDFS étudié. \\
+
 Nouveauté lexicale BGL & Groupes connu/inconnu et baseline & Aucun positif dans le groupe connu. \\
+
 Dépendance aux variables & Mono-features, coefficients, ablation, permutation & Biais journalier toujours possible. \\
+
 Surajustement du rejet & Calibration sur connus seulement & Trois inconnus seulement. \\
+
 Confusion distribution/HA & Deux VM et Redis central explicités & Broker et partitions non testés. \\
+
 Confusion mémoire/gain & Comparaison ON/OFF & Aucun bénéfice systématique observé. \\
+
 \bottomrule
+
 \end{tabularx}
+
 \end{table}
+
 
 \section{Conclusions soutenues}
 
-Les preuves permettent d’affirmer que le prototype normalise les unités des sources testées, route correctement les 28 fichiers connus du jeu indépendant, rejette trois inconnus au seuil gelé et exécute les modèles réels pour 1,400 unités sur 1,401. Elles permettent aussi d’affirmer que les agents proposent, refusent, exécutent et réattribuent des tâches sur deux VM, avec un replay sans effet dupliqué.
+Après ces contrôles, plusieurs conclusions restent directement soutenues par les expériences.
 
-Elles ne permettent pas d’annoncer une exactitude multi-source, une supériorité générale du routage spécialisé, un gain systématique de la mémoire, une mise à jour autonome évaluée ou une disponibilité industrielle. Cette frontière n’est pas un défaut rédactionnel : elle constitue le résultat de l’audit scientifique.
+Le prototype parvient à lire, parser et normaliser les unités prévues dans la campagne multi-format. Sur le jeu indépendant du routeur, les 28 fichiers connus sont correctement orientés et les trois fichiers inconnus sont rejetés lorsque le seuil gelé est appliqué. Dans la campagne utilisant les modèles réels, $1\,400$ unités sur $1\,401$ passent effectivement par une inférence.
+
+Le comportement des agents est également observable au-delà d’une simple description architecturale. Dans la campagne multi-VM, ils proposent ou refusent des tâches, les exécutent, produisent des résultats et participent à une réattribution après l’échec contrôlé. Le replay instrumenté ne produit pas de second effet persistant.
+
+Ces résultats permettent de soutenir le fonctionnement du prototype dans les conditions expérimentales décrites. Ils ne suffisent cependant pas à conclure à une exactitude globale sur des sources hétérogènes, à une supériorité générale du routage spécialisé, à un bénéfice systématique de la mémoire, à une mise à jour autonome des modèles ou à une disponibilité industrielle.
+```

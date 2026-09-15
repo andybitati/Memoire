@@ -2,82 +2,139 @@
 
 \section{Principe de reproductibilité}
 
-La reproductibilité repose sur quatre éléments liés : une entrée identifiée, un protocole paramétré, un \texttt{run\_id} et un artefact de sortie. Une valeur du mémoire n’est considérée comme finale que si cette chaîne peut être reconstruite. Les tableaux agrégés facilitent la lecture, mais les JSON et CSV bruts restent la preuve principale.
+Dans ce travail, la reproductibilité repose sur une chaîne simple : une entrée identifiée, un protocole paramétré, un \texttt{run\_id} et un artefact de sortie. Toute valeur rapportée dans le mémoire doit pouvoir être reliée à ces quatre éléments.
 
-Les manifests conservent les chemins, tailles et empreintes SHA-256 lorsque celles-ci sont disponibles. Cette empreinte prouve que deux exécutions utilisent le même fichier ; elle ne suffit pas à établir qu’une copie locale est une distribution officielle si la provenance n’est pas documentée.
+Les tableaux agrégés facilitent la lecture des résultats, mais ils ne remplacent pas les artefacts produits pendant l'exécution. Les fichiers JSON et CSV bruts constituent la référence lorsqu'une valeur doit être vérifiée ou recalculée.
+
+Les manifestes complètent cette traçabilité en conservant notamment les chemins, la taille des fichiers et leur empreinte SHA-256 lorsque celle-ci est disponible. Deux fichiers possédant la même empreinte peuvent être considérés comme identiques au niveau binaire. Cette vérification ne prouve toutefois pas qu'une copie locale correspond à la distribution officielle d'un dataset si sa provenance n'a pas été documentée.
+
 
 \section{Organisation des preuves}
 
-Les expériences finales sont réparties par phase :
+Les artefacts expérimentaux sont répartis selon les principales phases du travail :
 
 \begin{itemize}
-  \item \texttt{experiments/phase\_dataset\_strengthening} contient les protocoles HDFS, BGL, multi-format et CSE-CIC-IDS2018 ;
-  \item \texttt{experiments/phase\_multi\_agent} conserve le benchmark A--D et la campagne multi-VM ;
-  \item \texttt{experiments/phase\_final\_scientific\_consolidation} rassemble les contrôles forensiques, le bootstrap, le routeur open-set et l’exécution multi-source avec modèles réels ;
-  \item \texttt{revision\_reports} contient l’audit du manuscrit, le catalogue et le générateur des figures finales.
+
+    \item \texttt{experiments/phase\_dataset\_strengthening} regroupe les protocoles HDFS, BGL, multi-format et CSE-CIC-IDS2018 ;
+
+    \item \texttt{experiments/phase\_multi\_agent} contient le benchmark A--D ainsi que la campagne multi-VM ;
+
+    \item \texttt{experiments/phase\_final\_scientific\_consolidation} rassemble les contrôles forensiques, le bootstrap HDFS, le routeur open-set et l'exécution multi-source avec modèles réels ;
+
+    \item \texttt{revision\_reports} conserve les rapports de contrôle, le catalogue des preuves et le générateur des figures finales.
+
 \end{itemize}
 
-Dans chaque phase, \texttt{raw} conserve la sortie la plus proche de l’exécution, \texttt{processed} les représentations intermédiaires, \texttt{aggregated} les synthèses et \texttt{figures} les visualisations. Les graphiques insérés dans le mémoire sont copiés dans \texttt{figures/final} pour stabiliser la compilation.
+À l'intérieur de chaque phase, les fichiers sont encore séparés selon leur rôle. Le dossier \texttt{raw} contient les sorties les plus proches de l'exécution, \texttt{processed} les représentations intermédiaires et \texttt{aggregated} les synthèses utilisées pour l'analyse. Les visualisations sont placées dans \texttt{figures}.
+
+Les graphiques retenus pour le mémoire sont ensuite copiés dans \texttt{figures/final}, qui fait partie des chemins déclarés par \texttt{\textbackslash graphicspath}. Cette organisation permet de distinguer un résultat expérimental brut de sa représentation destinée au document final.
+
 
 \section{Chaîne de reproduction}
 
-La reproduction suit le même ordre pour toutes les campagnes. Il faut d’abord vérifier l’entrée et son hash, installer les dépendances figées, exécuter le script avec les paramètres et graines enregistrés, puis comparer le schéma et les valeurs de l’artefact. La figure est régénérée seulement après cette comparaison.
+La logique générale reste la même d'une campagne à l'autre. La première vérification porte sur l'entrée : fichier attendu, provenance disponible et hash lorsque celui-ci a été enregistré. L'environnement logiciel est ensuite préparé à partir des dépendances figées.
 
-Le script \texttt{revision\_reports/generate\_final\_scientific\_figures.py} lit les artefacts validés et applique un style commun. Aucune métrique expérimentale n’est saisie manuellement lorsqu’elle existe dans un CSV ou un JSON. Les titres, unités, tailles de police et sources sont centralisés afin que les figures restent lisibles après réduction A4.
+Le script expérimental est exécuté avec les paramètres et les graines documentés. Avant de reconstruire une figure, le schéma de l'artefact obtenu et les valeurs importantes sont comparés aux résultats de référence. La visualisation n'intervient qu'après cette vérification.
+
+Le script \texttt{revision\_reports/generate\_final\_scientific\_figures.py} automatise la dernière étape. Il lit les artefacts validés et applique les mêmes conventions graphiques aux différentes campagnes. Lorsqu'une métrique existe déjà dans un CSV ou un JSON, elle n'est pas ressaisie manuellement.
+
+Les titres, unités, tailles de police et informations de source sont ainsi centralisés. Cette précaution réduit les divergences entre les artefacts expérimentaux, les graphiques et les valeurs reprises dans le mémoire, tout en maintenant leur lisibilité après réduction au format A4.
+
 
 \section{Paramètres déterminants}
 
-Pour CICIDS2017, la reproduction doit préciser la séparation : aléatoire, scénario ou temporelle. Les graines 42 à 46 sont utilisées dans les comparaisons principales. La table des cinq candidats repose sur un espace commun et un holdout fichier/scénario.
+La reproduction de CICIDS2017 dépend d'abord de la partition choisie. Une séparation aléatoire, un holdout par scénario et une séparation temporelle ne répondent pas à la même question expérimentale. Les comparaisons principales utilisent les graines 42 à 46. L'étude des cinq candidats repose pour sa part sur un espace commun et sur le protocole de holdout fichier/scénario.
 
-Pour HDFS, les paramètres essentiels sont les blocs ordonnés par première apparition, les proportions 60/20/20, les échantillons 6,000/2,000/2,000, la graine 42 et Drain3 avec similarité 0,4, profondeur 4 et 100 enfants. L’agrégateur moyenne et le seuil 1,2729429339548877 sont gelés après validation.
+Pour HDFS, plusieurs paramètres doivent rester inchangés pour retrouver le protocole étudié : l'ordre des blocs selon leur première apparition, la répartition 60/20/20, les échantillons de $6\,000$, $2\,000$ et $2\,000$ blocs, ainsi que la graine 42. Drain3 est configuré avec une similarité de $0{,}4$, une profondeur de 4 et un maximum de 100 enfants. Après la validation, l'agrégateur moyenne et le seuil $1{,}2729429339548877$ sont gelés.
 
-Pour BGL, l’artefact final doit conserver le seuil Histogram, le groupe de connaissance du template et le baseline de nouveauté. Pour CSE-CIC-IDS2018, il faut préserver les journées 15 et 16 février, les 78 caractéristiques, les cinq graines et les échantillons équilibrés de 20,000 lignes.
+Dans BGL, l'artefact conserve notamment le seuil Histogram, l'appartenance au groupe de templates connus ou inconnus et le résultat du baseline de nouveauté.
 
-Le routeur utilise 31 fichiers indépendants, 28 connus et 3 inconnus. Le seuil 100 est sélectionné sur les connus seulement. Changer ce seuil après lecture des inconnus produirait une autre expérience.
+Le protocole CSE-CIC-IDS2018 fixe les journées du 15 et du 16 février, 78 caractéristiques, les graines 42 à 46 et des échantillons équilibrés de $20\,000$ lignes par ensemble.
+
+Le routeur open-set utilise enfin 31 fichiers indépendants : 28 connus et 3 inconnus. Le seuil 100 est déterminé uniquement à partir des sources connues. Le modifier après observation des trois fichiers inconnus reviendrait à exécuter une expérience différente.
+
 
 \section{Reproduction du benchmark multi-agent}
 
-Le benchmark A--D doit conserver quatre charges, quatre architectures et dix répétitions. Les 160 exécutions représentent 264,000 tâches. Les métriques sont calculées avec leurs unités natives : tâches/s, millisecondes, secondes CPU, pourcentage équivalent cœur, pourcentage normalisé machine et mégaoctets RSS.
+Le benchmark A--D combine quatre architectures, quatre niveaux de charge et dix répétitions par configuration. L'ensemble représente 160 exécutions et $264\,000$ tâches.
 
-L’environnement influence fortement les micro-latences. Une reproduction sur une autre machine doit donc comparer les tendances relatives et publier sa propre configuration, plutôt que d’exiger une égalité bit à bit des durées. Le résultat fonctionnel attendu reste l’absence d’échecs si les mêmes chemins sont couverts.
+Les mesures doivent être interprétées dans leurs unités d'origine : tâches par seconde pour le débit, millisecondes pour les latences, secondes de processus pour le temps CPU, pourcentage équivalent cœur, pourcentage normalisé par la machine et mégaoctets pour le pic RSS.
+
+Ces valeurs, en particulier les micro-latences, dépendent de l'environnement d'exécution. Une reproduction effectuée sur une autre machine n'a donc pas pour objectif de retrouver exactement les mêmes durées à la décimale près. Elle doit plutôt publier sa propre configuration et vérifier si les tendances relatives entre architectures sont conservées.
+
+Sur le plan fonctionnel, l'attente est différente : si les mêmes chemins sont exécutés dans des conditions compatibles, la campagne doit pouvoir se terminer sans échec.
+
 
 \section{Reproduction de la campagne multi-VM}
 
-La campagne de référence est \texttt{multivm\_cnp\_20260909T202632Z\_37592}. Elle nécessite un coordinateur, Redis 7.4.9 et deux agents enregistrés : \texttt{debian-alpha} et \texttt{ubuntu-beta}. Les profils autorisent un traitement parallèle par agent. Le scénario contient 60 tâches, un échec contrôlé, une réattribution et un replay idempotent.
+La campagne de référence porte le \texttt{run\_id}
+\texttt{multivm\_cnp\_20260909T202632Z\_37592}. Elle utilise un coordinateur, Redis 7.4.9 et deux agents enregistrés sous les noms \texttt{debian-alpha} et \texttt{ubuntu-beta}. Chaque profil autorise au maximum une tâche parallèle.
 
-La preuve attendue inclut les hôtes et versions de système, les compteurs de messages, les résultats par agent et la section \texttt{idempotence}. Une reproduction valide ne dépend pas d’un partage strict 30/30, car l’ordonnancement peut varier ; elle doit en revanche terminer les tâches, observer la reprise injectée et ne pas dupliquer l’effet logique.
+Le scénario comprend 60 tâches auxquelles s'ajoutent un échec contrôlé, une réattribution et un replay destiné à vérifier l'idempotence.
 
-Les identifiants de connexion et mots de passe ne sont pas intégrés au mémoire ni aux artefacts publiables. Ils doivent être fournis par des variables d’environnement ou un gestionnaire de secrets. Le Redis de laboratoire reste centralisé et isolé ; l’ouverture réseau non authentifiée n’est pas un scénario de déploiement recommandé.
+Une reproduction doit conserver suffisamment d'informations pour vérifier le déroulement de la campagne : hôtes, versions des systèmes, compteurs de messages, résultats obtenus par chaque agent et section \texttt{idempotence}.
+
+Un partage exactement égal de 30 tâches par agent n'est pas une condition de validité. L'ordonnancement peut varier d'une exécution à l'autre. En revanche, toutes les tâches doivent être terminées, l'échec injecté doit conduire à la reprise prévue et le replay ne doit pas créer un second effet logique.
+
+Les informations d'accès ne font pas partie des artefacts publiables. Identifiants de connexion et mots de passe doivent être fournis par des variables d'environnement ou par un mécanisme de gestion des secrets.
+
+Le Redis utilisé dans le laboratoire reste centralisé et isolé. Une instance Redis exposée sur le réseau sans mécanisme d'authentification ne constitue pas un mode de déploiement recommandé.
+
 
 \section{Compilation du mémoire}
 
-Le document utilise pdfLaTeX avec encodage UTF-8, police T1 et support français. La bibliographie est construite entre les passes LaTeX, puis deux passes supplémentaires stabilisent les références, la table des matières et les listes. Toutes les compilations finales sont lancées depuis le dossier \texttt{ARIEL\_LOGMINER\_MEMOIRE\_FINAL}.
+Le mémoire est compilé avec pdfLaTeX en UTF-8, avec encodage de police T1 et prise en charge du français. La bibliographie est générée entre les différentes passes LaTeX. Deux passes supplémentaires permettent ensuite de stabiliser les références croisées, la table des matières et les listes.
 
-Les contrôles portent sur les références non résolues, les débordements significatifs, les labels dupliqués, les caractères corrompus et la présence des figures. Le PDF n’est retenu qu’après stabilisation du nombre de pages.
+La compilation est lancée depuis le dossier
+\texttt{ARIEL\_LOGMINER\_MEMOIRE\_FINAL}.
+
+La vérification finale ne consiste pas uniquement à obtenir un PDF. Elle porte aussi sur les références non résolues, les débordements de mise en page significatifs, les labels dupliqués, les caractères corrompus et la présence effective de toutes les figures attendues.
+
 
 \section{Exploitation locale}
 
-Un déploiement local peut utiliser \texttt{LocalMessageBus} et \texttt{SQLiteIdempotencyStore}. Cette configuration convient aux tests et à l’analyse sur une seule machine. Le passage à Redis permet plusieurs processus et machines, mais ajoute des exigences de disponibilité, d’authentification et de supervision.
+Pour une utilisation sur une seule machine, Ariel Logminer peut fonctionner avec \texttt{LocalMessageBus} et \texttt{SQLiteIdempotencyStore}. Cette configuration convient aux tests, à l'analyse hors ligne et aux campagnes ne nécessitant pas de partage d'état entre plusieurs processus distants.
 
-L’analyste consulte les résultats, vérifie la provenance, examine les événements corrélés et formule un retour. Une anomalie candidate n’est pas automatiquement un incident confirmé. Le dashboard facilite cette lecture, tandis que les artefacts restent la référence pour un audit détaillé.
+Redis devient utile lorsque plusieurs processus ou plusieurs machines doivent participer au traitement. Ce changement apporte cependant de nouvelles contraintes : disponibilité du service, authentification, supervision et gestion du réseau.
 
-\section{Frontière d’industrialisation}
+Du point de vue de l'analyste, le fonctionnement reste similaire. Les résultats sont consultés avec leur provenance, les événements corrélés peuvent être examinés et un retour peut être enregistré. Une anomalie candidate conserve son statut tant qu'elle n'a pas reçu l'interprétation nécessaire pour devenir un incident confirmé.
 
-Une mise en production demanderait des travaux non évalués ici : TLS, gestion de secrets, contrôle d’accès, journalisation inviolable, réplication Redis, tests de partition, sauvegarde, reprise après sinistre, surveillance continue et politique de rétention. Une orchestration de conteneurs pourrait faciliter le déploiement, mais n’améliorerait pas à elle seule la validité des modèles.
+Le dashboard facilite cette inspection. Pour un audit détaillé, les artefacts de campagne restent toutefois la référence.
 
-La montée en charge devrait être testée avec des inférences réalistes, sur une durée longue et avec des pannes du transport. Les objectifs de latence et de disponibilité devraient être fixés avant la campagne. Tant que ces éléments manquent, Ariel Logminer reste un prototype de laboratoire.
 
-\section{Checklist de vérification}
+\section{Frontière d'industrialisation}
 
-Avant publication, les points suivants sont contrôlés :
+Le passage du prototype vers une exploitation en production demanderait plusieurs mécanismes qui n'ont pas été évalués dans ce mémoire. Parmi eux figurent TLS, la gestion des secrets, le contrôle d'accès, une journalisation protégée contre l'altération, la réplication de Redis, les tests de partition réseau, les sauvegardes, la reprise après sinistre, la surveillance continue et une politique de rétention adaptée.
+
+Une orchestration par conteneurs pourrait simplifier le déploiement et la gestion des composants. Elle ne résoudrait cependant pas, à elle seule, les questions de validité prédictive ou de généralisation des modèles.
+
+La montée en charge devrait également être étudiée avec des tâches d'inférence représentatives, sur des durées plus longues et en introduisant volontairement des pannes du transport. Les objectifs de latence, de disponibilité et de reprise devraient être définis avant ces campagnes afin de disposer de critères d'acceptation explicites.
+
+Tant que ces validations ne sont pas réalisées, Ariel Logminer doit être considéré comme un prototype de laboratoire et non comme une plateforme industrielle.
+
+
+\section{Contrôles d'intégrité documentaire}
+
+La reproductibilité concerne également le document final. Plusieurs contrôles sont donc appliqués avant la livraison :
 
 \begin{itemize}
-  \item fichiers texte encodés en UTF-8 et absence de caractères corrompus ;
-  \item correspondance des valeurs entre texte, tableaux, figures et artefacts ;
-  \item séparation explicite des datasets, splits et unités ;
-  \item labels LaTeX uniques et références résolues ;
-  \item figures lisibles sur A4 avec axes, unités et source ;
-  \item bibliographie compilée et accents conservés ;
-  \item limites industrielles maintenues dans les perspectives ;
-  \item absence de donnée d’accès ou de secret dans la livraison.
+
+    \item vérification de l'encodage UTF-8 des fichiers texte et de l'absence de caractères corrompus ;
+
+    \item comparaison des valeurs reprises dans le texte, les tableaux et les figures avec les artefacts correspondants ;
+
+    \item identification explicite des jeux de données, partitions et unités d'analyse ;
+
+    \item vérification de l'unicité des labels LaTeX et de la résolution des références ;
+
+    \item contrôle de la lisibilité des figures au format A4, avec axes, unités et source ;
+
+    \item compilation de la bibliographie et conservation correcte des accents ;
+
+    \item vérification de la cohérence entre chaque résultat annoncé et le périmètre expérimental qui le soutient ;
+
+    \item contrôle de l'absence d'identifiants d'accès, mots de passe ou autres secrets dans les éléments livrés.
+
 \end{itemize}
+
+Ces contrôles complètent la traçabilité expérimentale. Ils visent à éviter qu'une valeur correctement obtenue pendant une campagne soit ensuite altérée par une erreur de transcription, de génération de figure ou de compilation du mémoire.

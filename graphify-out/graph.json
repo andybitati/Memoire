@@ -238,7 +238,7 @@
       "label": "cicids_figures()",
       "file_type": "code",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L108",
+      "source_location": "L114",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_cicids_figures",
       "community": 154,
@@ -249,7 +249,7 @@
       "label": "hdfs_bgl_figures()",
       "file_type": "code",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L132",
+      "source_location": "L138",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_hdfs_bgl_figures",
       "community": 154,
@@ -260,7 +260,7 @@
       "label": "cse_figures()",
       "file_type": "code",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L170",
+      "source_location": "L176",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_cse_figures",
       "community": 154,
@@ -271,7 +271,7 @@
       "label": "routing_and_pipeline_figures()",
       "file_type": "code",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L204",
+      "source_location": "L210",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_routing_and_pipeline_figures",
       "community": 154,
@@ -282,7 +282,7 @@
       "label": "distributed_and_e2e_figures()",
       "file_type": "code",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L218",
+      "source_location": "L224",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_distributed_and_e2e_figures",
       "community": 154,
@@ -293,7 +293,7 @@
       "label": "main()",
       "file_type": "code",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L246",
+      "source_location": "L252",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_main",
       "community": 154,
@@ -2606,8 +2606,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_bus",
-      "community": 7,
-      "community_name": "AgentMessage",
+      "community": 56,
+      "community_name": "RedisMessageBus",
       "norm_label": "09_code_et_scripts_preuves/bus.py"
     },
     {
@@ -2628,8 +2628,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_bus_messagebus",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "messagebus"
     },
     {
@@ -2639,8 +2639,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_bus_py_protocol",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "protocol"
     },
     {
@@ -2683,8 +2683,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_bus_localmessagebus",
-      "community": 194,
-      "community_name": "LocalMessageBus",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "localmessagebus"
     },
     {
@@ -2694,8 +2694,8 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_bus_localmessagebus_init",
-      "community": 194,
-      "community_name": "LocalMessageBus",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": ".__init__()"
     },
     {
@@ -2705,8 +2705,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_bus_py_path",
-      "community": 194,
-      "community_name": "LocalMessageBus",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "path"
     },
     {
@@ -2727,8 +2727,8 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_bus_localmessagebus_read",
-      "community": 194,
-      "community_name": "LocalMessageBus",
+      "community": 7,
+      "community_name": "AgentMessage",
       "norm_label": ".read()"
     },
     {
@@ -2760,8 +2760,8 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_bus_redismessagebus_ping",
-      "community": 56,
-      "community_name": "RedisMessageBus",
+      "community": 7,
+      "community_name": "AgentMessage",
       "norm_label": ".ping()"
     },
     {
@@ -2914,8 +2914,8 @@
       "source_location": "L374",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_bus_mqttmessagebus_ping",
-      "community": 56,
-      "community_name": "RedisMessageBus",
+      "community": 7,
+      "community_name": "AgentMessage",
       "norm_label": ".ping()"
     },
     {
@@ -2925,8 +2925,8 @@
       "source_location": "L383",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_bus_mqttmessagebus_publish",
-      "community": 56,
-      "community_name": "RedisMessageBus",
+      "community": 7,
+      "community_name": "AgentMessage",
       "norm_label": ".publish()"
     },
     {
@@ -2947,8 +2947,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_bus_rationale_1",
-      "community": 7,
-      "community_name": "AgentMessage",
+      "community": 56,
+      "community_name": "RedisMessageBus",
       "norm_label": "bus de communication entre agents logminer. la v1 conserve un bus jsonl local,..."
     },
     {
@@ -2969,8 +2969,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_bus_rationale_43",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "contrat minimal partage par les bus jsonl et redis."
     },
     {
@@ -2980,8 +2980,8 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_bus_rationale_62",
-      "community": 194,
-      "community_name": "LocalMessageBus",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "bus append-only stocke dans un fichier jsonl."
     },
     {
@@ -3299,8 +3299,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "09_code_et_scripts_preuves/detector.py"
     },
     {
@@ -3310,8 +3310,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector_detect_anomalies",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "detect_anomalies()"
     },
     {
@@ -3321,8 +3321,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector_py_path",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "path"
     },
     {
@@ -3332,8 +3332,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector_py_localmessagebus",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "localmessagebus"
     },
     {
@@ -3343,8 +3343,8 @@
       "source_location": "L176",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector_save_model_artifact",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "save_model_artifact()"
     },
     {
@@ -3354,8 +3354,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector_py_isolationforest",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "isolationforest"
     },
     {
@@ -3365,8 +3365,8 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector_load_model_artifact",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "load_model_artifact()"
     },
     {
@@ -3376,8 +3376,8 @@
       "source_location": "L226",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector_align_features",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "align_features()"
     },
     {
@@ -3387,8 +3387,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector_py_dataframe",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "dataframe"
     },
     {
@@ -3398,8 +3398,8 @@
       "source_location": "L234",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector_main",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "main()"
     },
     {
@@ -3409,8 +3409,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector_rationale_1",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "agent detecteur d'anomalies base sur isolation forest. role dans le projet: cet..."
     },
     {
@@ -3420,8 +3420,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector_rationale_52",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "entraine ou recharge isolation forest puis exporte les scores. en mode..."
     },
     {
@@ -3431,8 +3431,8 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector_rationale_187",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "enregistre le modele et son schema de features avec joblib. sauvegarder..."
     },
     {
@@ -3442,8 +3442,8 @@
       "source_location": "L216",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector_rationale_216",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "charge un artefact joblib produit par `save_model_artifact`."
     },
     {
@@ -3453,8 +3453,8 @@
       "source_location": "L227",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_detector_rationale_227",
-      "community": 128,
-      "community_name": "detect_anomalies",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "realigne les features d'inference sur le schema d'entrainement."
     },
     {
@@ -4807,7 +4807,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "09_code_et_scripts_preuves/pipeline.py"
     },
     {
@@ -4818,7 +4818,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_unknownparser",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "unknownparser"
     },
     {
@@ -4829,7 +4829,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_unknownparser_parse",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": ".parse()"
     },
     {
@@ -4840,7 +4840,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_ensure_dir",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "_ensure_dir()"
     },
     {
@@ -4851,7 +4851,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_iter_files",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "iter_files()"
     },
     {
@@ -4862,7 +4862,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_sample_text",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "_sample_text()"
     },
     {
@@ -4873,7 +4873,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_looks_like_pcap",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "_looks_like_pcap()"
     },
     {
@@ -4884,7 +4884,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_detect_kind",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "detect_kind()"
     },
     {
@@ -4895,7 +4895,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_load_parser",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "_load_parser()"
     },
     {
@@ -4906,7 +4906,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_default_output_name",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "_default_output_name()"
     },
     {
@@ -4916,8 +4916,8 @@
       "source_location": "L237",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_run_pipeline",
-      "community": 124,
-      "community_name": "run_pipeline",
+      "community": 1,
+      "community_name": "09_code_et_scripts_preuves/api.py",
       "norm_label": "run_pipeline()"
     },
     {
@@ -4928,7 +4928,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_rationale_1",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "pipeline de pretraitement logminer. role dans le memoire: ce fichier represente..."
     },
     {
@@ -4939,7 +4939,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_rationale_40",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "parseur de secours integre au pipeline. il conserve les lignes brutes quand le..."
     },
     {
@@ -4950,7 +4950,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_rationale_100",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "cree un dossier s'il n'existe pas deja."
     },
     {
@@ -4961,7 +4961,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_rationale_106",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "retourne tous les fichiers a traiter. args: input_path: chemin vers un fichier..."
     },
     {
@@ -4972,7 +4972,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_rationale_131",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "lit un petit echantillon texte pour la detection heuristique."
     },
     {
@@ -4983,7 +4983,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_rationale_141",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "detecte rapidement les signatures binaires pcap/pcapng."
     },
     {
@@ -4994,7 +4994,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_rationale_158",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "detecte le type de journal a partir de l'extension et du contenu. cette..."
     },
     {
@@ -5005,7 +5005,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_rationale_216",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "charge la classe parser du module correspondant au type detecte."
     },
     {
@@ -5016,7 +5016,7 @@
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_rationale_232",
       "community": 124,
-      "community_name": "run_pipeline",
+      "community_name": "09_code_et_scripts_preuves/pipeline.py",
       "norm_label": "construit un nom de csv stable."
     },
     {
@@ -5026,8 +5026,8 @@
       "source_location": "L247",
       "_origin": "ast",
       "id": "docs_memoire_pack_redaction_final_09_code_et_scripts_preuves_pipeline_rationale_247",
-      "community": 124,
-      "community_name": "run_pipeline",
+      "community": 1,
+      "community_name": "09_code_et_scripts_preuves/api.py",
       "norm_label": "traite un fichier ou dossier de logs et produit un ou plusieurs csv. args:..."
     },
     {
@@ -6687,7 +6687,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_dataset_strengthening_common",
-      "community": 129,
+      "community": 99,
       "community_name": "dataset_strengthening_common.py",
       "norm_label": "dataset_strengthening_common.py"
     },
@@ -6699,7 +6699,7 @@
       "_origin": "ast",
       "id": "scripts_dataset_strengthening_common_ensure_phase_dirs",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "ensure_phase_dirs()"
     },
     {
@@ -6709,8 +6709,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "scripts_dataset_strengthening_common_utc_now",
-      "community": 151,
-      "community_name": "relative",
+      "community": 99,
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "utc_now()"
     },
     {
@@ -6720,8 +6720,8 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "scripts_dataset_strengthening_common_run_id",
-      "community": 103,
-      "community_name": "run_external_csecicids2018_strengthening.py",
+      "community": 99,
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "run_id()"
     },
     {
@@ -6743,7 +6743,7 @@
       "_origin": "ast",
       "id": "scripts_dataset_strengthening_common_py_path",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "path"
     },
     {
@@ -6753,7 +6753,7 @@
       "source_location": "L71",
       "_origin": "ast",
       "id": "scripts_dataset_strengthening_common_git_commit",
-      "community": 129,
+      "community": 99,
       "community_name": "dataset_strengthening_common.py",
       "norm_label": "git_commit()"
     },
@@ -6765,7 +6765,7 @@
       "_origin": "ast",
       "id": "scripts_dataset_strengthening_common_sha256_file",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "sha256_file()"
     },
     {
@@ -6775,8 +6775,8 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "scripts_dataset_strengthening_common_load_config",
-      "community": 129,
-      "community_name": "dataset_strengthening_common.py",
+      "community": 102,
+      "community_name": "run_hdfs_block_strengthening.py",
       "norm_label": "load_config()"
     },
     {
@@ -6786,8 +6786,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_dataset_strengthening_common_py_any",
-      "community": 129,
-      "community_name": "dataset_strengthening_common.py",
+      "community": 102,
+      "community_name": "run_hdfs_block_strengthening.py",
       "norm_label": "any"
     },
     {
@@ -6798,7 +6798,7 @@
       "_origin": "ast",
       "id": "scripts_dataset_strengthening_common_write_json",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "write_json()"
     },
     {
@@ -6808,7 +6808,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "scripts_dataset_strengthening_common_write_csv",
-      "community": 129,
+      "community": 99,
       "community_name": "dataset_strengthening_common.py",
       "norm_label": "write_csv()"
     },
@@ -6819,7 +6819,7 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "scripts_dataset_strengthening_common_append_ledger",
-      "community": 129,
+      "community": 99,
       "community_name": "dataset_strengthening_common.py",
       "norm_label": "append_ledger()"
     },
@@ -6852,8 +6852,8 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "scripts_dataset_strengthening_common_metrics_from_prediction",
-      "community": 129,
-      "community_name": "dataset_strengthening_common.py",
+      "community": 103,
+      "community_name": "run_external_csecicids2018_strengthening.py",
       "norm_label": "metrics_from_prediction()"
     },
     {
@@ -6885,7 +6885,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_dataset_strengthening_common_rationale_1",
-      "community": 129,
+      "community": 99,
       "community_name": "dataset_strengthening_common.py",
       "norm_label": "utilitaires partages par les campagnes de renforcement des datasets."
     },
@@ -7193,8 +7193,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_evaluate_sequence_split",
-      "community": 153,
-      "community_name": "evaluate_split",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "evaluate_sequence_split.py"
     },
     {
@@ -7204,8 +7204,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "scripts_evaluate_sequence_split_labels",
-      "community": 153,
-      "community_name": "evaluate_split",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "_labels()"
     },
     {
@@ -7215,8 +7215,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_evaluate_sequence_split_py_dataframe",
-      "community": 153,
-      "community_name": "evaluate_split",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "dataframe"
     },
     {
@@ -7226,8 +7226,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_evaluate_sequence_split_py_series",
-      "community": 153,
-      "community_name": "evaluate_split",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "series"
     },
     {
@@ -7237,8 +7237,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "scripts_evaluate_sequence_split_align",
-      "community": 153,
-      "community_name": "evaluate_split",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "_align()"
     },
     {
@@ -7248,8 +7248,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "scripts_evaluate_sequence_split_top_by_score",
-      "community": 153,
-      "community_name": "evaluate_split",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "_top_by_score()"
     },
     {
@@ -7259,8 +7259,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "scripts_evaluate_sequence_split_summarize",
-      "community": 153,
-      "community_name": "evaluate_split",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "_summarize()"
     },
     {
@@ -7270,8 +7270,8 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "scripts_evaluate_sequence_split_rank_strength",
-      "community": 153,
-      "community_name": "evaluate_split",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "_rank_strength()"
     },
     {
@@ -7281,8 +7281,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "scripts_evaluate_sequence_split_histogram_scores",
-      "community": 153,
-      "community_name": "evaluate_split",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "_histogram_scores()"
     },
     {
@@ -7292,8 +7292,8 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "scripts_evaluate_sequence_split_evaluate_split",
-      "community": 153,
-      "community_name": "evaluate_split",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "evaluate_split()"
     },
     {
@@ -7303,8 +7303,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_evaluate_sequence_split_py_path",
-      "community": 153,
-      "community_name": "evaluate_split",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "path"
     },
     {
@@ -7314,8 +7314,8 @@
       "source_location": "L176",
       "_origin": "ast",
       "id": "scripts_evaluate_sequence_split_main",
-      "community": 153,
-      "community_name": "evaluate_split",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "main()"
     },
     {
@@ -7325,8 +7325,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_evaluate_sequence_split_rationale_1",
-      "community": 153,
-      "community_name": "evaluate_split",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "evaluation train -> test pour logs sequentiels hdfs/bgl enrichis. contrairement..."
     },
     {
@@ -8645,7 +8645,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_logminer_redis_cnp_agent",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "logminer_redis_cnp_agent.py"
     },
@@ -8656,8 +8656,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "scripts_logminer_redis_cnp_agent_synthetic_effect",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 105,
+      "community_name": "agents/bus.py",
       "norm_label": "synthetic_effect()"
     },
     {
@@ -8667,8 +8667,8 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "scripts_logminer_redis_cnp_agent_build_agent",
-      "community": 46,
-      "community_name": "AgentCapability",
+      "community": 105,
+      "community_name": "agents/bus.py",
       "norm_label": "build_agent()"
     },
     {
@@ -8678,8 +8678,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_logminer_redis_cnp_agent_py_namespace",
-      "community": 46,
-      "community_name": "AgentCapability",
+      "community": 105,
+      "community_name": "agents/bus.py",
       "norm_label": "namespace"
     },
     {
@@ -8689,8 +8689,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_logminer_redis_cnp_agent_py_redismessagebus",
-      "community": 46,
-      "community_name": "AgentCapability",
+      "community": 105,
+      "community_name": "agents/bus.py",
       "norm_label": "redismessagebus"
     },
     {
@@ -8700,8 +8700,8 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "scripts_logminer_redis_cnp_agent_main",
-      "community": 46,
-      "community_name": "AgentCapability",
+      "community": 105,
+      "community_name": "agents/bus.py",
       "norm_label": "main()"
     },
     {
@@ -8711,7 +8711,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_logminer_redis_cnp_agent_rationale_1",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "processus agent autonome repondant aux contrats via redis streams."
     },
@@ -9800,7 +9800,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_run_bgl_known_unknown_strengthening",
-      "community": 129,
+      "community": 99,
       "community_name": "dataset_strengthening_common.py",
       "norm_label": "run_bgl_known_unknown_strengthening.py"
     },
@@ -9812,7 +9812,7 @@
       "_origin": "ast",
       "id": "scripts_run_bgl_known_unknown_strengthening_group_masks",
       "community": 129,
-      "community_name": "dataset_strengthening_common.py",
+      "community_name": "evaluate_groups",
       "norm_label": "group_masks()"
     },
     {
@@ -9823,7 +9823,7 @@
       "_origin": "ast",
       "id": "scripts_run_bgl_known_unknown_strengthening_py_ndarray",
       "community": 129,
-      "community_name": "dataset_strengthening_common.py",
+      "community_name": "evaluate_groups",
       "norm_label": "ndarray"
     },
     {
@@ -9834,7 +9834,7 @@
       "_origin": "ast",
       "id": "scripts_run_bgl_known_unknown_strengthening_evaluate_groups",
       "community": 129,
-      "community_name": "dataset_strengthening_common.py",
+      "community_name": "evaluate_groups",
       "norm_label": "evaluate_groups()"
     },
     {
@@ -9845,7 +9845,7 @@
       "_origin": "ast",
       "id": "scripts_run_bgl_known_unknown_strengthening_py_any",
       "community": 129,
-      "community_name": "dataset_strengthening_common.py",
+      "community_name": "evaluate_groups",
       "norm_label": "any"
     },
     {
@@ -9856,7 +9856,7 @@
       "_origin": "ast",
       "id": "scripts_run_bgl_known_unknown_strengthening_make_figures",
       "community": 129,
-      "community_name": "dataset_strengthening_common.py",
+      "community_name": "evaluate_groups",
       "norm_label": "make_figures()"
     },
     {
@@ -9867,7 +9867,7 @@
       "_origin": "ast",
       "id": "scripts_run_bgl_known_unknown_strengthening_py_path",
       "community": 129,
-      "community_name": "dataset_strengthening_common.py",
+      "community_name": "evaluate_groups",
       "norm_label": "path"
     },
     {
@@ -9877,7 +9877,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "scripts_run_bgl_known_unknown_strengthening_execute",
-      "community": 129,
+      "community": 99,
       "community_name": "dataset_strengthening_common.py",
       "norm_label": "execute()"
     },
@@ -9888,7 +9888,7 @@
       "source_location": "L249",
       "_origin": "ast",
       "id": "scripts_run_bgl_known_unknown_strengthening_main",
-      "community": 129,
+      "community": 99,
       "community_name": "dataset_strengthening_common.py",
       "norm_label": "main()"
     },
@@ -9899,7 +9899,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_run_bgl_known_unknown_strengthening_rationale_1",
-      "community": 129,
+      "community": 99,
       "community_name": "dataset_strengthening_common.py",
       "norm_label": "quantifie la performance bgl sur templates connus et inconnus du train."
     },
@@ -9943,8 +9943,8 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "scripts_run_cicids_temporal_strengthening_build_priority_pool",
-      "community": 101,
-      "community_name": "run_multiformat_validation.py",
+      "community": 130,
+      "community_name": "run_cicids_temporal_strengthening.py",
       "norm_label": "build_priority_pool()"
     },
     {
@@ -10064,8 +10064,8 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "scripts_run_cicids_temporal_strengthening_rationale_70",
-      "community": 101,
-      "community_name": "run_multiformat_validation.py",
+      "community": 130,
+      "community_name": "run_cicids_temporal_strengthening.py",
       "norm_label": "conserve les ``per_class`` plus petites priorites d'un balayage complet."
     },
     {
@@ -12539,8 +12539,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_run_memory_feedback_ablation",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "run_memory_feedback_ablation.py"
     },
     {
@@ -12550,8 +12550,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "scripts_run_memory_feedback_ablation_count_priority",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "_count_priority()"
     },
     {
@@ -12561,8 +12561,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_run_memory_feedback_ablation_py_dataframe",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "dataframe"
     },
     {
@@ -12572,8 +12572,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "scripts_run_memory_feedback_ablation_simulated_profile",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "_simulated_profile()"
     },
     {
@@ -12583,8 +12583,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "scripts_run_memory_feedback_ablation_run_ablation",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "run_ablation()"
     },
     {
@@ -12594,8 +12594,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_run_memory_feedback_ablation_py_path",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "path"
     },
     {
@@ -12605,8 +12605,8 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "scripts_run_memory_feedback_ablation_main",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "main()"
     },
     {
@@ -12616,8 +12616,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_run_memory_feedback_ablation_rationale_1",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "ablation de la memoire de feedback analyste sur les anomalies logminer. le..."
     },
     {
@@ -12639,7 +12639,7 @@
       "_origin": "ast",
       "id": "scripts_run_multiformat_balanced_strengthening",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "run_multiformat_balanced_strengthening.py"
     },
     {
@@ -12650,7 +12650,7 @@
       "_origin": "ast",
       "id": "scripts_run_multiformat_balanced_strengthening_read_normalized",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "read_normalized()"
     },
     {
@@ -12661,7 +12661,7 @@
       "_origin": "ast",
       "id": "scripts_run_multiformat_balanced_strengthening_py_path",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "path"
     },
     {
@@ -12672,7 +12672,7 @@
       "_origin": "ast",
       "id": "scripts_run_multiformat_balanced_strengthening_py_dataframe",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "dataframe"
     },
     {
@@ -12683,7 +12683,7 @@
       "_origin": "ast",
       "id": "scripts_run_multiformat_balanced_strengthening_normalized_path",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "normalized_path()"
     },
     {
@@ -12694,7 +12694,7 @@
       "_origin": "ast",
       "id": "scripts_run_multiformat_balanced_strengthening_py_any",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "any"
     },
     {
@@ -12705,7 +12705,7 @@
       "_origin": "ast",
       "id": "scripts_run_multiformat_balanced_strengthening_make_figure",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "make_figure()"
     },
     {
@@ -12716,7 +12716,7 @@
       "_origin": "ast",
       "id": "scripts_run_multiformat_balanced_strengthening_main",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "main()"
     },
     {
@@ -13002,7 +13002,7 @@
       "_origin": "ast",
       "id": "scripts_run_multisource_cnp_e2e_strengthening",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "run_multisource_cnp_e2e_strengthening.py"
     },
     {
@@ -13068,7 +13068,7 @@
       "_origin": "ast",
       "id": "scripts_run_multisource_cnp_e2e_strengthening_build_agents",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "build_agents()"
     },
     {
@@ -13079,7 +13079,7 @@
       "_origin": "ast",
       "id": "scripts_run_multisource_cnp_e2e_strengthening_make_agent_figure",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "make_agent_figure()"
     },
     {
@@ -13090,7 +13090,7 @@
       "_origin": "ast",
       "id": "scripts_run_multisource_cnp_e2e_strengthening_py_path",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "path"
     },
     {
@@ -13101,7 +13101,7 @@
       "_origin": "ast",
       "id": "scripts_run_multisource_cnp_e2e_strengthening_make_funnel_figure",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "make_funnel_figure()"
     },
     {
@@ -13112,7 +13112,7 @@
       "_origin": "ast",
       "id": "scripts_run_multisource_cnp_e2e_strengthening_main",
       "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "main()"
     },
     {
@@ -13331,8 +13331,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_run_parallel_resource_campaign",
-      "community": 39,
-      "community_name": "run_parallel_resource_campaign.py",
+      "community": 6,
+      "community_name": "agents/model_compare.py",
       "norm_label": "run_parallel_resource_campaign.py"
     },
     {
@@ -13342,8 +13342,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "scripts_run_parallel_resource_campaign_build_synthetic_dataset",
-      "community": 39,
-      "community_name": "run_parallel_resource_campaign.py",
+      "community": 6,
+      "community_name": "agents/model_compare.py",
       "norm_label": "build_synthetic_dataset()"
     },
     {
@@ -13353,8 +13353,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_run_parallel_resource_campaign_py_path",
-      "community": 39,
-      "community_name": "run_parallel_resource_campaign.py",
+      "community": 6,
+      "community_name": "agents/model_compare.py",
       "norm_label": "path"
     },
     {
@@ -13364,8 +13364,8 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "scripts_run_parallel_resource_campaign_monitor",
-      "community": 39,
-      "community_name": "run_parallel_resource_campaign.py",
+      "community": 6,
+      "community_name": "agents/model_compare.py",
       "norm_label": "_monitor()"
     },
     {
@@ -13375,8 +13375,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "event",
-      "community": 39,
-      "community_name": "run_parallel_resource_campaign.py",
+      "community": 6,
+      "community_name": "agents/model_compare.py",
       "norm_label": "event"
     },
     {
@@ -13386,8 +13386,8 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "scripts_run_parallel_resource_campaign_num",
-      "community": 39,
-      "community_name": "run_parallel_resource_campaign.py",
+      "community": 6,
+      "community_name": "agents/model_compare.py",
       "norm_label": "num()"
     },
     {
@@ -13397,8 +13397,8 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "scripts_run_parallel_resource_campaign_run_campaign",
-      "community": 39,
-      "community_name": "run_parallel_resource_campaign.py",
+      "community": 6,
+      "community_name": "agents/model_compare.py",
       "norm_label": "run_campaign()"
     },
     {
@@ -13408,8 +13408,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_run_parallel_resource_campaign_py_any",
-      "community": 39,
-      "community_name": "run_parallel_resource_campaign.py",
+      "community": 6,
+      "community_name": "agents/model_compare.py",
       "norm_label": "any"
     },
     {
@@ -13419,8 +13419,8 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "scripts_run_parallel_resource_campaign_write_csv",
-      "community": 39,
-      "community_name": "run_parallel_resource_campaign.py",
+      "community": 6,
+      "community_name": "agents/model_compare.py",
       "norm_label": "write_csv()"
     },
     {
@@ -13430,8 +13430,8 @@
       "source_location": "L178",
       "_origin": "ast",
       "id": "scripts_run_parallel_resource_campaign_write_table",
-      "community": 39,
-      "community_name": "run_parallel_resource_campaign.py",
+      "community": 6,
+      "community_name": "agents/model_compare.py",
       "norm_label": "write_table()"
     },
     {
@@ -13441,8 +13441,8 @@
       "source_location": "L204",
       "_origin": "ast",
       "id": "scripts_run_parallel_resource_campaign_write_svg",
-      "community": 39,
-      "community_name": "run_parallel_resource_campaign.py",
+      "community": 6,
+      "community_name": "agents/model_compare.py",
       "norm_label": "write_svg()"
     },
     {
@@ -13452,8 +13452,8 @@
       "source_location": "L239",
       "_origin": "ast",
       "id": "scripts_run_parallel_resource_campaign_main",
-      "community": 39,
-      "community_name": "run_parallel_resource_campaign.py",
+      "community": 6,
+      "community_name": "agents/model_compare.py",
       "norm_label": "main()"
     },
     {
@@ -13463,8 +13463,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_run_parallel_resource_campaign_rationale_1",
-      "community": 39,
-      "community_name": "run_parallel_resource_campaign.py",
+      "community": 6,
+      "community_name": "agents/model_compare.py",
       "norm_label": "campagne ressources pour execution parallele logminer. cette campagne mesure un..."
     },
     {
@@ -13475,7 +13475,7 @@
       "_origin": "ast",
       "id": "scripts_run_redis_cnp_multivm_campaign",
       "community": 105,
-      "community_name": "run_redis_cnp_multivm_campaign.py",
+      "community_name": "agents/bus.py",
       "norm_label": "run_redis_cnp_multivm_campaign.py"
     },
     {
@@ -13486,7 +13486,7 @@
       "_origin": "ast",
       "id": "scripts_run_redis_cnp_multivm_campaign_percentile",
       "community": 105,
-      "community_name": "run_redis_cnp_multivm_campaign.py",
+      "community_name": "agents/bus.py",
       "norm_label": "percentile()"
     },
     {
@@ -13497,7 +13497,7 @@
       "_origin": "ast",
       "id": "scripts_run_redis_cnp_multivm_campaign_write_manifest",
       "community": 105,
-      "community_name": "run_redis_cnp_multivm_campaign.py",
+      "community_name": "agents/bus.py",
       "norm_label": "write_manifest()"
     },
     {
@@ -13508,7 +13508,7 @@
       "_origin": "ast",
       "id": "scripts_run_redis_cnp_multivm_campaign_py_path",
       "community": 105,
-      "community_name": "run_redis_cnp_multivm_campaign.py",
+      "community_name": "agents/bus.py",
       "norm_label": "path"
     },
     {
@@ -13519,7 +13519,7 @@
       "_origin": "ast",
       "id": "scripts_run_redis_cnp_multivm_campaign_append_ledger",
       "community": 105,
-      "community_name": "run_redis_cnp_multivm_campaign.py",
+      "community_name": "agents/bus.py",
       "norm_label": "append_ledger()"
     },
     {
@@ -13530,7 +13530,7 @@
       "_origin": "ast",
       "id": "scripts_run_redis_cnp_multivm_campaign_main",
       "community": 105,
-      "community_name": "run_redis_cnp_multivm_campaign.py",
+      "community_name": "agents/bus.py",
       "norm_label": "main()"
     },
     {
@@ -13541,7 +13541,7 @@
       "_origin": "ast",
       "id": "scripts_run_redis_cnp_multivm_campaign_rationale_1",
       "community": 105,
-      "community_name": "run_redis_cnp_multivm_campaign.py",
+      "community_name": "agents/bus.py",
       "norm_label": "campagne contract net avec agents deja lances sur plusieurs vm."
     },
     {
@@ -13551,7 +13551,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_run_redis_cnp_process_campaign",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "run_redis_cnp_process_campaign.py"
     },
@@ -13562,7 +13562,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "scripts_run_redis_cnp_process_campaign_percentile",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "percentile()"
     },
@@ -13573,7 +13573,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "scripts_run_redis_cnp_process_campaign_append_ledger",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "append_ledger()"
     },
@@ -13584,7 +13584,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_run_redis_cnp_process_campaign_py_path",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "path"
     },
@@ -13595,7 +13595,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "scripts_run_redis_cnp_process_campaign_write_manifest",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "write_manifest()"
     },
@@ -13606,7 +13606,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "scripts_run_redis_cnp_process_campaign_main",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "main()"
     },
@@ -13617,7 +13617,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_run_redis_cnp_process_campaign_rationale_1",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "validation du contract net logminer entre processus distincts via redis."
     },
@@ -14156,8 +14156,8 @@
       "source_location": "L169",
       "_origin": "ast",
       "id": "scripts_run_router_independent_strengthening_main",
-      "community": 90,
-      "community_name": "run_router_independent_strengthening.py",
+      "community": 99,
+      "community_name": "dataset_strengthening_common.py",
       "norm_label": "main()"
     },
     {
@@ -14772,8 +14772,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_run_supervisor_campaign",
-      "community": 162,
-      "community_name": "run_supervisor_campaign.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "run_supervisor_campaign.py"
     },
     {
@@ -14783,8 +14783,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "scripts_run_supervisor_campaign_family",
-      "community": 162,
-      "community_name": "run_supervisor_campaign.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "_family()"
     },
     {
@@ -14794,8 +14794,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_run_supervisor_campaign_py_any",
-      "community": 162,
-      "community_name": "run_supervisor_campaign.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "any"
     },
     {
@@ -14805,8 +14805,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "scripts_run_supervisor_campaign_timing",
-      "community": 162,
-      "community_name": "run_supervisor_campaign.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "_timing()"
     },
     {
@@ -14816,8 +14816,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "scripts_run_supervisor_campaign_write_csv",
-      "community": 162,
-      "community_name": "run_supervisor_campaign.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "write_csv()"
     },
     {
@@ -14827,8 +14827,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_run_supervisor_campaign_py_path",
-      "community": 162,
-      "community_name": "run_supervisor_campaign.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "path"
     },
     {
@@ -14838,8 +14838,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "scripts_run_supervisor_campaign_write_table",
-      "community": 162,
-      "community_name": "run_supervisor_campaign.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "write_table()"
     },
     {
@@ -14849,8 +14849,8 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "scripts_run_supervisor_campaign_main",
-      "community": 162,
-      "community_name": "run_supervisor_campaign.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "main()"
     },
     {
@@ -14860,8 +14860,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_run_supervisor_campaign_rationale_1",
-      "community": 162,
-      "community_name": "run_supervisor_campaign.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "campagne multi-cycles du supervisoragent. produit des artefacts exploitables..."
     },
     {
@@ -14959,8 +14959,8 @@
       "source_location": "L193",
       "_origin": "ast",
       "id": "scripts_run_true_multi_agent_experiments_load_policy",
-      "community": 94,
-      "community_name": "run_true_multi_agent_experiments.py",
+      "community": 113,
+      "community_name": "AgentPolicyWeights",
       "norm_label": "load_policy()"
     },
     {
@@ -15003,8 +15003,8 @@
       "source_location": "L229",
       "_origin": "ast",
       "id": "scripts_run_true_multi_agent_experiments_build_agents",
-      "community": 94,
-      "community_name": "run_true_multi_agent_experiments.py",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "build_agents()"
     },
     {
@@ -15179,8 +15179,8 @@
       "source_location": "L671",
       "_origin": "ast",
       "id": "scripts_run_true_multi_agent_experiments_end_to_end_experiment",
-      "community": 25,
-      "community_name": "run_intelligent_agents_demo.py",
+      "community": 94,
+      "community_name": "run_true_multi_agent_experiments.py",
       "norm_label": "end_to_end_experiment()"
     },
     {
@@ -15773,8 +15773,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_summarize_vbox_redis_1h_campaign",
-      "community": 242,
-      "community_name": "summarize_vbox_redis_1h_campaign.py",
+      "community": 105,
+      "community_name": "agents/bus.py",
       "norm_label": "summarize_vbox_redis_1h_campaign.py"
     },
     {
@@ -15784,8 +15784,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "scripts_summarize_vbox_redis_1h_campaign_main",
-      "community": 242,
-      "community_name": "summarize_vbox_redis_1h_campaign.py",
+      "community": 105,
+      "community_name": "agents/bus.py",
       "norm_label": "main()"
     },
     {
@@ -15795,8 +15795,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_summarize_vbox_redis_1h_campaign_rationale_1",
-      "community": 242,
-      "community_name": "summarize_vbox_redis_1h_campaign.py",
+      "community": 105,
+      "community_name": "agents/bus.py",
       "norm_label": "synthese d'une campagne redis multi-vm d'endurance."
     },
     {
@@ -16356,8 +16356,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_init",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 97,
+      "community_name": "SQLiteIdempotencyStore",
       "norm_label": "agents/__init__.py"
     },
     {
@@ -16367,8 +16367,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_logminer_agents_init_run_supervisor_cycle",
-      "community": 543,
-      "community_name": "run_supervisor_cycle",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "run_supervisor_cycle()"
     },
     {
@@ -16378,8 +16378,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_init_rationale_1",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 97,
+      "community_name": "SQLiteIdempotencyStore",
       "norm_label": "agents logminer de haut niveau."
     },
     {
@@ -16389,8 +16389,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_logminer_agents_init_rationale_18",
-      "community": 543,
-      "community_name": "run_supervisor_cycle",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "charge le superviseur historique uniquement lorsqu'il est demande. le..."
     },
     {
@@ -16620,7 +16620,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_bus",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "agents/bus.py"
     },
@@ -16631,8 +16631,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "src_logminer_agents_bus_agentmessage",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 10,
+      "community_name": "AgentMessage",
       "norm_label": "agentmessage"
     },
     {
@@ -16642,8 +16642,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "src_logminer_agents_bus_messagebus",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 20,
+      "community_name": "AgentTask",
       "norm_label": "messagebus"
     },
     {
@@ -16653,8 +16653,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_bus_py_protocol",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 20,
+      "community_name": "AgentTask",
       "norm_label": "protocol"
     },
     {
@@ -16664,8 +16664,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_logminer_agents_bus_messagebus_publish",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 10,
+      "community_name": "AgentMessage",
       "norm_label": ".publish()"
     },
     {
@@ -16676,7 +16676,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_py_any",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "any"
     },
     {
@@ -16686,8 +16686,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "src_logminer_agents_bus_messagebus_read",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 10,
+      "community_name": "AgentMessage",
       "norm_label": ".read()"
     },
     {
@@ -16698,7 +16698,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_localmessagebus",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "localmessagebus"
     },
     {
@@ -16709,7 +16709,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_localmessagebus_init",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".__init__()"
     },
     {
@@ -16720,7 +16720,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_py_path",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "path"
     },
     {
@@ -16731,7 +16731,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_localmessagebus_publish",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".publish()"
     },
     {
@@ -16742,7 +16742,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_localmessagebus_read",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".read()"
     },
     {
@@ -16753,7 +16753,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_redismessagebus",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "redismessagebus"
     },
     {
@@ -16764,7 +16764,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_redismessagebus_init",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".__init__()"
     },
     {
@@ -16775,7 +16775,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_redismessagebus_ping",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".ping()"
     },
     {
@@ -16786,7 +16786,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_redismessagebus_stream_info",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".stream_info()"
     },
     {
@@ -16797,7 +16797,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_redismessagebus_ensure_group",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".ensure_group()"
     },
     {
@@ -16808,7 +16808,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_redismessagebus_publish",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".publish()"
     },
     {
@@ -16819,7 +16819,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_redismessagebus_read",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".read()"
     },
     {
@@ -16830,7 +16830,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_redismessagebus_enqueue_job",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".enqueue_job()"
     },
     {
@@ -16841,7 +16841,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_redismessagebus_read_group_jobs",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".read_group_jobs()"
     },
     {
@@ -16852,7 +16852,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_redismessagebus_claim_stale_jobs",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".claim_stale_jobs()"
     },
     {
@@ -16863,7 +16863,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_redismessagebus_ack_job",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".ack_job()"
     },
     {
@@ -16874,7 +16874,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_redismessagebus_pending_jobs",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".pending_jobs()"
     },
     {
@@ -16884,8 +16884,8 @@
       "source_location": "L331",
       "_origin": "ast",
       "id": "src_logminer_agents_bus_filter_messages",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 10,
+      "community_name": "AgentMessage",
       "norm_label": "filter_messages()"
     },
     {
@@ -16896,7 +16896,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_mqttmessagebus",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "mqttmessagebus"
     },
     {
@@ -16907,7 +16907,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_mqttmessagebus_init",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".__init__()"
     },
     {
@@ -16918,7 +16918,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_mqttmessagebus_close",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".close()"
     },
     {
@@ -16929,7 +16929,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_mqttmessagebus_ping",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".ping()"
     },
     {
@@ -16940,7 +16940,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_mqttmessagebus_publish",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".publish()"
     },
     {
@@ -16951,7 +16951,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_mqttmessagebus_read",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": ".read()"
     },
     {
@@ -16961,7 +16961,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_1",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "bus de communication entre agents logminer. la v1 conserve un bus jsonl local,..."
     },
@@ -16972,8 +16972,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_31",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 10,
+      "community_name": "AgentMessage",
       "norm_label": "message standard echange entre agents."
     },
     {
@@ -16983,8 +16983,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_43",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 20,
+      "community_name": "AgentTask",
       "norm_label": "contrat minimal partage par les bus jsonl et redis."
     },
     {
@@ -16995,7 +16995,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_62",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "bus append-only stocke dans un fichier jsonl."
     },
     {
@@ -17006,7 +17006,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_106",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "bus redis streams pour les runs fastapi/agents distribues."
     },
     {
@@ -17017,7 +17017,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_128",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "retourne un etat leger du stream redis."
     },
     {
@@ -17028,7 +17028,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_137",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "cree un consumer group redis streams si necessaire."
     },
     {
@@ -17039,7 +17039,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_209",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "publie un job persistant pour un worker separe."
     },
     {
@@ -17050,7 +17050,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_240",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "lit des jobs via consumer group pour repartir le travail entre workers."
     },
     {
@@ -17061,7 +17061,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_279",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "reclame des jobs pending restes trop longtemps sans ack."
     },
     {
@@ -17072,7 +17072,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_316",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "accuse reception d'un job traite."
     },
     {
@@ -17083,7 +17083,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_321",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "expose un resume des jobs non acquittes."
     },
     {
@@ -17093,8 +17093,8 @@
       "source_location": "L332",
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_332",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 10,
+      "community_name": "AgentMessage",
       "norm_label": "filtre les messages d'un run donne."
     },
     {
@@ -17105,7 +17105,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_340",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "bus mqtt leger pour collecteurs et traces temps reel non persistantes."
     },
     {
@@ -17116,7 +17116,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_bus_rationale_407",
       "community": 10,
-      "community_name": "RedisMessageBus",
+      "community_name": "AgentMessage",
       "norm_label": "mqtt est pub/sub; l'historique n'est pas relu comme jsonl/redis."
     },
     {
@@ -17126,8 +17126,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "collector_agent.py"
     },
     {
@@ -17137,8 +17137,8 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_logcandidate",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "logcandidate"
     },
     {
@@ -17148,8 +17148,8 @@
       "source_location": "L116",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_project_path",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "_project_path()"
     },
     {
@@ -17159,8 +17159,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_py_path",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "path"
     },
     {
@@ -17170,8 +17170,8 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_split_env_roots",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "_split_env_roots()"
     },
     {
@@ -17181,8 +17181,8 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_windows_application_roots",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "_windows_application_roots()"
     },
     {
@@ -17192,8 +17192,8 @@
       "source_location": "L159",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_deployment_roots",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "deployment_roots()"
     },
     {
@@ -17203,8 +17203,8 @@
       "source_location": "L199",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_iter_files",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "_iter_files()"
     },
     {
@@ -17214,8 +17214,8 @@
       "source_location": "L219",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_iter_root_files",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "_iter_root_files()"
     },
     {
@@ -17225,8 +17225,8 @@
       "source_location": "L238",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_iter_files_parallel",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "_iter_files_parallel()"
     },
     {
@@ -17236,8 +17236,8 @@
       "source_location": "L259",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_priority",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "_priority()"
     },
     {
@@ -17247,8 +17247,8 @@
       "source_location": "L277",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_candidate_from_path",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "_candidate_from_path()"
     },
     {
@@ -17258,8 +17258,8 @@
       "source_location": "L300",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_discover_logs",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "discover_logs()"
     },
     {
@@ -17269,8 +17269,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_py_messagebus",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "messagebus"
     },
     {
@@ -17280,8 +17280,8 @@
       "source_location": "L344",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_main",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "main()"
     },
     {
@@ -17291,8 +17291,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_rationale_1",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "agent collecteur logminer. le collecteur decouvre les journaux disponibles dans..."
     },
     {
@@ -17302,8 +17302,8 @@
       "source_location": "L131",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_rationale_131",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "retourne des dossiers applicatifs windows susceptibles de contenir des logs."
     },
     {
@@ -17313,8 +17313,8 @@
       "source_location": "L166",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_rationale_166",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "construit les racines de decouverte adaptees a l'os cible."
     },
     {
@@ -17324,8 +17324,8 @@
       "source_location": "L307",
       "_origin": "ast",
       "id": "src_logminer_agents_collector_agent_rationale_307",
-      "community": 131,
-      "community_name": "collector_agent.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "decouvre les journaux candidats et les classe par pertinence."
     },
     {
@@ -17335,7 +17335,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "contract_net.py"
     },
@@ -17347,7 +17347,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_negotiationresult",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "negotiationresult"
     },
     {
@@ -17357,8 +17357,8 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_contractnetcoordinator",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "contractnetcoordinator"
     },
     {
@@ -17368,8 +17368,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_contractnetcoordinator_init",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".__init__()"
     },
     {
@@ -17379,8 +17379,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_py_messagebus",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "messagebus"
     },
     {
@@ -17390,8 +17390,8 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_contractnetcoordinator_register",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".register()"
     },
     {
@@ -17401,8 +17401,8 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_contractnetcoordinator_unregister",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".unregister()"
     },
     {
@@ -17412,8 +17412,8 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_contractnetcoordinator_refresh_registry",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".refresh_registry()"
     },
     {
@@ -17423,8 +17423,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_py_any",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "any"
     },
     {
@@ -17434,8 +17434,8 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_contractnetcoordinator_publish",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "._publish()"
     },
     {
@@ -17445,8 +17445,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_py_agentmessage",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "agentmessage"
     },
     {
@@ -17456,8 +17456,8 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_contractnetcoordinator_evaluation_payload",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "._evaluation_payload()"
     },
     {
@@ -17467,8 +17467,8 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_contractnetcoordinator_negotiate",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".negotiate()"
     },
     {
@@ -17478,8 +17478,8 @@
       "source_location": "L284",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_contractnetcoordinator_run_tasks",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".run_tasks()"
     },
     {
@@ -17489,8 +17489,8 @@
       "source_location": "L297",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_contractnetcoordinator_message_counts",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".message_counts()"
     },
     {
@@ -17500,7 +17500,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_rationale_1",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "protocole contract net leger pour l'allocation autonome des taches logminer. le..."
     },
@@ -17512,7 +17512,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_rationale_42",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "trace structuree d'une negociation et de son execution."
     },
     {
@@ -17522,8 +17522,8 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_rationale_59",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "registre et arbitre minimal; les agents restent auteurs de leurs offres."
     },
     {
@@ -17533,8 +17533,8 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_rationale_128",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "negocie, attribue et execute une tache selon un cycle cnp observable."
     },
     {
@@ -17544,8 +17544,8 @@
       "source_location": "L285",
       "_origin": "ast",
       "id": "src_logminer_agents_contract_net_rationale_285",
-      "community": 113,
-      "community_name": "ContractNetCoordinator",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "execute plusieurs negociations, eventuellement en parallele."
     },
     {
@@ -17863,8 +17863,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_detector",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "agents/detector.py"
     },
     {
@@ -17874,8 +17874,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "src_logminer_agents_detector_detect_anomalies",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "detect_anomalies()"
     },
     {
@@ -17885,8 +17885,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_detector_py_path",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "path"
     },
     {
@@ -17896,8 +17896,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_detector_py_localmessagebus",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "localmessagebus"
     },
     {
@@ -17907,8 +17907,8 @@
       "source_location": "L176",
       "_origin": "ast",
       "id": "src_logminer_agents_detector_save_model_artifact",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "save_model_artifact()"
     },
     {
@@ -17918,8 +17918,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_detector_py_isolationforest",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "isolationforest"
     },
     {
@@ -17929,8 +17929,8 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "src_logminer_agents_detector_load_model_artifact",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "load_model_artifact()"
     },
     {
@@ -17940,8 +17940,8 @@
       "source_location": "L226",
       "_origin": "ast",
       "id": "src_logminer_agents_detector_align_features",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "align_features()"
     },
     {
@@ -17951,8 +17951,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_detector_py_dataframe",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "dataframe"
     },
     {
@@ -17962,8 +17962,8 @@
       "source_location": "L234",
       "_origin": "ast",
       "id": "src_logminer_agents_detector_main",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "main()"
     },
     {
@@ -17973,8 +17973,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_detector_rationale_1",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "agent detecteur d'anomalies base sur isolation forest. role dans le projet: cet..."
     },
     {
@@ -17984,8 +17984,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "src_logminer_agents_detector_rationale_52",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "entraine ou recharge isolation forest puis exporte les scores. en mode..."
     },
     {
@@ -17995,8 +17995,8 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "src_logminer_agents_detector_rationale_187",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "enregistre le modele et son schema de features avec joblib. sauvegarder..."
     },
     {
@@ -18006,8 +18006,8 @@
       "source_location": "L216",
       "_origin": "ast",
       "id": "src_logminer_agents_detector_rationale_216",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "charge un artefact joblib produit par `save_model_artifact`."
     },
     {
@@ -18017,8 +18017,8 @@
       "source_location": "L227",
       "_origin": "ast",
       "id": "src_logminer_agents_detector_rationale_227",
-      "community": 152,
-      "community_name": "agents/detector.py",
+      "community": 12,
+      "community_name": "agents/model_router.py",
       "norm_label": "realigne les features d'inference sur le schema d'entrainement."
     },
     {
@@ -18028,8 +18028,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "feedback_memory.py"
     },
     {
@@ -18039,8 +18039,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_feedbackprofile",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "feedbackprofile"
     },
     {
@@ -18050,8 +18050,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_norm",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "_norm()"
     },
     {
@@ -18061,8 +18061,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_row_value",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "_row_value()"
     },
     {
@@ -18072,8 +18072,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_py_series",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "series"
     },
     {
@@ -18083,8 +18083,8 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_feedback_key_from_values",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "feedback_key_from_values()"
     },
     {
@@ -18094,8 +18094,8 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_feedback_key_from_row",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "feedback_key_from_row()"
     },
     {
@@ -18105,8 +18105,8 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_load_feedback_profile",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "load_feedback_profile()"
     },
     {
@@ -18116,8 +18116,8 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_apply_feedback_memory",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "apply_feedback_memory()"
     },
     {
@@ -18127,8 +18127,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_py_dataframe",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "dataframe"
     },
     {
@@ -18138,8 +18138,8 @@
       "source_location": "L160",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_apply_feedback_memory_to_csv",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "apply_feedback_memory_to_csv()"
     },
     {
@@ -18149,8 +18149,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_py_path",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "path"
     },
     {
@@ -18160,8 +18160,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_rationale_1",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "memoire de feedback analyste appliquee aux anomalies candidates."
     },
     {
@@ -18171,8 +18171,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_rationale_52",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "construit une cle stable de similarite pour un signal analyste."
     },
     {
@@ -18182,8 +18182,8 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_rationale_78",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "charge les decisions analyste auditees et les agrege par motif."
     },
     {
@@ -18193,8 +18193,8 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "src_logminer_agents_feedback_memory_rationale_114",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 39,
+      "community_name": "feedback_memory.py",
       "norm_label": "ajoute des colonnes memoire et ajuste la priorite des anomalies. la fonction ne..."
     },
     {
@@ -18204,7 +18204,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_idempotency",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "idempotency.py"
     },
@@ -18490,7 +18490,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_idempotency_rationale_1",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "registre persistant d'idempotence pour les effets des taches logminer. la cle..."
     },
@@ -18567,7 +18567,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "intelligent_runtime.py"
     },
@@ -18579,7 +18579,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_agentcapability",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "agentcapability"
     },
     {
@@ -18600,8 +18600,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_agentpolicyweights",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 113,
+      "community_name": "AgentPolicyWeights",
       "norm_label": "agentpolicyweights"
     },
     {
@@ -18611,8 +18611,8 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_agentpolicyweights_post_init",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 113,
+      "community_name": "AgentPolicyWeights",
       "norm_label": ".__post_init__()"
     },
     {
@@ -18622,8 +18622,8 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_agentpolicyweights_from_mapping",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 113,
+      "community_name": "AgentPolicyWeights",
       "norm_label": ".from_mapping()"
     },
     {
@@ -18644,8 +18644,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_agentperception",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 97,
+      "community_name": "SQLiteIdempotencyStore",
       "norm_label": "agentperception"
     },
     {
@@ -18655,8 +18655,8 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_bidevaluation",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 20,
+      "community_name": "AgentTask",
       "norm_label": "bidevaluation"
     },
     {
@@ -18678,7 +18678,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_agenttask_create",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".create()"
     },
     {
@@ -18689,7 +18689,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_taskresult",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "taskresult"
     },
     {
@@ -18700,7 +18700,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_agentmemory",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "agentmemory"
     },
     {
@@ -18710,8 +18710,8 @@
       "source_location": "L172",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_agentmemory_record",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".record()"
     },
     {
@@ -18798,8 +18798,8 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_inmemorytasksource",
-      "community": 42,
-      "community_name": "run_intelligent_agents_campaign.py",
+      "community": 20,
+      "community_name": "AgentTask",
       "norm_label": "inmemorytasksource"
     },
     {
@@ -18809,8 +18809,8 @@
       "source_location": "L235",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_inmemorytasksource_init",
-      "community": 42,
-      "community_name": "run_intelligent_agents_campaign.py",
+      "community": 20,
+      "community_name": "AgentTask",
       "norm_label": ".__init__()"
     },
     {
@@ -18831,8 +18831,8 @@
       "source_location": "L251",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_inmemorytasksource_acknowledge",
-      "community": 42,
-      "community_name": "run_intelligent_agents_campaign.py",
+      "community": 20,
+      "community_name": "AgentTask",
       "norm_label": ".acknowledge()"
     },
     {
@@ -18919,8 +18919,8 @@
       "source_location": "L383",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_multitaskintelligentagent",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "multitaskintelligentagent"
     },
     {
@@ -18930,8 +18930,8 @@
       "source_location": "L386",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_multitaskintelligentagent_init",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 113,
+      "community_name": "AgentPolicyWeights",
       "norm_label": ".__init__()"
     },
     {
@@ -18941,8 +18941,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "taskhandler",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 113,
+      "community_name": "AgentPolicyWeights",
       "norm_label": "taskhandler"
     },
     {
@@ -18952,8 +18952,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_py_messagebus",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 113,
+      "community_name": "AgentPolicyWeights",
       "norm_label": "messagebus"
     },
     {
@@ -18963,8 +18963,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_py_path",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 113,
+      "community_name": "AgentPolicyWeights",
       "norm_label": "path"
     },
     {
@@ -18974,8 +18974,8 @@
       "source_location": "L427",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_multitaskintelligentagent_load_memory",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 113,
+      "community_name": "AgentPolicyWeights",
       "norm_label": "._load_memory()"
     },
     {
@@ -18985,8 +18985,8 @@
       "source_location": "L435",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_multitaskintelligentagent_save_memory",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".save_memory()"
     },
     {
@@ -19117,8 +19117,8 @@
       "source_location": "L577",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_multitaskintelligentagent_accept",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".accept()"
     },
     {
@@ -19128,8 +19128,8 @@
       "source_location": "L586",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_multitaskintelligentagent_start_task",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "._start_task()"
     },
     {
@@ -19139,8 +19139,8 @@
       "source_location": "L593",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_multitaskintelligentagent_finish_task",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "._finish_task()"
     },
     {
@@ -19150,8 +19150,8 @@
       "source_location": "L597",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_multitaskintelligentagent_learn",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".learn()"
     },
     {
@@ -19183,8 +19183,8 @@
       "source_location": "L654",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_multitaskintelligentagent_execute_task",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".execute_task()"
     },
     {
@@ -19205,7 +19205,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_rationale_1",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "noyau d'agents intelligents multi-taches pour logminer. ce module ajoute une..."
     },
@@ -19217,7 +19217,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_rationale_43",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "competence qu'un agent peut annoncer et utiliser."
     },
     {
@@ -19227,8 +19227,8 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_rationale_58",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 113,
+      "community_name": "AgentPolicyWeights",
       "norm_label": "poids configurables du score d'utilite local, sans pretention d'optimalite."
     },
     {
@@ -19238,8 +19238,8 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_rationale_83",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 97,
+      "community_name": "SQLiteIdempotencyStore",
       "norm_label": "instantane local utilise pour evaluer un appel a propositions."
     },
     {
@@ -19249,8 +19249,8 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_rationale_98",
-      "community": 32,
-      "community_name": "agents/bus.py",
+      "community": 20,
+      "community_name": "AgentTask",
       "norm_label": "decision locale normalisee produite pour une tache."
     },
     {
@@ -19272,7 +19272,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_rationale_144",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "resultat explicable d'une tache."
     },
     {
@@ -19283,7 +19283,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_rationale_161",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "memoire locale simple pour apprendre des executions precedentes."
     },
     {
@@ -19315,8 +19315,8 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_rationale_233",
-      "community": 42,
-      "community_name": "run_intelligent_agents_campaign.py",
+      "community": 20,
+      "community_name": "AgentTask",
       "norm_label": "source locale utile pour tests et demonstrations reproductibles."
     },
     {
@@ -19337,8 +19337,8 @@
       "source_location": "L384",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_rationale_384",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "agent logiciel multi-taches avec politique de decision explicite."
     },
     {
@@ -19381,8 +19381,8 @@
       "source_location": "L578",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_rationale_578",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "reserve localement une place apres attribution du contrat."
     },
     {
@@ -19392,8 +19392,8 @@
       "source_location": "L598",
       "_origin": "ast",
       "id": "src_logminer_agents_intelligent_runtime_rationale_598",
-      "community": 20,
-      "community_name": "AgentTask",
+      "community": 46,
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "met a jour la memoire seulement lorsque le mode memoire est actif."
     },
     {
@@ -20822,7 +20822,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "redis_contract_net.py"
     },
@@ -20834,7 +20834,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_message_fields",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "_message_fields()"
     },
     {
@@ -20845,7 +20845,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_py_agentmessage",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "agentmessage"
     },
     {
@@ -20856,7 +20856,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_decode_message",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "_decode_message()"
     },
     {
@@ -20867,7 +20867,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_py_any",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "any"
     },
     {
@@ -20878,7 +20878,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnettransport",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "rediscontractnettransport"
     },
     {
@@ -20889,7 +20889,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnettransport_init",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": ".__init__()"
     },
     {
@@ -20900,7 +20900,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_py_redismessagebus",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "redismessagebus"
     },
     {
@@ -20911,7 +20911,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnettransport_inbox",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": ".inbox()"
     },
     {
@@ -20922,7 +20922,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnettransport_send",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "._send()"
     },
     {
@@ -20933,7 +20933,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnettransport_send_to_agent",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": ".send_to_agent()"
     },
     {
@@ -20944,7 +20944,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnettransport_send_response",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": ".send_response()"
     },
     {
@@ -20955,7 +20955,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnettransport_read",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": ".read()"
     },
     {
@@ -20966,7 +20966,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnettransport_latest_id",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": ".latest_id()"
     },
     {
@@ -20977,7 +20977,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnettransport_register",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": ".register()"
     },
     {
@@ -20988,7 +20988,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnettransport_registered_agents",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": ".registered_agents()"
     },
     {
@@ -20999,7 +20999,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnetcoordinator",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "rediscontractnetcoordinator"
     },
     {
@@ -21010,7 +21010,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnetcoordinator_init",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": ".__init__()"
     },
     {
@@ -21021,7 +21021,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnetcoordinator_send",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "._send()"
     },
     {
@@ -21032,7 +21032,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnetcoordinator_collect",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "._collect()"
     },
     {
@@ -21043,7 +21043,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rediscontractnetcoordinator_negotiate",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": ".negotiate()"
     },
     {
@@ -21053,7 +21053,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rationale_1",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "transport contract net inter-processus fonde sur redis streams."
     },
@@ -21065,7 +21065,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rationale_51",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "boites dediees par agent et flux de reponses partage par run."
     },
     {
@@ -21076,7 +21076,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_redis_contract_net_rationale_141",
       "community": 32,
-      "community_name": "agents/bus.py",
+      "community_name": "RedisContractNetTransport",
       "norm_label": "coordinateur cnp utilisant uniquement des reponses emises par les processus..."
     },
     {
@@ -21086,8 +21086,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_resource_monitor",
-      "community": 195,
-      "community_name": "agents/resource_monitor.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "agents/resource_monitor.py"
     },
     {
@@ -21097,8 +21097,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_logminer_agents_resource_monitor_agentresource",
-      "community": 195,
-      "community_name": "agents/resource_monitor.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "agentresource"
     },
     {
@@ -21108,8 +21108,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "src_logminer_agents_resource_monitor_safe_cmdline",
-      "community": 195,
-      "community_name": "agents/resource_monitor.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "_safe_cmdline()"
     },
     {
@@ -21119,8 +21119,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_resource_monitor_py_any",
-      "community": 195,
-      "community_name": "agents/resource_monitor.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "any"
     },
     {
@@ -21130,8 +21130,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "src_logminer_agents_resource_monitor_classify_process",
-      "community": 195,
-      "community_name": "agents/resource_monitor.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "_classify_process()"
     },
     {
@@ -21141,8 +21141,8 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "src_logminer_agents_resource_monitor_snapshot",
-      "community": 195,
-      "community_name": "agents/resource_monitor.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "snapshot()"
     },
     {
@@ -21152,8 +21152,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_agents_resource_monitor_rationale_1",
-      "community": 195,
-      "community_name": "agents/resource_monitor.py",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "mesure de consommation des ressources logminer."
     },
     {
@@ -21362,7 +21362,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_sequence_window",
       "community": 14,
-      "community_name": "enrich_sequence_windows",
+      "community_name": "add_sequence_window_features",
       "norm_label": "sequence_window.py"
     },
     {
@@ -21373,7 +21373,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_sequence_window_enrich_sequence_windows",
       "community": 14,
-      "community_name": "enrich_sequence_windows",
+      "community_name": "add_sequence_window_features",
       "norm_label": "enrich_sequence_windows()"
     },
     {
@@ -21384,7 +21384,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_sequence_window_py_path",
       "community": 14,
-      "community_name": "enrich_sequence_windows",
+      "community_name": "add_sequence_window_features",
       "norm_label": "path"
     },
     {
@@ -21395,7 +21395,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_sequence_window_main",
       "community": 14,
-      "community_name": "enrich_sequence_windows",
+      "community_name": "add_sequence_window_features",
       "norm_label": "main()"
     },
     {
@@ -21406,7 +21406,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_sequence_window_rationale_1",
       "community": 14,
-      "community_name": "enrich_sequence_windows",
+      "community_name": "add_sequence_window_features",
       "norm_label": "agent de fenetrage glissant pour hdfs/bgl. il enrichit un csv logminer avec des..."
     },
     {
@@ -21417,7 +21417,7 @@
       "_origin": "ast",
       "id": "src_logminer_agents_sequence_window_rationale_36",
       "community": 14,
-      "community_name": "enrich_sequence_windows",
+      "community_name": "add_sequence_window_features",
       "norm_label": "lit un csv normalise, ajoute les features sequentielles et l'ecrit."
     },
     {
@@ -21438,8 +21438,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_logminer_agents_supervisor_agent_supervisorperception",
-      "community": 224,
-      "community_name": "SupervisorPerception",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "supervisorperception"
     },
     {
@@ -21471,8 +21471,8 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "src_logminer_agents_supervisor_agent_supervisorcycleresult",
-      "community": 194,
-      "community_name": "LocalMessageBus",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "supervisorcycleresult"
     },
     {
@@ -21581,8 +21581,8 @@
       "source_location": "L199",
       "_origin": "ast",
       "id": "src_logminer_agents_supervisor_agent_perceive",
-      "community": 224,
-      "community_name": "SupervisorPerception",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "perceive()"
     },
     {
@@ -21592,8 +21592,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_agents_supervisor_agent_py_messagebus",
-      "community": 224,
-      "community_name": "SupervisorPerception",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "messagebus"
     },
     {
@@ -21691,8 +21691,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_logminer_agents_supervisor_agent_rationale_37",
-      "community": 224,
-      "community_name": "SupervisorPerception",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "donnees observees avant decision."
     },
     {
@@ -21724,8 +21724,8 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "src_logminer_agents_supervisor_agent_rationale_74",
-      "community": 194,
-      "community_name": "LocalMessageBus",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "resultat complet d'un cycle autonome."
     },
     {
@@ -21790,8 +21790,8 @@
       "source_location": "L208",
       "_origin": "ast",
       "id": "src_logminer_agents_supervisor_agent_rationale_208",
-      "community": 224,
-      "community_name": "SupervisorPerception",
+      "community": 2,
+      "community_name": "supervisor_agent.py",
       "norm_label": "observe les sources disponibles et la charge locale."
     },
     {
@@ -22505,8 +22505,8 @@
       "source_location": "L856",
       "_origin": "ast",
       "id": "src_logminer_api_supervisor_cycle",
-      "community": 56,
-      "community_name": "RedisMessageBus",
+      "community": 0,
+      "community_name": "logminer/api.py",
       "norm_label": "supervisor_cycle()"
     },
     {
@@ -22549,8 +22549,8 @@
       "source_location": "L857",
       "_origin": "ast",
       "id": "src_logminer_api_rationale_857",
-      "community": 56,
-      "community_name": "RedisMessageBus",
+      "community": 0,
+      "community_name": "logminer/api.py",
       "norm_label": "execute un cycle autonome perception-etat-decision-action."
     },
     {
@@ -23264,8 +23264,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_features_init",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "features/__init__.py"
     },
     {
@@ -23275,8 +23275,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_features_init_rationale_1",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "extraction de variables ml depuis les csv normalises logminer."
     },
     {
@@ -23286,8 +23286,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "drain_templates.py"
     },
     {
@@ -23297,8 +23297,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates_cluster",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "_cluster"
     },
     {
@@ -23308,8 +23308,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates_tokenize_message",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "tokenize_message()"
     },
     {
@@ -23319,8 +23319,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates_similarity",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "_similarity()"
     },
     {
@@ -23330,8 +23330,8 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates_merge_template",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "_merge_template()"
     },
     {
@@ -23341,8 +23341,8 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates_drain_like_templates",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "drain_like_templates()"
     },
     {
@@ -23352,8 +23352,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates_py_series",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "series"
     },
     {
@@ -23363,8 +23363,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates_py_dataframe",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "dataframe"
     },
     {
@@ -23374,8 +23374,8 @@
       "source_location": "L116",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates_drain3_templates",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "drain3_templates()"
     },
     {
@@ -23385,8 +23385,8 @@
       "source_location": "L144",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates_build_templates",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "build_templates()"
     },
     {
@@ -23396,8 +23396,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates_rationale_1",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "templateur drain-like leger pour journaux systeme. ce module n'implemente pas..."
     },
     {
@@ -23407,8 +23407,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates_rationale_31",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "tokenise un message apres normalisation des valeurs tres variables."
     },
     {
@@ -23418,8 +23418,8 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates_rationale_64",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "assigne un identifiant et un template drain-like a chaque message. les clusters..."
     },
     {
@@ -23429,8 +23429,8 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates_rationale_117",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "assigne les templates avec la librairie `drain3` si elle est installee."
     },
     {
@@ -23440,8 +23440,8 @@
       "source_location": "L151",
       "_origin": "ast",
       "id": "src_logminer_features_drain_templates_rationale_151",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "construit les templates avec drain3 officiel ou fallback drain-like."
     },
     {
@@ -23451,8 +23451,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_features_event_features",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "event_features.py"
     },
     {
@@ -23462,8 +23462,8 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_load_events",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "load_events()"
     },
     {
@@ -23473,8 +23473,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_py_path",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "path"
     },
     {
@@ -23484,8 +23484,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_py_dataframe",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "dataframe"
     },
     {
@@ -23495,8 +23495,8 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_to_numeric",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "_to_numeric()"
     },
     {
@@ -23506,8 +23506,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_py_series",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "series"
     },
     {
@@ -23517,8 +23517,8 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_safe_feature_name",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "_safe_feature_name()"
     },
     {
@@ -23528,8 +23528,8 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_generic_numeric_features",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "_generic_numeric_features()"
     },
     {
@@ -23539,8 +23539,8 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_message_features",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "_message_features()"
     },
     {
@@ -23550,8 +23550,8 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_time_features",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "_time_features()"
     },
     {
@@ -23561,8 +23561,8 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_categorical_features",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "_categorical_features()"
     },
     {
@@ -23572,8 +23572,8 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_build_feature_frame",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "build_feature_frame()"
     },
     {
@@ -23583,8 +23583,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_rationale_1",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "conversion des evenements normalises en variables utilisables par le ml. le..."
     },
     {
@@ -23594,8 +23594,8 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_rationale_64",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "charge un csv logminer en conservant les champs texte."
     },
     {
@@ -23605,8 +23605,8 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_rationale_81",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "recupere les colonnes numeriques utiles hors schema logminer. c'est..."
     },
     {
@@ -23616,8 +23616,8 @@
       "source_location": "L158",
       "_origin": "ast",
       "id": "src_logminer_features_event_features_rationale_158",
-      "community": 116,
-      "community_name": "event_features.py",
+      "community": 3,
+      "community_name": "monthly_model_retraining.py",
       "norm_label": "construit une matrice de features numeriques pour la detection. args: events:..."
     },
     {
@@ -23627,8 +23627,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "sequence_windows.py"
     },
     {
@@ -23638,8 +23638,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_windowstate",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "_windowstate"
     },
     {
@@ -23649,8 +23649,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_message_template",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "message_template()"
     },
     {
@@ -23660,8 +23660,8 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_first_existing",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "_first_existing()"
     },
     {
@@ -23671,8 +23671,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_py_dataframe",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "dataframe"
     },
     {
@@ -23682,8 +23682,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_py_series",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "series"
     },
     {
@@ -23693,8 +23693,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_seconds_between",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "_seconds_between()"
     },
     {
@@ -23704,8 +23704,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_py_timestamp",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "timestamp"
     },
     {
@@ -23715,8 +23715,8 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_severity_level",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "_severity_level()"
     },
     {
@@ -23726,8 +23726,8 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_prune_state",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "_prune_state()"
     },
     {
@@ -23737,8 +23737,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_py_timedelta",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "timedelta"
     },
     {
@@ -23748,8 +23748,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_context_key",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "_context_key()"
     },
     {
@@ -23759,8 +23759,8 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_add_sequence_window_features",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "add_sequence_window_features()"
     },
     {
@@ -23770,8 +23770,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_rationale_1",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "features de fenetrage glissant pour journaux sequentiels hdfs/bgl. les logs..."
     },
     {
@@ -23781,8 +23781,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_rationale_40",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "retourne un template textuel leger, drain-like mais deterministe."
     },
     {
@@ -23792,8 +23792,8 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "src_logminer_features_sequence_windows_rationale_99",
-      "community": 6,
-      "community_name": "agents/model_compare.py",
+      "community": 14,
+      "community_name": "add_sequence_window_features",
       "norm_label": "ajoute des colonnes `seq_*` a un dataframe logminer. la fonction preserve les..."
     },
     {
@@ -23803,8 +23803,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_io_init",
-      "community": 44,
-      "community_name": "emit",
+      "community": 15,
+      "community_name": "logminer/pipeline.py",
       "norm_label": "io/__init__.py"
     },
     {
@@ -23814,8 +23814,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_io_csv_writer",
-      "community": 44,
-      "community_name": "emit",
+      "community": 15,
+      "community_name": "logminer/pipeline.py",
       "norm_label": "csv_writer.py"
     },
     {
@@ -23880,8 +23880,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_io_csv_writer_rationale_1",
-      "community": 44,
-      "community_name": "emit",
+      "community": 15,
+      "community_name": "logminer/pipeline.py",
       "norm_label": "ecriture csv normalisee pour logminer. ce module est volontairement simple:..."
     },
     {
@@ -24254,8 +24254,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_parsers_init",
-      "community": 99,
-      "community_name": "run_multisource_cnp_e2e_strengthening.py",
+      "community": 90,
+      "community_name": "run_router_independent_strengthening.py",
       "norm_label": "parsers/__init__.py"
     },
     {
@@ -25057,8 +25057,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_logminer_parsers_windows_event_clean",
-      "community": 26,
-      "community_name": "writer.py",
+      "community": 21,
+      "community_name": "windows_event.py",
       "norm_label": "clean()"
     },
     {
@@ -25222,8 +25222,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "src_logminer_parsers_windows_event_rationale_29",
-      "community": 26,
-      "community_name": "writer.py",
+      "community": 21,
+      "community_name": "windows_event.py",
       "norm_label": "nettoie un message sans dependre de `common.py`. le fichier `common.py`..."
     },
     {
@@ -25673,8 +25673,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_logminer_schema_columns",
-      "community": 44,
-      "community_name": "emit",
+      "community": 15,
+      "community_name": "logminer/pipeline.py",
       "norm_label": "schema/columns.py"
     },
     {
@@ -25806,7 +25806,7 @@
       "_origin": "ast",
       "id": "tests_test_dataset_strengthening_test_bgl_groups_are_exhaustive_and_disjoint",
       "community": 129,
-      "community_name": "dataset_strengthening_common.py",
+      "community_name": "evaluate_groups",
       "norm_label": "test_bgl_groups_are_exhaustive_and_disjoint()"
     },
     {
@@ -25827,8 +25827,8 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "tests_test_dataset_strengthening_test_route_dataframe_normalizes_cicids_header_whitespace",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 114,
+      "community_name": "test_dataset_strengthening.py",
       "norm_label": "test_route_dataframe_normalizes_cicids_header_whitespace()"
     },
     {
@@ -25838,8 +25838,8 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "tests_test_dataset_strengthening_test_route_dataframe_ignores_empty_common_schema_columns",
-      "community": 12,
-      "community_name": "agents/model_router.py",
+      "community": 114,
+      "community_name": "test_dataset_strengthening.py",
       "norm_label": "test_route_dataframe_ignores_empty_common_schema_columns()"
     },
     {
@@ -25860,8 +25860,8 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "tests_test_dataset_strengthening_test_agent_message_contract_has_exactly_seven_fields",
-      "community": 114,
-      "community_name": "test_dataset_strengthening.py",
+      "community": 10,
+      "community_name": "AgentMessage",
       "norm_label": "test_agent_message_contract_has_exactly_seven_fields()"
     },
     {
@@ -25872,7 +25872,7 @@
       "_origin": "ast",
       "id": "tests_test_dataset_strengthening_test_cnp_preserves_end_to_end_run_id",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "test_cnp_preserves_end_to_end_run_id()"
     },
     {
@@ -25904,8 +25904,8 @@
       "source_location": "L202",
       "_origin": "ast",
       "id": "tests_test_dataset_strengthening_test_temporal_files_are_disjoint",
-      "community": 130,
-      "community_name": "run_cicids_temporal_strengthening.py",
+      "community": 114,
+      "community_name": "test_dataset_strengthening.py",
       "norm_label": "test_temporal_files_are_disjoint()"
     },
     {
@@ -26113,7 +26113,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_test_true_multi_agent",
-      "community": 32,
+      "community": 105,
       "community_name": "agents/bus.py",
       "norm_label": "test_true_multi_agent.py"
     },
@@ -26125,7 +26125,7 @@
       "_origin": "ast",
       "id": "tests_test_true_multi_agent_ok_handler",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "ok_handler()"
     },
     {
@@ -26136,7 +26136,7 @@
       "_origin": "ast",
       "id": "tests_test_true_multi_agent_truemultiagenttests",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": "truemultiagenttests"
     },
     {
@@ -26147,7 +26147,7 @@
       "_origin": "ast",
       "id": "tests_test_true_multi_agent_truemultiagenttests_test_redis_contract_net_reassigns_after_failed_award",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".test_redis_contract_net_reassigns_after_failed_award()"
     },
     {
@@ -26158,7 +26158,7 @@
       "_origin": "ast",
       "id": "tests_test_true_multi_agent_truemultiagenttests_test_agent_message_contract_stays_at_seven_fields",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".test_agent_message_contract_stays_at_seven_fields()"
     },
     {
@@ -26169,7 +26169,7 @@
       "_origin": "ast",
       "id": "tests_test_true_multi_agent_truemultiagenttests_test_reliability_uses_laplace_smoothing",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".test_reliability_uses_laplace_smoothing()"
     },
     {
@@ -26180,7 +26180,7 @@
       "_origin": "ast",
       "id": "tests_test_true_multi_agent_truemultiagenttests_test_contract_net_emits_proposal_refusal_award_and_result",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".test_contract_net_emits_proposal_refusal_award_and_result()"
     },
     {
@@ -26191,7 +26191,7 @@
       "_origin": "ast",
       "id": "tests_test_true_multi_agent_truemultiagenttests_test_fail_message_is_emitted_when_no_agent_proposes",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".test_fail_message_is_emitted_when_no_agent_proposes()"
     },
     {
@@ -26202,7 +26202,7 @@
       "_origin": "ast",
       "id": "tests_test_true_multi_agent_truemultiagenttests_test_all_standard_refusal_reasons_are_reachable",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".test_all_standard_refusal_reasons_are_reachable()"
     },
     {
@@ -26213,7 +26213,7 @@
       "_origin": "ast",
       "id": "tests_test_true_multi_agent_truemultiagenttests_test_memory_switch_changes_or_neutralizes_historical_component",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".test_memory_switch_changes_or_neutralizes_historical_component()"
     },
     {
@@ -26224,7 +26224,7 @@
       "_origin": "ast",
       "id": "tests_test_true_multi_agent_truemultiagenttests_test_post_processing_pre_ack_recovery_does_not_repeat_effect",
       "community": 46,
-      "community_name": "AgentCapability",
+      "community_name": "MultiTaskIntelligentAgent",
       "norm_label": ".test_post_processing_pre_ack_recovery_does_not_repeat_effect()"
     },
     {
@@ -28648,6 +28648,28 @@
       "norm_label": "blocage dashboard bleu"
     },
     {
+      "label": "FIGURES_MODIFICATIONS_FINALES.md",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FIGURES_MODIFICATIONS_FINALES.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_figures_modifications_finales",
+      "community": 116,
+      "community_name": "FIGURES_MODIFICATIONS_FINALES.md",
+      "norm_label": "figures_modifications_finales.md"
+    },
+    {
+      "label": "Figures finales g\u00e9n\u00e9r\u00e9es ou remplac\u00e9es",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FIGURES_MODIFICATIONS_FINALES.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_figures_modifications_finales_figures_finales_g\u00e9n\u00e9r\u00e9es_ou_remplac\u00e9es",
+      "community": 116,
+      "community_name": "FIGURES_MODIFICATIONS_FINALES.md",
+      "norm_label": "figures finales generees ou remplacees"
+    },
+    {
       "label": "FIGURE_CATALOGUE.md",
       "file_type": "document",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FIGURE_CATALOGUE.md",
@@ -28886,7 +28908,7 @@
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit",
       "community": 225,
-      "community_name": "Audit scientifique final du m\u00e9moire",
+      "community_name": "Incertitudes P0 ferm\u00e9es",
       "norm_label": "final_memoire_scientific_audit.md"
     },
     {
@@ -28897,19 +28919,140 @@
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_audit_scientifique_final_du_m\u00e9moire",
       "community": 225,
-      "community_name": "Audit scientifique final du m\u00e9moire",
+      "community_name": "Incertitudes P0 ferm\u00e9es",
       "norm_label": "audit scientifique final du memoire"
     },
     {
-      "label": "Points restant explicitement limit\u00e9s",
+      "label": "R\u00e9sultats et statut",
       "file_type": "document",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
-      "source_location": "L19",
+      "source_location": "L8",
       "_origin": "ast",
-      "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_points_restant_explicitement_limit\u00e9s",
+      "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_r\u00e9sultats_et_statut",
       "community": 225,
-      "community_name": "Audit scientifique final du m\u00e9moire",
-      "norm_label": "points restant explicitement limites"
+      "community_name": "Incertitudes P0 ferm\u00e9es",
+      "norm_label": "resultats et statut"
+    },
+    {
+      "label": "Incertitudes P0 ferm\u00e9es",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_incertitudes_p0_ferm\u00e9es",
+      "community": 225,
+      "community_name": "Incertitudes P0 ferm\u00e9es",
+      "norm_label": "incertitudes p0 fermees"
+    },
+    {
+      "label": "Campagne multi-VM",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_campagne_multi_vm",
+      "community": 225,
+      "community_name": "Incertitudes P0 ferm\u00e9es",
+      "norm_label": "campagne multi-vm"
+    },
+    {
+      "label": "Ancien score ambigu",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_ancien_score_ambigu",
+      "community": 225,
+      "community_name": "Incertitudes P0 ferm\u00e9es",
+      "norm_label": "ancien score ambigu"
+    },
+    {
+      "label": "Contrat `AgentMessage`",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_contrat_agentmessage",
+      "community": 225,
+      "community_name": "Incertitudes P0 ferm\u00e9es",
+      "norm_label": "contrat `agentmessage`"
+    },
+    {
+      "label": "Drain3 HDFS",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L44",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_drain3_hdfs",
+      "community": 225,
+      "community_name": "Incertitudes P0 ferm\u00e9es",
+      "norm_label": "drain3 hdfs"
+    },
+    {
+      "label": "CPU et RAM",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L48",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_cpu_et_ram",
+      "community": 225,
+      "community_name": "Incertitudes P0 ferm\u00e9es",
+      "norm_label": "cpu et ram"
+    },
+    {
+      "label": "Mise \u00e0 jour contr\u00f4l\u00e9e",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L52",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_mise_\u00e0_jour_contr\u00f4l\u00e9e",
+      "community": 225,
+      "community_name": "Incertitudes P0 ferm\u00e9es",
+      "norm_label": "mise a jour controlee"
+    },
+    {
+      "label": "Ablation du routage",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L56",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_ablation_du_routage",
+      "community": 225,
+      "community_name": "Incertitudes P0 ferm\u00e9es",
+      "norm_label": "ablation du routage"
+    },
+    {
+      "label": "R\u00e9gression logistique \u00e0 0,233670",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L60",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_r\u00e9gression_logistique_\u00e0_0_233670",
+      "community": 225,
+      "community_name": "Incertitudes P0 ferm\u00e9es",
+      "norm_label": "regression logistique a 0,233670"
+    },
+    {
+      "label": "Contr\u00f4les r\u00e9dactionnels",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L64",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_contr\u00f4les_r\u00e9dactionnels",
+      "community": 225,
+      "community_name": "Incertitudes P0 ferm\u00e9es",
+      "norm_label": "controles redactionnels"
+    },
+    {
+      "label": "R\u00e9serves qui demeurent",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L75",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_r\u00e9serves_qui_demeurent",
+      "community": 225,
+      "community_name": "Incertitudes P0 ferm\u00e9es",
+      "norm_label": "reserves qui demeurent"
     },
     {
       "label": "FINAL_REWRITE_PLAN.md",
@@ -28998,6 +29141,50 @@
       "community": 228,
       "community_name": "HUMANIZATION PASS",
       "norm_label": "compatibilite latex"
+    },
+    {
+      "label": "LIMITES_SCIENTIFIQUES_RESTANTES.md",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/LIMITES_SCIENTIFIQUES_RESTANTES.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_limites_scientifiques_restantes",
+      "community": 128,
+      "community_name": "LIMITES_SCIENTIFIQUES_RESTANTES.md",
+      "norm_label": "limites_scientifiques_restantes.md"
+    },
+    {
+      "label": "Limites scientifiques restantes",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/LIMITES_SCIENTIFIQUES_RESTANTES.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_limites_scientifiques_restantes_limites_scientifiques_restantes",
+      "community": 128,
+      "community_name": "LIMITES_SCIENTIFIQUES_RESTANTES.md",
+      "norm_label": "limites scientifiques restantes"
+    },
+    {
+      "label": "MODIFICATIONS_FINALES.md",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/MODIFICATIONS_FINALES.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_modifications_finales",
+      "community": 131,
+      "community_name": "MODIFICATIONS_FINALES.md",
+      "norm_label": "modifications_finales.md"
+    },
+    {
+      "label": "Tableau des modifications finales",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/MODIFICATIONS_FINALES.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_modifications_finales_tableau_des_modifications_finales",
+      "community": 131,
+      "community_name": "MODIFICATIONS_FINALES.md",
+      "norm_label": "tableau des modifications finales"
     },
     {
       "label": "MULTI_AGENT_RESULTS_INTEGRATION_AUDIT.md",
@@ -29198,10 +29385,21 @@
       "norm_label": "current state"
     },
     {
-      "label": "CHECKPOINT MULTI-VM D\u00c9FINITIF \u2014 2026-09-09 20:28 UTC",
+      "label": "CHECKPOINT M\u00c9MOIRE FINAL \u2014 2026-09-11",
       "file_type": "document",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
       "source_location": "L3",
+      "_origin": "ast",
+      "id": "ariel_logminer_memoire_final_revision_reports_state_current_state_checkpoint_m\u00e9moire_final_2026_09_11",
+      "community": 139,
+      "community_name": "CURRENT STATE",
+      "norm_label": "checkpoint memoire final \u2014 2026-09-11"
+    },
+    {
+      "label": "CHECKPOINT MULTI-VM D\u00c9FINITIF \u2014 2026-09-09 20:28 UTC",
+      "file_type": "document",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_state_current_state_checkpoint_multi_vm_d\u00e9finitif_2026_09_09_20_28_utc",
       "community": 139,
@@ -29212,7 +29410,7 @@
       "label": "CHECKPOINT MULTI-AGENTS \u2014 2026-09-09 16:12",
       "file_type": "document",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L18",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_state_current_state_checkpoint_multi_agents_2026_09_09_16_12",
       "community": 139,
@@ -29223,7 +29421,7 @@
       "label": "CHECKPOINT IMPL\u00c9MENTATION \u2014 2026-09-09 16:22",
       "file_type": "document",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L32",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_state_current_state_checkpoint_impl\u00e9mentation_2026_09_09_16_22",
       "community": 139,
@@ -29234,7 +29432,7 @@
       "label": "CHECKPOINT EXP\u00c9RIMENTAL \u2014 2026-09-09 16:55",
       "file_type": "document",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L44",
+      "source_location": "L56",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_state_current_state_checkpoint_exp\u00e9rimental_2026_09_09_16_55",
       "community": 139,
@@ -29245,7 +29443,7 @@
       "label": "CHECKPOINT DE REPRISE \u2014 2026-09-09",
       "file_type": "document",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L61",
+      "source_location": "L73",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_state_current_state_checkpoint_de_reprise_2026_09_09",
       "community": 139,
@@ -29256,7 +29454,7 @@
       "label": "Completed",
       "file_type": "document",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L82",
+      "source_location": "L94",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_state_current_state_completed",
       "community": 139,
@@ -29267,7 +29465,7 @@
       "label": "In progress",
       "file_type": "document",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L98",
+      "source_location": "L110",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_state_current_state_in_progress",
       "community": 139,
@@ -29278,7 +29476,7 @@
       "label": "Pending",
       "file_type": "document",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L105",
+      "source_location": "L117",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_state_current_state_pending",
       "community": 139,
@@ -29289,7 +29487,7 @@
       "label": "Verified facts",
       "file_type": "document",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L110",
+      "source_location": "L122",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_state_current_state_verified_facts",
       "community": 139,
@@ -29300,7 +29498,7 @@
       "label": "Open issues",
       "file_type": "document",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L120",
+      "source_location": "L132",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_state_current_state_open_issues",
       "community": 139,
@@ -29311,7 +29509,7 @@
       "label": "Important artifact paths",
       "file_type": "document",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L127",
+      "source_location": "L139",
       "_origin": "ast",
       "id": "ariel_logminer_memoire_final_revision_reports_state_current_state_important_artifact_paths",
       "community": 139,
@@ -50485,7 +50683,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L108",
+      "source_location": "L114",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures",
@@ -50496,7 +50694,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L170",
+      "source_location": "L176",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures",
@@ -50518,7 +50716,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L218",
+      "source_location": "L224",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures",
@@ -50529,7 +50727,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L132",
+      "source_location": "L138",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures",
@@ -50540,7 +50738,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L246",
+      "source_location": "L252",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures",
@@ -50551,7 +50749,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L204",
+      "source_location": "L210",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures",
@@ -50585,7 +50783,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L109",
+      "source_location": "L115",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_cicids_figures",
@@ -50597,7 +50795,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L171",
+      "source_location": "L177",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_cse_figures",
@@ -50621,7 +50819,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L224",
+      "source_location": "L230",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_distributed_and_e2e_figures",
@@ -50633,7 +50831,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L144",
+      "source_location": "L150",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_hdfs_bgl_figures",
@@ -50645,7 +50843,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L205",
+      "source_location": "L211",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_routing_and_pipeline_figures",
@@ -50657,7 +50855,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L87",
+      "source_location": "L93",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_architecture_figures",
@@ -50669,7 +50867,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L117",
+      "source_location": "L123",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_cicids_figures",
@@ -50681,7 +50879,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L177",
+      "source_location": "L183",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_cse_figures",
@@ -50693,7 +50891,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L223",
+      "source_location": "L229",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_distributed_and_e2e_figures",
@@ -50705,7 +50903,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L141",
+      "source_location": "L147",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_hdfs_bgl_figures",
@@ -50717,7 +50915,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L208",
+      "source_location": "L214",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_routing_and_pipeline_figures",
@@ -50741,7 +50939,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L113",
+      "source_location": "L119",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_cicids_figures",
@@ -50753,7 +50951,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L175",
+      "source_location": "L181",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_cse_figures",
@@ -50765,7 +50963,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L222",
+      "source_location": "L228",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_distributed_and_e2e_figures",
@@ -50777,7 +50975,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L139",
+      "source_location": "L145",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_hdfs_bgl_figures",
@@ -50789,7 +50987,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L247",
+      "source_location": "L253",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_main",
@@ -50801,7 +50999,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L247",
+      "source_location": "L253",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_main",
@@ -50813,7 +51011,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L247",
+      "source_location": "L253",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_main",
@@ -50825,7 +51023,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L247",
+      "source_location": "L253",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_main",
@@ -50837,7 +51035,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L247",
+      "source_location": "L253",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_main",
@@ -50849,7 +51047,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py",
-      "source_location": "L247",
+      "source_location": "L253",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_generate_final_scientific_figures_main",
@@ -121977,6 +122175,17 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FIGURES_MODIFICATIONS_FINALES.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_figures_modifications_finales",
+      "target": "ariel_logminer_memoire_final_revision_reports_figures_modifications_finales_figures_finales_g\u00e9n\u00e9r\u00e9es_ou_remplac\u00e9es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FIGURE_CATALOGUE.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -122209,11 +122418,132 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
-      "source_location": "L19",
+      "source_location": "L64",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_audit_scientifique_final_du_m\u00e9moire",
-      "target": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_points_restant_explicitement_limit\u00e9s",
+      "target": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_contr\u00f4les_r\u00e9dactionnels",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_audit_scientifique_final_du_m\u00e9moire",
+      "target": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_incertitudes_p0_ferm\u00e9es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L75",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_audit_scientifique_final_du_m\u00e9moire",
+      "target": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_r\u00e9serves_qui_demeurent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_audit_scientifique_final_du_m\u00e9moire",
+      "target": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_r\u00e9sultats_et_statut",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L56",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_incertitudes_p0_ferm\u00e9es",
+      "target": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_ablation_du_routage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_incertitudes_p0_ferm\u00e9es",
+      "target": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_ancien_score_ambigu",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_incertitudes_p0_ferm\u00e9es",
+      "target": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_campagne_multi_vm",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_incertitudes_p0_ferm\u00e9es",
+      "target": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_contrat_agentmessage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_incertitudes_p0_ferm\u00e9es",
+      "target": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_cpu_et_ram",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L44",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_incertitudes_p0_ferm\u00e9es",
+      "target": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_drain3_hdfs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_incertitudes_p0_ferm\u00e9es",
+      "target": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_mise_\u00e0_jour_contr\u00f4l\u00e9e",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/FINAL_MEMOIRE_SCIENTIFIC_AUDIT.md",
+      "source_location": "L60",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_incertitudes_p0_ferm\u00e9es",
+      "target": "ariel_logminer_memoire_final_revision_reports_final_memoire_scientific_audit_r\u00e9gression_logistique_\u00e0_0_233670",
       "confidence_score": 1.0
     },
     {
@@ -122280,6 +122610,28 @@
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_humanization_pass_humanization_pass",
       "target": "ariel_logminer_memoire_final_revision_reports_humanization_pass_p\u00e9rim\u00e8tre",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/LIMITES_SCIENTIFIQUES_RESTANTES.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_limites_scientifiques_restantes",
+      "target": "ariel_logminer_memoire_final_revision_reports_limites_scientifiques_restantes_limites_scientifiques_restantes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/MODIFICATIONS_FINALES.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_modifications_finales",
+      "target": "ariel_logminer_memoire_final_revision_reports_modifications_finales_tableau_des_modifications_finales",
       "confidence_score": 1.0
     },
     {
@@ -122451,7 +122803,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L61",
+      "source_location": "L73",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_state_current_state_current_state",
@@ -122462,7 +122814,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L44",
+      "source_location": "L56",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_state_current_state_current_state",
@@ -122473,7 +122825,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L32",
+      "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_state_current_state_current_state",
@@ -122484,7 +122836,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L18",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_state_current_state_current_state",
@@ -122495,7 +122847,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L3",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_state_current_state_current_state",
@@ -122506,7 +122858,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L82",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ariel_logminer_memoire_final_revision_reports_state_current_state_current_state",
+      "target": "ariel_logminer_memoire_final_revision_reports_state_current_state_checkpoint_m\u00e9moire_final_2026_09_11",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_state_current_state_current_state",
@@ -122517,7 +122880,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L127",
+      "source_location": "L139",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_state_current_state_current_state",
@@ -122528,7 +122891,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L98",
+      "source_location": "L110",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_state_current_state_current_state",
@@ -122539,7 +122902,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L120",
+      "source_location": "L132",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_state_current_state_current_state",
@@ -122550,7 +122913,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L105",
+      "source_location": "L117",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_state_current_state_current_state",
@@ -122561,7 +122924,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/state/CURRENT_STATE.md",
-      "source_location": "L110",
+      "source_location": "L122",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ariel_logminer_memoire_final_revision_reports_state_current_state_current_state",
@@ -139103,5 +139466,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b58717bba83f6308d9a2c9cb91c30b0759c7990b"
+  "built_at_commit": "dd191f8dd0902da278824b61c140f20b4104ba04"
 }
