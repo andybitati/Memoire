@@ -59,6 +59,8 @@ Le titre du mémoire emploie les termes \textit{autonome}, \textit{distribuée} 
 
 Un \textbf{agent} désigne ici une entité logicielle disposant de capacités déclarées, d'un état propre, d'une mémoire et d'une politique locale de décision. Lorsqu'une tâche lui est proposée, il peut évaluer sa capacité à la traiter, soumettre une proposition ou la refuser, puis exécuter un handler compatible et intégrer un retour d'expérience. Cette définition reste volontairement opérationnelle : elle renvoie au comportement du code et aux traces produites par le prototype, et non à une entité cognitive.
 
+Un \textbf{worker} désigne ici l'unité d'exécution runtime (processus ou thread) qui consomme et traite une tâche transportée par le bus de messages ; il peut héberger un agent, ou, dans l'architecture de référence B, opérer sans capacités déclarées ni politique de décision propre.
+
 L'\textbf{autonomie} correspond à la capacité de l'agent à prendre localement certaines décisions d'offre, de refus et d'exécution, sans recevoir pour chaque tâche une affectation impérative d'un superviseur central. Cette autonomie reste bornée par des règles et des paramètres configurés. Elle ne doit pas être assimilée à une intelligence générale ni à un apprentissage continu entièrement autonome en production.
 
 Le qualificatif \textbf{intelligent} renvoie, dans ce contexte, à une adaptation opérationnelle fondée sur plusieurs informations : état de l'agent, capacités disponibles, historique, compatibilité du modèle, disponibilité, charge et latence. La politique expérimentale initiale repose sur l'utilité configurable suivante :
