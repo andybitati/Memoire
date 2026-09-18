@@ -1,4 +1,3 @@
-```latex
 \chapter*{Conclusion générale et perspectives}
 
 \addcontentsline{toc}{chapter}{Conclusion générale et perspectives}
@@ -11,7 +10,7 @@ L'évaluation montre surtout que la performance d'un modèle ne peut pas être s
 
 La même exigence de lecture apparaît sur les journaux système. Pour HDFS, l'évaluation alignée sur l'unité des labels conduit à un F1 de $0{,}892308$ au niveau bloc, avec Drain3 ajusté uniquement sur l'entraînement. Sur BGL, le F1 de $0{,}913698$ doit être interprété avec le taux élevé de templates inconnus, soit $89{,}8081\,\%$, et avec le baseline de nouveauté qui obtient $0{,}277885$.
 
-Les campagnes consacrées à l'architecture complètent ces résultats prédictifs. Au seuil gelé, le routeur rejette les trois fichiers inconnus testés sans rejeter les 28 fichiers connus. La chaîne multiformat lit, parse et normalise $7\,001$ unités. Lorsque les modèles réels sont activés, $1\,400$ inférences sont effectivement exécutées sur $1\,401$ unités. Enfin, la campagne multi-VM répartit 60 tâches entre Debian et Ubuntu, avec quinze refus, un échec contrôlé, une réattribution et aucun effet dupliqué lors du replay.
+Les campagnes consacrées à l'architecture complètent ces résultats prédictifs. Au seuil gelé, le routeur rejette les trois fichiers inconnus testés sans rejeter les 28 fichiers connus. La chaîne multiformat lit, parse et normalise $7\,001$ unités. Lorsque les modèles réels sont activés, $1\,400$ inférences sont effectivement exécutées sur $1\,401$ unités. Enfin, la campagne multi-VM d’une heure mène à terme $1\,800$ tâches sur $1\,800$ et reprend un traitement interrompu après persistance, avec un seul effet logique et aucun doublon lors du rejeu.
 
 
 \section{Réponse aux questions de recherche}
@@ -101,7 +100,7 @@ Les premières limites concernent les données. Les corpus utilisés ne couvrent
 
 Les résultats HDFS et BGL doivent eux aussi être replacés dans leurs échantillons. Le test HDFS ne contient que 29 blocs positifs. Pour BGL, aucun exemple positif n'est présent parmi les templates connus, ce qui empêche d'y mesurer le rappel. L'évaluation open-set du routeur repose pour sa part sur seulement trois fichiers inconnus.
 
-La validation distribuée reste également limitée au laboratoire. Redis est centralisé, deux machines virtuelles sont utilisées et la campagne est courte. Ni panne du broker, ni partition réseau, ni charge durable ne sont testées. Les métriques CPU et mémoire décrivent des processus locaux et ne représentent pas la consommation d'une infrastructure complète.
+La validation distribuée reste également limitée au laboratoire. Redis est centralisé, deux machines virtuelles sont utilisées et la campagne dure une heure. Ni panne du broker, ni partition réseau, ni charge industrielle ni vieillissement sur plusieurs jours ne sont testés. Les métriques CPU et mémoire décrivent des processus locaux et ne représentent pas la consommation d'une infrastructure complète.
 
 Il n'existe par ailleurs pas d'exactitude globale pour la campagne multi-source, puisque les sources ne partagent pas une vérité terrain homogène. Une telle valeur donnerait une impression de comparabilité que les données ne permettent pas de soutenir.
 
@@ -126,4 +125,3 @@ Ariel Logminer montre qu'une chaîne d'analyse multi-source peut être organisé
 Le résultat le plus important n'est cependant pas une valeur unique de F1. Les expériences montrent au contraire que les conclusions changent avec les données, l'unité d'analyse, le protocole de séparation et la charge imposée au système. Cette observation justifie l'approche retenue dans le mémoire : associer chaque affirmation au protocole et au niveau de preuve qui la soutiennent.
 
 Dans le laboratoire étudié, l'architecture est fonctionnelle, modulaire et auditable. Les performances prédictives et opérationnelles restent variables selon les scénarios, et plusieurs propriétés nécessaires à une exploitation industrielle ne sont pas encore évaluées. Les perspectives identifiées constituent donc moins une correction du prototype qu'une extension du niveau de preuve nécessaire pour passer d'un système expérimental à une solution pouvant être confrontée à des conditions de production.
-```

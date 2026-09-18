@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "experiment_id": "cnp_endurance_multivm",
+  "topology": "two_virtual_machines_one_central_redis",
+  "duration_sec": 3600,
+  "task_interval_sec": 2.0,
+  "checkpoint_interval_sec": 300,
+  "response_timeout_sec": 5.0,
+  "registry_timeout_sec": 120.0,
+  "agents": [
+    "debian-alpha",
+    "ubuntu-beta"
+  ],
+  "task_types": [
+    "parse.synthetic",
+    "route.synthetic",
+    "detect.synthetic",
+    "correlate.synthetic"
+  ],
+  "memory": "on",
+  "controlled_failure": {
+    "enabled": true,
+    "timing": "after_idempotency_result_persisted_before_RESULT_message",
+    "preferred_agent": "debian-alpha",
+    "task_type": "parse.synthetic",
+    "expected_persistent_effects": 1,
+    "expected_duplicate_effects": 0,
+    "expected_min_reassignments": 1
+  },
+  "claim_scope": "laboratory endurance and CNP recovery; no Redis high availability claim"
+}

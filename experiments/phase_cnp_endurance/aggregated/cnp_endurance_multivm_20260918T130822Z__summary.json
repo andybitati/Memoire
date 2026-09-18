@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "experiment_id": "cnp_endurance_multivm",
+  "run_id": "cnp_endurance_multivm_20260918T130822Z",
+  "status": "COMPLETED",
+  "started_at": "2026-09-18T13:13:37.219351+00:00",
+  "completed_at": "2026-09-18T14:13:48.322799+00:00",
+  "config": "experiments/phase_cnp_endurance/configs/cnp_endurance_multivm_protocol.json",
+  "git_commit": "2c4f0e7",
+  "topology": {
+    "coordinator_host": "andy-aaron",
+    "redis_url": "redis://localhost:6379/0",
+    "redis_version": "7.4.9",
+    "agents": {
+      "debian-alpha": {
+        "agent_id": "debian-alpha",
+        "run_id": "cnp_endurance_multivm_20260918T130822Z",
+        "updated_at": "2026-09-18T13:09:38.542572+00:00",
+        "pid": 2875,
+        "host": "andy",
+        "os": "Linux-6.12.96+deb13-amd64-x86_64-with-glibc2.41",
+        "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+        "profile": "alpha",
+        "perception": {
+          "agent_id": "debian-alpha",
+          "healthy": true,
+          "active_tasks": 0,
+          "max_parallel_tasks": 1,
+          "load_ratio": 0.0,
+          "available_models": [
+            "*"
+          ],
+          "available_dependencies": [
+            "*"
+          ],
+          "memory_enabled": true,
+          "observed_at": "2026-09-18T13:09:38.542505+00:00"
+        }
+      },
+      "ubuntu-beta": {
+        "agent_id": "ubuntu-beta",
+        "run_id": "cnp_endurance_multivm_20260918T130822Z",
+        "updated_at": "2026-09-18T13:12:56.657039+00:00",
+        "pid": 2874,
+        "host": "andy-VirtualBox",
+        "os": "Linux-5.4.0-70-generic-x86_64-with-glibc2.29",
+        "python": "3.8.10 (default, Mar 18 2025, 20:04:55) \n[GCC 9.4.0]",
+        "profile": "beta",
+        "perception": {
+          "agent_id": "ubuntu-beta",
+          "healthy": true,
+          "active_tasks": 0,
+          "max_parallel_tasks": 1,
+          "load_ratio": 0.0,
+          "available_models": [
+            "*"
+          ],
+          "available_dependencies": [
+            "*"
+          ],
+          "memory_enabled": true,
+          "observed_at": "2026-09-18T13:12:56.654978+00:00"
+        }
+      }
+    },
+    "distinct_agent_hosts": [
+      "andy",
+      "andy-VirtualBox"
+    ]
+  },
+  "target_duration_sec": 3600.0,
+  "observed_duration_sec": 3605.11,
+  "task_interval_sec": 2.0,
+  "submitted_tasks": 1800,
+  "successful_tasks": 1800,
+  "failed_tasks": 0,
+  "throughput_tasks_sec": 0.499291,
+  "latency_mean_ms": 88.25028,
+  "latency_median_ms": 53.983,
+  "latency_p95_ms": 156.3017,
+  "latency_p99_ms": 836.72528,
+  "tasks_by_agent": {
+    "debian-alpha": 451,
+    "ubuntu-beta": 1349
+  },
+  "reassignments_during_endurance": 1,
+  "message_counts": {
+    "PROPOSE": 1818,
+    "AWARD": 910,
+    "ACCEPT": 910,
+    "agent.task.started": 910,
+    "agent.task.completed": 910,
+    "RESULT": 909,
+    "REJECT": 908,
+    "FEEDBACK": 910,
+    "CFP": 1816
+  },
+  "redis_completed_idempotency_keys": 1801,
+  "controlled_failure": {
+    "enabled": true,
+    "status": "PASSED",
+    "task_id": "cnp_endurance_multivm_20260918T130822Z-controlled-crash",
+    "winner_after_reassignment": "ubuntu-beta",
+    "reassignments": 1,
+    "idempotency_replayed": true,
+    "persistent_effects": 1,
+    "duplicate_effects": 0,
+    "latency_ms": 5060.317
+  },
+  "scope": "laboratory endurance and CNP recovery; no Redis high availability claim",
+  "message_events_retained": 10001,
+  "message_counts_scope": "retained tail only; not complete-run totals",
+  "message_stream_retention_note": "During this run, agent writers used approximate maxlen=10000; protocol-message counts are therefore excluded from scientific conclusions."
+}

@@ -1,4 +1,3 @@
-```latex
 \chapter{Validité scientifique}
 
 \section{Objet de l’analyse}
@@ -31,7 +30,7 @@ HDFS et BGL représentent eux aussi des contextes particuliers. Pour HDFS, l’�
 
 BGL présente une autre particularité : $89{,}8081\,\%$ des unités de test utilisent un template absent de l’entraînement. Une modification de ce taux de nouveauté pourrait donc changer sensiblement les performances observées.
 
-La même prudence s’applique à la campagne multi-VM. Deux systèmes Linux participent à l’expérience avec un Redis central pendant $2{,}712455$~s. Cette campagne montre qu’une distribution inter-machine, un refus, une réattribution et un replay idempotent peuvent être observés dans cette topologie. Elle ne renseigne pas sur le comportement à long terme, les partitions réseau, le multi-site, le vieillissement des agents ou la haute disponibilité du broker.
+La même prudence s’applique à la campagne multi-VM. Deux systèmes Linux participent à l’expérience avec un Redis central pendant $3\,605{,}110$~s. Les $1\,800$ tâches planifiées réussissent et l’arrêt post-persistance/pré-\texttt{RESULT} conduit à une réattribution sans effet dupliqué. Une heure améliore la preuve d’endurance du protocole, mais ne renseigne pas sur les partitions réseau, le multi-site, un vieillissement sur plusieurs jours ou la haute disponibilité du broker.
 
 
 \section{Validité de construit}
@@ -118,4 +117,3 @@ Le prototype parvient à lire, parser et normaliser les unités prévues dans la
 Le comportement des agents est également observable au-delà d’une simple description architecturale. Dans la campagne multi-VM, ils proposent ou refusent des tâches, les exécutent, produisent des résultats et participent à une réattribution après l’échec contrôlé. Le replay instrumenté ne produit pas de second effet persistant.
 
 Ces résultats permettent de soutenir le fonctionnement du prototype dans les conditions expérimentales décrites. Ils ne suffisent cependant pas à conclure à une exactitude globale sur des sources hétérogènes, à une supériorité générale du routage spécialisé, à un bénéfice systématique de la mémoire, à une mise à jour autonome des modèles ou à une disponibilité industrielle.
-```

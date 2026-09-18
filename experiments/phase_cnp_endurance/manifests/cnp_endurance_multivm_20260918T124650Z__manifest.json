@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "run_id": "cnp_endurance_multivm_20260918T124650Z",
+  "generated_at": "2026-09-18T12:59:40.727161+00:00",
+  "files": [
+    {
+      "path": "experiments/phase_cnp_endurance/aggregated/cnp_endurance_multivm_20260918T124650Z__summary.json",
+      "bytes": 3499,
+      "sha256": "b535ab1700750d740494a5430c6540c906f363c6066360cdc74928d067f6acf5"
+    },
+    {
+      "path": "experiments/phase_cnp_endurance/configs/cnp_endurance_multivm_protocol.json",
+      "bytes": 874,
+      "sha256": "028f164108a873fa389354073a8fcfeff7b298dee465b4737de19b8bafdc36b9"
+    },
+    {
+      "path": "experiments/phase_cnp_endurance/logs/cnp_endurance_multivm_20260918T124650Z__messages.jsonl",
+      "bytes": 1169820,
+      "sha256": "3735731df3a59fa5fff7ec7c61a2102986e1fa03eac88c02f6447e2f23983392"
+    },
+    {
+      "path": "experiments/phase_cnp_endurance/raw/cnp_endurance_multivm_20260918T124650Z__checkpoint.json",
+      "bytes": 326,
+      "sha256": "18368045a2ffd61943814ce681a7a58cd791f6d00fb710b96c3a6863124dce53"
+    },
+    {
+      "path": "experiments/phase_cnp_endurance/raw/cnp_endurance_multivm_20260918T124650Z__task_metrics.csv",
+      "bytes": 38418,
+      "sha256": "e8eab8112fbf437d34c76d49b33f23351aef993db1ffe043d3861f5e8df0d0cd"
+    },
+    {
+      "path": "experiments/phase_cnp_endurance/reports/cnp_endurance_multivm_20260918T124650Z__report.md",
+      "bytes": 653,
+      "sha256": "0b514ab897d5c89f0c54c6cc0dc2a94103247556b51d93ad695c7c96802db558"
+    },
+    {
+      "path": "scripts/logminer_redis_cnp_agent.py",
+      "bytes": 9160,
+      "sha256": "f49dde34254961c8082b139e6ce75cf4d4b14306cf3b58834f3a36bafffa77e8"
+    },
+    {
+      "path": "scripts/run_cnp_endurance_multivm.py",
+      "bytes": 23127,
+      "sha256": "a232716b3ef7e4ed30c009114059d3ce9a72551b3dc55557dc3ead09c4eb0e20"
+    },
+    {
+      "path": "src/logminer/agents/idempotency.py",
+      "bytes": 10322,
+      "sha256": "e7f18186dab1aa5e017ac353ab4a8ae3756b5ad2b544f1cc12273c74afa125c4"
+    },
+    {
+      "path": "src/logminer/agents/intelligent_runtime.py",
+      "bytes": 30805,
+      "sha256": "c82f7e1932f074f2e218f6ae8e2a3990f79882f8177fb43cb40cd7d32639bd0e"
+    },
+    {
+      "path": "src/logminer/agents/redis_contract_net.py",
+      "bytes": 11247,
+      "sha256": "016cb0b2399b2ca1256475fc37d280de66d05d2c3df2ce432ae81e1d0925b4de"
+    }
+  ]
+}

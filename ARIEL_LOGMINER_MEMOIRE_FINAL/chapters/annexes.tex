@@ -68,7 +68,7 @@ Routeur open-set & rejet 3/3 ; faux rejet 0/28 & \texttt{router\_open\_set\_fina
 Multiformat & $7\,001/7\,001$ & \texttt{multiformat\_balanced\_summary.csv} \\
 E2E modèles & $1\,400/1\,401$ & \texttt{multisource\_cnp\_model\_inference\_by\_source.csv} \\
 Benchmark A--D & 160 exécutions ; $264\,000$ tâches & \texttt{ma\_20260909T160812Z\_34016\_\_statistics.csv} \\
-Multi-VM & 60/60 ; 30/30 & \texttt{multivm\_cnp\_20260909T202632Z\_37592\_\_redis\_cnp\_multivm.json} \\
+Endurance CNP multi-VM & $1\,800/1\,800$ ; 1 h & \texttt{cnp\_endurance\_multivm\_20260918T130822Z\_\_summary.json} \\
 Corrélation & F1 0,812500 & \texttt{data/processed/final\_experiments\_2026/correlation\_synthetic\_summary.json} \\
 \bottomrule
 \end{longtable}
@@ -102,24 +102,25 @@ Test & TP 29, FP 7, TN $1\,964$, FN 0 \\
 
 \begin{table}[H]
 \centering
-\caption{Configuration et observations de la campagne multi-VM retenue.}
+\caption{Configuration et observations de la campagne d’endurance multi-VM retenue.}
 \label{tab:multivm-parametres-annexe}
 \small
 \begin{tabularx}{\textwidth}{p{0.28\textwidth} X}
 \toprule
 \textbf{Champ} & \textbf{Valeur} \\
 \midrule
-Run & \texttt{multivm\_cnp\_20260909T202632Z\_37592} \\
+Run & \texttt{cnp\_endurance\_multivm\_20260918T130822Z} \\
 Coordinateur & \texttt{andy-aaron} \\
 Transport & Redis 7.4.9 centralisé, base 0 \\
 Agent Debian & \texttt{debian-alpha}, Linux 6.12.96 Debian 13, Python 3.13.5 \\
 Agent Ubuntu & \texttt{ubuntu-beta}, Linux 5.4.0-70, Python 3.8.10 \\
 Parallélisme & un traitement simultané par agent \\
-Durée & 2,712455 s \\
-Tâches & 60 réussies sur 60 ; 30 par agent \\
-Décisions & 108 propositions, 15 refus, 63 attributions \\
-Reprise & un \texttt{FAIL} contrôlé, une réattribution \\
-Idempotence & un effet persistant, zéro effet dupliqué lors du replay \\
+Durée & $3\,605{,}110$ s observées pour $3\,600$ s ciblées \\
+Tâches & $1\,800$ réussies sur $1\,800$ ; Debian 451, Ubuntu $1\,349$ \\
+Latence & médiane 53,983 ms ; p95 156,3017 ms ; p99 836,72528 ms \\
+Reprise & arrêt post-persistance/pré-\texttt{RESULT}, une réattribution \\
+Idempotence & rejeu du résultat, un effet persistant, zéro effet dupliqué \\
+Trace de messages & fenêtre terminale de $10\,001$ événements ; compteurs non conclusifs \\
 \bottomrule
 \end{tabularx}
 \end{table}

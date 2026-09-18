@@ -1,4 +1,3 @@
-```latex
 \chapter{Discussion générale}
 
 \section{Ce que montre l’évaluation}
@@ -21,7 +20,7 @@ Démontrer un avantage prédictif de la spécialisation demanderait une expérie
 
 \section{Autonomie réelle mais bornée}
 
-Les agents utilisés dans Ariel Logminer ne sont pas de simples consommateurs passifs d’une file. Ils déclarent plusieurs capacités, disposent de plusieurs handlers, observent leur état local, calculent une utilité et peuvent refuser une tâche. Les messages \texttt{PROPOSE}, \texttt{REFUSE}, \texttt{AWARD} et \texttt{REJECT} rendent ces décisions visibles dans les traces du protocole. La campagne multi-VM confirme ce comportement avec quinze refus, un échec injecté et une réattribution réussie.
+Les agents utilisés dans Ariel Logminer ne sont pas de simples consommateurs passifs d’une file. Ils déclarent plusieurs capacités, disposent de plusieurs handlers, observent leur état local, calculent une utilité et peuvent refuser une tâche. Les messages \texttt{PROPOSE}, \texttt{REFUSE}, \texttt{AWARD} et \texttt{REJECT} rendent ces décisions visibles dans les traces du protocole. La campagne multi-VM d’une heure confirme la continuité de cette orchestration sur $1\,800$ tâches et la réattribution réussie après un arrêt post-persistance/pré-\texttt{RESULT}.
 
 Cette autonomie possède néanmoins une définition précise. Les coefficients de la fonction d’utilité sont configurés à l’avance et ne sont pas appris. Le coordinateur conserve en outre la responsabilité de l’attribution finale. L’agent prend donc une décision locale dans un cadre déterministe et explicite ; il ne s’agit pas d’un système capable de modifier librement sa propre politique ou ses objectifs.
 
@@ -78,5 +77,4 @@ Le comportement du Contract Net mérite également d’être étudié avec des t
 
 La gouvernance des modèles constitue un autre prolongement prioritaire. Une campagne dédiée devrait introduire volontairement des candidats meilleurs et moins bons, conserver un jeu de validation gelé, observer les décisions de promotion et de rejet, puis mesurer leurs conséquences sur un test indépendant. Le mécanisme pourrait alors être évalué sur son effet réel et non seulement sur sa présence dans le code.
 
-À plus long terme, le passage vers une architecture de production demanderait de travailler la réplication et le basculement Redis, les partitions réseau, la sécurité des communications, le contrôle d’accès, la gestion des secrets et l’observabilité. Des campagnes prolongées seraient également nécessaires pour étudier la stabilité du système dans le temps.
-```
+À plus long terme, le passage vers une architecture de production demanderait de travailler la réplication et le basculement Redis, les partitions réseau, la sécurité des communications, le contrôle d’accès, la gestion des secrets et l’observabilité. La campagne d’une heure apporte une première preuve d’endurance ; des campagnes de plusieurs jours resteraient nécessaires pour étudier le vieillissement du système.
