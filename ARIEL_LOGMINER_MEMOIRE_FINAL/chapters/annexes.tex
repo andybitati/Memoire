@@ -154,3 +154,69 @@ Mise à jour autonome continue & PERSPECTIVE & Hors du prototype évalué. \\
 \section{Conditions d’interprétation des résultats}
 
 Le périmètre expérimental exclut la haute disponibilité Redis, la tolérance aux partitions, la sécurité opérationnelle complète et les performances à très grande échelle. Le routage open-set porte sur trois inconnus. Le F1 BGL ne fournit aucun rappel pour les anomalies à template connu. Le score CSE-CIC-IDS2018 dépend fortement de certaines caractéristiques. La mémoire influence une décision, mais n’améliore pas systématiquement les métriques. Aucune exactitude globale multi-source n’est disponible.
+
+\section{Notes détaillées des figures}
+\label{ann:notes-figures}
+
+Cette section rassemble les éléments d’interprétation, les limites et les sources retirés des légendes afin de conserver des figures lisibles dans le corps du mémoire.
+
+\subsection{Architecture et implémentation}
+
+\paragraph{Figure~\ref{fig:architecture-multi-agent} -- architecture multi-agents.}
+Le diagramme relie les sources, la normalisation, le routage, le Contract Net, le transport Redis et les artefacts de preuve. La topologie représentée correspond au laboratoire étudié et ne décrit pas une infrastructure de production générique.
+
+\paragraph{Figure~\ref{fig:contract-net-sequence} -- séquence Contract Net.}
+La séquence est celle observée dans les campagnes locales et Redis. Les branches \textit{REFUSE} et \textit{FAIL} sont conservées pour rendre visibles les refus normaux du protocole et les reprises contrôlées.
+
+\paragraph{Figure~\ref{fig:dashboard-vue-ensemble} -- tableau de bord.}
+L’interface rassemble les volumes, les états et les alertes, puis relie une exécution à ses résultats. Sa validation est fonctionnelle et reste distincte de l’évaluation prédictive.
+
+\subsection{Résultats expérimentaux}
+
+\paragraph{Figure~\ref{fig:cicids-protocoles} -- protocoles CICIDS2017.}
+Le Random Forest atteint un F1 de 0,995142 sous séparation aléatoire, 0,157744 sous holdout par scénario et 0,437429 sous séparation temporelle ; la régression logistique temporelle atteint 0,556615. L’écart indique que le score aléatoire décrit surtout une interpolation dans des scénarios mélangés et ne mesure pas le même transfert.
+
+\paragraph{Figure~\ref{fig:cicids-modeles} -- candidats CICIDS2017.}
+Dans le holdout par scénario, la régression logistique obtient le meilleur F1 moyen, soit 0,233670, mais sa dispersion reste forte. Son rang parmi les candidats testés ne transforme donc pas ce résultat faible en preuve de généralisation.
+
+\paragraph{Figure~\ref{fig:hdfs-event-bloc} -- niveaux événement et bloc.}
+Le F1 événementiel de 0,213115 n’est pas aligné sur l’unité des labels, tandis que l’agrégation moyenne par \texttt{block\_id} atteint 0,892308. Le résultat au niveau bloc est retenu pour cette raison ; les deux mesures ne constituent pas des benchmarks équivalents.
+
+\paragraph{Figure~\ref{fig:hdfs-bootstrap} -- bootstrap HDFS.}
+La médiane de 0,894737 et l’intervalle empirique $[0{,}800000\,;\,0{,}961039]$ décrivent la variation produite par le rééchantillonnage des blocs positifs du test sur $1\,000$ réplications. Ils ne s’étendent pas à une population universelle.
+
+\paragraph{Figure~\ref{fig:bgl-connu-inconnu} -- connaissance des templates BGL.}
+Le groupe \texttt{KNOWN\_TEMPLATE} contient $2\,029$ unités et aucune anomalie ; aucun rappel d’anomalies connues ne peut donc y être estimé. Le F1 global est porté par le groupe des templates inconnus, ce qui limite son interprétation comme apprentissage de comportement.
+
+\paragraph{Figure~\ref{fig:bgl-baseline} -- comparaison au baseline BGL.}
+Le gain de F1, de 0,277885 à 0,913698, indique que le seuil Histogram filtre une grande partie des nouveautés normales. La comparaison ne résout pas l’absence de positifs parmi les templates connus et ne permet donc pas d’estimer ce rappel.
+
+\paragraph{Figure~\ref{fig:csecic-lr-rf} -- modèles CSE-CIC-IDS2018.}
+L’entraînement porte sur le 15 février et le test sur le 16 février, avec cinq graines. La régression logistique domine le Random Forest selon le F1 moyen. Ce résultat très élevé motive un audit des caractéristiques plutôt qu’une conclusion immédiate de généralisation.
+
+\paragraph{Figure~\ref{fig:csecic-coefficients} -- coefficients de la régression logistique.}
+L’amplitude des coefficients décrit les associations apprises après prétraitement ; elle ne mesure pas une causalité. La stabilité des signes aide à localiser les variables à contrôler.
+
+\paragraph{Figure~\ref{fig:csecic-mono-feature} -- modèles mono-feature.}
+Le F1 de 0,999720 obtenu avec \texttt{Dst Port} révèle qu’une seule variable porte presque toute la séparation dans ce split. Le graphique sert de diagnostic de dépendance et non de preuve de fuite.
+
+\paragraph{Figure~\ref{fig:csecic-ablation} -- ablation des caractéristiques.}
+Le F1 passe de 0,999212 avec 78 variables à 0,657859 après retrait des dix premières. Cette chute établit une sensibilité à l’espace de caractéristiques ; elle ne garantit pas que les variables restantes se transfèrent à d’autres journées.
+
+\paragraph{Figure~\ref{fig:csecic-permutation} -- permutation des labels.}
+La forte dispersion et l’effondrement observé pour une graine montrent que la performance principale n’est pas reproduite de façon stable lorsque la relation d’apprentissage est détruite. Ce contrôle circonscrit certains mécanismes triviaux sans identifier, à lui seul, toutes les sources de biais.
+
+\paragraph{Figure~\ref{fig:routeur-open-set} -- compromis open-set.}
+Au seuil 100, le rejet des inconnus vaut 3/3, le faux rejet des connus 0/28, la couverture 0,903226 et l’exactitude sélective 1,0. La \texttt{decision\_margin} reste un score heuristique et non une probabilité.
+
+\paragraph{Figure~\ref{fig:couverture-multiformat} -- couverture multiformat.}
+Les $7\,001$ unités présentes sont lues, parsées et normalisées. HDFS et BGL contribuent chacun $1\,000$ unités, tandis qu’Apache repose sur une seule fixture. Cette couverture ne mesure ni la complétude de tous les champs ni une compatibilité universelle.
+
+\paragraph{Figure~\ref{fig:benchmark-abcd} -- architectures A--D.}
+Chaque point repose sur dix répétitions. Le monolithe domine les micro-tâches, tandis que les échanges Contract Net ajoutent un coût visible. Les courbes C et D ne montrent pas de gain systématique de la mémoire sur le débit ou la latence.
+
+\paragraph{Figure~\ref{fig:e2e-couverture-modeles} -- couverture d’inférence.}
+Les modèles réels sont exécutés pour $1\,400$ unités sur $1\,401$ ; la seule unité Apache passe par le fallback. Ce résultat établit l’usage effectif des modèles, sans calculer une exactitude globale entre sources hétérogènes.
+
+\paragraph{Figure~\ref{fig:e2e-latence-modeles} -- latence d’inférence.}
+La voie M est plus coûteuse, avec 0,105420~s en moyenne agrégée contre 0,031027~s pour H. Ces durées sont observées dans le laboratoire et ne constituent pas un engagement de service en production.

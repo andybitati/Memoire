@@ -1,0 +1,48 @@
+# Compilation complète du mémoire avec PowerShell
+# Exécuter les commandes ci-dessous dans l'ordre.
+
+Set-Location "E:\Cours\TFE\ARIEL_LOGMINER_MEMOIRE_FINAL"
+
+# Créer le dossier de compilation s'il n'existe pas.
+New-Item -ItemType Directory -Path ".\build" -Force | Out-Null
+
+# BibTeX cherche references.bib dans le dossier courant de compilation.
+Copy-Item -LiteralPath ".\references.bib" -Destination ".\build\references.bib" -Force
+
+Set-Location ".\build"
+
+# 1. Première passe LaTeX : génération des fichiers auxiliaires.
+& "C:\Users\aoliv\AppData\Local\Programs\MiKTeX\miktex\bin\x64\pdflatex.exe" `
+  "-enable-installer" `
+  "-include-directory=E:/Cours/TFE/ARIEL_LOGMINER_MEMOIRE_FINAL" `
+  "-interaction=nonstopmode" `
+  "-file-line-error" `
+  "-halt-on-error" `
+  "E:/Cours/TFE/ARIEL_LOGMINER_MEMOIRE_FINAL/main.tex"
+
+# 2. Génération de la bibliographie.
+& "C:\Users\aoliv\AppData\Local\Programs\MiKTeX\miktex\bin\x64\bibtex.exe" "main"
+
+# 3. Deuxième passe LaTeX : intégration de la bibliographie et des références.
+& "C:\Users\aoliv\AppData\Local\Programs\MiKTeX\miktex\bin\x64\pdflatex.exe" `
+  "-enable-installer" `
+  "-include-directory=E:/Cours/TFE/ARIEL_LOGMINER_MEMOIRE_FINAL" `
+  "-interaction=nonstopmode" `
+  "-file-line-error" `
+  "-halt-on-error" `
+  "E:/Cours/TFE/ARIEL_LOGMINER_MEMOIRE_FINAL/main.tex"
+
+# 4. Troisième passe LaTeX : stabilisation de la pagination et des renvois.
+& "C:\Users\aoliv\AppData\Local\Programs\MiKTeX\miktex\bin\x64\pdflatex.exe" `
+  "-enable-installer" `
+  "-include-directory=E:/Cours/TFE/ARIEL_LOGMINER_MEMOIRE_FINAL" `
+  "-interaction=nonstopmode" `
+  "-file-line-error" `
+  "-halt-on-error" `
+  "E:/Cours/TFE/ARIEL_LOGMINER_MEMOIRE_FINAL/main.tex"
+
+# Vérifier le PDF produit.
+Get-Item -LiteralPath ".\main.pdf" | Select-Object FullName, Length, LastWriteTime
+
+# Le document final se trouve ici :
+# E:\Cours\TFE\ARIEL_LOGMINER_MEMOIRE_FINAL\build\main.pdf
