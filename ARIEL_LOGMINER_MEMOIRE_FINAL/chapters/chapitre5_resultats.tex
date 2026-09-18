@@ -360,7 +360,7 @@ Il n’est pas pertinent de calculer une exactitude globale sur cette campagne, 
 
 \subsection{Protocole}
 
-La campagne porte le \texttt{run\_id} \texttt{multivm\_cnp\_20260909T202632Z\_37592}. Le coordinateur s’exécute sur l’hôte \texttt{andy-aaron} avec Redis 7.4.9 à l’adresse locale configurée. Deux machines virtuelles participent :
+La campagne d’endurance porte le \texttt{run\_id} \texttt{cnp\_endurance\_multivm\_20260918T130822Z}. Le coordinateur s’exécute sur l’hôte \texttt{andy-aaron} avec Redis 7.4.9 centralisé. Deux machines virtuelles participent :
 
 \begin{itemize}
 
@@ -370,27 +370,34 @@ La campagne porte le \texttt{run\_id} \texttt{multivm\_cnp\_20260909T202632Z\_37
 
 \end{itemize}
 
-Chaque agent accepte au plus une tâche parallèle. Le protocole soumet 60 tâches et enregistre toutes les transitions CNP, un échec injecté, la réattribution et un replay idempotent. La durée mesurée est 2,712455\~s.
+Chaque agent accepte au plus une tâche parallèle. Le protocole soumet une micro-tâche synthétique déterministe toutes les deux secondes pendant une heure, avec un checkpoint atomique toutes les cinq minutes. Cette charge cible l’orchestration CNP et sa stabilité ; elle ne mesure pas la qualité prédictive ni le coût d’une inférence réelle. Un scénario terminal force en outre l’arrêt de l’agent Debian après persistance du résultat mais avant l’émission de \texttt{RESULT}, puis vérifie la réattribution et le rejeu idempotent.
 
 \subsection{Résultats}
 
-Les 60 tâches se terminent avec succès : 30 sur Debian et 30 sur Ubuntu. Le débit est 22,120187 tâches/s, la latence moyenne 45,120333\~ms, la médiane 40,6495\~ms et le percentile 95 vaut 63,02985\~ms. Les traces comptent notamment 123 \texttt{CFP}, 108 \texttt{PROPOSE}, 15 \texttt{REFUSE}, 63 \texttt{AWARD}, 62 \texttt{RESULT} et un \texttt{FAIL} contrôlé.
+La durée observée atteint $3\,605{,}110$~s pour une cible de $3\,600$~s. Les $1\,800$ tâches planifiées se terminent toutes avec succès, soit un débit moyen de $0{,}499291$ tâche/s. La latence moyenne vaut $88{,}250280$~ms, la médiane $53{,}983$~ms, le p95 $156{,}3017$~ms et le p99 $836{,}72528$~ms.
 
-\begin{figure}[H]
+\begin{table}[H]
+\centering
+\caption{Résultats principaux de la campagne CNP multi-VM d’une heure.}
+\label{tab:cnp-endurance}
+\begin{tabularx}{0.92\textwidth}{p{0.42\textwidth} X}
+\toprule
+\textbf{Mesure} & \textbf{Observation} \\
+\midrule
+Durée cible / observée & $3\,600$ / $3\,605{,}110$ s \\
+Tâches réussies & $1\,800/1\,800$ \\
+Débit moyen & $0{,}499291$ tâche/s \\
+Latence médiane / p95 / p99 & $53{,}983$ / $156{,}3017$ / $836{,}72528$ ms \\
+Répartition & Debian : 451 ; Ubuntu : $1\,349$ \\
+Reprise terminale & réattribution réussie ; rejeu idempotent \\
+Effets persistants / dupliqués & 1 / 0 \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
-  \centering
+Lors du scénario terminal, Debian persiste le résultat puis s’arrête avant de publier \texttt{RESULT}. Le coordinateur réattribue la tâche à Ubuntu ; le magasin Redis renvoie le résultat déjà persistant au lieu de répéter l’effet. Un seul effet est observé et aucun doublon n’apparaît. La campagne fournit ainsi une preuve directe de l’endurance du protocole, de la reprise contrôlée et de l’idempotence dans cette topologie.
 
-  \includegraphics[width=0.96\textwidth]{fig_multi_agent_task_distribution.png}
-
-  \caption{Répartition des 60 tâches de la campagne multi-VM. Debian et Ubuntu exécutent chacune 30 tâches ; 15 refus et un échec contrôlé sont visibles dans l’artefact complet. Cette symétrie documente la distribution observée ; la disponibilité du Redis central n’est pas testée. Source : \texttt{multivm\_cnp\_20260909T202632Z\_37592\_\_redis\_cnp\_multivm.json}.}
-
-  \label{fig:multi-vm-repartition}
-
-\end{figure}
-
-L’unique tâche mise en échec est réattribuée une fois, puis menée à terme. Le test d’idempotence rejoue ensuite le même effet sur un agent différent : un seul effet persistant est observé et aucun doublon n’apparaît. Dans cette topologie précise, la campagne fournit donc des preuves de fonctionnement pour l’attribution, le refus, la reprise contrôlée et l’idempotence.
-
-Redis reste toutefois un point central de cette topologie. Aucun basculement du broker, aucune partition réseau, aucun fonctionnement multi-site et aucune charge industrielle prolongée ne sont testés. La campagne valide donc des mécanismes de distribution en laboratoire, pas une architecture hautement disponible.
+La trace de messages ne conserve que la fenêtre terminale de $10\,001$ événements à cause de la rétention approximative configurée pendant ce run. Ses compteurs par type sont donc exclus des conclusions ; les métriques par tâche, le résultat de reprise et le magasin d’idempotence restent complets. Redis demeure par ailleurs un point central : aucun basculement du broker, aucune partition réseau, aucun fonctionnement multi-site et aucune charge industrielle ne sont testés. La campagne valide des mécanismes de distribution en laboratoire, pas une architecture hautement disponible.
 
 \section{Corrélation d’incidents}
 
