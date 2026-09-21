@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "run_id": "cnp_endurance_multivm_20260918T130822Z",
+  "generated_at": "2026-09-18T14:29:54.630255+00:00",
+  "files": [
+    {
+      "path": "experiments/phase_cnp_endurance/aggregated/cnp_endurance_multivm_20260918T130822Z__summary.json",
+      "bytes": 3771,
+      "sha256": "6a91345aec316327a77e4bb16c8abe1c7b3142e8c5fde51a07cb4970649f3f66"
+    },
+    {
+      "path": "experiments/phase_cnp_endurance/configs/cnp_endurance_multivm_protocol.json",
+      "bytes": 874,
+      "sha256": "028f164108a873fa389354073a8fcfeff7b298dee465b4737de19b8bafdc36b9"
+    },
+    {
+      "path": "experiments/phase_cnp_endurance/logs/cnp_endurance_multivm_20260918T130822Z__debian-alpha.log",
+      "bytes": 216,
+      "sha256": "39eb8dd661f63edc11b72825b8361a9b374ec7843361281683a649c8a20297af"
+    },
+    {
+      "path": "experiments/phase_cnp_endurance/logs/cnp_endurance_multivm_20260918T130822Z__messages.jsonl",
+      "bytes": 7021895,
+      "sha256": "c0dbf6752afb6a51518f785b5f9cb45c592c21f26bace4a3baa489f77cc2b0a4"
+    },
+    {
+      "path": "experiments/phase_cnp_endurance/logs/cnp_endurance_multivm_20260918T130822Z__ubuntu-beta.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "experiments/phase_cnp_endurance/raw/cnp_endurance_multivm_20260918T130822Z__checkpoint.json",
+      "bytes": 332,
+      "sha256": "7aa0d6115c9afc5287dea0ac014eda47f789e3aba327df15f8695b1e89076936"
+    },
+    {
+      "path": "experiments/phase_cnp_endurance/raw/cnp_endurance_multivm_20260918T130822Z__task_metrics.csv",
+      "bytes": 461631,
+      "sha256": "8cef64d526ed8add36239734be35642f9d95591cd5c2f385493eba360eef7a23"
+    },
+    {
+      "path": "experiments/phase_cnp_endurance/reports/cnp_endurance_multivm_20260918T130822Z__report.md",
+      "bytes": 1008,
+      "sha256": "397226ee30a1bbb44217712b5617b023904ed817a90684517ac5d757a0ef6e60"
+    },
+    {
+      "path": "scripts/finalize_cnp_endurance_artifacts.py",
+      "bytes": 4496,
+      "sha256": "4c984f3ad87dce6b9379a0ad2ca44c7f72e7754d314e609a7db192a6d2cb064a"
+    },
+    {
+      "path": "scripts/finalize_cnp_endurance_multivm_agents.ps1",
+      "bytes": 2529,
+      "sha256": "114b38dddbd9d2ccd7328acd7fe4d2c930d3ed4c578900906f3c800e47ffdb2f"
+    },
+    {
+      "path": "scripts/logminer_redis_cnp_agent.py",
+      "bytes": 9308,
+      "sha256": "2c83ee42854011e29779e93a26e9e953a9eaafa653d0d74109c41a0682222654"
+    },
+    {
+      "path": "scripts/run_cnp_endurance_multivm.py",
+      "bytes": 23546,
+      "sha256": "b1ce206ce2747eb42a6d98e011cb2dadb1f54d47e0c028cc97539038da8a8252"
+    },
+    {
+      "path": "scripts/start_cnp_endurance_multivm_agents.ps1",
+      "bytes": 7364,
+      "sha256": "ce1b62854af220916db65ce7029a4249c2d54ff0e4a4692528843cb228f47dc0"
+    },
+    {
+      "path": "src/logminer/agents/bus.py",
+      "bytes": 14095,
+      "sha256": "0cfacff79d4b5a06254dc40f75b9712ae80f4282cf9d1014013fa40ba1c74d8e"
+    },
+    {
+      "path": "src/logminer/agents/contract_net.py",
+      "bytes": 11502,
+      "sha256": "cd0e555ba914e015cb16c2aa1445c90eb8c04b1f1f7e3a038204e13ffdaa5dc7"
+    },
+    {
+      "path": "src/logminer/agents/idempotency.py",
+      "bytes": 10322,
+      "sha256": "e7f18186dab1aa5e017ac353ab4a8ae3756b5ad2b544f1cc12273c74afa125c4"
+    },
+    {
+      "path": "src/logminer/agents/intelligent_runtime.py",
+      "bytes": 30805,
+      "sha256": "c82f7e1932f074f2e218f6ae8e2a3990f79882f8177fb43cb40cd7d32639bd0e"
+    },
+    {
+      "path": "src/logminer/agents/redis_contract_net.py",
+      "bytes": 11247,
+      "sha256": "016cb0b2399b2ca1256475fc37d280de66d05d2c3df2ce432ae81e1d0925b4de"
+    }
+  ]
+}

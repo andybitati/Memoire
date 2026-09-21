@@ -86,6 +86,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Agent Logminer CNP inter-processus sur Redis")
     parser.add_argument("--redis-url", default="redis://localhost:6379/0")
     parser.add_argument("--event-stream", default="logminer:events")
+    parser.add_argument("--event-stream-maxlen", type=int, default=250_000)
     parser.add_argument("--namespace", required=True)
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--agent-id", required=True)
@@ -93,10 +94,24 @@ def main() -> int:
     parser.add_argument("--memory", choices=("on", "off"), default="on")
     parser.add_argument("--disable-task-types", default="")
     parser.add_argument("--fail-once-task-types", default="")
+    parser.add_argument(
+        "--crash-after-persisted-result-once",
+        action="store_true",
+        help=(
+            "Interrompt volontairement le processus une fois, apres persistance "
+            "du resultat idempotent et avant emission du message RESULT, lorsque "
+            "le payload porte crash_after_persisted_result=true."
+        ),
+    )
     parser.add_argument("--idle-timeout-sec", type=float, default=15.0)
     args = parser.parse_args()
 
-    bus = RedisMessageBus(url=args.redis_url, stream=args.event_stream, run_id=args.run_id)
+    bus = RedisMessageBus(
+        url=args.redis_url,
+        stream=args.event_stream,
+        run_id=args.run_id,
+        maxlen=args.event_stream_maxlen,
+    )
     if not bus.ping():
         raise RuntimeError("Redis ne répond pas")
     transport = RedisContractNetTransport(bus, namespace=args.namespace, run_id=args.run_id)
@@ -117,6 +132,7 @@ def main() -> int:
     cursor = transport.latest_id(inbox)
     pending: dict[str, tuple[AgentTask, object]] = {}
     completed = 0
+    crash_injected = False
     last_activity = time.monotonic()
 
     while time.monotonic() - last_activity < args.idle_timeout_sec:
@@ -167,6 +183,27 @@ def main() -> int:
                     payload={"contract_id": contract_id, "task_id": task.task_id, "pid": os.getpid()},
                 )
                 result = agent.execute_task(task, evaluation.utility, list(evaluation.reasons))
+                if (
+                    args.crash_after_persisted_result_once
+                    and not crash_injected
+                    and result.status == "ok"
+                    and bool(task.payload.get("crash_after_persisted_result"))
+                ):
+                    crash_injected = True
+                    print(
+                        json.dumps(
+                            {
+                                "event": "controlled_crash_after_persisted_result",
+                                "run_id": args.run_id,
+                                "agent_id": args.agent_id,
+                                "task_id": task.task_id,
+                                "pid": os.getpid(),
+                            },
+                            ensure_ascii=False,
+                        ),
+                        flush=True,
+                    )
+                    os._exit(91)
                 transport.send_response(
                     source=args.agent_id,
                     target=message.source,

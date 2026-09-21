@@ -68,13 +68,13 @@ Sur le plan fonctionnel, l'attente est différente : si les mêmes chemins sont 
 \section{Reproduction de la campagne multi-VM}
 
 La campagne de référence porte le \texttt{run\_id}
-\texttt{multivm\_cnp\_20260909T202632Z\_37592}. Elle utilise un coordinateur, Redis 7.4.9 et deux agents enregistrés sous les noms \texttt{debian-alpha} et \texttt{ubuntu-beta}. Chaque profil autorise au maximum une tâche parallèle.
+\texttt{cnp\_endurance\_multivm\_20260918T130822Z}. Elle utilise un coordinateur, Redis 7.4.9 et deux agents enregistrés sous les noms \texttt{debian-alpha} et \texttt{ubuntu-beta}. Chaque profil autorise au maximum une tâche parallèle.
 
-Le scénario comprend 60 tâches auxquelles s'ajoutent un échec contrôlé, une réattribution et un replay destiné à vérifier l'idempotence.
+Le scénario cadence $1\,800$ micro-tâches synthétiques sur une heure. Il se termine par un arrêt contrôlé de Debian après persistance et avant publication de \texttt{RESULT}, puis par une réattribution à Ubuntu et un rejeu destiné à vérifier l'idempotence.
 
-Une reproduction doit conserver suffisamment d'informations pour vérifier le déroulement de la campagne : hôtes, versions des systèmes, compteurs de messages, résultats obtenus par chaque agent et section \texttt{idempotence}.
+Une reproduction doit conserver suffisamment d'informations pour vérifier le déroulement de la campagne : configuration gelée, hôtes, versions des systèmes, métriques par tâche, checkpoints, journaux des agents, résumé et manifeste SHA-256. Pour le run retenu, les compteurs de messages portent seulement sur la fenêtre terminale conservée et ne doivent pas être interprétés comme des totaux sur l’heure.
 
-Un partage exactement égal de 30 tâches par agent n'est pas une condition de validité. L'ordonnancement peut varier d'une exécution à l'autre. En revanche, toutes les tâches doivent être terminées, l'échec injecté doit conduire à la reprise prévue et le replay ne doit pas créer un second effet logique.
+Un partage égal des tâches n'est pas une condition de validité : le run observé attribue 451 tâches à Debian et $1\,349$ à Ubuntu. L'ordonnancement peut varier d'une exécution à l'autre. En revanche, toutes les tâches doivent être terminées, l'arrêt injecté doit conduire à la reprise prévue et le rejeu ne doit pas créer un second effet logique.
 
 Les informations d'accès ne font pas partie des artefacts publiables. Identifiants de connexion et mots de passe doivent être fournis par des variables d'environnement ou par un mécanisme de gestion des secrets.
 

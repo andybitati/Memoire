@@ -1,0 +1,266 @@
+\babel@toc {french}{}\relax 
+\contentsline {chapter}{Épigraphe}{i}{chapter*.1}%
+\contentsline {chapter}{Dédicace}{ii}{chapter*.2}%
+\contentsline {chapter}{Remerciements}{iii}{chapter*.3}%
+\contentsline {chapter}{Déclaration relative à l'utilisation d'outils d'intelligence artificielle}{iv}{chapter*.4}%
+\contentsline {chapter}{Résumé}{v}{chapter*.5}%
+\contentsline {chapter}{Abstract}{viii}{chapter*.6}%
+\contentsline {chapter}{Bokuse}{xi}{chapter*.7}%
+\contentsline {chapter}{Table des mati\`eres}{xiv}{chapter*.8}%
+\contentsline {chapter}{Table des figures}{xv}{chapter*.9}%
+\contentsline {chapter}{Liste des tableaux}{xvi}{chapter*.10}%
+\contentsline {chapter}{Liste des sigles et acronymes}{xvii}{chapter*.11}%
+\contentsline {chapter}{Introduction générale}{1}{chapter*.12}%
+\contentsline {section}{Contexte général et justification du sujet}{1}{section*.13}%
+\contentsline {section}{Problématique}{3}{section*.14}%
+\contentsline {section}{Positionnement et définition opérationnelle des termes}{4}{section*.15}%
+\contentsline {section}{Question centrale et questions de recherche}{5}{section*.16}%
+\contentsline {section}{Hypothèses de recherche}{6}{section*.17}%
+\contentsline {section}{Objectif général et objectifs spécifiques}{7}{section*.18}%
+\contentsline {section}{Démarche méthodologique}{8}{section*.19}%
+\contentsline {section}{Contributions du travail}{10}{section*.20}%
+\contentsline {section}{Délimitations et portée du mémoire}{11}{section*.21}%
+\contentsline {section}{Organisation du mémoire}{11}{section*.22}%
+\contentsline {chapter}{\numberline {1}État de l'art et fondements}{13}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Introduction}{13}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Journaux système et réseau}{14}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Rôle des journaux dans la cybersécurité}{14}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Hétérogénéité des sources}{14}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Typologie utile pour une chaîne d'analyse}{15}{subsection.1.2.3}%
+\contentsline {section}{\numberline {1.3}Détection d'intrusion et détection d'anomalies}{15}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Fondements de la détection d'intrusion}{15}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Nature des anomalies}{16}{subsection.1.3.2}%
+\contentsline {subsection}{\numberline {1.3.3}Détection et décision}{16}{subsection.1.3.3}%
+\contentsline {section}{\numberline {1.4}Approches fondées sur les règles et les signatures}{17}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}Principe}{17}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}Limites}{17}{subsection.1.4.2}%
+\contentsline {subsection}{\numberline {1.4.3}Complémentarité avec les approches fondées sur les données}{17}{subsection.1.4.3}%
+\contentsline {section}{\numberline {1.5}Apprentissage automatique pour la cybersécurité}{18}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}Apprentissage supervisé}{18}{subsection.1.5.1}%
+\contentsline {subsection}{\numberline {1.5.2}Random Forest et modèles d'ensemble}{18}{subsection.1.5.2}%
+\contentsline {subsection}{\numberline {1.5.3}Modèles linéaires}{19}{subsection.1.5.3}%
+\contentsline {subsection}{\numberline {1.5.4}Gradient boosting et arbres supplémentaires}{19}{subsection.1.5.4}%
+\contentsline {section}{\numberline {1.6}Apprentissage non supervisé et détection de valeurs atypiques}{19}{section.1.6}%
+\contentsline {subsection}{\numberline {1.6.1}Motivation}{19}{subsection.1.6.1}%
+\contentsline {subsection}{\numberline {1.6.2}Isolation Forest}{20}{subsection.1.6.2}%
+\contentsline {subsection}{\numberline {1.6.3}Local Outlier Factor}{20}{subsection.1.6.3}%
+\contentsline {subsection}{\numberline {1.6.4}One-Class SVM}{20}{subsection.1.6.4}%
+\contentsline {subsection}{\numberline {1.6.5}Méthodes statistiques simples}{20}{subsection.1.6.5}%
+\contentsline {section}{\numberline {1.7}Problème du déséquilibre des classes}{21}{section.1.7}%
+\contentsline {section}{\numberline {1.8}Datasets et validité des évaluations}{21}{section.1.8}%
+\contentsline {subsection}{\numberline {1.8.1}Rôle des datasets publics}{21}{subsection.1.8.1}%
+\contentsline {subsection}{\numberline {1.8.2}CICIDS2017}{21}{subsection.1.8.2}%
+\contentsline {subsection}{\numberline {1.8.3}HDFS}{22}{subsection.1.8.3}%
+\contentsline {subsection}{\numberline {1.8.4}BGL}{22}{subsection.1.8.4}%
+\contentsline {subsection}{\numberline {1.8.5}Loghub}{22}{subsection.1.8.5}%
+\contentsline {section}{\numberline {1.9}Parsing automatique des journaux}{23}{section.1.9}%
+\contentsline {subsection}{\numberline {1.9.1}Pourquoi parser les messages}{23}{subsection.1.9.1}%
+\contentsline {subsection}{\numberline {1.9.2}Drain}{23}{subsection.1.9.2}%
+\contentsline {subsection}{\numberline {1.9.3}Importance du protocole d'apprentissage du parseur}{23}{subsection.1.9.3}%
+\contentsline {section}{\numberline {1.10}Normalisation de journaux hétérogènes}{24}{section.1.10}%
+\contentsline {subsection}{\numberline {1.10.1}Objectif de la normalisation}{24}{subsection.1.10.1}%
+\contentsline {subsection}{\numberline {1.10.2}Risque de perte d'information}{24}{subsection.1.10.2}%
+\contentsline {subsection}{\numberline {1.10.3}Normalisation et robustesse réelle}{25}{subsection.1.10.3}%
+\contentsline {section}{\numberline {1.11}Analyse séquentielle des journaux}{25}{section.1.11}%
+\contentsline {subsection}{\numberline {1.11.1}Importance de l'ordre des événements}{25}{subsection.1.11.1}%
+\contentsline {subsection}{\numberline {1.11.2}DeepLog}{25}{subsection.1.11.2}%
+\contentsline {subsection}{\numberline {1.11.3}LogAnomaly}{25}{subsection.1.11.3}%
+\contentsline {subsection}{\numberline {1.11.4}LogBERT}{26}{subsection.1.11.4}%
+\contentsline {section}{\numberline {1.12}Représentation sémantique et évolution récente de l'analyse de logs}{26}{section.1.12}%
+\contentsline {section}{\numberline {1.13}Systèmes multi-agents}{27}{section.1.13}%
+\contentsline {subsection}{\numberline {1.13.1}Concept général}{27}{subsection.1.13.1}%
+\contentsline {subsection}{\numberline {1.13.2}Intérêt architectural}{27}{subsection.1.13.2}%
+\contentsline {subsection}{\numberline {1.13.3}Coût de l'orchestration}{27}{subsection.1.13.3}%
+\contentsline {section}{\numberline {1.14}Bus de messages et distribution des tâches}{28}{section.1.14}%
+\contentsline {subsection}{\numberline {1.14.1}Découplage des composants}{28}{subsection.1.14.1}%
+\contentsline {subsection}{\numberline {1.14.2}Acquittement}{28}{subsection.1.14.2}%
+\contentsline {subsection}{\numberline {1.14.3}Tolérance aux pannes}{28}{subsection.1.14.3}%
+\contentsline {section}{\numberline {1.15}Routage et spécialisation des traitements}{29}{section.1.15}%
+\contentsline {subsection}{\numberline {1.15.1}Pourquoi router les données}{29}{subsection.1.15.1}%
+\contentsline {subsection}{\numberline {1.15.2}Spécialisation et performance}{29}{subsection.1.15.2}%
+\contentsline {section}{\numberline {1.16}Corrélation d'événements}{29}{section.1.16}%
+\contentsline {subsection}{\numberline {1.16.1}Du signal isolé à l'incident potentiel}{29}{subsection.1.16.1}%
+\contentsline {subsection}{\numberline {1.16.2}Difficultés de la corrélation}{30}{subsection.1.16.2}%
+\contentsline {section}{\numberline {1.17}Mémoire persistante et feedback humain}{30}{section.1.17}%
+\contentsline {subsection}{\numberline {1.17.1}Rôle de la mémoire}{30}{subsection.1.17.1}%
+\contentsline {subsection}{\numberline {1.17.2}Human-in-the-loop}{31}{subsection.1.17.2}%
+\contentsline {section}{\numberline {1.18}Mise à jour et gouvernance des modèles}{31}{section.1.18}%
+\contentsline {subsection}{\numberline {1.18.1}Besoin d'évolution}{31}{subsection.1.18.1}%
+\contentsline {subsection}{\numberline {1.18.2}Mise à jour contrôlée}{31}{subsection.1.18.2}%
+\contentsline {section}{\numberline {1.19}Tableaux de bord et exploitabilité par l'analyste}{32}{section.1.19}%
+\contentsline {subsection}{\numberline {1.19.1}Rôle de la visualisation}{32}{subsection.1.19.1}%
+\contentsline {subsection}{\numberline {1.19.2}Fonctionnalité et utilisabilité}{32}{subsection.1.19.2}%
+\contentsline {section}{\numberline {1.20}Reproductibilité et traçabilité expérimentale}{32}{section.1.20}%
+\contentsline {subsection}{\numberline {1.20.1}Importance de la reproductibilité}{32}{subsection.1.20.1}%
+\contentsline {subsection}{\numberline {1.20.2}Traçabilité des données}{33}{subsection.1.20.2}%
+\contentsline {subsection}{\numberline {1.20.3}Traçabilité des résultats}{33}{subsection.1.20.3}%
+\contentsline {section}{\numberline {1.21}Comparaison des principales familles d'approches}{33}{section.1.21}%
+\contentsline {section}{\numberline {1.22}Comparaison de travaux représentatifs}{34}{section.1.22}%
+\contentsline {section}{\numberline {1.23}Lacunes identifiées dans la littérature}{35}{section.1.23}%
+\contentsline {subsection}{\numberline {1.23.1}Fragmentation des fonctions}{35}{subsection.1.23.1}%
+\contentsline {subsection}{\numberline {1.23.2}Hétérogénéité insuffisamment considérée dans les évaluations}{36}{subsection.1.23.2}%
+\contentsline {subsection}{\numberline {1.23.3}Confusion possible entre score et généralisation}{36}{subsection.1.23.3}%
+\contentsline {subsection}{\numberline {1.23.4}Évaluation incomplète des propriétés architecturales}{36}{subsection.1.23.4}%
+\contentsline {subsection}{\numberline {1.23.5}Place de l'analyste}{36}{subsection.1.23.5}%
+\contentsline {section}{\numberline {1.24}Positionnement scientifique d'Ariel Logminer}{37}{section.1.24}%
+\contentsline {section}{\numberline {1.25}Synthèse du chapitre}{38}{section.1.25}%
+\contentsline {chapter}{\numberline {2}Modèle proposé et architecture d'Ariel Logminer}{40}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Introduction}{40}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Exigences de conception}{41}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Exigences fonctionnelles}{41}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Exigences non fonctionnelles}{42}{subsection.2.2.2}%
+\contentsline {section}{\numberline {2.3}Principes architecturaux}{42}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Séparation des responsabilités}{42}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Séparation entre contrat métier et transport}{43}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Autonomie encadrée}{43}{subsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.3.4}Conservation des résultats négatifs}{43}{subsection.2.3.4}%
+\contentsline {section}{\numberline {2.4}Architecture générale}{44}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Organisation en plans fonctionnels}{45}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Plan de données}{45}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Plan d'orchestration}{45}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}Plan de persistance et d'audit}{46}{subsection.2.5.3}%
+\contentsline {subsection}{\numberline {2.5.4}Plan de contrôle humain}{46}{subsection.2.5.4}%
+\contentsline {section}{\numberline {2.6}Agents fonctionnels}{46}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Architecture multi-agents réellement utilisée}{47}{subsection.2.6.1}%
+\contentsline {section}{\numberline {2.7}Cycle de vie d'une donnée}{50}{section.2.7}%
+\contentsline {subsection}{\numberline {2.7.1}Niveau 1 : source brute}{50}{subsection.2.7.1}%
+\contentsline {subsection}{\numberline {2.7.2}Niveau 2 : événement parsé}{50}{subsection.2.7.2}%
+\contentsline {subsection}{\numberline {2.7.3}Niveau 3 : événement normalisé}{50}{subsection.2.7.3}%
+\contentsline {subsection}{\numberline {2.7.4}Niveau 4 : sortie de détection}{51}{subsection.2.7.4}%
+\contentsline {subsection}{\numberline {2.7.5}Niveau 5 : anomalie candidate}{51}{subsection.2.7.5}%
+\contentsline {subsection}{\numberline {2.7.6}Niveau 6 : incident candidat}{51}{subsection.2.7.6}%
+\contentsline {subsection}{\numberline {2.7.7}Niveau 7 : décision analyste}{51}{subsection.2.7.7}%
+\contentsline {section}{\numberline {2.8}Modèle de normalisation}{52}{section.2.8}%
+\contentsline {subsection}{\numberline {2.8.1}Noyau commun}{52}{subsection.2.8.1}%
+\contentsline {subsection}{\numberline {2.8.2}Principe de conservation}{52}{subsection.2.8.2}%
+\contentsline {subsection}{\numberline {2.8.3}Gestion des champs absents}{53}{subsection.2.8.3}%
+\contentsline {section}{\numberline {2.9}Routage par famille}{53}{section.2.9}%
+\contentsline {subsection}{\numberline {2.9.1}Rôle du routeur}{53}{subsection.2.9.1}%
+\contentsline {subsection}{\numberline {2.9.2}Indices utilisés}{53}{subsection.2.9.2}%
+\contentsline {subsection}{\numberline {2.9.3}Score et marge}{54}{subsection.2.9.3}%
+\contentsline {subsection}{\numberline {2.9.4}Fallback}{54}{subsection.2.9.4}%
+\contentsline {section}{\numberline {2.10}Portefeuille de modèles}{54}{section.2.10}%
+\contentsline {section}{\numberline {2.11}Corrélation des anomalies candidates}{55}{section.2.11}%
+\contentsline {subsection}{\numberline {2.11.1}Objectif}{55}{subsection.2.11.1}%
+\contentsline {subsection}{\numberline {2.11.2}Critères de rapprochement}{55}{subsection.2.11.2}%
+\contentsline {subsection}{\numberline {2.11.3}Fragmentation et fusion}{55}{subsection.2.11.3}%
+\contentsline {section}{\numberline {2.12}Mémoire persistante}{56}{section.2.12}%
+\contentsline {subsection}{\numberline {2.12.1}Finalité}{56}{subsection.2.12.1}%
+\contentsline {subsection}{\numberline {2.12.2}Mémoire d'exécution}{56}{subsection.2.12.2}%
+\contentsline {subsection}{\numberline {2.12.3}Mémoire analyste}{57}{subsection.2.12.3}%
+\contentsline {subsection}{\numberline {2.12.4}Limite de l'adaptation}{57}{subsection.2.12.4}%
+\contentsline {section}{\numberline {2.13}Audit}{57}{section.2.13}%
+\contentsline {section}{\numberline {2.14}Contrat métier \texttt {AgentMessage}}{58}{section.2.14}%
+\contentsline {subsection}{\numberline {2.14.1}Signification de \texttt {run\_id}}{59}{subsection.2.14.1}%
+\contentsline {subsection}{\numberline {2.14.2}Pourquoi un contrat minimal}{59}{subsection.2.14.2}%
+\contentsline {section}{\numberline {2.15}Bus de communication}{59}{section.2.15}%
+\contentsline {subsection}{\numberline {2.15.1}Bus local}{59}{subsection.2.15.1}%
+\contentsline {subsection}{\numberline {2.15.2}Redis Streams}{59}{subsection.2.15.2}%
+\contentsline {subsection}{\numberline {2.15.3}MQTT}{60}{subsection.2.15.3}%
+\contentsline {section}{\numberline {2.16}Gestion des tâches et capacités des agents}{60}{section.2.16}%
+\contentsline {section}{\numberline {2.17}Gouvernance des modèles}{61}{section.2.17}%
+\contentsline {subsection}{\numberline {2.17.1}Registre de modèles}{61}{subsection.2.17.1}%
+\contentsline {subsection}{\numberline {2.17.2}Modèle courant et candidat}{61}{subsection.2.17.2}%
+\contentsline {subsection}{\numberline {2.17.3}Règle de promotion}{62}{subsection.2.17.3}%
+\contentsline {subsection}{\numberline {2.17.4}Intégrité et retour arrière}{62}{subsection.2.17.4}%
+\contentsline {section}{\numberline {2.18}Dashboard et validation humaine}{62}{section.2.18}%
+\contentsline {subsection}{\numberline {2.18.1}Fonction architecturale}{62}{subsection.2.18.1}%
+\contentsline {subsection}{\numberline {2.18.2}Place de l'analyste}{63}{subsection.2.18.2}%
+\contentsline {section}{\numberline {2.19}Gestion des erreurs et fallback}{63}{section.2.19}%
+\contentsline {section}{\numberline {2.20}Reprise et limites de résilience}{64}{section.2.20}%
+\contentsline {section}{\numberline {2.21}Topologies d'exécution}{64}{section.2.21}%
+\contentsline {subsection}{\numberline {2.21.1}Exécution locale}{64}{subsection.2.21.1}%
+\contentsline {subsection}{\numberline {2.21.2}Exécution multiprocessus}{65}{subsection.2.21.2}%
+\contentsline {subsection}{\numberline {2.21.3}Exécution multi-VM de laboratoire}{65}{subsection.2.21.3}%
+\contentsline {section}{\numberline {2.22}Sécurité et confidentialité dans l'architecture}{65}{section.2.22}%
+\contentsline {section}{\numberline {2.23}Scénarios d'utilisation}{66}{section.2.23}%
+\contentsline {subsection}{\numberline {2.23.1}Analyse hors ligne d'un corpus}{66}{subsection.2.23.1}%
+\contentsline {subsection}{\numberline {2.23.2}Analyse locale par micro-lots}{66}{subsection.2.23.2}%
+\contentsline {subsection}{\numberline {2.23.3}Traitement distribué par workers}{67}{subsection.2.23.3}%
+\contentsline {subsection}{\numberline {2.23.4}Validation d'une anomalie}{67}{subsection.2.23.4}%
+\contentsline {subsection}{\numberline {2.23.5}Évaluation d'un modèle candidat}{67}{subsection.2.23.5}%
+\contentsline {section}{\numberline {2.24}Relation entre architecture, questions de recherche et hypothèses}{68}{section.2.24}%
+\contentsline {section}{\numberline {2.25}Frontières de l'architecture proposée}{68}{section.2.25}%
+\contentsline {section}{\numberline {2.26}Synthèse du chapitre}{69}{section.2.26}%
+\contentsline {chapter}{\numberline {3}Implémentation}{72}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Organisation du prototype}{72}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Environnement logiciel}{72}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Adaptateurs multi-formats}{73}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Routeur et registre de modèles}{73}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Implémentation des agents}{74}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Idempotence et reprise}{74}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Pipeline d'inférence}{74}{section.3.7}%
+\contentsline {section}{\numberline {3.8}Parsing HDFS et BGL}{75}{section.3.8}%
+\contentsline {section}{\numberline {3.9}Corrélation}{75}{section.3.9}%
+\contentsline {section}{\numberline {3.10}Mémoire et gouvernance}{76}{section.3.10}%
+\contentsline {section}{\numberline {3.11}API, dashboard et audit}{76}{section.3.11}%
+\contentsline {section}{\numberline {3.12}Validation fonctionnelle}{77}{section.3.12}%
+\contentsline {section}{\numberline {3.13}Lien entre code et preuves}{78}{section.3.13}%
+\contentsline {chapter}{\numberline {4}Résultats et évaluation}{79}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Cadre de lecture}{79}{section.4.1}%
+\contentsline {section}{\numberline {4.2}CICIDS2017 : influence du protocole}{80}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Question et données}{80}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Comparaison de cinq candidats}{81}{subsection.4.2.2}%
+\contentsline {section}{\numberline {4.3}HDFS : décision au niveau bloc}{83}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Protocole sans contamination du parseur}{83}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Bootstrap par bloc}{84}{subsection.4.3.2}%
+\contentsline {section}{\numberline {4.4}BGL : templates connus et inconnus}{84}{section.4.4}%
+\contentsline {section}{\numberline {4.5}CSE-CIC-IDS2018 : transfert et dépendance aux variables}{86}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Protocole principal}{86}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}Coefficients et scores mono-feature}{87}{subsection.4.5.2}%
+\contentsline {subsection}{\numberline {4.5.3}Ablation et permutation}{89}{subsection.4.5.3}%
+\contentsline {section}{\numberline {4.6}Routeur open-set}{91}{section.4.6}%
+\contentsline {section}{\numberline {4.7}Couverture multi-format}{92}{section.4.7}%
+\contentsline {section}{\numberline {4.8}Benchmark des architectures A--D}{93}{section.4.8}%
+\contentsline {section}{\numberline {4.9}Exécution de bout en bout avec modèles réels}{94}{section.4.9}%
+\contentsline {section}{\numberline {4.10}Campagne Contract Net multi-VM}{96}{section.4.10}%
+\contentsline {subsection}{\numberline {4.10.1}Protocole}{96}{subsection.4.10.1}%
+\contentsline {subsection}{\numberline {4.10.2}Résultats}{97}{subsection.4.10.2}%
+\contentsline {section}{\numberline {4.11}Corrélation d’incidents}{98}{section.4.11}%
+\contentsline {section}{\numberline {4.12}Mise à jour contrôlée des modèles}{98}{section.4.12}%
+\contentsline {section}{\numberline {4.13}Synthèse des résultats}{98}{section.4.13}%
+\contentsline {chapter}{\numberline {5}Validité scientifique}{101}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Objet de l’analyse}{101}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Validité interne}{101}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Validité externe}{102}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Validité de construit}{103}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Validité statistique}{103}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Risques résiduels et mesures de contrôle}{104}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Conclusions soutenues}{104}{section.5.7}%
+\contentsline {chapter}{\numberline {6}Discussion générale}{107}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Ce que montre l’évaluation}{107}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Valeur de la spécialisation}{107}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Autonomie réelle mais bornée}{108}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Coût de l’orchestration}{108}{section.6.4}%
+\contentsline {section}{\numberline {6.5}Mémoire et apprentissage}{109}{section.6.5}%
+\contentsline {section}{\numberline {6.6}Portée opérationnelle}{109}{section.6.6}%
+\contentsline {section}{\numberline {6.7}Réponses transversales}{110}{section.6.7}%
+\contentsline {section}{\numberline {6.8}Priorités de prolongement}{110}{section.6.8}%
+\contentsline {chapter}{\numberline {7}Reproductibilité, déploiement et exploitation}{112}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Principe de reproductibilité}{112}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Organisation des preuves}{112}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Chaîne de reproduction}{113}{section.7.3}%
+\contentsline {section}{\numberline {7.4}Paramètres déterminants}{113}{section.7.4}%
+\contentsline {section}{\numberline {7.5}Reproduction du benchmark multi-agent}{114}{section.7.5}%
+\contentsline {section}{\numberline {7.6}Reproduction de la campagne multi-VM}{114}{section.7.6}%
+\contentsline {section}{\numberline {7.7}Compilation du mémoire}{115}{section.7.7}%
+\contentsline {section}{\numberline {7.8}Exploitation locale}{115}{section.7.8}%
+\contentsline {section}{\numberline {7.9}Frontière d'industrialisation}{115}{section.7.9}%
+\contentsline {section}{\numberline {7.10}Contrôles d'intégrité documentaire}{116}{section.7.10}%
+\contentsline {chapter}{Conclusion générale et perspectives}{118}{chapter*.56}%
+\contentsline {section}{\numberline {7.11}Bilan}{118}{section.7.11}%
+\contentsline {section}{\numberline {7.12}Réponse aux questions de recherche}{118}{section.7.12}%
+\contentsline {section}{\numberline {7.13}Statut des hypothèses}{119}{section.7.13}%
+\contentsline {section}{\numberline {7.14}Apports scientifiques et techniques}{120}{section.7.14}%
+\contentsline {section}{\numberline {7.15}Limites}{121}{section.7.15}%
+\contentsline {section}{\numberline {7.16}Perspectives}{121}{section.7.16}%
+\contentsline {section}{\numberline {7.17}Conclusion générale}{122}{section.7.17}%
+\contentsline {chapter}{\numberline {A}Contrats et traçabilité}{123}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Structure exacte d’\texttt {AgentMessage}}{123}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Messages du protocole}{124}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Matrice résultats--preuves}{124}{section.A.3}%
+\contentsline {section}{\numberline {A.4}Paramètres HDFS}{125}{section.A.4}%
+\contentsline {section}{\numberline {A.5}Paramètres multi-VM}{126}{section.A.5}%
+\contentsline {section}{\numberline {A.6}Unités de performance}{126}{section.A.6}%
+\contentsline {section}{\numberline {A.7}Statut de la mise à jour des modèles}{127}{section.A.7}%
+\contentsline {section}{\numberline {A.8}Conditions d’interprétation des résultats}{127}{section.A.8}%

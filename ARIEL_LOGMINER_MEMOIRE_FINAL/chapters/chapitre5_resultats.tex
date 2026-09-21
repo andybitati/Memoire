@@ -8,6 +8,8 @@ Ce chapitre présente les campagnes en maintenant séparées les expériences qu
 
 Quatre ensembles d’expériences structurent la lecture. Les campagnes CICIDS2017, HDFS, BGL et CSE-CIC-IDS2018 portent sur la qualité prédictive et sur la manière dont le protocole modifie son interprétation. Le routeur et la couverture multi-format sont évalués séparément, car ils concernent le fonctionnement de la chaîne plutôt que la seule prédiction. Un troisième ensemble étudie le Contract Net, le coût des architectures et l’exécution avec les modèles réels. La validation multi-VM et la corrélation complètent enfin l’évaluation sur les aspects distribués et contextuels.
 
+Les interprétations détaillées, limites et sources associées aux figures sont regroupées dans l’annexe~\ref{ann:notes-figures}.
+
 \begin{table}[H]
 
 \centering
@@ -60,7 +62,7 @@ La campagne compare trois partitions sur CICIDS2017. La séparation aléatoire s
 
   \includegraphics[width=0.98\textwidth]{fig_cicids_protocol_comparison.png}
 
-  \caption{Comparaison des protocoles CICIDS2017. Le Random Forest atteint un F1 de 0,995142 sous séparation aléatoire, 0,157744 sous holdout par scénario et 0,437429 sous séparation temporelle ; la régression logistique temporelle atteint 0,556615. L’écart montre que le score aléatoire décrit surtout une interpolation dans des scénarios mélangés et ne mesure pas le même transfert. Source : \texttt{cicids\_protocol\_comparison.csv}.}
+  \caption[Comparaison des protocoles CICIDS2017.]{Comparaison des protocoles CICIDS2017. Source : \texttt{cicids\_protocol\_comparison.csv}.}
 
   \label{fig:cicids-protocoles}
 
@@ -112,7 +114,7 @@ HistGradientBoosting & 0,003568 & 0,001800 & 0,007978 \\
 
   \includegraphics[width=0.98\textwidth]{fig_cicids_model_comparison.png}
 
-  \caption{Comparaison des cinq modèles CICIDS2017 dans le même protocole de holdout. La régression logistique obtient le meilleur F1 moyen, 0,233670, mais sa dispersion reste forte. La figure justifie son rang parmi les candidats testés ; elle ne transforme pas ce résultat faible en preuve de généralisation. Source : \texttt{cicids\_model\_candidates\_summary.csv}.}
+  \caption[Comparaison de cinq modèles CICIDS2017 sous holdout par scénario.]{Comparaison de cinq modèles CICIDS2017 sous holdout par scénario. Source : \texttt{cicids\_model\_candidates\_summary.csv}.}
 
   \label{fig:cicids-modeles}
 
@@ -134,7 +136,7 @@ Drain3 est ajusté uniquement sur les $126\,368$ événements d’entraînement 
 
   \includegraphics[width=0.96\textwidth]{fig_hdfs_event_vs_block.png}
 
-  \caption{HDFS au niveau événement et au niveau bloc. Le F1 événementiel de 0,213115 n’est pas aligné sur l’unité des labels, tandis que l’agrégation moyenne par \texttt{block\_id} atteint 0,892308. La comparaison montre pourquoi le résultat bloc est retenu, sans présenter les deux mesures comme des benchmarks équivalents. Source : \texttt{ds\_hdfs\_block\_20260910T081756Z\_\_hdfs\_block\_result.json}.}
+  \caption[Scores HDFS au niveau événement et au niveau bloc.]{Scores HDFS au niveau événement et au niveau bloc. Source : \texttt{ds\_hdfs\_block\_20260910T081756Z\_\_hdfs\_block\_result.json}.}
 
   \label{fig:hdfs-event-bloc}
 
@@ -152,7 +154,7 @@ Mille réplications bootstrap rééchantillonnent les unités indépendantes \te
 
   \includegraphics[width=0.96\textwidth]{fig_hdfs_bootstrap_distribution.png}
 
-  \caption{Distribution bootstrap du F1 HDFS, $1\,000$ réplications par bloc. La médiane de $0{,}894737$ et l’intervalle empirique $[0{,}800000\,;\,0{,}961039]$ décrivent la variation produite par le rééchantillonnage des blocs positifs du test. Ils ne s’étendent pas à une population universelle. Source : \texttt{hdfs\_block\_robustness\_20260911T002351Z\_bootstrap\_replicates.csv}.}
+  \caption[Distribution bootstrap du F1 HDFS.]{Distribution bootstrap du F1 HDFS sur $1\,000$ réplications par bloc. Source : \texttt{hdfs\_block\_robustness\_20260911T002351Z\_bootstrap\_replicates.csv}.}
 
   \label{fig:hdfs-bootstrap}
 
@@ -170,7 +172,7 @@ Le détecteur Histogram est évalué sur $19\,908$ unités, dont $2\,885$ positi
 
   \includegraphics[width=0.96\textwidth]{fig_bgl_known_unknown.png}
 
-  \caption{Résultats BGL séparés selon la connaissance du template. Le groupe \texttt{KNOWN\_TEMPLATE} contient $2\,029$ unités et aucune anomalie ; aucun rappel d’anomalies connues ne peut donc y être estimé. Le F1 global est porté par le groupe des templates inconnus, ce qui limite l’interprétation comme apprentissage de comportement. Source : \texttt{ds\_bgl\_known\_unknown\_20260910T082706Z\_\_bgl\_group\_metrics.csv}.}
+  \caption[Résultats BGL selon la connaissance du template.]{Résultats BGL selon la connaissance du template. Source : \texttt{ds\_bgl\_known\_unknown\_20260910T082706Z\_\_bgl\_group\_metrics.csv}.}
 
   \label{fig:bgl-connu-inconnu}
 
@@ -184,7 +186,7 @@ Le baseline \texttt{UnknownTemplateBaseline} prédit une anomalie pour tout temp
 
   \includegraphics[width=0.96\textwidth]{fig_bgl_histogram_vs_unknown_baseline.png}
 
-  \caption{Histogram face au baseline « template inconnu » sur BGL. Le gain de F1, de 0,277885 à 0,913698, indique que le seuil Histogram filtre une grande partie des nouveautés normales. La comparaison ne résout pas l’absence de positifs parmi les templates connus et ne permet donc pas d’estimer ce rappel. Source : métriques BGL par groupe.}
+  \caption[Histogram et baseline « template inconnu » sur BGL.]{Histogram et baseline « template inconnu » sur BGL. Source : \texttt{ds\_bgl\_known\_unknown\_20260910T082706Z\_\_bgl\_group\_metrics.csv}.}
 
   \label{fig:bgl-baseline}
 
@@ -202,7 +204,7 @@ L’entraînement utilise le 15 février 2018 et le test le 16 février 2018. Po
 
   \includegraphics[width=0.96\textwidth]{fig_csecic_lr_vs_rf.png}
 
-  \caption{Régression logistique et Random Forest sur CSE-CIC-IDS2018, entraînement le 15 février et test le 16 février, cinq graines. La régression logistique domine le Random Forest selon le F1 moyen. Ce résultat très élevé motive un audit des caractéristiques plutôt qu’une conclusion immédiate de généralisation. Source : \texttt{external\_csecicids2018\_20260910T230136Z\_metrics.csv}.}
+  \caption[Régression logistique et Random Forest sur CSE-CIC-IDS2018.]{Régression logistique et Random Forest sur CSE-CIC-IDS2018, cinq graines. Source : \texttt{external\_csecicids2018\_20260910T230136Z\_metrics.csv}.}
 
   \label{fig:csecic-lr-rf}
 
@@ -218,7 +220,7 @@ Les coefficients moyens de la régression logistique placent notamment \texttt{D
 
   \includegraphics[width=0.96\textwidth]{fig_csecic_lr_coefficients.png}
 
-  \caption{Principaux coefficients moyens de la régression logistique CSE-CIC-IDS2018. Leur amplitude décrit les associations apprises après prétraitement ; elle ne mesure pas une causalité. La stabilité des signes aide à localiser les variables à contrôler. Source : \texttt{external\_csecicids2018\_lr\_coefficients.csv}.}
+  \caption[Coefficients moyens de la régression logistique sur CSE-CIC-IDS2018.]{Principaux coefficients moyens de la régression logistique sur CSE-CIC-IDS2018. Source : \texttt{external\_csecicids2018\_lr\_coefficients.csv}.}
 
   \label{fig:csecic-coefficients}
 
@@ -232,7 +234,7 @@ L’expérience mono-feature apporte un diagnostic particulièrement important :
 
   \includegraphics[width=0.96\textwidth]{fig_csecic_lr_single_feature.png}
 
-  \caption{F1 moyen des modèles mono-feature CSE-CIC-IDS2018, cinq graines. La valeur de 0,999720 obtenue avec \texttt{Dst Port} révèle qu’une seule variable porte presque toute la séparation dans ce split. Le graphique sert de diagnostic de dépendance, non de preuve de fuite. Source : \texttt{external\_csecicids2018\_single\_feature\_scores.csv}.}
+  \caption[F1 moyen des modèles mono-feature sur CSE-CIC-IDS2018.]{F1 moyen des modèles mono-feature sur CSE-CIC-IDS2018, cinq graines. Source : \texttt{external\_csecicids2018\_single\_feature\_scores.csv}.}
 
   \label{fig:csecic-mono-feature}
 
@@ -248,7 +250,7 @@ Le retrait progressif des variables les mieux classées dégrade la performance.
 
   \includegraphics[width=0.96\textwidth]{fig_csecic_lr_ablation.png}
 
-  \caption{Ablation des caractéristiques CSE-CIC-IDS2018. Le F1 passe de 0,999212 avec 78 variables à 0,657859 après retrait des dix premières. Cette chute établit une sensibilité à l’espace de caractéristiques ; elle ne garantit pas que les variables restantes se transfèrent à d’autres journées. Source : \texttt{external\_csecicids2018\_feature\_ablation.csv}.}
+  \caption[Ablation des caractéristiques sur CSE-CIC-IDS2018.]{Ablation des caractéristiques sur CSE-CIC-IDS2018. Source : \texttt{external\_csecicids2018\_feature\_ablation.csv}.}
 
   \label{fig:csecic-ablation}
 
@@ -262,7 +264,7 @@ Après permutation des labels d’entraînement, les F1 deviennent très instabl
 
   \includegraphics[width=0.96\textwidth]{fig_csecic_lr_label_permutation.png}
 
-  \caption{Contrôle par permutation des labels d’entraînement, graines 42 à 46. La forte dispersion et l’effondrement observé pour une graine montrent que la performance principale n’est pas reproduite de façon stable lorsque la relation d’apprentissage est détruite. Ce contrôle circonscrit certains mécanismes triviaux, sans identifier à lui seul toutes les sources de biais. Source : \texttt{final\_csecic\_lr\_forensic\_20260911T000140Z\_label\_permutation.csv}.}
+  \caption[Contrôle par permutation des labels d’entraînement.]{Contrôle par permutation des labels d’entraînement, graines 42 à 46. Source : \texttt{final\_csecic\_lr\_forensic\_20260911T000140Z\_label\_permutation.csv}.}
 
   \label{fig:csecic-permutation}
 
@@ -278,7 +280,7 @@ Le jeu indépendant contient 31 fichiers répartis en neuf groupes : 28 connus e
 
   \includegraphics[width=0.97\textwidth]{fig_router_open_set_tradeoff.png}
 
-  \caption{Compromis open-set du routeur sur 31 fichiers indépendants. Au seuil 100, le rejet des inconnus vaut 3/3, le faux rejet des connus 0/28, la couverture 0,903226 et l’exactitude sélective 1,0. La \texttt{decision\_margin} reste un score heuristique, non une probabilité. Source : \texttt{router\_open\_set\_final\_tradeoff\_diagnostic.csv}.}
+  \caption[Compromis open-set du routeur sur 31 fichiers.]{Compromis open-set du routeur sur 31 fichiers indépendants. Source : \texttt{router\_open\_set\_final\_tradeoff\_diagnostic.csv}.}
 
   \label{fig:routeur-open-set}
 
@@ -296,7 +298,7 @@ La campagne \texttt{multiformat\_balanced\_20260910T094422Z} vise $1\,000$ unit�
 
   \includegraphics[width=0.98\textwidth]{fig_multiformat_coverage_by_source.png}
 
-  \caption{Couverture par source du protocole multiformat. Les $7\,001$ unités présentes sont lues, parsées et normalisées ; HDFS et BGL contribuent chacun $1\,000$ unités, tandis qu’Apache repose sur une seule fixture. La figure établit la couverture du protocole, sans mesurer la complétude de tous les champs ni une compatibilité universelle. Source : \texttt{multiformat\_balanced\_summary.csv}.}
+  \caption[Couverture par source du protocole multiformat.]{Couverture par source du protocole multiformat. Source : \texttt{multiformat\_balanced\_summary.csv}.}
 
   \label{fig:couverture-multiformat}
 
@@ -314,7 +316,7 @@ Le benchmark compare quatre architectures : A, monolithe ; B, workers centralis�
 
   \includegraphics[width=0.99\textwidth]{fig_multi_agent_throughput_latency.png}
 
-  \caption{Débit et latence moyenne des architectures A--D selon la charge, dix répétitions par point. Le monolithe domine les micro-tâches, tandis que les échanges Contract Net ajoutent un coût visible. Les courbes C et D ne montrent pas de gain systématique de la mémoire sur le débit ou la latence. Source : \texttt{ma\_20260909T160812Z\_34016\_\_statistics.csv}.}
+  \caption[Débit et latence des architectures A--D selon la charge.]{Débit et latence moyenne des architectures A--D selon la charge. Source : \texttt{ma\_20260909T160812Z\_34016\_\_statistics.csv}.}
 
   \label{fig:benchmark-abcd}
 
@@ -334,7 +336,7 @@ La campagne multi-source contient $1\,401$ unités : une unité Apache et 200 un
 
   \includegraphics[width=0.97\textwidth]{fig_e2e_real_model_coverage.png}
 
-  \caption{Couverture d’inférence de la condition M par source. Les modèles réels sont exécutés pour $1\,400$ unités sur $1\,401$ ; la seule unité Apache passe par le fallback. La figure établit l’usage effectif des modèles, sans calculer une exactitude globale entre sources hétérogènes. Source : \texttt{multisource\_cnp\_model\_inference\_by\_source.csv}.}
+  \caption[Couverture d’inférence de la condition M par source.]{Couverture d’inférence de la condition M par source. Source : \texttt{multisource\_cnp\_model\_inference\_by\_source.csv}.}
 
   \label{fig:e2e-couverture-modeles}
 
@@ -348,7 +350,7 @@ La latence moyenne agrégée est 0,031027\~s pour H et 0,105420\~s pour M. Cette
 
   \includegraphics[width=0.98\textwidth]{fig_e2e_real_model_latency.png}
 
-  \caption{Latence moyenne par source des conditions heuristique H et modèles M. La voie M est plus coûteuse, avec 0,105420\~s en moyenne agrégée contre 0,031027\~s pour H. Ces durées sont observées dans le laboratoire et ne constituent pas un engagement de service en production. Source : métriques de l’exécution CNP multi-source.}
+  \caption[Latence moyenne par source des conditions H et M.]{Latence moyenne par source des conditions heuristique H et modèles M. Source : métriques de l’exécution CNP multi-source.}
 
   \label{fig:e2e-latence-modeles}
 
@@ -360,7 +362,7 @@ Il n’est pas pertinent de calculer une exactitude globale sur cette campagne, 
 
 \subsection{Protocole}
 
-La campagne retenue porte le \texttt{run\_id} \texttt{multivm\_cnp\_20260909T202632Z\_37592}. Le coordinateur s’exécute sur l’hôte \texttt{andy-aaron} avec Redis 7.4.9 à l’adresse locale configurée. Deux machines virtuelles participent :
+La campagne d’endurance porte le \texttt{run\_id} \texttt{cnp\_endurance\_multivm\_20260918T130822Z}. Le coordinateur s’exécute sur l’hôte \texttt{andy-aaron} avec Redis 7.4.9 centralisé. Deux machines virtuelles participent :
 
 \begin{itemize}
 
@@ -370,27 +372,34 @@ La campagne retenue porte le \texttt{run\_id} \texttt{multivm\_cnp\_20260909T202
 
 \end{itemize}
 
-Chaque agent accepte au plus une tâche parallèle. Le protocole soumet 60 tâches et enregistre toutes les transitions CNP, un échec injecté, la réattribution et un replay idempotent. La durée mesurée est 2,712455\~s.
+Chaque agent accepte au plus une tâche parallèle. Le protocole soumet une micro-tâche synthétique déterministe toutes les deux secondes pendant une heure, avec un checkpoint atomique toutes les cinq minutes. Cette charge cible l’orchestration CNP et sa stabilité ; elle ne mesure pas la qualité prédictive ni le coût d’une inférence réelle. Un scénario terminal force en outre l’arrêt de l’agent Debian après persistance du résultat mais avant l’émission de \texttt{RESULT}, puis vérifie la réattribution et le rejeu idempotent.
 
 \subsection{Résultats}
 
-Les 60 tâches se terminent avec succès : 30 sur Debian et 30 sur Ubuntu. Le débit est 22,120187 tâches/s, la latence moyenne 45,120333\~ms, la médiane 40,6495\~ms et le percentile 95 vaut 63,02985\~ms. Les traces comptent notamment 123 \texttt{CFP}, 108 \texttt{PROPOSE}, 15 \texttt{REFUSE}, 63 \texttt{AWARD}, 62 \texttt{RESULT} et un \texttt{FAIL} contrôlé.
+La durée observée atteint $3\,605{,}110$~s pour une cible de $3\,600$~s. Les $1\,800$ tâches planifiées se terminent toutes avec succès, soit un débit moyen de $0{,}499291$ tâche/s. La latence moyenne vaut $88{,}250280$~ms, la médiane $53{,}983$~ms, le p95 $156{,}3017$~ms et le p99 $836{,}72528$~ms.
 
-\begin{figure}[H]
+\begin{table}[H]
+\centering
+\caption{Résultats principaux de la campagne CNP multi-VM d’une heure.}
+\label{tab:cnp-endurance}
+\begin{tabularx}{0.92\textwidth}{p{0.42\textwidth} X}
+\toprule
+\textbf{Mesure} & \textbf{Observation} \\
+\midrule
+Durée cible / observée & $3\,600$ / $3\,605{,}110$ s \\
+Tâches réussies & $1\,800/1\,800$ \\
+Débit moyen & $0{,}499291$ tâche/s \\
+Latence médiane / p95 / p99 & $53{,}983$ / $156{,}3017$ / $836{,}72528$ ms \\
+Répartition & Debian : 451 ; Ubuntu : $1\,349$ \\
+Reprise terminale & réattribution réussie ; rejeu idempotent \\
+Effets persistants / dupliqués & 1 / 0 \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
-  \centering
+Lors du scénario terminal, Debian persiste le résultat puis s’arrête avant de publier \texttt{RESULT}. Le coordinateur réattribue la tâche à Ubuntu ; le magasin Redis renvoie le résultat déjà persistant au lieu de répéter l’effet. Un seul effet est observé et aucun doublon n’apparaît. La campagne fournit ainsi une preuve directe de l’endurance du protocole, de la reprise contrôlée et de l’idempotence dans cette topologie.
 
-  \includegraphics[width=0.96\textwidth]{fig_multi_agent_task_distribution.png}
-
-  \caption{Répartition des 60 tâches de la campagne multi-VM. Debian et Ubuntu exécutent chacune 30 tâches ; 15 refus et un échec contrôlé sont visibles dans l’artefact complet. Cette symétrie documente la distribution observée ; la disponibilité du Redis central n’est pas testée. Source : \texttt{multivm\_cnp\_20260909T202632Z\_37592\_\_redis\_cnp\_multivm.json}.}
-
-  \label{fig:multi-vm-repartition}
-
-\end{figure}
-
-L’unique tâche mise en échec est réattribuée une fois, puis menée à terme. Le test d’idempotence rejoue ensuite le même effet sur un agent différent : un seul effet persistant est observé et aucun doublon n’apparaît. Dans cette topologie précise, la campagne fournit donc des preuves de fonctionnement pour l’attribution, le refus, la reprise contrôlée et l’idempotence.
-
-Redis reste toutefois un point central de cette topologie. Aucun basculement du broker, aucune partition réseau, aucun fonctionnement multi-site et aucune charge industrielle prolongée ne sont testés. La campagne valide donc des mécanismes de distribution en laboratoire, pas une architecture hautement disponible.
+La trace de messages ne conserve que la fenêtre terminale de $10\,001$ événements à cause de la rétention approximative configurée pendant ce run. Ses compteurs par type sont donc exclus des conclusions ; les métriques par tâche, le résultat de reprise et le magasin d’idempotence restent complets. Redis demeure par ailleurs un point central : aucun basculement du broker, aucune partition réseau, aucun fonctionnement multi-site et aucune charge industrielle ne sont testés. La campagne valide des mécanismes de distribution en laboratoire, pas une architecture hautement disponible.
 
 \section{Corrélation d’incidents}
 
