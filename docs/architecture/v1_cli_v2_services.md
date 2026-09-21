@@ -8,8 +8,7 @@ role de risque:
   socle de secours si les evolutions suivantes deviennent instables;
 - **V2**: exposition progressive des agents par FastAPI, compatible avec la V1;
 - **V3**: orchestration evenementielle. Redis Streams est maintenant integre
-  comme bus optionnel de la V2 pour les jobs persistants; MQTT est ajoute comme
-  bus pub/sub optionnel pour collecteurs et notifications temps reel.
+  comme bus optionnel de la V2 pour les jobs persistants et les workers.
 
 ## V1 - Prototype CLI Stable
 
@@ -133,11 +132,10 @@ Dashboard / client
 La V2 devra conserver la compatibilite avec les commandes CLI: l'API ne doit
 pas dupliquer la logique, mais appeler les fonctions deja testees.
 
-## V3 Possible - Redis Streams Et MQTT
+## V3 Possible - Redis Streams
 
 Redis Streams est introduit comme bus optionnel deja disponible dans le
-prototype. MQTT est aussi disponible pour des collecteurs plus proches de l'IoT
-ou du temps reel. Ces bus deviennent utiles pour:
+prototype. Il devient utile pour:
 
 - plusieurs collecteurs en parallele;
 - traitement quasi temps reel;
@@ -163,14 +161,6 @@ Configuration Redis locale:
 docker compose -f docker-compose.redis.yml up -d
 $env:LOGMINER_REDIS_URL="redis://localhost:6379/0"
 $env:LOGMINER_REDIS_STREAM="logminer:events"
-```
-
-Configuration MQTT locale:
-
-```powershell
-docker compose -f docker-compose.mqtt.yml up -d
-$env:LOGMINER_MQTT_HOST="localhost"
-$env:LOGMINER_MQTT_TOPIC_PREFIX="logminer/events"
 ```
 
 ## Decision Actuelle

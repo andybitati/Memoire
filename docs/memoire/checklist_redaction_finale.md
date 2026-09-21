@@ -50,7 +50,6 @@ preparer des articles a partir du prototype Logminer.
 | `table_resource_campaign.md` | pret | Historique ressources |
 | `table_resilience_agent.md` | pret | Robustesse/resilience |
 | `table_redis_streams_integration.md` | pret | Bus evenementiel optionnel |
-| `table_mqtt_integration.md` | pret | Pub/sub MQTT optionnel |
 | `table_scalability_redis_smoke.md` | pret | Memoire / Article 2, pas resultat central Article 1 |
 | `table_comparaison_outils_standards.md` | pret | Outils standards |
 | `table_operational_tool_comparison.md` | pret | Positionnement SOC |

@@ -53,7 +53,7 @@ La campagne CPU/RAM multi-cycles est egalement executee:
 | --- | --- | --- | --- | --- |
 | 1. Logs | Identifier, categoriser, parser et normaliser les journaux | Tres avance | Parseurs multi-format, schema commun, pipeline, taxonomie | Ajouter davantage d'exemples bruts -> normalises |
 | 2. Detection | Comparer methodes classiques, statistiques et IA | Tres avance | `validation_summary.csv`, comparateur, baselines, modeles IA | Consolider faux positifs par periode |
-| 3. Multi-agents | Concevoir agents specialises et communication | Avance | Agents Python, bus JSONL, FastAPI, Redis Streams, MQTT, file de jobs, worker Redis, diagrammes | Distribution multi-machine et back-pressure non encore prouves |
+| 3. Multi-agents | Concevoir agents specialises et communication | Avance | Agents Python, bus JSONL, FastAPI, Redis Streams, file de jobs, worker Redis, diagrammes | Distribution multi-machine et back-pressure non encore prouves |
 | 4. IA legere temps reel | Integrer modeles legers et workflow quasi temps reel | Avance | `.joblib`, routeur, benchmark temps reel | Optimiser latence et verifier adaptation continue |
 | 5. Dashboard | Visualiser, filtrer, interagir avec alertes | Avance | Dashboard web/Streamlit, decisions, audit, graphiques temps reel | Captures finales desktop/mobile |
 | 6. Tests varies | Tester logs simules, reels et publics | Tres avance | Windows, Wazuh, Linux/auth, HDFS, BGL, CICIDS, UNSW, robustesse, comparaison operationnelle | Execution reelle fail2ban/OSSEC/Wazuh si demandee |
@@ -71,10 +71,6 @@ operationnelle optionnelle, car le code contient deja:
   requete HTTP;
 - les consumer groups Redis via `read_group_jobs`, `ack_job` et
   `/redis/pending`;
-- `MqttMessageBus` dans `src/logminer/agents/bus.py`;
-- les endpoints FastAPI `/mqtt/health` et `/mqtt/publish`;
-- `docker-compose.mqtt.yml` et `docker/mosquitto/mosquitto.conf` pour lancer
-  Mosquitto localement;
 - l'option `use_redis=true` sur les workflows API;
 - `docker-compose.redis.yml` pour lancer Redis localement;
 - le contrat de message commun documente dans

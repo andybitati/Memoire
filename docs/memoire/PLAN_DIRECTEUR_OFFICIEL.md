@@ -80,7 +80,7 @@ Points a couvrir:
 - routage multi-modeles par famille de journaux;
 - communication entre agents;
 - passage V1 CLI vers V2 FastAPI;
-- Redis Streams et MQTT comme extensions operationnelles locales;
+- Redis Streams comme extension operationnelle locale;
 - limites: distribution multi-machine stricte a presenter comme perspective.
 
 ### Chapitre 4 - Implementation

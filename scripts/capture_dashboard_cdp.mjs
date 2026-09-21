@@ -120,7 +120,6 @@ async function captureOne(browser, filename, url, width, height) {
     const servicesReady = !url.includes("technical") || (
       text.includes("FastAPI") &&
       text.includes("Redis Streams") &&
-      text.includes("MQTT") &&
       !text.includes("fetch failed")
     );
     if (text.includes("Ariel Logminer") && servicesReady) {

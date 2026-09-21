@@ -318,11 +318,9 @@ Une évolution naturelle de l'architecture consisterait à déployer différents
 
 Les collecteurs pourraient fonctionner au plus près des sources de journaux. Les événements seraient ensuite transmis vers une file persistante ou un bus de messages. Les modèles de détection pourraient fonctionner sous forme de workers distincts, tandis qu'une API centralisée fournirait les résultats consolidés au tableau de bord.
 
-Redis Streams et MQTT ont été étudiés comme mécanismes possibles pour cette évolution.
+Redis Streams a été étudié comme mécanisme pour cette évolution.
 
 Redis Streams a déjà été utilisé dans la campagne locale multiprocessus de six heures. Au cours de cette expérience, 8 508 tâches uniques ont été terminées, aucune tâche finale n'est restée en attente et 709 pannes volontaires avant acquittement ont été récupérées par le worker de reprise.
-
-MQTT reste davantage une piste pour assurer des communications légères entre certains composants.
 
 Ces résultats ne suffisent cependant pas à valider un environnement distribué de production.
 

@@ -226,7 +226,7 @@ Le tableau de bord n'a donc pas besoin de connaître directement l'organisation 
 
 Cette séparation rend l'architecture plus flexible. Elle facilite notamment l'ajout futur de nouveaux workers, de files d'attente, de services intermédiaires ou de connecteurs vers d'autres plateformes.
 
-Dans cette version, Docker n'est pas présenté comme un agent d'analyse autonome. Il sert de couche d'exécution pour certains services de support, en particulier Redis Streams et MQTT. L'activité observable du système provient donc principalement de FastAPI, des workers Python et des messages publiés sur Redis, tandis que Docker est suivi comme un runtime d'infrastructure indiquant si ces services peuvent être hébergés localement.
+Dans cette version, Docker n'est pas présenté comme un agent d'analyse autonome. Il sert de couche d'exécution pour certains services de support, en particulier Redis Streams. L'activité observable du système provient donc principalement de FastAPI, des workers Python et des messages publiés sur Redis, tandis que Docker est suivi comme un runtime d'infrastructure indiquant si ces services peuvent être hébergés localement.
 
 \section{Tableau de bord Ariel Logminer}
 

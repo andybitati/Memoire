@@ -94,7 +94,7 @@ ajoutes plus tard lorsqu'ils seront rediges.
 
 - Presenter les anomalies non supervisees comme des anomalies candidates.
 - Ne pas presenter la baseline fail2ban-like comme fail2ban officiel.
-- Presenter Redis/MQTT comme extension operationnelle locale, pas comme preuve
+- Presenter Redis Streams comme extension operationnelle locale, pas comme preuve
   de scalabilite industrielle.
 - Distinguer article 1 et article 2 pour les mesures de scalabilite.
 - Ne pas sur-vendre l'auto-apprentissage continu: le cadrer en perspective.

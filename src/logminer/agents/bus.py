@@ -20,12 +20,6 @@ try:
 except ImportError:  # pragma: no cover - dependance optionnelle hors V2
     redis = None
 
-try:
-    import paho.mqtt.client as mqtt
-except ImportError:  # pragma: no cover - dependance optionnelle hors V2/V3
-    mqtt = None
-
-
 @dataclass
 class AgentMessage:
     """Message standard echange entre agents."""
@@ -336,74 +330,3 @@ def filter_messages(messages: Iterable[AgentMessage], run_id: str | None = None)
     return [message for message in messages if message.run_id == run_id]
 
 
-class MqttMessageBus:
-    """Bus MQTT leger pour collecteurs et traces temps reel non persistantes."""
-
-    def __init__(
-        self,
-        host: str = "localhost",
-        port: int = 1883,
-        topic_prefix: str = "logminer/events",
-        run_id: str | None = None,
-        client_id: str | None = None,
-        keepalive: int = 30,
-        qos: int = 1,
-        username: str | None = None,
-        password: str | None = None,
-    ):
-        if mqtt is None:
-            raise RuntimeError("Le paquet Python 'paho-mqtt' n'est pas installe")
-
-        self.host = host
-        self.port = int(port)
-        self.topic_prefix = topic_prefix.strip("/")
-        self.run_id = run_id or uuid4().hex
-        self.keepalive = int(keepalive)
-        self.qos = max(0, min(int(qos), 2))
-        self.client_id = client_id or f"logminer-{self.run_id}"
-        self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=self.client_id)
-        if username:
-            self.client.username_pw_set(username, password=password)
-        self.client.connect(self.host, self.port, keepalive=self.keepalive)
-        self.client.loop_start()
-
-    def close(self) -> None:
-        self.client.loop_stop()
-        self.client.disconnect()
-
-    def ping(self) -> bool:
-        info = self.client.publish(
-            f"{self.topic_prefix}/health",
-            json.dumps({"run_id": self.run_id, "status": "ping"}, ensure_ascii=False),
-            qos=self.qos,
-        )
-        info.wait_for_publish(timeout=5)
-        return bool(info.is_published())
-
-    def publish(
-        self,
-        source: str,
-        target: str,
-        message_type: str,
-        payload: Dict[str, Any] | None = None,
-        status: str = "ok",
-    ) -> AgentMessage:
-        message = AgentMessage(
-            run_id=self.run_id,
-            source=source,
-            target=target,
-            message_type=message_type,
-            payload=dict(payload or {}),
-            status=status,
-        )
-        topic = f"{self.topic_prefix}/{message.target}/{message.message_type}".replace(" ", "_")
-        info = self.client.publish(topic, json.dumps(asdict(message), ensure_ascii=False), qos=self.qos)
-        info.wait_for_publish(timeout=5)
-        if not info.is_published():
-            raise RuntimeError(f"Publication MQTT non confirmee sur {topic}")
-        return message
-
-    def read(self) -> List[AgentMessage]:
-        """MQTT est pub/sub; l'historique n'est pas relu comme JSONL/Redis."""
-
-        return []

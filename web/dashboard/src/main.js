@@ -27,12 +27,11 @@ let state = {
   redisMessages: [],
   audit: [],
   validation: [],
-  services: { api: {}, redis: {}, redisPending: {}, mqtt: {}, models: [] },
+  services: { api: {}, redis: {}, redisPending: {}, models: [] },
   resources: {},
   collector: { loading: false, error: "", selected: null, candidates: [] },
   privilege: { loading: false, error: "", result: null },
   runtime: { loading: false, error: "", result: null },
-  mqttTest: { loading: false, error: "", result: null },
   autoRun: { loading: false, error: "", result: null },
   explanation: { loading: false, provider: "", text: "", error: "" },
   meta: {},
@@ -559,24 +558,6 @@ async function prepareRuntime() {
   render();
 }
 
-async function testMqttPublish() {
-  state = { ...state, mqttTest: { loading: true, error: "", result: null } };
-  render();
-  try {
-    const result = await fetchJson("/api/mqtt-publish", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ at: new Date().toISOString() }),
-    });
-    state = { ...state, mqttTest: { loading: false, error: "", result } };
-    await loadData({ mode: "mqtt", silent: true, skipAutoAnalysis: true });
-    state = { ...state, mqttTest: { loading: false, error: "", result } };
-  } catch (error) {
-    state = { ...state, mqttTest: { loading: false, error: error.message, result: null } };
-  }
-  render();
-}
-
 function dashboardSnapshot() {
   const anomalyCount = state.anomalies.filter((row) => row.is_anomaly === "1").length;
   const criticalIncidents = state.incidents.filter((row) => ["CRITICAL", "ERROR"].includes(row.severity)).length;
@@ -860,13 +841,12 @@ function pipelineTopologyPanel() {
 }
 
 function servicePanel() {
-  const { api, redis, redisPending, mqtt, models } = state.services;
+  const { api, redis, redisPending, models } = state.services;
   const runtime = state.runtime.result || state.services.runtime || {};
   const modelCount = (models || []).filter((model) => model.exists).length;
   const selected = state.collector.selected || state.autoRun.result?.selected;
   const result = state.autoRun.result;
   const privilege = state.privilege.result;
-  const mqttTest = state.mqttTest || {};
   const pendingJobs = redisPending?.pending?.pending ?? redisPending?.pending_count ?? 0;
   const runtimeReady = Boolean(runtime?.docker_engine);
   const runtimeAction = runtime?.services_started
@@ -874,12 +854,7 @@ function servicePanel() {
     : runtimeReady
       ? "surveillance seule"
       : "à vérifier";
-  const hostedServices = [
-    redis?.status === "ok" ? "Redis actif" : "",
-    mqtt?.status === "ok" ? "MQTT actif" : "",
-  ]
-    .filter(Boolean)
-    .join(" · ");
+  const hostedServices = redis?.status === "ok" ? "Redis actif" : "";
 
   return `
     <section class="panel servicePanel">
@@ -890,7 +865,6 @@ function servicePanel() {
       <div class="serviceGrid">
         <div class="serviceItem"><span class="dot ${api?.status === "ok" ? "" : "errorDot"}"></span><div><strong>FastAPI</strong><small>${escapeHtml(api?.status || "inconnu")}</small></div></div>
         <div class="serviceItem"><span class="dot ${redis?.status === "ok" ? "" : "errorDot"}"></span><div><strong>Redis Streams</strong><small>${escapeHtml(redis?.stream || redis?.error || "non vérifié")}</small></div></div>
-        <div class="serviceItem"><span class="dot ${mqtt?.status === "ok" ? "" : "errorDot"}"></span><div><strong>MQTT</strong><small>${escapeHtml(mqtt?.status === "ok" ? `${mqtt.host || "localhost"}:${mqtt.port || 1883}` : mqtt?.error || "non vérifié")}</small></div></div>
         <div class="serviceItem"><span class="dot ${Number(pendingJobs) ? "warnDot" : ""}"></span><div><strong>Jobs pending</strong><small>${escapeHtml(pendingJobs)} job(s) Redis</small></div></div>
         <div class="serviceItem runtimeItem">
           <span class="dot ${runtimeReady ? "" : "errorDot"}"></span>
@@ -900,11 +874,6 @@ function servicePanel() {
           </div>
         </div>
         <div class="serviceItem"><span class="dot"></span><div><strong>Modèles IA</strong><small>${modelCount}/${(models || []).length} artefacts</small></div></div>
-      </div>
-      <div style="display:flex; gap:10px; align-items:center;">
-        <button class="secondaryAction" id="mqttTestBtn" ${mqttTest.loading ? "disabled" : ""}>${mqttTest.loading ? "Test MQTT..." : "Tester MQTT"}</button>
-        ${mqttTest.result ? `<small style="color:var(--emerald);">MQTT publié: ${escapeHtml(mqttTest.result.message?.message_type || "ok")}</small>` : ""}
-        ${mqttTest.error ? `<small style="color:var(--crimson);">${escapeHtml(mqttTest.error)}</small>` : ""}
       </div>
       <div class="rationaleBox">
         <strong>Collecte continue :</strong>
@@ -918,7 +887,6 @@ function servicePanel() {
 
 function operatorSummaryPanel() {
   const redisOk = state.services.redis?.status === "ok";
-  const mqttOk = state.services.mqtt?.status === "ok";
   const apiOk = state.services.api?.status === "ok";
   const latestAudit = state.audit[state.audit.length - 1];
   const result = state.autoRun.result;
@@ -938,14 +906,12 @@ function operatorSummaryPanel() {
         <div class="hudMiniGrid">
           ${hudRing("API", apiOk ? "ON" : "OFF", apiOk ? "Disponible" : "À vérifier", apiOk ? "ok" : "warn")}
           ${hudRing("REDIS", redisOk ? "ON" : "OFF", redisOk ? "Bus actif" : "Bus absent", redisOk ? "ok" : "warn")}
-          ${hudRing("MQTT", mqttOk ? "ON" : "OFF", mqttOk ? "Pub/sub actif" : "Optionnel", mqttOk ? "ok" : "idle")}
           ${hudRing("AUDIT", latestAudit ? "LOG" : "---", latestAudit ? latestAudit.action : "Aucune action", latestAudit ? "ok" : "idle")}
         </div>
       </div>
       <div style="display:flex; flex-direction:column; gap:10px;">
         ${statusBadge("FastAPI Server", apiOk, apiOk ? "Disponible" : state.services.api?.error)}
         ${statusBadge("Bus Messages Redis", redisOk, redisOk ? "Canal agents actif" : state.services.redis?.error)}
-        ${statusBadge("Broker MQTT", mqttOk, mqttOk ? "Pub/sub opérationnel" : state.services.mqtt?.error || "Optionnel")}
         ${statusBadge("Audit Système", Boolean(latestAudit), latestAudit ? latestAudit.action : "Aucune action enregistrée")}
       </div>
     </section>
@@ -1462,7 +1428,6 @@ function analystDecisionPanel(alerts, selectedIncident) {
   const serviceState = [
     ["API", state.services.api?.status === "ok"],
     ["Redis", state.services.redis?.status === "ok"],
-    ["MQTT", state.services.mqtt?.status === "ok"],
     ["Modèles", (state.services.models || []).some((model) => model.exists)],
   ];
 
@@ -1626,7 +1591,6 @@ function render() {
   document.getElementById("reloadBtn")?.addEventListener("click", loadData);
   document.getElementById("browserNotifBtn")?.addEventListener("click", enableBrowserNotifications);
   document.getElementById("runtimeBtn")?.addEventListener("click", prepareRuntime);
-  document.getElementById("mqttTestBtn")?.addEventListener("click", testMqttPublish);
   document.getElementById("openResultsBtn")?.addEventListener("click", () => setView("results"));
   document.getElementById("privilegedBtn")?.addEventListener("click", requestPrivilegedCollect);
   document.getElementById("discoverBtn")?.addEventListener("click", discoverLogs);

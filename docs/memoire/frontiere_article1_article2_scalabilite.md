@@ -11,7 +11,6 @@ Article 2 recupere tout ce qui releve de l'operationnel:
 
 - comportement de la file `logminer:jobs`;
 - workers Redis et consumer groups;
-- usage MQTT pour collecteurs legers et pub/sub temps reel;
 - jobs pending et reprise apres arret worker;
 - latence queuee;
 - campagne CPU/RAM;
@@ -35,9 +34,7 @@ Article 2 recupere tout ce qui releve de l'operationnel:
 ## Donnees A Ne Pas Mettre Comme Resultats Dans Article 1
 
 - `table_scalability_redis_smoke.md`;
-- `table_mqtt_integration.md` comme resultat experimental central;
 - temps de queue Redis;
-- debit MQTT ou comparaison Redis/MQTT;
 - comparaison nombre de workers;
 - reprise pending;
 - tests d'arret worker;

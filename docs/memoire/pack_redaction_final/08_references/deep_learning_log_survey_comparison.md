@@ -268,7 +268,7 @@ alertes pour un analyste. Notre travail ajoute donc une couche d'exploitation.
 - Les logs Windows reels ne sont pas labellises; ils servent surtout a
   l'entrainement non supervise et a la demonstration.
 - Le dashboard est local; les agents ne sont pas encore exposes comme services
-  distribues FastAPI/Redis/MQTT.
+  distribues FastAPI/Redis.
 
 ## Positionnement Scientifique
 

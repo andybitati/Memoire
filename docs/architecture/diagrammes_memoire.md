@@ -66,7 +66,7 @@ flowchart TB
     V2 --> V3[V3 Redis Streams<br/>bus optionnel integre, distribution a valider]
     V1 --> S[Socle defendable pour soutenance]
     V2 --> D[Demonstration interactive]
-    V3 --> P[MQTT et industrialisation en perspective]
+    V3 --> P[Securisation et industrialisation en perspective]
 ```
 
 ## Cycle D'Evaluation

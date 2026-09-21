@@ -70,7 +70,7 @@ Fig.~\ref{fig:architecture} summarizes the current \logminer{} workflow. The col
     \label{fig:architecture}
 \end{figure}
 
-The implementation uses Python, scikit-learn models, local file artifacts, JSONL bus traces and FastAPI endpoints. Redis Streams is now available as an optional queued-execution layer: FastAPI can enqueue workflows into a persistent job stream, and external workers can consume them through Redis consumer groups. MQTT is also available as an optional pub/sub channel for lightweight collectors and real-time notifications. This article is therefore the appropriate venue for operational discussion of Redis/MQTT behavior, worker execution, pending jobs, resilience and the remaining back-pressure limits; durable SOC-scale asynchronous scaling still requires longer stress campaigns and production policies.
+The implementation uses Python, scikit-learn models, local file artifacts, JSONL bus traces and FastAPI endpoints. Redis Streams is now available as an optional queued-execution layer: FastAPI can enqueue workflows into a persistent job stream, and external workers can consume them through Redis consumer groups. This article is therefore the appropriate venue for operational discussion of Redis behavior, worker execution, pending jobs, resilience and the remaining back-pressure limits; durable SOC-scale asynchronous scaling still requires longer stress campaigns and production policies.
 
 \subsection{Model Portfolio}
 The model portfolio combines supervised Random Forest models for labeled tabular families and non-supervised Isolation Forest or ensemble-style detectors for unlabeled or partially labeled sources. Fig.~\ref{fig:portfolio} shows the family-aware model portfolio.
@@ -290,7 +290,7 @@ Mean maximum RAM & 176.89 MB \\
 \end{figure}
 
 \subsection{Buffering and Back-Pressure}
-The current buffering strategy is local and conservative. Collectors and parsers persist raw files, manifests, normalized records and JSONL bus messages before detection. The detector processes bounded samples or prepared batches rather than an unbounded memory queue. If detection lags behind collection, the backlog remains visible in files and traces, but the prototype does not yet implement production-grade admission control, retry policies, priority scheduling or durable back-pressure. A Kafka, MQTT, Redis Streams or equivalent broker is required for sustained asynchronous SOC ingestion.
+The current buffering strategy is local and conservative. Collectors and parsers persist raw files, manifests, normalized records and JSONL bus messages before detection. The detector processes bounded samples or prepared batches rather than an unbounded memory queue. If detection lags behind collection, the backlog remains visible in files and traces, but the prototype does not yet implement production-grade admission control, retry policies, priority scheduling or durable back-pressure. Redis Streams or another durable broker is required for sustained asynchronous SOC ingestion.
 
 \section{Supervisor Stability and Stress Behavior}
 The SupervisorAgent performs bounded policy-based workflow control. It observes sources and resources, selects a source, adjusts sample size and correlation window, launches workflow steps and records decisions. A 30-cycle campaign showed stable completion, but this is a functional stability check, not proof of long-term autonomy.

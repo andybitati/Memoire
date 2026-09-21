@@ -61,13 +61,9 @@ optionnel pour tracer et repartir les workflows agents. La campagne d'endurance
 de six heures valide une distribution locale multi-processus avec reprise
 systematique des taches non acquittees. Cette brique prepare une distribution
 multi-machine, mais elle ne prouve pas encore une scalabilite SOC industrielle.
-MQTT reste une perspective pour des collecteurs plus proches de l'IoT ou du
-temps reel.
-
 Tableau a reprendre pour le chapitre architecture:
 
 - `docs/memoire/tables/table_redis_streams_integration.md`.
-- `docs/memoire/tables/table_mqtt_integration.md`.
 - `docs/memoire/tables/table_scalability_redis_smoke.md` pour le memoire ou
   l'article 2, pas comme resultat central de l'article 1.
 

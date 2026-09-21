@@ -193,7 +193,7 @@ def matrix_diagram(path: Path) -> None:
     notes = [
         ("V1 CLI stable", 82, 245),
         ("V2 FastAPI locale", 382, 245),
-        ("V3 Redis/MQTT en extension", 662, 245),
+        ("V3 Redis Streams distribué", 662, 245),
     ]
     for text, x, y in notes:
         parts.append(f'<text x="{x}" y="{y}" class="subtitle">{escape(text)}</text>')

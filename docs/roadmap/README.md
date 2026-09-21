@@ -43,7 +43,7 @@ fonctionnalite doit pouvoir etre rattachee a l'un des sept objectifs officiels.
 | --- | --- | --- |
 | V1 - Prototype CLI stable | Chaine reproductible: parsing, detection, correlation, dashboard et modeles `.joblib` | Socle de soutenance |
 | V2 - Services FastAPI | Exposer les agents via REST tout en reutilisant la V1 | Disponible localement |
-| V3 - Bus Redis/MQTT | Rapprocher le prototype d'un fonctionnement distribue/quasi temps reel | Redis Streams amorce, MQTT optionnel |
+| V3 - Bus Redis Streams | Rapprocher le prototype d'un fonctionnement distribue/quasi temps reel | Redis Streams integre et evalue |
 
 La V1 reste le filet de securite. FastAPI, Redis et les evolutions temps reel
 doivent renforcer la demonstration sans rendre la chaine CLI instable.

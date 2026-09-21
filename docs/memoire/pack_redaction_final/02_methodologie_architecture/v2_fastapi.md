@@ -50,25 +50,6 @@ $env:LOGMINER_REDIS_URL="redis://localhost:6379/0"
 $env:LOGMINER_REDIS_STREAM="logminer:events"
 ```
 
-## Lancer MQTT
-
-MQTT est optionnel et complementaire de Redis Streams. Il sert surtout aux
-collecteurs legers, notifications temps reel et essais pub/sub. Redis Streams
-reste le choix privilegie pour les jobs persistants et les workers.
-
-```powershell
-docker compose -f docker-compose.mqtt.yml up -d
-```
-
-Variables disponibles:
-
-```powershell
-$env:LOGMINER_MQTT_HOST="localhost"
-$env:LOGMINER_MQTT_PORT="1883"
-$env:LOGMINER_MQTT_TOPIC_PREFIX="logminer/events"
-$env:LOGMINER_MQTT_QOS="1"
-```
-
 ## Agent Runtime Docker
 
 La V2 prevoit un agent runtime charge de faciliter le travail de
@@ -139,8 +120,6 @@ laissant le controle final a l'administrateur systeme et reseau.
 | `POST /runtime/prepare` | Demarrer Docker/Compose lorsque c'est possible |
 | `GET /redis/health` | Verifier la connexion au serveur Redis |
 | `GET /redis/pending` | Lire le resume des jobs Redis non acquittes |
-| `GET /mqtt/health` | Verifier la connexion au broker MQTT |
-| `POST /mqtt/publish` | Publier un message `AgentMessage` sur MQTT |
 | `GET /events` | Lire les evenements publies dans Redis |
 | `GET /models` | Lister les familles de modeles et leurs artefacts |
 | `POST /collect/discover` | Decouvrir automatiquement les journaux candidats |
@@ -190,24 +169,6 @@ Invoke-RestMethod `
 Invoke-RestMethod `
   -Method Get `
   -Uri "http://127.0.0.1:8000/events?run_id=demo-linux-auth"
-```
-
-## Exemple Avec MQTT
-
-Verifier le broker:
-
-```powershell
-Invoke-RestMethod http://127.0.0.1:8000/mqtt/health
-```
-
-Publier un message:
-
-```powershell
-Invoke-RestMethod `
-  -Method Post `
-  -Uri http://127.0.0.1:8000/mqtt/publish `
-  -ContentType "application/json" `
-  -Body '{"run_id":"mqtt-demo","source":"api","target":"collector","message_type":"mqtt.demo","payload":{"ok":true}}'
 ```
 
 ## Execution Queuee Avec Workers

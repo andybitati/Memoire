@@ -153,7 +153,7 @@ La sortie d'un modele est convertie en objet d'analyse comprenant au minimum la 
 Une anomalie candidate isolee n'est pas forcement une intrusion. Le correlateur regroupe donc les signaux selon la severite, la proximite temporelle, la source, la categorie et les messages. L'objectif est de produire des incidents plus exploitables qu'une liste brute de scores.
 
 \section{Bus, audit et extensions}
-La version locale s'appuie sur des fichiers JSONL et CSV reproductibles. La V2 FastAPI expose des endpoints de traitement et un dashboard web. Redis Streams est ajoute comme bus operationnel local pour l'orchestration evenementielle et la repartition de taches entre workers. MQTT reste une extension de communication legere. Ces extensions ne sont pas presentees comme une preuve de scalabilite industrielle, mais comme une validation locale de l'architecture et une trajectoire d'evolution.
+La version locale s'appuie sur des fichiers JSONL et CSV reproductibles. La V2 FastAPI expose des endpoints de traitement et un dashboard web. Redis Streams est ajoute comme bus operationnel local pour l'orchestration evenementielle et la repartition de taches entre workers. Cette extension n'est pas presentee comme une preuve de scalabilite industrielle, mais comme une validation locale de l'architecture et une trajectoire d'evolution.
 
 La memoire adaptative s'inscrit dans cette meme logique d'audit. Elle conserve des informations stables sur les cycles d'execution, les erreurs, les durees, les decisions recentes, les familles traitees et les retours analyste. Son objectif est de permettre aux agents de mieux contextualiser leurs choix lors des cycles suivants et d'alimenter une mise a jour controlee des modeles. Dans ce processus, un modele candidat est entraine hors ligne, compare au modele courant sur des metriques definies, puis promu uniquement lorsqu'il obtient les meilleures performances dans le cadre retenu.
 
@@ -176,7 +176,7 @@ V3 &
 Agents fonctionnels, Redis Streams, consumer groups, heartbeat, ACK et reprise locale. &
 Experimenter une orchestration evenementielle locale, mesurer son cout et verifier la recuperation de taches non acquittees. \tabularnewline
 Extension &
-MQTT, bus securise, plusieurs machines, supervision renforcee, tolerance aux pannes distribuee. &
+Bus securise, plusieurs machines, supervision renforcee, tolerance aux pannes distribuee. &
 Definir les prolongements possibles sans les confondre avec les capacites deja validees experimentalement. \tabularnewline
 \bottomrule
 \end{tabularx}
@@ -217,7 +217,7 @@ L'architecture modulaire suppose que les composants echangent des informations s
 
 Ce contrat de message permet de separer les responsabilites. Le collecteur produit des messages bruts ou semi-structures. Le parseur enrichit le payload avec les champs extraits. Le normaliseur aligne les noms de colonnes. Le routeur ajoute la famille probable et le modele selectionne. Le detecteur ajoute le score et la decision. Le correlateur ajoute un identifiant d'incident. L'audit conserve les traces de ces transformations.
 
-Dans la version locale, ces messages peuvent etre materialises par des appels de fonctions, des fichiers JSONL ou des sorties CSV. Dans une version plus distribuee, le meme contrat pourrait circuler dans Redis Streams, MQTT ou une autre file de messages. L'interet de cette abstraction est de preparer l'evolution sans imposer immediatement une infrastructure lourde.
+Dans la version locale, ces messages peuvent etre materialises par des appels de fonctions, des fichiers JSONL ou des sorties CSV. Dans une version plus distribuee, le meme contrat pourrait circuler dans Redis Streams ou une autre file de messages. L'interet de cette abstraction est de preparer l'evolution sans imposer immediatement une infrastructure lourde.
 
 \section{Strategie de correlation}
 La correlation transforme des anomalies candidates isolees en incidents. Elle repose sur une hypothese simple : un evenement rare devient plus significatif lorsqu'il s'inscrit dans un contexte. Ce contexte peut etre temporel, spatial, semantique ou operationnel. Un echec de connexion isole peut etre banal. Plusieurs echecs rapproches sur le meme utilisateur ou la meme source peuvent devenir suspects. Une alerte Wazuh de severite moyenne peut devenir prioritaire si elle coincide avec une anomalie detectee par un modele non supervise.
@@ -257,6 +257,6 @@ Plusieurs scenarios d'utilisation structurent le modele. Le premier est le scena
 
 Le deuxieme scenario est le scenario de traitement local par micro-lots. Le serveur FastAPI expose un endpoint de decouverte et d'analyse. Le dashboard interroge les resultats et affiche les anomalies candidates. Ce scenario valide une boucle interactive periodique, mais reste limite a une machine ou a un environnement local. Il ne constitue pas une preuve de temps reel strict au sens d'un SOC a tres haut debit.
 
-Le troisieme scenario est le scenario d'extension evenementielle. Les agents peuvent publier ou consommer des messages via Redis Streams ou MQTT. Redis Streams est utilise dans les experiences pour valider une repartition locale multi-processus, avec reprise d'une tache non acquittee. MQTT prepare une communication legere entre composants. Dans le memoire, ce scenario est presente comme une preuve locale d'architecture distribuee, non comme une preuve industrielle multi-machine.
+Le troisieme scenario est le scenario d'extension evenementielle. Les agents peuvent publier ou consommer des messages via Redis Streams, utilise dans les experiences pour valider une repartition locale multi-processus avec reprise d'une tache non acquittee. Dans le memoire, ce scenario est presente comme une preuve locale d'architecture distribuee, non comme une preuve industrielle multi-machine.
 
 Le quatrieme scenario est le scenario pedagogique. Le prototype sert a comprendre le cycle complet d'analyse des journaux : collecte, parsing, normalisation, detection, interpretation et audit. Ce scenario est important dans un cadre universitaire car il relie les notions theoriques de detection d'anomalies a un systeme concret.

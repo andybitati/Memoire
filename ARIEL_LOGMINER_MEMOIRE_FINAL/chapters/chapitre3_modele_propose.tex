@@ -174,7 +174,7 @@ feedback/.style={-{Latex[length=2.2mm]}, dashed, thick}
 \node[component, left=of corr] (dash) {Dashboard\\et analyste};
 \node[store, below=1.35cm of corr] (audit) {Audit\\et mémoire};
 \node[component, right=of detect] (update) {Mise à jour\\contrôlée};
-\node[component, below=1.35cm of detect] (bus) {Bus de tâches\\local / Redis / MQTT};
+\node[component, below=1.35cm of detect] (bus) {Bus de tâches\\local / Redis Streams};
 \draw[arrow] (sources) -- (collect);
 \draw[arrow] (collect) -- (parse);
 \draw[arrow] (parse) -- (norm);
@@ -219,9 +219,8 @@ feedback analyste possèdent tous un intérêt pour la traçabilité.
 
 Le bus de tâches est également transversal. Le pipeline peut être exécuté localement sans
 que toutes les opérations passent obligatoirement par Redis. Redis Streams intervient
-lorsque les tâches doivent être distribuées entre workers. MQTT représente une autre voie
-de communication prévue par le contrat logiciel. Ces mécanismes de transport ne modifient
-pas la signification métier d'un message.
+lorsque les tâches doivent être distribuées entre workers. Ce mécanisme de transport ne
+modifie pas la signification métier d'un message.
 
 \section{Organisation en plans fonctionnels}
 
@@ -1017,14 +1016,6 @@ traitement
 Un ACK Redis atteste seulement que le consommateur a acquitté le message selon le mécanisme
 prévu. Il n'atteste pas la réussite de toutes les conséquences métier possibles de la tâche.
 Cette nuance est conservée lors de l'interprétation des expériences multi-VM.
-
-\subsection{MQTT}
-
-MQTT constitue une autre possibilité de transport prévue dans l'architecture.
-Le même contrat métier peut être sérialisé avant publication.
-MQTT n'ajoute pas pour autant un nouvel identifiant métier d'événement à la structure
-\texttt{AgentMessage}. Les identifiants et propriétés propres au protocole de transport
-doivent rester conceptuellement séparés du message métier.
 
 \section{Gestion des tâches et capacités des agents}
 

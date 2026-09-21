@@ -112,7 +112,7 @@ Sections conseillees:
 6. Routage multi-modeles.
 7. Correlation des anomalies en incidents.
 8. V1 CLI, V2 FastAPI et Redis Streams optionnel comme trajectoire
-   concrete d'orchestration evenementielle; MQTT reste une perspective.
+   concrete d'orchestration evenementielle.
 
 Figures a inserer:
 
@@ -156,16 +156,6 @@ Paragraphe Redis Streams a integrer:
 > Les mesures queuees et multi-workers sont reservees a l'article 2, avec les
 > retries avances, la dead-letter queue, le back-pressure applicatif, la
 > securisation et les tests de charge prolonges.
-
-Paragraphe MQTT a integrer:
-
-> MQTT est ajoute comme bus pub/sub optionnel et complementaire a Redis Streams.
-> Il reutilise le contrat `AgentMessage` et publie les evenements sur des topics
-> de type `logminer/events/<target>/<message_type>`. Son role est de soutenir
-> des collecteurs legers, des notifications temps reel et des scenarios IoT ou
-> reseau local. Contrairement a Redis Streams, MQTT n'est pas utilise ici comme
-> file de jobs persistante pour workers; les mesures de debit MQTT et la
-> comparaison Redis/MQTT sont reservees a l'article 2.
 
 Attention article 1 / article 2:
 
@@ -322,7 +312,6 @@ Bilan par objectif:
 Perspectives:
 
 - extension multi-machine a partir de Redis Streams, files de jobs et workers;
-  MQTT reste une piste complementaire pour collecteurs temps reel;
 - integration SOC/SIEM plus stricte;
 - consolidation des templates Drain3 et comparaison avec des modeles sequentiels specialises;
 - reduction des faux positifs par apprentissage actif;

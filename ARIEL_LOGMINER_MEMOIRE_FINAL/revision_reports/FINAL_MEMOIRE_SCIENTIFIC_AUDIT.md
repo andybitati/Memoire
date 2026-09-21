@@ -39,7 +39,7 @@ La valeur ambiguë n’apparaît plus dans le résumé, les chapitres, la conclu
 
 ### Contrat `AgentMessage`
 
-Le mémoire présente exactement : `run_id`, `source`, `target`, `message_type`, `payload`, `status`, `timestamp`. Il n’ajoute pas d’`event_id` de premier niveau. Les identifiants protocolaires sont dans `payload` ; les identifiants Redis/MQTT appartiennent au transport.
+Le mémoire présente exactement : `run_id`, `source`, `target`, `message_type`, `payload`, `status`, `timestamp`. Il n’ajoute pas d’`event_id` de premier niveau. Les identifiants protocolaires sont dans `payload` ; les identifiants Redis appartiennent au transport.
 
 ### Drain3 HDFS
 

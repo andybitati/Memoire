@@ -25,7 +25,7 @@ ou lit les sorties produites par les autres agents:
 - anomalies candidates issues de l'agent detecteur;
 - incidents correles issus de l'agent correlateur;
 - messages du bus agents JSONL ou Redis Streams;
-- etat des services V2 comme FastAPI, Redis, MQTT, Docker et les modeles IA;
+- etat des services V2 comme FastAPI, Redis, Docker et les modeles IA;
 - ressources consommees par les agents;
 - journal d'audit des decisions utilisateur et systeme.
 
@@ -91,7 +91,7 @@ Elle doit afficher:
 
 - une synthese du nombre d'evenements, anomalies candidates, incidents correles
   et messages agents;
-- l'etat des principaux services: API, Redis Streams, MQTT, Docker, modeles;
+- l'etat des principaux services: API, Redis Streams, Docker, modeles;
 - un panneau de priorite indiquant la prochaine action recommandee;
 - une banniere d'alerte lorsqu'il existe des signaux urgents;
 - une analyse temporelle des evenements ou anomalies;
@@ -136,10 +136,10 @@ observable du systeme.
 
 Elle doit afficher:
 
-- le panneau Services V2 avec l'etat de FastAPI, Redis Streams, MQTT, Docker et
+- le panneau Services V2 avec l'etat de FastAPI, Redis Streams, Docker et
   des artefacts modeles;
 - les jobs Redis pending ou non acquittes;
-- les actions techniques comme tester MQTT ou preparer le runtime;
+- les actions techniques comme inspecter Redis ou preparer le runtime;
 - la consommation CPU et memoire par agent;
 - le parcours d'analyse du workflow;
 - le flux agents, traduit en langage humain;
@@ -221,7 +221,6 @@ serveur dashboard:
 - /api/collect-discover pour decouvrir les journaux disponibles;
 - /api/privileged-collect pour demander une collecte privilegiee;
 - /api/runtime-prepare pour preparer l'environnement;
-- /api/mqtt-publish pour tester la publication MQTT;
 - /api/alert-decision pour enregistrer une decision sur une alerte.
 
 Les donnees principales proviennent du dossier data/processed, notamment les
@@ -239,7 +238,7 @@ Le UI doit gerer proprement les etats suivants:
 - erreur de chargement;
 - service indisponible;
 - runtime non prepare;
-- absence de Redis ou MQTT;
+- absence de Redis;
 - absence de modeles IA;
 - resultats disponibles mais sans anomalie;
 - incident selectionne introuvable;
@@ -277,7 +276,7 @@ Le UI est considere reussi si un utilisateur peut:
 - identifier les incidents prioritaires;
 - filtrer et chercher dans les donnees;
 - comprendre le parcours des agents;
-- verifier l'etat de FastAPI, Redis, MQTT, Docker et des modeles;
+- verifier l'etat de FastAPI, Redis, Docker et des modeles;
 - lancer ou relancer une analyse autonome;
 - obtenir une explication humaine des resultats;
 - exporter les donnees utiles;

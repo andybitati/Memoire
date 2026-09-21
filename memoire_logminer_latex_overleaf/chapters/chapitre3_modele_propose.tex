@@ -268,9 +268,7 @@ La version V2, développée autour de FastAPI, expose des endpoints permettant d
 
 Redis Streams est ensuite introduit comme bus opérationnel afin de tester une orchestration événementielle et une répartition locale des tâches entre plusieurs workers.
 
-MQTT reste une possibilité d'extension pour les communications légères entre composants. Son intégration complète n'est cependant pas utilisée comme preuve d'un fonctionnement distribué industriel.
-
-Redis Streams et MQTT sont donc considérés comme des moyens d'explorer l'évolution de l'architecture, et non comme une démonstration de scalabilité à grande échelle.
+Redis Streams est donc considéré comme un moyen d'explorer l'évolution de l'architecture, et non comme une démonstration de scalabilité à grande échelle.
 
 \begin{table}[H]
 \centering
@@ -291,7 +289,7 @@ V3 &
 Agents fonctionnels, Redis Streams, consumer groups, heartbeat, ACK et reprise locale. &
 Expérimenter une orchestration événementielle locale, mesurer son coût et vérifier la récupération de tâches non acquittées. \tabularnewline
 Extension &
-MQTT, bus sécurisé, plusieurs machines, supervision renforcée, tolérance aux pannes distribuée. &
+Bus sécurisé, plusieurs machines, supervision renforcée, tolérance aux pannes distribuée. &
 Définir les prolongements possibles sans les confondre avec les capacités déjà validées expérimentalement. \tabularnewline
 \bottomrule
 \end{tabularx}
@@ -447,7 +445,7 @@ Le collecteur produit les données brutes ou semi-structurées. Le parseur enric
 
 Dans la version locale, ces messages peuvent être représentés par des objets en mémoire, des fichiers JSONL ou des sorties CSV.
 
-Dans une version plus distribuée, le même contrat pourrait être utilisé avec Redis Streams, MQTT ou un autre système de messagerie.
+Dans une version plus distribuée, le même contrat pourrait être utilisé avec Redis Streams ou un autre système de messagerie.
 
 L'intérêt de cette abstraction est de préparer l'évolution du prototype sans imposer dès le départ une infrastructure lourde.
 
@@ -571,11 +569,9 @@ Cette configuration permet de tester une boucle interactive et périodique sur u
 
 Le troisième scénario concerne l'évolution vers une architecture événementielle.
 
-Les agents peuvent publier ou consommer des messages à l'aide de Redis Streams ou, dans certaines extensions, de MQTT.
+Les agents peuvent publier ou consommer des messages à l'aide de Redis Streams.
 
 Redis Streams est utilisé dans les expériences afin de vérifier la répartition locale de tâches entre plusieurs workers ainsi que la possibilité de reprendre une tâche non acquittée.
-
-MQTT représente plutôt une option de communication légère entre plusieurs composants.
 
 Ce scénario constitue une validation locale de certains mécanismes distribués. Il ne correspond pas encore à une validation industrielle sur plusieurs machines physiques, plusieurs sites ou un environnement de production sécurisé.
 

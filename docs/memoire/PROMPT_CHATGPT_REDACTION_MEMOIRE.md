@@ -26,7 +26,7 @@ Reseaux a l'aide d'Agents Intelligents Multi-Taches.
 8. Presenter les anomalies non supervisees comme des anomalies candidates, pas
    comme des attaques confirmees.
 9. Ne pas presenter la baseline fail2ban-like comme fail2ban officiel.
-10. Presenter Redis/MQTT comme extensions locales et perspectives de
+10. Presenter Redis Streams comme extension locale et perspective de
     scalabilite, pas comme preuve de production SOC industrielle.
 
 ## Ordre De Redaction Conseille

@@ -25,7 +25,7 @@ Interpretation: precision de routage distinct-source = 5/5. Sur les 30 cycles re
 
 Nous devons repondre positivement, avec nuance. Les avertissements de compatibilite `scikit-learn` montrent une menace de reproductibilite. La bonne reponse est de dire que les scores actuels restent des mesures locales du prototype, et que la diffusion reproductible devra republisher les artefacts entraines dans un environnement epingle.
 
-Mise a jour a signaler explicitement: le depot GitHub mentionne dans l'article contient maintenant `Dockerfile`, `requirements-container.txt`, `requirements.txt`, `requirements-ai.txt`, `docker-compose.redis.yml` et `docker-compose.mqtt.yml`. Le conteneur a ete teste localement avec Docker 27.4.0:
+Mise a jour a signaler explicitement: le depot GitHub mentionne dans l'article contient maintenant `Dockerfile`, `requirements-container.txt`, `requirements.txt`, `requirements-ai.txt` et `docker-compose.redis.yml`. Le conteneur a ete teste localement avec Docker 27.4.0:
 
 ```powershell
 docker build -t logminer-article1-runtime:test .
@@ -36,7 +36,7 @@ Le build est passe apres ajout des dependances systeme Cairo necessaires a `pyca
 
 Formulation courte possible:
 
-> Yes. The GitHub repository now includes the Dockerfile, pinned container requirements and Redis/MQTT Compose descriptors. The container was build-tested with Docker 27.4.0 and smoke-tested by importing the FastAPI application and the pinned scientific stack. The compatibility warnings are treated as a model-persistence validity threat: the current scores are local prototype measurements, and exact replication still requires retraining or republishing the model artifacts under the pinned container environment.
+> Yes. The GitHub repository now includes the Dockerfile, pinned container requirements and the Redis Compose descriptor. The container was build-tested with Docker 27.4.0 and smoke-tested by importing the FastAPI application and the pinned scientific stack. The compatibility warnings are treated as a model-persistence validity threat: the current scores are local prototype measurements, and exact replication still requires retraining or republishing the model artifacts under the pinned container environment.
 
 Cela reste article 1: reproductibilite experimentale. Ce n'est pas encore une revendication de deploiement scalable, donc cela n'empiete pas sur l'article 2.
 
@@ -54,5 +54,5 @@ Formulation courte possible:
 
 ## Position generale a tenir
 
-La reponse doit etre: nous avons ajoute ce qui est mesurable maintenant, et nous avons borne ce qui ne l'est pas encore. Ne pas promettre une evaluation SOC, ni une scalabilite multi-machine, ni une correlation validee par analystes dans l'article 1. L'article 1 defend le routeur auditable, la specialisation controlee, le fallback et la reproductibilite experimentale; l'article 2 gardera le stress, la file Redis/MQTT, la resilience et l'exploitation prolongee.
+La reponse doit etre: nous avons ajoute ce qui est mesurable maintenant, et nous avons borne ce qui ne l'est pas encore. Ne pas promettre une evaluation SOC, ni une scalabilite multi-machine, ni une correlation validee par analystes dans l'article 1. L'article 1 defend le routeur auditable, la specialisation controlee, le fallback et la reproductibilite experimentale; l'article 2 gardera le stress, la file Redis, la resilience et l'exploitation prolongee.
 

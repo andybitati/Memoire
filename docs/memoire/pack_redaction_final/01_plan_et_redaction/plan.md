@@ -110,8 +110,7 @@ Elements a presenter:
   `user`, `src_ip`, `dst_ip`, `category`, `message`;
 - strategie multi-modeles par famille de logs;
 - choix de stabiliser une V1 locale en CLI comme socle de secours, avant une
-  V2 FastAPI avec Redis Streams optionnel. MQTT reste une perspective si des
-  collecteurs plus proches de l'IoT ou du temps reel sont ajoutes.
+  V2 FastAPI avec Redis Streams optionnel.
 
 ## Chapitre 4 - Implementation Du Prototype
 
@@ -261,7 +260,7 @@ Reste a rediger:
 - bilan objectif par objectif;
 - contribution principale;
 - perspectives integrees au memoire: consolidation V2 FastAPI, Redis Streams
-  optionnel deja integre, MQTT en perspective, temps reel, enrichissement des
+  optionnel deja integre, temps reel, enrichissement des
   features, integration SOC/SIEM.
 
 Message final a faire ressortir:

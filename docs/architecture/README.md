@@ -106,7 +106,7 @@ Le prototype peut evoluer en trois niveaux.
 | --- | --- | --- | --- |
 | Local simple | Fichiers CSV + dossiers `data/` | Prototype, tests de datasets, memoire | Maintenant |
 | Services REST | FastAPI | Agents executables separement avec endpoints clairs | Quand le detecteur IA est ajoute |
-| Bus d'evenements | Redis Streams, MQTT ou sockets | Flux quasi temps reel et agents distribues | Redis Streams pour jobs/workers; MQTT maintenant pour pub/sub leger |
+| Bus d'evenements | Redis Streams | Flux quasi temps reel et agents distribues | Jobs persistants, workers et orchestration multi-agent |
 
 Le choix retenu pour stabiliser le prototype et organiser les evolutions du
 memoire est:
@@ -114,7 +114,7 @@ memoire est:
 ```text
 V1: fichiers CSV + CLI + bus local JSONL, version de secours defendable
 V2: FastAPI pour exposer parseur/detecteur/correlateur/dashboard
-V3: Redis Streams optionnel deja integre, file de jobs et workers; MQTT optionnel pour pub/sub temps reel leger
+V3: Redis Streams optionnel deja integre, file de jobs et workers
 ```
 
 La V1 est la version stable du memoire et doit rester fonctionnelle. La

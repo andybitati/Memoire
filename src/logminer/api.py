@@ -27,7 +27,7 @@ if str(BASE_DIR) not in sys.path:
 
 from agents.model_router import MODEL_DEFAULTS, route_model, run_routed_detection
 from agents.correlator import correlate_anomalies
-from agents.bus import MqttMessageBus, RedisMessageBus
+from agents.bus import RedisMessageBus
 from agents.audit import read_audit, write_audit
 from agents.collector_agent import DEFAULT_ROOTS, deployment_roots, discover_logs
 from agents.privilege_agent import request_windows_sensitive_collection
@@ -175,15 +175,6 @@ class EventsRequest(BaseModel):
     count: int = 100
 
 
-class MqttPublishRequest(BaseModel):
-    source: str = "api"
-    target: str = "mqtt"
-    message_type: str = "mqtt.test"
-    payload: dict[str, Any] = Field(default_factory=dict)
-    status: str = "ok"
-    run_id: str | None = None
-
-
 class AlertDecisionRequest(BaseModel):
     alert_id: str = Field(..., description="Identifiant d'alerte, incident ou ligne analysee")
     decision: str = Field(..., description="accept, reject ou reclassify")
@@ -248,17 +239,6 @@ def _redis_settings() -> dict[str, Any]:
     }
 
 
-def _mqtt_settings() -> dict[str, Any]:
-    return {
-        "host": os.getenv("LOGMINER_MQTT_HOST", "localhost"),
-        "port": int(os.getenv("LOGMINER_MQTT_PORT", "1883")),
-        "topic_prefix": os.getenv("LOGMINER_MQTT_TOPIC_PREFIX", "logminer/events"),
-        "qos": int(os.getenv("LOGMINER_MQTT_QOS", "1")),
-        "username": os.getenv("LOGMINER_MQTT_USERNAME") or None,
-        "password": os.getenv("LOGMINER_MQTT_PASSWORD") or None,
-    }
-
-
 def _redis_bus(run_id: str | None = None) -> RedisMessageBus:
     settings = _redis_settings()
     try:
@@ -267,16 +247,6 @@ def _redis_bus(run_id: str | None = None) -> RedisMessageBus:
         return bus
     except Exception as exc:
         raise HTTPException(status_code=503, detail=f"Redis indisponible: {exc}") from exc
-
-
-def _mqtt_bus(run_id: str | None = None) -> MqttMessageBus:
-    settings = _mqtt_settings()
-    try:
-        bus = MqttMessageBus(run_id=run_id, **settings)
-        bus.ping()
-        return bus
-    except Exception as exc:
-        raise HTTPException(status_code=503, detail=f"MQTT indisponible: {exc}") from exc
 
 
 def _publish(
@@ -403,40 +373,6 @@ def redis_pending() -> dict[str, Any]:
         "job_group": settings["job_group"],
         "pending": bus.pending_jobs(stream=settings["job_stream"], group=settings["job_group"]),
     }
-
-
-@app.get("/mqtt/health")
-def mqtt_health() -> dict[str, Any]:
-    settings = _mqtt_settings()
-    bus = _mqtt_bus()
-    try:
-        ping = bus.ping()
-    finally:
-        bus.close()
-    return {
-        "status": "ok",
-        "host": settings["host"],
-        "port": settings["port"],
-        "topic_prefix": settings["topic_prefix"],
-        "qos": settings["qos"],
-        "ping_publish": ping,
-    }
-
-
-@app.post("/mqtt/publish")
-def mqtt_publish(request: MqttPublishRequest) -> dict[str, Any]:
-    bus = _mqtt_bus(request.run_id)
-    try:
-        message = bus.publish(
-            source=request.source,
-            target=request.target,
-            message_type=request.message_type,
-            payload=request.payload,
-            status=request.status,
-        )
-    finally:
-        bus.close()
-    return {"published": True, "message": asdict(message)}
 
 
 @app.get("/events")

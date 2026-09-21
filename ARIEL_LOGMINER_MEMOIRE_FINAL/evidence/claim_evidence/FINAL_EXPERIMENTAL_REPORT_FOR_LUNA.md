@@ -284,7 +284,7 @@ AgentMessage(
 )
 ```
 
-Il n'existe aucun champ direct `event_id`, `message_id` ou `metadata`. `run_id` corrèle une exécution. Toute métadonnée supplémentaire se trouve dans `payload`. Redis ajoute ses propres identifiants de stream pour le transport/ACK; l'enveloppe job Redis est distincte. MQTT sérialise le contrat mais n'ajoute pas un identifiant métier d'événement.
+Il n'existe aucun champ direct `event_id`, `message_id` ou `metadata`. `run_id` corrèle une exécution. Toute métadonnée supplémentaire se trouve dans `payload`. Redis ajoute ses propres identifiants de stream pour le transport/ACK; l'enveloppe job Redis est distincte.
 
 # 15. Statut de la contribution méthodologique
 
@@ -303,7 +303,7 @@ Niveau: OBSERVÉ/DÉMONTRÉ dans les protocoles locaux. Généralisation externe
 | Élément | Statut exact |
 | --- | --- |
 | Pipeline principal | IMPLÉMENTÉ; testé fonctionnellement selon plusieurs voies |
-| `AgentMessage` et bus local/Redis/MQTT | IMPLÉMENTÉS |
+| `AgentMessage` et bus local/Redis | IMPLÉMENTÉS |
 | Routeur réel | IMPLÉMENTÉ et ÉVALUÉ sur corpus dérivé |
 | Corrélateur | IMPLÉMENTÉ et ÉVALUÉ sur scénarios synthétiques contrôlés |
 | Mise à jour contrôlée | IMPLÉMENTÉE et TESTÉE FONCTIONNELLEMENT DE BOUT EN BOUT |
@@ -417,7 +417,7 @@ Ne jamais réintroduire une figure contenant `0,999965` comme résultat scientif
 | Abstract | Aligner exactement sur le résumé et supprimer toute attribution CIC-DDoS/UNSW fragile. |
 | Chapitre 1 | Conserver les cinq hypothèses mais leur attribuer le statut partiellement soutenu; QR1–QR5 partielles, QR6 forte dans le prototype. |
 | Chapitre 2 | Vérifier uniquement les descriptions de datasets; distinguer nom public et copie locale; ne pas inventer de provenance. |
-| Chapitre 3 §3.14 | Remplacer le contrat par les sept champs exacts; séparer enveloppes Redis/MQTT; préciser `run_id` de corrélation. |
+| Chapitre 3 §3.14 | Remplacer le contrat par les sept champs exacts; séparer l'enveloppe Redis; préciser `run_id` de corrélation. |
 | Chapitre 3 parsing | Restreindre la conservation du brut et signaler l'incomplétude HDFS/BGL du pipeline courant. |
 | Chapitre 3 routeur | Décrire scores heuristiques, marge non probabiliste, fallback et incohérence Apache. |
 | Chapitre 3 mise à jour | Statut exact: implémentée et testée fonctionnellement de bout en bout; autonomie en perspective. |
