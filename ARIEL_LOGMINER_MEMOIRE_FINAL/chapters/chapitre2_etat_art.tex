@@ -289,9 +289,7 @@ Supposons par exemple qu'un ensemble contienne 99\,\% d'événements normaux. Un
 qui prédit systématiquement la classe normale obtiendra 99\,\% d'accuracy tout en étant
 incapable de détecter la moindre attaque.
 Cette situation explique l'importance de métriques telles que la précision, le rappel, le
-F1-score, le MCC et l'aire sous la courbe précision--rappel. Leur définition détaillée est
-présentée dans le chapitre méthodologique ; dans l'état de l'art, le point essentiel est
-que la qualité d'un détecteur ne peut pas être résumée par une seule mesure.
+F1-score, le MCC et l'aire sous la courbe précision--rappel. La qualité d'un détecteur ne peut pas être résumée par une seule mesure.
 Le rappel renseigne sur la capacité à retrouver les éléments positifs, tandis que la
 précision indique quelle proportion des détections positives correspond réellement à la
 classe recherchée. Dans un contexte opérationnel, ces deux dimensions sont importantes :
@@ -327,8 +325,7 @@ Lorsque l'objectif est d'étudier la généralisation, une séparation par scén
 apporter une information complémentaire. Le modèle doit alors reconnaître une classe ou
 un comportement dans un contexte moins proche des exemples utilisés pendant
 l'entraînement.
-Le protocole expérimental distingue donc la \textit{performance sur une partition*
-*aléatoire} de la \textit{performance hors scénario d'entraînement}.
+Le protocole expérimental distingue donc la \textit{performance sur une partition aléatoire} de la \textit{performance hors scénario d'entraînement}.
 Cette précaution méthodologique s'inscrit dans un débat documenté par la littérature.
 Plusieurs travaux ont réexaminé CICIDS2017 après sa publication et identifié des
 problèmes de génération du trafic, de construction des flux, d'extraction des
