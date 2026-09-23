@@ -100,12 +100,10 @@ L'API expose les informations nécessaires au fonctionnement de l'interface : é
 
 Le tableau de bord sert avant tout à examiner les alertes, les incidents candidats et les éléments de preuve disponibles. Il constitue un support à l'analyse ; il ne remplace pas la validation humaine.
 
-La note détaillée associée à la figure est reportée dans l’annexe~\ref{ann:notes-figures}.
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.94\textwidth]{dashboard_vue_ensemble.png}
-    \caption[Vue d'ensemble du tableau de bord Ariel Logminer.]{Vue d'ensemble du tableau de bord Ariel Logminer. Source : prototype local Ariel Logminer.}
+    \caption{Vue d'ensemble du tableau de bord. L'interface rassemble les volumes, états et alertes et relie une exécution à ses résultats. Sa validation est fonctionnelle et distincte de l'évaluation prédictive. Source : prototype local Ariel Logminer.}
     \label{fig:dashboard-vue-ensemble}
 \end{figure}
 
@@ -124,4 +122,3 @@ Les manifestes conservent la provenance des jeux de données ainsi que l'unité 
 Chaque campagne possède un identifiant d'exécution et enregistre ses paramètres avec les résultats qu'elle produit. Cette liaison permet de retrouver l'origine d'une valeur sans dépendre d'une transcription manuelle.
 
 Les figures présentées dans le chapitre suivant sont générées directement à partir de ces artefacts CSV ou JSON. Un script commun centralise le style des graphiques, les unités et les sources utilisées. Cette organisation réduit le risque qu'un tableau, une figure et le texte du mémoire rapportent des valeurs différentes pour une même expérience.
-```
