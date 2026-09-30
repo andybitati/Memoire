@@ -1,0 +1,1092 @@
+ANALYSE DU POSITIONNEMENT DE LOGMINER PAR RAPPORT AU MARCHE,
+AUX SOLUTIONS OPEN SOURCE ET AUX TRAVAUX DE RECHERCHE
+
+Date de l'analyse : 30 septembre 2026
+Projet analysé : Ariel LogMiner / TFE
+
+===============================================================================
+1. CONCLUSION EXECUTIVE
+===============================================================================
+
+La conclusion honnête est double.
+
+Premièrement, Ariel LogMiner n'est pas une invention entièrement nouvelle au
+sens du marché. La collecte de journaux hétérogènes, leur normalisation, la
+détection d'anomalies par machine learning, la corrélation, le tableau de bord,
+le feedback analyste et même l'utilisation d'agents logiciels existent déjà,
+séparément ou conjointement, dans des produits comme Elastic Security, Splunk,
+Microsoft Sentinel, IBM QRadar, OpenSearch Security Analytics, Graylog et
+Wazuh. Des dépôts GitHub tels que Salesforce LogAI, AI-SOC-Agent,
+Network Threat Analyzer et plusieurs prototypes de SOC multi-agents couvrent
+également une partie importante du même terrain fonctionnel.
+
+Deuxièmement, aucun produit ou dépôt public identifié pendant cette recherche
+ne reproduit exactement la combinaison particulière évaluée dans LogMiner :
+
+  - reconnaissance de plusieurs familles de journaux ;
+  - normalisation vers un noyau commun ;
+  - routeur open-set capable de rejeter une famille inconnue ;
+  - registre de modèles spécialisés par famille ;
+  - comparaison de méthodes statistiques, ML et deep learning léger ;
+  - allocation négociée des tâches par Contract Net ;
+  - transport de cette négociation par Redis Streams ;
+  - idempotence SQLite et Redis ;
+  - reprise et rejeu contrôlés ;
+  - mémoire locale influençant les offres des agents ;
+  - corrélation en incidents candidats ;
+  - validation humaine et audit ;
+  - protocoles expérimentaux séparant soigneusement les niveaux de preuve.
+
+Il est impossible de prouver qu'aucun système privé, dépôt non indexé ou
+prototype interne ne réalise la même combinaison. L'absence de clone exact
+dans cette recherche ne constitue donc pas, à elle seule, une preuve de
+nouveauté scientifique. En revanche, la composition, l'implémentation et
+l'évaluation de cet ensemble constituent un apport appliqué défendable.
+
+Le meilleur positionnement n'est pas :
+
+  « LogMiner est un nouveau SOC qui fait ce que les autres ne savent pas faire. »
+
+Le positionnement recommandé est :
+
+  « Ariel LogMiner est un banc expérimental local, léger et traçable, conçu
+  comme une couche analytique complémentaire à un SIEM ou à un HIDS. Son apport
+  ne réside pas dans un nouvel algorithme de détection, mais dans l'intégration
+  reproductible d'un routage par famille, de plusieurs modèles légers, d'une
+  allocation multi-agent négociée, de mécanismes de reprise et d'une discipline
+  explicite de preuve expérimentale. »
+
+
+===============================================================================
+2. CE QUE LOGMINER EST REELLEMENT
+===============================================================================
+
+LogMiner se situe entre deux catégories déjà bien établies :
+
+  1. le prototype académique centré sur un algorithme ou un dataset ;
+  2. la plateforme SOC/SIEM industrielle couvrant collecte, détection,
+     investigation, case management et réponse.
+
+LogMiner n'est ni l'un ni l'autre. Il s'agit principalement d'un prototype
+d'intégration et d'expérimentation pour journaux hétérogènes. Sa chaîne couvre :
+
+  collecte ou découverte
+      -> détection du format
+      -> parsing spécialisé
+      -> normalisation
+      -> identification de famille
+      -> routage vers un modèle compatible
+      -> détection d'anomalies candidates
+      -> corrélation
+      -> persistance et audit
+      -> tableau de bord et validation humaine.
+
+La branche multi-agent ajoute une logique de distribution de tâches : un agent
+dispose de capacités, d'un état, d'une charge, d'une mémoire et d'une politique
+locale. Il peut proposer de prendre une tâche ou la refuser. Le coordinateur
+diffuse les appels à propositions, compare les offres et attribue la tâche,
+mais ne calcule pas l'utilité à la place des agents.
+
+Cette définition est importante. Les agents de LogMiner ne sont pas des agents
+cognitifs généraux et ne sont pas principalement des agents LLM. Ce sont des
+agents logiciels bornés, interprétables, spécialisés dans l'allocation et
+l'exécution de traitements. L'expression « agents logiciels distribués à
+négociation de tâches » est plus exacte que la formule commerciale très large
+« agents IA autonomes ».
+
+
+===============================================================================
+3. COMPARAISON AVEC LES PRINCIPALES SOLUTIONS DU MARCHE
+===============================================================================
+
+3.1. Wazuh
+-----------
+
+Recouvrement avec LogMiner :
+
+  - collecte depuis de nombreuses sources ;
+  - décodage et extraction de champs ;
+  - règles et niveaux de sévérité ;
+  - stockage et recherche ;
+  - visualisation et threat hunting ;
+  - intégrations externes ;
+  - scripts de réponse active.
+
+Ce que Wazuh fait mieux :
+
+  - déploiement opérationnel ;
+  - agents endpoint ;
+  - gestion de parc ;
+  - règles de sécurité matures ;
+  - contrôle d'intégrité, vulnérabilités et conformité ;
+  - RBAC et fonctions d'administration ;
+  - mécanismes de réponse.
+
+Ce que LogMiner peut ajouter :
+
+  - rescoring non supervisé d'événements ou d'alertes Wazuh ;
+  - expérimentation de plusieurs modèles sur les mêmes données ;
+  - choix explicite d'un modèle selon la famille ;
+  - détection de rareté ne dépendant pas uniquement des règles Wazuh ;
+  - protocole reproductible permettant d'étudier les faux positifs et la
+    généralisation ;
+  - orchestration expérimentale de traitements distribués.
+
+Verdict : Wazuh reste le candidat le plus naturel pour héberger LogMiner comme
+sidecar analytique. Toutefois, cette complémentarité doit encore être démontrée
+par une intégration de bout en bout et par un gain mesuré face à Wazuh seul.
+
+
+3.2. Elastic Security
+---------------------
+
+Elastic couvre déjà :
+
+  - ingestion, parsing, transformation et routage de logs ;
+  - schéma ECS ;
+  - analyse de volumes et de patterns ;
+  - détection d'anomalies par machine learning ;
+  - règles ML générant des alertes à partir d'un seuil d'anomalie ;
+  - règles de corrélation EQL ;
+  - suppression et regroupement d'alertes ;
+  - timelines, cases et connecteurs vers des systèmes externes ;
+  - dashboards et fonctions d'investigation.
+
+Sur le plan fonctionnel, Elastic est donc un sur-ensemble de nombreuses
+fonctions de LogMiner. LogMiner ne peut pas raisonnablement revendiquer que les
+SOC existants ignorent la détection comportementale ou les anomalies.
+
+Différence défendable : Elastic est un produit opérationnel généraliste alors
+que LogMiner expose et évalue chaque mécanisme dans un environnement local
+contrôlé. LogMiner permet d'inspecter les modèles, les données, les splits, les
+seuils, les échecs et les résultats négatifs sans dépendre d'une plateforme
+propriétaire ou d'un niveau de licence donné.
+
+
+3.3. Splunk Enterprise Security et Machine Learning Toolkit
+-----------------------------------------------------------
+
+Splunk MLTK permet déjà de construire et d'appliquer des modèles de
+classification, clustering, séries temporelles et anomalies. Il comprend ou
+rend accessibles des méthodes proches de celles de LogMiner : Local Outlier
+Factor, One-Class SVM, modèles linéaires, arbres, Random Forest et de nombreux
+algorithmes Python. Splunk Enterprise Security ajoute corrélation, contexte,
+scores de risque et Risk-Based Alerting.
+
+Recouvrement : très fort.
+
+Différence défendable : LogMiner est plus petit, local, inspectable et construit
+comme un protocole de recherche reproductible. Splunk est plus mature et plus
+puissant opérationnellement, mais plus lourd, plus coûteux et moins adapté à
+l'étude transparente de toutes les décisions internes.
+
+
+3.4. Microsoft Sentinel et Defender
+------------------------------------
+
+Microsoft Sentinel possède déjà :
+
+  - ingestion de nombreuses sources ;
+  - modèle normalisé et requêtes KQL ;
+  - règles d'analyse ;
+  - anomalies personnalisables ;
+  - UEBA fondé sur le comportement propre d'une entité, ses pairs et
+    l'organisation ;
+  - scores de priorité et d'anomalie ;
+  - corrélation et investigation ;
+  - automatisation et playbooks ;
+  - agents Security Copilot pour le triage.
+
+Microsoft commercialise déjà des agents capables de distinguer des alertes
+vraies et fausses, de documenter leur raisonnement et d'exploiter du feedback.
+L'expression générale « agent pour aider un SOC » n'est donc plus distinctive.
+
+Différence : LogMiner n'utilise pas principalement un LLM pour simuler un
+analyste. Il étudie des agents déterministes et légers pour distribuer des
+traitements de données et de modèles. Cela favorise le fonctionnement local,
+la répétabilité et un coût réduit, mais limite l'analyse sémantique.
+
+
+3.5. IBM QRadar UEBA
+--------------------
+
+QRadar UEBA construit déjà des profils de risque, des modèles temporels, des
+clusters comportementaux et des baselines d'utilisateurs ou d'entités. Il
+associe ces résultats à des dashboards, des timelines et des offenses.
+
+Recouvrement : fort sur l'anomalie, le scoring, l'historique et la restitution.
+
+Différence : LogMiner ne vise pas une UEBA industrielle. Son apport est plutôt
+la comparaison contrôlée de modèles et de protocoles sur plusieurs familles de
+données, avec accès direct au code et aux artefacts.
+
+
+3.6. OpenSearch Security Analytics
+----------------------------------
+
+OpenSearch est un concurrent particulièrement important parce qu'il est ouvert
+et proche technologiquement des infrastructures SIEM modernes. Il propose :
+
+  - ingestion et indexation de logs ;
+  - schéma ECS et types de journaux personnalisés ;
+  - règles Sigma ;
+  - détecteurs et alertes ;
+  - plugin d'anomaly detection ;
+  - corrélation de résultats provenant de plusieurs sources ;
+  - visualisation par graphe de corrélation.
+
+OpenSearch fragilise l'argument selon lequel LogMiner serait nécessaire parce
+qu'aucune solution ouverte ne rassemble détection, corrélation et dashboard.
+
+Différence : LogMiner reste plus proche d'un banc de recherche multi-modèles,
+avec routage open-set, campagnes sur datasets et négociation de tâches. Une
+comparaison directe avec OpenSearch Anomaly Detection renforcerait fortement le
+mémoire.
+
+
+3.7. Graylog Security et Security Onion
+---------------------------------------
+
+Graylog et Security Onion couvrent déjà une grande partie de la chaîne
+opérationnelle : ingestion, recherche, règles, alertes, corrélation,
+visualisation, investigation et gestion de cas. Graylog Security propose en
+outre des fonctions d'anomaly detection et d'UEBA selon l'édition.
+
+LogMiner ne les remplace pas. Il peut au mieux servir de moteur expérimental
+externe ou de laboratoire de modèles connecté à leurs données.
+
+
+3.8. SOC « agentiques » récents
+-------------------------------
+
+Microsoft Security Copilot, Google Security Operations et Cortex XSIAM ont déjà
+introduit des agents de triage, investigation et réponse. Ces systèmes peuvent
+chercher du contexte, corréler des signaux, rédiger une conclusion et parfois
+déclencher une action avec validation humaine.
+
+Ce marché confirme deux choses :
+
+  - l'idée générale d'un SOC assisté par plusieurs agents n'est pas nouvelle ;
+  - la différence de LogMiner doit porter sur la légèreté, la déterminisme, la
+    distribution des traitements et la reproductibilité, pas sur le simple mot
+    « agent ».
+
+
+===============================================================================
+4. DEPOTS GITHUB ET PROJETS OPEN SOURCE LES PLUS PROCHES
+===============================================================================
+
+4.1. Salesforce LogAI
+---------------------
+
+LogAI est probablement le voisin open source le plus important sur la partie
+analyse intelligente de journaux. Il offre :
+
+  - modèle de données OpenTelemetry ;
+  - chargeur et prétraitement unifiés ;
+  - parsing automatique, notamment Drain ;
+  - clustering et résumé de logs ;
+  - détection temporelle et sémantique ;
+  - modèles statistiques, ML et deep learning ;
+  - benchmark sur HDFS/BGL ;
+  - interface graphique.
+
+Chevauchement : très fort sur parsing, modèles, benchmark et interface.
+
+Différence LogMiner : orientation sécurité, formatage de sources Windows,
+réseau et SIEM, routage par famille, corrélation en incidents, négociation CNP,
+Redis, idempotence, multi-VM et matrice affirmation-preuve.
+
+Conclusion : LogAI doit absolument apparaître dans l'état de l'art. L'ignorer
+rendrait vulnérable toute revendication de chaîne intégrée de log intelligence.
+
+
+4.2. logpai/loglizer, Drain3, DeepLog, LogBERT et projets similaires
+-------------------------------------------------------------------
+
+Ces projets couvrent les briques algorithmiques de LogMiner : parsing de
+templates, extraction de features, modèles statistiques, apprentissage
+supervisé ou non supervisé, séquences et deep learning.
+
+Ils montrent que LogMiner n'invente ni Drain3, ni Isolation Forest, ni le LSTM,
+ni la détection d'anomalies HDFS/BGL. Leur faiblesse relative par rapport au
+périmètre de LogMiner est qu'ils se concentrent souvent sur le détecteur et le
+benchmark, sans couvrir simultanément ingestion multi-format, distribution,
+audit, feedback et tableau de bord SOC.
+
+
+4.3. Network Threat Analyzer
+----------------------------
+
+Ce dépôt combine PCAP, syslog, logs web, règles, Isolation Forest, LOF,
+One-Class SVM, fusion, déduplication, scoring et dashboard Streamlit.
+
+Chevauchement : fort.
+
+Différence LogMiner : davantage de familles, registre de modèles, routeur
+open-set, distribution Redis, Contract Net, idempotence, mémoire expérimentale
+et campagnes multi-protocoles plus approfondies.
+
+
+4.4. AI-SOC-Agent
+-----------------
+
+Ce dépôt est très proche du positionnement « complément à Wazuh ». Sa chaîne
+revendiquée est :
+
+  alertes Wazuh
+      -> corrélation
+      -> construction d'incident
+      -> Isolation Forest
+      -> fusion de preuves
+      -> LLM local
+      -> validation du rapport
+      -> dashboard et PDF.
+
+Chevauchement : très fort sur l'idée d'ajouter une couche analytique à Wazuh.
+
+Différence LogMiner : entrée multi-source plus large, plusieurs modèles et
+protocoles, routeur open-set, orchestration distribuée et profondeur de la
+traçabilité expérimentale. AI-SOC-Agent est toutefois plus directement intégré
+à une instance Wazuh et produit un rapport assisté par LLM.
+
+
+4.5. Cybersecurity Multi-Agent SOC Platform
+-------------------------------------------
+
+Ce projet universitaire combine plusieurs agents, Isolation Forest, LLM,
+apprentissage par renforcement, feedback humain, protocoles MCP/A2A, dashboard
+et réponse automatisée.
+
+Chevauchement : fort sur l'étiquette « SOC multi-agent » et sur le pipeline de
+décision.
+
+Différence : il vise surtout le raisonnement LLM et la réponse aux menaces
+internes. LogMiner vise le traitement reproductible de logs hétérogènes et la
+mesure des propriétés architecturales.
+
+
+4.6. gapilongo/SOC et prototypes agentiques comparables
+--------------------------------------------------------
+
+Plusieurs dépôts récents décrivent des agents d'ingestion, triage, corrélation,
+analyse, human-in-the-loop, réponse et apprentissage, avec Redis, bases de
+données et audit. Le recouvrement architectural peut être élevé.
+
+Il faut cependant distinguer :
+
+  - une architecture annoncée dans un README ;
+  - du code effectivement exécuté ;
+  - une expérimentation reproductible ;
+  - une validation dans un environnement réel.
+
+L'un des avantages de LogMiner est précisément de fournir des artefacts, des
+runs, des tests, des hashes et une matrice de preuves. Cette différence est
+plus sérieuse que la simple présence d'un diagramme multi-agent.
+
+
+4.7. Contract Net et Redis
+--------------------------
+
+Le Contract Net Protocol remonte aux travaux de Reid G. Smith publiés en 1980.
+Il ne peut donc pas être présenté comme une invention de LogMiner. Des dépôts
+génériques mettent également en œuvre des appels à propositions, offres et
+attributions sur Redis.
+
+L'apport de LogMiner est plus restreint mais réel : adapter ce protocole à des
+tâches de parsing, routage, détection et corrélation ; rendre les motifs de
+refus explicites ; intégrer l'état des modèles et dépendances dans l'offre ;
+relier la négociation à l'idempotence et à l'audit ; puis mesurer son coût face
+à des architectures centralisées.
+
+
+===============================================================================
+5. CE QUI N'EST PAS NOUVEAU DANS LOGMINER
+===============================================================================
+
+Les éléments suivants ne doivent pas être revendiqués comme inventions :
+
+  - la collecte ou le parsing de logs ;
+  - la normalisation vers un schéma commun ;
+  - l'utilisation de CEF, LEEF, syslog ou EVTX ;
+  - Isolation Forest, Random Forest, LOF, k-Means, One-Class SVM, LSTM,
+    Autoencoder, z-score, IQR ou histogramme ;
+  - Drain3 et le parsing par templates ;
+  - les datasets HDFS, BGL et CICIDS ;
+  - la corrélation temporelle ou par entité ;
+  - un dashboard d'anomalies ;
+  - le feedback analyste ;
+  - Redis Streams ;
+  - l'idempotence ;
+  - le Contract Net Protocol ;
+  - les IDS ou SOC organisés en agents ;
+  - le principe d'un complément ML à un SIEM.
+
+AAFID étudiait déjà à la fin des années 1990 une architecture distribuée
+d'agents autonomes pour la détection d'intrusion. La littérature récente et les
+produits 2025-2026 ont de plus généralisé les agents LLM pour le triage SOC.
+
+
+===============================================================================
+6. L'APPORT PROPRE DE LOGMINER, MEME S'IL RESTE MODESTE
+===============================================================================
+
+6.1. Une contribution de composition évaluée, pas un simple assemblage
+-----------------------------------------------------------------------
+
+Assembler des briques connues n'est pas automatiquement une contribution.
+L'apport apparaît lorsque l'assemblage :
+
+  - résout un problème explicite ;
+  - impose des interfaces et contrats vérifiables ;
+  - produit un comportement mesurable ;
+  - permet de comparer plusieurs choix ;
+  - révèle des résultats qui n'étaient pas évidents avant l'expérience.
+
+LogMiner satisfait partiellement ces conditions. Il ne se contente pas de
+placer plusieurs scripts dans un dossier. Il relie le format d'entrée, la
+famille, le prétraitement, le modèle compatible, la décision d'un agent, le
+résultat, la corrélation et la trace d'audit dans un même run.
+
+La contribution est donc une contribution d'ingénierie scientifique : rendre
+comparables, observables et testables des fonctions habituellement étudiées
+séparément.
+
+
+6.2. Le routage est séparé de la performance prédictive
+-------------------------------------------------------
+
+Beaucoup de systèmes confondent deux questions :
+
+  - le système a-t-il choisi un traitement compatible ?
+  - le modèle choisi prédit-il mieux qu'un autre ?
+
+LogMiner mesure ces questions séparément. Le routeur peut être utile pour
+éviter d'envoyer un fichier HDFS à un modèle de flux réseau même lorsque la
+spécialisation n'apporte pas systématiquement un meilleur F1.
+
+Le run open-set final utilise un seuil calibré uniquement sur les familles
+connues. Dans le petit test final, les 28 fichiers connus sont acceptés et les
+trois fichiers inconnus sont rejetés. L'échantillon inconnu est trop petit pour
+revendiquer une généralisation, mais le protocole illustre correctement la
+différence entre classification fermée et rejet d'une entrée hors périmètre.
+
+Ce point est un apport méthodologique utile : un système de sécurité sérieux
+doit pouvoir dire « je ne connais pas cette source » plutôt que forcer une
+classification et produire un score trompeur.
+
+
+6.3. L'exécution réelle des modèles est prouvée dans la chaîne multi-agent
+-------------------------------------------------------------------------
+
+Une faiblesse fréquente des prototypes est d'afficher un registre de modèles
+sans prouver que les artefacts sont réellement chargés au moment du traitement.
+
+La consolidation finale de LogMiner montre que sept artefacts compatibles ont
+été chargés et appelés sur 1 400 des 1 401 unités de la condition multi-modèle ;
+une unité Apache a suivi le fallback. Cette preuve est plus importante qu'une
+simple capture d'écran du registre : elle relie la décision de routage à une
+inférence effectivement exécutée et à des marqueurs d'audit.
+
+L'apport reste limité : l'exécution effective ne prouve pas que chaque modèle
+est bon. Elle prouve néanmoins que l'architecture n'est pas seulement nominale.
+
+
+6.4. Des agents réellement négociateurs, et non de simples classes nommées agents
+-------------------------------------------------------------------------------
+
+Le projet distinguait initialement des workers spécialisés mais leur allocation
+restait centralisée. La transformation finale matérialise un cycle :
+
+  CFP -> PROPOSE ou REFUSE -> AWARD ou REJECT -> ACCEPT -> RESULT ou FAIL
+      -> FEEDBACK.
+
+Les agents calculent eux-mêmes une utilité à partir de leur capacité, historique,
+modèle disponible, santé, charge et latence. Les refus sont normalisés : capacité
+manquante, modèle absent, surcharge, agent non sain, utilité insuffisante ou
+dépendance indisponible.
+
+Ce n'est pas une nouvelle théorie multi-agent. L'apport est une implémentation
+traçable de la négociation appliquée au pipeline LogMiner, accompagnée d'une
+comparaison avec un monolithe et des workers centralisés.
+
+
+6.5. Le coût de l'architecture est mesuré au lieu d'être masqué
+--------------------------------------------------------------
+
+La campagne principale compare quatre conditions : monolithe, workers
+centralisés, agents avec mémoire désactivée et agents avec mémoire activée.
+Elle représente 160 runs et 264 000 traitements de micro-tâches.
+
+Le résultat est défavorable au multi-agent pour le débit brut : à 5 000 tâches,
+le monolithe est très largement plus rapide et les agents paient le coût des
+messages et de la négociation. La mémoire n'apporte pas non plus un gain de
+débit systématique.
+
+Conserver ce résultat négatif est un apport scientifique. Cela évite la fausse
+conclusion « multi-agent = automatiquement plus rapide ». LogMiner montre plutôt
+que l'intérêt potentiel des agents se situe dans la modularité, l'audit, la
+compatibilité, la réattribution et la reprise, avec un coût mesurable.
+
+
+6.6. Mémoire et adaptation bornées, interprétables
+--------------------------------------------------
+
+La mémoire des agents ne prétend pas être un apprentissage continu général.
+Elle conserve des succès, échecs et durées puis modifie une composante de
+l'utilité. Dans un scénario contrôlé de 120 tâches, la préférence se déplace
+vers l'agent devenu plus adapté après plusieurs observations.
+
+L'apport est faible mais propre : montrer qu'un historique local peut influencer
+une décision d'allocation de manière inspectable. Ce résultat ne prouve ni un
+gain de détection ni une adaptation autonome en production.
+
+
+6.7. Reprise et idempotence reliées au traitement
+-------------------------------------------------
+
+LogMiner ne se limite pas au pending/ACK de Redis. Il introduit une clé logique
+d'idempotence et des magasins SQLite/Redis. Le résultat est persisté avant
+l'acquittement ; un agent reprenant une tâche déjà terminée relit le résultat au
+lieu d'appeler le handler une seconde fois.
+
+Les campagnes contrôlées montrent un rejeu entre processus et entre les VM
+Debian/Ubuntu sans effet logique dupliqué dans le scénario instrumenté.
+
+Cet apport est utile pour un complément de SOC, car une reprise ne doit pas
+créer deux incidents, deux notifications ou deux réponses. La limite est
+essentielle : l'atomicité n'est pas garantie pour n'importe quel effet externe
+si le système cible ne partage pas la transaction ou la clé d'idempotence.
+
+
+6.8. Une chaîne locale et légère face à des plateformes lourdes
+---------------------------------------------------------------
+
+LogMiner peut être exécuté localement avec des modèles classiques, sans envoyer
+les journaux vers un service LLM ou une plateforme cloud. Cette caractéristique
+peut avoir une valeur dans :
+
+  - un laboratoire universitaire ;
+  - une petite organisation ;
+  - un environnement à connectivité limitée ;
+  - un contexte où les journaux ne doivent pas quitter le site ;
+  - une phase de sélection ou validation avant intégration au SIEM.
+
+La légèreté ne doit pas être confondue avec une meilleure scalabilité. Elle
+signifie plutôt que le prototype est plus facile à inspecter, modifier et
+reproduire qu'un SOC commercial complet.
+
+
+6.9. Le principal apport : la discipline affirmation -> preuve -> limite
+-----------------------------------------------------------------------
+
+La contribution la plus solide de LogMiner est probablement méthodologique.
+Le projet conserve une matrice reliant :
+
+  affirmation
+      -> expérience
+      -> configuration
+      -> données
+      -> artefact
+      -> résultat
+      -> limite rédactionnelle.
+
+Cette discipline a conduit à corriger ou rejeter plusieurs affirmations :
+
+  - un F1 élevé sur une séparation aléatoire ne prouve pas la généralisation ;
+  - sur CICIDS2017, le F1 passe approximativement de 0,995 en split aléatoire à
+    0,158 en holdout par scénario ;
+  - le routage n'apporte pas un gain prédictif systématique ;
+  - la mémoire n'améliore pas systématiquement le débit ;
+  - les agents sont beaucoup plus lents que le monolithe sur les micro-tâches ;
+  - l'inférence réelle Linux/auth n'obtient qu'un F1 descriptif d'environ 0,39
+    dans le sous-ensemble final étudié ;
+  - le résultat HDFS doit être évalué au niveau bloc et reste variable ;
+  - BGL doit être interprété avec son taux élevé de templates inconnus ;
+  - une anomalie candidate ne constitue pas une attaque confirmée.
+
+Un produit commercial documente rarement ses résultats négatifs avec ce niveau
+de granularité. Un petit prototype qui démontre ses limites peut avoir une
+valeur scientifique supérieure à un prototype qui annonce seulement un score
+spectaculaire.
+
+
+6.10. La valeur potentielle comme complément de SOC
+---------------------------------------------------
+
+La valeur réaliste de LogMiner n'est pas de remplacer les règles, le stockage,
+le case management ou la réponse d'un SOC. Elle peut être de jouer l'un des
+rôles suivants :
+
+  A. Sidecar d'anomalie
+     Relire des événements ou alertes déjà produits par Wazuh et ajouter un
+     score de rareté ou une anomalie candidate.
+
+  B. Banc de qualification de modèles
+     Comparer plusieurs traitements avant d'en intégrer un au SIEM.
+
+  C. Routeur de traitements hétérogènes
+     Eviter d'appliquer le même modèle à des formats ou familles incompatibles.
+
+  D. Couche d'audit expérimental
+     Conserver la provenance du modèle, des paramètres et de chaque décision.
+
+  E. Démonstrateur de distribution résiliente
+     Tester allocation, refus, reprise et idempotence avant une architecture
+     plus industrielle.
+
+  F. Outil de formation
+     Montrer à des étudiants ou analystes comment ingestion, parsing, features,
+     modèles, corrélation et orchestration interagissent réellement.
+
+Ces rôles sont modestes, mais ils sont cohérents avec les preuves disponibles.
+
+
+===============================================================================
+7. EVALUATION DU NIVEAU DE NOUVEAUTE
+===============================================================================
+
+Nouvel algorithme de détection                         : très faible / aucun
+Nouvelle méthode de parsing                            : aucune
+Nouveau protocole multi-agent                          : aucun
+Nouvelles fonctions SOC                                : faible
+Nouvelle combinaison technique précise                 : modérée
+Implémentation intégrée et auditable                    : modérée à forte
+Evaluation séparée des propriétés architecturales      : forte
+Traçabilité et conservation des résultats négatifs     : forte
+Maturité opérationnelle SOC                            : faible
+Valeur pédagogique et reproductibilité locale          : forte
+
+Cette évaluation ne dévalorise pas le travail. Un TFE n'est pas obligé
+d'inventer un nouvel algorithme fondamental. Il doit définir un problème,
+concevoir une solution, l'implémenter, l'évaluer honnêtement et en déduire des
+conclusions proportionnées aux preuves. Sur ce terrain, LogMiner possède un
+apport réel.
+
+
+===============================================================================
+8. CE QUE LES PREUVES ACTUELLES PERMETTENT DE DIRE
+===============================================================================
+
+Affirmations raisonnablement soutenables :
+
+  - LogMiner est une chaîne exécutable multi-source et multi-modèle.
+  - Les agents possèdent des capacités, un état, une politique et une mémoire.
+  - Une négociation Contract Net complète est implémentée et tracée.
+  - Plusieurs processus et deux VM ont participé aux campagnes de laboratoire.
+  - La reprise et l'idempotence fonctionnent dans les scénarios instrumentés.
+  - Les modèles compatibles sont réellement chargés et exécutés dans la chaîne.
+  - Un routeur open-set a rejeté les trois entrées inconnues du petit test final.
+  - Les performances prédictives changent fortement selon le dataset et le
+    protocole de séparation.
+  - L'orchestration multi-agent ajoute un surcoût important sur les micro-tâches.
+  - Les résultats et leurs limites sont rattachés à des artefacts vérifiables.
+
+Affirmations non soutenables actuellement :
+
+  - LogMiner détecte globalement mieux qu'Elastic, Splunk, Sentinel ou Wazuh.
+  - LogMiner détecte des zero-days ou attaques inconnues en production.
+  - LogMiner réduit les faux positifs d'un SOC réel.
+  - LogMiner diminue le temps de travail des analystes.
+  - Le routage spécialisé améliore toujours le F1.
+  - La mémoire améliore systématiquement les performances.
+  - L'architecture est hautement disponible ou industriellement scalable.
+  - Le dashboard a une utilisabilité validée auprès d'analystes.
+  - Les agents sont cognitivement autonomes.
+  - Le système est prêt pour un déploiement SOC de production.
+
+
+===============================================================================
+9. LA COMPLEMENTARITE AVEC WAZUH N'EST PAS ENCORE PROUVEE
+===============================================================================
+
+L'analyse actuelle de l'export Wazuh contient 122 563 événements et signale
+3 676 anomalies candidates LogMiner. Cela prouve que LogMiner peut rescorrer
+des données Wazuh. Cela ne prouve pas encore qu'il apporte une meilleure
+détection.
+
+Pour démontrer une complémentarité, il faudrait connaître :
+
+  - les vraies attaques présentes ;
+  - celles détectées par Wazuh seul ;
+  - celles détectées par LogMiner seul ;
+  - celles ajoutées uniquement par LogMiner ;
+  - parmi ces alertes ajoutées, combien sont vraies ;
+  - le nombre de faux positifs supplémentaires par jour ;
+  - le temps nécessaire à l'analyste pour les trier ;
+  - la latence et le coût de calcul supplémentaires.
+
+Le tableau de recouvrement Wazuh/LogMiner est descriptif. Sans vérité terrain,
+une anomalie LogMiner absente des alertes Wazuh peut être :
+
+  - une attaque nouvelle utilement détectée ;
+  - un événement bénin rare ;
+  - une erreur de parsing ;
+  - un changement normal de configuration ;
+  - un artefact du modèle ou du seuil.
+
+La formule « complément conçu et techniquement plausible » est actuellement
+plus exacte que « complément dont le gain est démontré ».
+
+
+===============================================================================
+10. EXPERIENCE DECISIVE A AJOUTER
+===============================================================================
+
+L'expérience la plus utile serait une comparaison contrôlée à quatre branches :
+
+  A. Wazuh seul ;
+  B. LogMiner seul ;
+  C. union des alertes Wazuh et LogMiner ;
+  D. intersection ou fusion pondérée Wazuh + LogMiner.
+
+Le même scénario devrait être rejoué dans les quatre conditions. La vérité
+terrain pourrait provenir d'un petit laboratoire contrôlé avec attaques connues,
+par exemple des scénarios d'authentification, exécution de processus, mouvement
+latéral ou trafic réseau clairement horodatés.
+
+Métriques minimales :
+
+  - TP, FP, FN, TN lorsque leur définition est valide ;
+  - précision, rappel, F1 et MCC ;
+  - rappel incrémental de C par rapport à A ;
+  - précision des alertes ajoutées uniquement par LogMiner ;
+  - alertes par heure ou par jour ;
+  - temps moyen de détection ;
+  - latence P95 ;
+  - CPU et RAM ;
+  - nombre d'incidents à examiner ;
+  - temps de triage analyste, si des participants sont disponibles.
+
+Cette expérience permettrait de répondre à la question commerciale essentielle :
+
+  « LogMiner trouve-t-il des événements pertinents manqués par le SOC sans
+  créer une quantité inacceptable de bruit ? »
+
+
+===============================================================================
+11. INTEGRATION TECHNIQUE A REALISER POUR MERITER LE TERME COMPLEMENT
+===============================================================================
+
+Entrée recommandée :
+
+  - lecture de alerts.json ou de l'API Wazuh ;
+  - ou lecture de l'index wazuh-alerts-* dans OpenSearch ;
+  - conservation de l'identifiant original, de l'agent, de la règle et du
+    timestamp ;
+  - déduplication et checkpoint de lecture.
+
+Sortie recommandée :
+
+  - index OpenSearch séparé, par exemple logminer-anomalies-* ;
+  - ou webhook/custom integration Wazuh ;
+  - référence bidirectionnelle vers l'événement d'origine ;
+  - score, modèle, version, features principales, seuil, motif et run_id ;
+  - statut anomaly_candidate, jamais attack_confirmed sans preuve externe.
+
+Exigences minimales de production :
+
+  - TLS ;
+  - authentification et RBAC ;
+  - gestion des secrets ;
+  - limitation de débit et backpressure ;
+  - rotation/rétention des données ;
+  - observabilité Prometheus/Grafana ;
+  - reprise après panne du broker ;
+  - test de partition réseau ;
+  - Redis Sentinel ou Cluster si la haute disponibilité est revendiquée ;
+  - politique de version et de rollback des modèles ;
+  - licence explicite si le dépôt doit être publié ou réutilisé.
+
+
+===============================================================================
+12. COMPARAISONS SUPPLEMENTAIRES A AJOUTER AU MEMOIRE
+===============================================================================
+
+L'état de l'art ne devrait pas se limiter à fail2ban, OSSEC et Wazuh. Il faut
+au minimum ajouter :
+
+  - Elastic Security ML et EQL ;
+  - Splunk Enterprise Security et MLTK ;
+  - Microsoft Sentinel UEBA ;
+  - IBM QRadar UEBA ;
+  - OpenSearch Security Analytics et Anomaly Detection ;
+  - Salesforce LogAI ;
+  - Security Onion ou Graylog comme plateforme ouverte/opérationnelle ;
+  - AAFID comme antériorité multi-agent ;
+  - les agents SOC récents de Microsoft, Google et Palo Alto ;
+  - au moins deux dépôts GitHub de SOC multi-agent contemporains.
+
+Pour chaque solution, séparer les dimensions suivantes :
+
+  - objectif principal ;
+  - formats et ingestion ;
+  - règles/signatures ;
+  - ML/anomalies ;
+  - sélection ou routage de modèles ;
+  - corrélation ;
+  - orchestration et distribution ;
+  - feedback humain ;
+  - réponse automatique ;
+  - auditabilité ;
+  - reproductibilité scientifique ;
+  - maturité production ;
+  - licence et coût.
+
+
+===============================================================================
+13. FORMULATIONS RECOMMANDEES POUR LE MEMOIRE
+===============================================================================
+
+13.1. Formulation courte
+------------------------
+
+« Ariel LogMiner est un prototype d'intégration et d'expérimentation pour
+l'analyse de journaux hétérogènes. Sa contribution ne réside pas dans un nouvel
+algorithme, mais dans l'articulation reproductible d'un routage par famille, de
+plusieurs modèles légers, d'une orchestration multi-agent négociée et de
+mécanismes d'audit et de reprise. »
+
+
+13.2. Formulation orientée complément SOC
+-----------------------------------------
+
+« LogMiner est conçu comme une couche analytique expérimentale pouvant être
+placée à côté d'un SIEM ou d'un HIDS. Le SOC conserve la collecte, les règles,
+le stockage, l'investigation et la réponse ; LogMiner ajoute un environnement
+local permettant de rescorrer certaines données, comparer des modèles et
+conserver la provenance de chaque décision. Le gain opérationnel de cette
+complémentarité reste à mesurer dans un déploiement intégré. »
+
+
+13.3. Formulation de l'apport scientifique
+------------------------------------------
+
+« L'apport principal est méthodologique : les performances prédictives, le
+routage, la distribution, la reprise et l'utilité du feedback sont évalués
+comme des propriétés distinctes. Cette séparation évite de déduire d'un bon F1
+la robustesse ou la valeur opérationnelle du système entier. »
+
+
+13.4. Formulation sur les agents
+--------------------------------
+
+« Les agents de LogMiner sont des composants logiciels bornés disposant de
+capacités, d'un état, d'une mémoire et d'une politique locale d'offre ou de
+refus. Leur autonomie concerne l'allocation négociée des tâches ; elle ne doit
+pas être assimilée à une autonomie cognitive ou à un analyste LLM. »
+
+
+13.5. Formulation sur la nouveauté
+----------------------------------
+
+« Les briques mobilisées possèdent toutes des antériorités. La nouveauté
+revendiquée est donc compositionnelle et expérimentale : elle porte sur leur
+intégration dans une chaîne légère unique et sur la confrontation systématique
+des revendications architecturales aux preuves produites. »
+
+
+===============================================================================
+14. REPONSES PREPAREES AUX QUESTIONS D'UN JURY
+===============================================================================
+
+Question : Elastic, Splunk ou Sentinel font déjà de l'anomaly detection. Où est
+votre nouveauté ?
+
+Réponse :
+« Oui, et le travail ne revendique pas l'invention de l'anomaly detection. Son
+apport est un banc local et inspectable qui relie formats, routeur, modèles,
+négociation de tâches et audit, puis évalue séparément la précision, le coût de
+l'orchestration, le rejet open-set et la reprise. »
+
+
+Question : Salesforce LogAI semble déjà proposer une chaîne multi-modèle avec
+parsing et interface. Pourquoi LogMiner ?
+
+Réponse :
+« LogAI est un voisin important et doit être cité. Il est plus avancé comme
+bibliothèque de log intelligence. LogMiner se distingue par l'orientation
+cybersécurité multi-source, le routage de familles, la corrélation en incidents,
+la négociation Contract Net, Redis, l'idempotence et la validation multi-VM. »
+
+
+Question : Pourquoi parler de multi-agent si c'est plus lent qu'un monolithe ?
+
+Réponse :
+« Le résultat montre précisément que le multi-agent n'est pas un mécanisme
+d'accélération automatique. Son intérêt étudié porte sur la modularité, le
+refus d'une tâche incompatible, l'audit, la réattribution et la reprise. Le coût
+de ces propriétés est mesuré au lieu d'être ignoré. »
+
+
+Question : LogMiner détecte-t-il des attaques inconnues ?
+
+Réponse :
+« Il détecte des observations atypiques et produit des anomalies candidates.
+Une anomalie n'est pas une attaque. La capacité à ajouter des vraies détections
+à un SOC doit encore être mesurée sur un scénario labellisé. »
+
+
+Question : Est-ce un système prêt pour la production ?
+
+Réponse :
+« Non. Il s'agit d'un prototype de laboratoire. La production demanderait au
+minimum haute disponibilité, TLS, RBAC, secrets, observabilité, tests de
+partition, charge longue durée, intégration bidirectionnelle et étude avec des
+analystes. »
+
+
+Question : Quel est alors le résultat le plus important ?
+
+Réponse :
+« Le résultat principal est qu'une même chaîne peut intégrer plusieurs familles
+et mécanismes tout en conservant la provenance de ses décisions, et surtout que
+les conclusions changent fortement avec le protocole. Le projet montre autant
+les limites que les succès de l'architecture. »
+
+
+===============================================================================
+15. VERDICT FINAL
+===============================================================================
+
+Il existe des solutions similaires et plusieurs sur-ensembles fonctionnels de
+LogMiner sur le marché. Il existe également des dépôts GitHub très proches.
+Présenter LogMiner comme une technologie sans équivalent serait fragile.
+
+Il reste néanmoins un apport défendable : une combinaison spécifique de
+traitement multi-source, routage open-set, portefeuille de modèles, agents
+négociateurs, Redis, idempotence et audit, accompagnée d'une évaluation qui
+sépare les propriétés au lieu de les confondre.
+
+La valeur la plus originale n'est pas que LogMiner fasse davantage qu'un SOC
+commercial. Il en fait beaucoup moins. Sa valeur est de rendre visibles et
+testables des mécanismes qui sont souvent enfermés dans une plateforme plus
+large, et d'associer à chaque affirmation un niveau de preuve et une limite.
+
+La contribution peut donc être qualifiée ainsi :
+
+  - faible sur le plan algorithmique ;
+  - limitée sur le plan de la nouveauté produit ;
+  - modérée sur le plan de la combinaison architecturale ;
+  - forte sur le plan de l'intégration reproductible, de la traçabilité et de
+    l'honnêteté expérimentale.
+
+C'est ce dernier axe qui doit être placé au centre de la soutenance et de la
+rédaction finale.
+
+
+===============================================================================
+16. SOURCES EXTERNES PRINCIPALES
+===============================================================================
+
+Les pages ci-dessous ont été consultées ou vérifiées pour cette analyse.
+
+Produits et plateformes :
+
+Wazuh, Decoders
+https://documentation.wazuh.com/current/user-manual/ruleset/decoders/index.html
+
+Wazuh Dashboard
+https://documentation.wazuh.com/current/getting-started/components/wazuh-dashboard.html
+
+Wazuh, Custom Active Response
+https://documentation.wazuh.com/current/user-manual/capabilities/active-response/custom-active-response-scripts.html
+
+Elastic Security, Machine Learning Rules
+https://www.elastic.co/docs/solutions/security/detect-and-alert/machine-learning
+
+Elastic, Log Monitoring
+https://www.elastic.co/docs/solutions/observability/logs
+
+Splunk Machine Learning Toolkit
+https://docs.splunk.com/Documentation/MLApp/latest/User/WelcometoMLTK
+
+Splunk Enterprise Security, Risk-Based Alerting
+https://docs.splunk.com/Documentation/ES/8.1.0/User/AnalyzeInvestigationEvents
+
+Microsoft Sentinel, User and Entity Behavior Analytics
+https://learn.microsoft.com/en-us/azure/sentinel/identify-threats-with-entity-behavior-analytics
+
+Microsoft Security Alert Triage Agent
+https://learn.microsoft.com/en-us/defender-xdr/security-alert-triage-agent
+
+Google Security Operations, Triage and Investigation Agent
+https://docs.cloud.google.com/chronicle/docs/secops/triage-investigation-agent
+
+Palo Alto Networks, Cortex Agentic Assistant
+https://www.paloaltonetworks.com/cortex/cortex-agentic-assistant
+
+IBM QRadar UEBA
+https://www.ibm.com/docs/en/qradar-common?topic=app-qradar-user-behavior-analytics
+
+OpenSearch Security Analytics
+https://docs.opensearch.org/platform/security-analytics/
+
+OpenSearch, Correlation Rules
+https://docs.opensearch.org/latest/security-analytics/sec-analytics-config/correlation-config/
+
+Graylog Security Events
+https://go2docs.graylog.org/current/what_more_can_graylog_do_for_me/security_events.htm
+
+Security Onion, Introduction
+https://docs.securityonion.net/en/3/main/introduction/
+
+
+Recherche et antériorités :
+
+Reid G. Smith, The Contract Net Protocol, IEEE Transactions on Computers, 1980
+DOI : 10.1109/TC.1980.1675516
+
+Purdue CERIAS, Autonomous Agents for Intrusion Detection / AAFID
+https://www.cerias.purdue.edu/site/about/history/coast/projects/aafid.php
+
+Qian Cheng et al., LogAI: A Library for Log Analytics and Intelligence, 2023
+https://arxiv.org/abs/2301.13415
+
+
+Dépôts GitHub :
+
+Salesforce LogAI
+https://github.com/salesforce/logai
+
+LogPAI Loglizer
+https://github.com/logpai/loglizer
+
+LogPAI Drain3
+https://github.com/logpai/Drain3
+
+Network Threat Analyzer
+https://github.com/eugen-goebel/network-threat-analyzer
+
+AI-SOC-Agent
+https://github.com/kunalbhoria1/AI-SOC-Agent
+
+Cybersecurity Multi-Agent SOC Platform
+https://github.com/nourchokri/Cybersecurity_project
+
+SOC multi-agent LangGraph
+https://github.com/gapilongo/SOC
+
+Generic Contract Net sur Redis
+https://github.com/brainstems/multi_agent_management
+
+
+===============================================================================
+17. SOURCES INTERNES LOGMINER LES PLUS IMPORTANTES
+===============================================================================
+
+ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre1_introduction.tex
+ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre2_etat_art.tex
+ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre3_modele_propose.tex
+ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre4_implementation.tex
+ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre5_resultats.tex
+ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre6_approfondissements_scientifiques.tex
+ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre6_conclusion.tex
+ARIEL_LOGMINER_MEMOIRE_FINAL/evidence/claim_evidence/final_claim_evidence_matrix.md
+ARIEL_LOGMINER_MEMOIRE_FINAL/tables/table_wazuh_logminer_summary.md
+ARIEL_LOGMINER_MEMOIRE_FINAL/tables/table_wazuh_logminer_overlap.md
+ARIEL_LOGMINER_MEMOIRE_FINAL/tables/table_operational_tool_comparison.md
+docs/TRUE_MULTI_AGENT_ARCHITECTURE.md
+MULTI_AGENT_FINAL_REPORT.md
+FINAL_SCIENTIFIC_CONSOLIDATION_REPORT.md
+
