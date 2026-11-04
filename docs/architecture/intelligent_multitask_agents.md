@@ -22,6 +22,46 @@ executables, et non seulement par une formulation redactionnelle.
 | Tolerance aux pannes | Jobs non acquittes recuperables, erreurs tracees | En place: reprise via `XAUTOCLAIM` et panne simulee avant `ack` |
 | Preuve experimentale | Scripts reproductibles et sorties auditables | En place: demos locales, Redis distribue, campagne longue 150 taches panne/reprise |
 
+## Autonomie Bornee Par Objectifs
+
+Le runtime met en oeuvre une autonomie locale orientee objectif, sans ajouter
+d'orchestrateur ni de service obligatoire. Un handler peut retourner un simple
+dictionnaire ou un `ActionOutcome` contenant son resultat et, si necessaire,
+les sous-taches a executer ensuite.
+
+`MultiTaskIntelligentAgent.pursue_goal` execute cette chaine avec quatre
+garde-fous explicites portes par `AutonomyLimits`:
+
+- nombre maximal d'actions;
+- profondeur maximale des sous-taches;
+- nombre maximal de tentatives par tache;
+- nombre maximal de taches en attente.
+
+L'etat `GoalState` est conserve dans la memoire JSON existante. Un objectif
+interrompu peut etre repris avec `resume_goal`; un budget epuise ne peut etre
+augmente que de maniere explicite. Une tache non supportee localement peut etre
+transmise au Contract Net par le callback `delegate`, par exemple
+`delegate=coordinator.negotiate`.
+
+```python
+def discover(task, context):
+    return ActionOutcome(
+        output={"discovered": True},
+        next_tasks=[AgentTask.create("parse.logs")],
+    )
+
+goal = agent.pursue_goal(
+    "Decouvrir puis parser les journaux",
+    [AgentTask.create("discover.logs")],
+    limits=AutonomyLimits(max_actions=8, max_depth=3),
+    delegate=coordinator.negotiate,
+)
+```
+
+La selection depuis une file et la proposition Contract Net partagent
+desormais la meme evaluation d'utilite locale. La priorite, les delais et la
+diversite recente restent des ajustements de classement propres a la file.
+
 ## Nouveaux Composants
 
 - `src/logminer/agents/intelligent_runtime.py`

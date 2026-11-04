@@ -123,7 +123,9 @@ Cette séparation évite une confusion importante. Un identifiant créé par Red
 
 \subsection{Autonomie encadrée}
 
-L'autonomie recherchée reste limitée et vérifiable. Le système peut découvrir une source, calculer des indices de routage, sélectionner un traitement, exécuter un modèle, produire une anomalie candidate ou publier une tâche sans intervention humaine à chaque étape.
+L'autonomie recherchée reste limitée et vérifiable. Un objectif fourni à un agent est représenté par un état persistant contenant les tâches en attente, les actions exécutées, les résultats obtenus et les erreurs rencontrées. Chaque handler peut terminer l'objectif ou produire des sous-tâches. L'agent classe alors les actions compatibles selon sa politique locale, exécute celle qui est retenue et délègue au protocole Contract Net une tâche qui requiert une capacité absente localement.
+
+Le cycle suivi est : perception de l'état, évaluation, action, mémorisation, puis terminaison, reprise, nouvel enchaînement ou délégation. Quatre garde-fous bornent ce cycle : nombre maximal d'actions, profondeur maximale des sous-tâches, nombre maximal de tentatives par tâche et taille maximale de la file d'attente. Un budget épuisé interrompt l'objectif ; sa reprise exige une augmentation explicite du budget.
 
 Cette automatisation possède cependant des frontières. Un score inhabituel ne devient pas automatiquement un incident confirmé, et un nouveau modèle ne remplace pas le modèle courant sans comparaison préalable. Les décisions à forte portée restent donc encadrées par des règles explicites ou par une validation humaine.
 
@@ -317,8 +319,10 @@ directement un modèle en production.
 
 \section{Agents fonctionnels}
 
-Un agent désigne ici un composant logiciel spécialisé doté de capacités, d'un état et
-d'une politique locale, et non une entité cognitive générale.
+Un agent désigne ici un composant logiciel spécialisé doté de capacités, d'un état,
+d'une mémoire et d'une politique locale. Il poursuit un objectif borné en sélectionnant,
+exécutant, enchaînant ou déléguant des tâches compatibles ; il ne constitue pas une
+entité cognitive générale.
 Les responsabilités principales sont résumées dans le
 tableau~\ref{tab:agents-architecture}.
 
@@ -410,11 +414,14 @@ particulièrement utiles lorsqu'une partie du pipeline est exécutée par plusie
 
 \subsection{Architecture multi-agents}
 
-Le chemin multi-agents évalué s'appuie sur \texttt{MultiTaskIntelligentAgent} et
-\texttt{ContractNetCoordinator}. Le premier regroupe plusieurs capacités et handlers, observe son
-état local, calcule une offre ou un refus et conserve un feedback lorsque la mémoire est
-activée. Le second enregistre les agents, diffuse les appels à propositions, compare les
-utilités reçues, attribue la tâche, rejette les autres offres et écrit la trace du cycle.
+L'architecture multi-agents s'appuie sur \texttt{MultiTaskIntelligentAgent} et
+\texttt{ContractNetCoordinator}. L'agent regroupe plusieurs capacités et handlers, observe son
+état local, calcule une offre ou un refus, poursuit les objectifs qui lui sont confiés et conserve
+les résultats utiles à la décision et à la reprise. Un handler peut retourner un résultat simple
+ou un \texttt{ActionOutcome} contenant les sous-tâches à traiter. L'état persistant
+\texttt{GoalState} et les limites \texttt{AutonomyLimits} rendent l'enchaînement explicite et
+borné. Le coordinateur enregistre les agents, diffuse les appels à propositions, compare les
+utilités reçues, attribue les tâches déléguées, rejette les autres offres et écrit la trace du cycle.
 Le coordinateur ne calcule donc pas l'utilité à la place des agents.
 Les variantes de transport et de persistance sont séparées du contrat métier :
 \texttt{LocalMessageBus} et \texttt{RedisMessageBus} transportent les messages ;
@@ -440,8 +447,8 @@ U=0{,}30C+0{,}20H+0{,}20M+0{,}15A+0{,}10L+0{,}05T,
 avec des composantes bornées entre 0 et 1. La fiabilité historique est calculée par
 $H_i=(s_i+1)/(s_i+f_i+2)$. Les poids sont configurables et fixés avant les campagnes ;
 ils ne sont pas appris et ne sont pas présentés comme optimaux.
-Le superviseur centralisé sert d'architecture de comparaison. Dans le chemin autonome
-évalué, les agents proposent ou refusent localement avant l'attribution.
+Les agents proposent ou refusent localement avant l'attribution, puis intègrent le résultat
+de la négociation dans la continuité de l'objectif concerné.
 
 Les précisions d’interprétation relatives aux figures suivantes sont regroupées dans l’annexe~\ref{ann:notes-figures}.
 
@@ -603,7 +610,7 @@ manière universelle. La validation finale du pipeline multiformat montre que ce
 propriété dépend des voies considérées.
 La formulation correcte est donc la suivante : le schéma est conçu pour préserver les
 informations nécessaires à l'audit lorsque l'adaptateur les expose, mais la conservation
-exacte et complète du brut n'est pas une garantie universelle du prototype actuel.
+exacte et complète du brut n'est pas une garantie universelle du prototype.
 
 \subsection{Gestion des champs absents}
 Un champ absent ne doit pas entraîner la création d'une information fictive.

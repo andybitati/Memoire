@@ -4,7 +4,7 @@
 
 \section{Bilan}
 
-Ce mémoire a conduit à la conception et à l'évaluation d'Ariel Logminer, un prototype multi-agent léger destiné à l'analyse de journaux système et réseau. Sa contribution ne réside pas dans la proposition d'un nouvel algorithme de détection, mais dans l'organisation d'une chaîne traçable qui associe normalisation, routage open-set, portefeuille de modèles, protocole Contract Net, idempotence, corrélation et restitution à l'analyste.
+Ce mémoire a conduit à la conception et à l'évaluation d'Ariel Logminer, un prototype multi-agent léger destiné à l'analyse de journaux système et réseau. Sa contribution ne réside pas dans la proposition d'un nouvel algorithme de détection, mais dans l'organisation d'une chaîne traçable qui associe poursuite bornée d'objectifs, normalisation, routage open-set, portefeuille de modèles, protocole Contract Net, idempotence, corrélation et restitution à l'analyste.
 
 L'évaluation montre surtout que la performance d'un modèle ne peut pas être séparée du protocole qui la produit. Sur CICIDS2017, le F1 du Random Forest atteint $0{,}995142$ avec une séparation aléatoire, puis chute à $0{,}157744$ lorsqu'un scénario est tenu hors entraînement. Avec une séparation temporelle, il vaut $0{,}437429$. Ces trois valeurs ne se contredisent pas : elles répondent à des questions expérimentales différentes.
 
@@ -21,7 +21,7 @@ Les campagnes consacrées à l'architecture complètent ces résultats prédicti
     Les résultats apportent un soutien partiel à la possibilité de rapprocher des journaux hétérogènes au moyen d'un schéma commun. Toutes les unités prévues par le protocole multi-format traversent la chaîne et leur provenance reste identifiable. Cette observation reste limitée aux formats effectivement testés et ne permet pas d'affirmer que chaque champ de toute source possible serait conservé avec la même complétude.
 
     \item[\textbf{QR2.}]
-    L'organisation multi-agent est effectivement matérialisée dans le prototype : capacités, plusieurs handlers, état local, mémoire et échanges Contract Net sont observables dans les traces. Les agents peuvent proposer ou refuser une tâche avant son attribution. Cette autonomie reste néanmoins encadrée par une fonction d'utilité configurée et par le coordinateur du protocole.
+    L'organisation multi-agent est matérialisée dans le prototype : capacités, handlers, état local, mémoire, objectifs persistants et échanges Contract Net sont observables dans le code et les traces. Les agents peuvent proposer ou refuser une tâche, enchaîner des sous-tâches, reprendre un objectif et déléguer une opération avant son attribution. Cette autonomie reste encadrée par une fonction d'utilité, des budgets explicites et le coordinateur du protocole pour les tâches déléguées.
 
     \item[\textbf{QR3.}]
     Sur le jeu indépendant retenu, le routeur oriente correctement les 28 fichiers connus et rejette les trois inconnus après application du seuil gelé. Ce résultat soutient sa fonction de sélection d'un traitement compatible. Il ne permet pas d'en déduire que la spécialisation améliore systématiquement les performances prédictives, ce qui n'est pas observé dans toutes les familles et toutes les graines.
@@ -89,7 +89,7 @@ Influence décisionnelle observée ; bénéfice et mise à jour contrôlée non 
 
 L'un des principaux apports du travail est méthodologique. Chaque score est rattaché à la question expérimentale qui l'a produit, ce qui évite de traiter comme contradictoires des performances obtenues sous des protocoles différents. Cette discipline conduit notamment à retenir l'évaluation au niveau bloc pour HDFS, à compléter le résultat BGL par un baseline de nouveauté et à examiner les caractéristiques de CSE-CIC-IDS2018 avant d'interpréter son F1 très élevé.
 
-Sur le plan architectural, \texttt{MultiTaskIntelligentAgent} matérialise plusieurs propriétés du modèle proposé : capacités déclarées, état, mémoire et pluralité de handlers. Le protocole Contract Net rend les étapes d'attribution visibles, tandis que les bus local et Redis séparent la logique métier du mécanisme de transport. L'idempotence est prise en charge par les magasins SQLite et Redis pour les effets instrumentés par les campagnes.
+Sur le plan architectural, \texttt{MultiTaskIntelligentAgent} matérialise les propriétés du modèle proposé : capacités déclarées, état, mémoire, pluralité de handlers et poursuite bornée d'objectifs. \texttt{ActionOutcome}, \texttt{GoalState} et \texttt{AutonomyLimits} rendent explicites l'enchaînement, la persistance et les garde-fous. Le protocole Contract Net rend les étapes d'attribution et de délégation visibles, tandis que les bus local et Redis séparent la logique métier du mécanisme de transport. L'idempotence est prise en charge par les magasins SQLite et Redis pour les effets instrumentés par les campagnes.
 
 La contribution expérimentale ne repose pas sur une seule campagne. Le benchmark A--D rassemble 160 exécutions et permet de mesurer le coût de l'orchestration. La validation multi-VM établit le fonctionnement inter-machine dans une topologie explicitement documentée. L'exécution multi-source vérifie enfin que les modèles recommandés sont effectivement appelés, plutôt que simplement présents dans le registre.
 
@@ -104,7 +104,7 @@ La validation distribuée reste également limitée au laboratoire. Redis est ce
 
 Il n'existe par ailleurs pas d'exactitude globale pour la campagne multi-source, puisque les sources ne partagent pas une vérité terrain homogène. Une telle valeur donnerait une impression de comparabilité que les données ne permettent pas de soutenir.
 
-Enfin, la mémoire ne produit pas de gain systématique dans le benchmark. La procédure de mise à jour contrôlée dispose d'une implémentation et d'un mode \textit{dry-run}, mais son intérêt n'a pas été mesuré à travers une série complète de promotions, rejets et évaluations ultérieures. Ariel Logminer reste donc un prototype expérimental et non un système autonome prêt pour une exploitation de production.
+Enfin, la mémoire ne produit pas de gain systématique dans le benchmark. La poursuite d'objectifs, l'enchaînement, la délégation et la reprise sont couverts par des tests fonctionnels, mais leur coût et leur bénéfice ne sont pas mesurés par une campagne quantitative dédiée. La procédure de mise à jour contrôlée dispose d'une implémentation et d'un mode \textit{dry-run}, mais son intérêt n'a pas été mesuré à travers une série complète de promotions, rejets et évaluations ultérieures. Ariel Logminer reste donc un prototype expérimental et non un système autonome prêt pour une exploitation de production.
 
 
 \section{Perspectives}
@@ -115,13 +115,13 @@ CSE-CIC-IDS2018 mérite également une validation sur d'autres journées. Les ex
 
 La gouvernance des modèles constitue une deuxième perspective importante. Une campagne dédiée pourrait utiliser des candidats volontairement meilleurs et moins bons, un jeu de validation gelé et un test indépendant. Chaque candidat serait évalué, accepté ou rejeté selon la règle définie, puis son effet serait mesuré après la décision. Cette expérience permettrait de dépasser le constat d'une infrastructure disponible pour mesurer réellement le bénéfice du mécanisme.
 
-Le passage vers une exploitation plus proche de la production demanderait enfin de renforcer la couche distribuée : réplication du transport, tests de partition et de basculement, chiffrement TLS, contrôle d'accès, gestion des secrets, observabilité et campagnes de longue durée. Ces extensions devraient conserver un principe essentiel du prototype actuel : toute décision importante doit rester rattachable à une trace et à un artefact vérifiable.
+Le passage vers une exploitation plus proche de la production demanderait enfin de renforcer la couche distribuée : réplication du transport, tests de partition et de basculement, chiffrement TLS, contrôle d'accès, gestion des secrets, observabilité et campagnes de longue durée. Ces travaux devraient conserver un principe essentiel du prototype : toute décision importante doit rester rattachable à une trace et à un artefact vérifiable.
 
 
 \section{Conclusion générale}
 
-Ariel Logminer montre qu'une chaîne d'analyse multi-source peut être organisée autour d'agents capables de prendre certaines décisions locales, tout en rendant mesurables leur comportement, leur coût et leurs limites. Le prototype sait normaliser plusieurs sources, les router, attribuer des tâches, exécuter des traitements, corréler des anomalies candidates et conserver les éléments nécessaires à leur audit.
+Ariel Logminer montre qu'une chaîne d'analyse multi-source peut être organisée autour d'agents capables de poursuivre des objectifs bornés et de prendre des décisions locales, tout en rendant mesurables leur comportement, leur coût et leurs limites. Le prototype sait normaliser plusieurs sources, les router, attribuer et déléguer des tâches, enchaîner des traitements, reprendre un état persistant, corréler des anomalies candidates et conserver les éléments nécessaires à leur audit.
 
 Le résultat le plus important n'est cependant pas une valeur unique de F1. Les expériences montrent au contraire que les conclusions changent avec les données, l'unité d'analyse, le protocole de séparation et la charge imposée au système. Cette observation justifie l'approche retenue dans le mémoire : associer chaque affirmation au protocole et au niveau de preuve qui la soutiennent.
 
-Dans le laboratoire étudié, l'architecture est fonctionnelle, modulaire et auditable. Les performances prédictives et opérationnelles restent variables selon les scénarios, et plusieurs propriétés nécessaires à une exploitation industrielle ne sont pas encore évaluées. Les perspectives identifiées constituent donc moins une correction du prototype qu'une extension du niveau de preuve nécessaire pour passer d'un système expérimental à une solution pouvant être confrontée à des conditions de production.
+Dans le laboratoire étudié, l'architecture est fonctionnelle, modulaire et auditable. Les performances prédictives et opérationnelles restent variables selon les scénarios, et plusieurs propriétés nécessaires à une exploitation industrielle ne sont pas encore évaluées. Les perspectives identifiées portent donc sur le niveau de preuve nécessaire pour confronter le système expérimental à des conditions de production.

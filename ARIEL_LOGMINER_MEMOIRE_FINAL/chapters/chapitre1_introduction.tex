@@ -57,13 +57,13 @@ Ces difficultés conduisent à considérer la détection d'anomalies non comme u
 
 Le titre du mémoire emploie les termes \textit{autonome}, \textit{distribuée} et \textit{agents intelligents multitâches}. Ces termes peuvent couvrir des réalités très différentes ; leur sens doit donc être précisé dans le cadre exact de ce travail.
 
-Un \textbf{agent} désigne ici une entité logicielle disposant de capacités déclarées, d'un état propre, d'une mémoire et d'une politique locale de décision. Lorsqu'une tâche lui est proposée, il peut évaluer sa capacité à la traiter, soumettre une proposition ou la refuser, puis exécuter un handler compatible et intégrer un retour d'expérience. Cette définition reste volontairement opérationnelle : elle renvoie au comportement du code et aux traces produites par le prototype, et non à une entité cognitive.
+Un \textbf{agent} désigne ici une entité logicielle disposant de capacités déclarées, d'un état propre, d'une mémoire et d'une politique locale de décision. Lorsqu'un objectif borné lui est confié, il évalue les tâches disponibles, peut proposer leur exécution ou les refuser, exécute un handler compatible, produit si nécessaire des sous-tâches et délègue celles qui exigent une autre capacité. L'état de l'objectif et les résultats intermédiaires sont mémorisés afin de permettre la reprise et l'audit. Cette définition reste volontairement opérationnelle : elle renvoie au comportement du code et aux traces produites par le prototype, et non à une entité cognitive.
 
 Un \textbf{worker} désigne ici l'unité d'exécution runtime (processus ou thread) qui consomme et traite une tâche transportée par le bus de messages ; il peut héberger un agent, ou, dans l'architecture de référence B, opérer sans capacités déclarées ni politique de décision propre.
 
-L'\textbf{autonomie} correspond à la capacité de l'agent à prendre localement certaines décisions d'offre, de refus et d'exécution, sans recevoir pour chaque tâche une affectation impérative d'un superviseur central. Cette autonomie reste bornée par des règles et des paramètres configurés. Elle ne doit pas être assimilée à une intelligence générale ni à un apprentissage continu entièrement autonome en production.
+L'\textbf{autonomie} correspond à la capacité de l'agent à prendre localement des décisions d'offre, de refus, d'exécution, d'enchaînement, de reprise et de délégation, sans recevoir une instruction impérative à chaque étape. Cette autonomie est limitée par un nombre maximal d'actions, de tentatives, de niveaux de sous-tâches et de tâches en attente. L'objectif initial reste fourni par le système ou par l'utilisateur ; l'agent ne définit pas librement ses propres finalités et ne doit pas être assimilé à une intelligence générale ni à un apprentissage continu entièrement autonome en production.
 
-Le qualificatif \textbf{intelligent} renvoie, dans ce contexte, à une adaptation opérationnelle fondée sur plusieurs informations : état de l'agent, capacités disponibles, historique, compatibilité du modèle, disponibilité, charge et latence. La politique expérimentale initiale repose sur l'utilité configurable suivante :
+Le qualificatif \textbf{intelligent} renvoie, dans ce contexte, à une adaptation opérationnelle fondée sur plusieurs informations : état de l'agent, capacités disponibles, historique, compatibilité du modèle, disponibilité, charge et latence. La politique de décision repose sur l'utilité configurable suivante :
 
 \[
 U = 0{,}30C + 0{,}20H + 0{,}20M + 0{,}15A + 0{,}10L + 0{,}05T,
@@ -169,7 +169,7 @@ Cet objectif général se décline en objectifs spécifiques :
 
     \item définir une représentation commune permettant au pipeline de manipuler plusieurs catégories de données tout en conservant les informations nécessaires à l'analyse ;
 
-    \item concevoir une architecture modulaire fondée sur des composants et agents spécialisés, avec des mécanismes explicites de communication, de suivi et d'audit ;
+    \item concevoir une architecture modulaire fondée sur des composants et agents spécialisés capables de poursuivre des objectifs bornés, avec des mécanismes explicites de communication, de délégation, de suivi et d'audit ;
 
     \item mettre en œuvre un mécanisme de routage capable d'orienter une source vers une famille et un traitement compatibles ;
 
@@ -252,7 +252,7 @@ Le tableau de bord est validé sur ses fonctions : affichage, filtrage et consul
 
 Les méthodes non supervisées produisent des anomalies candidates. Elles ne permettent pas, en l'absence de vérité terrain fiable, d'assimiler automatiquement chaque signal à une attaque ni d'estimer directement le nombre réel d'incidents.
 
-La mémoire persistante conserve des informations utiles aux décisions et aux exécutions, tandis que la procédure de mise à jour contrôlée fournit un cadre pour comparer un modèle candidat au modèle courant. L'automatisation complète du réentraînement, de la validation et du déploiement continu reste une perspective.
+La mémoire persistante conserve des informations utiles aux décisions, aux exécutions et à la reprise des objectifs, tandis que la procédure de mise à jour contrôlée fournit un cadre pour comparer un modèle candidat au modèle courant. L'automatisation complète du réentraînement, de la validation et du déploiement continu reste une perspective.
 
 Le choix de modèles relativement légers répond enfin au périmètre local de l'étude. Les architectures profondes spécialisées dans l'analyse séquentielle des journaux sont prises en compte dans l'état de l'art, mais leur comparaison exhaustive avec toutes les méthodes intégrées au prototype n'est pas l'objet principal du mémoire. L'attention est portée sur l'intégration, l'auditabilité, la diversité des sources et la qualité du protocole expérimental.
 

@@ -15,7 +15,14 @@ if str(LOGMINER_SRC) not in sys.path:
 from agents.bus import AgentMessage, LocalMessageBus
 from agents.contract_net import ContractNetCoordinator
 from agents.idempotency import SQLiteIdempotencyStore
-from agents.intelligent_runtime import AgentCapability, AgentMemory, AgentTask, MultiTaskIntelligentAgent
+from agents.intelligent_runtime import (
+    ActionOutcome,
+    AgentCapability,
+    AgentMemory,
+    AgentTask,
+    AutonomyLimits,
+    MultiTaskIntelligentAgent,
+)
 from agents.redis_contract_net import RedisContractNetCoordinator
 
 
@@ -24,6 +31,103 @@ def ok_handler(task, context):
 
 
 class TrueMultiAgentTests(unittest.TestCase):
+    def test_agent_pursues_and_persists_a_bounded_multistep_goal(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            memory_path = Path(temp_dir) / "agent-memory.json"
+
+            def discover(task, context):
+                return ActionOutcome(
+                    output={"discovered": True},
+                    next_tasks=[AgentTask.create("parse")],
+                )
+
+            def parse(task, context):
+                return ActionOutcome(output={"parsed": True}, goal_completed=True)
+
+            agent = MultiTaskIntelligentAgent(
+                agent_id="autonomous-agent",
+                capabilities=[
+                    AgentCapability("discover", ("discover",)),
+                    AgentCapability("parse", ("parse",)),
+                ],
+                handlers={"discover": discover, "parse": parse},
+                memory_path=memory_path,
+            )
+            goal = agent.pursue_goal(
+                "Découvrir puis parser les journaux",
+                [AgentTask.create("discover")],
+                limits=AutonomyLimits(max_actions=4, max_depth=2),
+            )
+
+            self.assertEqual(goal.status, "completed")
+            self.assertEqual(goal.actions_executed, 2)
+            self.assertEqual(len(goal.completed_task_ids), 2)
+            self.assertFalse(goal.pending_tasks)
+
+            reloaded = MultiTaskIntelligentAgent(
+                agent_id="autonomous-agent",
+                capabilities=[AgentCapability("discover", ("discover",))],
+                handlers={"discover": discover},
+                memory_path=memory_path,
+            )
+            persisted = reloaded.get_goal(goal.goal_id)
+            self.assertIsNotNone(persisted)
+            self.assertEqual(persisted.status, "completed")
+            self.assertEqual(persisted.actions_executed, 2)
+
+    def test_goal_delegates_an_unsupported_follow_up(self):
+        def plan(task, context):
+            return ActionOutcome(next_tasks=[AgentTask.create("remote.detect")])
+
+        agent = MultiTaskIntelligentAgent(
+            agent_id="planner",
+            capabilities=[AgentCapability("plan", ("plan",))],
+            handlers={"plan": plan},
+        )
+        remote = MultiTaskIntelligentAgent(
+            agent_id="remote-worker",
+            capabilities=[AgentCapability("detect", ("remote.detect",))],
+            handlers={"remote.detect": ok_handler},
+        )
+        coordinator = ContractNetCoordinator([remote])
+
+        goal = agent.pursue_goal(
+            "Planifier et déléguer",
+            [AgentTask.create("plan")],
+            delegate=coordinator.negotiate,
+        )
+
+        self.assertEqual(goal.status, "completed")
+        self.assertEqual(goal.actions_executed, 2)
+        self.assertEqual(len(goal.delegated_task_ids), 1)
+        self.assertEqual(goal.task_results[-1]["agent_id"], "remote-worker")
+
+    def test_goal_stops_when_the_action_budget_is_exhausted(self):
+        def repeat(task, context):
+            return ActionOutcome(next_tasks=[AgentTask.create("repeat")])
+
+        agent = MultiTaskIntelligentAgent(
+            agent_id="bounded-agent",
+            capabilities=[AgentCapability("repeat", ("repeat",))],
+            handlers={"repeat": repeat},
+        )
+        goal = agent.pursue_goal(
+            "Répéter de façon bornée",
+            [AgentTask.create("repeat")],
+            limits=AutonomyLimits(max_actions=2, max_depth=5),
+        )
+
+        self.assertEqual(goal.status, "budget_exhausted")
+        self.assertEqual(goal.actions_executed, 2)
+        self.assertEqual(len(goal.pending_tasks), 1)
+
+        unchanged = agent.resume_goal(goal.goal_id)
+        self.assertEqual(unchanged.status, "budget_exhausted")
+        agent.handlers["repeat"] = lambda task, context: ActionOutcome(goal_completed=True)
+        resumed = agent.resume_goal(goal.goal_id, additional_actions=1)
+        self.assertEqual(resumed.status, "completed")
+        self.assertEqual(resumed.actions_executed, 3)
+
     def test_redis_contract_net_reassigns_after_failed_award(self):
         class FakeTransport:
             response_stream = "responses"

@@ -20,7 +20,7 @@
 \contentsline {section}{Démarche méthodologique}{8}{section*.19}%
 \contentsline {section}{Contributions du travail}{10}{section*.20}%
 \contentsline {section}{Délimitations et portée du mémoire}{11}{section*.21}%
-\contentsline {section}{Organisation du mémoire}{11}{section*.22}%
+\contentsline {section}{Organisation du mémoire}{12}{section*.22}%
 \contentsline {chapter}{\numberline {1}État de l'art et fondements}{13}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Introduction}{13}{section.1.1}%
 \contentsline {section}{\numberline {1.2}Journaux système et réseau}{14}{section.1.2}%
@@ -129,11 +129,11 @@
 \contentsline {subsection}{\numberline {2.7.4}Niveau 4 : sortie de détection}{50}{subsection.2.7.4}%
 \contentsline {subsection}{\numberline {2.7.5}Niveau 5 : anomalie candidate}{50}{subsection.2.7.5}%
 \contentsline {subsection}{\numberline {2.7.6}Niveau 6 : incident candidat}{50}{subsection.2.7.6}%
-\contentsline {subsection}{\numberline {2.7.7}Niveau 7 : décision analyste}{51}{subsection.2.7.7}%
+\contentsline {subsection}{\numberline {2.7.7}Niveau 7 : décision analyste}{50}{subsection.2.7.7}%
 \contentsline {section}{\numberline {2.8}Modèle de normalisation}{51}{section.2.8}%
 \contentsline {subsection}{\numberline {2.8.1}Noyau commun}{51}{subsection.2.8.1}%
 \contentsline {subsection}{\numberline {2.8.2}Principe de conservation}{51}{subsection.2.8.2}%
-\contentsline {subsection}{\numberline {2.8.3}Gestion des champs absents}{52}{subsection.2.8.3}%
+\contentsline {subsection}{\numberline {2.8.3}Gestion des champs absents}{51}{subsection.2.8.3}%
 \contentsline {section}{\numberline {2.9}Routage par famille}{52}{section.2.9}%
 \contentsline {subsection}{\numberline {2.9.1}Rôle du routeur}{52}{subsection.2.9.1}%
 \contentsline {subsection}{\numberline {2.9.2}Indices utilisés}{52}{subsection.2.9.2}%
@@ -188,101 +188,101 @@
 \contentsline {section}{\numberline {3.4}Routeur et registre de modèles}{69}{section.3.4}%
 \contentsline {section}{\numberline {3.5}Implémentation des agents}{70}{section.3.5}%
 \contentsline {section}{\numberline {3.6}Idempotence et reprise}{70}{section.3.6}%
-\contentsline {section}{\numberline {3.7}Pipeline d'inférence}{70}{section.3.7}%
+\contentsline {section}{\numberline {3.7}Pipeline d'inférence}{71}{section.3.7}%
 \contentsline {section}{\numberline {3.8}Parsing HDFS et BGL}{71}{section.3.8}%
 \contentsline {section}{\numberline {3.9}Corrélation}{71}{section.3.9}%
 \contentsline {section}{\numberline {3.10}Mémoire et gouvernance}{72}{section.3.10}%
 \contentsline {section}{\numberline {3.11}API, dashboard et audit}{72}{section.3.11}%
 \contentsline {section}{\numberline {3.12}Validation fonctionnelle}{73}{section.3.12}%
 \contentsline {section}{\numberline {3.13}Lien entre code et preuves}{73}{section.3.13}%
-\contentsline {chapter}{\numberline {4}Résultats et évaluation}{74}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Cadre de lecture}{74}{section.4.1}%
-\contentsline {section}{\numberline {4.2}CICIDS2017 : influence du protocole}{75}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Question et données}{75}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Comparaison de cinq candidats}{76}{subsection.4.2.2}%
-\contentsline {section}{\numberline {4.3}HDFS : décision au niveau bloc}{78}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Protocole sans contamination du parseur}{78}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Bootstrap par bloc}{79}{subsection.4.3.2}%
-\contentsline {section}{\numberline {4.4}BGL : templates connus et inconnus}{79}{section.4.4}%
-\contentsline {section}{\numberline {4.5}CSE-CIC-IDS2018 : transfert et dépendance aux variables}{81}{section.4.5}%
-\contentsline {subsection}{\numberline {4.5.1}Protocole principal}{81}{subsection.4.5.1}%
-\contentsline {subsection}{\numberline {4.5.2}Coefficients et scores mono-feature}{82}{subsection.4.5.2}%
-\contentsline {subsection}{\numberline {4.5.3}Ablation et permutation}{84}{subsection.4.5.3}%
-\contentsline {section}{\numberline {4.6}Routeur open-set}{86}{section.4.6}%
-\contentsline {section}{\numberline {4.7}Couverture multi-format}{87}{section.4.7}%
-\contentsline {section}{\numberline {4.8}Benchmark des architectures A--D}{88}{section.4.8}%
-\contentsline {section}{\numberline {4.9}Exécution de bout en bout avec modèles réels}{89}{section.4.9}%
-\contentsline {section}{\numberline {4.10}Campagne Contract Net multi-VM}{91}{section.4.10}%
-\contentsline {subsection}{\numberline {4.10.1}Protocole}{91}{subsection.4.10.1}%
-\contentsline {subsection}{\numberline {4.10.2}Résultats}{92}{subsection.4.10.2}%
-\contentsline {section}{\numberline {4.11}Corrélation d’incidents}{92}{section.4.11}%
-\contentsline {section}{\numberline {4.12}Mise à jour contrôlée des modèles}{93}{section.4.12}%
-\contentsline {section}{\numberline {4.13}Synthèse des résultats}{93}{section.4.13}%
-\contentsline {chapter}{\numberline {5}Validité scientifique}{94}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Objet de l’analyse}{94}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Validité interne}{94}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Validité externe}{95}{section.5.3}%
-\contentsline {section}{\numberline {5.4}Validité de construit}{96}{section.5.4}%
-\contentsline {section}{\numberline {5.5}Validité statistique}{96}{section.5.5}%
-\contentsline {section}{\numberline {5.6}Risques résiduels et mesures de contrôle}{97}{section.5.6}%
-\contentsline {section}{\numberline {5.7}Conclusions soutenues}{97}{section.5.7}%
-\contentsline {chapter}{\numberline {6}Discussion générale}{99}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Ce que montre l’évaluation}{99}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Valeur de la spécialisation}{99}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Autonomie réelle mais bornée}{100}{section.6.3}%
-\contentsline {section}{\numberline {6.4}Coût de l’orchestration}{100}{section.6.4}%
-\contentsline {section}{\numberline {6.5}Mémoire et apprentissage}{101}{section.6.5}%
-\contentsline {section}{\numberline {6.6}Portée opérationnelle}{101}{section.6.6}%
-\contentsline {section}{\numberline {6.7}Réponses transversales}{102}{section.6.7}%
-\contentsline {section}{\numberline {6.8}Priorités de prolongement}{102}{section.6.8}%
-\contentsline {chapter}{\numberline {7}Reproductibilité, déploiement et exploitation}{104}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Principe de reproductibilité}{104}{section.7.1}%
-\contentsline {section}{\numberline {7.2}Organisation des preuves}{104}{section.7.2}%
-\contentsline {section}{\numberline {7.3}Chaîne de reproduction}{105}{section.7.3}%
-\contentsline {section}{\numberline {7.4}Paramètres déterminants}{105}{section.7.4}%
-\contentsline {section}{\numberline {7.5}Reproduction du benchmark multi-agent}{106}{section.7.5}%
-\contentsline {section}{\numberline {7.6}Reproduction de la campagne multi-VM}{106}{section.7.6}%
-\contentsline {section}{\numberline {7.7}Compilation du mémoire}{107}{section.7.7}%
-\contentsline {section}{\numberline {7.8}Exploitation locale}{107}{section.7.8}%
-\contentsline {section}{\numberline {7.9}Frontière d'industrialisation}{108}{section.7.9}%
-\contentsline {section}{\numberline {7.10}Contrôles d'intégrité documentaire}{108}{section.7.10}%
-\contentsline {chapter}{Conclusion générale et perspectives}{109}{chapter*.56}%
-\contentsline {section}{\numberline {7.11}Bilan}{109}{section.7.11}%
-\contentsline {section}{\numberline {7.12}Réponse aux questions de recherche}{109}{section.7.12}%
-\contentsline {section}{\numberline {7.13}Statut des hypothèses}{110}{section.7.13}%
-\contentsline {section}{\numberline {7.14}Apports scientifiques et techniques}{111}{section.7.14}%
-\contentsline {section}{\numberline {7.15}Limites}{112}{section.7.15}%
-\contentsline {section}{\numberline {7.16}Perspectives}{112}{section.7.16}%
-\contentsline {section}{\numberline {7.17}Conclusion générale}{113}{section.7.17}%
-\contentsline {chapter}{\numberline {A}Contrats et traçabilité}{114}{appendix.A}%
-\contentsline {section}{\numberline {A.1}Structure exacte d’\texttt {AgentMessage}}{114}{section.A.1}%
-\contentsline {section}{\numberline {A.2}Messages du protocole}{115}{section.A.2}%
-\contentsline {section}{\numberline {A.3}Matrice résultats--preuves}{115}{section.A.3}%
-\contentsline {section}{\numberline {A.4}Paramètres HDFS}{116}{section.A.4}%
-\contentsline {section}{\numberline {A.5}Paramètres multi-VM}{117}{section.A.5}%
-\contentsline {section}{\numberline {A.6}Unités de performance}{117}{section.A.6}%
-\contentsline {section}{\numberline {A.7}Statut de la mise à jour des modèles}{118}{section.A.7}%
-\contentsline {section}{\numberline {A.8}Conditions d’interprétation des résultats}{118}{section.A.8}%
-\contentsline {section}{\numberline {A.9}Notes détaillées des figures}{118}{section.A.9}%
-\contentsline {subsection}{\numberline {A.9.1}Architecture et implémentation}{118}{subsection.A.9.1}%
-\contentsline {paragraph}{Figure~\ref {fig:architecture-multi-agent} -- architecture multi-agents.}{118}{section*.62}%
-\contentsline {paragraph}{Figure~\ref {fig:contract-net-sequence} -- séquence Contract Net.}{119}{section*.63}%
-\contentsline {paragraph}{Figure~\ref {fig:dashboard-vue-ensemble} -- tableau de bord.}{119}{section*.64}%
-\contentsline {subsection}{\numberline {A.9.2}Résultats expérimentaux}{119}{subsection.A.9.2}%
-\contentsline {paragraph}{Figure~\ref {fig:cicids-protocoles} -- protocoles CICIDS2017.}{119}{section*.65}%
-\contentsline {paragraph}{Figure~\ref {fig:cicids-modeles} -- candidats CICIDS2017.}{119}{section*.66}%
-\contentsline {paragraph}{Figure~\ref {fig:hdfs-event-bloc} -- niveaux événement et bloc.}{119}{section*.67}%
-\contentsline {paragraph}{Figure~\ref {fig:hdfs-bootstrap} -- bootstrap HDFS.}{119}{section*.68}%
-\contentsline {paragraph}{Figure~\ref {fig:bgl-connu-inconnu} -- connaissance des templates BGL.}{119}{section*.69}%
-\contentsline {paragraph}{Figure~\ref {fig:bgl-baseline} -- comparaison au baseline BGL.}{119}{section*.70}%
-\contentsline {paragraph}{Figure~\ref {fig:csecic-lr-rf} -- modèles CSE-CIC-IDS2018.}{120}{section*.71}%
-\contentsline {paragraph}{Figure~\ref {fig:csecic-coefficients} -- coefficients de la régression logistique.}{120}{section*.72}%
-\contentsline {paragraph}{Figure~\ref {fig:csecic-mono-feature} -- modèles mono-feature.}{120}{section*.73}%
-\contentsline {paragraph}{Figure~\ref {fig:csecic-ablation} -- ablation des caractéristiques.}{120}{section*.74}%
-\contentsline {paragraph}{Figure~\ref {fig:csecic-permutation} -- permutation des labels.}{120}{section*.75}%
-\contentsline {paragraph}{Figure~\ref {fig:routeur-open-set} -- compromis open-set.}{120}{section*.76}%
-\contentsline {paragraph}{Figure~\ref {fig:couverture-multiformat} -- couverture multiformat.}{120}{section*.77}%
-\contentsline {paragraph}{Figure~\ref {fig:benchmark-abcd} -- architectures A--D.}{120}{section*.78}%
-\contentsline {paragraph}{Figure~\ref {fig:e2e-couverture-modeles} -- couverture d’inférence.}{120}{section*.79}%
-\contentsline {paragraph}{Figure~\ref {fig:e2e-latence-modeles} -- latence d’inférence.}{121}{section*.80}%
-\contentsline {chapter}{Bibliographie}{122}{appendix*.81}%
+\contentsline {chapter}{\numberline {4}Résultats et évaluation}{75}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Cadre de lecture}{75}{section.4.1}%
+\contentsline {section}{\numberline {4.2}CICIDS2017 : influence du protocole}{76}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Question et données}{76}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Comparaison de cinq candidats}{77}{subsection.4.2.2}%
+\contentsline {section}{\numberline {4.3}HDFS : décision au niveau bloc}{79}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Protocole sans contamination du parseur}{79}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Bootstrap par bloc}{80}{subsection.4.3.2}%
+\contentsline {section}{\numberline {4.4}BGL : templates connus et inconnus}{80}{section.4.4}%
+\contentsline {section}{\numberline {4.5}CSE-CIC-IDS2018 : transfert et dépendance aux variables}{82}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Protocole principal}{82}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}Coefficients et scores mono-feature}{83}{subsection.4.5.2}%
+\contentsline {subsection}{\numberline {4.5.3}Ablation et permutation}{85}{subsection.4.5.3}%
+\contentsline {section}{\numberline {4.6}Routeur open-set}{87}{section.4.6}%
+\contentsline {section}{\numberline {4.7}Couverture multi-format}{88}{section.4.7}%
+\contentsline {section}{\numberline {4.8}Benchmark des architectures A--D}{89}{section.4.8}%
+\contentsline {section}{\numberline {4.9}Exécution de bout en bout avec modèles réels}{90}{section.4.9}%
+\contentsline {section}{\numberline {4.10}Campagne Contract Net multi-VM}{92}{section.4.10}%
+\contentsline {subsection}{\numberline {4.10.1}Protocole}{92}{subsection.4.10.1}%
+\contentsline {subsection}{\numberline {4.10.2}Résultats}{93}{subsection.4.10.2}%
+\contentsline {section}{\numberline {4.11}Corrélation d’incidents}{93}{section.4.11}%
+\contentsline {section}{\numberline {4.12}Mise à jour contrôlée des modèles}{94}{section.4.12}%
+\contentsline {section}{\numberline {4.13}Synthèse des résultats}{94}{section.4.13}%
+\contentsline {chapter}{\numberline {5}Validité scientifique}{95}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Objet de l’analyse}{95}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Validité interne}{95}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Validité externe}{96}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Validité de construit}{97}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Validité statistique}{97}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Risques résiduels et mesures de contrôle}{98}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Conclusions soutenues}{98}{section.5.7}%
+\contentsline {chapter}{\numberline {6}Discussion générale}{100}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Ce que montre l’évaluation}{100}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Valeur de la spécialisation}{100}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Autonomie réelle mais bornée}{101}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Coût de l’orchestration}{101}{section.6.4}%
+\contentsline {section}{\numberline {6.5}Mémoire et apprentissage}{102}{section.6.5}%
+\contentsline {section}{\numberline {6.6}Portée opérationnelle}{102}{section.6.6}%
+\contentsline {section}{\numberline {6.7}Réponses transversales}{103}{section.6.7}%
+\contentsline {section}{\numberline {6.8}Priorités de prolongement}{103}{section.6.8}%
+\contentsline {chapter}{\numberline {7}Reproductibilité, déploiement et exploitation}{105}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Principe de reproductibilité}{105}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Organisation des preuves}{105}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Chaîne de reproduction}{106}{section.7.3}%
+\contentsline {section}{\numberline {7.4}Paramètres déterminants}{106}{section.7.4}%
+\contentsline {section}{\numberline {7.5}Reproduction du benchmark multi-agent}{107}{section.7.5}%
+\contentsline {section}{\numberline {7.6}Reproduction de la campagne multi-VM}{107}{section.7.6}%
+\contentsline {section}{\numberline {7.7}Compilation du mémoire}{108}{section.7.7}%
+\contentsline {section}{\numberline {7.8}Exploitation locale}{108}{section.7.8}%
+\contentsline {section}{\numberline {7.9}Frontière d'industrialisation}{109}{section.7.9}%
+\contentsline {section}{\numberline {7.10}Contrôles d'intégrité documentaire}{109}{section.7.10}%
+\contentsline {chapter}{Conclusion générale et perspectives}{110}{chapter*.56}%
+\contentsline {section}{\numberline {7.11}Bilan}{110}{section.7.11}%
+\contentsline {section}{\numberline {7.12}Réponse aux questions de recherche}{110}{section.7.12}%
+\contentsline {section}{\numberline {7.13}Statut des hypothèses}{111}{section.7.13}%
+\contentsline {section}{\numberline {7.14}Apports scientifiques et techniques}{112}{section.7.14}%
+\contentsline {section}{\numberline {7.15}Limites}{113}{section.7.15}%
+\contentsline {section}{\numberline {7.16}Perspectives}{113}{section.7.16}%
+\contentsline {section}{\numberline {7.17}Conclusion générale}{114}{section.7.17}%
+\contentsline {chapter}{\numberline {A}Contrats et traçabilité}{115}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Structure exacte d’\texttt {AgentMessage}}{115}{section.A.1}%
+\contentsline {section}{\numberline {A.2}Messages du protocole}{116}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Matrice résultats--preuves}{116}{section.A.3}%
+\contentsline {section}{\numberline {A.4}Paramètres HDFS}{117}{section.A.4}%
+\contentsline {section}{\numberline {A.5}Paramètres multi-VM}{118}{section.A.5}%
+\contentsline {section}{\numberline {A.6}Unités de performance}{118}{section.A.6}%
+\contentsline {section}{\numberline {A.7}Statut de la mise à jour des modèles}{119}{section.A.7}%
+\contentsline {section}{\numberline {A.8}Conditions d’interprétation des résultats}{119}{section.A.8}%
+\contentsline {section}{\numberline {A.9}Notes détaillées des figures}{119}{section.A.9}%
+\contentsline {subsection}{\numberline {A.9.1}Architecture et implémentation}{119}{subsection.A.9.1}%
+\contentsline {paragraph}{Figure~\ref {fig:architecture-multi-agent} -- architecture multi-agents.}{119}{section*.62}%
+\contentsline {paragraph}{Figure~\ref {fig:contract-net-sequence} -- séquence Contract Net.}{120}{section*.63}%
+\contentsline {paragraph}{Figure~\ref {fig:dashboard-vue-ensemble} -- tableau de bord.}{120}{section*.64}%
+\contentsline {subsection}{\numberline {A.9.2}Résultats expérimentaux}{120}{subsection.A.9.2}%
+\contentsline {paragraph}{Figure~\ref {fig:cicids-protocoles} -- protocoles CICIDS2017.}{120}{section*.65}%
+\contentsline {paragraph}{Figure~\ref {fig:cicids-modeles} -- candidats CICIDS2017.}{120}{section*.66}%
+\contentsline {paragraph}{Figure~\ref {fig:hdfs-event-bloc} -- niveaux événement et bloc.}{120}{section*.67}%
+\contentsline {paragraph}{Figure~\ref {fig:hdfs-bootstrap} -- bootstrap HDFS.}{120}{section*.68}%
+\contentsline {paragraph}{Figure~\ref {fig:bgl-connu-inconnu} -- connaissance des templates BGL.}{120}{section*.69}%
+\contentsline {paragraph}{Figure~\ref {fig:bgl-baseline} -- comparaison au baseline BGL.}{120}{section*.70}%
+\contentsline {paragraph}{Figure~\ref {fig:csecic-lr-rf} -- modèles CSE-CIC-IDS2018.}{121}{section*.71}%
+\contentsline {paragraph}{Figure~\ref {fig:csecic-coefficients} -- coefficients de la régression logistique.}{121}{section*.72}%
+\contentsline {paragraph}{Figure~\ref {fig:csecic-mono-feature} -- modèles mono-feature.}{121}{section*.73}%
+\contentsline {paragraph}{Figure~\ref {fig:csecic-ablation} -- ablation des caractéristiques.}{121}{section*.74}%
+\contentsline {paragraph}{Figure~\ref {fig:csecic-permutation} -- permutation des labels.}{121}{section*.75}%
+\contentsline {paragraph}{Figure~\ref {fig:routeur-open-set} -- compromis open-set.}{121}{section*.76}%
+\contentsline {paragraph}{Figure~\ref {fig:couverture-multiformat} -- couverture multiformat.}{121}{section*.77}%
+\contentsline {paragraph}{Figure~\ref {fig:benchmark-abcd} -- architectures A--D.}{121}{section*.78}%
+\contentsline {paragraph}{Figure~\ref {fig:e2e-couverture-modeles} -- couverture d’inférence.}{121}{section*.79}%
+\contentsline {paragraph}{Figure~\ref {fig:e2e-latence-modeles} -- latence d’inférence.}{122}{section*.80}%
+\contentsline {chapter}{Bibliographie}{123}{appendix*.81}%

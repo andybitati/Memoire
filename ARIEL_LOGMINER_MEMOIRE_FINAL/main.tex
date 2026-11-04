@@ -277,14 +277,18 @@ ANNÉE ACADÉMIQUE : 2025--2026
 \addcontentsline{toc}{chapter}{Résumé}
 
 Ce mémoire présente Ariel \logminer{}, une architecture multi-agents légère
-et distribuée en laboratoire pour l'analyse de journaux système et réseau
-hétérogènes. Un agent est ici une entité logicielle dotée de capacités,
-d'un état, d'une mémoire et d'une politique locale ; il peut proposer,
-refuser puis exécuter une tâche au moyen de handlers compatibles. La
-négociation repose sur un protocole Contract Net explicite et sur un
-transport local ou Redis. L'autonomie et la distribution désignent ici
-des propriétés logicielles évaluées en laboratoire. L'intelligence générale
-et le fonctionnement d'un SOC industriel sont hors périmètre.
+destinée à l'analyse de journaux système et réseau hétérogènes, dont la
+distribution est évaluée dans une topologie de laboratoire. Un agent est ici
+une entité logicielle dotée de capacités, d'un état, d'une mémoire et d'une
+politique locale. Lorsqu'un objectif borné lui est confié, il peut évaluer les
+tâches disponibles, proposer leur exécution ou les refuser, exécuter des
+handlers compatibles, enchaîner des sous-tâches, reprendre un état persistant
+et déléguer une opération exigeant une autre capacité. La négociation repose
+sur un protocole Contract Net explicite et sur un bus local ou Redis Streams.
+L'allocation et la distribution sont évaluées par des campagnes en laboratoire,
+tandis que la poursuite bornée d'objectifs est validée fonctionnellement.
+L'intelligence générale, la définition autonome des finalités et le
+fonctionnement d'un SOC industriel restent hors périmètre.
 
 L'évaluation met particulièrement en évidence l'influence du protocole
 expérimental sur les performances. Sur CICIDS2017, un Random Forest
@@ -392,15 +396,18 @@ automatique, reproductibilité.
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
 
-This thesis presents Ariel \logminer{}, a lightweight multi-agent
-architecture distributed in a laboratory setting for heterogeneous system
-and network log analysis. An agent is defined as a software entity with
-declared capabilities, state, memory, and a local policy; it can propose,
-refuse, and execute tasks through compatible handlers. Negotiation follows
-an explicit Contract Net Protocol and communication may use a local bus or
-Redis. Autonomy and distribution refer here to software properties evaluated
-in a laboratory setting. General intelligence and operation as an industrial
-SOC platform are outside the evaluated scope.
+This thesis presents Ariel \logminer{}, a lightweight multi-agent architecture
+for heterogeneous system and network log analysis, whose distribution is
+evaluated in a laboratory topology. An agent is defined as a software entity
+with declared capabilities, state, memory, and a local policy. When assigned
+a bounded objective, it can evaluate available tasks, propose or refuse their
+execution, invoke compatible handlers, chain subtasks, resume persistent state,
+and delegate an operation requiring another capability. Negotiation follows an
+explicit Contract Net Protocol over a local bus or Redis Streams. Allocation
+and distribution are evaluated through laboratory campaigns, while bounded
+goal pursuit is functionally validated. General intelligence, autonomous goal
+definition, and operation as an industrial SOC platform remain outside the
+scope of this work.
 
 The evaluation particularly highlights the influence of the experimental
 protocol on measured performance. On CICIDS2017, a Random Forest evaluated

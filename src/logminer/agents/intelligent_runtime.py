@@ -24,7 +24,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from time import perf_counter
-from typing import Any, Callable, Dict, Iterable, Protocol
+from typing import Any, Callable, Iterable, Protocol
 from uuid import uuid4
 
 try:
@@ -35,7 +35,7 @@ except ImportError:  # pragma: no cover - compatibility with direct script execu
     from agents.idempotency import SQLiteIdempotencyStore
 
 
-TaskHandler = Callable[["AgentTask", "AgentContext"], Dict[str, Any]]
+TaskHandler = Callable[["AgentTask", "AgentContext"], Any]
 
 
 @dataclass(frozen=True)
@@ -140,6 +140,100 @@ class AgentTask:
 
 
 @dataclass
+class ActionOutcome:
+    """Résultat d'un handler pouvant orienter la suite d'un objectif.
+
+    Les handlers historiques peuvent continuer à retourner un dictionnaire.
+    Ce contrat enrichi est réservé aux handlers qui souhaitent produire des
+    sous-tâches ou terminer explicitement l'objectif courant.
+    """
+
+    output: dict[str, Any] = field(default_factory=dict)
+    next_tasks: list[AgentTask] = field(default_factory=list)
+    goal_completed: bool = False
+    retry_current_task: bool = False
+    notes: list[str] = field(default_factory=list)
+
+    def control_payload(self) -> dict[str, Any]:
+        return {
+            "next_tasks": [asdict(task) for task in self.next_tasks],
+            "goal_completed": bool(self.goal_completed),
+            "retry_current_task": bool(self.retry_current_task),
+            "notes": list(self.notes),
+        }
+
+
+@dataclass(frozen=True)
+class AutonomyLimits:
+    """Garde-fous d'une boucle autonome locale."""
+
+    max_actions: int = 20
+    max_depth: int = 5
+    max_attempts_per_task: int = 2
+    max_pending_tasks: int = 100
+
+    def __post_init__(self) -> None:
+        if min(
+            self.max_actions,
+            self.max_attempts_per_task,
+            self.max_pending_tasks,
+        ) < 1:
+            raise ValueError("Les budgets d'autonomie doivent être supérieurs ou égaux à 1")
+        if self.max_depth < 0:
+            raise ValueError("La profondeur autonome doit être positive ou nulle")
+
+
+@dataclass
+class GoalState:
+    """État persistant et borné d'un objectif poursuivi par un agent."""
+
+    goal_id: str
+    objective: str
+    status: str = "pending"
+    actions_executed: int = 0
+    max_actions: int = 20
+    max_depth: int = 5
+    max_attempts_per_task: int = 2
+    max_pending_tasks: int = 100
+    pending_tasks: list[dict[str, Any]] = field(default_factory=list)
+    completed_task_ids: list[str] = field(default_factory=list)
+    failed_task_ids: list[str] = field(default_factory=list)
+    delegated_task_ids: list[str] = field(default_factory=list)
+    task_results: list[dict[str, Any]] = field(default_factory=list)
+    last_error: str = ""
+    created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    updated_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+    @classmethod
+    def create(
+        cls,
+        objective: str,
+        tasks: Iterable[AgentTask],
+        *,
+        limits: AutonomyLimits | None = None,
+        goal_id: str | None = None,
+    ) -> "GoalState":
+        bounds = limits or AutonomyLimits()
+        return cls(
+            goal_id=goal_id or uuid4().hex,
+            objective=str(objective),
+            max_actions=bounds.max_actions,
+            max_depth=bounds.max_depth,
+            max_attempts_per_task=bounds.max_attempts_per_task,
+            max_pending_tasks=bounds.max_pending_tasks,
+            pending_tasks=[asdict(task) for task in tasks],
+        )
+
+    @classmethod
+    def from_mapping(cls, values: dict[str, Any]) -> "GoalState":
+        return cls(**dict(values))
+
+    @property
+    def terminal(self) -> bool:
+        return self.status in {"completed", "failed", "blocked", "budget_exhausted"}
+
+
+@dataclass
 class TaskResult:
     """Resultat explicable d'une tache."""
 
@@ -154,6 +248,7 @@ class TaskResult:
     elapsed_sec: float = 0.0
     decision_score: float = 0.0
     decision_reasons: list[str] = field(default_factory=list)
+    control: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -167,6 +262,7 @@ class AgentMemory:
     completed_tasks: list[str] = field(default_factory=list)
     recent_task_types: list[str] = field(default_factory=list)
     last_decisions: list[dict[str, Any]] = field(default_factory=list)
+    goals: dict[str, dict[str, Any]] = field(default_factory=dict)
     updated_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     def record(self, result: TaskResult) -> None:
@@ -603,36 +699,20 @@ class MultiTaskIntelligentAgent:
         self.save_memory()
 
     def score_task(self, task: AgentTask) -> tuple[float, list[str]]:
-        score = float(task.priority)
-        reasons = [f"priority={task.priority}"]
+        """Classe une tâche à partir de la même utilité que le Contract Net."""
+
+        evaluation = self.evaluate(task)
+        if not evaluation.accepted:
+            return -9999.0, [f"refusal={evaluation.refusal_reason}"]
+        score = float(task.priority) + evaluation.utility * 20.0
+        reasons = [
+            f"priority={task.priority}",
+            f"utility={evaluation.utility:.6f}",
+            *evaluation.reasons,
+        ]
         if task.task_id in self.memory.completed_tasks:
             score -= 100.0
             reasons.append("already completed")
-        matching = [capability for capability in self.capabilities if capability.supports(task.task_type)]
-        if task.required_capability:
-            matching = [capability for capability in matching if capability.name == task.required_capability]
-        if not matching:
-            return -9999.0, ["unsupported task"]
-        best = max(matching, key=lambda capability: capability.confidence - capability.cost * 0.05)
-        score += best.confidence * 20.0
-        score -= best.cost
-        reasons.append(f"capability={best.name}")
-        reasons.append(f"confidence={best.confidence}")
-        errors = self.memory.errors_by_type.get(task.task_type, 0)
-        successes = self.memory.successes_by_type.get(task.task_type, 0)
-        reliability = self.memory.reliability(task.task_type)
-        score += (reliability - 0.5) * 20.0
-        score += min(successes, 10) * 0.25
-        score -= min(errors, 10) * 1.5
-        if errors:
-            reasons.append(f"historical_errors={errors}")
-        if successes:
-            reasons.append(f"historical_successes={successes}")
-        reasons.append(f"reliability={reliability:.2f}")
-        avg_duration = self.memory.average_duration(task.task_type)
-        if avg_duration is not None:
-            score -= min(avg_duration, 30.0) * 0.05
-            reasons.append(f"avg_duration_sec={avg_duration:.2f}")
         recent_same_type = sum(1 for task_type in self.memory.recent_task_types[-8:] if task_type == task.task_type)
         if recent_same_type >= 4:
             score -= recent_same_type * 1.5
@@ -683,18 +763,34 @@ class MultiTaskIntelligentAgent:
                 else:
                     key_reserved = True
 
+            control: dict[str, Any] = {}
             if replayed_output is None:
                 handler = self.handlers[task.task_type]
-                output = handler(task, context)
+                raw_output = handler(task, context)
+                if isinstance(raw_output, ActionOutcome):
+                    output = dict(raw_output.output)
+                    control = raw_output.control_payload()
+                    persisted_output = {
+                        "_agent_output": output,
+                        "_agent_control": control,
+                    }
+                else:
+                    output = dict(raw_output)
+                    persisted_output = output
                 if self.idempotency_store is not None and idempotency_key:
                     self.idempotency_store.complete(
                         idempotency_key,
                         owner=self.agent_id,
                         task_id=task.task_id,
-                        result=output,
+                        result=persisted_output,
                     )
             else:
-                output = replayed_output
+                if "_agent_output" in replayed_output and "_agent_control" in replayed_output:
+                    output = dict(replayed_output["_agent_output"])
+                    output["_idempotency_replayed"] = True
+                    control = dict(replayed_output["_agent_control"])
+                else:
+                    output = replayed_output
             result = TaskResult(
                 task_id=task.task_id,
                 task_type=task.task_type,
@@ -705,6 +801,7 @@ class MultiTaskIntelligentAgent:
                 elapsed_sec=round(perf_counter() - timer, 6),
                 decision_score=score,
                 decision_reasons=list(reasons or []),
+                control=control,
             )
         except Exception as exc:
             if key_reserved and self.idempotency_store is not None and idempotency_key:
@@ -729,6 +826,217 @@ class MultiTaskIntelligentAgent:
             status=result.status,
         )
         return result
+
+    @staticmethod
+    def _goal_task(task: AgentTask, *, goal_id: str, parent_task_id: str = "", depth: int = 0) -> AgentTask:
+        cloned = AgentTask(**asdict(task))
+        cloned.payload = {
+            **cloned.payload,
+            "_goal_id": goal_id,
+            "_parent_task_id": parent_task_id,
+            "_goal_depth": int(depth),
+        }
+        return cloned
+
+    def _save_goal(self, goal: GoalState) -> None:
+        goal.updated_at = datetime.now(timezone.utc).isoformat()
+        self.memory.goals[goal.goal_id] = asdict(goal)
+        self.save_memory()
+        self.publish_state(
+            "agent.goal.updated",
+            {
+                "goal_id": goal.goal_id,
+                "objective": goal.objective,
+                "goal_status": goal.status,
+                "actions_executed": goal.actions_executed,
+                "pending_tasks": len(goal.pending_tasks),
+            },
+            status="ok" if goal.status not in {"failed", "blocked", "budget_exhausted"} else "error",
+        )
+
+    def start_goal(
+        self,
+        objective: str,
+        tasks: Iterable[AgentTask],
+        *,
+        limits: AutonomyLimits | None = None,
+        goal_id: str | None = None,
+    ) -> GoalState:
+        """Crée et persiste un objectif sans encore exécuter ses tâches."""
+
+        goal = GoalState.create(objective, tasks, limits=limits, goal_id=goal_id)
+        if len(goal.pending_tasks) > goal.max_pending_tasks:
+            raise ValueError("Le nombre initial de tâches dépasse le budget de l'objectif")
+        prepared: list[dict[str, Any]] = []
+        for raw_task in goal.pending_tasks:
+            task = self._goal_task(AgentTask(**raw_task), goal_id=goal.goal_id)
+            prepared.append(asdict(task))
+        goal.pending_tasks = prepared
+        if not goal.pending_tasks:
+            goal.status = "completed"
+        self._save_goal(goal)
+        return goal
+
+    def get_goal(self, goal_id: str) -> GoalState | None:
+        raw = self.memory.goals.get(goal_id)
+        return GoalState.from_mapping(raw) if raw is not None else None
+
+    def pursue_goal(
+        self,
+        objective: str,
+        tasks: Iterable[AgentTask],
+        *,
+        limits: AutonomyLimits | None = None,
+        goal_id: str | None = None,
+        delegate: Callable[[AgentTask], Any] | None = None,
+    ) -> GoalState:
+        """Poursuit un objectif jusqu'à sa terminaison ou un garde-fou.
+
+        ``delegate`` reste facultatif et peut s'appuyer sur le Contract Net:
+        il reçoit une tâche non exécutable localement et retourne soit un
+        ``TaskResult``, soit un objet possédant un attribut ``result``.
+        """
+
+        goal = self.start_goal(objective, tasks, limits=limits, goal_id=goal_id)
+        return self._advance_goal(goal, delegate=delegate)
+
+    def resume_goal(
+        self,
+        goal_id: str,
+        *,
+        delegate: Callable[[AgentTask], Any] | None = None,
+        additional_actions: int = 0,
+    ) -> GoalState:
+        """Reprend un objectif persistant encore exécutable."""
+
+        goal = self.get_goal(goal_id)
+        if goal is None:
+            raise KeyError(f"Objectif inconnu: {goal_id}")
+        if goal.status in {"completed", "failed"}:
+            return goal
+        if goal.status == "budget_exhausted":
+            if additional_actions < 1:
+                return goal
+            goal.max_actions += int(additional_actions)
+        if goal.status in {"blocked", "budget_exhausted"}:
+            goal.status = "running"
+            goal.last_error = ""
+        return self._advance_goal(goal, delegate=delegate)
+
+    def _advance_goal(
+        self,
+        goal: GoalState,
+        *,
+        delegate: Callable[[AgentTask], Any] | None,
+    ) -> GoalState:
+        if goal.status == "completed":
+            return goal
+        goal.status = "running"
+        self._save_goal(goal)
+
+        while goal.pending_tasks and goal.actions_executed < goal.max_actions:
+            pending = [AgentTask(**raw_task) for raw_task in goal.pending_tasks]
+            selected = self.choose_tasks(pending, limit=1)
+            delegated = False
+            if selected:
+                task, score, reasons = selected[0]
+                result = self.execute_task(task, score, reasons)
+            else:
+                task = pending[0]
+                if delegate is None:
+                    goal.status = "blocked"
+                    goal.last_error = f"Aucun handler local ou proposition acceptable pour {task.task_type}"
+                    self._save_goal(goal)
+                    return goal
+                delegated = True
+                try:
+                    delegated_result = delegate(task)
+                except Exception as exc:
+                    delegated_result = TaskResult(
+                        task_id=task.task_id,
+                        task_type=task.task_type,
+                        agent_id=self.agent_id,
+                        status="error",
+                        error=f"delegation_failed: {exc}",
+                    )
+                result = getattr(delegated_result, "result", delegated_result)
+                if result is None or not isinstance(result, TaskResult):
+                    result = TaskResult(
+                        task_id=task.task_id,
+                        task_type=task.task_type,
+                        agent_id=self.agent_id,
+                        status="error",
+                        error="delegation_failed",
+                    )
+
+            goal.pending_tasks = [
+                raw_task for raw_task in goal.pending_tasks if raw_task.get("task_id") != task.task_id
+            ]
+            goal.actions_executed += 1
+            if delegated:
+                goal.delegated_task_ids.append(task.task_id)
+            goal.task_results.append(
+                {
+                    "task_id": result.task_id,
+                    "task_type": result.task_type,
+                    "agent_id": result.agent_id,
+                    "status": result.status,
+                    "error": result.error,
+                    "completed_at": result.completed_at,
+                }
+            )
+            goal.task_results = goal.task_results[-50:]
+
+            retry_requested = bool(result.control.get("retry_current_task"))
+            if result.status != "ok" or retry_requested:
+                next_attempt = int(task.attempts) + 1
+                if next_attempt < goal.max_attempts_per_task:
+                    task.attempts = next_attempt
+                    goal.pending_tasks.append(asdict(task))
+                    self._save_goal(goal)
+                    continue
+                goal.failed_task_ids.append(task.task_id)
+                goal.status = "failed"
+                goal.last_error = result.error or "Nombre maximal de tentatives atteint"
+                self._save_goal(goal)
+                return goal
+
+            goal.completed_task_ids.append(task.task_id)
+            if bool(result.control.get("goal_completed")):
+                goal.pending_tasks.clear()
+                goal.status = "completed"
+                self._save_goal(goal)
+                return goal
+
+            parent_depth = int(task.payload.get("_goal_depth", 0))
+            for raw_follow_up in result.control.get("next_tasks", []):
+                depth = parent_depth + 1
+                if depth > goal.max_depth:
+                    goal.status = "failed"
+                    goal.last_error = "Profondeur maximale de l'objectif dépassée"
+                    self._save_goal(goal)
+                    return goal
+                follow_up = self._goal_task(
+                    AgentTask(**raw_follow_up),
+                    goal_id=goal.goal_id,
+                    parent_task_id=task.task_id,
+                    depth=depth,
+                )
+                goal.pending_tasks.append(asdict(follow_up))
+                if len(goal.pending_tasks) > goal.max_pending_tasks:
+                    goal.status = "failed"
+                    goal.last_error = "Nombre maximal de tâches en attente dépassé"
+                    self._save_goal(goal)
+                    return goal
+            self._save_goal(goal)
+
+        if goal.pending_tasks:
+            goal.status = "budget_exhausted"
+            goal.last_error = "Budget maximal d'actions atteint"
+        else:
+            goal.status = "completed"
+        self._save_goal(goal)
+        return goal
 
     def run_once(self, source: TaskSource, *, fetch_limit: int | None = None) -> list[TaskResult]:
         self.heartbeat()

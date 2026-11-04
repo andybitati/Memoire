@@ -40,20 +40,24 @@ Le registre conserve également la provenance de l'artefact chargé. Si aucun mo
 
 \section{Implémentation des agents}
 
-La classe \texttt{MultiTaskIntelligentAgent} peut enregistrer plusieurs capacités et plusieurs handlers. Son état local contient les informations utilisées lors de la décision : disponibilité, charge, santé et mémoire. À la réception d'un appel, l'agent vérifie d'abord si la tâche est compatible avec ses capacités. Il peut alors proposer son exécution ou la refuser. Dans ce protocole, un refus constitue un comportement normal et non une exception.
+La classe \texttt{MultiTaskIntelligentAgent} peut enregistrer plusieurs capacités et plusieurs handlers. Son état local contient les informations utilisées lors de la décision : disponibilité, charge, santé et mémoire. Lorsqu'un objectif lui est confié, l'agent classe les tâches compatibles à partir de la même utilité que celle employée pour les propositions Contract Net. Il peut exécuter une tâche, produire les sous-tâches suivantes ou refuser une opération qui ne satisfait pas ses contraintes. Dans ce protocole, un refus constitue un comportement normal et non une exception.
 
 L'attribution locale est coordonnée par \texttt{ContractNetCoordinator}. Lorsque la négociation passe par Redis, \texttt{RedisContractNetCoordinator} s'appuie sur \texttt{RedisContractNetTransport}. Les deux chemins utilisent les types de messages décrits à la section~\ref{sec:agentmessage}. Les traces expérimentales distinguent propositions, refus, attributions, résultats et échecs afin de rendre le cycle observable.
 
 Pour les essais locaux, \texttt{LocalMessageBus} permet d'exécuter les échanges en mémoire et facilite les tests déterministes. \texttt{RedisMessageBus} est utilisé dès que la campagne implique plusieurs processus. Le transport reste toutefois neutre vis-à-vis de la compétence des agents : il déplace les messages, mais ne décide pas quel agent doit exécuter la tâche.
+
+Le contrat \texttt{ActionOutcome} associe le résultat d'un handler aux éventuelles sous-tâches qu'il produit. \texttt{GoalState} conserve l'objectif, son statut, les tâches en attente, les résultats récents et les compteurs d'exécution. \texttt{AutonomyLimits} fixe les budgets d'actions, de profondeur, de tentatives et de tâches en attente. Ces objets sont sérialisables dans la mémoire JSON déjà utilisée par l'agent et ne nécessitent aucun service d'orchestration supplémentaire.
+
+La méthode \texttt{pursue\_goal} exécute la boucle jusqu'à la terminaison, au blocage, à l'échec ou à l'épuisement du budget. \texttt{resume\_goal} recharge l'état persistant ; un budget épuisé ne peut être prolongé que par un nombre d'actions explicitement accordé. Le callback de délégation peut être directement relié à \texttt{ContractNetCoordinator.negotiate}, ce qui conserve un seul mécanisme d'attribution pour les tâches non exécutables localement.
 
 
 \section{Idempotence et reprise}
 
 Deux mécanismes de persistance sont disponibles pour l'idempotence. \texttt{SQLiteIdempotencyStore} est adapté à l'exécution locale, tandis que \texttt{RedisIdempotencyStore} rend cet état accessible à plusieurs agents.
 
-Avant d'appliquer l'effet associé à une tâche, le worker vérifie sa clé logique. Lorsque l'opération se termine correctement, cette clé est enregistrée. Si la même tâche est rejouée par la suite, le système peut reconnaître qu'un effet a déjà été produit et éviter de le répéter. Le replay devient ainsi observable sans nécessairement provoquer un second effet.
+Avant d'appliquer l'effet associé à une tâche, l'agent vérifie sa clé logique. Lorsque l'opération se termine correctement, cette clé est enregistrée. Si la même tâche est rejouée par la suite, le système peut reconnaître qu'un effet a déjà été produit et éviter de le répéter. Le replay devient ainsi observable sans nécessairement provoquer un second effet.
 
-Cette protection a cependant une portée précise. Elle couvre les opérations effectivement instrumentées par le protocole et ne transforme pas toutes les interactions du système en transactions atomiques. Par exemple, un arrêt survenant après une opération externe non transactionnelle mais avant l'enregistrement de la clé demanderait une stratégie supplémentaire dans une version industrialisée.
+Cette protection a cependant une portée précise. Elle couvre les opérations effectivement instrumentées par le protocole et ne transforme pas toutes les interactions du système en transactions atomiques. Par exemple, un arrêt survenant après une opération externe non transactionnelle mais avant l'enregistrement de la clé demanderait une stratégie supplémentaire dans un déploiement industriel.
 
 
 \section{Pipeline d'inférence}
@@ -110,7 +114,7 @@ Le tableau de bord sert avant tout à examiner les alertes, les incidents candid
 
 \section{Validation fonctionnelle}
 
-Les tests automatisés vérifient notamment les contrats, les transitions du protocole, le routage, les chemins de fallback et le replay idempotent. Ils sont complétés par les campagnes expérimentales, qui produisent des artefacts CSV et JSON destinés à l'analyse.
+Les tests automatisés vérifient notamment les contrats, les transitions du protocole, le routage, les chemins de fallback et le replay idempotent. Le module du noyau multi-agent comprend onze scénarios, dont l'enchaînement de handlers, la persistance et le rechargement d'un objectif, la délégation effective par Contract Net, l'arrêt sur épuisement du budget et la reprise après augmentation explicite de ce budget. Ils sont complétés par les campagnes expérimentales, qui produisent des artefacts CSV et JSON destinés à l'analyse.
 
 Il faut toutefois distinguer deux types de conclusion. Un test fonctionnel réussi montre qu'un chemin du code produit le comportement attendu dans les conditions prévues. Il ne démontre pas qu'une méthode est statistiquement meilleure qu'une autre. Cette seconde question nécessite un protocole expérimental et des métriques adaptées.
 

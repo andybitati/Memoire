@@ -3,11 +3,14 @@
 from .contract_net import CNP_MESSAGE_TYPES, ContractNetCoordinator, NegotiationResult
 from .idempotency import IdempotencyRecord, RedisIdempotencyStore, SQLiteIdempotencyStore
 from .intelligent_runtime import (
+    ActionOutcome,
     AgentCapability,
     AgentPerception,
     AgentPolicyWeights,
     AgentTask,
+    AutonomyLimits,
     BidEvaluation,
+    GoalState,
     MultiTaskIntelligentAgent,
     TaskResult,
 )
@@ -26,14 +29,17 @@ def run_supervisor_cycle(*args, **kwargs):
     return _run_supervisor_cycle(*args, **kwargs)
 
 __all__ = [
+    "ActionOutcome",
     "AgentCapability",
     "AgentPerception",
     "AgentPolicyWeights",
     "AgentTask",
+    "AutonomyLimits",
     "BidEvaluation",
     "CNP_MESSAGE_TYPES",
     "ContractNetCoordinator",
     "IdempotencyRecord",
+    "GoalState",
     "MultiTaskIntelligentAgent",
     "NegotiationResult",
     "RedisContractNetCoordinator",
