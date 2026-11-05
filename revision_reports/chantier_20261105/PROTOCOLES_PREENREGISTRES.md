@@ -10,6 +10,7 @@ Procédure : décision C13-proc de `ETAT_CHANTIER.md`. Une ligne par protocole, 
 | E-CNP-STATIC-ASSIGNMENT | 5 | `revision_reports/chantier_20261105/agent_5/protocoles/E-CNP-STATIC-ASSIGNMENT.md` | `d2f699b5c30e0611a62f9138583e44c11dca8a31568be4001eeb768f895855bb` | `2026-11-05T14:40:48Z` | ce commit (`Protocole E-CNP-STATIC-ASSIGNMENT préenregistré`) |
 | E-CNP-LEAST-LOADED | 5 | `revision_reports/chantier_20261105/agent_5/protocoles/E-CNP-LEAST-LOADED.md` | `15fd66bf90eb0affe9ecc24ef80d20fc418900b040b97b5b487896beb63b9b53` | `2026-11-05T15:39:22Z` | ce commit (`Protocole E-CNP-LEAST-LOADED préenregistré`) |
 | E-H3B-STRICT-HOLDOUT | 4 | `revision_reports/chantier_20261105/agent_4/protocoles/E-H3B-STRICT-HOLDOUT.md` | `a27296a0cf3b5232fd70d3db5a21036740f1d0e63f4173faa3c2d0387a55ad22` | `2026-11-05T15:39:39Z` | ce commit (`Protocole E-H3B-STRICT-HOLDOUT préenregistré`) |
+| E-CICIDS-HOLDOUT-FIX | Coordinateur (refonte 150 p.) | `revision_reports/refonte_150p/cicids_fix/E-CICIDS-HOLDOUT-FIX.md` | `265f797b246c51192fa5139d84add9891c3d27f4dc90332afd8dd13e300aa59d` | `2026-11-05T20:44:54Z` | ce commit (`Protocole E-CICIDS-HOLDOUT-FIX préenregistré`) ; runner commité avec le protocole |
 
 ## Écarts au protocole
 
