@@ -47,7 +47,7 @@
 | Fond | 8 | 4,0 | Aucune hypothèse validée. Aucun bénéfice propre de l'architecture : négociation sans avantage, mémoire seulement à p = 0,9, distribution non démontrée. Pas d'analyse conjointe de sources hétérogènes. Résultats prédictifs sous les règles simples. Points obtenus : chaîne intégrée fonctionnelle et réponses claires aux questions |
 | Rigueur | 6 | 5,0 | Forte pour le préenregistrement, le jugement sur critères écrits, la publication des résultats défavorables et la traçabilité. Perdu : critères de H1 à H5 non fixés à l'avance, un défaut de données découvert tard, pas de reproduction indépendante |
 | Originalité | 3 | 1,0 | Pas de nouvel algorithme ni de nouvelle méthode ; réplications de critiques connues. Point obtenu : démontage expérimental d'une architecture, rarement publié sous cette forme |
-| Forme | 3 | 2,0 | Structure et bibliographie correctes. Perdu : style marqué par l'assistance, résumé long, répétitions, Bokuse non relu |
+| Forme | 3 | 2,0 | Structure et bibliographie correctes. Perdu : style marqué par l'assistance, répétitions, Bokuse non relu |
 | **Total** | **20** | **12/20** | |
 
 Fourchette plausible : **11 à 14**. Le haut suppose une soutenance où l'auteur explique seul E-CNP, E-H5 et la fuite d'E-H3b, et une relecture de style. Le bas, ou un refus, devient probable si l'auteur ne peut pas défendre ces campagnes.

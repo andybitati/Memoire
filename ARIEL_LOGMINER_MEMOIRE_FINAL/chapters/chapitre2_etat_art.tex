@@ -113,7 +113,7 @@ Dans une chaîne de cybersécurité, le passage de la mesure technique à la dé
 
 Lorsqu'un tel signal mérite d'être conservé, enrichi ou présenté à l'analyste, il devient une \textbf{alerte} ou une \textbf{anomalie candidate}. La qualification d'\textbf{incident confirmé} vient plus tard et suppose une interprétation supplémentaire fondée sur plusieurs éléments de preuve.
 
-\logminer{} se situe volontairement avant cette dernière étape. Le prototype détecte, priorise et rapproche des anomalies candidates ; la confirmation d'une intrusion dépend de la qualité de la vérité terrain, du contexte disponible et, lorsque cela est nécessaire, de l'analyste.
+\logminer{} se situe volontairement avant cette dernière étape. Le prototype détecte et rapproche des anomalies candidates ; la confirmation d'une intrusion dépend de la qualité de la vérité terrain, du contexte disponible et, lorsque cela est nécessaire, de l'analyste.
 
 \section{Approches fondées sur les règles et les signatures}
 
@@ -153,7 +153,7 @@ pour laquelle aucune signature explicite n'existe.
 Cette complémentarité justifie le positionnement de \logminer{} : le prototype n'est pas
 présenté comme un substitut aux plateformes HIDS ou SIEM établies. Il étudie plutôt
 l'intégration de mécanismes analytiques supplémentaires dans une chaîne où les sorties
-restent auditables et soumises à interprétation.
+restent traçables et soumises à interprétation.
 
 \section{Apprentissage automatique pour la cybersécurité}
 
@@ -1125,7 +1125,7 @@ OpenSearch Security Analytics couvrent déjà ingestion, règles, alertes, inves
 corrélation à des degrés différents
 \cite{wazuh2026architecture,elastic2026security,opensearch2026securityanalytics}.
 LogAI et Loglizer fournissent par ailleurs des cadres pour comparer des traitements de
-journaux \cite{cheng2023logai,he2016experience}. La lacune initialement formulée comme un
+journaux \cite{cheng2023logai,he2016experience}. Une lacune formulée comme un
 « espace entre prototype algorithmique et plateforme opérationnelle » ne suffit donc pas
 à établir une nouveauté.
 
@@ -1151,8 +1151,7 @@ Quatre exigences structurent alors une comparaison défendable :
 Ariel Logminer satisfait partiellement cette ambition : les artefacts relient plusieurs
 affirmations à des protocoles, et les résultats négatifs révèlent les raccourcis de
 datasets. En revanche, aucune comparaison expérimentale n'est conduite contre les cadres
-intégrés, aucun incident réel ne combine journaux système et flux réseau, et le bénéfice
-propre de la négociation n'est pas établi dans le manuscrit actuel. Les observations sur
+intégrés, aucun incident réel ne combine journaux système et flux réseau, et aucun bénéfice propre de la négociation n'est établi face à une répartition au moindre chargé (section~\ref{sec:e-cnp-moindre}). Les observations sur
 la dépendance aux partitions répliquent des avertissements déjà publiés
 \cite{sommer2010outside,arp2022dos,le2022logbased,engelen2021troubleshooting,liu2022error} ;
 elles ne constituent pas une découverte conceptuelle.
@@ -1209,7 +1208,7 @@ Regroupement temporel et contextuel évalué sur des corpus synthétiques contr�
 Reconstruction causale ou validation sur incidents SOC réels multi-sources. \\
 Mémoire &
 Persistance de l'historique et support d'une procédure de mise à jour contrôlée. &
-Gain mesuré de la mémoire sur l'attribution des tâches ; apprentissage continu autonome en production. \\
+Gain général de la mémoire sur l'attribution des tâches, établi seulement pour une probabilité d'échec de $0{,}9$ ; apprentissage continu autonome en production. \\
 Priorisation &
 Mécanisme prévu par la conception. &
 Amélioration mesurée de l'ordre de traitement des anomalies. \\
@@ -1229,6 +1228,6 @@ L'analyse des journaux a progressivement dépassé les règles, les signatures e
 
 Le même constat vaut pour l'architecture. Modularité, distribution, corrélation, persistance et visualisation ne se résument pas à une métrique de classification. Une architecture multi-agent peut mieux séparer les responsabilités tout en ajoutant du surcoût. Une reprise observée dans un scénario précis ne prouve pas la haute disponibilité du système entier. De même, une interface qui fonctionne techniquement n'est pas, pour cette seule raison, une interface dont l'utilisabilité a été démontrée.
 
-La lacune retenue dans ce mémoire se situe à cet endroit : disposer d'une chaîne cohérente capable d'intégrer plusieurs familles de journaux, plusieurs mécanismes de détection et des fonctions d'exploitation, tout en exigeant pour chaque propriété annoncée une preuve expérimentale adaptée.
+Ce mémoire ne prétend pas combler une lacune fonctionnelle. Il se place à cet endroit pour une autre raison : étudier une chaîne cohérente qui intègre plusieurs familles de journaux, plusieurs mécanismes de détection et des fonctions d'exploitation, en exigeant pour chaque propriété annoncée une preuve expérimentale adaptée, y compris lorsque le résultat lui est défavorable.
 
 Le chapitre suivant présente le modèle proposé et l'architecture d'Ariel Logminer. Les besoins dégagés ici y sont traduits en composants, contrats de communication, mécanismes de routage, traitements de détection, mémoire, corrélation et audit.

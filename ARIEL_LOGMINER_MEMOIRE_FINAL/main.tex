@@ -275,87 +275,15 @@ ANNÉE ACADÉMIQUE : 2025--2026
 \chapter*{Résumé}
 \addcontentsline{toc}{chapter}{Résumé}
 
-Ce mémoire présente Ariel \logminer{}, une architecture multi-agents légère
-destinée à l'analyse de journaux système et réseau hétérogènes, dont la
-distribution est évaluée dans une topologie de laboratoire. Un agent est ici
-une entité logicielle dotée de capacités, d'un état, d'une mémoire et d'une
-politique locale. Lorsqu'un objectif borné lui est confié, il peut évaluer les
-tâches disponibles, proposer leur exécution ou les refuser, exécuter des
-handlers compatibles, enchaîner des sous-tâches, reprendre un état persistant
-et déléguer une opération exigeant une autre capacité. La négociation repose
-sur un protocole Contract Net explicite et sur un bus local ou Redis Streams.
-L'allocation et la distribution sont évaluées par des campagnes en laboratoire,
-tandis que la poursuite bornée d'objectifs est validée fonctionnellement.
-L'intelligence générale, la définition autonome des finalités et le
-fonctionnement d'un SOC industriel restent hors périmètre.
+Ce mémoire présente Ariel \logminer{}, une architecture multi-agents légère pour l'analyse de journaux système et réseau de formats hétérogènes, évaluée en laboratoire sur un ou deux hôtes. Ses agents sont des entités logicielles dotées de capacités, d'un état, d'une mémoire et d'une politique locale, qui se répartissent les tâches par un protocole Contract Net, sur un bus local ou Redis Streams. Le travail n'introduit aucun nouvel algorithme : il évalue une chaîne intégrée et confronte ses résultats à des règles simples et à des architectures de référence.
 
-L'évaluation met particulièrement en évidence l'influence du protocole
-expérimental sur les performances. Sur CICIDS2017, un Random Forest évalué
-avec une séparation aléatoire stratifiée obtient un F1 moyen de
-$0{,}9951$ sur cinq graines. Lorsque chacun des cinq scénarios d'attaque
-est tenu hors entraînement, le F1 moyen tombe à $0{,}1577$. Parmi cinq
-modèles légers comparés sous ce holdout, la régression logistique obtient
-le meilleur F1 moyen, $0{,}2337$, tandis que HistGradientBoosting obtient
-une PR-AUC macro de $0{,}5690$ pour un F1 presque nul au seuil retenu. Un
-changement de modèle modifie donc certaines métriques sans supprimer la
-fragilité inter-scénarios.
+Les scores dépendent d'abord du protocole. Sur CICIDS2017, le F1 du Random Forest passe de $0{,}9951$ en séparation aléatoire à $0{,}1577$ lorsqu'un scénario est tenu hors entraînement. Sous les protocoles stricts, aucun résultat principal ne dépasse la meilleure règle simple évaluée sur le même test. Sur HDFS, au niveau bloc, Histogram atteint $0{,}8684$ contre $0{,}8724$ pour la surprise moyenne des templates. Sur BGL, son F1 de $0{,}9137$ coïncide avec la règle « sévérité absente de l'entraînement ». Sur CSE-CIC-IDS2018, traité comme un audit, une règle fixe sur le port de destination atteint $0{,}9997$. Ces constats répliquent des critiques déjà publiées.
 
-Pour HDFS et BGL, le protocole sépare strictement entraînement, validation et
-test. Drain3 est ajusté uniquement sur l'entraînement, puis gelé avant les
-deux partitions suivantes. Au niveau \texttt{block\_id}, Histogram atteint un
-F1 de $0{,}8684$ (IC à 95~\% : $[0{,}8568\,;\,0{,}879493]$) sur les
-$115\,013$ blocs de test HDFS, dont $1\,679$ positifs, avec un rappel de $1$
-et une précision de $0{,}7674$, identiques pour cinq graines ; une règle simple, la surprise moyenne des templates, atteint $0{,}8724$ sur le même test. Sur BGL, le F1
-vaut $0{,}9137$, mais $89{,}8081\,\%$ des événements de test portent un
-template inconnu de l'entraînement, et la décision d'Histogram coïncide
-exactement avec la règle « sévérité absente de l'entraînement normal ». Ce
-score mesure donc une nouveauté de sévérité plutôt qu'une modélisation de la
-dynamique des journaux ; la règle « template inconnu » n'atteint que
-$0{,}2779$.
+Les adaptateurs lisent $7\,001$ unités, dont une fixture Apache d'une seule ligne, et le remplissage du schéma commun va de sept champs sur sept à aucun. Le routeur rejette $20/20$ fichiers inconnus et écarte à tort $3/46$ fichiers connus. Chaque source est évaluée séparément : aucun incident n'est analysé conjointement à partir de journaux système et de flux réseau.
 
-Sur CSE-CIC-IDS2018, une séparation entre le 15 et le 16 février donne un F1
-moyen de $0{,}9992$ à la régression logistique contre $0{,}4014$ au
-Random Forest. L'audit montre cependant que \texttt{Dst Port} seul atteint
-$0{,}9997$, score qu'une règle fixe sur le port de destination (inférieur à
-1024) obtient également, et que le transfert inverse, du 16 vers le
-15 février, ne dépasse pas $0{,}2342$. Le score principal repose donc sur
-un raccourci propre à la journée de test.
+Sur des microtâches, le monolithe traite 55 à 72 fois plus de tâches par seconde que les agents. L'absence de doublon après une panne tient au magasin d'idempotence, transposable aux architectures de référence. Sur deux machines virtuelles, la seconde ne traite que $1{,}23\,\%$ des tâches en saturation. Trois comparaisons préenregistrées, sur des tâches synthétiques et dans un seul processus, précisent ce bilan. Face à une table statique, Contract Net perd $13~\%$ de débit en régime nominal et réduit les échecs à la première exécution lorsque des agents défaillent. Un répartiteur au moindre chargé, sans négociation, obtient les mêmes taux d'échec, et Contract Net perd alors 11 à 14~\% de débit : l'avantage propre de la négociation n'est pas établi. La mémoire n'apporte un gain établi que pour une probabilité d'échec de $0{,}9$.
 
-La validation multiformat lit, parse et normalise $7\,001/7\,001$ unités, dont
-une seule fixture Apache. Ce résultat mesure la couverture fonctionnelle des
-formats testés ; le remplissage du schéma commun varie de sept champs standard
-sur sept (syslog, BGL) à aucun (flux réseau tabulaires). Une politique
-open-set calibrée uniquement sur les sources connues, puis gelée, rejette
-$20/20$ fichiers inconnus et écarte à tort $3/46$ fichiers connus ; les
-43 fichiers connus acceptés sont correctement orientés et la marge de décision
-n'est pas une probabilité calibrée. Aucune comparaison avec une chaîne sans
-routage n'a été exécutée : le bénéfice prédictif du routage spécialisé n'est
-pas établi.
-
-Le benchmark contrôlé couvre quatre architectures, quatre charges et dix
-répétitions, soit $160$ exécutions et $264\,000$ traitements sans échec. Sur les microtâches du protocole, le monolithe traite 55 à 72 fois plus de tâches par seconde que les architectures à agents. Lors d'une panne appariée survenant
-après persistance, les architectures à agents ne dupliquent aucun effet,
-contrairement au monolithe et aux workers centralisés ; doter ces derniers du même magasin d'idempotence supprime également les doublons. Trois comparaisons préenregistrées, sur des tâches synthétiques et dans un seul processus, précisent ce bilan. Face à une table statique, Contract Net perd $13~\%$ de débit en régime nominal et réduit les échecs à la première exécution lorsque des agents défaillent. Un répartiteur au moindre chargé, sans négociation, obtient les mêmes taux d'échec, et Contract Net perd alors 11 à 14~\% de débit : l'avantage propre de la négociation n'est pas établi. La mémoire n'apporte un gain établi que pour une probabilité d'échec de $0{,}9$.
-
-Une campagne d'endurance d'une heure, sur deux machines virtuelles Debian et
-Ubuntu reliées à un Redis centralisé sur l'hôte du laboratoire, mène à terme
-$1\,800$ tâches sur $1\,800$, réparties 451 et $1\,349$ selon les profils de
-capacité configurés ; un arrêt contrôlé après persistance conduit à une
-réattribution et à un rejeu sans effet dupliqué. En saturation, la capacité
-de cette topologie se situe entre 8 et 16 tâches/s, et la seconde machine ne
-traite que $1{,}23\,\%$ des tâches réussies : elle n'augmente pas la capacité
-observée. La haute disponibilité n'a pas été évaluée.
-
-Aucune des cinq hypothèses n'est validée. H1 et H2 sont partiellement
-soutenues, mais ce qu'elles établissent relève d'exigences de réalisation :
-chaque unité est lue et émise dans le schéma commun, et le magasin
-d'idempotence supprime les effets dupliqués quelle que soit l'architecture.
-H3 reste non tranchée, faute de comparaison avec une chaîne sans routage. H4
-n'est pas tranchée : sous séparation temporelle pour CICIDS2017, sur CSE-CIC-IDS2018, sur BGL et sur HDFS au niveau bloc, aucun modèle ne dépasse la règle simple évaluée sur le même test, et aucun budget de ressources n'a été fixé. H5 n'est pas tranchée : le gain de la mémoire reste conditionnel, la priorisation des anomalies n'a pas été mesurée et aucun cycle de promotion n'a été éprouvé. Aucune expérience n'analyse
-conjointement un même incident à partir de journaux système et de flux
-réseau. La contribution principale d'Ariel \logminer{} réside ainsi dans
-l'intégration architecturale et méthodologique d'une chaîne locale, modulaire
-et expérimentalement traçable pour l'analyse de journaux hétérogènes.
+Aucune des cinq hypothèses n'est validée. H1 et H2 sont partiellement soutenues, mais relèvent d'exigences de réalisation. H3, H4 et H5 ne sont pas tranchées, et la supériorité visée par H4 est infirmée sur les quatre jeux publics. La contribution est donc méthodologique et d'ingénierie : une chaîne locale traçable, dont les expériences isolent l'effet de plusieurs mécanismes et montrent que, souvent, une solution plus simple suffit.
 
 \bigskip
 
@@ -372,83 +300,15 @@ automatique, reproductibilité.
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
 
-This thesis presents Ariel \logminer{}, a lightweight multi-agent architecture
-for heterogeneous system and network log analysis, whose distribution is
-evaluated in a laboratory topology. An agent is defined as a software entity
-with declared capabilities, state, memory, and a local policy. When assigned
-a bounded objective, it can evaluate available tasks, propose or refuse their
-execution, invoke compatible handlers, chain subtasks, resume persistent state,
-and delegate an operation requiring another capability. Negotiation follows an
-explicit Contract Net Protocol over a local bus or Redis Streams. Allocation
-and distribution are evaluated through laboratory campaigns, while bounded
-goal pursuit is functionally validated. General intelligence, autonomous goal
-definition, and operation as an industrial SOC platform remain outside the
-scope of this work.
+This thesis presents Ariel \logminer{}, a lightweight multi-agent architecture for analyzing system and network logs of heterogeneous formats, evaluated in a laboratory on one or two hosts. Its agents are software entities with capabilities, state, memory, and a local policy, which allocate tasks through a Contract Net protocol over a local bus or Redis Streams. The work introduces no new algorithm: it evaluates an integrated pipeline and confronts its results with simple rules and reference architectures.
 
-The evaluation particularly highlights the influence of the experimental
-protocol on measured performance. On CICIDS2017, a Random Forest evaluated
-with a stratified random split reaches a mean F1-score of $0.9951$ over five
-seeds. When each of the five attack scenarios is held out from training, the
-mean F1-score falls to $0.1577$. Among five lightweight models compared
-under this holdout, Logistic Regression achieves the highest mean F1-score,
-$0.2337$, while HistGradientBoosting reaches a macro PR-AUC of $0.5690$
-with a near-zero F1-score at the selected threshold. Changing the classifier
-therefore alters some metrics without eliminating inter-scenario fragility.
+Scores depend first on the protocol. On CICIDS2017, the Random Forest F1 falls from $0.9951$ under a random split to $0.1577$ when a scenario is held out from training. Under strict protocols, no main result exceeds the best simple rule evaluated on the same test set. On HDFS, at block level, Histogram reaches $0.8684$ against $0.8724$ for the mean template surprisal. On BGL, its F1 of $0.9137$ coincides with the rule ``severity absent from training''. On CSE-CIC-IDS2018, treated as an audit, a fixed rule on the destination port reaches $0.9997$. These findings replicate published criticisms.
 
-For HDFS and BGL, the protocol strictly separates training, validation, and
-test partitions. Drain3 is fitted only on the training partition and frozen
-before validation and test. At the \texttt{block\_id} level, Histogram reaches
-an F1-score of $0.8684$ (95\% CI $[0.8568;0.8795]$) on the
-$115{,}013$ HDFS test blocks, including $1{,}679$ positives, with a recall of
-$1$ and a precision of $0.7674$, identical across five sampling seeds; a simple rule, the mean template surprisal, reaches $0.8724$ on the same test set. On
-BGL, F1 is $0.9137$, but 89.8081\% of test events carry a template unseen
-in training, and the Histogram decision coincides exactly with the rule
-``severity absent from normal training''. This score therefore measures
-severity novelty rather than a model of log dynamics; the ``unknown
-template'' rule reaches only $0.2779$.
+The adapters read $7{,}001$ units, including a one-line Apache fixture, and common-schema completeness ranges from seven fields out of seven to none. The router rejects $20/20$ unknown files and wrongly rejects $3/46$ known files. Each source is evaluated separately: no incident is analyzed jointly from system logs and network flows.
 
-On CSE-CIC-IDS2018, a February 15 versus February 16 split yields a mean
-F1-score of $0.9992$ for Logistic Regression and $0.4014$ for Random
-Forest. However, \texttt{Dst Port} alone reaches $0.9997$, a score also
-obtained by a fixed destination-port rule (below 1024), and the reverse
-transfer, from February 16 to February 15, does not exceed $0.2342$. The
-primary score therefore rests on a shortcut specific to the test day.
+On microtasks, the monolith processes 55 to 72 times more tasks per second than the agents. The absence of duplicates after a failure comes from the idempotency store, which transfers to the reference architectures. On two virtual machines, the second processes only 1.23\% of tasks under saturation. Three preregistered comparisons, on synthetic tasks within a single process, refine this assessment. Against a static table, Contract Net loses 13\% of throughput in the nominal regime and reduces first-execution failures when agents fail. A least-loaded dispatcher, without negotiation, reaches the same failure rates, and Contract Net then loses 11 to 14\% of throughput: no specific advantage of negotiation is established. Memory yields an established gain only at a failure probability of $0.9$.
 
-The multi-format validation reads, parses, and normalizes $7{,}001/7{,}001$
-units, including a single Apache fixture. This result measures functional
-coverage of the tested formats; filling of the common schema ranges from seven
-standard fields out of seven (syslog, BGL) to none (tabular network flows). An
-open-set policy calibrated only on known sources and then frozen rejects
-$20/20$ unknown files and wrongly rejects $3/46$ known files; all 43 accepted
-known files are correctly routed, and the decision margin is not a calibrated
-probability. No comparison with a pipeline without routing was run: the
-predictive benefit of specialized routing is not established.
-
-The controlled architecture benchmark covers four architectures, four loads,
-and ten repetitions, yielding 160 runs and $264{,}000$ treatments with no
-failure. On the protocol's microtasks, the monolith processes 55 to 72 times more tasks per second than the agent architectures. Under a paired failure occurring
-after persistence, the agent architectures duplicate no effect, unlike the
-monolith and the centralized workers; equipping the latter with the same idempotency store also removes duplicates. Three preregistered comparisons, on synthetic tasks within a single process, refine this assessment. Against a static table, Contract Net loses 13\% of throughput in the nominal regime and reduces first-execution failures when agents fail. A least-loaded dispatcher, without negotiation, reaches the same failure rates, and Contract Net then loses 11 to 14\% of throughput: no specific advantage of negotiation is established. Memory yields an established gain only at a failure probability of $0.9$.
-
-A one-hour endurance campaign on two virtual machines, Debian and Ubuntu,
-connected to a Redis instance centralized on the laboratory host, completes
-$1{,}800$ out of $1{,}800$ tasks, split 451 and $1{,}349$ according to the
-configured capability profiles; a controlled stop after persistence leads to
-a reassignment and a replay with no duplicated effect. Under saturation, the
-capacity of this topology lies between 8 and 16 tasks/s, and the second
-machine processes only 1.23\% of the successful tasks: it does not increase
-the observed capacity. High availability was not evaluated.
-
-None of the five hypotheses is validated. H1 and H2 are partially supported,
-but what they establish are implementation requirements: every unit is read
-and emitted into the common schema, and the idempotency store removes
-duplicated effects whatever the architecture. H3 remains undecided, since no
-pipeline without routing was run for comparison. H4 is undecided: under the temporal split for CICIDS2017, on CSE-CIC-IDS2018, on BGL and on HDFS at block level, no model exceeds the simple rule evaluated on the same test set, and no resource budget was set. H5 is undecided: the gain from memory is conditional, anomaly prioritization was not measured, and no promotion cycle was exercised. No experiment
-analyzes a single incident jointly from system logs and network flows. Ariel \logminer{}
-therefore contributes primarily an architectural and methodological
-integration of a local, modular, and experimentally traceable
-heterogeneous-log analysis pipeline, rather than a new machine-learning
-algorithm.
+None of the five hypotheses is validated. H1 and H2 are partially supported but amount to implementation requirements. H3, H4 and H5 remain undecided, and the superiority targeted by H4 is refuted on all four public datasets. The contribution is therefore methodological and in engineering: a traceable local pipeline, whose experiments isolate the effect of several mechanisms and show that a simpler solution is often sufficient.
 
 \bigskip
 

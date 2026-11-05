@@ -32,7 +32,7 @@ CICIDS2017 & flux réseau & Sensibilité au split et choix parmi cinq candidats.
 
 HDFS & bloc & Détection alignée sur le label, parseur ajusté sur train seulement. \\
 
-BGL & événement/template &Apport d’Histogram au-delà d’un baseline de nouveauté. \\
+BGL & événement/template &Apport d’Histogram au-delà d’une baseline de nouveauté. \\
 
 CSE-CIC-IDS2018 & flux réseau & Audit : transfert journalier et dépendance aux caractéristiques. \\
 
@@ -40,7 +40,7 @@ Routeur & fichier & Reconnaissance des sources connues et rejet de 20 sources in
 
 Multi-format & unité native & Lecture, parsing et normalisation des sources testées. \\
 
-Multi-agent & tâche & Coût A--D, décisions CNP et effet de la mémoire. \\
+Multi-agent & tâche & Coût A--D, Contract Net face à une table statique et au moindre chargé, effet de la mémoire. \\
 
 Multi-VM & tâche & Répartition Debian--Ubuntu, reprise et idempotence. \\
 
@@ -804,7 +804,7 @@ Le statut retenu est donc : \textbf{IMPLÉMENTÉ} pour l’infrastructure de com
 \section{Comparaison aux règles simples}
 \label{sec:baselines-par-jeu}
 
-Le tableau~\ref{tab:baselines-par-jeu} confronte, sur chaque test, le résultat principal à la meilleure règle simple évaluée sur le même test.
+Le tableau~\ref{tab:baselines-par-jeu} confronte, sous chaque protocole strict, le résultat principal à la meilleure règle simple évaluée sur le même test. La séparation aléatoire de CICIDS2017, qui dépasse la prédiction systématiquement positive, n'y figure pas, car elle ne mesure pas le transfert vers un scénario nouveau.
 
 \begin{table}[H]
 \centering
@@ -824,7 +824,7 @@ CSE-CIC-IDS2018, 15 vers 16 février & Port de destination inférieur à 1024 & 
 \end{tabularx}
 \end{table}
 
-Aucun résultat principal ne dépasse sa règle simple. Ces règles ne constituent pas des détecteurs recommandables : leur score révèle la structure du test, comme la prévalence des partitions CICIDS2017 ou le port de destination propre au 16 février. Leur intérêt est de fixer le niveau qu'un modèle doit dépasser pour que son score apporte une information.
+Sous ces protocoles, aucun résultat principal ne dépasse sa règle simple. Ces règles ne constituent pas des détecteurs recommandables : leur score révèle la structure du test, comme la prévalence des partitions CICIDS2017 ou le port de destination propre au 16 février. Leur intérêt est de fixer le niveau qu'un modèle doit dépasser pour que son score apporte une information.
 
 \section{Synthèse des résultats}
 

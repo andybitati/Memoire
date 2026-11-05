@@ -25,7 +25,7 @@ L'apprentissage automatique apporte des outils supplémentaires pour exploiter c
 
 Le choix de l'algorithme ne constitue donc qu'une partie du problème. Une détection exploitable doit s'insérer dans une chaîne où plusieurs fonctions coopèrent : acquisition des données, parsing, normalisation, routage vers un traitement compatible, détection, corrélation, conservation des décisions, audit et restitution à l'analyste. Un score élevé obtenu sur un jeu de données isolé ne suffit pas à couvrir l'ensemble de ces besoins.
 
-C'est dans cette perspective qu'a été développé \textit{Ariel Logminer}. Le prototype rassemble plusieurs mécanismes relativement légers dans une architecture commune afin d'analyser des journaux hétérogènes de manière reproductible et auditable. L'apport recherché concerne avant tout l'architecture, l'intégration des composants et leur évaluation expérimentale. Le travail ne prétend ni proposer une nouvelle théorie de l'apprentissage automatique ni introduire un algorithme universel de détection.
+C'est dans cette perspective qu'a été développé \textit{Ariel Logminer}. Le prototype rassemble plusieurs mécanismes relativement légers dans une architecture commune afin d'analyser des journaux de formats hétérogènes de manière traçable. L'apport recherché concerne avant tout l'architecture, l'intégration des composants et leur évaluation expérimentale. Le travail ne prétend ni proposer une nouvelle théorie de l'apprentissage automatique ni introduire un algorithme universel de détection.
 
 Cette orientation répond aussi à une contrainte pratique. Déployer immédiatement une infrastructure complète de type SOC peut être difficile dans un contexte universitaire, expérimental ou dans une organisation disposant de moyens limités. Un prototype local offre au contraire un environnement contrôlé dans lequel il devient possible d'étudier séparément les mécanismes de la chaîne, de mesurer leur comportement et de comparer plusieurs choix d'architecture, de détection et de distribution.
 
@@ -256,11 +256,11 @@ L'apport \textbf{méthodologique} tient surtout au protocole d'évaluation. Les 
 
 La dimension \textbf{logicielle} est concrétisée par un prototype fonctionnel intégrant des agents spécialisés, un routeur, plusieurs traitements de détection, une mémoire persistante, un mécanisme d'audit, une corrélation et une interface de consultation. L'architecture peut ainsi être observée dans son exécution, et non uniquement à travers un schéma conceptuel.
 
-Sur le plan \textbf{expérimental}, plusieurs campagnes ciblent des propriétés différentes : généralisation des modèles, traitement multiformat, routage, comparaison agents/monolithe, communication via Redis, exécution multi-VM, corrélation et mise à jour contrôlée. Les résultats positifs sont conservés, mais les résultats partiels ou négatifs le sont également lorsqu'ils permettent de préciser la portée réelle du système.
+Sur le plan \textbf{expérimental}, plusieurs campagnes ciblent des propriétés différentes : généralisation des modèles, traitement multiformat, routage, comparaison agents/monolithe, comparaison de Contract Net à une table statique et à un répartiteur au moindre chargé, communication via Redis, exécution multi-VM, corrélation et mise à jour contrôlée. Les résultats positifs sont conservés, mais les résultats partiels ou négatifs le sont également lorsqu'ils permettent de préciser la portée réelle du système.
 
-Le prototype possède enfin une dimension \textbf{opérationnelle} limitée au cadre étudié. Les résultats sont associés à des mécanismes d'audit, de filtrage, de mémoire et de restitution qui maintiennent l'analyste dans la boucle de décision. Cette qualification décrit ce qui fonctionne dans le laboratoire ; elle ne constitue pas une certification du prototype comme plateforme SOC de production.
+Le prototype possède enfin une dimension \textbf{opérationnelle} limitée au cadre étudié. Les résultats sont associés à des mécanismes d'audit, de filtrage, de mémoire et de restitution qui maintiennent l'analyste dans la boucle de décision. Ce constat vaut pour le laboratoire.
 
-Les expériences permettent ainsi de caractériser non seulement les performances, mais aussi leurs limites. Elles montrent notamment qu'une séparation aléatoire peut produire des résultats bien plus favorables qu'un holdout par scénario, qu'une architecture à agents introduit un coût mesurable et qu'un adaptateur peut rencontrer des limites sur certaines familles de données. Ces observations participent directement à la définition des propriétés réellement démontrées.
+Les expériences permettent ainsi de caractériser non seulement les performances, mais aussi leurs limites. Elles montrent notamment qu'une séparation aléatoire peut produire des résultats bien plus favorables qu'un holdout par scénario, que, sous ces protocoles stricts, aucun résultat principal ne dépasse la meilleure règle simple évaluée sur le même test, qu'une architecture à agents introduit un coût mesurable et que la négociation n'apporte aucun avantage établi sur une répartition au moindre chargé. Ces observations participent directement à la définition des propriétés réellement démontrées.
 
 
 \section*{Délimitations et portée du mémoire}
@@ -281,7 +281,7 @@ La mémoire persistante conserve des informations utiles aux décisions, aux ex�
 
 Le choix de modèles relativement légers répond enfin au périmètre local de l'étude. Les architectures profondes spécialisées dans l'analyse séquentielle des journaux sont prises en compte dans l'état de l'art, mais leur comparaison exhaustive avec toutes les méthodes intégrées au prototype n'est pas l'objet principal du mémoire ; les scores publiés sont rappelés au chapitre des résultats avec leur protocole, sans être réputés directement comparables. De même, la détection d'intrusion réseau est évaluée pour l'essentiel comme une classification supervisée : la capacité à détecter des attaques sans exemple étiqueté n'est mesurée que par un contrôle limité, dont le résultat est défavorable.
 
-Ces limites ne remettent pas en cause les résultats obtenus ; elles indiquent simplement jusqu'où ils peuvent être interprétés et quelles extensions nécessiteraient de nouvelles expériences.
+Ces limites indiquent jusqu'où les résultats peuvent être interprétés et quelles extensions demanderaient de nouvelles expériences.
 
 
 \section*{Organisation du mémoire}

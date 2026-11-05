@@ -3,7 +3,7 @@
 
 \section{Objet de l’analyse}
 
-Les résultats présentés au chapitre précédent ne portent pas tous sur le même objet. Certains évaluent une performance prédictive, d’autres la reconnaissance d’un format, l’exécution distribuée ou encore la qualité de la corrélation. Il serait donc artificiel de chercher à les résumer par une seule mesure.
+Les résultats présentés au chapitre précédent ne portent pas tous sur le même objet. Certains évaluent une performance prédictive, d’autres la reconnaissance d’un format, l’exécution distribuée ou encore la qualité de la corrélation. Ils ne se résument donc pas à une seule mesure.
 
 Ce chapitre examine la solidité des conclusions selon quatre dimensions : validité interne, externe, de construit et statistique. L’objectif est moins de défendre chaque résultat que de préciser lesquels restent soutenus une fois leurs conditions d’obtention et leurs limites prises en compte.
 
@@ -18,6 +18,8 @@ CICIDS2017 met en évidence un problème différent. Une partition aléatoire pe
 
 Le cas de CSE-CIC-IDS2018 demande encore une autre lecture. La séparation par journée limite le mélange direct entre lignes d'entraînement et de test, mais elle n'empêche pas un raccourci propre à la journée de test. \texttt{Dst Port} utilisé seul atteint un F1 moyen de $0{,}9997$, et une règle fixe qui déclare attaque tout flux de port de destination inférieur à 1024 obtient le même score sur le 16 février, alors qu'elle n'atteint que $0{,}1215$ sur le 15 ; le transfert inverse, du 16 vers le 15 février, ne dépasse pas $0{,}2342$ (section~\ref{sec:csecic-raccourci}). La permutation des labels indique qu'aucune variable ne code directement le label, mais le score principal repose sur ce biais structurel entre les deux journées : la séparation par journée ne suffit donc pas à garantir que le modèle apprend une logique d'attaque transférable.
 
+La comparaison des modèles communs et spécialisés illustre un autre risque. Une première exécution, pourtant préenregistrée et reproductible à l'identique, reposait sur un chargement qui incluait l'étiquette dans les variables d'UNSW et réduisait CICIDS aux attaques DDoS d'un seul fichier. Un rejeu ne révèle pas un tel défaut, puisqu'il le reproduit ; seule la lecture du code l'a mis en évidence (section~\ref{sec:e-h3b}). Les autres campagnes n'ont pas fait l'objet d'un audit de code aussi poussé.
+
 Pour le routeur open-set, le seuil 100 est calibré uniquement à partir des sources connues. Après extension sans recalibration, les $20/20$ fichiers inconnus sont rejetés et $3/46$ fichiers connus le sont à tort. L’évaluation reste donc séparée de la calibration, mais les fichiers d'un même schéma ne sont pas indépendants et les faux rejets montrent la sensibilité aux variantes de schémas connus.
 
 
@@ -31,7 +33,7 @@ HDFS et BGL représentent eux aussi des contextes particuliers. Pour HDFS, l’�
 
 BGL présente une autre particularité : $89{,}8081\,\%$ des unités de test utilisent un template absent de l’entraînement. Une modification de ce taux de nouveauté pourrait donc changer sensiblement les performances observées.
 
-La même prudence s’applique aux campagnes distribuées. Deux systèmes Linux participent à l’endurance avec un Redis central pendant $3\,605{,}110$~s et les $1\,800$ tâches planifiées réussissent. Une expérience de panne appariée, exécutée localement, montre séparément que l'idempotence évite l'effet dupliqué. Ces résultats ne renseignent pas sur les partitions réseau, le multi-site, un vieillissement sur plusieurs jours ou la haute disponibilité du broker.
+La même prudence s’applique aux campagnes distribuées. Deux systèmes Linux participent à l’endurance avec un Redis central pendant $3\,605{,}1$~s et les $1\,800$ tâches planifiées réussissent. Une expérience de panne appariée, exécutée localement, montre séparément que l'idempotence évite l'effet dupliqué. Ces résultats ne renseignent pas sur les partitions réseau, le multi-site, un vieillissement sur plusieurs jours ou la haute disponibilité du broker.
 
 
 \section{Validité de construit}
@@ -48,6 +50,8 @@ La couverture multi-format possède elle aussi une définition précise. Elle v�
 
 Le caractère multi-agent ne se résume pas non plus au nombre de processus lancés. Dans ce travail, il est matérialisé par les capacités des agents, leur état local, la présence de plusieurs handlers et les comportements observés : proposition, refus, attribution, résultat ou échec. De la même manière, le replay idempotent montre qu’un effet logique instrumenté n’est pas dupliqué dans le scénario testé ; il ne transforme pas l’ensemble du système en transaction distribuée générale.
 
+Dans les comparaisons de Contract Net, les défaillances et la lenteur sont injectées sur les agents que la table statique sollicite le plus. Un contraste favorable mesure donc l'évitement de ces agents, et non une qualité générale de la négociation ; c'est ce qui justifie la comparaison au moindre chargé.
+
 Enfin, l’exécution effective d’un modèle et la qualité de sa prédiction sont deux propriétés distinctes. La campagne M établit que $1\,400$ inférences réelles sont réalisées sur $1\,401$ unités. Elle ne permet pas d’en déduire une exactitude globale, car les différentes sources ne partagent pas une vérité terrain homogène.
 
 
@@ -63,7 +67,7 @@ Sur HDFS, les intervalles sont calculés au niveau \texttt{block\_id}, c’est-�
 
 BGL présente une difficulté différente : aucun positif n’est présent dans le groupe des templates connus. Il est donc impossible d’y calculer un rappel d’anomalies connues.
 
-Le benchmark multi-agent porte enfin sur des micro-tâches. Dans ce contexte, le monolithe profite d’un coût de coordination très faible, alors que le Contract Net exige plusieurs échanges pour une même attribution. Des tâches plus lourdes pourraient modifier ce compromis, mais cette possibilité relève d’une hypothèse à tester. Les résultats disponibles soutiennent seulement l’absence de gain systématique des architectures C et D dans le protocole effectivement exécuté.
+Le benchmark multi-agent porte enfin sur des micro-tâches. Dans ce contexte, le monolithe profite d’un coût de coordination très faible, alors que le Contract Net exige plusieurs échanges pour une même attribution. Des tâches plus lourdes pourraient modifier ce compromis, mais cette possibilité relève d’une hypothèse à tester. Les comparaisons préenregistrées utilisent 30 graines et des tâches de 2 à 10~ms : elles établissent que, dans un seul processus, la négociation n'apporte aucun avantage sur une répartition au moindre chargé. Elles ne couvrent ni les tâches plus lourdes ni l'exécution distribuée.
 
 
 \section{Risques résiduels et mesures de contrôle}
@@ -100,7 +104,9 @@ Surajustement du rejet & Calibration sur connus seulement ; extension à 20 inco
 
 Confusion distribution/HA & Deux VM et Redis central explicités & Broker et partitions non testés. \\
 
-Confusion mémoire/gain & Comparaison ON/OFF & Aucun bénéfice systématique observé. \\
+Confusion mémoire/gain & Comparaison ON/OFF, fiabilité hétérogène & Gain établi seulement à $p = 0{,}9$. \\
+
+Confusion négociation/charge & Comparaison à un répartiteur au moindre chargé & Un seul processus ; exécution distribuée non testée. \\
 
 \bottomrule
 
@@ -117,6 +123,6 @@ Le prototype parvient à lire, parser et normaliser les unités prévues dans la
 
 Le comportement des agents est également observable au-delà d’une simple description architecturale. Dans la campagne d'endurance multi-VM, ils proposent pour les tâches, les exécutent, produisent des résultats et participent à une réattribution après l'échec contrôlé. Le replay instrumenté ne produit pas de second effet persistant.
 
-Ces résultats permettent de soutenir le fonctionnement du prototype dans les conditions expérimentales décrites. Ils ne suffisent cependant pas à conclure à une exactitude globale sur des sources hétérogènes, à une supériorité générale du routage spécialisé, à un bénéfice systématique de la mémoire, à une mise à jour autonome des modèles ou à une disponibilité industrielle.
+Ces résultats permettent de soutenir le fonctionnement du prototype dans les conditions expérimentales décrites. Ils ne suffisent cependant pas à conclure à une exactitude globale sur des sources hétérogènes, à une supériorité générale du routage spécialisé, à un bénéfice propre de la négociation, à un bénéfice général de la mémoire, à une mise à jour autonome des modèles ou à une disponibilité industrielle.
 
 \input{chapters/limites_consolidees}
