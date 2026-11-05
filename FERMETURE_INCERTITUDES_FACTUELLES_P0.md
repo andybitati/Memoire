@@ -428,68 +428,7 @@ Déclasser les formulations du résumé, des chapitres 3, 4 et 8 : employer « p
 
 ## 7. Ablation du routage
 
-### FAIT VÉRIFIÉ
-
-L'expérience contrôlée compare un RandomForest global à trois RandomForest spécialisés par famille, avec exactement le même espace de caractéristiques, les mêmes hyperparamètres, les mêmes splits et les mêmes graines. Elle utilise la famille connue pour choisir le modèle spécialisé ; elle n'évalue pas les erreurs du routeur réel.
-
-Elle ne montre aucun gain prédictif systématique : le modèle spécialisé est très légèrement meilleur sur CICIDS2017, mais moins bon sur Linux/auth et UNSW-NB15. Les écarts sont faibles.
-
-### PREUVE
-
-Le CSV contient 30 lignes : 5 graines × 3 familles × 2 variantes. Le script entraîne le modèle global sur la concaténation des trains puis un modèle par groupe `family`; le test de chaque famille est identique entre variantes.
-
-### FICHIER/SCRIPT/ARTEFACT
-
-- `scripts/run_family_routing_ablation.py`
-- `data/processed/family_routing_ablation.csv`
-- `docs/memoire/tables/table_family_routing_ablation.md`
-- `docs/memoire/figures/fig_family_routing_ablation.{svg,png}`
-- copie CSV : `docs/memoire/pack_redaction_final/06_reproductibilite_preuves/family_routing_ablation.csv`
-- tableau opérationnel confondu : `docs/memoire/tables/table_family_routing_operational_ablation.md`
-- copies actuellement divergentes dans `memoire_logminer_latex_overleaf/tables/`
-
-### VALEUR OU CONFIGURATION
-
-- datasets : `linux_auth_logs_labeled.csv`; huit CSV CICIDS2017 `MachineLearningCVE`; fichiers officiels locaux `UNSW_NB15_training-set.parquet` et `UNSW_NB15_testing-set.parquet`, concaténés avant sous-échantillonnage ;
-- volume : jusqu'à 6 000 lignes par classe et famille, donc 12 000 lignes par famille ; split stratifié aléatoire 75/25 par famille ; 3 000 lignes de test par famille, équilibrées 1 500/1 500 ;
-- graines : 42, 43, 44, 45, 46 ;
-- espace commun : 12 numériques (`duration`, ports, paquets, octets, taux, tentatives, heure, jour, moyenne/écart-type/max/ratio non nul) et 4 catégorielles (`protocol`, `service`, `state`, `status`) ;
-- prétraitement : imputation médiane + StandardScaler pour le numérique, imputation du mode + OneHotEncoder `handle_unknown=ignore`, `min_frequency=5` pour le catégoriel ;
-- modèle des deux variantes : RandomForest 120 arbres, profondeur 22, `min_samples_leaf=2`, `class_weight=balanced`, `n_jobs=1`, graine du run ;
-- métriques : exactitude, précision, rappel, F1, PR-AUC, MCC, FPR, FP/1 000 et matrice de confusion.
-
-| Famille | F1 global | F1 spécialisé | Delta spécialisé-global | Lecture |
-| --- | ---: | ---: | ---: | --- |
-| CICIDS2017 | 0,999132 | 0,999333 | +0,000201 | avantage spécialisé minime |
-| Linux/auth | 0,819404 | 0,816354 | -0,003050 | modèle global légèrement meilleur |
-| UNSW-NB15 | 0,992214 | 0,991950 | -0,000264 | modèle global légèrement meilleur |
-
-La « comparaison opérationnelle » n'est pas une ablation contrôlée : elle rapproche le modèle global minimal de modèles historiques employant d'autres caractéristiques, d'autres splits et parfois d'autres volumes. Elle ne permet pas d'attribuer son delta au routage. De plus, les copies divergent : le tableau généré depuis le CSV courant donne Linux/auth global 0,819404 et CICIDS global 0,999132, tandis que la copie LaTeX opérationnelle contient 0,819388 et 0,998887.
-
-Commande exacte historiquement invoquée pour produire le CSV à cinq graines :
-
-INFORMATION À VÉRIFIER.
-
-La configuration effective est toutefois récupérable du CSV et implique l'option `--seeds 42,43,44,45,46`, car le défaut du script seul n'exécute qu'une graine.
-
-### STATUT
-
-ÉVALUÉ — AUCUN GAIN PRÉDICTIF SYSTÉMATIQUE ; ROUTEUR RÉEL NON TESTÉ PAR CETTE ABLATION.
-
-### CE QUE LE MÉMOIRE PEUT AFFIRMER
-
-Avec un espace commun et des modèles identiques, spécialiser l'entraînement par famille ne produit pas de supériorité systématique sur les trois familles testées. L'intérêt démontré du routage reste architectural : permettre des pipelines et caractéristiques différents selon la famille.
-
-### CE QUE LE MÉMOIRE NE PEUT PAS AFFIRMER
-
-- que le routage spécialisé améliore systématiquement la prédiction ;
-- que cette expérience mesure l'exactitude du routeur de fichiers/événements ;
-- que les deltas de la comparaison opérationnelle sont causés par le routage seul ;
-- que les résultats s'étendent à d'autres familles ou splits.
-
-### ACTION À TRANSMETTRE À LUNA
-
-Intégrer au chapitre 5 uniquement l'ablation contrôlée issue de `family_routing_ablation.csv`, avec les trois paires de F1 et la conclusion négative explicite. Ne pas utiliser le tableau opérationnel comme preuve causale. Régénérer ou supprimer les copies divergentes du tableau opérationnel.
+Résultats retirés : ils provenaient d'un script comportant une fuite de l'étiquette sur UNSW et une sélection par premières lignes réduisant CICIDS aux DDoS. Comparaison valide : `experiments/phase_revision_20261105/E-H3B-STRICT-HOLDOUT/`, section `sec:e-h3b` du mémoire.
 
 ## 8. Logistic Regression à 0,233670
 
@@ -558,5 +497,4 @@ Pour le chapitre 5, intégrer le dataset, les cinq fichiers tenus à l'écart, l
 | Drain3 HDFS/BGL | ÉVALUÉ MAIS NON INDÉPENDANT; EXPLORATOIRE | scripts d'enrichissement séparés, CSV train/test Drain3, métriques | Ch. 5 §HDFS/BGL, résumé, ch. 6 scientifique et conclusion |
 | CPU/RAM monolithique-agents | UNITÉS ÉTABLIES; RELABELLER | `run_controlled_monolith_vs_agents.py`; CSV contrôlé | Tableau et méthode ch. 5 |
 | Mise à jour contrôlée | IMPLÉMENTÉE; TESTÉE EN DRY-RUN; NON ÉVALUÉE DE BOUT EN BOUT | `monthly_retraining_dry_run_report.json`, zéro feedback, aucun candidat/backup | Résumé, ch. 3, ch. 4, ch. 6 et ch. 8 |
-| Ablation du routage | ÉVALUÉE; PAS DE GAIN SYSTÉMATIQUE; ROUTEUR RÉEL NON TESTÉ | `family_routing_ablation.csv` | Ajouter au ch. 5; conserver la nuance ch. 6; corriger tableaux divergents |
 | LogisticRegression 0,233670 | VÉRIFIÉE, meilleure uniquement par F1 moyen parmi cinq candidats | CSV détaillé et résumé des candidats | Compléter le ch. 5; maintenir les réserves dans résumé/discussion |

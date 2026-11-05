@@ -180,16 +180,6 @@ Simulated Windows & 0.000000 & 0.000 \\
 
 For HDFS/BGL-like sources, the modular event contract can route logs to a Drain-like semantic parsing agent followed by sequence-aware detection, while preserving lighter tabular branches for Linux/auth and network-flow families.
 
-\subsection{Family-Aware Ablation}
-Fig.~\ref{fig:ablation} summarizes the controlled common-space ablation. This result is deliberately conservative: routing alone does not guarantee universal F1 improvement when all families are forced into the same minimal representation. The operational value of routing is that it enables compatible native feature spaces and specialized detector branches.
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\linewidth]{figures/fig_family_routing_ablation.pdf}
-    \caption{Controlled common-space ablation. The family-aware strategy should be read as controlled specialization, not as a universal F1 improvement claim.}
-    \label{fig:ablation}
-\end{figure}
-
 \subsection{Robustness}
 The robustness scenario covers Apache, CEF/LEEF, CloudTrail, Linux auth and an incomplete log. Unknown or corrupted records are preserved as unknown records instead of breaking the workflow.
 
@@ -308,7 +298,7 @@ The Wazuh export contains 122,563 events and 3,676 \logminer{} anomaly candidate
 \end{figure}
 
 \section{Threats to Validity}
-Internal validity is limited because datasets, feature spaces and model families differ. The ablation mitigates this risk but also shows that family-aware routing is not universally superior under a common minimal representation. External validity is limited by local execution and selected datasets. Operational validity is limited because non-supervised outputs require analyst validation, correlation quality is not yet measured against analyst-labeled incidents and the current workflow is only partially parallelized. HDFS results show that sequence-oriented logs need Drain-like templates and temporal detectors. The sequential and parallel resource campaigns support local feasibility, not production SOC throughput.
+Internal validity is limited because datasets, feature spaces and model families differ. No controlled comparison isolates the effect of family-aware routing. External validity is limited by local execution and selected datasets. Operational validity is limited because non-supervised outputs require analyst validation, correlation quality is not yet measured against analyst-labeled incidents and the current workflow is only partially parallelized. HDFS results show that sequence-oriented logs need Drain-like templates and temporal detectors. The sequential and parallel resource campaigns support local feasibility, not production SOC throughput.
 
 \section{Conclusion}
 This article prepared an extended evaluation-oriented view of \logminer. Results show strong supervised performance on Linux/auth, CICIDS2017 and UNSW/CIC-DDoS, useful Wazuh anomaly-candidate generation, robust preservation of unknown records and feasible local quasi-real-time operation. The added parallel campaign shows that independent detector execution can be exploited locally with measurable CPU/RAM behavior. The main limitations are also explicit: high HDFS false positives, partial synchronous buffering, local-only resource measurements, bounded but non-learning supervisor control and the need for durable asynchronous scaling. Future work includes semantic parsing for sequential logs, calibrated routing confidence, distributed message buses, active analyst feedback, automatic degradation watchdogs and integration with mature SIEM/HIDS platforms.

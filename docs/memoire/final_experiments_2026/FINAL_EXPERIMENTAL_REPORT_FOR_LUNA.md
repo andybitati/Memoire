@@ -83,7 +83,7 @@ Hash du test DDoS gelé phase 4: `23019860997b8071e0922c52c1710e10b017adcc20f531
 | 10 | Matrice affirmation→preuve | TERMINÉE | 31 affirmations | Frontières de preuve explicites |
 | 11 | Hypothèses/questions | TERMINÉE | 5+6 | Statuts prudents établis |
 
-Expériences antérieures retenues: trois campagnes multi-VM, ablation du routage, benchmark monolithique/agents. L'expérience historique `0,999965` est auditée mais exclue.
+Expériences antérieures retenues: trois campagnes multi-VM, benchmark monolithique/agents. L'expérience historique `0,999965` est auditée mais exclue.
 
 # 5. Protocoles complets
 
@@ -233,7 +233,6 @@ CICIDS groupé par scénario–modèle; HDFS/BGL par dataset–méthode; N=5 pou
 - Ne l'attribuer ni à UNSW-NB15 officiel ni au CIC-DDoS2019 officiel.
 - Ne pas présenter l'ancien HDFS/BGL comme validation indépendante.
 - Ne pas présenter 525 entrées comme 525 succès applicatifs individuels.
-- Ne pas présenter l'ablation du routage comme gain prédictif systématique.
 - Ne pas utiliser les temps internes HDFS/BGL par méthode: chronométrage non comparable.
 
 # 12. Affirmations désormais autorisées

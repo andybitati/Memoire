@@ -52,7 +52,6 @@ Scientific angle:
 - `fig_validation_selection_f1.pdf`
 - `fig_supervised_models_f1.pdf`
 - `fig_false_positive_rates.pdf`
-- `fig_family_routing_ablation.pdf`
 - `fig_robustness_multiformat.pdf`
 - `fig_realtime_workflow_latency.pdf`
 - `fig_resource_campaign_multicycle.pdf`
@@ -70,8 +69,6 @@ Scientific angle:
 - `table_fail2ban_like_baseline.md`
 - `table_wazuh_logminer_summary.md`
 - `table_wazuh_logminer_overlap.md`
-- `table_family_routing_ablation.md`
-- `table_family_routing_operational_ablation.md`
 
 ## Overleaf Upload
 

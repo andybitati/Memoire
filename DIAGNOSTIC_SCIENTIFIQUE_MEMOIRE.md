@@ -176,7 +176,7 @@ Organisation recommandée : architecture logique commune ; schéma exact ; respo
 | Plusieurs formats sont ingérés | 4.4, 5.15 | Parseurs, pipeline, figure 5.8 | 1–2 lignes par format | OBSERVÉ | Plusieurs formats définis passent un test fonctionnel. | « robuste » est trop fort. |
 | Schéma commun conservant l'original | 3.3, 4.4 | `schema/columns.py`, parseurs | Test multiformat | OBSERVÉ | Schéma implémenté et inspecté sur les cas testés. | Pas de mesure de perte d'information. |
 | Routage par famille | 3.4, 4.5 | `model_router.py` | Tables Markdown d'ablation | DÉMONTRÉ fonctionnellement | Le routeur sélectionne une famille et un modèle compatible. | Résultats absents du ch. 5. |
-| Routage supérieur au modèle global | 1.4, 6.6 | `family_routing_ablation.csv` | Performances proches | NON SOUTENU | Aucun gain systématique dans l'espace commun testé. | Ne pas revendiquer de supériorité. |
+| Routage supérieur au modèle global | 1.4, 6.6 | `E-H3B-STRICT-HOLDOUT/summary.json` | Non-infériorité non établie | NON SOUTENU | L'artefact initial, fautif, a été retiré ; voir `sec:e-h3b`. | Ne pas revendiquer de supériorité. |
 | Détection supervisée | 5.4 | CSV de métriques | Linux/auth, CICIDS2017, CIC-DDoS2019 | DÉMONTRÉ dans les protocoles | Performances observées sur les splits déclarés. | Généralisation limitée. |
 | Généralisation CICIDS2017 | 5.4 | Tables 5.5–5.6 | 0,999260 vs 0,157827 | DÉMONTRÉ pour ce protocole | Forte dépendance aux scénarios vus à l'entraînement. | Résultat majeur, à mettre au centre. |
 | Meilleur candidat LogisticRegression | Résumé | table/CSV candidats | F1 0,233670 | OBSERVÉ | Meilleur parmi les candidats légers testés. | Expérience absente du corps. |

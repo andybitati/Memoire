@@ -31,7 +31,6 @@ Les figures sont disponibles en PNG/PDF/SVG dans `04_figures_png_pdf/`:
 - `fig_robustness_multiformat`
 - `fig_wazuh_logminer_overlap`
 - `fig_model_portfolio_scale`
-- `fig_family_routing_ablation`
 
 ## Tableaux
 
@@ -60,7 +59,6 @@ a inserer dans le corps du memoire sont:
 - `06_reproductibilite_preuves/realtime_workflow_benchmark_20260604.csv`
 - `06_reproductibilite_preuves/resource_campaign.csv`
 - `06_reproductibilite_preuves/resource_campaign_20260604.csv`
-- `06_reproductibilite_preuves/family_routing_ablation.csv`
 - `06_reproductibilite_preuves/standard_tools_wazuh_logminer_overlap.csv`
 - `06_reproductibilite_preuves/standard_tools_fail2ban_like_baseline.csv`
 - `06_reproductibilite_preuves/random_forest_linux_auth_metrics.csv`
@@ -80,7 +78,6 @@ a inserer dans le corps du memoire sont:
 - `09_code_et_scripts_preuves/audit.py`
 - `09_code_et_scripts_preuves/benchmark_realtime_workflow.py`
 - `09_code_et_scripts_preuves/run_resource_campaign.py`
-- `09_code_et_scripts_preuves/run_family_routing_ablation.py`
 - `09_code_et_scripts_preuves/generate_memoire_assets.py`
 - `09_code_et_scripts_preuves/export_memoire_figures.py`
 

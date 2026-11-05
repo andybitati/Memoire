@@ -55,7 +55,7 @@ Statut : infrastructure IMPLÉMENTÉE, chemins partiellement TESTÉS, bénéfice
 
 ### Ablation du routage
 
-L’expérience établit le fonctionnement du routage et le contrôle de compatibilité. Aucun gain prédictif systématique n’est revendiqué.
+Résultats retirés : ils provenaient d'un script comportant une fuite de l'étiquette sur UNSW et une sélection par premières lignes réduisant CICIDS aux DDoS. Comparaison valide : `experiments/phase_revision_20261105/E-H3B-STRICT-HOLDOUT/`, section `sec:e-h3b` du mémoire.
 
 ### Régression logistique à 0,233670
 

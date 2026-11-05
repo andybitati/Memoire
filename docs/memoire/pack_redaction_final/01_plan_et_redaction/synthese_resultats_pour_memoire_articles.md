@@ -20,7 +20,6 @@ articles. Les figures vectorielles correspondantes sont dans
 | Faux positifs par famille | `docs/memoire/figures/fig_false_positive_rates.svg` | Chapitre 5, discussion des alertes |
 | Recouvrement Wazuh / Logminer | `docs/memoire/figures/fig_wazuh_logminer_overlap.svg` | Comparaison outils standards |
 | Campagne CPU/RAM multi-cycles | `docs/memoire/figures/fig_resource_campaign_multicycle.svg` | Evaluation ressources, article evaluation |
-| Ablation routage familial | `docs/memoire/figures/fig_family_routing_ablation.svg` | Article 1: contribution scientifique |
 
 Tableaux associes:
 
@@ -38,8 +37,6 @@ Tableaux associes:
 - `docs/memoire/tables/table_intelligent_redis_6h_campaign.md`;
 - `docs/memoire/tables/table_intelligent_agents_ablation.md`;
 - `docs/memoire/tables/table_intelligent_agents_resources.md`;
-- `docs/memoire/tables/table_family_routing_ablation.md`;
-- `docs/memoire/tables/table_family_routing_operational_ablation.md`.
 
 ## Resultat Global
 
@@ -249,22 +246,7 @@ Phrase defensive pour le memoire:
 
 ## Ablation Du Routage Familial
 
-L'article doit integrer l'ablation du routage familial pour soutenir la
-contribution scientifique. Deux niveaux sont disponibles:
-
-- ablation controlee: baseline globale et modeles specialises forces dans le
-  meme espace de features commun minimal;
-- ablation operationnelle: baseline globale commune comparee aux configurations
-  specialisees completes.
-
-Resultat a formuler clairement:
-
-> Le routage familial ne garantit pas un gain F1 universel sur chaque famille.
-> Il apporte surtout une specialisation controlee, utile lorsque les familles de
-> logs exigent des espaces de features et des modeles differents. L'ablation
-> operationnelle montre un gain net sur Linux/auth, un gain leger sur UNSW, et
-> un resultat comparable sur CICIDS ou la baseline globale est deja proche de
-> la saturation.
+Résultats retirés : ils provenaient d'un script comportant une fuite de l'étiquette sur UNSW et une sélection par premières lignes réduisant CICIDS aux DDoS. Comparaison valide : `experiments/phase_revision_20261105/E-H3B-STRICT-HOLDOUT/`, section `sec:e-h3b` du mémoire.
 
 Phrase de reponse a ELK:
 

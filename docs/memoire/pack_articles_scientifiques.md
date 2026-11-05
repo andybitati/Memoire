@@ -80,8 +80,6 @@ Questions du document directeur, adaptees au prototype:
 - routage multi-modeles selon la famille de logs;
 - dashboard interactif avec validation/rejet et audit trail;
 - evaluation initiale sur logs publics, reels et robustesse multi-format.
-- ablation du routage familial: baseline globale commune vs configurations
-  specialisees.
 
 ### Abstract Recommande
 
@@ -142,7 +140,6 @@ Figures:
 - `fig_robustness_multiformat.svg`;
 - `fig_supervised_models_f1.svg`;
 - `fig_false_positive_rates.svg`.
-- `fig_family_routing_ablation.svg`.
 
 Tableaux:
 
@@ -151,8 +148,6 @@ Tableaux:
 - `table_false_positives.md`;
 - `table_comparaison_outils_standards.md`;
 - `table_operational_tool_comparison.md`.
-- `table_family_routing_ablation.md`;
-- `table_family_routing_operational_ablation.md`.
 
 ### Resultats A Citer
 
@@ -242,7 +237,6 @@ Questions du document directeur, adaptees aux preuves disponibles:
 - benchmark quasi temps reel;
 - campagne CPU/RAM multi-cycles de 30 cycles;
 - robustesse sur logs incomplets et multi-format;
-- ablation du routage familial et discussion de la baseline monolithique;
 - discussion de la scalabilite et de la resilience.
 
 ### Abstract Recommande
@@ -283,7 +277,6 @@ Questions du document directeur, adaptees aux preuves disponibles:
    - resultats supervises;
    - anomalies candidates non supervisees;
    - faux positifs;
-   - ablation du routage familial;
    - latence;
    - campagne CPU/RAM;
    - recouvrement Wazuh/Logminer.
@@ -315,7 +308,6 @@ Figures:
 - `fig_resource_campaign_multicycle.svg`;
 - `fig_robustness_multiformat.svg`;
 - `fig_wazuh_logminer_overlap.svg`.
-- `fig_family_routing_ablation.svg`.
 
 Tableaux:
 
@@ -329,8 +321,6 @@ Tableaux:
 - `table_fail2ban_like_baseline.md`;
 - `table_wazuh_logminer_summary.md`;
 - `table_wazuh_logminer_overlap.md`.
-- `table_family_routing_ablation.md`;
-- `table_family_routing_operational_ablation.md`.
 
 ### Resultats A Citer
 

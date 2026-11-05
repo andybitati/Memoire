@@ -6,7 +6,7 @@
 4. Le score CSE-CIC-IDS2018 dépend fortement de `Dst Port` et d’un petit groupe de caractéristiques.
 5. Les contrôles CSE-CIC écartent certains mécanismes triviaux, pas toute fuite ou tout biais de scénario possible.
 6. Le routeur open-set n’est testé que sur trois fichiers inconnus et 28 connus.
-7. L’ablation du routage ne met pas en évidence de gain prédictif systématique.
+7. Le gain prédictif du routage n'est pas établi (section `sec:e-h3b`).
 8. La fixture Apache contient une seule ligne ; elle valide le chemin logiciel, pas un corpus Apache réel.
 9. Aucune exactitude globale multi-source n’est disponible.
 10. Le F1 Linux/auth de 0,390244 reste descriptif pour la source sélectionnée.

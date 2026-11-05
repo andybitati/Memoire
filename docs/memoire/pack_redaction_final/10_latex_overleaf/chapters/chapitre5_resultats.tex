@@ -39,7 +39,6 @@ Le tableau \ref{tab:model-config} centralise les principaux hyperparametres util
 Linux/auth & RandomForest & 120 & 24 & 42 & Split stratifie exploratoire ; \texttt{class\_weight=balanced}, \texttt{min\_samples\_leaf=2}. \\
 CICIDS2017 & RandomForest & 100 & 28 & 42 & Split stratifie exploratoire ; \texttt{class\_weight=balanced}, \texttt{min\_samples\_leaf=2}. \\
 CIC-DDoS2019 & RandomForest & 100 & 28 & 42--46 & Holdout fichier/famille DDoS ; \texttt{class\_weight=balanced}, \texttt{min\_samples\_leaf=2}, echantillons plafonnes. \\
-Ablation global/familles & RandomForest & 120 & 22 & 42--46 & Espace commun strict, split 75/25 par famille, \texttt{class\_weight=balanced}, PR-AUC et MCC rapportes. \\
 Validation stricte complementaire & RandomForest & 100--120 & 24--28 & 42--46 & Holdout par serveurs, fichiers ou scenarios ; echantillons plafonnes pour bornage calculatoire. \\
 Windows/Wazuh & Isolation Forest & 200 & n/a & 42 & \texttt{contamination=0,05} par defaut, bornee dans $[0,001;0,5]$ ; anomalies candidates, pas intrusions confirmees. \\
 HDFS/BGL Drain3 & Isolation Forest & 200 & n/a & 42 & Contamination fixee sur le train pour la validation train--test ; templates Drain3 et fenetres temporelles. \\

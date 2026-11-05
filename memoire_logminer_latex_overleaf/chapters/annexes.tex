@@ -34,9 +34,6 @@ Les principales commandes utilisées pour reproduire les expériences sont repri
 \item Principales options utilisées pour cette campagne :
 \path{--cycles 30 --interval-sec 2 --max-mb 5}
 
-\item Étude d'ablation du routage par famille :
-\texttt{python} \path{scripts/run_family_routing_ablation.py}
-
 \item Campagne d'endurance utilisant Redis Streams :
 \texttt{python} \path{scripts/run_intelligent_redis_endurance_campaign.py}
 
@@ -77,7 +74,6 @@ Afin de conserver une trace vérifiable des expériences, les principaux résult
 
 \item \texttt{resource\_campaign.csv} ;
 
-\item \texttt{family\_routing\_ablation.csv} ;
 
 \item \texttt{standard\_tools\_wazuh\_logminer\_overlap.csv} ;
 
@@ -313,10 +309,6 @@ Mesure du temps nécessaire au traitement local de plusieurs micro-lots. Ce rés
 Campagne CPU/RAM &
 \texttt{resource\_campaign.csv} &
 Mesure de la consommation des ressources et du comportement du prototype durant une campagne de 30 cycles. \\
-
-Ablation du routage &
-\texttt{family\_routing\_ablation.csv} &
-Comparaison contrôlée entre un modèle global et des modèles spécialisés par famille, évalués sur cinq graines à partir des métriques F1, PR-AUC et MCC. \\
 
 Robustesse multiformat &
 Rapport de robustesse et figure associée &

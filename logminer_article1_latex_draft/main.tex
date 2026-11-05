@@ -65,7 +65,7 @@ Security monitoring environments generate heterogeneous logs whose formats, sema
 
 The prototype decomposes the workflow into specialized cooperating modules for collection, parsing, normalization, family-aware routing, anomaly detection, correlation, dashboard visualization and audit. The contribution is not a new standalone detector, but an auditable specialization layer: events are normalized into a common schema, assigned to a log family with explicit evidence and confidence, processed by a compatible lightweight model, then unified as anomaly candidates before being correlated into analyst-readable incidents.
 
-Experiments cover Windows logs, Wazuh exports, Linux/auth logs, HDFS, BGL, CICIDS2017 and UNSW/CIC-DDoS data. The evaluation includes a controlled common-space ablation and an operational specialization ablation. The results support the feasibility of a local lightweight implementation, while showing that routing should be interpreted as controlled specialization rather than a universal F1 improvement on every dataset.
+Experiments cover Windows logs, Wazuh exports, Linux/auth logs, HDFS, BGL, CICIDS2017 and UNSW/CIC-DDoS data. The results support the feasibility of a local lightweight implementation. They do not establish a predictive gain of family-aware routing over a common model, which this paper does not measure.
 
 The prototype is positioned as an analytical complement to mature log management and HIDS/SIEM tools rather than as a replacement for production SOC platforms or large-enterprise SOC infrastructures.
 \end{abstract}
@@ -87,8 +87,8 @@ The contribution of this paper is fourfold:
 \begin{enumerate}
     \item An auditable family-aware software-agent architecture for log analysis, including collector, parser, normalizer, router, detector, correlator, dashboard, audit and bounded supervisor roles.
     \item A formal routing and fallback mechanism in which normalized logs are assigned to a log family through explicit evidence, confidence scoring and route explanations before being processed by a compatible detector.
-    \item A multi-source evaluation covering system logs, SIEM exports and network datasets, including controlled and operational ablations, false positives, routing audit traces, bounded local workflow latency and operational limits.
-    \item A cautious empirical positioning showing that family-aware routing is controlled specialization rather than a guaranteed F1 improvement on every dataset.
+    \item A multi-source evaluation covering system logs, SIEM exports and network datasets, including false positives, routing audit traces, bounded local workflow latency and operational limits.
+    \item A cautious empirical positioning: family-aware routing is presented as an engineering mechanism, and no F1 improvement over a common model is claimed.
 \end{enumerate}
 
 The paper deliberately uses cautious claims. Non-supervised outputs are treated as anomaly candidates, not confirmed intrusions. The validated distribution is mainly logical and modular, while large-scale multi-machine distribution remains future work. The source code of the prototype is available at \url{https://github.com/andybitati/Memoire}; large raw datasets and local operational exports are excluded from the repository when size, licensing or privacy constraints apply. The remainder of the paper is organized as follows: Section II reviews related work, Sections III and IV present the methodology and routing mechanism, Section V details the implementation, Section VI describes the experimental setup, Section VII reports and discusses the results, Section VIII states the operational positioning and validity limits, and Section IX concludes the paper.
@@ -239,30 +239,7 @@ Syslog subtype & $+140$ linux, $-40$ windows & Normalized subtype contains syslo
 \end{tabularx}
 \end{table*}
 
-\subsection{Ablation Protocol}
-To make the claim testable, the experimental protocol includes an ablation study. Table~\ref{tab:ablation} defines the comparisons. Two levels are reported. First, a controlled common-space ablation forces both the global model and the family-aware models to use the same minimal feature representation. Second, an operational ablation compares the same global common-feature baseline with the full specialized configurations, where each family can use its native feature space and trained detector. A complete factorial isolation of routing, features and model family is identified as future work; the present evaluation separates a constrained routing effect from the complete specialization package.
-
-A stricter future factorial design should independently vary the router type, feature representation, detector family, correlation policy and fallback policy. Such a design would separate the effect of selecting the right family from the effect of using richer native features or stronger downstream models.
-
-\begin{table}[t]
-\caption{Ablation protocol used to evaluate family-aware specialization}
-\label{tab:ablation}
-\centering
-\scriptsize
-\begin{tabularx}{\linewidth}{p{2.4cm}X}
-\toprule
-\textbf{Configuration} & \textbf{Purpose} \\
-\midrule
-Global common model & Main baseline: one detector applied to all families using a minimal shared feature space \\
-Family-aware common models & Controlled test: family selection and per-family detectors under the same minimal shared features \\
-Family-aware native models & Operational test: routing plus family-compatible native features and specialized detectors \\
-Without correlation & Measures detector-level candidate production before incident grouping \\
-With correlation & Measures the complete pipeline from anomaly candidate to analyst-readable incident \\
-Factorial routing/features/models & Future Work: planned extension to isolate the independent causal effect of each component \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
+\subsection{Evidence Boundaries}
 Table~\ref{tab:claim_boundaries} maps the main hypotheses to the level of evidence available in this paper. This table is included to make the contribution falsifiable and to separate demonstrated behavior from future work.
 
 \begin{table}[t]
@@ -274,11 +251,10 @@ Table~\ref{tab:claim_boundaries} maps the main hypotheses to the level of eviden
 \toprule
 \textbf{Hypothesis} & \textbf{Expected behavior} & \textbf{Evidence boundary} \\
 \midrule
-H1 & A monolithic common model can remain competitive when all families use the same minimal features & Confirmed by the controlled ablation; routing alone is not claimed as universally superior \\
-H2 & Family-aware routing helps when it enables native feature spaces and compatible detectors & Supported for Linux/auth and UNSW in the operational ablation; CICIDS is already near saturation \\
-H3 & Sequential system logs require sequence-aware branches & Supported as a limitation by HDFS false positives; Drain-like and temporal detectors remain future work \\
-H4 & Fallback routing prevents unknown or corrupted inputs from breaking the workflow & Supported as graceful degradation; fallback outputs are not confirmed intrusions \\
-H5 & The routing layer is feasible on a local workstation or gateway & Supported by local latency and routing-overhead results; SOC-scale throughput is not claimed \\
+H1 & Family-aware specialization improves detection over a common model & Not established: this paper reports no valid controlled comparison \\
+H2 & Sequential system logs require sequence-aware branches & Supported as a limitation by HDFS false positives; Drain-like and temporal detectors remain future work \\
+H3 & Fallback routing prevents unknown or corrupted inputs from breaking the workflow & Supported as graceful degradation; fallback outputs are not confirmed intrusions \\
+H4 & The routing layer is feasible on a local workstation or gateway & Supported by local latency and routing-overhead results; SOC-scale throughput is not claimed \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -382,8 +358,6 @@ Robustness & Apache, CEF/LEEF, CloudTrail, Linux auth, incomplete log & Multi-fo
 \subsection{Evaluation Protocol and Experimental Rigor}
 The evaluation follows a validation-based protocol adapted to the heterogeneous nature of the sources. For labeled supervised datasets, metrics are reported on held-out test partitions or predefined evaluation splits, using F1-score and false positive rates to capture both detection quality and analyst workload. For unlabeled operational exports, such as Wazuh or local Windows logs, outputs are explicitly interpreted as anomaly candidates and correlated incidents rather than confirmed attacks. Workflow latency is reported only to verify that the routing layer is feasible in a local prototype; detailed resource, stress and scalability behavior is outside the core scope of this first article.
 
-The routing ablation is split into two complementary views. The controlled common-space comparison constrains all families to the same minimal representation, whereas the operational comparison evaluates the full specialization package composed of family identification, native feature compatibility and specialized model selection. This protocol is designed to reduce overclaiming: the controlled ablation tests whether routing alone dominates under shared features, while the operational ablation tests whether routing enables compatible feature spaces and models. All results should therefore be read as evidence for a lightweight family-aware analytical architecture, not as a universal benchmark victory over all monolithic or sequence-aware detectors.
-
 The experimental artifacts were organized to support manuscript-level traceability: routed outputs, anomaly candidates, incidents, timing profiles, resource snapshots, figures and LaTeX tables are preserved as local files before being summarized in the paper. The GitHub repository mentioned in the introduction includes the executable source tree together with the development requirements, a pinned container requirements file, a Dockerfile for the FastAPI runtime, and a Redis Docker Compose descriptor. The container definition was build-tested with Docker 27.4.0 and smoke-tested by importing the FastAPI application and the pinned scientific stack, including scikit-learn, pandas, numpy and joblib. Large datasets, local exports and trained model binaries may remain external when size, licensing or privacy constraints apply.
 
 \section{Results and Discussion}
@@ -417,7 +391,7 @@ BGL & BlueGene/L HPC logs & Ensemble / Autoencoder / Isolation Forest & Best sel
     \label{fig:f1}
 \end{figure}
 
-These results should not be interpreted as universal superiority. They show that the prototype can integrate several families and that family-specific models are operationally feasible. The routing effect is therefore isolated through the ablations below.
+These results should not be interpreted as universal superiority. They show that the prototype can integrate several families and that family-specific models are operationally feasible. They do not isolate a routing effect, which this paper does not measure.
 
 \subsection{Routing Audit Evidence}
 Since the paper now centers on auditable routing, the evaluation must expose what is actually audited. In the current prototype, each routed execution records the selected family, route reason, route score or confidence signal, selected model branch and downstream candidate/incidence counts. Table~\ref{tab:routing_audit} summarizes the evidence that is already available from the current artifacts. These results do not constitute a complete route-accuracy benchmark, but they show that route decisions are inspectable rather than hidden inside the detector.
@@ -438,55 +412,6 @@ Timing profile & Router accounts for 0.9\% in direct profiling and averages 0.24
 \bottomrule
 \end{tabularx}
 \end{table}
-
-\subsection{Routing Ablation}
-Table~\ref{tab:ablation_controlled} reports the controlled ablation. In this setting, both the global model and the family-aware models use the same minimal common feature space. This isolates routing under a constrained representation. The global model remains highly competitive and even slightly outperforms the per-family models on Linux/auth and UNSW in this specific setting. This result is important: it prevents overclaiming and shows that routing alone does not guarantee higher F1 when all families are forced into the same representation.
-
-\begin{table}[t]
-\caption{Controlled common-space ablation}
-\label{tab:ablation_controlled}
-\centering
-\scriptsize
-\begin{tabular}{l l r r r}
-\toprule
-\textbf{Variant} & \textbf{Family} & \textbf{Rows} & \textbf{F1} & \textbf{FP/1000} \\
-\midrule
-Global common & CICIDS & 3,000 & 0.999667 & 0.000 \\
-Family-aware & CICIDS & 3,000 & 0.999667 & 0.000 \\
-Global common & Linux/auth & 3,000 & 0.824368 & 50.000 \\
-Family-aware & Linux/auth & 3,000 & 0.816399 & 53.333 \\
-Global common & UNSW & 3,000 & 0.995662 & 1.667 \\
-Family-aware & UNSW & 3,000 & 0.994660 & 2.000 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Table~\ref{tab:ablation_operational} compares the same global common-feature baseline with the full specialized configurations. This second view better reflects the proposed contribution, because family-aware routing allows each family to use a compatible feature space and model. The full configuration improves Linux/auth and UNSW, while CICIDS remains slightly better under the global common baseline because that dataset is already nearly saturated.
-
-\begin{table}[t]
-\caption{Operational ablation: global common baseline vs full specialized configurations}
-\label{tab:ablation_operational}
-\centering
-\scriptsize
-\begin{tabular}{l r r r}
-\toprule
-\textbf{Family} & \textbf{Global F1} & \textbf{Family-aware F1} & \textbf{$\Delta$ F1} \\
-\midrule
-Linux/auth & 0.824368 & 0.916602 & +0.092234 \\
-CICIDS & 0.999667 & 0.997163 & -0.002503 \\
-UNSW & 0.995662 & 0.999965 & +0.004303 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\linewidth]{figures/fig_family_routing_ablation.pdf}
-    \caption{Controlled common-space ablation. The figure compares global and family-aware models under the same minimal feature representation, so it should not be read as the full operational specialization result.}
-    \label{fig:ablation}
-\end{figure}
-
-These ablations refine the claim: family-aware routing should not be presented as a universal F1 improvement. Its value is controlled specialization and feature/model compatibility across heterogeneous families. In particular, it helps when a family benefits from a dedicated representation, as shown by Linux/auth and UNSW in the operational comparison.
 
 \subsection{False Positives}
 False positives matter because they directly affect analyst workload. Table~\ref{tab:falsepos} reports representative false positive rates. HDFS shows a high false positive rate with the current lightweight row-level representation. This is a structural limitation for distributed-system logs, where event order and textual templates are central. The absence of temporal-window features is not a hard limitation of the normalizer schema, which can carry timestamps, event identifiers and raw messages. It is a deliberate lightweight design constraint of this first prototype. Therefore, the current HDFS result should not be compared favorably against sequence-aware methods such as DeepLog or LogAnomaly. For HDFS/BGL-like sources, \logminer{} should be extended with a semantic parsing agent, for example Drain-like templates, and temporal windows before detection. The modular event contract is precisely intended to support this downstream algorithmic heterogeneity: HDFS/BGL batches could be routed to a Drain-like parser and an LSTM-style sequence detector without changing simpler tabular branches such as Linux/auth, CICIDS2017 or UNSW/CIC-DDoS.
@@ -595,7 +520,7 @@ Unsupervised results & Anomaly candidates, not confirmed intrusions \\
 \end{table}
 
 \subsection{Threats to Validity}
-The main internal validity threat is that results combine multiple datasets, feature representations and model families. The controlled ablation mitigates this risk, but also shows that routing alone is not always superior under a common minimal feature space. The operational ablation evaluates routing, specialized feature spaces and specialized detectors together; it does not isolate the independent contribution of each factor. Therefore, the claim is limited to controlled specialization and feature/model compatibility, not universal dominance over monolithic classifiers. A stricter factorial design would require at least three independent axes: router choice, feature representation and detector family.
+The main internal validity threat is that results combine multiple datasets, feature representations and model families. No controlled comparison isolates the contribution of routing, feature spaces or detectors. Therefore, the claim is limited to feasibility and feature/model compatibility, not to a predictive advantage over monolithic classifiers. A stricter factorial design would require at least three independent axes: router choice, feature representation and detector family.
 
 Statistical validity is limited because repeated-seed confidence intervals and broad routing-weight sensitivity sweeps are not yet reported. The current router constants are auditable policy parameters, but they are not calibrated probabilities; the added $\pm10\%$ replay only covers the five SupervisorAgent sources and should be interpreted as a local stability check. Dataset validity is also limited: very high F1 scores on network datasets require careful interpretation because class imbalance, duplicate flows, temporal splitting and train-test leakage can distort intrusion-detection benchmarks. HDFS demonstrates an explicit negative boundary of the current lightweight row-level representation and should be compared against sequence-aware parsers and detectors before any stronger claim is made for distributed-system logs. Model-persistence validity is also relevant: the June 2026 benchmark environment loaded several scikit-learn model artifacts trained under earlier library versions, which generated compatibility warnings. The results are still useful as local prototype measurements. The repository now includes a Dockerfile and a pinned \texttt{requirements-container.txt} file to document the runtime environment; this image was build-tested and smoke-tested for API and dependency compatibility. However, exact external replication of the reported F1 scores still requires retraining or republishing model artifacts under that pinned environment. Long-running stress, resource and supervisor-degradation results are not used as central evidence in this article.
 
@@ -604,7 +529,7 @@ External validity is limited by the selected datasets and local execution enviro
 \section{Conclusion and Future Work}
 This paper presented \logminer, a lightweight auditable family-aware routing architecture for heterogeneous log anomaly detection. Its main contribution is a specialization layer that makes model selection explicit, preserves routing reasons and fallback behavior, and connects common normalization with compatible family-specific detectors and interpretable correlation. Results across Windows, Wazuh, Linux/auth, HDFS, BGL, CICIDS2017 and UNSW/CIC-DDoS support the feasibility of the approach on a local infrastructure.
 
-The ablation study refines the contribution: the family-aware strategy should be understood as controlled specialization rather than a guarantee of better F1 on every source. Further work includes a factorial ablation separating routing, features and model choice; stronger template-based parsing; routing HDFS/BGL-style logs toward a Drain-like semantic parsing agent followed by temporal or LSTM-style sequence detection; multi-machine deployment; active learning from analyst decisions; richer incident explanations; and integration with mature SIEM/HIDS platforms. Detailed supervisor stability, stress, resource and scalability campaigns are reserved for a separate operational study.
+The family-aware strategy should be understood as an engineering mechanism, whose predictive benefit is not established here. Further work includes a factorial ablation separating routing, features and model choice; stronger template-based parsing; routing HDFS/BGL-style logs toward a Drain-like semantic parsing agent followed by temporal or LSTM-style sequence detection; multi-machine deployment; active learning from analyst decisions; richer incident explanations; and integration with mature SIEM/HIDS platforms. Detailed supervisor stability, stress, resource and scalability campaigns are reserved for a separate operational study.
 
 \section*{Declaration of Generative AI and AI-Assisted Technologies}
 The authors used AI-assisted writing tools to improve language clarity, structure and readability during manuscript preparation. The authors reviewed, edited and validated the technical content and take full responsibility for the final manuscript.

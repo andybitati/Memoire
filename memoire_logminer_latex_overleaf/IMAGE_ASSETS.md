@@ -28,7 +28,6 @@ et preuves experimentales.
 - `figures/fig_architecture_logminer.png`
 - `figures/fig_architecture_logminer_mermaid.png`
 - `figures/fig_model_portfolio_scale.png`
-- `figures/fig_family_routing_ablation.png`
 - `figures/fig_supervised_models_f1.png`
 - `figures/fig_validation_selection_f1.png`
 - `figures/fig_wazuh_logminer_overlap.png`

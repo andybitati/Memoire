@@ -29,7 +29,7 @@ modeles.
 
 | Remarque Bastion Lab / reviewers | Etat actuel | Preuve dans le travail actuel | Reste a faire |
 | --- | --- | --- | --- |
-| Ajouter une ablation du routage familial | Couvert | Article 1 contient une ablation commune et une ablation operationnelle; les resultats montrent que le routage seul ne gagne pas toujours | Ajouter plus tard une ablation factorielle stricte routage/features/modele |
+| Ajouter une ablation du routage familial | Retire | Les resultats disponibles provenaient d'un script fautif et ont ete retires de l'article 1 | Ajouter plus tard une ablation factorielle stricte routage/features/modele |
 | Eviter de pretendre que le routage ameliore toujours le F1 | Couvert | Le manuscrit dit explicitement que la strategie est une specialisation controlee, pas une garantie universelle | Aucun blocage majeur |
 | Clarifier que l'innovation n'est pas un nouvel algorithme ML | Couvert | La section `Scientific Claim` presente la contribution comme une couche auditable de specialisation | Garder cette formulation dans toute version soumise |
 | Clarifier le terme agent / multi-agent | Couvert | L'introduction et la section superviseur disent que les agents sont des modules logiciels, pas des agents cognitifs, FIPA, RL ou LLM | Eventuellement remplacer certains titres par `software-agent` si un reviewer reste strict |

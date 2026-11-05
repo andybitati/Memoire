@@ -8,37 +8,7 @@ Anomaly Detection in Heterogeneous Logs`.
 
 ## 1. Ablation Du Routage Familial
 
-Critique traitee:
-
-> L'article defend le routage familial, mais les resultats d'ablation manquent.
-
-Correction apportee:
-
-- script reproductible: `scripts/run_family_routing_ablation.py`;
-- donnees brutes: `data/processed/family_routing_ablation.csv`;
-- tableau controle: `docs/memoire/tables/table_family_routing_ablation.md`;
-- tableau operationnel: `docs/memoire/tables/table_family_routing_operational_ablation.md`;
-- figure: `docs/memoire/figures/fig_family_routing_ablation.svg`;
-- exports article: `docs/memoire/figures_exports/fig_family_routing_ablation.png`
-  et `.pdf`.
-
-Interpretation recommandee:
-
-> The controlled common-space ablation shows that routing alone does not
-> automatically outperform a monolithic classifier when all families are forced
-> into the same minimal feature space. However, the operational comparison shows
-> that the full family-aware configuration improves Linux/auth and UNSW results
-> and remains close on CICIDS, where the global common baseline is already near
-> saturation. Therefore, the contribution should be framed as controlled
-> specialization and feature/model compatibility, not as a universal guarantee
-> of higher F1 on every dataset.
-
-Phrase a inserer:
-
-> The proposed strategy aims to limit confusion induced by heterogeneous log
-> formats and distributions. This hypothesis is evaluated against a monolithic
-> common-feature baseline and complemented by an operational comparison with
-> family-specific configurations.
+Résultats retirés : ils provenaient d'un script comportant une fuite de l'étiquette sur UNSW et une sélection par premières lignes réduisant CICIDS aux DDoS. Comparaison valide : `experiments/phase_revision_20261105/E-H3B-STRICT-HOLDOUT/`, section `sec:e-h3b` du mémoire.
 
 ## 2. Ambiguite Du Terme Multi-Agent
 
