@@ -7,6 +7,7 @@ Procédure : décision C13-proc de `ETAT_CHANTIER.md`. Une ligne par protocole, 
 | E-H4-HDFS-BLOCK-BASELINES | 4 | `revision_reports/chantier_20261105/agent_4/protocoles/E-H4-HDFS-BLOCK-BASELINES.md` | `9bdd07555b59bea54ea625c1ecf6491381aa0bdca6f83b1481f5f21e87e820cc` | `2026-11-05T12:29:53.6488951Z` | ce commit (`Protocole E-H4-HDFS-BLOCK-BASELINES préenregistré`) |
 | E-H3B-FAMILY-MODELS | 4 | `revision_reports/chantier_20261105/agent_4/protocoles/E-H3B-FAMILY-MODELS.md` | `a0aa90c857e01b6ae428871270f9addfe6f098ab4503fec6c5db77337c8b276d` | `2026-11-05T12:29:53.6488951Z` | ce commit (`Protocole E-H3B-FAMILY-MODELS préenregistré`) |
 | E-H5-MEMORY-RELIABILITY | 5 | `revision_reports/chantier_20261105/agent_5/protocoles/E-H5-MEMORY-RELIABILITY.md` | `b5f782c7d72ba57ef4f9fa35e7b9a474b9953bcaeafab5779f345e75206db48e` | `2026-11-05T14:40:44Z` | ce commit (`Protocole E-H5-MEMORY-RELIABILITY préenregistré`) |
+| E-CNP-STATIC-ASSIGNMENT | 5 | `revision_reports/chantier_20261105/agent_5/protocoles/E-CNP-STATIC-ASSIGNMENT.md` | `d2f699b5c30e0611a62f9138583e44c11dca8a31568be4001eeb768f895855bb` | `2026-11-05T14:40:48Z` | ce commit (`Protocole E-CNP-STATIC-ASSIGNMENT préenregistré`) |
 
 ## Écarts au protocole
 
