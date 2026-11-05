@@ -96,6 +96,8 @@ Application du plan terminée le 2026-11-05 : lots W1 à W6 intégrés. `ARIEL_L
 
 Publication GitHub effectuée le 2026-11-05 : commit de refonte `4cc1c15` poussé sur `origin/revision-chantier-20261105`. La branche locale suit désormais cette branche distante ; `main` n'a pas été modifiée.
 
+Fusion demandée par l'auteur et effectuée le 2026-11-05 : `main` a été avancée en fast-forward de `35da3a9` à `316b839`, sans conflit, puis poussée sur `origin/main`.
+
 Vérification de provenance CSE-CIC-IDS2018 signalée par l'auteur le 2026-11-05 : les fichiers retéléchargés depuis la source vérifiée et déposés à la racine de `data/raw/external/` sont des copies bit à bit des copies employées par les expériences sous `data/raw/external/CSE-CIC-IDS2018/`. Empreintes SHA-256 : jeudi `FA2947A8256D81EE9103AE16139D62D0E17AA23E696EE80D9E76FB51C01C9C4B`, vendredi `1A4919FAA0C49C7AF97230B0C2D076EBA23EE6DD81103A3801D51AC316355D8B`. Cette vérification résout le doute de provenance relevé par Claude : conserver l'audit CSE-CIC dans le manuscrit et H4 sur quatre jeux. L'écart avec la taille S3 relevée antérieurement reste un écart de métadonnée, non une preuve que les fichiers expérimentaux provenaient d'une autre source.
 
 ## 5quinquies. Chantier de révision à huit agents (2026-11-05) — terminé
