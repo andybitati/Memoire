@@ -74,7 +74,11 @@ Dans les campagnes Redis, $P_a=1$. Une offre suppose alors $n_a=0$, donc $\rho_a
 U=0{,}65+0{,}30C+0{,}20H+0{,}05T.
 \]
 Le paramètre \texttt{minimum\_utility} n'y est pas transmis ; le refus pour faible utilité
-y reste donc inactif.
+y reste donc inactif. L'utilité est ainsi un classement à poids fixes : dans les campagnes
+Redis, trois de ses six termes sont constants ($M=1$, et $A=L=1$ puisque $\rho_a=0$), et
+seuls $C$, $H$ et $T$ différencient les offres, $H$ et $T$ uniquement lorsque la mémoire est
+activée. La décision des agents ne relève donc pas d'un raisonnement, mais d'une règle de
+classement explicite et vérifiable.
 
 \paragraph{Mise à jour et rôle décisionnel.}
 $H$ et $T$ évoluent après une exécution locale par l'appel à \texttt{learn}, uniquement

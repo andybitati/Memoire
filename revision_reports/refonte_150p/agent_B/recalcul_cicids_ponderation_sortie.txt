@@ -1,0 +1,8 @@
+ExtraTrees microF1=0.3081 macroF1=0.1433 F1_sans_Infiltration=0.1791
+HistGradientBoosting microF1=0.0059 macroF1=0.0036 F1_sans_Infiltration=0.0045
+LogisticRegression microF1=0.3205 macroF1=0.2337 F1_sans_Infiltration=0.1989
+RandomForest microF1=0.3488 macroF1=0.1578 F1_sans_Infiltration=0.1973
+SGDLogistic microF1=0.3075 macroF1=0.1436 F1_sans_Infiltration=0.1795
+prevalence_test [0.5, 0.5, 0.3295, 0.0079, 0.3528]
+tout_positif_par_scenario [0.6667, 0.6667, 0.4957, 0.0157, 0.5215] macro=0.4733 micro=0.5491 sans_Infiltration=0.5876
+pr_auc_LR [0.8118, 0.5279, 0.314, 0.3568, 0.2837]

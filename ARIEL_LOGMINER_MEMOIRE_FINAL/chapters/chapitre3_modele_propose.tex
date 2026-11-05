@@ -2,147 +2,57 @@
 
 \label{chap:architecture}
 
-\section{Introduction}
+L'état de l'art a montré qu'une chaîne d'analyse de journaux de formats différents ne se ramène pas au choix d'un algorithme. Avant qu'un modèle intervienne, la source doit être lue, reconnue, transformée puis orientée vers un traitement compatible ; après la détection, les sorties doivent encore être contextualisées, conservées, éventuellement corrélées et présentées à l'analyste. Ariel \logminer{} est conçu autour de ce problème d'intégration : chaque responsabilité est confiée à un composant distinct, de sorte qu'une anomalie candidate contestée puisse être rattachée à l'étape qui l'a produite (lecture, parsing, normalisation, routage, modèle ou corrélation).
 
-L'état de l'art a montré qu'une chaîne d'analyse de journaux hétérogènes ne peut pas être ramenée au choix d'un seul algorithme. Avant qu'un modèle intervienne, la source doit être lue, reconnue, transformée puis orientée vers un traitement compatible. Après la détection, le travail n'est pas terminé : les sorties doivent encore être contextualisées, conservées, éventuellement corrélées et présentées à l'analyste. Ces fonctions relèvent de domaines différents, mais elles doivent fonctionner ensemble.
+Ce chapitre décrit le modèle architectural du prototype : exigences, composants, cycle de vie des données, contrats de communication, routage, mémoire, corrélation et gouvernance des modèles. Les choix de programmation sont présentés au chapitre suivant. Lorsqu'une fonction décrite ici n'est pas implémentée dans le prototype, le texte le signale explicitement.
 
-Ariel \logminer{} a été conçu autour de ce problème d'intégration. L'architecture sépare les responsabilités principales afin qu'une évolution locale n'impose pas une réécriture complète du système. Cette séparation a aussi une valeur pour l'audit. Si une anomalie candidate paraît incohérente, il doit être possible de remonter la chaîne et de déterminer si l'origine du problème se trouve dans la lecture de la source, le parsing, la normalisation, le routage, le modèle ou la corrélation.
+\section{Exigences et principes de conception}
 
-Le qualificatif multi-agent renvoie ici à des composants spécialisés qui disposent de capacités, d'un état et d'un mécanisme de communication. Certaines tâches peuvent être exécutées par des workers distincts et transportées au moyen de Redis Streams. Il s'agit toutefois d'une distribution logicielle validée en laboratoire, et non d'une démonstration de haute disponibilité industrielle ou de fonctionnement géographiquement distribué.
+\label{sec:exigences-principes}
 
-Ce chapitre décrit le modèle architectural du prototype. Il présente les exigences de conception, les composants, le cycle de vie des données, les contrats de communication, le routage, la mémoire, la corrélation et la gouvernance des modèles. Les choix de programmation détaillés sont laissés au chapitre suivant afin de conserver une séparation nette entre \textit{conception} et \textit{implémentation}.
-
-\section{Exigences de conception}
-
-\subsection{Exigences fonctionnelles}
-
-La conception part d'une chaîne fonctionnelle complète. Pour qu'une source puisse être exploitée, le système doit être capable de la recevoir, d'en déterminer la nature, d'extraire les informations utiles et de transmettre une représentation exploitable aux composants suivants.
-
-Les principales exigences fonctionnelles sont synthétisées dans le tableau~\ref{tab:exigences-fonctionnelles}.
+La conception part d'une chaîne fonctionnelle complète, dont les exigences sont synthétisées dans le tableau~\ref{tab:exigences-fonctionnelles}.
 
 \begin{table}[H]
-
 \centering
-
 \caption{Exigences fonctionnelles principales d'Ariel \logminer{}}
-
 \label{tab:exigences-fonctionnelles}
-
 \small
-
-\begin{tabularx}{\textwidth}{p{1.2cm}p{4.0cm}X}
-
+\begin{tabularx}{\textwidth}{p{1.0cm}p{3.4cm}X}
 \toprule
-
 \textbf{ID} & \textbf{Fonction} & \textbf{Exigence} \\
-
 \midrule
-
-F1 & Acquisition &
-
-Accepter plusieurs catégories de fichiers, journaux ou exports utilisés dans le périmètre
-du prototype. \\
-
-F2 & Parsing &
-
-Extraire les champs pertinents d'une source lorsque son format est reconnu et signaler
-explicitement les cas non pris en charge. \\
-
-F3 & Normalisation &
-
-Transformer les informations disponibles vers un noyau commun exploitable par les
-composants transversaux. \\
-
-F4 & Routage &
-
-Identifier une famille probable de données et choisir un traitement compatible. \\
-
-F5 & Détection &
-
-Appliquer un modèle supervisé, non supervisé ou statistique selon la nature de la source
-et le protocole prévu. \\
-
-F6 & Corrélation &
-
-Rapprocher plusieurs anomalies candidates à partir d'indices temporels ou contextuels. \\
-
-F7 & Mémoire et audit &
-
-Conserver les informations nécessaires à la traçabilité des exécutions, décisions et
-erreurs. \\
-
-F8 & Visualisation &
-
-Présenter les résultats sous une forme permettant leur consultation, leur filtrage et leur
-inspection par l'analyste. \\
-
-F9 & Mise à jour contrôlée &
-
-Comparer un modèle candidat au modèle courant avant toute décision de promotion. \\
-
+F1 & Acquisition & Accepter les catégories de fichiers, journaux et exports du périmètre du prototype. \\
+F2 & Parsing & Extraire les champs d'une source dont le format est reconnu ; signaler explicitement les cas non pris en charge. \\
+F3 & Normalisation & Projeter les informations disponibles vers un noyau commun exploitable par les composants transversaux. \\
+F4 & Routage & Identifier une famille probable de données et choisir un traitement compatible. \\
+F5 & Détection & Appliquer un modèle supervisé, non supervisé ou statistique selon la source et le protocole. \\
+F6 & Corrélation & Rapprocher des anomalies candidates à partir d'indices temporels et contextuels. \\
+F7 & Mémoire et audit & Conserver les informations nécessaires à la traçabilité des exécutions, décisions et erreurs. \\
+F8 & Visualisation & Présenter les résultats pour leur consultation, leur filtrage et leur inspection. \\
+F9 & Mise à jour contrôlée & Comparer un modèle candidat au modèle courant avant toute promotion. \\
 \bottomrule
-
 \end{tabularx}
-
 \end{table}
 
-Ces fonctions ne sont pas toutes évaluées de la même manière. Une opération de parsing
-peut être vérifiée par le nombre d'entrées effectivement transformées. La qualité d'un
-classifieur nécessite des métriques de prédiction. Le bus de messages demande des mesures
-d'acquittement et de reprise. Le tableau de bord peut être vérifié fonctionnellement sans
-que cela constitue pour autant une étude d'utilisabilité.
-La conception associe ainsi chaque fonction au type de preuve pertinent.
+Ces fonctions ne relèvent pas du même type de preuve. Le parsing se vérifie par le nombre d'entrées effectivement transformées ; un classifieur exige des métriques de prédiction ; le bus de messages, des mesures d'acquittement et de reprise ; le tableau de bord, une vérification fonctionnelle qui ne constitue pas une étude d'utilisabilité.
 
-\subsection{Exigences non fonctionnelles}
+Cinq exigences non fonctionnelles complètent ce tableau. La \textbf{modularité} donne à chaque composant une responsabilité principale identifiable. L'\textbf{auditabilité} impose que les traitements importants laissent des traces suffisantes pour reconstruire une décision ou diagnostiquer une erreur du pipeline. La \textbf{reproductibilité} relie chaque résultat aux données, paramètres, versions de modèles et artefacts qui l'ont produit. La \textbf{dégradation contrôlée} interdit qu'une source inconnue ou mal formée soit déclarée correctement traitée : le système signale l'erreur, emprunte une route de repli ou conserve les éléments disponibles. Enfin, la \textbf{sobriété opérationnelle} exige que les fonctions essentielles s'exécutent sur une machine locale, sans cluster.
 
-Cinq exigences non fonctionnelles structurent l'architecture, mais elles agissent à des niveaux différents.
+Quatre principes en découlent.
+\begin{enumerate}
+    \item \textbf{Séparation des responsabilités.} La normalisation reste distincte du modèle qui consomme les données, ce qui permet d'évaluer séparément le parseur, le routeur et le détecteur : une erreur de routage n'est pas imputée au modèle sélectionné.
+    \item \textbf{Séparation entre contrat métier et transport.} Le message échangé entre agents porte une intention métier (émetteur, destinataire, type, charge utile) ; le transport conserve ses propres informations (identifiant de stream, groupe de consommateurs, état \textit{pending}, acquittement). Un identifiant créé par Redis n'est jamais l'identifiant métier d'un événement de sécurité.
+    \item \textbf{Autonomie bornée.} Un objectif confié à un agent est représenté par un état persistant : tâches en attente, actions exécutées, résultats et erreurs. Chaque handler termine l'objectif ou produit des sous-tâches ; l'agent classe les actions compatibles selon sa règle locale, exécute celle qu'il retient et délègue par Contract Net une tâche qui exige une capacité absente. Quatre garde-fous bornent ce cycle : nombre d'actions, profondeur des sous-tâches, tentatives par tâche et taille de la file. Un budget épuisé interrompt l'objectif, dont la reprise exige une augmentation explicite du budget. Un score inhabituel ne devient pas un incident confirmé, et un modèle ne remplace pas le modèle courant sans comparaison préalable.
+    \item \textbf{Conservation des résultats négatifs.} Erreurs, refus et résultats défavorables sont enregistrés comme des résultats, non éliminés comme du bruit : ils délimitent ce que l'architecture permet réellement de soutenir.
+\end{enumerate}
 
-La \textbf{modularité} impose que chaque composant possède une responsabilité principale identifiable. Le routeur choisit un traitement, le corrélateur rapproche les signaux, le normaliseur harmonise leur représentation, tandis que les décisions persistent indépendamment du tableau de bord.
+\section{Architecture générale et plans fonctionnels}
 
-L'\textbf{auditabilité} concerne la capacité à expliquer ce qui s'est produit. Les traitements importants doivent laisser des traces suffisamment précises pour reconstruire une décision ou diagnostiquer une anomalie du pipeline. En cybersécurité, un résultat performant mais impossible à expliquer reste difficile à exploiter.
-
-La \textbf{reproductibilité} relie les résultats aux données, paramètres, versions de modèles et artefacts expérimentaux qui les ont produits. Cette exigence est particulièrement importante dans un mémoire où plusieurs campagnes utilisent des protocoles différents.
-
-La \textbf{dégradation contrôlée} intervient lorsque le chemin nominal n'est pas applicable. Une source inconnue ou mal formée ne doit pas être silencieusement déclarée comme correctement traitée. Le système doit pouvoir signaler l'erreur, utiliser une route de repli ou conserver les éléments disponibles pour inspection.
-
-Enfin, la \textbf{sobriété opérationnelle} fixe une contrainte pratique : le prototype doit rester exécutable dans un environnement local raisonnable. L'architecture pourra être étendue vers une distribution plus large, mais ses fonctions essentielles ne doivent pas dépendre d'un cluster industriel.
-
-\section{Principes architecturaux}
-
-\subsection{Séparation des responsabilités}
-
-L'architecture évite qu'un seul module concentre toute la chaîne de traitement. Ce découpage répond d'abord à la diversité des données : les sources n'ont pas les mêmes structures et les algorithmes n'attendent pas nécessairement les mêmes entrées. La normalisation doit donc rester distincte du modèle qui consomme les données.
-
-Le découpage a aussi une fonction méthodologique. Lorsque chaque étape est identifiable, le comportement du parser, du routeur ou du détecteur peut être évalué séparément. Une erreur de routage, par exemple, ne doit pas être interprétée comme une faiblesse intrinsèque du modèle sélectionné.
-
-\subsection{Séparation entre contrat métier et transport}
-
-La communication distingue deux niveaux. Le message échangé entre agents porte une intention métier : émetteur, destinataire, type de message et charge utile à traiter. Le transport possède de son côté ses propres informations de fonctionnement, par exemple l'identifiant de stream, le groupe de consommateurs, l'état pending, l'acquittement ou la reprise.
-
-Cette séparation évite une confusion importante. Un identifiant créé par Redis pour gérer le transport d'un message n'est pas, par nature, l'identifiant métier de l'événement de sécurité analysé.
-
-\subsection{Autonomie encadrée}
-
-L'autonomie recherchée reste limitée et vérifiable. Un objectif fourni à un agent est représenté par un état persistant contenant les tâches en attente, les actions exécutées, les résultats obtenus et les erreurs rencontrées. Chaque handler peut terminer l'objectif ou produire des sous-tâches. L'agent classe alors les actions compatibles selon sa politique locale, exécute celle qui est retenue et délègue au protocole Contract Net une tâche qui requiert une capacité absente localement.
-
-Le cycle suivi est : perception de l'état, évaluation, action, mémorisation, puis terminaison, reprise, nouvel enchaînement ou délégation. Quatre garde-fous bornent ce cycle : nombre maximal d'actions, profondeur maximale des sous-tâches, nombre maximal de tentatives par tâche et taille maximale de la file d'attente. Un budget épuisé interrompt l'objectif ; sa reprise exige une augmentation explicite du budget.
-
-Cette automatisation possède cependant des frontières. Un score inhabituel ne devient pas automatiquement un incident confirmé, et un nouveau modèle ne remplace pas le modèle courant sans comparaison préalable. Les décisions à forte portée restent donc encadrées par des règles explicites ou par une validation humaine.
-
-\subsection{Conservation des résultats négatifs}
-
-L'évaluation n'est pas conçue uniquement pour confirmer les hypothèses initiales. Une voie de normalisation qui échoue, un modèle qui généralise mal ou une architecture à agents plus lente qu'une exécution monolithique restent des résultats utiles.
-
-Ce choix influence directement la persistance et l'audit : erreurs, refus et résultats négatifs ne sont pas traités comme du bruit à supprimer. Ils servent au contraire à préciser ce que l'architecture permet réellement de soutenir.
-
-\section{Architecture générale}
+\label{sec:architecture-generale}
 
 \begin{figure}[H]
-
 \centering
-
 \resizebox{0.98\textwidth}{!}{%
-
 \begin{tikzpicture}[
 node distance=1.05cm and 1.05cm,
 component/.style={
@@ -192,689 +102,147 @@ feedback/.style={-{Latex[length=2.2mm]}, dashed, thick}
 \draw[arrow] (bus) -- (detect);
 \draw[feedback] (bus.west) -- (audit.east);
 \end{tikzpicture}
-
 }
-
-\caption{Architecture logique d'Ariel \logminer{}.}
-
+\caption{Architecture logique d'Ariel \logminer{}. Source : auteur.}
 \label{fig:architecture-logique}
-
 \end{figure}
 
-\begin{center}
+Le flux principal se lit de gauche à droite (figure~\ref{fig:architecture-logique}). Une source est acquise ; le parseur extrait les informations qu'il reconnaît ; le normaliseur construit une représentation commune ; le routeur détermine la famille la plus plausible et sélectionne le traitement correspondant ; le détecteur produit un score, une classe ou une décision intermédiaire. Les anomalies candidates sont ensuite transmises au corrélateur puis au tableau de bord. L'audit et la mémoire sont transversaux : une erreur de parsing, une décision de routage, un résultat de modèle et une décision d'analyste y sont enregistrés. Le bus de tâches l'est également : le pipeline s'exécute localement sans Redis, et Redis Streams n'intervient que lorsque des tâches sont réparties entre workers, sans modifier la signification métier des messages.
 
-\footnotesize Source : auteur.
+Quatre plans fonctionnels structurent cette architecture. Le \textbf{plan de données} regroupe les transformations de la représentation d'une source : lecture, parsing, normalisation, détection. Le \textbf{plan d'orchestration} décide quel composant intervient et comment une tâche est transportée : routage par famille, choix du handler, attribution aux agents, signaux de vie (\textit{heartbeats}), groupes de consommateurs Redis, acquittement et reprise ; c'est à ce plan que renvoient les termes « autonome » et « distribué » dans ce travail. Le \textbf{plan de persistance et d'audit} conserve ce qui permet d'expliquer ou de rejouer une exécution : fichiers de résultats, historiques, décisions de routage, scores, erreurs, retours de l'analyste, versions de modèles, empreintes et décisions de promotion. Le \textbf{plan de contrôle humain}, enfin, concerne l'analyste : le système prépare et ordonne des signaux, mais l'effet de cette priorisation n'est pas évalué et l'interprétation reste humaine ; le tableau de bord enregistre une acceptation, un rejet ou un reclassement, sans modifier un modèle en service.
 
-\end{center}
+\section{Agents et cycle de vie d'une donnée}
 
-Le flux principal se lit de gauche à droite. Une source est d'abord acquise ou ouverte.
-Le parser extrait les informations qu'il reconnaît. Le normaliseur tente ensuite de
-construire une représentation commune. Le routeur détermine la famille la plus plausible
-et sélectionne le traitement correspondant. Le détecteur produit un score, une classe ou
-une décision intermédiaire selon le type de modèle. Les anomalies candidates peuvent alors
-être transmises au corrélateur puis au tableau de bord.
+\label{sec:agents-cycle}
 
-L'audit et la mémoire ne constituent pas une étape terminale unique. Ils sont représentés
-comme une fonction transversale parce que plusieurs composants peuvent y enregistrer des
-informations. Une erreur de parsing, une décision de routage, un résultat de modèle ou un
-feedback analyste possèdent tous un intérêt pour la traçabilité.
-
-Le bus de tâches est également transversal. Le pipeline peut être exécuté localement sans
-que toutes les opérations passent obligatoirement par Redis. Redis Streams intervient
-lorsque les tâches doivent être distribuées entre workers. Ce mécanisme de transport ne
-modifie pas la signification métier d'un message.
-
-\section{Organisation en plans fonctionnels}
-
-Pour lire l'architecture sans mélanger des fonctions de nature différente, quatre plans sont distingués.
-
-\subsection{Plan de données}
-
-Le plan de données regroupe les transformations qui modifient directement la représentation
-d'une source :
-
-\begin{center}
-
-\textit{source}
-$\longrightarrow$
-\textit{lecture}
-$\longrightarrow$
-\textit{parsing}
-$\longrightarrow$
-\textit{normalisation}
-$\longrightarrow$
-\textit{détection}.
-
-\end{center}
-
-Chaque étape reçoit une représentation et produit une représentation plus adaptée au
-traitement suivant.
-
-\subsection{Plan d'orchestration}
-
-Le plan d'orchestration décide quel composant doit intervenir et comment une tâche peut
-être transportée.
-Il contient notamment :
-
-\begin{itemize}
-
-    \item le routage par famille ;
-
-    \item le choix du modèle ou du handler ;
-
-    \item l'affectation de tâches à des agents ;
-
-    \item les heartbeats ;
-
-    \item les consumer groups Redis ;
-
-    \item les mécanismes d'acquittement et de reprise prévus.
-
-\end{itemize}
-
-Ce plan correspond principalement au sens donné aux termes \textit{autonome} et
-\textit{distribué} dans ce travail.
-
-\subsection{Plan de persistance et d'audit}
-
-Le plan de persistance conserve les éléments nécessaires pour expliquer ou reproduire une
-exécution.
-Il peut comprendre :
-
-\begin{itemize}
-
-    \item fichiers de résultats ;
-
-    \item historiques d'exécution ;
-
-    \item décisions de routage ;
-
-    \item scores ;
-
-    \item erreurs ;
-
-    \item feedback analyste ;
-
-    \item versions de modèles ;
-
-    \item hashes d'intégrité ;
-
-    \item décisions de promotion ou de rejet.
-
-\end{itemize}
-
-Ce plan est particulièrement important pour distinguer une simple application qui affiche
-un résultat d'un prototype scientifique dans lequel les résultats doivent rester
-rattachables à des preuves.
-
-\subsection{Plan de contrôle humain}
-
-Le plan de contrôle humain concerne directement l'analyste.
-Le système peut préparer et ordonner des signaux, mais l'effet de cette priorisation n'est
-pas évalué et le besoin d'une interprétation humaine demeure. Le dashboard expose les informations
-nécessaires à cette inspection et permet, lorsqu'une fonction correspondante est
-disponible, d'enregistrer une validation, un rejet ou un reclassement.
-Cette décision peut ensuite être conservée dans la mémoire et l'audit. Elle ne modifie pas
-directement un modèle en production.
-
-\section{Agents fonctionnels}
-
-Un agent désigne ici un composant logiciel spécialisé doté de capacités, d'un état,
-d'une mémoire et d'une politique locale. Il poursuit un objectif borné en sélectionnant,
-exécutant, enchaînant ou déléguant des tâches compatibles ; il ne constitue pas une
-entité cognitive générale.
-Les responsabilités principales sont résumées dans le
-tableau~\ref{tab:agents-architecture}.
+Un agent désigne ici une entité logicielle qui dispose de capacités déclarées, d'un état propre et d'une règle locale de décision : face à une tâche, elle calcule un score d'utilité, propose ou refuse son exécution, exécute un traitement compatible et peut produire des sous-tâches. Cette définition est volontairement faible. Elle correspond aux propriétés de réactivité et de capacité sociale décrites par Wooldridge \cite{wooldridge2009introduction}, non à une autonomie cognitive : la règle de décision est une somme pondérée à poids fixés avant les expériences (section~\ref{sec:spec-utilite}), et sa seule adaptation tient à la mise à jour de deux taux empiriques lorsque la mémoire est activée. Le mot « agent » désigne donc une organisation du logiciel. Savoir si cette organisation apporte un bénéfice mesurable par rapport à une affectation plus simple est l'une des questions examinées. Les responsabilités des composants sont résumées dans le tableau~\ref{tab:agents-architecture}.
 
 \begin{table}[H]
-
 \centering
-
 \caption{Responsabilités des agents et composants fonctionnels}
-
 \label{tab:agents-architecture}
-
 \small
-\begin{tabularx}{\textwidth}{p{3.1cm}X X}
+\begin{tabularx}{\textwidth}{p{3.0cm}X X}
 \toprule
-\textbf{Composant} &
-\textbf{Responsabilité principale} &
-\textbf{Sortie attendue} \\
+\textbf{Composant} & \textbf{Responsabilité principale} & \textbf{Sortie} \\
 \midrule
-
-Collecteur &
-
-Découvrir ou charger une source disponible dans le périmètre du prototype. &
-
-Objet, fichier ou unité de travail associée à une provenance. \\
-
-Parseur &
-
-Reconnaître la structure d'une entrée et extraire les champs disponibles. &
-
-Événement parsé ou erreur/fallback explicite. \\
-
-Normaliseur &
-
-Projeter les informations disponibles vers un noyau commun. &
-
-Événement normalisé lorsque la voie le permet. \\
-
-Routeur &
-
-Estimer la famille de la source et sélectionner un modèle ou handler compatible. &
-
-Famille, traitement choisi, scores heuristiques et justification. \\
-
-Détecteur &
-
-Appliquer le traitement statistique ou ML associé à la famille. &
-
-Classe, score ou anomalie candidate selon le modèle. \\
-
-Corrélateur &
-
-Regrouper des anomalies candidates qui présentent des relations compatibles. &
-
-Incident candidat ou groupe corrélé. \\
-
-Audit &
-
-Enregistrer les informations nécessaires à la traçabilité. &
-
-Historique inspectable des opérations et décisions. \\
-
-Mémoire &
-
-Conserver certains états et retours utiles aux traitements ultérieurs. &
-
-Informations persistantes accessibles aux mécanismes autorisés. \\
-
-Dashboard &
-
-Présenter les événements et permettre leur inspection. &
-
-Vue analyste, filtres et décisions lorsque disponibles. \\
-
-Superviseur / workers &
-
-Distribuer, sélectionner et suivre certaines tâches. &
-
-État d'exécution, heartbeat, acquittement ou erreur. \\
-
+Collecteur & Découvrir ou charger une source du périmètre. & Fichier ou unité de travail associée à sa provenance. \\
+Parseur & Reconnaître la structure d'une entrée et extraire les champs disponibles. & Événement parsé, ou erreur et repli explicites. \\
+Normaliseur & Projeter les informations disponibles vers le noyau commun. & Événement normalisé. \\
+Routeur & Estimer la famille de la source et sélectionner un traitement compatible. & Famille, traitement, scores heuristiques et motifs. \\
+Détecteur & Appliquer le traitement statistique ou d'apprentissage associé à la famille. & Classe, score ou anomalie candidate. \\
+Corrélateur & Regrouper les anomalies candidates dont les clés et la fenêtre coïncident. & Incident candidat. \\
+Audit & Enregistrer les opérations et décisions. & Journal d'audit inspectable. \\
+Mémoire & Conserver les compteurs d'exécution et les retours de l'analyste. & État persistant relu par les mécanismes autorisés. \\
+Dashboard & Présenter événements et incidents ; recueillir les décisions. & Vue analyste, filtres, décisions. \\
+Superviseur, workers & Distribuer, sélectionner et suivre les tâches. & État d'exécution, signal de vie, acquittement ou erreur. \\
 \bottomrule
-
 \end{tabularx}
-
 \end{table}
 
-La séparation n'interdit pas qu'un même processus exécute plusieurs responsabilités dans
-un scénario local. Elle définit plutôt des frontières logiques. Ces frontières deviennent
-particulièrement utiles lorsqu'une partie du pipeline est exécutée par plusieurs workers.
+Ces frontières sont logiques : un même processus peut exécuter plusieurs responsabilités dans un scénario local. Elles deviennent opérantes lorsqu'une partie du pipeline est confiée à plusieurs workers.
 
 \subsection{Architecture multi-agents}
 
-L'architecture multi-agents s'appuie sur \texttt{MultiTaskIntelligentAgent} et
-\texttt{ContractNetCoordinator}. L'agent regroupe plusieurs capacités et handlers, observe son
-état local, calcule une offre ou un refus, poursuit les objectifs qui lui sont confiés et conserve
-les résultats utiles à la décision et à la reprise. Un handler peut retourner un résultat simple
-ou un \texttt{ActionOutcome} contenant les sous-tâches à traiter. L'état persistant
-\texttt{GoalState} et les limites \texttt{AutonomyLimits} rendent l'enchaînement explicite et
-borné. Le coordinateur enregistre les agents, diffuse les appels à propositions, compare les
-utilités reçues, attribue les tâches déléguées, rejette les autres offres et écrit la trace du cycle.
-Le coordinateur ne calcule donc pas l'utilité à la place des agents.
-Les variantes de transport et de persistance sont séparées du contrat métier :
-\texttt{LocalMessageBus} et \texttt{RedisMessageBus} transportent les messages ;
-\texttt{RedisContractNetCoordinator} et \texttt{RedisContractNetTransport} réalisent la négociation
-inter-processus ; \texttt{SQLiteIdempotencyStore} et \texttt{RedisIdempotencyStore} empêchent une
-réexécution contrôlée lorsqu'une clé a déjà produit un résultat. Cette séparation permet
-de tester le même protocole en local, sur plusieurs processus et dans deux machines
-virtuelles.
-Le cycle de négociation, dérivé du Contract Net \cite{smith1980contract} et de sa
-spécification FIPA \cite{fipa2002contractnet} (correspondance détaillée au
-chapitre~\ref{chap:etat-art}), est :
+L'architecture multi-agents repose sur la classe \texttt{MultiTaskIntelligentAgent} (le nom est hérité du code et ne qualifie pas le comportement) et sur \texttt{ContractNetCoordinator}. L'agent regroupe plusieurs capacités et handlers, observe son état local, calcule une offre ou un refus, poursuit les objectifs qui lui sont confiés et conserve les résultats utiles à la reprise. Un handler retourne un résultat simple ou un \texttt{ActionOutcome} contenant des sous-tâches ; l'état persistant \texttt{GoalState} et les limites \texttt{AutonomyLimits} rendent l'enchaînement explicite et borné. Le coordinateur enregistre les agents, diffuse les appels à propositions, classe les utilités reçues, attribue la tâche, rejette les autres offres et trace le cycle ; il ne calcule pas l'utilité à la place des agents.
 
+Le transport et la persistance sont séparés du contrat métier : \texttt{LocalMessageBus} et \texttt{RedisMessageBus} transportent les messages ; \texttt{RedisContractNetCoordinator} et \texttt{RedisContractNetTransport} réalisent la négociation entre processus ; \texttt{SQLiteIdempotencyStore} et \texttt{RedisIdempotencyStore} empêchent qu'une tâche dont la clé a déjà produit un résultat soit exécutée une seconde fois. Le même protocole est ainsi testé en local, sur plusieurs processus et sur deux machines virtuelles. Le cycle de négociation, dérivé du Contract Net \cite{smith1980contract} et de sa spécification FIPA \cite{fipa2002contractnet} (correspondance détaillée au chapitre~\ref{chap:etat-art}), est :
 \begin{center}
-
-\textit{CFP} $\rightarrow$ \textit{PROPOSE/REFUSE}
-$\rightarrow$ \textit{AWARD/REJECT} $\rightarrow$ \textit{ACCEPT}
-$\rightarrow$ \textit{RESULT/FAIL} $\rightarrow$ \textit{FEEDBACK}.
+\textit{CFP} $\rightarrow$ \textit{PROPOSE/REFUSE} $\rightarrow$ \textit{AWARD/REJECT} $\rightarrow$ \textit{ACCEPT} $\rightarrow$ \textit{RESULT/FAIL} $\rightarrow$ \textit{FEEDBACK}.
 \end{center}
 
 La politique expérimentale fixe l'utilité à
-
 \[
 U=0{,}30C+0{,}20H+0{,}20M+0{,}15A+0{,}10L+0{,}05T,
 \]
-avec des composantes bornées entre 0 et 1, où $C$ désigne la confiance de capacité,
-$H$ la fiabilité historique, $M$ la compatibilité de modèle, $A$ la disponibilité,
-$L$ la charge et $T$ la latence observée. Les poids sont configurables et fixés avant
-les campagnes ; ils ne sont pas appris et ne sont pas présentés comme optimaux. Le
-calcul exact de chaque composante, les règles de refus et l'usage de $U$ dans le
-Contract Net et la poursuite d'objectifs sont spécifiés à la
-section~\ref{sec:spec-utilite}.
-Les agents proposent ou refusent localement avant l'attribution, puis intègrent le résultat
-de la négociation dans la continuité de l'objectif concerné.
-
-Les précisions d’interprétation relatives aux figures suivantes sont regroupées dans l’annexe~\ref{ann:notes-figures}.
+avec des composantes bornées entre 0 et 1 : confiance de capacité $C$, fiabilité historique $H$, compatibilité de modèle $M$, disponibilité $A$, charge $L$ et latence observée $T$. Les poids sont configurables et fixés avant les campagnes ; ils ne sont ni appris ni présentés comme optimaux. L'utilité est donc un classement à poids fixes, dont plusieurs termes sont constants dans les campagnes Redis ; le calcul exact de chaque composante, les règles de refus et l'usage de $U$ sont spécifiés à la section~\ref{sec:spec-utilite}.
 
 \begin{figure}[H]
-
 \centering
-
 \includegraphics[width=\textwidth]{fig_architecture_multi_agent_global.png}
-
 \caption[Architecture multi-agents.]{Architecture multi-agents. Source : auteur.}
-
 \label{fig:architecture-multi-agent}
-
 \end{figure}
 
 \begin{figure}[H]
-
 \centering
-
 \includegraphics[width=\textwidth]{fig_contract_net_sequence.png}
-
 \caption[Séquence Contract Net observée dans les campagnes locales et Redis.]{Séquence Contract Net observée dans les campagnes locales et Redis. Source : auteur.}
-
 \label{fig:contract-net-sequence}
-
 \end{figure}
 
-\section{Cycle de vie d'une donnée}
+\subsection{Cycle de vie d'une donnée}
 
-\subsection{Niveau 1 : source brute}
+\label{sec:cycle-vie}
 
-Le point de départ est la source brute, c'est-à-dire l'objet reçu du système ou du fichier d'origine.
-Il peut s'agir d'une ligne textuelle, d'un enregistrement tabulaire, d'un événement
-Windows, d'un export de plateforme de sécurité ou d'un objet déjà structuré.
-À ce stade, aucune hypothèse forte n'est faite sur sa compatibilité avec les modèles.
-
-\subsection{Niveau 2 : événement parsé}
-
-Le parser tente d'extraire les informations significatives.
-L'événement parsé reste proche de la structure de sa source. Par exemple, un export
-tabulaire peut conserver ses colonnes spécifiques tandis qu'un message système peut être
-décomposé en timestamp, hôte, composant et message lorsque ces informations sont
-disponibles.
-Cette étape doit également pouvoir produire un constat d'échec. Une entrée non reconnue
-ne doit pas être considérée comme correctement parsée.
-
-\subsection{Niveau 3 : événement normalisé}
-
-Le niveau normalisé introduit un noyau commun.
-L'objectif est de permettre à plusieurs composants transversaux d'accéder à des concepts
-similaires sans connaître tous les formats d'origine.
-Le noyau peut notamment contenir des informations telles que :
-
-\begin{itemize}
-
-    \item horodatage ;
-
-    \item source ;
-
-    \item hôte ;
-
-    \item famille ;
-
-    \item catégorie ;
-
-    \item sévérité ;
-
-    \item message ;
-
-    \item données spécifiques nécessaires à la suite du traitement.
-
-\end{itemize}
-
-Toutes les sources ne traversent toutefois pas toujours cette
-étape sans perte. Le modèle architectural prévoit une normalisation commune, tandis que
-sa couverture réelle dépend des adaptateurs effectivement implémentés. Cette propriété est
-mesurée dans le chapitre expérimental.
-
-\subsection{Niveau 4 : sortie de détection}
-Après sélection du traitement, le système produit une sortie qui dépend de la nature du
-modèle.
-Dans un scénario supervisé, la sortie peut être une classe ou un score de classification.
-Dans un scénario non supervisé, elle correspond plutôt à un score d'anomalie ou à une
-décision dérivée d'un seuil.
-Le système conserve la différence sémantique entre ces deux catégories. Un score
-d'anomalie n'est pas transformé automatiquement en attaque confirmée.
-
-\subsection{Niveau 5 : anomalie candidate}
-Lorsqu'une sortie satisfait le critère de sélection du détecteur, elle devient une anomalie
-candidate.
-Ce changement de niveau signifie simplement que l'observation mérite davantage
-d'attention. Sa validation de sécurité nécessite une interprétation contextuelle.
-\subsection{Niveau 6 : incident candidat}
-Le corrélateur peut rapprocher plusieurs anomalies candidates lorsque des relations
-temporelles ou contextuelles sont observées.
-Le résultat est appelé \textit{incident candidat} ou groupe corrélé. Là encore, ce terme
-ne remplace pas la confirmation humaine d'un incident réel.
-
-\subsection{Niveau 7 : décision analyste}
-La chaîne aboutit à la décision de l'analyste, lorsque les informations ont pu être inspectées.
-L'analyste peut, selon les fonctions de l'interface, conserver un statut, confirmer
-l'intérêt d'un signal, le rejeter ou le reclasser.
-Cette progression est résumée par la figure conceptuelle suivante :
+Une donnée traverse sept niveaux de représentation :
 \begin{center}
-
-\textit{source brute}
-$\rightarrow$
-\textit{événement parsé}
-$\rightarrow$
-\textit{événement normalisé}
-$\rightarrow$
-\textit{sortie modèle}
-$\rightarrow$
-\textit{anomalie candidate}
-$\rightarrow$
-\textit{incident candidat}
-$\rightarrow$
-\textit{décision analyste}.
-
+\textit{source brute} $\rightarrow$ \textit{événement parsé} $\rightarrow$ \textit{événement normalisé} $\rightarrow$ \textit{sortie de modèle} $\rightarrow$ \textit{anomalie candidate} $\rightarrow$ \textit{incident candidat} $\rightarrow$ \textit{décision analyste}.
 \end{center}
+La \textbf{source brute} est l'objet reçu : ligne textuelle, enregistrement tabulaire, événement Windows ou export de plateforme de sécurité. L'\textbf{événement parsé} reste proche de sa source (colonnes d'un export, ou horodatage, hôte, composant et message d'une ligne système) ; une entrée non reconnue produit un constat d'échec, non un événement. L'\textbf{événement normalisé} introduit le noyau commun décrit à la section suivante ; toutes les sources ne le traversent pas sans perte, et cette couverture est mesurée au chapitre~\ref{chap:resultats}. La \textbf{sortie de modèle} est une classe ou un score de classification dans un scénario supervisé, un score d'anomalie ou une décision de seuil dans un scénario non supervisé ; un score d'anomalie n'est jamais converti en attaque confirmée. Une sortie qui satisfait le critère du détecteur devient une \textbf{anomalie candidate}, c'est-à-dire une observation qui mérite attention. Le corrélateur en regroupe plusieurs en \textbf{incident candidat}, terme qui ne remplace pas la confirmation d'un incident réel. La \textbf{décision analyste} conserve, accepte, rejette ou reclasse un signal. La séparation de ces niveaux permet, lorsqu'un résultat final est contesté, de rechercher à quel niveau une information incorrecte a été introduite.
 
-La séparation entre ces niveaux est importante pour l'audit. Lorsqu'un résultat final est
-contesté, le système doit permettre de rechercher à quel niveau une information incorrecte
-a été introduite.
+\section{Normalisation, routage, portefeuille de modèles et corrélation}
 
-\section{Modèle de normalisation}
+\label{sec:normalisation-routage}
 
-\subsection{Noyau commun}
+\subsection{Modèle de normalisation}
 
-La normalisation poursuit un objectif d'interopérabilité interne. Elle ne cherche pas à
-forcer toutes les sources à devenir identiques.
-Un noyau commun est utile pour les opérations transversales telles que :
+La normalisation vise une interopérabilité interne, non l'uniformisation des sources. Le schéma commun du prototype compte quarante-deux colonnes, parmi lesquelles le jeu de données et son sous-type, la provenance (fichier, ligne), l'horodatage, la sévérité, la source, l'hôte, l'utilisateur, les adresses et ports réseau, le protocole, la catégorie, la sous-catégorie et le message. Ce noyau sert aux opérations transversales : filtrer par source, ordonner par horodatage, associer une famille, transmettre un résultat au tableau de bord et conserver un contexte dans l'audit. Les caractéristiques propres à un modèle restent hors du noyau lorsqu'elles n'ont pas de sens pour les autres familles.
 
-\begin{itemize}
+Deux règles encadrent cette projection. Un champ absent n'est pas inventé : lorsque l'horodatage, l'hôte ou la catégorie ne peuvent être déterminés, le champ reste vide plutôt que de recevoir une valeur présentée comme réelle. Ensuite, la conservation du brut n'est pas universelle : le schéma conserve la provenance (fichier et numéro de ligne) et les informations que l'adaptateur expose, mais la conservation exacte et complète de l'entrée d'origine n'est pas garantie pour toutes les voies.
 
-    \item filtrer par source ;
+\subsection{Routage par famille}
 
-    \item ordonner par horodatage ;
+Le routeur fait l'interface entre la représentation de la source et le portefeuille de traitements. Il ne cherche pas une attaque : il détermine la famille de pipeline la plus cohérente avec l'entrée, ce qui évite, par exemple, d'appliquer un modèle de flux réseau tabulaires à un fichier de journaux textuels. Ses indices sont l'extension et la structure du fichier, les noms de colonnes, la présence de champs caractéristiques, des motifs dans le contenu des premières lignes et, pour certaines familles, le nom du fichier. Chaque indice ajoute des points à une ou plusieurs familles.
 
-    \item afficher un message ;
+Le routeur conserve la marge entre les deux meilleurs scores. Cette \textbf{marge n'est pas une probabilité calibrée} : une marge de 80 ne signifie pas une probabilité de $80\,\%$ que la famille soit correcte. Lorsque la source ne peut être attribuée avec assez de cohérence à une famille connue, elle est dirigée vers une route de repli, un modèle général d'Isolation Forest, plutôt que vers un modèle incompatible ; dans le protocole open-set, une entrée dont la meilleure famille est le repli, ou dont le score reste sous le seuil fixé, est rejetée. Le repli distingue ainsi deux résultats de sens différent : la source a été traitée par un modèle de sa famille, ou le système a reconnu qu'il ne disposait pas du traitement adapté.
 
-    \item associer une famille ;
+\subsection{Portefeuille de modèles}
 
-    \item transmettre un résultat au dashboard ;
+L'architecture ne repose pas sur un modèle universel. Un registre associe chaque famille à un artefact de modèle ou à une méthode : modèles supervisés pour les données tabulaires étiquetées, méthodes non supervisées en l'absence d'étiquettes fiables, et traitements propres aux journaux structurés en templates. Le routeur fournit la famille ; le registre fournit l'artefact disponible. Un modèle entraîné sur CICIDS2017 ne devient pas un détecteur applicable à un événement Windows ou BGL, et chaque combinaison évaluée reste soumise à son protocole (chapitre~\ref{chap:resultats}).
 
-    \item conserver un contexte dans l'audit.
+\subsection{Corrélation des anomalies candidates}
 
-\end{itemize}
+\label{sec:modele-correlation}
 
-Les caractéristiques spécifiques nécessaires à un modèle doivent rester séparées de ce
-noyau lorsqu'elles n'ont pas de signification pour les autres familles.
+Lorsqu'un détecteur traite chaque événement séparément, plusieurs observations liées au même phénomène apparaissent comme des alertes indépendantes. Le corrélateur réduit cette fragmentation. Il appartient à la famille temporelle et contextuelle : il regroupe les anomalies candidates qui tombent dans la même fenêtre temporelle fixe et partagent les mêmes valeurs pour sept clés (hôte, utilisateur, source, catégorie, sous-catégorie, protocole, port de destination). Il ne modélise ni préconditions d'attaque ni causalité.
 
-\subsection{Principe de conservation}
+Deux erreurs opposées bornent sa conception. La \textbf{fragmentation} répartit dans plusieurs incidents des événements appartenant au même phénomène ; la \textbf{fusion} regroupe à tort des événements indépendants. La largeur de la fenêtre et la précision des clés règlent ce compromis. Une règle d'égalité stricte sur sept clés favorise la précision au détriment du rappel, en particulier pour les incidents en plusieurs étapes dont les catégories diffèrent. Le corrélateur exige donc une évaluation propre, avec une vérité de regroupement et des baselines plus simples (« hôte et fenêtre », « fenêtre seule ») : un bon F1 de classification en amont ne garantit pas la qualité du regroupement.
 
-Le principe souhaité est de conserver suffisamment d'information pour permettre un retour
-vers la source.
-Cependant, l'architecture ne suppose pas que le brut exact est toujours conservé de
-manière universelle. La validation finale du pipeline multiformat montre que cette
-propriété dépend des voies considérées.
-La formulation correcte est donc la suivante : le schéma est conçu pour préserver les
-informations nécessaires à l'audit lorsque l'adaptateur les expose, mais la conservation
-exacte et complète du brut n'est pas une garantie universelle du prototype.
+\section{Mémoire, audit et gouvernance des modèles}
 
-\subsection{Gestion des champs absents}
-Un champ absent ne doit pas entraîner la création d'une information fictive.
-Lorsqu'un timestamp, un hôte ou une catégorie ne peut pas être déterminé, le système doit
-préférer :
-\begin{itemize}
+\label{sec:memoire-gouvernance}
 
-    \item une valeur nulle ;
+\subsection{Mémoire persistante}
 
-    \item un état explicite d'indisponibilité ;
+Le prototype implémente deux mémoires distinctes. La \textbf{mémoire d'exécution} de chaque agent conserve, par type de tâche, le nombre d'exécutions réussies et échouées, les durées récentes, les derniers types de tâches traités et les derniers messages d'erreur ; elle est sérialisée en JSON et relue au redémarrage. Lorsque la mémoire est activée, elle alimente deux composantes de l'utilité : la fiabilité historique $H$, estimée par un lissage de Laplace, et la latence observée $T$. La \textbf{mémoire de l'analyste} conserve les décisions d'acceptation, de rejet et de reclassement prises dans le tableau de bord, regroupées par motif (catégorie, sévérité, événement, source et message). Elle ajuste la priorité d'affichage des anomalies présentant un motif déjà jugé : un motif souvent rejeté est rétrogradé, un motif accepté est remonté. Cette mémoire n'entraîne pas le modèle actif.
 
-    \item ou l'absence du champ facultatif,
+L'adaptation comporte ainsi trois niveaux : conserver une information, l'utiliser pour modifier une priorité ou une décision, et modifier les paramètres d'un modèle. Le prototype implémente les deux premiers niveaux et une procédure contrôlée pour le troisième ; un retour de l'analyste ne déclenche ni réentraînement immédiat ni déploiement automatique. L'effet de l'ajustement de priorité sur le travail de l'analyste n'est pas évalué.
 
-\end{itemize}
-plutôt que d'inventer une donnée.
-Cette règle soutient directement la traçabilité scientifique du pipeline.
-\section{Routage par famille}
+\subsection{Audit}
 
-\subsection{Rôle du routeur}
+L'audit rend les opérations importantes retraçables. Chaque entrée consigne l'action, son statut, l'acteur, la cible, des détails structurés (dont l'identifiant d'exécution) et l'horodatage. Il sert au diagnostic technique d'une erreur du pipeline, au rattachement scientifique d'un résultat à l'exécution qui l'a produit, et à la consultation par l'analyste du chemin suivi par un traitement.
 
-Le routeur constitue l'interface entre la représentation de la source et le portefeuille
-de traitements.
-Son objectif n'est pas d'identifier une attaque. Il doit déterminer quelle famille de
-pipeline est la plus cohérente avec l'entrée.
-Cette séparation évite, par exemple, d'appliquer directement un modèle prévu pour des
-caractéristiques réseau tabulaires à un fichier de logs textuels.
+\subsection{Gouvernance des modèles}
 
-\subsection{Indices utilisés}
-Le routage peut exploiter plusieurs catégories d'indices :
-\begin{itemize}
+Lorsqu'une évolution est envisagée, le système distingue le modèle courant, le candidat, le jeu d'évaluation, la métrique de décision, le gain minimal exigé et la décision de promotion ou de rejet. Pour une métrique $M$ dont une valeur élevée est préférable, la règle est :
+\[
+\Delta M = M_{\text{candidat}} - M_{\text{courant}}, \qquad
+\text{promouvoir} \iff \Delta M \geq \delta_{\min},
+\]
+où $\delta_{\min}$ est le gain minimal exigé. Le code de comparaison dispose d'un mode d'essai à blanc (\textit{dry-run}) qui calcule la décision sans remplacer le modèle. En cas de promotion, le modèle courant est sauvegardé avant d'être remplacé ; dans l'essai de bout en bout, des empreintes SHA-256 vérifient que la sauvegarde correspond au modèle remplacé et que le nouveau modèle courant est bien le candidat. L'évaluation ne couvre pas une succession de promotions et de rejets en exploitation : l'infrastructure est implémentée, son bénéfice n'est pas mesuré.
 
-    \item extension et structure du fichier ;
+\section{Contrat de message, bus et attribution des tâches}
 
-    \item noms de colonnes ;
+\label{sec:contrat-bus}
 
-    \item présence de champs caractéristiques ;
-
-    \item motifs dans les premières lignes ;
-
-    \item propriétés de la source ;
-
-    \item scores associés aux règles de reconnaissance.
-
-\end{itemize}
-
-Plusieurs indices peuvent contribuer simultanément à une même famille.
-
-\subsection{Score et marge}
-
-La sortie interne du routeur peut associer un score heuristique aux familles candidates.
-Lorsque deux familles obtiennent des scores proches, le système peut conserver une marge
-entre les deux meilleures valeurs.
-Cette \textbf{marge n'est pas une probabilité calibrée}. Elle indique uniquement la
-distance entre deux scores produits par les règles du routeur.
-Une marge de 80 ne signifie donc pas une probabilité de $80\,\%$ que la famille soit correcte.
-
-\subsection{Fallback}
-
-Le fallback constitue une propriété importante de l'architecture.
-Lorsqu'une source ne peut pas être attribuée avec suffisamment de cohérence à une famille
-connue, elle peut être dirigée vers une route de repli.
-Cette décision est préférable à l'application forcée d'un modèle incompatible.
-Le fallback permet également de distinguer deux situations :
-
-\begin{enumerate}
-
-    \item le système a traité correctement la source ;
-
-    \item le système a identifié qu'il ne disposait pas du traitement adapté.
-
-\end{enumerate}
-
-Ces deux résultats ont des significations très différentes dans une évaluation.
-
-\section{Portefeuille de modèles}
-
-L'architecture ne repose pas sur un modèle universel.
-Elle prévoit un registre dans lequel une famille peut être associée à un modèle ou à une
-méthode de traitement.
-Les familles de méthodes considérées dans le prototype comprennent notamment :
-\begin{itemize}
-
-    \item modèles supervisés pour les données tabulaires labellisées ;
-
-    \item méthodes non supervisées lorsque les labels fiables sont absents ;
-
-    \item méthodes statistiques adaptées à certaines séries ou agrégations ;
-
-    \item traitements spécifiques aux journaux structurés en templates.
-
-\end{itemize}
-
-Le portefeuille doit être compris comme une abstraction d'ingénierie. Le routeur fournit
-une famille et le registre détermine quel artefact de modèle est disponible pour cette
-famille.
-Le modèle utilisé dans une expérience reste soumis au protocole correspondant. Un modèle
-entraîné sur CICIDS2017 ne devient pas automatiquement un détecteur applicable à un
-événement Windows ou BGL.
-Les comparaisons expérimentales du chapitre~\ref{chap:resultats} servent précisément à
-étudier les performances observées pour les combinaisons effectivement testées.
-
-\section{Corrélation des anomalies candidates}
-
-\subsection{Objectif}
-
-Le corrélateur cherche à réduire la fragmentation de l'information.
-Lorsqu'un détecteur traite chaque événement séparément, plusieurs observations liées au
-même phénomène peuvent apparaître comme des alertes indépendantes. Le regroupement permet
-de fournir un contexte plus lisible à l'analyste.
-
-\subsection{Critères de rapprochement}
-
-Les critères peuvent comprendre :
-\begin{itemize}
-
-    \item proximité temporelle ;
-
-    \item source ;
-
-    \item hôte ;
-
-    \item utilisateur ;
-
-    \item famille ;
-
-    \item catégorie ;
-
-    \item adresse réseau lorsque disponible ;
-
-    \item similitude de certains attributs.
-
-\end{itemize}
-
-Le choix exact dépend des informations présentes dans l'événement.
-
-\subsection{Fragmentation et fusion}
-
-La conception reconnaît deux erreurs opposées.
-La \textbf{fragmentation} se produit lorsque des événements appartenant au même phénomène
-sont répartis dans plusieurs incidents candidats.
-La \textbf{fusion} apparaît lorsque des événements indépendants sont regroupés à tort.
-La largeur de la fenêtre temporelle et la précision des clés influencent directement ce
-compromis.
-Le corrélateur doit donc être évalué avec une vérité de regroupement spécifique. Un bon
-F1 de classification en amont ne garantit pas automatiquement une bonne qualité de
-corrélation.
-
-\section{Mémoire persistante}
-
-\subsection{Finalité}
-
-La mémoire persistante est conçue comme un mécanisme de capitalisation.
-Elle peut conserver plusieurs catégories d'information :
-\begin{itemize}
-
-    \item résultats d'exécution ;
-
-    \item erreurs ;
-
-    \item tâches récentes ;
-
-    \item décisions du routeur ;
-
-    \item anomalies observées ;
-
-    \item feedback analyste ;
-
-    \item décisions concernant les modèles.
-
-\end{itemize}
-
-Cette mémoire permet d'éviter qu'une exécution soit considérée comme un événement isolé
-sans aucun historique.
-\subsection{Mémoire d'exécution}
-La mémoire d'exécution conserve les informations relatives au comportement des agents et
-des tâches.
-Elle peut notamment indiquer :
-
-\begin{itemize}
-
-    \item type de tâche ;
-
-    \item état ;
-
-    \item date ;
-
-    \item résultat ;
-
-    \item erreur éventuelle ;
-
-    \item durée ;
-
-    \item agent concerné.
-
-\end{itemize}
-
-Son intérêt principal est l'audit et la reprise de contexte.
-
-\subsection{Mémoire analyste}
-
-Le feedback humain représente une seconde catégorie de mémoire.
-Lorsqu'un utilisateur valide, rejette ou reclasse un signal, la décision peut être
-conservée avec le contexte correspondant.
-Cette mémoire n'entraîne pas directement le modèle actif. Elle constitue une information
-qui pourra être exploitée lors d'un traitement ultérieur ou d'une campagne de mise à
-jour contrôlée.
-
-\subsection{Limite de l'adaptation}
-
-L'adaptation comporte trois niveaux :
-
-\begin{enumerate}
-
-    \item conserver une information ;
-
-    \item utiliser cette information pour modifier une priorité ou une décision ;
-
-    \item modifier les paramètres d'un modèle ML.
-
-\end{enumerate}
-
-Le prototype implémente principalement les deux premiers mécanismes et une procédure
-contrôlée pour le troisième. Un feedback ne déclenche donc ni réentraînement immédiat ni
-déploiement automatique.
-
-\section{Audit}
-
-L'audit accompagne la mémoire, mais son objectif est plus précis : rendre les opérations
-importantes retraçables.
-Une entrée d'audit peut notamment documenter :
-
-\begin{itemize}
-
-    \item l'exécution concernée ;
-
-    \item le composant ;
-
-    \item l'action ;
-
-    \item le statut ;
-
-    \item un message ;
-
-    \item le moment de l'opération ;
-
-    \item la décision ou l'erreur observée.
-
-\end{itemize}
-L'audit remplit plusieurs fonctions complémentaires. Sur le plan \textbf{technique}, il aide à diagnostiquer une erreur du pipeline. Sa fonction \textbf{scientifique} consiste à rattacher un résultat à l'exécution qui l'a produit. Il possède enfin une dimension \textbf{opérationnelle}, car l'analyste peut y retrouver le chemin suivi par un traitement.
-L'audit n'est donc pas un simple fichier de debug temporaire. Il fait partie du modèle architectural du prototype.
-\section{Contrat métier \texttt{AgentMessage}}
+\subsection{Contrat métier \texttt{AgentMessage}}
 
 \label{sec:agentmessage}
 
-La communication entre agents repose sur un contrat métier explicite.
-La structure de \texttt{AgentMessage} contient exactement sept champs :
+La communication entre agents repose sur un contrat métier explicite. \texttt{AgentMessage} contient exactement sept champs :
 \begin{center}
-
+\small
 \begin{tabular}{ll}
 \toprule
 \textbf{Champ} & \textbf{Rôle} \\
@@ -885,98 +253,19 @@ La structure de \texttt{AgentMessage} contient exactement sept champs :
 \texttt{message\_type} & Nature du message métier. \\
 \texttt{payload} & Charge utile transportée. \\
 \texttt{status} & État métier du message ou du traitement. \\
-\texttt{timestamp} & Horodatage associé au message. \\
+\texttt{timestamp} & Horodatage du message. \\
 \bottomrule
 \end{tabular}
-
 \end{center}
+\texttt{AgentMessage} ne possède pas de champ \texttt{event\_id}, \texttt{message\_id} ou \texttt{metadata} ; une information complémentaire est placée dans \texttt{payload}. \texttt{run\_id} corrèle les messages d'une même exécution et n'identifie pas un événement métier : plusieurs messages partagent le même \texttt{run\_id}. Ce contrat minimal évite de rendre les agents dépendants de la structure de chaque source ; son prix est la nécessité de documenter les charges utiles attendues par chaque \texttt{message\_type}.
 
-La représentation conceptuelle est donc :
-\begin{verbatim}
-AgentMessage(
-    run\_id,
-    source,
-    target,
-    message\_type,
-    payload,
-    status,
-    timestamp
-)
+\subsection{Bus local et Redis Streams}
 
-\end{verbatim}
-Cette structure doit être conservée exactement dans la description du système.
-En particulier, \texttt{AgentMessage} ne possède pas comme champs directs :
-
-\begin{itemize}
-
-    \item \texttt{event\_id} ;
-
-    \item \texttt{message\_id} ;
-
-    \item \texttt{metadata}.
-
-\end{itemize}
-
-Lorsqu'une information complémentaire est nécessaire, elle peut être placée dans
-\texttt{payload} selon le type de message.
-
-\subsection{Signification de \texttt{run\_id}}
-
-\texttt{run\_id} sert à corréler les messages appartenant à une même exécution.
-Il ne représente pas l'identifiant unique de chaque événement métier.
-Plusieurs messages peuvent donc partager le même \texttt{run\_id} lorsqu'ils appartiennent
-à une même exécution.
-
-\subsection{Pourquoi un contrat minimal}
-
-Un contrat réduit évite de rendre tous les agents dépendants de la structure détaillée de
-chaque source. Le contenu spécifique peut être transporté dans \texttt{payload} sans
-modifier la structure fondamentale du message à chaque nouveau type de tâche.
-Le prix de cette souplesse est la nécessité de documenter correctement les structures de
-payload attendues par les différents \texttt{message\_type}.
-
-\section{Bus de communication}
-
-\subsection{Bus local}
-
-Dans le scénario le plus simple, les agents peuvent coopérer à l'intérieur du même
-environnement local.
-Le contrat métier reste utile même lorsque le transport ne traverse pas un réseau. Il
-stabilise la structure des échanges et facilite l'évolution vers des workers séparés.
-
-\subsection{Redis Streams}
-
-Redis Streams est utilisé lorsque les tâches sont transportées au moyen d'un stream et
-consommées par un groupe de workers.
-Le transport possède des concepts qui n'appartiennent pas directement à
-\texttt{AgentMessage} :
-
-\begin{itemize}
-
-    \item identifiant de stream ;
-
-    \item stream ;
-
-    \item consumer group ;
-
-    \item consumer ;
-
-    \item pending ;
-
-    \item acquittement ;
-
-    \item mécanisme de reprise.
-
-\end{itemize}
-
-Le schéma de la figure~\ref{fig:message-transport} illustre cette séparation.
+Dans le scénario local, les agents coopèrent en mémoire ; le contrat métier stabilise malgré tout la structure des échanges. Redis Streams est employé lorsque les tâches sont publiées dans un stream et consommées par un groupe de workers. Le transport possède alors des concepts qui n'appartiennent pas à \texttt{AgentMessage} : identifiant de stream, groupe de consommateurs, consommateur, état \textit{pending}, acquittement et reprise (figure~\ref{fig:message-transport}).
 
 \begin{figure}[H]
-
 \centering
-
 \resizebox{0.98\textwidth}{!}{%
-
 \begin{tikzpicture}[
 node distance=1cm and 3.0cm,
 box/.style={
@@ -1010,266 +299,30 @@ traitement
 -- node[label, midway, below=2pt]{ACK / état transport} (ackturn)
 -- (envelope.south);
 \end{tikzpicture}
-
 }
-
-\caption{Séparation entre le contrat métier et l'enveloppe de transport Redis.}
-
+\caption{Séparation entre le contrat métier et l'enveloppe de transport Redis. Source : auteur.}
 \label{fig:message-transport}
-
 \end{figure}
 
-\begin{center}
+Un acquittement Redis atteste seulement que le consommateur a acquitté le message ; il n'atteste pas la réussite de toutes les conséquences métier de la tâche. Cette nuance gouverne l'interprétation des expériences sur plusieurs machines virtuelles.
 
-\footnotesize Source : auteur.
+\subsection{Attribution des tâches}
 
-\end{center}
+Les tâches ne sont pas envoyées indistinctement à tous les workers : un agent ne propose une offre que s'il possède la capacité requise. Le cycle est le suivant : réception d'une tâche, identification de son type, appel à propositions aux agents dotés de la capacité, attribution à l'offre d'utilité maximale, exécution, production du résultat, mise à jour de l'état et trace d'audit. Chaque agent émet un signal de vie (\textit{heartbeat}) à chaque cycle d'exécution ; ce signal renseigne sur l'état observé d'un worker mais n'établit pas la haute disponibilité, qui exigerait la redondance et la réplication des autres composants.
 
-Un ACK Redis atteste seulement que le consommateur a acquitté le message selon le mécanisme
-prévu. Il n'atteste pas la réussite de toutes les conséquences métier possibles de la tâche.
-Cette nuance est conservée lors de l'interprétation des expériences multi-VM.
+\section{Erreurs, reprise et topologies d'exécution}
 
-\section{Gestion des tâches et capacités des agents}
+\label{sec:erreurs-topologies}
 
-Un agent peut disposer de plusieurs handlers.
-Le principe est de ne pas envoyer arbitrairement toutes les tâches à tous les workers.
-Le superviseur ou le mécanisme de sélection doit vérifier qu'un agent possède la capacité
-nécessaire au traitement demandé.
-Le fonctionnement peut être représenté comme suit :
+Une architecture qui manipule des données réelles traite les échecs comme un cas normal : fichier illisible, format inconnu, champ manquant, horodatage invalide, parseur incompatible, normalisation impossible, modèle absent, erreur d'inférence, erreur de transport ou tâche non acquittée. Trois règles s'appliquent. Une erreur est \textbf{visible} : elle produit un statut ou une trace. Une donnée absente n'est jamais remplacée par une valeur présentée comme réelle (\textbf{non-fabrication}). Les informations déjà disponibles sont conservées lorsque la suite du pipeline devient impossible. Le repli du routeur applique directement cette logique.
 
-\begin{enumerate}
+Redis Streams permet d'étudier la reprise de tâches non acquittées. Les scénarios de panne ne sont pas équivalents : arrêt d'un worker avant, pendant ou après le traitement mais avant l'acquittement, indisponibilité de Redis, partition réseau, duplication de messages, panne simultanée de plusieurs composants. Les expériences n'en couvrent qu'une partie, et la tolérance aux pannes du système complet n'est pas établie. En particulier, le mécanisme \textit{pending}/ACK ne suffit pas à éviter qu'une tâche traitée mais non acquittée soit exécutée deux fois : c'est le rôle du magasin d'idempotence, dont l'effet est mesuré au chapitre~\ref{chap:resultats}.
 
-    \item réception ou découverte d'une tâche ;
-
-    \item identification du type de tâche ;
-
-    \item recherche d'un agent possédant la capacité correspondante ;
-
-    \item affectation ;
-
-    \item exécution ;
-
-    \item production du résultat ;
-
-    \item mise à jour de l'état ;
-
-    \item émission d'une trace d'audit.
-
-\end{enumerate}
-
-Le heartbeat permet de signaler qu'un agent reste actif.
-Sa présence renseigne sur l'état observé d'un worker, mais ne suffit pas à établir la haute
-disponibilité. Une telle architecture
-nécessiterait également des mécanismes de redondance, de réplication et de reprise pour
-d'autres composants.
-\section{Gouvernance des modèles}
-
-\subsection{Registre de modèles}
-
-Le registre fournit une correspondance entre une famille de données et les artefacts
-disponibles.
-Pour chaque modèle, des informations telles que le type, la version, l'emplacement ou le
-hash peuvent être conservées.
-Le routeur ne réentraîne pas directement les modèles. Il sélectionne un traitement déjà
-disponible dans le registre.
-
-\subsection{Modèle courant et candidat}
-
-Lorsqu'une évolution est envisagée, le système distingue :
-\begin{itemize}
-
-    \item le modèle courant ;
-
-    \item le candidat ;
-
-    \item le jeu d'évaluation retenu ;
-
-    \item la métrique de décision ;
-
-    \item le seuil minimal de gain ;
-
-    \item la décision de promotion ou de rejet.
-
-\end{itemize}
-
-Le candidat est évalué avant de pouvoir remplacer le modèle courant.
-
-\subsection{Règle de promotion}
-
-Soit une métrique $M$ pour laquelle une valeur plus élevée est préférable.
-On définit :
-
-\[
-\Delta M = M_{\text{candidat}} - M_{\text{courant}}.
-\]
-
-Une politique de promotion peut alors être représentée par :
-
-\[
-\text{promouvoir}
-\quad \Longleftrightarrow \quad
-\Delta M \geq \delta_{\min},
-\]
-
-où $\delta_{\min}$ représente le gain minimal exigé.
-La métrique peut varier selon le modèle ; la formule formalise le principe général de
-comparaison contrôlée.
-
-Le dépôt contient le code de comparaison et un mode dry-run. L'évaluation ne couvre pas
-une succession complète et répétée de promotions et de rejets en exploitation. Le
-chapitre~\ref{chap:resultats} distingue donc l'infrastructure implémentée de son bénéfice
-global, qui n'a pas été mesuré.
-
-\subsection{Intégrité et retour arrière}
-
-La gouvernance d'un modèle doit permettre de savoir quel artefact était actif avant une
-promotion.
-Les hashes et sauvegardes servent à vérifier que le candidat, le modèle courant et le
-backup correspondent aux fichiers attendus.
-Les contrôles d'intégrité et les sauvegardes réduisent le risque d'une modification
-silencieuse du modèle actif. La procédure est évaluée dans l'environnement du prototype,
-sans couvrir un système complet de MLOps industriel.
-
-\section{Dashboard et validation humaine}
-
-\subsection{Fonction architecturale}
-
-Le dashboard constitue l'extrémité visible de la chaîne.
-Il reçoit des informations déjà produites par les traitements précédents et les organise
-pour permettre leur inspection.
-Le tableau de bord utilise une interface qui rassemble les états, anomalies,
-incidents candidats et informations d'audit.
-Le rôle architectural du dashboard comprend notamment :
-
-\begin{itemize}
-
-    \item présentation d'une vue synthétique ;
-
-    \item consultation des anomalies candidates ;
-
-    \item accès au détail ;
-
-    \item filtrage ;
-
-    \item visualisation du contexte disponible ;
-
-    \item accès à certaines informations d'audit ;
-
-    \item enregistrement d'une décision lorsque la fonction correspondante est active.
-
-\end{itemize}
-
-\subsection{Place de l'analyste}
-
-L'analyste intervient après les mécanismes automatiques de sélection et de corrélation.
-La sélection et la corrélation réduisent le nombre d'éléments à examiner, tandis que
-l'interprétation reste humaine.
-Une décision peut être enregistrée dans l'audit et la mémoire afin de conserver une trace
-du traitement.
-La validation porte sur le fonctionnement du tableau de bord. Son effet sur les
-performances humaines et son utilisabilité nécessitent une expérience spécifique auprès
-d'utilisateurs.
-
-\section{Gestion des erreurs et fallback}
-
-Une architecture destinée à manipuler des données réelles doit considérer les échecs comme
-un cas normal du fonctionnement.
-Les erreurs possibles comprennent notamment :
-
-\begin{itemize}
-
-    \item fichier illisible ;
-
-    \item format inconnu ;
-
-    \item champ manquant ;
-
-    \item timestamp invalide ;
-
-    \item parser incompatible ;
-
-    \item normalisation impossible ;
-
-    \item modèle absent ;
-
-    \item erreur d'inférence ;
-
-    \item erreur de transport ;
-
-    \item tâche non acquittée.
-
-\end{itemize}
-
-Le traitement des erreurs repose sur trois idées simples. D'abord, une erreur doit être \textbf{visible} : elle produit un statut ou une trace exploitable. Ensuite, le système applique un principe de \textbf{non-fabrication} ; une donnée absente n'est jamais remplacée par une valeur présentée comme réelle. Enfin, la \textbf{conservation raisonnable} permet de garder les informations déjà disponibles lorsque la suite du pipeline devient impossible.
-Le fallback du routeur applique directement cette logique.
-\section{Reprise et limites de résilience}
-
-Redis Streams permet d'étudier la reprise de certaines tâches non acquittées.
-L'architecture distingue néanmoins plusieurs scénarios de panne :
-\begin{enumerate}
-
-    \item arrêt d'un worker avant traitement ;
-
-    \item arrêt pendant le traitement ;
-
-    \item arrêt après traitement mais avant ACK ;
-
-    \item indisponibilité de Redis ;
-
-    \item partition réseau ;
-
-    \item duplication de messages ;
-
-    \item panne simultanée de plusieurs composants.
-
-\end{enumerate}
-
-Ces scénarios ne sont pas équivalents.
-Les expériences couvrent une partie limitée de ces situations ; la tolérance aux pannes
-du système complet n'est pas établie.
-En particulier, l'idempotence applicative dans le scénario
-\textit{traitement réussi mais ACK perdu} n'est pas démontrée par le simple fonctionnement
-du mécanisme pending/ACK.
-La portée exacte des expériences de résilience est discutée dans les chapitres consacrés
-aux résultats et à la validité scientifique.
-\section{Topologies d'exécution}
-
-\subsection{Exécution locale}
-
-La topologie locale exécute l'ensemble des composants sur une même machine.
-Ce mode permet :
-\begin{itemize}
-
-    \item développement ;
-
-    \item tests ;
-
-    \item analyse hors ligne ;
-
-    \item campagnes expérimentales ;
-
-    \item reproductibilité locale.
-
-\end{itemize}
-
-Il constitue le mode de référence pour de nombreux traitements du mémoire.
-\subsection{Exécution multiprocessus}
-
-Une exécution multiprocessus sépare plusieurs workers tout en restant sur le même hôte.
-Redis Streams permet alors de séparer le producteur des consommateurs.
-Ce scénario évalue principalement le coût et le comportement de l'orchestration.
-\subsection{Exécution multi-VM de laboratoire}
-
-La validation multi-VM étend ce principe en plaçant des workers sur plusieurs machines virtuelles.
-Le modèle logique peut être représenté par la
-figure~\ref{fig:topologie-multivm}.
+Trois topologies d'exécution sont prévues. La \textbf{topologie locale} exécute tous les composants sur une machine ; c'est le mode de développement, de test et de la plupart des campagnes. La \textbf{topologie multiprocessus} sépare plusieurs workers sur un même hôte, Redis Streams séparant le producteur des consommateurs ; elle sert à mesurer le coût de l'orchestration. La \textbf{topologie multi-VM de laboratoire} place des workers sur deux machines virtuelles autour d'un serveur Redis central (figure~\ref{fig:topologie-multivm}). Elle vérifie qu'un stream commun est consommé depuis plusieurs machines dans l'environnement étudié ; la réplication et le basculement du serveur Redis ne sont pas évalués.
 
 \begin{figure}[H]
-
 \centering
-
-\resizebox{0.86\textwidth}{!}{%
-
+\resizebox{0.80\textwidth}{!}{%
 \begin{tikzpicture}[
 node distance=1cm and 1.35cm,
 box/.style={
@@ -1296,272 +349,25 @@ arrow/.style={<->, thick, >=Latex}
 \draw[arrow] (redis) -- (vm1);
 \draw[arrow] (redis) -- (vm2);
 \end{tikzpicture}
-
 }
-
-\caption{Topologie conceptuelle de la validation multi-VM de laboratoire.}
-
+\caption{Topologie de la validation multi-VM de laboratoire. Source : auteur.}
 \label{fig:topologie-multivm}
-
 \end{figure}
 
-\begin{center}
+\section{Interface analyste, sécurité et scénarios d'utilisation}
 
-\footnotesize Source : auteur.
+\label{sec:interface-scenarios}
 
-\end{center}
+Le tableau de bord est l'extrémité visible de la chaîne. Il reçoit, par l'API, des informations déjà produites (états, anomalies, incidents candidats, entrées d'audit) et offre une vue synthétique, la consultation et le filtrage des anomalies candidates, l'accès au détail et au contexte, et l'enregistrement d'une décision d'acceptation, de rejet ou de reclassement. L'analyste intervient après la sélection et la corrélation, qui réduisent le nombre d'éléments à examiner ; l'interprétation reste humaine. La validation porte sur le fonctionnement de l'interface ; son effet sur le travail de l'analyste et son utilisabilité n'ont pas été mesurés.
 
-Cette topologie vérifie qu'un stream commun peut être consommé depuis plusieurs machines
-virtuelles dans l'environnement étudié. Le serveur Redis reste central ; sa réplication et
-son basculement automatique ne sont pas évalués.
-\section{Sécurité et confidentialité dans l'architecture}
+Le traitement de journaux expose des informations sensibles : identifiants, noms d'hôtes, adresses réseau, chemins de fichiers. Trois principes encadrent le prototype. Le traitement est \textbf{local} : les expériences ne transmettent aucun journal à un service externe. Les champs transportés entre composants sont ceux du schéma commun et de la charge utile nécessaire, non l'intégralité du contenu disponible. La \textbf{provenance} est explicite : une donnée publique, une collecte locale, un export d'outil et un scénario synthétique se distinguent dans les artefacts. L'anonymisation ou la pseudonymisation des champs sensibles n'est pas implémentée dans le prototype. Ces principes ne valent pas certification : une mise en production exigerait une étude de l'authentification, du chiffrement des communications, de la gestion des secrets, des permissions et de la protection du stockage.
 
-Le traitement de journaux peut exposer des informations sensibles : identifiants utilisateur, noms d'hôtes, adresses réseau, chemins de fichiers ou détails d'applications. L'architecture doit donc limiter la diffusion de données qui ne sont pas nécessaires au traitement.
-Dans le périmètre du prototype, le \textbf{traitement local} est privilégié lorsque cela est possible. Les expériences principales ne nécessitent pas que les journaux soient transmis à un service externe.
-La \textbf{minimisation} complète cette approche : les champs transportés entre composants doivent correspondre au besoin réel du traitement, et non reproduire systématiquement tout le contenu disponible.
-La provenance reste également explicite. Une donnée publique, une collecte locale, un export d'outil et un scénario synthétique doivent pouvoir être distingués dans les artefacts et dans l'audit. Lorsque la valeur exacte d'un élément sensible n'est pas nécessaire à la démonstration, une \textbf{anonymisation ou neutralisation} peut être appliquée.
-Ces principes encadrent le prototype, mais ils ne valent pas certification de sécurité. Une mise en production nécessiterait une étude spécifique de l'authentification, du chiffrement des communications, de la gestion des secrets, des permissions et de la protection du stockage.
-
-\section{Scénarios d'utilisation}
-
-\subsection{Analyse hors ligne d'un corpus}
-
-L'analyse hors ligne commence lorsqu'un utilisateur fournit un fichier ou un ensemble de fichiers.
-Le pipeline :
-
-\begin{enumerate}
-
-    \item identifie la source ;
-
-    \item tente de la parser ;
-
-    \item normalise les informations disponibles ;
-
-    \item route vers une famille ;
-
-    \item applique le traitement ;
-
-    \item enregistre les résultats ;
-
-    \item produit les informations utilisables pour l'analyse.
-
-\end{enumerate}
-
-Ce scénario est adapté aux datasets publics et à l'analyse postérieure de journaux
-collectés.
-
-\subsection{Analyse locale par micro-lots}
-
-Le mode par micro-lots traite périodiquement plusieurs unités.
-Ce fonctionnement se rapproche d'une supervision continue, mais ne répond pas aux
-contraintes d'un système temps réel strict.
-Les micro-lots peuvent être produits par une collecte ou découverts dans une source locale.
-Ce mode est un choix de conception ; ses effets ne sont pas évalués dans les campagnes.
-
-\subsection{Traitement distribué}
-
-Dans le traitement distribué, une tâche est publiée puis récupérée par un worker disposant de
-la capacité correspondante.
-Le transport peut alors fournir :
-\begin{itemize}
-
-    \item groupe de consommateurs ;
-
-    \item état pending ;
-
-    \item acquittement ;
-
-    \item possibilité de reprise d'une tâche dans certains scénarios.
-
-\end{itemize}
-
-Ce scénario sert principalement à étudier l'organisation multi-agent et la distribution
-logicielle.
-
-\subsection{Validation d'une anomalie}
-
-La validation humaine intervient lorsque l'analyste consulte les résultats.
-Il examine le contexte, les scores, les événements proches et les informations d'audit.
-La décision enregistrée peut ensuite enrichir la mémoire, sans modifier immédiatement le
-modèle actif.
-
-\subsection{Évaluation d'un modèle candidat}
-
-La gouvernance ML intervient lorsqu'un nouveau modèle doit être évalué avant une éventuelle promotion.
-Un candidat est :
-
-\begin{enumerate}
-
-    \item produit hors ligne ;
-
-    \item évalué sur le protocole prévu ;
-
-    \item comparé au modèle courant ;
-
-    \item promu uniquement si la règle l'autorise ;
-
-    \item sinon rejeté et conservé comme preuve de la comparaison.
-
-\end{enumerate}
-
-Le protocole évite qu'un nouveau modèle soit considéré comme meilleur uniquement
-parce qu'il est plus récent.
-\section{Relation entre architecture, questions de recherche et hypothèses}
-
-Le tableau~\ref{tab:architecture-qr} montre comment les principales parties de
-l'architecture répondent aux questions posées dans l'introduction.
-
-\begin{table}[H]
-
-\centering
-
-\caption{Relation entre les composants architecturaux et les questions de recherche}
-
-\label{tab:architecture-qr}
-
-\small
-
-\begin{tabularx}{\textwidth}{p{1.3cm}p{4.0cm}X}
-
-\toprule
-
-\textbf{QR} &
-
-\textbf{Composants concernés} &
-
-\textbf{Objet de l'évaluation} \\
-
-\midrule
-
-QR1 &
-
-Parseurs, normaliseur, schéma commun, fallback. &
-
-Déterminer jusqu'où plusieurs formats peuvent être rapprochés sans supposer une
-
-normalisation universelle. \\
-
-QR2 &
-
-Agents, contrat métier, bus, audit, heartbeat. &
-
-Étudier modularité, traçabilité et comportement de la distribution. \\
-
-QR3 &
-
-Routeur, registre de modèles. &
-
-Vérifier le routage de familles et distinguer cette capacité d'un gain prédictif
-systématique. \\
-
-QR4 &
-
-Dashboard, corrélation, audit. &
-
-Vérifier les fonctions de consultation et de validation, sans revendiquer une utilisabilité
-mesurée. \\
-
-QR5 &
-
-Mémoire, feedback, gouvernance des modèles. &
-
-Mesurer l'effet de la mémoire et vérifier la mise à jour contrôlée. \\
-
-QR6 &
-
-Protocoles, unités d'analyse, règles triviales et artefacts. &
-
-Mesurer la dépendance des scores au protocole, à l'unité d'analyse et aux règles triviales. \\
-
-\bottomrule
-
-\end{tabularx}
-
-\end{table}
-
-Une correspondance analogue existe avec les hypothèses. H1 concerne principalement la
-normalisation ; H2 l'architecture à agents ; H3 le routage ; H4 l'utilisation de modèles
-légers dans une chaîne intégrée ; H5 la mémoire et la mise à jour contrôlée.
-Le rôle de l'architecture est de rendre ces hypothèses testables. Leur statut ne peut
-cependant être déterminé qu'après les expériences.
-
-\section{Frontières de l'architecture proposée}
-
-Le tableau~\ref{tab:frontieres-architecture} résume le périmètre démontré et les principales
-limites du modèle.
-
-\begin{table}[H]
-
-\centering
-
-\caption{Frontières de l'architecture d'Ariel \logminer{}}
-
-\label{tab:frontieres-architecture}
-
-\small
-
-\begin{tabularx}{\textwidth}{p{4.1cm}X}
-
-\toprule
-
-\textbf{Propriété} & \textbf{Portée retenue} \\
-
-\midrule
-
-Autonomie &
-
-Orchestration automatisée de tâches selon règles, capacités et états ; pas d'autonomie
-cognitive générale. \\
-
-Distribution &
-
-Workers séparés et multi-VM de laboratoire ; pas de distribution industrielle multi-site
-démontrée. \\
-
-Normalisation &
-
-Noyau commun et adaptateurs disponibles ; pas de compatibilité universelle ni de
-conservation brute exacte garantie pour toutes les voies. \\
-
-Détection &
-
-Portefeuille de modèles évalués sur des protocoles définis ; pas de détecteur universel. \\
-
-Routage &
-
-Sélection d'une famille et d'un traitement ; pas de garantie que la spécialisation améliore
-toujours la prédiction. \\
-
-Corrélation &
-
-Regroupement de scénarios contrôlés ; pas de validation SOC réelle à grande échelle. \\
-
-Mémoire &
-
-Persistance et support à certaines décisions ; pas d'apprentissage continu autonome en
-production. \\
-
-Résilience &
-
-Mécanismes de reprise étudiés pour certains scénarios ; pas de haute disponibilité complète. \\
-
-Dashboard &
-
-Interface fonctionnelle ; pas d'étude d'utilisabilité auprès d'un panel d'analystes. \\
-
-\bottomrule
-
-\end{tabularx}
-
-\end{table}
-
-Cette délimitation sépare les propriétés étudiées des possibilités architecturales qui
-nécessitent encore une validation expérimentale.
+Cinq scénarios d'utilisation découlent de cette architecture. (1) L'\textbf{analyse hors ligne} d'un fichier ou d'un corpus enchaîne identification, parsing, normalisation, routage, traitement et enregistrement des résultats ; c'est le scénario des jeux publics. (2) Le \textbf{traitement par cycles} : le superviseur enchaîne des cycles de découverte et d'analyse de fichiers locaux en conservant sa mémoire ; ce fonctionnement se rapproche d'une supervision continue sans satisfaire les contraintes du temps réel, et ses effets ne sont pas évalués. (3) Le \textbf{traitement distribué} publie une tâche récupérée par un worker doté de la capacité correspondante ; il sert à étudier l'organisation multi-agents et la répartition. (4) La \textbf{validation d'une anomalie} par l'analyste, qui examine le contexte, les scores et l'audit, enrichit la mémoire sans modifier le modèle actif. (5) L'\textbf{évaluation d'un modèle candidat}, produit hors ligne, évalué selon le protocole prévu et comparé au modèle courant, n'aboutit à une promotion que si la règle l'autorise ; un candidat rejeté est conservé comme trace de la comparaison.
 
 \section{Synthèse du chapitre}
 
-L'architecture d'Ariel \logminer{} organise la chaîne autour de responsabilités distinctes. La collecte et le parsing rapprochent les données de leur structure exploitable ; la normalisation fournit un noyau commun lorsque les adaptateurs le permettent ; le routeur choisit une famille et un traitement ; les détecteurs produisent des classes, des scores ou des anomalies candidates. La corrélation ajoute du contexte, tandis que le dashboard maintient l'analyste dans la boucle de décision.
-Audit et mémoire traversent plusieurs étapes du pipeline plutôt que d'intervenir uniquement à la fin. Ils conservent les éléments utiles à la traçabilité, aux décisions et à certaines reprises de contexte. Le bus, lui, permet de distribuer des tâches entre agents ou workers lorsque le scénario l'exige.
-Une séparation stricte est maintenue entre le contrat métier et le transport. \texttt{AgentMessage} contient exactement sept champs : \texttt{run\_id}, \texttt{source}, \texttt{target}, \texttt{message\_type}, \texttt{payload}, \texttt{status} et \texttt{timestamp}. Les identifiants utilisés par Redis pour le transport ou l'acquittement appartiennent à une enveloppe distincte et ne deviennent pas des identifiants métier.
-L'architecture prévoit enfin une adaptation contrôlée. Les décisions et feedbacks peuvent être conservés, et un modèle candidat peut être comparé au modèle courant avant promotion. Cette logique reste volontairement différente d'un apprentissage continu autonome en production.
-Le chapitre suivant montre comment ces principes sont traduits dans l'implémentation du prototype : organisation du code, technologies utilisées, adaptateurs, agents, bus, persistance, API, modèles et interface.
+\label{sec:synthese-architecture}
+
+L'architecture d'Ariel \logminer{} organise la chaîne autour de responsabilités distinctes. La collecte et le parsing rendent les données exploitables ; la normalisation fournit un noyau commun dans la mesure où les adaptateurs le permettent ; le routeur choisit une famille et un traitement ; les détecteurs produisent des classes, des scores ou des anomalies candidates ; la corrélation regroupe ces dernières et le tableau de bord maintient l'analyste dans la décision. L'audit et la mémoire traversent ces étapes. Le contrat métier, \texttt{AgentMessage} et ses sept champs, reste séparé du transport : les identifiants de Redis appartiennent à l'enveloppe et ne deviennent pas des identifiants métier. L'adaptation est volontairement contrôlée : décisions et retours sont conservés, et un modèle candidat n'est promu qu'après comparaison au modèle courant.
+
+Les propriétés décrites dans ce chapitre sont des propriétés de conception. La correspondance entre composants, questions de recherche et hypothèses est donnée par le tableau~\ref{tab:qr-hypotheses} ; ce qui a été effectivement testé, et ce qui s'est révélé supérieur à une alternative plus simple, est établi aux chapitres~\ref{chap:resultats} et suivants ; les frontières de l'architecture (autonomie bornée, distribution de laboratoire, normalisation partielle, absence de haute disponibilité et d'étude d'utilisabilité) sont regroupées dans la section unique des limites (section~\ref{sec:limites}). Le chapitre suivant montre comment ces principes sont traduits dans le code du prototype.

@@ -1,0 +1,31 @@
+\section{Variantes exploratoires BGL, conçues après lecture du test}
+\label{sec:annexe-variantes-bgl}
+
+Les variantes ci-dessous complètent le protocole principal BGL (section~\ref{sec:bgl-resultats}). Elles ont été explorées sans plan préalable, après observation du test : elles décrivent des mécanismes et ne constituent pas des estimations indépendantes de la performance. Toutes utilisent la même plage de test, sauf la partition chronologique 60/20/20, un Drain3 ajusté sans label sur le seul entraînement puis gelé, des histogrammes calculés sur les événements normaux de l'entraînement et un seuil choisi sur la validation.
+
+\begin{table}[H]
+\centering
+\caption[BGL : variantes exploratoires.]{BGL : variantes exploratoires. Le seuil est choisi sur la validation, mais le choix des variantes dépend de l'observation du test. Source : campagnes BGL, second protocole et protocole contigu (tableau~\ref{tab:preuves-experimentales}).}
+\label{tab:bgl-protocoles}
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Protocole} & \textbf{N test / positifs} & \textbf{Positifs connus} & \textbf{F1 Histogram} & \textbf{F1 template inconnu} \\
+\midrule
+Principal ($49\,999$ lignes) & $19\,908$ / $2\,885$ & 0 & 0,9137 & 0,2779 \\
+5 blocs de $10\,000$ lignes & $19\,908$ / $2\,885$ & 4 & 0,9238 & 0,2801 \\
+10 blocs & $19\,908$ / $2\,885$ & 5 & 0,8913 & 0,2803 \\
+20 blocs & $19\,908$ / $2\,885$ & 6 & 0,7309 & 0,2924 \\
+Drain3 adapté sur validation & $19\,908$ / $2\,885$ & 4 & 0,9137 & 0,2796 \\
+Chronologique 60/20/20 & $97\,107$ / $2\,439$ & 7 & 0,5985 & 0,0576 \\
+20 blocs avant le test & $19\,908$ / $2\,885$ & 6 & 0,9405 & 0,9156 \\
+G : $80\,000$ lignes contiguës & $19\,908$ / $2\,885$ & $2\,880$ & 0,9419 & 0,0033 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Les variantes à entraînement élargi ou adapté laissent au plus 7 positifs sur un template connu : $2\,874$ des $2\,885$ positifs du test appartiennent à une seule famille de messages (\texttt{ciod: Error reading message prefix on CioStream socket}), apparue peu avant le test. Le protocole G place un entraînement contigu de $80\,000$ lignes juste avant la validation ; il a été conçu après avoir observé la position de cette famille, et utilise donc une information sur le test. $2\,880$ positifs du test portent alors un template connu. Le seuil vaut $6{,}9770$ et la matrice de confusion compte $2\,879$ vrais positifs, 349 faux positifs, $16\,674$ vrais négatifs et 6 faux négatifs. Sur les $19\,723$ événements à template connu, dont $2\,880$ positifs, Histogram atteint une précision de $0{,}9347$, un rappel de $0{,}9983$ et un F1 de $0{,}9654$. La part d'événements de test à template inconnu tombe à $0{,}93\,\%$, et la règle « sévérité absente de l'entraînement » n'obtient plus qu'un F1 inférieur à $0{,}001$ : la décision ne repose plus sur la nouveauté de sévérité.
+
+La couverture du parseur dépend donc surtout de la proximité temporelle entre entraînement et test, les familles d'anomalies de BGL survenant en rafales ; Drain3 reconnaît tous les messages de la famille dominante dès qu'il l'a rencontrée. Le F1 varie de $0{,}5985$ à $0{,}9419$ selon la variante, sans évolution monotone avec la taille de l'entraînement. Le score de G décrit ce que détecte Histogram lorsque cette famille est connue ; il ne constitue pas une performance attendue, et aucune variante ne remplace le protocole principal.

@@ -1,61 +1,67 @@
 \chapter*{Déclaration relative à l'utilisation d'outils d'intelligence artificielle}
 \addcontentsline{toc}{chapter}{Déclaration relative à l'utilisation d'outils d'intelligence artificielle}
 
-Des outils d'intelligence artificielle générative ont été employés comme assistants pour
-la rédaction, la programmation, le contrôle de cohérence et l'exécution automatisée de
-campagnes expérimentales. Ils ne constituent une source scientifique d'aucune affirmation
-du mémoire. Les références bibliographiques renvoient aux publications, normes,
-documentations et jeux de données effectivement consultés.
+Des outils d'intelligence artificielle générative ont été utilisés tout au long du travail,
+de mai à novembre 2026 : ChatGPT et OpenAI Codex (modèle GPT-5, OpenAI), Copilot SDK dans
+Visual Studio Code, et Claude Code (modèle Claude Opus, Anthropic). Ils ne sont la source
+d'aucune affirmation scientifique du mémoire ; les références renvoient aux publications,
+normes, documentations et jeux de données consultés.
 
-\section*{Outils et usages}
+\section*{Répartition des rôles}
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabularx}{\textwidth}{p{0.27\textwidth}X}
+\begin{tabularx}{\textwidth}{p{0.22\textwidth}XX}
 \toprule
-\textbf{Outil} & \textbf{Usages} \\
+\textbf{Activité} & \textbf{Auteur} & \textbf{Outils} \\
 \midrule
-ChatGPT et OpenAI Codex, modèle GPT-5 (OpenAI) &
-Structuration et reformulation du manuscrit ; assistance à l'écriture, à la révision et
-au test de scripts ; contrôles de cohérence entre texte, code et artefacts. \\
-Copilot SDK dans Visual Studio Code &
-Reprise de l'intégration éditoriale ; vérification des preuves et des compilations ;
-adaptation et exécution contrôlée d'un runner expérimental. \\
-Claude Code, modèle Claude Opus (Anthropic) &
-Audit du manuscrit et du dépôt ; proposition et mise en œuvre de protocoles
-complémentaires ; écriture ou adaptation de scripts ; exécution de campagnes dans
-l'environnement de l'auteur ; agrégation des artefacts et préparation de corrections. \\
+Problématique et objectifs &
+Choix du sujet, des objectifs et des familles de journaux ; questions de positionnement
+(apport face aux plateformes existantes, rôle de chaque composant). &
+Analyse documentaire et reformulation sur demande. \\
+Environnement &
+Installation et configuration des machines virtuelles ; mise en place et exploitation de
+Redis et des environnements expérimentaux. &
+Scripts de déploiement et de lancement. \\
+Prototype &
+Conception de l'architecture d'ensemble ; spécification des capacités attendues et
+validation du fonctionnement. &
+Écriture et adaptation d'une large part du code et des tests. \\
+Campagnes principales &
+Décision des expériences à mener et des jeux à employer. &
+Écriture des scripts ; exécution dans l'environnement de l'auteur ; agrégation. \\
+Campagnes complémentaires &
+Décision de les mener, choix des comparateurs retenus (répartiteur au moindre chargé,
+partition stricte) et exclusion du scénario conjoint ; validation des conclusions. &
+Proposition et rédaction des protocoles, des critères et des scripts ; exécution ;
+analyse selon les règles fixées avant exécution. \\
+Rédaction &
+Plan, arbitrages, passages rédigés directement et contenu final. &
+Structuration, reformulation, contrôles de cohérence, figures et tableaux tirés des
+artefacts. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\section*{Parties concernées}
-
-L'assistance a concerné le code du prototype et les scripts expérimentaux, la préparation
-et l'exécution de campagnes complémentaires, la documentation des preuves, la génération
-de figures et de tableaux à partir des artefacts, ainsi que la rédaction et
-l'harmonisation du manuscrit. Les valeurs numériques retenues proviennent des fichiers
-CSV ou JSON identifiés dans la matrice résultats--preuves et non de réponses textuelles
-des outils.
-
-Les campagnes identifiées par les préfixes \texttt{agent2} à \texttt{agent6} ne sont pas présentées comme préenregistrées. Les protocoles E-H3b, E-H3b stricte, E-H4, E-H5, E-CNP et E-CNP au moindre chargé ont été versionnés et commités avant exécution ; cette qualification ne s'applique qu'aux
-questions, comparateurs, métriques et critères qu'ils définissent. Un incident
-d'exécution ou une correction de runner est documenté séparément et ne modifie pas ces
-critères. Tout autre protocole ne pourra être qualifié de préenregistré que s'il satisfait
-la même procédure avant l'accès aux résultats.
+Le prototype et les campagnes principales ont été réalisés de mai à septembre 2026. Les
+campagnes complémentaires, qui contrôlent les conclusions par des comparateurs plus
+simples, ont été conçues et exécutées en novembre 2026, après une première lecture du
+manuscrit ; elles sont postérieures aux résultats qu'elles éprouvent. Sept campagnes ont
+fait l'objet d'un protocole versionné dans le dépôt avant leur exécution ; cette antériorité
+est attestée par l'historique du dépôt et non par un registre externe. L'une de ces campagnes
+a ensuite été invalidée par un défaut de script et retirée des résultats. Les autres
+campagnes de contrôle ne sont pas présentées comme préenregistrées.
 
 \section*{Vérification et responsabilité}
 
-Les propositions ont été contrôlées en reliant les valeurs à un identifiant de campagne
-et à un artefact, en comparant les descriptions du comportement au code et aux journaux,
-et en conservant les résultats défavorables ou contradictoires. Les empreintes SHA-256
-du paquet de preuves permettent de vérifier l'intégrité binaire des artefacts publiés.
-Ces contrôles établissent une traçabilité ; ils ne valent pas reproduction indépendante
-par un tiers.
+Chaque valeur numérique retenue provient d'un fichier CSV ou JSON identifié dans la matrice
+résultats--preuves, et non d'une réponse textuelle d'un outil. Les descriptions du
+comportement ont été confrontées au code et aux journaux d'exécution ; les résultats
+défavorables ont été conservés, et ceux qu'un défaut de script invalidait ont été retirés.
+Les empreintes SHA-256 attestent l'intégrité des artefacts, non l'exactitude des calculs ;
+aucune reproduction indépendante par un tiers n'a été réalisée.
 
-L'auteur a arrêté les choix retenus dans le manuscrit et demeure responsable de la
-problématique, des résultats présentés, de leur interprétation, du choix des références
-et du contenu final. L'étendue précise de l'assistance est déclarée ci-dessus afin que
-les apports automatisés ne soient pas confondus avec une contribution humaine non
-assistée.
+L'auteur a arrêté les choix présentés, en assume les résultats et l'interprétation, et
+s'engage à justifier en soutenance chaque protocole, chaque script cité et chaque valeur
+retenue.

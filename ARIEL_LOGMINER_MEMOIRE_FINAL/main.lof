@@ -1,32 +1,26 @@
 \babel@toc {french}{}\relax 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces Architecture logique d'Ariel Logminer{}.}}{50}{figure.caption.35}%
-\contentsline {figure}{\numberline {2.2}{\ignorespaces Architecture multi-agents.}}{54}{figure.caption.37}%
-\contentsline {figure}{\numberline {2.3}{\ignorespaces Séquence Contract Net observée dans les campagnes locales et Redis.}}{55}{figure.caption.38}%
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Séparation entre le contrat métier et l'enveloppe de transport Redis.}}{64}{figure.caption.39}%
-\contentsline {figure}{\numberline {2.5}{\ignorespaces Topologie conceptuelle de la validation multi-VM de laboratoire.}}{68}{figure.caption.40}%
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Architecture logique d'Ariel Logminer{}. Source : auteur.}}{27}{figure.caption.31}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Architecture multi-agents.}}{30}{figure.caption.33}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Séquence Contract Net observée dans les campagnes locales et Redis.}}{31}{figure.caption.34}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Séparation entre le contrat métier et l'enveloppe de transport Redis. Source : auteur.}}{35}{figure.caption.35}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Topologie de la validation multi-VM de laboratoire. Source : auteur.}}{36}{figure.caption.36}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Vue d'ensemble du tableau de bord. L'interface rassemble les volumes, états et alertes et relie une exécution à ses résultats. Sa validation est fonctionnelle et distincte de l'évaluation prédictive. Source : prototype local Ariel Logminer.}}{82}{figure.caption.48}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Vue d'ensemble du tableau de bord. L'interface rassemble les volumes, états et alertes et relie une exécution à ses résultats. Sa validation est fonctionnelle et distincte de l'évaluation prédictive. Source : prototype local Ariel Logminer.}}{47}{figure.caption.42}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Comparaison des protocoles CICIDS2017.}}{86}{figure.caption.50}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Comparaison de cinq modèles CICIDS2017 sous holdout par scénario.}}{87}{figure.caption.52}%
-\contentsline {figure}{\numberline {4.3}{\ignorespaces F1 HDFS au niveau événement et au niveau bloc.}}{89}{figure.caption.54}%
-\contentsline {figure}{\numberline {4.4}{\ignorespaces Distribution bootstrap du F1 HDFS : test complet et échantillon de 2\,000 blocs.}}{90}{figure.caption.55}%
-\contentsline {figure}{\numberline {4.5}{\ignorespaces Résultats BGL selon la connaissance du template.}}{92}{figure.caption.57}%
-\contentsline {figure}{\numberline {4.6}{\ignorespaces Histogram et deux règles de nouveauté sur BGL.}}{93}{figure.caption.58}%
-\contentsline {figure}{\numberline {4.7}{\ignorespaces Régression logistique et Random Forest sur CSE-CIC-IDS2018.}}{96}{figure.caption.61}%
-\contentsline {figure}{\numberline {4.8}{\ignorespaces Coefficients moyens de la régression logistique sur CSE-CIC-IDS2018.}}{97}{figure.caption.62}%
-\contentsline {figure}{\numberline {4.9}{\ignorespaces F1 moyen des modèles mono-feature sur CSE-CIC-IDS2018.}}{98}{figure.caption.63}%
-\contentsline {figure}{\numberline {4.10}{\ignorespaces Ablation des caractéristiques sur CSE-CIC-IDS2018.}}{99}{figure.caption.64}%
-\contentsline {figure}{\numberline {4.11}{\ignorespaces Contrôle par permutation des labels d’entraînement.}}{100}{figure.caption.65}%
-\contentsline {figure}{\numberline {4.12}{\ignorespaces Rejet open-set du routeur selon le seuil, sur 66 fichiers.}}{102}{figure.caption.67}%
-\contentsline {figure}{\numberline {4.13}{\ignorespaces Couverture et remplissage du schéma par source.}}{104}{figure.caption.69}%
-\contentsline {figure}{\numberline {4.14}{\ignorespaces Débit et latence des architectures A--D selon la charge.}}{105}{figure.caption.70}%
-\contentsline {figure}{\numberline {4.15}{\ignorespaces Panne appariée : doublons et coût du rejeu selon l'architecture.}}{107}{figure.caption.73}%
-\contentsline {figure}{\numberline {4.16}{\ignorespaces Couverture d’inférence de la condition M par source.}}{110}{figure.caption.77}%
-\contentsline {figure}{\numberline {4.17}{\ignorespaces Latence moyenne par source des conditions H et M.}}{111}{figure.caption.78}%
-\contentsline {figure}{\numberline {4.18}{\ignorespaces Saturation de la topologie à deux machines virtuelles.}}{114}{figure.caption.80}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Comparaison des protocoles CICIDS2017.}}{51}{figure.caption.44}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces F1 HDFS au niveau événement et au niveau bloc.}}{54}{figure.caption.47}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Distribution bootstrap du F1 HDFS : test complet et échantillon de 2\,000 blocs.}}{55}{figure.caption.48}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Résultats BGL selon la connaissance du template.}}{57}{figure.caption.50}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Histogram et deux règles de nouveauté sur BGL.}}{58}{figure.caption.51}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Rejet open-set du routeur selon le seuil, sur 66 fichiers.}}{61}{figure.caption.54}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Couverture et remplissage du schéma par source.}}{63}{figure.caption.56}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Débit et latence des architectures A--D selon la charge.}}{64}{figure.caption.57}%
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Panne appariée : doublons et coût du rejeu selon l'architecture.}}{65}{figure.caption.60}%
+\contentsline {figure}{\numberline {4.10}{\ignorespaces Couverture d’inférence de la condition M par source.}}{69}{figure.caption.64}%
+\contentsline {figure}{\numberline {4.11}{\ignorespaces Latence moyenne par source des conditions H et M.}}{70}{figure.caption.65}%
+\contentsline {figure}{\numberline {4.12}{\ignorespaces Saturation de la topologie à deux machines virtuelles.}}{72}{figure.caption.67}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

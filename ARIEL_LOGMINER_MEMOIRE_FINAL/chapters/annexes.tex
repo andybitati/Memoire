@@ -44,63 +44,59 @@ Le contrat ne possède pas de champ \texttt{event\_id} de premier niveau. Les id
 
 \section{Matrice résultats--preuves}
 
-La matrice ci-dessous fournit un point d'entrée vers les artefacts qui étayent les
-résultats du mémoire. Les chemins complets sont relatifs à la racine du dépôt. Dans le
-paquet \texttt{experiments/phase\_revision\_20261104}, ils sont abrégés en commençant au
-sous-répertoire de campagne, par exemple \texttt{agent\_2\_hdfs/}. Le fichier
-\texttt{MANIFEST\_SHA256.csv} de ce paquet permet d'en contrôler le chemin, la taille et
-l'empreinte SHA-256.
-
+La matrice ci-dessous relie chaque résultat cité à sa campagne et à son artefact. C'est le
+seul endroit du mémoire où figurent les identifiants de campagne ; le corps du texte emploie
+l'étiquette de la première colonne. Les valeurs sont celles des artefacts, à six décimales.
+Les chemins sont relatifs à la racine du dépôt ; dans les paquets de consolidation, ils sont
+abrégés à partir du sous-répertoire de campagne. Chaque paquet possède un manifeste
+\texttt{MANIFEST\_SHA256.csv} qui permet d'en contrôler le chemin, la taille et l'empreinte.
 Cette matrice établit la traçabilité des valeurs, non leur reproduction indépendante.
-Une reproduction exige également le script, l'entrée, les dépendances, les paramètres et
-les graines associés. Les jeux publics qui ne sont pas redistribués doivent être obtenus
-depuis leur source documentée et vérifiés avant l'exécution.
 
-\begin{longtable}{p{0.20\textwidth} p{0.18\textwidth} p{0.52\textwidth}}
+{\small
+\begin{longtable}{p{0.24\textwidth} p{0.27\textwidth} p{0.40\textwidth}}
 \caption{Traçabilité des résultats expérimentaux.}\label{tab:preuves-experimentales}\\
 \toprule
-\textbf{Élément} & \textbf{Valeur} & \textbf{Artefact principal} \\
+\textbf{Étiquette} & \textbf{Valeur} & \textbf{Campagne et artefact} \\
 \midrule
 \endfirsthead
 \toprule
-\textbf{Élément} & \textbf{Valeur} & \textbf{Artefact principal} \\
+\textbf{Étiquette} & \textbf{Valeur} & \textbf{Campagne et artefact} \\
 \midrule
 \endhead
-CICIDS random RF & F1 0,995142 & \texttt{experiments/phase\_dataset\_strengthening/aggregated/cicids\_protocol\_comparison.csv} \\
-CICIDS scénario RF & F1 macro 0,157744 & Même synthèse, protocole holdout scénario. \\
-CICIDS temporel & RF 0,437429 ; LR 0,556615 & Même synthèse, lundi--jeudi vers vendredi. \\
-Sélection CICIDS & LR 0,233670 & \texttt{docs/memoire/pack\_redaction\_final/06\_reproductibilite\_preuves/cicids\_model\_candidates\_summary.csv} \\
-HDFS bloc, test complet & F1 0,868373 ; IC [0,856771 ; 0,879493] ; 5 graines & \texttt{agent\_2\_hdfs/agent2\_hdfs\_full\_20261104T131314Z\_\_result.json} \\
-Baselines HDFS bloc & Histogram 0,868373 ; surprise template seule 0,872434 ; marge $-0{,}004061$ & \path{experiments/phase_revision_20261105/E-H4-HDFS-BLOCK-BASELINES/summary.json} \\
-Modèles communs / spécialisés, catégorie tenue à l'écart & Non-infériorité non établie ; borne inférieure CICIDS $-0{,}0190$ & \path{experiments/phase_revision_20261105/E-H3B-STRICT-HOLDOUT/summary.json} \\
-E-H3b, non retenu & Fuite de l'étiquette sur UNSW ; CICIDS réduit aux DDoS & \path{experiments/phase_revision_20261105/E-H3B-FAMILY-MODELS/summary.json} \\
-Mémoire sous fiabilité hétérogène (E-H5) & Gain pour $p = 0{,}9$ seulement ; delta $-0{,}2993$ ; rapport de débit 1,210 & \path{experiments/phase_revision_20261105/E-H5-MEMORY-RELIABILITY/summary.json} \\
-Contract Net et table statique (E-CNP) & Avantage conditionnel ; rapport de débit nominal 0,867 & \path{experiments/phase_revision_20261105/E-CNP-STATIC-ASSIGNMENT/summary.json} \\
-Contract Net et moindre chargé & Aucun avantage ; rapport de débit nominal 0,870 & \path{experiments/phase_revision_20261105/E-CNP-LEAST-LOADED/summary.json} \\
-Benchmark A--D, débit & Tableau~\ref{tab:benchmark-debit} & \texttt{ma\_20260909T160812Z\_34016\_\_statistics.csv} \\
-E-H3 routage & Non exécuté ; au plus 45 candidats locaux pour 90 sources indépendantes requises & \texttt{revision\_reports/agent\_5/router\_open\_set/agent5\_router\_open\_set\_20261104T145601Z/sources\_config.json} \\
-HDFS bloc, échantillon distribué & F1 0,892308 sur $2\,000$ blocs & \texttt{ds\_hdfs\_block\_20260910T081756Z\_\_hdfs\_block\_result.json} \\
-BGL Histogram & F1 0,913698 & \texttt{ds\_bgl\_known\_unknown\_20260910T082706Z\_\_bgl\_group\_metrics.csv} \\
-BGL baseline & F1 0,277885 & Même artefact, modèle \texttt{UnknownTemplateBaseline}. \\
-CSE-CIC-IDS2018 & LR 0,999212 ; RF 0,401375 & \texttt{external\_csecicids2018\_20260910T230136Z\_metrics.csv} \\
-Ablation CSE-CIC & top 10 retirées : 0,657859 & \texttt{external\_csecicids2018\_feature\_ablation.csv} \\
-Routeur open-set & rejet 3/3 ; faux rejet 0/28 & \texttt{router\_open\_set\_final\_tradeoff\_diagnostic.csv} \\
-Routeur open-set étendu & rejet 20/20 ; faux rejet 3/46 & \texttt{agent\_5\_router\_open\_set/result.json} \\
-Multiformat & $7\,001/7\,001$ & \texttt{multiformat\_balanced\_summary.csv} \\
-Multiformat consolidé & $7\,001/7\,001$ ; une fixture Apache & \texttt{agent\_5\_multiformat/result.json} \\
-E2E modèles & $1\,400/1\,401$ & \texttt{multisource\_cnp\_model\_inference\_by\_source.csv} \\
-Benchmark A--D & 160 exécutions ; $264\,000$ tâches & \texttt{ma\_20260909T160812Z\_34016\_\_statistics.csv} \\
-Endurance CNP multi-VM & $1\,800/1\,800$ ; 1 h & \texttt{cnp\_endurance\_multivm\_20260918T130822Z\_\_summary.json} \\
-HDFS via CNP multi-VM & $2\,000/2\,000$ ; F1 0,892308 ; Debian $2\,000$, Ubuntu 0 & \texttt{agent\_3\_distribution/hdfs\_multivm\_cnp\_20261104T135345Z\_\_hdfs\_multivm\_summary.json} \\
-Saturation CNP multi-VM & coude 8--16 tâches/s ; 3 échecs sur $11\,430$ & \texttt{agent\_3\_distribution/agent3\_saturation\_multivm\_20261104T142325Z\_\_saturation\_summary.json} \\
-Panne appariée A/B/C/D & doublons A 10, B 10, C 0, D 0 ; A+I et B+I : 0 & \texttt{agent\_3\_distribution/agent3\_paired\_failure\_abcd\_20261104T141803Z\_\_summary.json} \\
-Corrélation & F1 0,812500 & \texttt{data/processed/final\_experiments\_2026/correlation\_synthetic\_summary.json} \\
-Corrélation étendue & précision 0,9884 ; rappel 0,5973 & \texttt{agent\_5\_correlation/result.json} \\
-BGL, protocole contigu G & F1 0,941927 ; protocole exploratoire & \texttt{revision\_reports/agent\_4/artifacts/bgl/agent4\_bgl\_contiguous\_horizon\_20261104T145740Z\_\_result.json} \\
-CSE-CIC, raccourci & \texttt{Dst Port} seul : F1 0,999720 & \texttt{agent\_4\_csecic/agent4\_csecic\_shortcut\_20261104T144738Z\_\_result.json} \\
-Isolation Forest CICIDS & F1 0,115719 / 0,521436 selon le seuil & \texttt{agent\_6\_iforest\_baselines/agent6\_cicids\_iforest\_20261104T141904Z\_summary.csv} \\
+\multicolumn{3}{l}{\textit{Détection et protocoles}} \\
+CICIDS2017, séparation aléatoire & RF 0,995142 & \path{experiments/phase_dataset_strengthening/aggregated/cicids_protocol_comparison.csv} \\
+CICIDS2017, séparation temporelle & RF 0,437429 ; LR 0,556615 & Même fichier ; \texttt{cicids\_temporal\_20260910T083015Z} \\
+CICIDS2017, holdout par scénario corrigé & Tout positif 0,473652 ; SGDLogistic 0,286877 ; LR 0,251567 ; RF 0,159373 ; aucun modèle ne bat la règle & E-CICIDS-HOLDOUT-FIX ; \path{experiments/phase_revision_20261105/E-CICIDS-HOLDOUT-FIX/summary.csv}, \texttt{decision.json} \\
+CICIDS2017, holdout par scénario d'origine & RF 0,157744 ; LR 0,233670. \textit{Défaut d'échantillonnage, non retenu} & Fichier de la séparation aléatoire ; \path{docs/memoire/pack_redaction_final/06_reproductibilite_preuves/cicids_model_candidates_summary.csv} \\
+Contrôle Isolation Forest, CICIDS2017 & F1 0,115719 / 0,521436 selon le seuil & \texttt{agent6\_cicids\_iforest\_20261104T141904Z\_summary.csv} \\
+Campagne HDFS, test complet & F1 0,868373, identique pour les cinq graines ; IC [0,856771 ; 0,879493] & \texttt{agent\_2\_hdfs/agent2\_hdfs\_full\_20261104T131314Z\_\_result.json} \\
+Baselines HDFS au niveau bloc & Histogram 0,868373 ; surprise du template 0,872434 ; écart $-0{,}004061$ & E-H4-HDFS-BLOCK-BASELINES ; \path{experiments/phase_revision_20261105/E-H4-HDFS-BLOCK-BASELINES/summary.json} \\
+Campagne HDFS, échantillon de $2\,000$ blocs & F1 0,892308 & \texttt{hdfs\_block\_robustness\_20260911T002351Z} ; \texttt{ds\_hdfs\_block\_20260910T081756Z\_\_hdfs\_block\_result.json} \\
+Campagne BGL, protocole principal & Histogram 0,913698 ; règle « template inconnu » 0,277885 & \texttt{ds\_bgl\_known\_unknown\_20260910T082706Z\_\_bgl\_group\_metrics.csv} \\
+Campagne BGL, second protocole & Variantes exploratoires & \texttt{agent4\_bgl\_second\_protocol\_20261104T142629Z} \\
+Campagne BGL, protocole contigu (G) & F1 0,941927 ; conçu après lecture du test, exploratoire & \texttt{revision\_reports/agent\_4/artifacts/bgl/agent4\_bgl\_contiguous\_horizon\_20261104T145740Z\_\_result.json} \\
+Audit CSE-CIC-IDS2018 & LR 0,999212 ; \texttt{Dst Port} seul 0,999720 ; provenance vérifiée par retéléchargement et identité des SHA-256 & \texttt{external\_csecicids2018\_20260910T230136Z\_metrics.csv} ; \texttt{agent4\_csecic\_shortcut\_20261104T144738Z\_\_result.json} \\
+\multicolumn{3}{l}{\textit{Routage, spécialisation, normalisation}} \\
+Évaluation open-set du routeur & Calibration : rejet 3/3, faux rejet 0/28 ; extension : rejet 20/20, faux rejet 3/46 & \texttt{router\_open\_set\_final\_tradeoff\_diagnostic.csv} ; \texttt{agent5\_router\_open\_set\_20261104T145601Z} \\
+Chaîne sans routage & Non exécutée & --- \\
+Modèle spécialisé / modèle commun & Non-infériorité non établie ; borne inférieure CICIDS $-0{,}0190$ & E-H3B-STRICT-HOLDOUT ; \path{experiments/phase_revision_20261105/E-H3B-STRICT-HOLDOUT/summary.json} \\
+Première comparaison spécialisé / commun & \textit{Fuite de l'étiquette sur UNSW ; CICIDS réduit aux DDoS ; non retenue} & E-H3B-FAMILY-MODELS ; \path{experiments/phase_revision_20261105/E-H3B-FAMILY-MODELS/summary.json} \\
+Corpus Linux/auth (provenance) & Jeu Kaggle « linux\_auth\_log-anomalies » (L\.{I}N \c{C}ORBACI, licence MIT, première version du 27 octobre 2025), entièrement synthétique (Faker) ; somme des tailles des quatre fichiers : $204\,854\,155$ octets, égale à la taille déclarée par Kaggle & \path{data/raw/Datasets/linux_auth_logs_*.csv} \\
+Couverture multi-format & $7\,001/7\,001$ ; une fixture Apache & \texttt{multiformat\_balanced\_20260910T094422Z} ; \texttt{agent5\_multiformat\_20261104T150111Z} \\
+Inférence de bout en bout & $1\,400/1\,401$ & \texttt{multisource\_cnp\_model\_inference\_by\_source.csv} \\
+\multicolumn{3}{l}{\textit{Orchestration et distribution}} \\
+Benchmark A--D & 160 exécutions ; $264\,000$ tâches ; tableau~\ref{tab:benchmark-debit} & \texttt{ma\_20260909T160812Z\_34016\_\_statistics.csv} \\
+Panne appariée A--D & Doublons A 10, B 10, C 0, D 0 ; A+I et B+I 0 & \texttt{agent3\_paired\_failure\_abcd\_20261104T141803Z\_\_summary.json} \\
+Mémoire et fiabilité & Gain pour $p = 0{,}9$ seulement ; écart $-0{,}2993$ ; rapport de débit 1,210 & E-H5-MEMORY-RELIABILITY ; \path{experiments/phase_revision_20261105/E-H5-MEMORY-RELIABILITY/summary.json} \\
+Contract Net contre table statique & Avantage conditionnel ; rapport de débit nominal 0,867 & E-CNP-STATIC-ASSIGNMENT ; \path{experiments/phase_revision_20261105/E-CNP-STATIC-ASSIGNMENT/summary.json} \\
+Contract Net contre moindre chargé & Aucun avantage ; rapport de débit nominal 0,870 & E-CNP-LEAST-LOADED ; \path{experiments/phase_revision_20261105/E-CNP-LEAST-LOADED/summary.json} \\
+Endurance sur deux VM & $1\,800/1\,800$ ; 1 h ; Debian 451, Ubuntu $1\,349$ & \texttt{cnp\_endurance\_multivm\_20260918T130822Z\_\_summary.json} \\
+Saturation sur deux VM & Coude 8--16 tâches/s ; 3 échecs sur $11\,430$ & \texttt{agent3\_saturation\_multivm\_20261104T142325Z\_\_saturation\_summary.json} \\
+Détection HDFS répartie sur deux VM & $2\,000/2\,000$ ; F1 0,892308 ; Debian $2\,000$, Ubuntu 0 & \texttt{hdfs\_multivm\_cnp\_20261104T135345Z\_\_hdfs\_multivm\_summary.json} \\
+Évaluation de la corrélation & F1 0,812500 ; corpus étendu : précision 0,9884, rappel 0,5973 & \path{data/processed/final_experiments_2026/correlation_synthetic_summary.json} ; \texttt{agent5\_correlation} \\
 \bottomrule
 \end{longtable}
+}
 
 \begin{table}[H]
 \centering
@@ -154,7 +150,7 @@ Drain3 & ajusté sur l'échantillon d'entraînement seul ; \texttt{match\_only} 
 Représentation & score de rareté événementiel, agrégé par bloc \\
 Agrégateur retenu & moyenne, choisie sur validation pour les cinq graines \\
 Seuil gelé & entre $1{,}272927$ et $1{,}274817$ selon la graine, choisi sur validation \\
-Test complet (cinq graines) & TP $1\,679$, FP 509, TN $112\,825$, FN 0 ; F1 $0{,}868373$ \\
+Test complet & TP $1\,679$, FP 509, TN $112\,825$, FN 0 ; F1 $0{,}868373$, identique pour les cinq graines \\
 Échantillon de $2\,000$ blocs du test (exécution distribuée, section~\ref{sec:hdfs-distribue}) & 29 positifs ; seuil $1{,}272943$ (graine 42) ; TP 29, FP 7, TN $1\,964$, FN 0 ; F1 $0{,}892308$ \\
 \bottomrule
 \end{tabularx}
@@ -213,78 +209,4 @@ Mise à jour autonome continue & PERSPECTIVE & Hors du prototype évalué. \\
 \end{tabularx}
 \end{table}
 
-\section{Conditions d’interprétation des résultats}
-
-Le périmètre expérimental exclut la haute disponibilité Redis, la tolérance aux partitions, la sécurité opérationnelle complète et les performances à très grande échelle. Le rejet open-set est évalué sur 20 fichiers inconnus et 46 fichiers connus ; le seuil gelé écarte aussi 3 fichiers connus, et les fichiers partageant un schéma ne sont pas indépendants. Dans le protocole BGL principal, le F1 ne fournit aucun rappel pour les anomalies à template connu, et la décision d'Histogram coïncide avec la règle « sévérité absente de l'entraînement ». Le score CSE-CIC-IDS2018 repose sur un raccourci par le port de destination propre à la journée de test. La mémoire influence une décision, mais n'améliore pas systématiquement les métriques. Aucune exactitude globale multi-source n'est disponible.
-
-\section{Notes détaillées des figures}
-\label{ann:notes-figures}
-
-Cette section rassemble les éléments d’interprétation, les limites et les sources retirés des légendes afin de conserver des figures lisibles dans le corps du mémoire.
-
-\subsection{Architecture et implémentation}
-
-\paragraph{Figure~\ref{fig:architecture-multi-agent} -- architecture multi-agents.}
-Le diagramme relie les sources, la normalisation, le routage, le Contract Net, le transport Redis et les artefacts de preuve. La topologie représentée correspond au laboratoire étudié et ne décrit pas une infrastructure de production générique.
-
-\paragraph{Figure~\ref{fig:contract-net-sequence} -- séquence Contract Net.}
-La séquence est celle observée dans les campagnes locales et Redis. Les branches \textit{REFUSE} et \textit{FAIL} sont conservées pour rendre visibles les refus normaux du protocole et les reprises contrôlées.
-
-\paragraph{Figure~\ref{fig:dashboard-vue-ensemble} -- tableau de bord.}
-L’interface rassemble les volumes, les états et les alertes, puis relie une exécution à ses résultats. Sa validation est fonctionnelle et reste distincte de l’évaluation prédictive.
-
-\subsection{Résultats expérimentaux}
-
-\paragraph{Figure~\ref{fig:cicids-protocoles} -- protocoles CICIDS2017.}
-Le Random Forest atteint un F1 de 0,995142 sous séparation aléatoire, 0,157744 sous holdout par scénario et 0,437429 sous séparation temporelle ; la régression logistique temporelle atteint 0,556615. L’écart indique que le score aléatoire décrit surtout une interpolation dans des scénarios mélangés et ne mesure pas le même transfert.
-
-\paragraph{Figure~\ref{fig:cicids-modeles} -- candidats CICIDS2017.}
-Dans le holdout par scénario, la régression logistique obtient le meilleur F1 moyen, soit 0,233670, mais sa dispersion reste forte. Son rang parmi les candidats testés ne transforme donc pas ce résultat faible en preuve de généralisation.
-
-\paragraph{Figure~\ref{fig:hdfs-event-bloc} -- niveaux événement et bloc.}
-Sur le test complet, le F1 au niveau événement reste compris entre 0,203686 et 0,203772 selon la graine, car cette unité n’est pas celle des labels. Au niveau bloc, les agrégations par maximum et par proportion d’événements anormaux atteignent 0,718889, la moyenne 0,868373. La moyenne est retenue parce qu’elle maximise le F1 de validation (0,945416), et non au vu du test ; les mesures par événement et par bloc ne constituent pas des benchmarks équivalents.
-
-\paragraph{Figure~\ref{fig:hdfs-bootstrap} -- bootstrap HDFS.}
-Sur le test complet, $20\,000$ réplications multinomiales donnent l’intervalle $[0{,}856771\,;\,0{,}879493]$ autour de 0,868373. Sur l’échantillon de $2\,000$ blocs, la médiane vaut 0,894737 et l’intervalle empirique $[0{,}800000\,;\,0{,}961039]$ : la dispersion est environ sept fois plus large, et le F1 ponctuel de 0,892308 sort de l’intervalle du test complet. Ces intervalles décrivent la variation due aux blocs testés et ne s’étendent pas à une population universelle.
-
-\paragraph{Figure~\ref{fig:bgl-connu-inconnu} -- connaissance des templates BGL.}
-Le groupe \texttt{KNOWN\_TEMPLATE} contient $2\,029$ unités et aucune anomalie ; aucun rappel d’anomalies connues ne peut donc y être estimé. Le F1 global est porté par le groupe des templates inconnus, ce qui limite son interprétation comme apprentissage de comportement.
-
-\paragraph{Figure~\ref{fig:bgl-baseline} -- comparaison à la baseline BGL.}
-Histogram passe de 0,277885, F1 de la règle « template inconnu », à 0,913698 ; la règle « sévérité absente de l’entraînement » produit pourtant exactement la même matrice de confusion. Le gain traduit donc une nouveauté de sévérité, non une modélisation de la dynamique des journaux, et ne résout pas l’absence de positifs parmi les templates connus.
-
-\paragraph{Figure~\ref{fig:csecic-lr-rf} -- modèles CSE-CIC-IDS2018.}
-L’entraînement porte sur le 15 février et le test sur le 16 février, avec cinq graines. La régression logistique domine le Random Forest selon le F1 moyen. Ce résultat très élevé motive un audit des caractéristiques plutôt qu’une conclusion immédiate de généralisation.
-
-\paragraph{Figure~\ref{fig:csecic-coefficients} -- coefficients de la régression logistique.}
-L’amplitude des coefficients décrit les associations apprises après prétraitement ; elle ne mesure pas une causalité. La stabilité des signes aide à localiser les variables à contrôler.
-
-\paragraph{Figure~\ref{fig:csecic-mono-feature} -- modèles mono-feature.}
-Le F1 de 0,999720 obtenu avec \texttt{Dst Port} révèle qu’une seule variable porte presque toute la séparation dans ce split. Le graphique sert de diagnostic de dépendance et non de preuve de fuite.
-
-\paragraph{Figure~\ref{fig:csecic-ablation} -- ablation des caractéristiques.}
-Le F1 passe de 0,999212 avec 78 variables à 0,657859 après retrait des dix premières. Cette chute établit une sensibilité à l’espace de caractéristiques ; elle ne garantit pas que les variables restantes se transfèrent à d’autres journées.
-
-\paragraph{Figure~\ref{fig:csecic-permutation} -- permutation des labels.}
-La forte dispersion et l’effondrement observé pour une graine montrent que la performance principale n’est pas reproduite de façon stable lorsque la relation d’apprentissage est détruite. Ce contrôle circonscrit certains mécanismes triviaux sans identifier, à lui seul, toutes les sources de biais.
-
-\paragraph{Figure~\ref{fig:routeur-open-set} -- compromis open-set.}
-Au seuil 100, fixé sur les 31 fichiers de calibration, le rejet des inconnus vaut 3/3 et le faux rejet des connus 0/28. Sur l’ensemble des 66 fichiers, ces taux deviennent 20/20 et 3/46 ; les 43 fichiers connus acceptés sont tous correctement orientés. Le score \texttt{min\_top\_score} reste heuristique et non une probabilité.
-
-\paragraph{Figure~\ref{fig:couverture-multiformat} -- couverture multiformat.}
-Les $7\,001$ unités présentes sont lues et émises dans le schéma commun ; Apache repose sur une seule fixture. Le second panneau montre que cette intégration ne garantit pas le remplissage du schéma : sept champs standard complets sur sept pour syslog et BGL, aucun pour les flux réseau tabulaires. Cette couverture ne mesure pas une compatibilité universelle.
-
-\paragraph{Figure~\ref{fig:benchmark-abcd} -- architectures A--D.}
-Chaque point repose sur dix répétitions. Le monolithe domine les micro-tâches, tandis que les échanges Contract Net ajoutent un coût visible. Les courbes C et D ne montrent pas de gain systématique de la mémoire sur le débit ou la latence.
-
-\paragraph{Figure~\ref{fig:panne-appariee} -- panne appariée.}
-Aucune architecture ne perd de tâche. A et B dupliquent l’effet dans les dix répétitions ; C, D, A\,+\,I et B\,+\,I n’en dupliquent aucun. La présence du magasin d’idempotence suffit donc à expliquer l’absence de doublons, indépendamment du Contract Net. Le rejeu coûte environ 5 à 6~ms en médiane, contre 0,02~ms pour une simple réexécution ; ces mesures sont prises dans un seul processus.
-
-\paragraph{Figure~\ref{fig:e2e-couverture-modeles} -- couverture d’inférence.}
-Les modèles réels sont exécutés pour $1\,400$ unités sur $1\,401$ ; la seule unité Apache passe par le fallback. Ce résultat établit l’usage effectif des modèles, sans calculer une exactitude globale entre sources hétérogènes.
-
-\paragraph{Figure~\ref{fig:e2e-latence-modeles} -- latence d’inférence.}
-La voie M est plus coûteuse, avec 0,105420~s en moyenne agrégée contre 0,031027~s pour H. Ces durées sont observées dans le laboratoire et ne constituent pas un engagement de service en production.
-
-\paragraph{Figure~\ref{fig:saturation-multivm} -- saturation sur deux machines virtuelles.}
-Le débit atteint suit la diagonale jusqu’à 8 tâches/s, puis plafonne entre 8,4 et 15,0 tâches/s tandis que la latence p95 dépasse 100~s. L’agent Ubuntu ne mène à bien que 140 des $11\,427$ tâches réussies, toutes en saturation, et porte les trois expirations : la seconde machine ne double pas la capacité. Avec trois répétitions par niveau, la position du coude reste approximative.
+\IfFileExists{chapters/annexe_variantes_bgl.tex}{\input{chapters/annexe_variantes_bgl}}{}

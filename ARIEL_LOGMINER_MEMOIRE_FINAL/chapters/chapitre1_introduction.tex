@@ -9,299 +9,167 @@
 
 \addcontentsline{toc}{section}{Contexte général et justification du sujet}
 
-Les systèmes informatiques modernes produisent continuellement des traces de leur fonctionnement, de leurs interactions et des événements qui modifient leur état. Ces traces prennent des formes diverses : journaux système, journaux d'applications, journaux d'authentification, flux réseau, événements de sécurité ou encore alertes émises par des plateformes spécialisées. Elles constituent une source d'information essentielle pour l'administration des systèmes, l'audit, l'investigation numérique et la cybersécurité. Leur gestion ne se résume donc pas à leur conservation. Collecte, protection, analyse et exploitation doivent s'inscrire dans un processus cohérent de supervision \cite{nist80092}.
+Les systèmes informatiques produisent continuellement des traces de leur fonctionnement : journaux système et applicatifs, journaux d'authentification, flux réseau, événements et alertes de plateformes de sécurité. Ces traces sont une source essentielle pour l'administration, l'audit, l'investigation numérique et la cybersécurité, à condition que leur collecte, leur protection, leur analyse et leur exploitation s'inscrivent dans un processus cohérent de supervision \cite{nist80092}.
 
-Dans la pratique, ces données sont rarement homogènes. Un poste Windows produit par exemple des événements structurés dans Windows Event Log, alors qu'un serveur Linux enregistre une partie de son activité dans des messages textuels de type syslog. Un serveur web génère ses propres journaux d'accès et d'erreur. À cela s'ajoutent les événements enrichis par les HIDS ou les SIEM, qui introduisent des règles, des niveaux de sévérité et diverses métadonnées. Les flux réseau destinés à la détection d'intrusion sont encore différents : ils sont souvent représentés sous une forme tabulaire contenant des caractéristiques statistiques ou temporelles.
+Ces données sont rarement homogènes. Un poste Windows produit des événements structurés, un serveur Linux des messages textuels de type syslog, un serveur web ses propres journaux d'accès et d'erreur ; les HIDS et les SIEM ajoutent règles, niveaux de sévérité et métadonnées, et les flux réseau destinés à la détection d'intrusion se présentent sous une forme tabulaire de caractéristiques statistiques. Des standards comme syslog homogénéisent leur propre domaine \cite{rfc5424}, sans offrir une représentation universelle. Deux événements décrivant des situations proches peuvent ainsi ne partager ni les mêmes champs, ni la même structure, ni la même granularité temporelle.
 
-Cette diversité est l'une des premières difficultés rencontrées lorsqu'on cherche à construire une chaîne d'analyse commune. Deux événements décrivant des situations proches peuvent ne partager ni les mêmes champs, ni la même structure, ni la même granularité temporelle. Des standards tels que syslog apportent une certaine homogénéité dans leur domaine d'application \cite{rfc5424}, mais ils ne constituent pas pour autant une représentation universelle des traces produites par les systèmes, les applications, les équipements réseau et les outils de sécurité. Une chaîne multi-source doit donc reconnaître l'origine des événements, extraire ce qui est pertinent et rapprocher les informations sans effacer les particularités propres à chaque source.
+Le volume pose une autre difficulté. L'analyse manuelle reste pertinente pour un incident précis, mais devient difficile à maintenir lorsque les sources se multiplient : il faut alors repérer les événements qui méritent l'attention, rapprocher ceux qui relèvent d'un même contexte et conserver de quoi permettre une vérification humaine.
 
-Le volume pose une autre difficulté. L'analyse manuelle reste pertinente lorsqu'un analyste étudie un incident précis, mais elle devient rapidement difficile à maintenir lorsque le nombre de sources et d'événements augmente. Il ne s'agit plus seulement de lire davantage de lignes. Il faut identifier les événements qui méritent une attention particulière, rapprocher ceux qui semblent appartenir au même contexte et conserver suffisamment d'éléments pour permettre une vérification humaine ultérieure.
+La détection d'intrusion s'appuie depuis longtemps sur les traces d'audit et sur la recherche de comportements qui s'écartent d'un fonctionnement attendu \cite{denning1987intrusion}, soit par signatures, soit par détection d'anomalies \cite{axelsson2000intrusion}. Ce qui est atypique n'étant pas nécessairement malveillant, une sortie de détecteur est traitée dans ce mémoire comme une \textit{anomalie candidate} : un signal à examiner dans son contexte, non une preuve d'intrusion \cite{chandola2009anomaly}.
 
-La détection d'intrusion s'appuie depuis longtemps sur l'exploitation des traces d'audit et sur la recherche de comportements qui s'écartent d'un fonctionnement attendu \cite{denning1987intrusion}. Certaines approches recherchent des comportements connus à l'aide de signatures, tandis que d'autres tentent d'identifier des anomalies \cite{axelsson2000intrusion}. Cette seconde famille devient particulièrement intéressante lorsqu'il est impossible de décrire à l'avance tous les comportements indésirables. Elle impose cependant une prudence essentielle : ce qui est atypique n'est pas nécessairement malveillant.
+L'apprentissage automatique fournit des modèles supervisés et non supervisés largement étudiés en cybersécurité \cite{buczak2016survey,khraisat2019survey}. Leur efficacité dépend toutefois de la qualité des données, du déséquilibre des classes, du protocole de séparation entre entraînement et test et de la proximité entre données expérimentales et environnement d'usage. Le choix de l'algorithme n'est qu'une partie du problème : une détection exploitable s'insère dans une chaîne où coopèrent acquisition, parsing, normalisation, routage, détection, corrélation, conservation des décisions, audit et restitution à l'analyste.
 
-Dans ce mémoire, une sortie produite par un mécanisme de détection d'anomalies est donc considérée comme une \textit{anomalie candidate}. Elle constitue un signal à examiner dans son contexte, et non une preuve d'intrusion. Cette distinction est importante, car la littérature identifie plusieurs formes d'anomalies dont l'interprétation dépend fortement du contexte \cite{chandola2009anomaly}.
-
-L'apprentissage automatique apporte des outils supplémentaires pour exploiter ces données. Les modèles supervisés peuvent apprendre à distinguer plusieurs classes lorsque des exemples correctement étiquetés sont disponibles. Les méthodes non supervisées, de leur côté, recherchent des observations atypiques sans exiger nécessairement une vérité terrain complète. De nombreuses approches ont déjà été étudiées en cybersécurité \cite{buczak2016survey,khraisat2019survey}. Leur efficacité dépend toutefois de plusieurs éléments : qualité des données, déséquilibre des classes, protocole de séparation entre entraînement et test, mais aussi proximité réelle entre les données expérimentales et l'environnement dans lequel le modèle devrait être utilisé.
-
-Le choix de l'algorithme ne constitue donc qu'une partie du problème. Une détection exploitable doit s'insérer dans une chaîne où plusieurs fonctions coopèrent : acquisition des données, parsing, normalisation, routage vers un traitement compatible, détection, corrélation, conservation des décisions, audit et restitution à l'analyste. Un score élevé obtenu sur un jeu de données isolé ne suffit pas à couvrir l'ensemble de ces besoins.
-
-C'est dans cette perspective qu'a été développé \textit{Ariel Logminer}. Le prototype rassemble plusieurs mécanismes relativement légers dans une architecture commune afin d'analyser des journaux de formats hétérogènes de manière traçable. L'apport recherché concerne avant tout l'architecture, l'intégration des composants et leur évaluation expérimentale. Le travail ne prétend ni proposer une nouvelle théorie de l'apprentissage automatique ni introduire un algorithme universel de détection.
-
-Cette orientation répond aussi à une contrainte pratique. Déployer immédiatement une infrastructure complète de type SOC peut être difficile dans un contexte universitaire, expérimental ou dans une organisation disposant de moyens limités. Un prototype local offre au contraire un environnement contrôlé dans lequel il devient possible d'étudier séparément les mécanismes de la chaîne, de mesurer leur comportement et de comparer plusieurs choix d'architecture, de détection et de distribution.
+C'est dans cette perspective qu'a été développé \textit{Ariel Logminer}, un prototype qui rassemble des mécanismes légers dans une architecture à agents afin d'analyser de manière traçable des journaux de formats hétérogènes. Le travail ne propose ni une nouvelle théorie de l'apprentissage ni un nouvel algorithme de détection. Un prototype local offre en revanche, dans un contexte universitaire où une infrastructure de type SOC n'est pas disponible, un environnement contrôlé où chaque mécanisme de la chaîne peut être isolé, mesuré et confronté à une alternative plus simple.
 
 
 \section*{Problématique}
 
 \addcontentsline{toc}{section}{Problématique}
 
-L'analyse de journaux système et réseau pour la cybersécurité fait apparaître plusieurs difficultés qui ne peuvent pas être traitées indépendamment les unes des autres.
+Plusieurs difficultés de l'analyse de journaux ne peuvent pas être traitées séparément. La première tient à la représentation des données : structurés, semi-structurés ou textuels, les journaux exigent pour certains un parsing préalable, et appliquer le même pipeline à toutes les sources conduirait soit à perdre de l'information, soit à multiplier les traitements spécifiques. Cette diversité se prolonge dans la détection : un modèle construit sur des flux réseau ne s'applique pas tel quel à des messages Linux, si bien que le traitement doit rester compatible avec la famille de journaux analysée.
 
-La première tient naturellement à la représentation des données. Les journaux manipulés peuvent être structurés, semi-structurés ou entièrement textuels. Certains possèdent un schéma explicite ; d'autres nécessitent une phase de parsing avant que leurs informations essentielles deviennent exploitables. Appliquer exactement le même pipeline à toutes ces sources conduirait soit à perdre certaines informations, soit à multiplier les traitements spécifiques jusqu'à rendre la chaîne difficile à maintenir.
+La généralisation est plus délicate encore. Un score obtenu sur une partition aléatoire peut être très différent de celui observé lorsque le test porte sur des données absentes de l'entraînement, et le transfert vers des réseaux opérationnels de résultats obtenus en environnement contrôlé est notoirement fragile \cite{sommer2010outside}. Un score ne s'interprète donc qu'avec le protocole qui l'a produit.
 
-Cette diversité se prolonge au niveau de la détection. Un modèle construit à partir de caractéristiques de flux réseau ne peut pas être appliqué tel quel à des événements Windows ou à des messages Linux. Même après transformation en représentations numériques, la signification des variables et leur distribution restent propres aux données d'origine. Le traitement retenu doit donc rester cohérent avec la famille de journaux analysée, en particulier lorsqu'une même application combine plusieurs méthodes supervisées et non supervisées.
+L'organisation logicielle intervient ensuite. Séparer la chaîne en composants spécialisés facilite le remplacement d'un traitement, l'identification d'une décision et la reprise d'une tâche, mais introduit un coût d'orchestration qu'il faut mesurer. Une architecture multi-agents va plus loin : elle confie l'attribution des tâches à une négociation entre agents, la reprise à des agents qui conservent leur état, l'adaptation à une mémoire de leurs succès et de leurs échecs. Ces propriétés sont souvent attribuées à l'organisation en agents elle-même. Or chacune repose sur un mécanisme plus simple — un magasin d'idempotence, la connaissance de la charge, un compteur de fiabilité, une règle de décision — qu'une organisation centralisée peut aussi embarquer. Tant que ces deux explications ne sont pas départagées, l'apport d'une architecture multi-agents à l'analyse de journaux reste une affirmation, non une connaissance.
 
-La question de la généralisation est encore plus délicate. Une performance obtenue sur une partition aléatoire peut être très différente de celle observée lorsque le test porte sur un scénario absent de l'entraînement. Sommer et Paxson ont notamment souligné les difficultés liées au transfert direct vers des réseaux opérationnels de résultats de machine learning obtenus dans des environnements contrôlés \cite{sommer2010outside}. Un score ne peut donc être interprété correctement qu'en connaissant le protocole qui l'a produit.
-
-L'organisation logicielle intervient ensuite. Rassembler collecte, détection, corrélation, mémoire et restitution dans un seul bloc simplifie parfois les premiers développements, mais complique l'évolution et l'audit du système. Une séparation entre composants spécialisés rend plus facile le remplacement d'un traitement, l'identification d'une décision et la reprise de certaines tâches. Elle introduit en contrepartie un coût d'orchestration qu'il faut mesurer plutôt que supposer négligeable.
-
-Un autre enjeu concerne directement l'analyste. Produire davantage de scores ne signifie pas nécessairement mieux assister une investigation. Les événements doivent pouvoir être filtrés, replacés dans leur contexte, rapprochés d'autres observations et soumis à une validation. La décision de sécurité ne doit donc pas être confondue avec la sortie brute d'un algorithme.
-
-À cela s'ajoute une exigence transversale : la vérifiabilité. Les données utilisées, les paramètres, les modèles, les partitions, les versions des dépendances et les résultats doivent être suffisamment documentés pour permettre de comprendre et, dans une mesure raisonnable, de reproduire les expériences. Cette exigence devient particulièrement importante lorsque le travail combine jeux de données publics, journaux collectés localement, exports d'outils de sécurité et scénarios synthétiques.
-
-Ces difficultés conduisent à considérer la détection d'anomalies non comme une simple opération de classification, mais comme une chaîne complète de traitement et de décision. La problématique du mémoire porte ainsi sur la conception d'une architecture capable de faire coopérer ces fonctions, tout en restant assez légère pour être évaluée localement, assez modulaire pour intégrer plusieurs traitements et suffisamment auditable pour que ses résultats puissent être interprétés et vérifiés.
+La vérifiabilité est enfin une exigence transversale : données, paramètres, partitions, versions des dépendances et résultats doivent être documentés pour qu'une expérience puisse être comprise et, dans une mesure raisonnable, reproduite.
 
 
 \section*{Positionnement et définition opérationnelle des termes}
 
 \addcontentsline{toc}{section}{Positionnement et définition opérationnelle des termes}
 
-Le titre du mémoire qualifie l'architecture de \textit{multi-agents} et de \textit{légère} ; le mémoire décrit en outre ses agents comme \textit{autonomes}, \textit{intelligents} et \textit{multitâches}, et leur exécution comme \textit{distribuée}. Ces termes peuvent couvrir des réalités très différentes ; leur sens doit donc être précisé dans le cadre exact de ce travail.
+Le titre qualifie l'architecture de \textit{multi-agents} et de \textit{légère}, et les journaux d'\textit{hétérogènes}. Ces termes couvrent des réalités très différentes ; leur sens est fixé ici dans le cadre exact du travail.
 
-Un \textbf{agent} désigne ici une entité logicielle disposant de capacités déclarées, d'un état propre, d'une mémoire et d'une politique locale de décision. Lorsqu'un objectif borné lui est confié, il évalue les tâches disponibles, peut proposer leur exécution ou les refuser, exécute un handler compatible, produit si nécessaire des sous-tâches et délègue celles qui exigent une autre capacité. L'état de l'objectif et les résultats intermédiaires sont mémorisés afin de permettre la reprise et l'audit. Cette définition reste volontairement opérationnelle : elle renvoie au comportement du code et aux traces produites par le prototype, et non à une entité cognitive.
+L'\textbf{hétérogénéité} visée est celle des \textbf{formats} : journaux textuels, événements structurés et flux réseau tabulaires sont lus par des adaptateurs distincts et projetés dans un schéma commun, chaque source étant lue et évaluée séparément. Aucun incident n'est analysé conjointement à partir de journaux système et de flux réseau ; le travail n'établit donc aucun bénéfice de la combinaison des sources.
 
-Un \textbf{worker} désigne ici l'unité d'exécution runtime (processus ou thread) qui consomme et traite une tâche transportée par le bus de messages ; il peut héberger un agent, ou, dans l'architecture de référence B, opérer sans capacités déclarées ni politique de décision propre.
+Un \textbf{agent} est une entité logicielle dotée de capacités déclarées, d'un état propre, d'une mémoire et d'une \textbf{politique de décision locale}. Lorsqu'un objectif borné lui est confié, il évalue les tâches disponibles, propose leur exécution ou les refuse, exécute un traitement compatible, produit au besoin des sous-tâches et délègue celles qui exigent une autre capacité ; l'état de l'objectif est conservé pour permettre la reprise et l'audit. Un \textbf{worker} est l'unité d'exécution (processus ou thread) qui consomme une tâche transportée par le bus de messages ; il peut héberger un agent ou, dans l'architecture de référence B, opérer sans capacités déclarées ni politique de décision. L'\textbf{autonomie} se limite à prendre localement les décisions d'offre, de refus, d'exécution, de reprise et de délégation, dans des bornes fixées sur le nombre d'actions, de tentatives et de niveaux de sous-tâches ; l'objectif reste fourni par le système ou l'utilisateur.
 
-L'\textbf{autonomie} correspond à la capacité de l'agent à prendre localement des décisions d'offre, de refus, d'exécution, d'enchaînement, de reprise et de délégation, sans recevoir une instruction impérative à chaque étape. Cette autonomie est limitée par un nombre maximal d'actions, de tentatives, de niveaux de sous-tâches et de tâches en attente. L'objectif initial reste fourni par le système ou par l'utilisateur ; l'agent ne définit pas librement ses propres finalités et ne doit pas être assimilé à une intelligence générale ni à un apprentissage continu entièrement autonome en production.
-
-Le qualificatif \textbf{intelligent} renvoie, dans ce contexte, à une adaptation opérationnelle fondée sur plusieurs informations : état de l'agent, capacités disponibles, historique, compatibilité du modèle, disponibilité, charge et latence. La politique de décision repose sur l'utilité configurable suivante :
-
+La politique de décision repose sur une utilité à poids fixes,
 \[
 U = 0{,}30C + 0{,}20H + 0{,}20M + 0{,}15A + 0{,}10L + 0{,}05T,
+\qquad H_i = \frac{s_i+1}{s_i+f_i+2},
 \]
+dont les composantes sont normalisées entre 0 et 1 et dont la spécification complète figure à la section~\ref{sec:spec-utilite}. Les poids sont fixés avant les campagnes et ne sont pas présentés comme optimaux ; dans les campagnes Redis, deux composantes sont constantes ou redondantes et le refus pour faible utilité est inactif, si bien que l'utilité se réduit à un classement des offres. Les agents ne sont donc pas qualifiés d'intelligents au sens ordinaire du mot : le nom de classe \texttt{MultiTaskIntelligentAgent} est un identifiant hérité du code.
 
-où les différentes composantes sont normalisées entre 0 et 1, avec
-
-\[
-H_i = \frac{s_i+1}{s_i+f_i+2}.
-\]
-
-Les poids sont fixés avant les campagnes expérimentales. Ils constituent des paramètres de fonctionnement et ne sont pas présentés comme une combinaison optimale ; leur mise en œuvre est spécifiée à la section~\ref{sec:spec-utilite}.
-
-Un agent est dit \textbf{multitâche} lorsqu'il peut traiter plusieurs catégories de tâches à travers différents handlers compatibles. La négociation s'appuie sur le protocole Contract Net \cite{smith1980contract}, dans une variante inspirée de la spécification FIPA \cite{fipa2002contractnet}, qui rend explicites les principales étapes de décision : CFP, PROPOSE ou REFUSE, AWARD ou REJECT, ACCEPT, RESULT ou FAIL, puis FEEDBACK.
-
-Le terme \textbf{distribué} renvoie à l'exécution de plusieurs processus et, dans l'expérience effectuée dans le présent travail, à l'utilisation de deux machines virtuelles communiquant au moyen d'un Redis centralisé sur l'hôte du laboratoire. Une architecture industrielle géographiquement distribuée, la haute disponibilité ou le fonctionnement d'un SOC multi-site ne font pas partie des propriétés évaluées.
-
-Enfin, une distinction est maintenue entre \textbf{anomalie} et \textbf{attaque}. Une anomalie correspond à une observation, ou à un ensemble d'observations, considéré comme inhabituel par le mécanisme utilisé. Parler d'attaque suppose une interprétation de sécurité plus forte, fondée sur une vérité terrain, une règle explicite ou une investigation. Les résultats issus des mécanismes non supervisés sont interprétés en respectant cette distinction.
+L'attribution s'appuie sur le protocole Contract Net \cite{smith1980contract}, dans une variante inspirée de la spécification FIPA \cite{fipa2002contractnet} : CFP, PROPOSE ou REFUSE, AWARD ou REJECT, ACCEPT, RESULT ou FAIL, puis FEEDBACK. Le terme \textbf{distribué} désigne l'exécution sur plusieurs processus et, dans une expérience, sur deux machines virtuelles reliées par un Redis centralisé sur l'hôte du laboratoire ; la haute disponibilité et l'exploitation multi-site ne sont pas évaluées. Enfin, une \textbf{anomalie} est une observation jugée inhabituelle par le mécanisme utilisé ; parler d'\textbf{attaque} suppose une vérité terrain, une règle explicite ou une investigation.
 
 
 \section*{Question centrale et questions de recherche}
 
 \addcontentsline{toc}{section}{Question centrale et questions de recherche}
 
-Les difficultés précédentes conduisent à la question centrale suivante :
+La problématique conduit à opposer deux explications des propriétés d'une chaîne d'analyse multi-agents.
+\begin{itemize}
+    \item \textbf{E1, explication par l'organisation en agents} : la reprise sans effet dupliqué, l'attribution adaptée à la charge et à la fiabilité, l'orientation vers un traitement compatible et la qualité de détection tiennent à l'organisation en agents autonomes et à la négociation Contract Net.
+    \item \textbf{E2, explication par les mécanismes simples} : ces propriétés tiennent à des mécanismes plus simples que l'architecture embarque — magasin d'idempotence, prise en compte de la charge, compteur de fiabilité lissé, règles triviales pour la détection — et qu'une organisation centralisée peut reproduire.
+\end{itemize}
+
+La question centrale est la suivante :
 
 \begin{quote}
-
-\textit{Dans quelle mesure une chaîne d'analyse multi-agents légère, exécutée en laboratoire sur un ou deux hôtes, peut-elle lire des journaux système et réseau de formats hétérogènes, les orienter vers un traitement compatible et y détecter des anomalies sous des protocoles d'évaluation stricts, et que coûte cette organisation par rapport à une exécution monolithique ou à des workers centralisés ?}
-
+\textit{Les propriétés qu'une architecture multi-agents légère semble conférer à une chaîne d'analyse de journaux de formats hétérogènes — reprise sans effet dupliqué, attribution adaptée à la charge et à la fiabilité, orientation vers un traitement compatible, détection d'anomalies — tiennent-elles à l'organisation en agents et à la négociation, ou à des mécanismes plus simples que cette architecture embarque et qu'une organisation centralisée peut reproduire ?}
 \end{quote}
 
-La variable principale de la partie prédictive est le F1 obtenu sur un test tenu à l'écart, calculé au niveau de l'unité annotée et rapporté à la meilleure règle triviale évaluée sur le même test. Le débit, la latence, les effets dupliqués après une panne et la répartition des tâches entre machines caractérisent la partie architecturale. L'hétérogénéité visée est celle des formats : chaque source est lue et évaluée séparément, et l'analyse conjointe d'un même incident à partir de journaux système et de flux réseau n'entre pas dans la question. La priorisation des anomalies, les traitements périodiques, l'exécution par micro-lots et l'aide apportée à l'analyste relèvent de la conception (chapitre~\ref{chap:architecture}), mais ne sont pas mesurés ; la question ne les retient donc pas.
-
-Cette question est déclinée en six questions de recherche :
+La question est examinée sur un prototype, Ariel Logminer, exécuté en laboratoire sur un ou deux hôtes. Chaque propriété est confrontée à une alternative qui conserve le mécanisme simple et retire l'organisation en agents ou la négociation. Le travail ne cherche pas à établir la supériorité d'une architecture ; il cherche à attribuer chaque effet observé à sa cause. Elle se décline en cinq questions de recherche :
 
 \begin{enumerate}[label=\textbf{QR\arabic*.}, leftmargin=1.6cm]
-
-    \item Quelles sources de formats différents les adaptateurs lisent-ils et projettent-ils dans un schéma commun, et quelle part de ce schéma chaque source remplit-elle effectivement ?
-
-    \item Comment organiser des agents spécialisés pour que l'attribution, la délégation et la reprise des tâches soient explicites, et quel coût cette organisation ajoute-t-elle par rapport à une exécution monolithique ou à des workers centralisés ?
-
-    \item Le routeur oriente-t-il chaque source connue vers un traitement compatible et rejette-t-il les sources dont le schéma lui est inconnu ?
-
-    \item Quelles fonctions de consultation, de filtrage et de validation le tableau de bord met-il à la disposition de l'analyste ?
-
-    \item L'activation de la mémoire persistante modifie-t-elle de façon mesurable le comportement des agents, et la procédure de mise à jour ne remplace-t-elle le modèle actif que conformément à sa règle de promotion ?
-
-    \item Dans quelle mesure les scores de détection obtenus sur des jeux publics dépendent-ils du protocole de séparation, de l'unité d'analyse et des règles triviales évaluées sur le même test ?
-
+    \item Quels formats les adaptateurs lisent-ils, et quelle part du schéma commun chaque source remplit-elle ?
+    \item Quel coût l'organisation en agents ajoute-t-elle, et l'exécution sur deux machines augmente-t-elle la capacité ?
+    \item La reprise et l'attribution des tâches tiennent-elles aux agents et à la négociation, ou à l'idempotence et à la prise en compte de la charge et de la fiabilité ?
+    \item Le routeur oriente-t-il chaque source vers un traitement compatible, et un modèle spécialisé par famille vaut-il un modèle commun ?
+    \item Les scores de détection obtenus sur des jeux publics dépendent-ils du protocole de séparation et de l'unité d'analyse, et dépassent-ils des règles triviales évaluées sur le même test ?
 \end{enumerate}
 
-Ces questions ne sont pas de même nature, et n'appellent pas le même type de preuve. Une \textbf{exigence de réalisation} est satisfaite ou non par le prototype : elle se vérifie par un test fonctionnel et ne constitue pas, à elle seule, une connaissance nouvelle. Une \textbf{propriété opérationnelle} est une grandeur mesurée, comme un coût, un débit ou une répartition, sans prédiction posée à l'avance. Une \textbf{hypothèse scientifique} compare deux conditions et peut être réfutée par l'observation. Le tableau~\ref{tab:nature-qr} rattache chaque question à ces catégories et aux hypothèses de la section suivante.
+Ces questions n'appellent pas le même type de preuve. Une \textbf{exigence de réalisation} est satisfaite ou non par le prototype et se vérifie par un test fonctionnel, sans constituer une connaissance nouvelle. Une \textbf{propriété opérationnelle} est une grandeur mesurée — coût, débit, répartition — sans prédiction posée à l'avance. Une \textbf{hypothèse} compare deux conditions et peut être réfutée par l'observation. Le tableau~\ref{tab:qr-hypotheses} rattache chaque question à ces catégories ; la conclusion en donne le statut (tableau~\ref{tab:statut-hypotheses}). La priorisation des anomalies, les traitements périodiques et l'aide apportée à l'analyste par le tableau de bord relèvent de la conception (chapitre~\ref{chap:architecture}) mais ne sont pas mesurés ; ils ne font pas l'objet d'une question de recherche.
 
 \begin{table}[H]
 \centering
-\caption{Nature des questions de recherche et preuves attendues.}
-\label{tab:nature-qr}
+\caption{Questions de recherche, hypothèses et exigences, mesures.}
+\label{tab:qr-hypotheses}
 \small
-\begin{tabularx}{\textwidth}{p{0.07\textwidth} p{0.27\textwidth} X p{0.07\textwidth}}
+\begin{tabularx}{\textwidth}{p{0.07\textwidth} p{0.2\textwidth} X}
 \toprule
-\textbf{QR} & \textbf{Nature} & \textbf{Preuve attendue} & \textbf{Hyp.} \\
+\textbf{QR} & \textbf{Hypothèse ou exigence} & \textbf{Mesure} \\
 \midrule
-QR1 & Exigence de réalisation ; propriété opérationnelle & Lecture et émission de chaque unité dans le schéma commun ; remplissage du schéma par source. & H1 \\
-QR2 & Exigence de réalisation ; propriété opérationnelle & Tests du noyau multi-agent ; coût comparé des architectures ; reprise après panne ; répartition des tâches entre machines. & H2 \\
-QR3 & Exigence de réalisation ; hypothèse comparative & Décisions du routeur sur des sources connues et inconnues ; comparaison avec la même chaîne sans routage. & H3 \\
-QR4 & Exigence de réalisation & Fonctions du tableau de bord documentées par captures ; l'utilité pour l'analyste n'est pas mesurée. & --- \\
-QR5 & Hypothèse comparative ; exigence de réalisation & Comparaison mémoire activée et désactivée à tâches identiques ; cycle de promotion et de rejet. & H5 \\
-QR6 & Hypothèse comparative ; propriété mesurée & Comparaison des partitions, des unités d'analyse et des règles triviales sur les quatre jeux publics. & H4 \\
+QR1 & R1 ; propriété mesurée & Unités lues et émises dans le schéma commun ; champs standard remplis par source. \\
+QR2 & Propriétés opérationnelles & Débit des architectures A à D ; part des tâches traitées par la seconde machine virtuelle. \\
+QR3 & R2 ; H-CNP ; H5a & Doublons après une panne contrôlée, avec et sans magasin d'idempotence ; Contract Net contre une table statique et contre un répartiteur au moindre chargé ; mémoire activée ou non sous fiabilité hétérogène. \\
+QR4 & H3 & Rejet des sources inconnues et faux rejets ; non-infériorité d'un modèle spécialisé face à un modèle commun ; comparaison avec la même chaîne sans routage. \\
+QR5 & H4 & F1 sur un test tenu à l'écart, comparé à la meilleure règle simple évaluée sur le même test. \\
+--- & H5b ; R3 & Priorisation des anomalies (non mesurée) ; cycle de promotion et de rejet des modèles. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-La réponse ne peut donc pas se réduire à une seule métrique de classification. Les modèles sont évalués selon le protocole qui les produit, et l'architecture selon le coût, la reprise et la répartition qu'elle induit ; les exigences de réalisation sont vérifiées, sans être présentées comme des résultats scientifiques.
 
+\section*{Hypothèses, exigences et critères de décision}
 
-\section*{Hypothèses de recherche et critères de décision}
+\addcontentsline{toc}{section}{Hypothèses, exigences et critères de décision}
 
-\addcontentsline{toc}{section}{Hypothèses de recherche et critères de décision}
-
-Cinq hypothèses structurent les expériences. Elles constituent des propositions à confronter aux observations et ne préjugent pas de leur validation.
-
+Trois \textbf{exigences de réalisation} vérifient que le prototype fait ce qu'il annonce ; elles ne sont pas comptées parmi les hypothèses.
 \begin{description}[leftmargin=1.6cm, style=nextline]
-
-    \item[\textbf{H1.}]
-    Pour chaque unité des formats retenus, la normalisation produit un événement conforme au noyau commun et conserve une référence vérifiable vers la donnée source. L'hypothèse est réfutée si une unité présente ne peut être lue, normalisée ou retracée.
-
-    \item[\textbf{H2.}]
-    Dans l'architecture à agents, lors d'un arrêt contrôlé après persistance et avant émission du résultat, l'activation de l'idempotence permet de terminer la tâche sans perte ni effet dupliqué, contrairement à la même exécution sans idempotence. L'hypothèse est réfutée si cette différence n'est pas observée.
-
-    \item[\textbf{H3.}]
-    Sur un corpus comprenant des familles connues et inconnues, le routage par famille réduit le taux d'exécutions incompatibles par rapport à la même chaîne sans routage, sans accroître le taux d'erreur prédictive fixé par le protocole. L'hypothèse est réfutée en l'absence de réduction mesurée.
-
-    \item[\textbf{H4.}]
-    Sous une séparation stricte fixée avant l'expérience, au moins un modèle léger surpasse la baseline déclarée en F1 sur le test tenu à l'écart et reproduit ce résultat dans le budget local de temps et de mémoire fixé par le protocole. L'hypothèse est réfutée si aucun candidat ne satisfait conjointement ces critères.
-
-    \item[\textbf{H5.}]
-    À protocole et tâches identiques, l'activation de la mémoire persistante améliore au moins une métrique de priorisation fixée à l'avance sans dégrader les autres métriques principales, et la procédure de mise à jour ne remplace le modèle actif que lorsqu'un candidat satisfait la règle de promotion. L'hypothèse est réfutée si aucun gain n'est observé ou si une promotion contraire à la règle se produit.
-
+    \item[\textbf{R1.}] Chaque unité des formats retenus est lue, émise dans le schéma commun et rattachée à sa source.
+    \item[\textbf{R2.}] Après un arrêt contrôlé entre la persistance d'un effet et l'émission du résultat, la tâche se termine sans perte ni effet dupliqué.
+    \item[\textbf{R3.}] La procédure de mise à jour ne remplace le modèle actif que lorsqu'un candidat satisfait la règle de promotion.
 \end{description}
 
-Chaque hypothèse définit une observation susceptible de la réfuter. Les seuils de décision des détecteurs sont choisis sur la validation et jamais sur le test, et le seuil du routeur est gelé avant d'être appliqué aux sources supplémentaires. Aucun des critères de H1 à H5 n'a en revanche fait l'objet d'un préenregistrement ; seuls les protocoles des comparaisons E-H3b, E-H3b stricte, E-H4, E-H5, E-CNP et E-CNP au moindre chargé l'ont été, et plusieurs grandeurs que les énoncés supposent fixées à l'avance ne l'ont pas été : le taux d'exécutions incompatibles et le taux d'erreur de référence de H3, le budget local de temps et de mémoire de H4, la métrique de priorisation de H5. Certains protocoles complémentaires ont par ailleurs été conçus après lecture de résultats antérieurs, comme le protocole contigu G sur BGL (section~\ref{sec:bgl-second-protocole}). Une hypothèse reste non tranchée lorsque le comparateur requis n'a pas été exécuté, et une grandeur qui n'a pas été fixée avant l'exécution n'est pas fixée après coup ; la conclusion applique ces règles (tableau~\ref{tab:statut-hypotheses}).
+Les \textbf{hypothèses} comparent le prototype à une alternative.
+\begin{description}[leftmargin=1.6cm, style=nextline]
+    \item[\textbf{H3.}] Sur un corpus de familles connues et inconnues, le routage par famille réduit le taux d'exécutions incompatibles par rapport à la même chaîne sans routage, sans accroître le taux d'erreur prédictive ; un modèle spécialisé par famille n'est pas inférieur à un modèle commun.
+    \item[\textbf{H4.}] Sous une séparation stricte, au moins un modèle léger dépasse en F1 la meilleure règle simple évaluée sur le même test tenu à l'écart, dans un budget local de temps et de mémoire.
+    \item[\textbf{H5a.}] Lorsque la fiabilité réelle des agents s'écarte de la confiance qu'ils déclarent, la mémoire de leurs succès et de leurs échecs réduit les échecs à la première exécution sans dégrader le débit.
+    \item[\textbf{H5b.}] La mémoire des retours de l'analyste améliore la priorisation des anomalies.
+    \item[\textbf{H-CNP.}] Face à un répartiteur au moindre chargé, la négociation Contract Net réduit les échecs à la première exécution sans perte de débit supérieure à 5\,\%.
+\end{description}
 
-Les cinq hypothèses ne sont pas de même nature. H1 et H2 portent sur des exigences de réalisation : leur issue dépend de la correction de l'implémentation, et, sans magasin d'idempotence, le rejeu d'une tâche dont l'effet est déjà persistant répète cet effet par construction. Elles vérifient que le prototype fait ce qu'il annonce, sans constituer des propositions explicatives. H3, H4 et H5 sont comparatives : elles opposent le prototype à une chaîne sans routage, à une baseline ou à une exécution sans mémoire, et seules ces comparaisons peuvent apporter une connaissance au-delà du fonctionnement du code.
+Ces énoncés reprennent les hypothèses initiales du travail en les classant selon leur nature. Les deux premières hypothèses initiales portaient sur la lecture des formats et sur la reprise : leur issue dépendait de la correction de l'implémentation, et, sans magasin d'idempotence, le rejeu d'une tâche dont l'effet est déjà persistant répète cet effet par construction. Elles deviennent R1 et R2. L'hypothèse initiale sur la mémoire réunissait trois propositions distinctes, ici séparées en H5a, H5b et R3. H-CNP est une hypothèse de campagne : elle reprend la règle de décision d'une comparaison complémentaire et n'appartient pas au programme initial. Ce reclassement ne modifie aucun statut ; il évite de compter des exigences de réalisation parmi les hypothèses.
 
-H1 découle directement de l'hétérogénéité des formats. Elle sera examinée à partir du comportement des adaptateurs et du pipeline de normalisation. Il ne s'agit pas de supposer qu'un schéma unique puisse représenter parfaitement toutes les propriétés de toutes les sources, mais de déterminer si plusieurs journaux peuvent être rapprochés sans perdre les informations nécessaires à leur analyse et à leur audit.
+L'opposition entre E1 et E2 structure l'analyse ; elle n'a pas été fixée avant l'ensemble des expériences. Seules les comparaisons dont le critère a été versionné dans le dépôt avant leur exécution la confrontent à un critère posé à l'avance : la comparaison des modèles spécialisés et commun sous partition stricte, la comparaison d'Histogram aux règles simples sur HDFS, la mémoire sous fiabilité hétérogène, Contract Net face à une table statique puis face au répartiteur au moindre chargé, et la réexécution du holdout par scénario de CICIDS2017. Ce versionnement n'est pas un préenregistrement auprès d'un registre externe ; plusieurs de ces protocoles ont été conçus après lecture de résultats antérieurs, et les autres résultats illustrent l'opposition sans la tester.
 
-Avec H2, l'attention se déplace vers l'architecture. La modularité et la traçabilité peuvent être observées dans la conception et dans les traces d'exécution ; la robustesse, elle, nécessite des scénarios de reprise et de défaillance contrôlée. La comparaison avec une exécution plus monolithique permettra également de mesurer le prix de cette organisation.
-
-H3 porte sur le routage. Les familles de journaux ayant des structures et des variables différentes, orienter chaque source vers un traitement compatible devrait limiter certaines incohérences. Cette hypothèse ne suppose toutefois pas qu'un modèle spécialisé soit automatiquement supérieur à un modèle plus général. Compatibilité architecturale et gain prédictif doivent donc être examinés séparément.
-
-H4 concerne le choix de modèles relativement légers. Ce choix est cohérent avec le périmètre local du prototype et avec l'objectif de reproductibilité. Il ne constitue pas une affirmation de supériorité face aux architectures profondes. L'intérêt de ces modèles sera jugé à partir des données, du protocole expérimental, du coût de calcul, de l'interprétabilité et de leur intégration dans la chaîne.
-
-H5 introduit enfin la mémoire persistante. Celle-ci n'est pas considérée comme un mécanisme d'apprentissage continu capable de modifier spontanément les modèles en production. Son rôle consiste à conserver des informations sur les exécutions, les décisions, les erreurs et certains retours de l'analyste, tout en fournissant un support à une procédure de mise à jour contrôlée.
+Plusieurs grandeurs que les hypothèses supposent fixées ne l'ont pas été avant les expériences : le taux d'exécutions incompatibles et le taux d'erreur de référence de H3, le budget local de temps et de mémoire de H4, la métrique de priorisation de H5b. Toute grandeur fixée après coup serait postérieure aux résultats : elle ne sert pas à les trancher et ne vaudrait que pour une expérience future dont le protocole serait versionné avant exécution. Une hypothèse reste donc non tranchée lorsque son comparateur n'a pas été exécuté ou que sa grandeur n'a pas été fixée ; une composante est réfutée lorsque le comparateur a été exécuté et que l'observation prévue se produit. Les seuils des détecteurs sont choisis sur la validation, jamais sur le test, et le seuil du routeur est gelé avant d'être appliqué aux sources supplémentaires.
 
 
-\section*{Objectif général et objectifs spécifiques}
+\section*{Objectifs}
 
-\addcontentsline{toc}{section}{Objectif général et objectifs spécifiques}
+\addcontentsline{toc}{section}{Objectifs}
 
-L'\textbf{objectif général} de ce travail est de concevoir, implémenter et évaluer un prototype modulaire, nommé \textit{Ariel Logminer}, destiné à la détection d'anomalies candidates dans des journaux système et réseau de formats hétérogènes. La conception prévoit également leur priorisation, qui n'est pas évaluée. Le prototype organise une chaîne allant de l'acquisition ou de la lecture des données jusqu'à la restitution des résultats. Cette chaîne intègre la normalisation, le routage, la détection, la corrélation, la mémoire, l'audit et les mécanismes nécessaires à une validation humaine.
-
-Cet objectif général se décline en objectifs spécifiques :
-
+L'\textbf{objectif général} est de concevoir, implémenter et évaluer un prototype modulaire, Ariel Logminer, destiné à la détection d'anomalies candidates dans des journaux système et réseau de formats hétérogènes, et d'attribuer chacune de ses propriétés au mécanisme qui la produit. Il se décline en cinq objectifs spécifiques, alignés sur les questions de recherche :
 \begin{enumerate}
-
-    \item caractériser les principales familles de journaux utilisées dans le travail et identifier les contraintes liées à leur hétérogénéité ;
-
-    \item définir une représentation commune permettant au pipeline de manipuler plusieurs catégories de données tout en conservant les informations nécessaires à l'analyse ;
-
-    \item concevoir une architecture modulaire fondée sur des composants et agents spécialisés capables de poursuivre des objectifs bornés, avec des mécanismes explicites de communication, de délégation, de suivi et d'audit ;
-
-    \item mettre en œuvre un mécanisme de routage capable d'orienter une source vers une famille et un traitement compatibles ;
-
-    \item intégrer des méthodes supervisées et non supervisées adaptées aux différents scénarios expérimentaux, sans supposer qu'un modèle unique convient à toutes les données ;
-
-    \item intégrer un mécanisme de corrélation afin de rapprocher plusieurs anomalies candidates lorsqu'elles présentent des relations temporelles ou contextuelles compatibles ;
-
-    \item mettre en place une mémoire persistante et une procédure contrôlée permettant de conserver les décisions et d'encadrer l'évaluation d'un modèle candidat avant son éventuelle promotion ;
-
-    \item proposer une interface permettant de consulter, filtrer et examiner les signaux produits par la chaîne, tout en maintenant la validation humaine dans le processus ;
-
-    \item évaluer le prototype à travers des protocoles documentés portant à la fois sur la qualité de détection, la robustesse fonctionnelle, le routage, le traitement multiformat, les ressources utilisées, l'orchestration et la distribution de laboratoire ;
-
-    \item documenter les données, paramètres, scripts et artefacts nécessaires pour rendre les expériences aussi vérifiables et reproductibles que le permet l'environnement étudié.
-
+    \item définir un schéma commun et des adaptateurs pour plusieurs familles de journaux, et mesurer ce que chaque source en remplit ;
+    \item concevoir une architecture d'agents à objectifs bornés, dotée d'un protocole d'attribution, de délégation, de reprise et d'audit explicites, et en mesurer le coût ;
+    \item confronter la reprise, l'attribution et la mémoire à des architectures de référence qui conservent les mécanismes simples sans organisation en agents ;
+    \item mettre en œuvre un routage open-set et des modèles par famille, et les comparer à leurs alternatives ;
+    \item évaluer la détection sous des protocoles stricts face à des règles triviales, en documentant données, paramètres et artefacts pour rendre les résultats vérifiables.
 \end{enumerate}
-
-Ces objectifs montrent le caractère transversal du travail. Certains concernent directement l'apprentissage automatique, d'autres relèvent davantage de l'architecture logicielle, du traitement des données ou de la validation expérimentale. Ariel Logminer cherche précisément à faire fonctionner ces dimensions dans une même chaîne.
 
 
 \section*{Démarche méthodologique}
 
 \addcontentsline{toc}{section}{Démarche méthodologique}
 
-La démarche retenue combine conception logicielle et expérimentation. Elle ne consiste pas à entraîner un modèle sur un jeu de données puis à généraliser son score à l'ensemble du système. Chaque fonction du prototype est évaluée avec des données et un protocole correspondant à la question étudiée.
+La démarche combine conception logicielle et expérimentation. Elle ne consiste pas à entraîner un modèle puis à généraliser son score au système : chaque fonction du prototype est évaluée avec les données et le protocole qui correspondent à la question posée, et chaque mécanisme est, autant que possible, confronté à une alternative plus simple sur les mêmes tâches.
 
-Le travail commence par l'établissement des fondements scientifiques et techniques nécessaires : journalisation, parsing, principales familles de détection d'anomalies, systèmes multi-agents, distribution des tâches, corrélation et restitution à l'analyste. Cette étude permet de préciser les fonctions attendues du prototype et, tout aussi important, les limites à ne pas dépasser dans l'interprétation des résultats.
+L'état de l'art précise les fonctions attendues et les limites d'interprétation. La conception sépare acquisition, parsing, normalisation, routage, détection, corrélation, mémoire, audit et restitution ; les agents échangent selon un contrat métier explicite, indépendant du bus de messages. L'implémentation matérialise cette architecture dans une pile exécutable localement.
 
-La conception de l'architecture s'appuie ensuite sur une séparation claire des responsabilités. Acquisition ou découverte des sources, parsing, normalisation, routage, détection, corrélation, mémoire, audit et restitution sont traités comme des fonctions distinctes. Les agents échangent au moyen d'un contrat métier explicite, tandis que le mécanisme de transport reste séparé. Ce choix évite de confondre la logique du traitement avec les détails propres au bus de messages.
+Les données relèvent de catégories distinctes. Parmi les \textbf{jeux publics}, CICIDS2017 fournit des flux réseau comportant du trafic bénin et des scénarios d'attaque \cite{sharafaldin2018cicids} ; HDFS \cite{xu2009hdfs} et BGL \cite{oliner2007bgl}, diffusés notamment par Loghub \cite{zhu2023loghub}, sont des journaux de systèmes distribués et de supercalculateur. La comparaison des modèles spécialisés emploie aussi UNSW-NB15 et un jeu public de journaux d'authentification Linux entièrement synthétique, diffusé sur Kaggle et généré avec la bibliothèque Faker ; aucun résultat obtenu sur ce dernier ne vaut pour des journaux réels. S'y ajoutent des \textbf{journaux collectés localement}, des \textbf{exports d'outils de sécurité} et des \textbf{scénarios synthétiques contrôlés}, qui ne sont confondus ni entre eux ni avec des incidents réels.
 
-L'implémentation matérialise cette architecture sous la forme d'un pipeline, d'adaptateurs de données, d'agents, d'un registre de modèles, de mécanismes de communication, d'une couche de persistance, d'un système d'audit et d'un tableau de bord. Une pile logicielle exécutable localement a été privilégiée afin de conserver un niveau raisonnable de contrôle et de reproductibilité.
+Les expériences de détection ne relèvent pas toutes du même cadre. Sur CICIDS2017, l'évaluation porte sur une classification supervisée binaire, comparée sous séparation aléatoire, temporelle et par scénario d'attaque tenu à l'écart ; un détecteur appris sur le seul trafic bénin sert de contrôle. HDFS et BGL relèvent d'une détection d'anomalies à calibration semi-supervisée : le score de rareté est appris sans les labels, le seuil fixé sur une validation étiquetée, et le parsing ajusté sur le seul entraînement puis gelé. Chaque modèle est comparé à des règles triviales sur le même test.
 
-Les données proviennent de plusieurs catégories qu'il est nécessaire de distinguer. Parmi les \textbf{jeux de données publics}, CICIDS2017 fournit des flux réseau comportant du trafic bénin et différents scénarios d'attaque dans un environnement contrôlé \cite{sharafaldin2018cicids}. CSE-CIC-IDS2018, produit par la même équipe selon une méthodologie comparable, sert de jeu externe \cite{sharafaldin2018cicids,cic2018csecicids}. HDFS est largement utilisé pour l'étude des anomalies dans les journaux de systèmes distribués \cite{xu2009hdfs}, tandis que BGL provient des journaux du supercalculateur Blue Gene/L \cite{oliner2007bgl}. Leur diffusion et leur emploi pour l'analyse automatisée de journaux sont également documentés dans Loghub \cite{zhu2023loghub}.
-
-Le protocole utilise aussi des \textbf{journaux collectés localement}, des \textbf{exports locaux d'outils de sécurité} et des \textbf{scénarios synthétiques contrôlés}. Ces catégories ne sont pas confondues. Une collecte locale n'est pas présentée comme un jeu de données public, et un scénario créé pour solliciter un mécanisme précis ne constitue pas une validation sur des incidents réels de SOC. La provenance des sources et des copies locales est conservée.
-
-Les expériences de détection suivent plusieurs protocoles et ne relèvent pas toutes du même cadre d'apprentissage. Sur les flux réseau (CICIDS2017 et CSE-CIC-IDS2018), l'évaluation porte principalement sur une \textbf{classification supervisée binaire}, entraînée sur des exemples étiquetés des deux classes ; un détecteur non supervisé, appris sur le seul trafic bénin, est évalué à titre de contrôle. Pour CICIDS2017, l'étude compare notamment une séparation aléatoire stratifiée à des holdouts par scénario, sur plusieurs graines. L'objectif est d'observer dans quelle mesure la constitution des ensembles d'entraînement et de test modifie les performances. Une campagne complémentaire compare plusieurs modèles légers sur les mêmes scénarios afin de vérifier que les conclusions ne dépendent pas d'un seul algorithme.
-
-HDFS et BGL sont traités différemment, dans un cadre de détection d'anomalies : le score de rareté est appris sans utiliser les labels (pour BGL, l'entraînement ne contient d'ailleurs aucun événement anormal), tandis que le seuil est fixé sur une validation étiquetée. Il s'agit donc d'une détection non supervisée à calibration semi-supervisée. Entraînement, validation et test sont séparés explicitement. Le parsing par modèles de messages est ajusté uniquement sur l'entraînement, puis son état est gelé avant l'évaluation. Les seuils nécessaires aux méthodes sont choisis à partir de la validation et non du test final. Cette organisation limite l'utilisation involontaire d'informations provenant du test lors de la préparation des données.
-
-Toutes les expériences ne cherchent pas à mesurer la qualité d'un classifieur. La validation multiformat vérifie quelles sources traversent effectivement les adaptateurs et atteignent la représentation normalisée. Le routeur est évalué sur sa capacité à reconnaître la famille d'une entrée dans le corpus retenu. Un benchmark compare également une exécution monolithique à une exécution par agents afin de quantifier le coût de l'orchestration. Les campagnes Redis et multi-VM examinent, de leur côté, la consommation des tâches, leur acquittement et un scénario de reprise en laboratoire.
-
-La corrélation fait l'objet d'une expérience séparée, construite à partir de scénarios synthétiques dont le regroupement attendu est connu. Cette expérience mesure la capacité des règles à rapprocher correctement les événements dans le corpus contrôlé ; elle ne constitue pas une validation sur des incidents réels de SOC.
-
-Une procédure de mise à jour contrôlée complète le dispositif. Elle compare un modèle candidat au modèle courant à partir d'une métrique et d'un seuil définis. Les informations permettant de vérifier l'intégrité de la procédure sont conservées. Il s'agit d'un mécanisme de gouvernance expérimentale des modèles, et non d'un apprentissage continu autonome déjà déployé en production.
-
-Les preuves produites sont donc de plusieurs natures. Les métriques de classification décrivent le comportement des modèles lorsqu'une vérité terrain est disponible. Les mesures de débit, de CPU et de mémoire caractérisent certains coûts d'exécution. Les campagnes fonctionnelles vérifient la circulation réelle des données et des tâches. Les captures documentent les fonctions de l'interface, sans prétendre mesurer son utilisabilité. Les manifestes et empreintes servent enfin à relier les données et les artefacts aux expériences qui les ont produits.
+Les autres campagnes ne mesurent pas un classifieur : la validation multiformat vérifie quelles sources atteignent le schéma commun ; le routeur est évalué sur des sources connues et inconnues ; un benchmark compare une exécution monolithique, des workers centralisés et deux architectures à agents ; des comparaisons appariées opposent Contract Net à une table statique et à un répartiteur au moindre chargé, la mémoire activée à la mémoire désactivée, et chaque architecture avec et sans magasin d'idempotence ; les campagnes Redis et multi-VM examinent l'exécution sur deux machines virtuelles ; la corrélation est évaluée sur des scénarios synthétiques dont le regroupement attendu est connu. Les mesures sont rattachées par des manifestes et des empreintes aux artefacts qui les ont produites (tableau~\ref{tab:preuves-experimentales}).
 
 
-\section*{Contributions du travail}
+\section*{Contributions et délimitations}
 
-\addcontentsline{toc}{section}{Contributions du travail}
+\addcontentsline{toc}{section}{Contributions et délimitations}
 
-Ariel Logminer n'introduit pas un nouvel algorithme d'apprentissage automatique. Son apport se situe ailleurs : dans l'organisation de plusieurs mécanismes au sein d'une même chaîne, dans leur confrontation à des données de nature différente et dans la manière dont leurs résultats sont documentés et évalués.
+Le travail n'introduit ni algorithme, ni protocole de négociation, ni schéma nouveau. Sa contribution est une \textbf{étude expérimentale critique} d'intégration et d'orchestration : un prototype complet, de la lecture des journaux à leur audit, sert de banc d'essai pour attribuer chaque propriété observée soit à l'organisation en agents, soit à un mécanisme plus simple qu'elle embarque. Les comparaisons architecturales — idempotence transposée aux architectures sans agents, répartiteur au moindre chargé, mémoire sous fiabilité hétérogène — sont propres au travail ; les constats sur la détection répliquent en revanche, sur les jeux étudiés, des critiques déjà publiées. Les résultats défavorables sont conservés au même titre que les autres.
 
-Sur le plan \textbf{architectural}, le prototype sépare les principales fonctions du traitement des journaux : parsing, normalisation, routage, détection, corrélation, mémoire, audit et visualisation. Cette organisation permet de suivre plus clairement le passage d'une source brute vers un résultat inspectable.
-
-L'apport \textbf{méthodologique} tient surtout au protocole d'évaluation. Les conclusions ne reposent pas uniquement sur une partition aléatoire. Le travail étudie la sensibilité des résultats à des holdouts par scénario, compare plusieurs modèles et impose, pour HDFS et BGL, une séparation explicite entre entraînement, validation et test. L'objectif est de distinguer les résultats qui restent valables lorsque les conditions d'évaluation deviennent plus exigeantes.
-
-La dimension \textbf{logicielle} est concrétisée par un prototype fonctionnel intégrant des agents spécialisés, un routeur, plusieurs traitements de détection, une mémoire persistante, un mécanisme d'audit, une corrélation et une interface de consultation. L'architecture peut ainsi être observée dans son exécution, et non uniquement à travers un schéma conceptuel.
-
-Sur le plan \textbf{expérimental}, plusieurs campagnes ciblent des propriétés différentes : généralisation des modèles, traitement multiformat, routage, comparaison agents/monolithe, comparaison de Contract Net à une table statique et à un répartiteur au moindre chargé, communication via Redis, exécution multi-VM, corrélation et mise à jour contrôlée. Les résultats positifs sont conservés, mais les résultats partiels ou négatifs le sont également lorsqu'ils permettent de préciser la portée réelle du système.
-
-Le prototype possède enfin une dimension \textbf{opérationnelle} limitée au cadre étudié. Les résultats sont associés à des mécanismes d'audit, de filtrage, de mémoire et de restitution qui maintiennent l'analyste dans la boucle de décision. Ce constat vaut pour le laboratoire.
-
-Les expériences permettent ainsi de caractériser non seulement les performances, mais aussi leurs limites. Elles montrent notamment qu'une séparation aléatoire peut produire des résultats bien plus favorables qu'un holdout par scénario, que, sous ces protocoles stricts, aucun résultat principal ne dépasse la meilleure règle simple évaluée sur le même test, qu'une architecture à agents introduit un coût mesurable et que la négociation n'apporte aucun avantage établi sur une répartition au moindre chargé. Ces observations participent directement à la définition des propriétés réellement démontrées.
-
-
-\section*{Délimitations et portée du mémoire}
-
-\addcontentsline{toc}{section}{Délimitations et portée du mémoire}
-
-Ce travail porte sur la conception et l'évaluation d'un \textbf{prototype}. Ce terme fixe la portée des résultats présentés.
-
-Les expériences reposent sur un ensemble identifié de jeux de données publics, de journaux ou exports locaux et de scénarios synthétiques. Elles permettent de décrire le comportement du système sur ces sources. Elles ne permettent pas, à elles seules, d'établir que le même comportement serait observé dans tous les environnements informatiques.
-
-La distribution est étudiée dans une topologie de laboratoire. Redis Streams, plusieurs workers et plusieurs machines virtuelles servent à observer l'échange, l'attribution et la reprise de certaines tâches. La haute disponibilité, la scalabilité industrielle et l'exploitation multi-site ne sont pas évaluées.
-
-Le tableau de bord est validé sur ses fonctions : affichage, filtrage et consultation des résultats. L'utilisabilité au sens ergonomique reste en dehors du protocole expérimental. Aucun groupe d'analystes n'a été mobilisé pour mesurer le temps d'investigation, la charge cognitive ou la facilité d'utilisation.
-
-Les méthodes non supervisées produisent des anomalies candidates. Elles ne permettent pas, en l'absence de vérité terrain fiable, d'assimiler automatiquement chaque signal à une attaque ni d'estimer directement le nombre réel d'incidents.
-
-La mémoire persistante conserve des informations utiles aux décisions, aux exécutions et à la reprise des objectifs, tandis que la procédure de mise à jour contrôlée fournit un cadre pour comparer un modèle candidat au modèle courant. L'automatisation complète du réentraînement, de la validation et du déploiement continu reste une perspective.
-
-Le choix de modèles relativement légers répond enfin au périmètre local de l'étude. Les architectures profondes spécialisées dans l'analyse séquentielle des journaux sont prises en compte dans l'état de l'art, mais leur comparaison exhaustive avec toutes les méthodes intégrées au prototype n'est pas l'objet principal du mémoire ; les scores publiés sont rappelés au chapitre des résultats avec leur protocole, sans être réputés directement comparables. De même, la détection d'intrusion réseau est évaluée pour l'essentiel comme une classification supervisée : la capacité à détecter des attaques sans exemple étiqueté n'est mesurée que par un contrôle limité, dont le résultat est défavorable.
-
-Ces limites indiquent jusqu'où les résultats peuvent être interprétés et quelles extensions demanderaient de nouvelles expériences.
+Les résultats décrivent un prototype de laboratoire, exécuté sur un ou deux hôtes, sur un ensemble identifié de sources. Ils ne permettent pas d'établir le comportement du système dans un SOC industriel ; les limites relatives aux données, à la distribution, aux grandeurs non mesurées et à l'interface sont rassemblées à la section~\ref{sec:limites}.
 
 
 \section*{Organisation du mémoire}
 
 \addcontentsline{toc}{section}{Organisation du mémoire}
 
-Outre cette introduction et la conclusion générale, le mémoire est structuré en sept chapitres.
-
-Le \textbf{chapitre 1} présente l'état de l'art et les fondements nécessaires à la compréhension du travail. Il aborde la journalisation, la détection d'anomalies, les méthodes supervisées et non supervisées, le parsing des journaux, les architectures multi-agents, la distribution, la corrélation et les approches récentes pertinentes. Cette analyse sert également à préciser le positionnement scientifique d'Ariel Logminer.
-
-Le \textbf{chapitre 2} décrit le modèle proposé et l'architecture du prototype. Les composants, leurs responsabilités, les flux de traitement, le contrat de messages ainsi que les mécanismes de routage, de mémoire, d'audit, de corrélation et de mise à jour contrôlée y sont détaillés.
-
-Le \textbf{chapitre 3} passe de la conception à l'implémentation. Il présente l'organisation logicielle, les technologies retenues, les agents, les adaptateurs, le registre de modèles, les mécanismes de communication, la persistance et l'interface de consultation.
-
-Le \textbf{chapitre 4} constitue le cœur expérimental du mémoire. Il rassemble les sources de données, leur traçabilité, les métriques, les protocoles et les résultats des campagnes consacrées à CICIDS2017, HDFS/BGL, au traitement multiformat, au routeur, à la comparaison agents/monolithe, à la validation multi-VM, à la corrélation et à la mise à jour contrôlée.
-
-Le \textbf{chapitre 5} examine la validité scientifique des résultats. Les menaces à la validité interne, externe, statistique et de construit y sont discutées, de même que les limites liées aux jeux de données, aux labels, aux partitions et à l'environnement expérimental.
-
-Le \textbf{chapitre 6} revient sur les résultats pour les interpréter de manière transversale. Il les met en relation avec les questions de recherche, les hypothèses et la littérature, sans écarter les résultats négatifs ni les limites observées.
-
-Le \textbf{chapitre 7} rassemble les éléments nécessaires à la reproductibilité, au déploiement et à l'exploitation du prototype. Il décrit l'environnement, les configurations, les paramètres, les scripts, les artefacts et les précautions à prendre pour reproduire les campagnes dans le périmètre étudié.
-
-La \textbf{conclusion générale} reprend enfin les principaux résultats à la lumière de la problématique et des objectifs. Elle revient sur les questions de recherche et les hypothèses, distingue les contributions effectivement soutenues par les expériences et présente les limites ainsi que les prolongements possibles.
+Le \textbf{chapitre 1} présente l'état de l'art et le positionnement du travail. Le \textbf{chapitre 2} décrit le modèle proposé et l'architecture : composants, contrat de messages, routage, utilité, mémoire, audit et corrélation. Le \textbf{chapitre 3} présente l'implémentation. Le \textbf{chapitre 4} rassemble les protocoles et les résultats de toutes les campagnes ; c'est le seul chapitre où les chiffres sont détaillés. Le \textbf{chapitre 5} examine la validité des résultats et regroupe les limites. Le \textbf{chapitre 6} distingue ce qui est implémenté, testé et effectivement supérieur à l'alternative simple, et répond à la question centrale. Le \textbf{chapitre 7} décrit les conditions de reproductibilité. La \textbf{conclusion générale} donne le statut des hypothèses et les perspectives.

@@ -1,21 +1,21 @@
 # Graph Report - TFE  (2026-11-05)
 
 ## Corpus Check
-- 1452 files · ~3,698,439 words
+- 1460 files · ~3,706,960 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 9823 nodes · 15768 edges · 1195 communities (687 shown, 508 thin omitted)
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 775 edges (avg confidence: 0.61)
+- 9901 nodes · 15885 edges · 1185 communities (676 shown, 509 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 782 edges (avg confidence: 0.61)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3c86587b`
+- Built from commit: `472d5e7b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- RedisMessageBus
+- src/logminer/api.py
 - docs/memoire/pack_redaction_final/09_code_et_scripts_preuves/api.py
 - src/logminer/agents/supervisor_agent.py
 - scripts/monthly_model_retraining.py
@@ -99,9 +99,9 @@
 - scripts/run_true_multi_agent_experiments.py
 - claim_evidence/FINAL_EXPERIMENTAL_REPORT_FOR_LUNA.md
 - final_experiments_2026/FINAL_EXPERIMENTAL_REPORT_FOR_LUNA.md
-- SQLiteIdempotencyStore
+- IdempotencyRecord
 - DECISIONS SCIENTIFIQUES FIGÉES
-- sha256_file
+- relative
 - Rapport final — transformation multi-agents d’Ariel Logminer
 - scripts/run_multiformat_validation.py
 - scripts/run_hdfs_block_strengthening.py
@@ -126,7 +126,7 @@
 - V2 FastAPI
 - Synthese Des Resultats Pour Memoire Et Articles
 - Synthese Des Resultats Pour Memoire Et Articles
-- docs/memoire/pack_redaction_final/09_code_et_scripts_preuves/pipeline.py
+- run_pipeline
 - 3. Inventaire vérifié
 - Etat Des Lieux Technique Face Au Document Directeur
 - Etat Des Lieux Technique Face Au Document Directeur
@@ -153,7 +153,7 @@
 - References A Mobiliser Par Chapitre
 - Reviewer 1
 - Entrainement Cloud Et Sauvegarde Des Modeles
-- relative
+- Any
 - relative
 - .merge-main-staging/src/logminer/api.py
 - ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py
@@ -197,7 +197,7 @@
 - 7. Ablation du routage
 - 8. Logistic Regression à 0,233670
 - Partie B — Limites : une version complète au chapitre 5, renvois ailleurs
-- ResourceSampler
+- score_events
 - Rapport de livraison finale
 - Modification log
 - Architecture Agents Intelligents Multi-Taches
@@ -226,9 +226,9 @@
 - CNP multi-source avec inférence réelle des modèles routés
 - Politique Des Images Et Figures
 - Memoire Logminer LaTeX Overleaf
-- relative
+- .merge-main-staging/scripts/run_multisource_cnp_model_inference.py
 - Incertitudes P0 fermées
-- write_audit
+- _audit
 - État de la consolidation scientifique finale
 - HUMANIZATION PASS
 - NEXT ACTION
@@ -508,7 +508,7 @@
 - memoire_logminer_latex_overleaf/tables/table_supervisor_stress_summary.md
 - memoire_logminer_latex_overleaf/tables/table_wazuh_logminer_overlap.md
 - memoire_logminer_latex_overleaf/tables/table_wazuh_logminer_summary.md
-- AgentCapability
+- Protocole préenregistré — E-H5-MEMORY-RELIABILITY
 - RedisMessageBus
 - .merge-main-staging/scripts/run_final_csecicids2018_lr_forensic.py
 - add_sequence_window_features
@@ -520,17 +520,17 @@
 - .merge-main-staging/src/logminer/detectors/file_detector.py
 - .merge-main-staging/ARIEL_LOGMINER_MEMOIRE_FINAL/evidence/claim_evidence/FINAL_EXPERIMENTAL_REPORT_FOR_LUNA.md
 - .merge-main-staging/docs/memoire/final_experiments_2026/FINAL_EXPERIMENTAL_REPORT_FOR_LUNA.md
-- MessageBus
+- Protocole préenregistré — E-CNP-STATIC-ASSIGNMENT
 - AgentTask
 - .merge-main-staging/Stitch web/server.mjs
 - .merge-main-staging/web/dashboard/server.mjs
 - SQLiteIdempotencyStore
 - .merge-main-staging/src/logminer/parsers/windows_event.py
 - DECISIONS SCIENTIFIQUES FIGÉES
-- .merge-main-staging/scripts/run_multisource_cnp_model_inference.py
+- .merge-main-staging/scripts/run_multisource_cnp_e2e_strengthening.py
 - correlate_anomalies
 - scripts/run_multisource_cnp_model_inference.py
-- AgentMessage
+- RedisMessageBus
 - Rapport final — transformation multi-agents d’Ariel Logminer
 - RedisContractNetTransport
 - run_pipeline
@@ -548,13 +548,13 @@
 - Article 1 - Conference IEEE
 - Article 1 - Conference IEEE
 - Analyse Critique - Reference Deep Learning For Anomaly Detection In Log Data
-- MqttMessageBus
+- RedisMessageBus
 - Analyse Critique - Reference Deep Learning For Anomaly Detection In Log Data
 - .merge-main-staging/scripts/build_cloud_training_dataset.py
 - .merge-main-staging/tests/test_final_scientific_consolidation.py
 - PHASE 13A — DATA TRACEABILITY REPORT
 - PHASE 13A — DATA TRACEABILITY REPORT
-- ContractNetCoordinator
+- .negotiate
 - .merge-main-staging/docs/memoire/pack_redaction_final/09_code_et_scripts_preuves/run_family_routing_ablation.py
 - run_pipeline
 - discover_logs
@@ -569,7 +569,7 @@
 - ERRORS AND BLOCKERS
 - V2 FastAPI
 - .merge-main-staging/scripts/run_intelligent_agents_ablation.py
-- run_routed_detection
+- Livrable 5 — Architecture multi-agents : preuves et limites
 - correlate_anomalies
 - Synthese Des Resultats Pour Memoire Et Articles
 - .merge-main-staging/docs/memoire/pack_redaction_final/09_code_et_scripts_preuves/generate_memoire_assets.py
@@ -578,7 +578,7 @@
 - .merge-main-staging/scripts/generate_memoire_assets.py
 - .merge-main-staging/scripts/prepare_validation_dataset.py
 - .merge-main-staging/scripts/run_router_evaluation.py
-- .merge-main-staging/src/logminer/agents/feedback_memory.py
+- _run_detector_tasks
 - main
 - scripts/run_router_evaluation.py
 - 3. Inventaire vérifié
@@ -617,7 +617,7 @@
 - .merge-main-staging/scripts/capture_dashboard_cdp.mjs
 - .merge-main-staging/scripts/evaluate_cicids_model_candidates.py
 - .merge-main-staging/scripts/evaluate_controlled_split_comparison.py
-- EffectLedger
+- run_e_h5_e_cnp.py
 - .merge-main-staging/scripts/prepare_dashboard_capture_data.py
 - .merge-main-staging/scripts/run_parallel_resource_campaign.py
 - .merge-main-staging/scripts/run_resource_campaign.py
@@ -653,12 +653,12 @@
 - .merge-main-staging/scripts/finalize_dataset_strengthening.py
 - .merge-main-staging/scripts/run_controlled_monolith_vs_agents.py
 - .merge-main-staging/scripts/run_correlation_synthetic_validation.py
-- .merge-main-staging/scripts/run_router_independent_strengthening.py
+- load_source
 - prepare_linux_auth_frame
 - .merge-main-staging/src/logminer/agents/dashboard.py
 - request_windows_sensitive_collection
 - scripts/run_correlation_synthetic_validation.py
-- agent5_correlation_extended.py
+- datetime
 - Registre Des Modeles Entraines
 - Registre Des Modeles Entraines
 - .merge-main-staging/scripts/prepare_linux_auth_dataset.py
@@ -687,7 +687,7 @@
 - 7. Ablation du routage
 - 8. Logistic Regression à 0,233670
 - build_agent
-- run_ablation
+- Livrable 4 — Méthodologie expérimentale et baselines
 - main
 - .merge-main-staging/src/logminer/common.py
 - ._emit_json
@@ -707,7 +707,7 @@
 - .merge-main-staging/scripts/generate_multi_agent_architecture_diagrams.py
 - .merge-main-staging/scripts/run_intelligent_redis_endurance_campaign.py
 - .merge-main-staging/scripts/run_robustness_scalability_checks.py
-- datetime
+- .merge-main-staging/src/logminer/parsers/syslog.py
 - Campagne Redis Agents Intelligents
 - Evolution V1 CLI Vers V2 FastAPI/Redis
 - EXPERIMENT CICIDS HOLDOUT MULTISEED — SUMMARY
@@ -764,8 +764,8 @@
 - .merge-main-staging/scripts/launch_logminer_app.ps1
 - _normalise_chunk
 - .merge-main-staging/scripts/verify_model_update_e2e.py
-- .merge-main-staging/src/logminer/parsers/bgl.py
-- finalize_cnp_endurance_artifacts.py
+- scripts/verify_model_update_e2e.py
+- run_local_pipeline
 - HANDOFF — Révision finale du mémoire Ariel Logminer
 - Contrat Des Messages Agents
 - Memoire
@@ -786,7 +786,7 @@
 - Campagne Agents Intelligents Multi-Taches
 - Campagne Redis Endurance 6h Agents Intelligents
 - enrich_sequence_windows
-- GoalState
+- supervisor_campaign
 - Campagne Redis Endurance 6h Agents Intelligents
 - Campagne Redis Endurance 6h Agents Intelligents
 - Campagne Redis Longue Agents Intelligents
@@ -1058,7 +1058,7 @@
 - src/logminer/writer.py
 - _candidate_models
 - PATCH NOTES — Agent 2, Histogram et HDFS
-- MultiTaskIntelligentAgent
+- _anomaly_strength
 - Plan de publication du dépôt Ariel Logminer
 - scripts/run_final_csecicids2018_lr_forensic.py
 - Audit factuel — cohérence et forme
@@ -1073,42 +1073,32 @@
 - STATUS.md
 - csecic_print_summary.py
 - DATA_LICENSES.md
-- .merge-main-staging/src/logminer/parsers/hdfs.py
+- run_supervisor_cycle
 - LIVRABLE 1 — Intégrité factuelle et cohérence documentaire
 - ETAT_CHANTIER — révision académique du mémoire Ariel Logminer
-- correlate_anomalies
+- run_supervisor_cycle
 - src/logminer/agents/feedback_memory.py
-- detect_anomalies
 - detect_anomalies
 - 2. Diagnostic
 - 2. Inventaire campagne par campagne
 - scripts/run_cicids_temporal_strengthening.py
 - ARCHITECTURE DU CHANTIER
-- run_local_pipeline
 - evaluate_split
-- run_local_pipeline
-- AgentMessage
-- DataFrame
+- parse_logs
 - Protocole préenregistré — E-H3B-FAMILY-MODELS
 - Protocole préenregistré — E-H4-HDFS-BLOCK-BASELINES
 - run_e_h3b_family_models.py
-- main
-- run_local_pipeline
-- detect_kind
 - .merge-main-staging/scripts/train_model_update_candidate.py
-- run_local_pipeline
 - bgl_anomaly_family_map.py
-- clean
 - Consignes communes à tous les agents du chantier (2026-11-05)
 - Registre des protocoles préenregistrés (chantier 2026-11-05)
-- .ack_job
 
 ## God Nodes (most connected - your core abstractions)
 1. `RedisMessageBus` - 77 edges
-2. `SQLiteIdempotencyStore` - 49 edges
-3. `AgentTask` - 49 edges
+2. `AgentTask` - 51 edges
+3. `SQLiteIdempotencyStore` - 49 edges
 4. `MessageBus` - 48 edges
-5. `MultiTaskIntelligentAgent` - 45 edges
+5. `MultiTaskIntelligentAgent` - 47 edges
 6. `AgentTask` - 42 edges
 7. `render()` - 40 edges
 8. `render()` - 39 edges
@@ -1130,19 +1120,19 @@
 ## Import Cycles
 - None detected.
 
-## Communities (1195 total, 508 thin omitted)
+## Communities (1185 total, 509 thin omitted)
 
-### Community 0 - "RedisMessageBus"
-Cohesion: 0.11
-Nodes (59): Bus Redis Streams pour les runs FastAPI/agents distribues., RedisMessageBus, agents_status(), alert_decision(), AlertDecisionRequest, _audit(), collect_discover(), collect_windows_privileged() (+51 more)
+### Community 0 - "src/logminer/api.py"
+Cohesion: 0.18
+Nodes (33): alert_decision(), AlertDecisionRequest, collect_windows_privileged(), correlate(), CorrelateRequest, _count_rows(), detect(), DetectRequest (+25 more)
 
 ### Community 1 - "docs/memoire/pack_redaction_final/09_code_et_scripts_preuves/api.py"
-Cohesion: 0.12
-Nodes (55): alert_decision(), AlertDecisionRequest, _audit(), collect_discover(), collect_windows_privileged(), correlate(), CorrelateRequest, _count_rows() (+47 more)
+Cohesion: 0.13
+Nodes (53): alert_decision(), AlertDecisionRequest, _audit(), collect_discover(), collect_windows_privileged(), correlate(), CorrelateRequest, _count_rows() (+45 more)
 
 ### Community 2 - "src/logminer/agents/supervisor_agent.py"
 Cohesion: 0.10
-Nodes (41): Charge le superviseur historique uniquement lorsqu'il est demandé. Le…, run_supervisor_cycle(), act(), decide(), load_memory(), main(), perceive(), _project_path() (+33 more)
+Nodes (39): act(), decide(), load_memory(), main(), perceive(), _project_path(), Any, MessageBus (+31 more)
 
 ### Community 3 - "scripts/monthly_model_retraining.py"
 Cohesion: 0.24
@@ -1174,7 +1164,7 @@ Nodes (16): correlate_anomalies(), _first_non_empty(), _incident_row(), main(), 
 
 ### Community 10 - "AgentMessage"
 Cohesion: 0.08
-Nodes (19): AgentMessage, filter_messages(), LocalMessageBus, Any, Path, Bus de communication entre agents Logminer. La V1 conserve un bus JSONL local,…, Bus Redis Streams pour les runs FastAPI/agents distribues., Retourne un etat leger du Stream Redis. (+11 more)
+Nodes (17): AgentMessage, filter_messages(), LocalMessageBus, Any, Path, Bus Redis Streams pour les runs FastAPI/agents distribues., Retourne un etat leger du Stream Redis., Cree un consumer group Redis Streams si necessaire. (+9 more)
 
 ### Community 11 - "file_detector.py"
 Cohesion: 0.08
@@ -1185,8 +1175,8 @@ Cohesion: 0.16
 Nodes (22): _active_column(), _first_alias(), _has_column(), _linux_auth_features(), _non_empty_ratio(), _positive_class_probability(), DataFrame, ndarray (+14 more)
 
 ### Community 13 - "docs/memoire/pack_redaction_final/09_code_et_scripts_preuves/model_router.py"
-Cohesion: 0.16
-Nodes (25): _default_output(), _detect_linux_auth_model(), _detect_supervised_model(), _first_alias(), _infer_sep(), _linux_auth_features(), _load_model_artifact(), main() (+17 more)
+Cohesion: 0.12
+Nodes (36): _active_column(), _default_output(), _detect_linux_auth_model(), _detect_supervised_model(), _first_alias(), _has_column(), _infer_sep(), _linux_auth_features() (+28 more)
 
 ### Community 14 - "add_sequence_window_features"
 Cohesion: 0.23
@@ -1213,16 +1203,16 @@ Cohesion: 0.06
 Nodes (50): BaseNormalizer, Any, Classes de base pour la normalisation semantique des evenements., Interface minimale commune a tous les normaliseurs., categorize(), CategorizerNormalizer, Any, BaseNormalizer (+42 more)
 
 ### Community 20 - "AgentTask"
-Cohesion: 0.10
-Nodes (13): AgentTask, InMemoryTaskSource, Protocol, Tache transportable entre agents ou workers., Resultat explicable d'une tache., Source abstraite de taches pour agents., Source locale utile pour tests et demonstrations reproductibles., Source de taches basee sur Redis Streams. Les taches sont stockees dans un… (+5 more)
+Cohesion: 0.04
+Nodes (59): MessageBus, Protocol, Bus de communication entre agents Logminer. La V1 conserve un bus JSONL local,…, Contrat minimal partage par les bus JSONL et Redis., NegotiationResult, Protocole Contract Net léger pour l'allocation autonome des tâches Logminer. Le…, Trace structurée d'une négociation et de son exécution., Registre SQLite transactionnel à portée inter-processus. (+51 more)
 
 ### Community 21 - "src/logminer/parsers/windows_event.py"
-Cohesion: 0.13
-Nodes (25): _children(), _event_data_to_message(), _first_child(), _iso(), _iter_evtx_events(), _iter_xml_events(), _level_to_severity(), _parse_event_elem() (+17 more)
+Cohesion: 0.10
+Nodes (29): parse_line(), Parser, _children(), clean(), _event_data_to_message(), _first_child(), _iso(), _iter_evtx_events() (+21 more)
 
 ### Community 22 - "main"
-Cohesion: 0.14
-Nodes (42): append_ledger(), ensure_phase_dirs(), git_commit(), _json_default(), Any, Path, Utilitaires reproductibles de la consolidation scientifique finale., relative() (+34 more)
+Cohesion: 0.13
+Nodes (44): binary_metrics(), ndarray, append_ledger(), ensure_phase_dirs(), git_commit(), _json_default(), Any, Path (+36 more)
 
 ### Community 23 - "scripts/run_family_routing_ablation.py"
 Cohesion: 0.23
@@ -1261,8 +1251,8 @@ Cohesion: 0.23
 Nodes (15): _bgl_label_to_binary(), _bgl_timestamp_to_iso(), _can_add(), _label_to_binary(), main(), prepare_bgl(), prepare_hdfs(), Path (+7 more)
 
 ### Community 32 - "RedisContractNetTransport"
-Cohesion: 0.14
-Nodes (12): _decode_message(), _message_fields(), AgentMessage, AgentTask, Any, NegotiationResult, RedisMessageBus, Transport Contract Net inter-processus fondé sur Redis Streams. (+4 more)
+Cohesion: 0.16
+Nodes (9): _decode_message(), _message_fields(), AgentMessage, AgentTask, Any, NegotiationResult, RedisMessageBus, Boîtes dédiées par agent et flux de réponses partagé par run. (+1 more)
 
 ### Community 33 - "hdfs.py"
 Cohesion: 0.47
@@ -1317,8 +1307,8 @@ Cohesion: 0.38
 Nodes (11): asset_report(), benchmark_rows(), false_positive_rows(), main(), number(), Path, Produit les preuves manquantes rapides pour le suivi technique du TFE. Sorties:…, read_csv() (+3 more)
 
 ### Community 46 - "ContractNetCoordinator"
-Cohesion: 0.15
-Nodes (12): ContractNetCoordinator, NegotiationResult, AgentMessage, AgentTask, Any, BidEvaluation, MessageBus, MultiTaskIntelligentAgent (+4 more)
+Cohesion: 0.16
+Nodes (10): ContractNetCoordinator, AgentMessage, AgentTask, Any, BidEvaluation, MessageBus, MultiTaskIntelligentAgent, Négocie, attribue et exécute une tâche selon un cycle CNP observable. (+2 more)
 
 ### Community 47 - "Catalogue des figures scientifiques finales"
 Cohesion: 0.10
@@ -1460,17 +1450,17 @@ Nodes (36): 10. Résultats exploratoires, 11. Résultats invalidés ou supprimé
 Cohesion: 0.05
 Nodes (36): 10. Résultats exploratoires, 11. Résultats invalidés ou supprimés, 12. Affirmations désormais autorisées, 13. Affirmations interdites, 14. Statut de la contribution architecturale, 15. Statut de la contribution méthodologique, 16. Statut de la contribution expérimentale, 17. Statut de la contribution logicielle (+28 more)
 
-### Community 97 - "SQLiteIdempotencyStore"
+### Community 97 - "IdempotencyRecord"
 Cohesion: 0.12
-Nodes (16): IdempotencyRecord, Any, Connection, Path, Row, Registre persistant d'idempotence pour les effets des tâches Logminer. La clé…, Rend le résultat durable avant l'ACK du transport., Libère une réservation échouée afin qu'une reprise puisse retenter. (+8 more)
+Nodes (13): IdempotencyRecord, Any, Connection, Path, Row, Registre persistant d'idempotence pour les effets des tâches Logminer. La clé…, Rend le résultat durable avant l'ACK du transport., Libère une réservation échouée afin qu'une reprise puisse retenter. (+5 more)
 
 ### Community 98 - "DECISIONS SCIENTIFIQUES FIGÉES"
 Cohesion: 0.06
 Nodes (31): D001, D002, D003, D004, D005, D006, D007, D008 (+23 more)
 
-### Community 99 - "sha256_file"
-Cohesion: 0.13
-Nodes (40): append_ledger(), ensure_phase_dirs(), git_commit(), load_config(), Path, Utilitaires partagés par les campagnes de renforcement des datasets., run_id(), sha256_file() (+32 more)
+### Community 99 - "relative"
+Cohesion: 0.12
+Nodes (47): append_ledger(), descriptive(), ensure_phase_dirs(), git_commit(), load_config(), metrics_from_prediction(), Any, Path (+39 more)
 
 ### Community 100 - "Rapport final — transformation multi-agents d’Ariel Logminer"
 Cohesion: 0.07
@@ -1481,12 +1471,12 @@ Cohesion: 0.22
 Nodes (23): aggregate_outputs(), analyse_item(), append_ledger(), current_git_commit(), field_map(), ledger_latest(), ledger_row(), linux_auth_adapter() (+15 more)
 
 ### Community 102 - "scripts/run_hdfs_block_strengthening.py"
-Cohesion: 0.17
-Nodes (27): binary_metrics(), metrics_from_prediction(), Any, ndarray, select_threshold(), aggregate_blocks(), assign_templates(), collect_selected_events() (+19 more)
+Cohesion: 0.19
+Nodes (23): select_threshold(), aggregate_blocks(), assign_templates(), collect_selected_events(), drain_config(), evaluate_aggregators(), execute(), fit_frozen_drain() (+15 more)
 
 ### Community 103 - "scripts/run_external_csecicids2018_strengthening.py"
-Cohesion: 0.22
-Nodes (22): descriptive(), aggregate(), deduplicate_unambiguous(), main(), Any, DataFrame, aggregate(), build_priority_pool() (+14 more)
+Cohesion: 0.32
+Nodes (16): aggregate(), build_priority_pool(), candidate_models(), clean_columns(), feature_columns(), label_column(), main(), numeric_features() (+8 more)
 
 ### Community 104 - "Rapport final de consolidation scientifique d’Ariel Logminer"
 Cohesion: 0.08
@@ -1525,8 +1515,8 @@ Cohesion: 0.10
 Nodes (19): 10. Linux/auth local ou autre origine vérifiée, 11. Wazuh/Elastic local, 12. Données synthétiques, 13. Comparaisons de hashes, 14. Sources bibliographiques, 15. Informations toujours inconnues, 16. Formulations autorisées pour Luna, 17. Formulations interdites pour Luna (+11 more)
 
 ### Community 113 - ".merge-main-staging/src/logminer/agents/model_compare.py"
-Cohesion: 0.07
-Nodes (73): detect_baseline(), main(), DataFrame, Path, _rarity_score(), Detecteur baseline explicable pour l'objectif 2. Ce module sert de point de…, Produit un CSV d'anomalies candidates avec la baseline explicable., Retourne une colonne texte meme si elle est absente du CSV. (+65 more)
+Cohesion: 0.11
+Nodes (50): _add_selection_scores(), _clip_contamination(), compare_models(), _detect_label_column(), _event_sequence_signal(), _labels_from_column(), main(), DataFrame (+42 more)
 
 ### Community 114 - "tests/test_dataset_strengthening.py"
 Cohesion: 0.10
@@ -1564,9 +1554,9 @@ Nodes (15): Ablation Du Routage Familial, Benchmark Quasi Temps Reel, Campagne P
 Cohesion: 0.12
 Nodes (15): Ablation Du Routage Familial, Benchmark Quasi Temps Reel, Campagne Parallele CPU/RAM, Campagne Redis Agents Intelligents, Captures Dashboard A Produire, Comparaison Qualitative Avec Outils Standards, Contribution A Mettre En Avant, Figures Generees (+7 more)
 
-### Community 124 - "docs/memoire/pack_redaction_final/09_code_et_scripts_preuves/pipeline.py"
-Cohesion: 0.15
-Nodes (11): _default_output_name(), _ensure_dir(), iter_files(), _load_parser(), Pipeline de pretraitement Logminer. Role dans le memoire: Ce fichier represente…, Cree un dossier s'il n'existe pas deja., Retourne tous les fichiers a traiter. Args: input_path: Chemin vers un fichier…, Charge la classe Parser du module correspondant au type detecte. (+3 more)
+### Community 124 - "run_pipeline"
+Cohesion: 0.13
+Nodes (19): _default_output_name(), detect_kind(), _ensure_dir(), iter_files(), _load_parser(), _looks_like_pcap(), Pipeline de pretraitement Logminer. Role dans le memoire: Ce fichier represente…, Cree un dossier s'il n'existe pas deja. (+11 more)
 
 ### Community 125 - "3. Inventaire vérifié"
 Cohesion: 0.13
@@ -1581,8 +1571,8 @@ Cohesion: 0.13
 Nodes (14): Etat Des Lieux Technique Face Au Document Directeur, Exigences Techniques Actuellement Satisfaites, Exigences Techniques Encore Partiellement Couvertes, Integration Redis Streams Dans Le Memoire, Objectif 1 - Logs, Parsing Et Normalisation, Objectif 2 - Techniques De Detection D'Anomalies, Objectif 3 - Architecture Multi-Agents Distribuee, Objectif 4 - Modeles IA Legers Et Quasi Temps Reel (+6 more)
 
 ### Community 129 - ".merge-main-staging/docs/memoire/pack_redaction_final/09_code_et_scripts_preuves/model_router.py"
-Cohesion: 0.12
-Nodes (36): _active_column(), _default_output(), _detect_linux_auth_model(), _detect_supervised_model(), _first_alias(), _has_column(), _infer_sep(), _linux_auth_features() (+28 more)
+Cohesion: 0.06
+Nodes (70): correlate_anomalies(), _first_non_empty(), main(), _priority_details(), _priority_label(), DataFrame, LocalMessageBus, Path (+62 more)
 
 ### Community 130 - "scripts/evaluate_supervised_strict_splits.py"
 Cohesion: 0.22
@@ -1664,17 +1654,17 @@ Nodes (12): Ablation Conceptuelle, Complexite Et Passage A L'echelle, Correlatio
 Cohesion: 0.15
 Nodes (12): Convention De Nommage, Entrainement Cloud Et Sauvegarde Des Modeles, Entrainement Cloud Reseau, Entrainement Par Famille De Logs, Entrainement Sur Le Cloud, Inference Locale, Pourquoi Joblib, Resultats Colab Du 29/05/2026 (+4 more)
 
-### Community 151 - "relative"
-Cohesion: 0.44
-Nodes (11): relative(), claim_matrix(), evidence_figure(), latest_ledger(), load_json(), main(), manifest(), newest() (+3 more)
+### Community 151 - "Any"
+Cohesion: 0.27
+Nodes (15): agents_status(), events(), get_runtime_status(), health(), _model_summary(), models(), Any, get (+7 more)
 
 ### Community 152 - "relative"
 Cohesion: 0.12
-Nodes (47): append_ledger(), ensure_phase_dirs(), git_commit(), Path, Utilitaires partagés par les campagnes de renforcement des datasets., relative(), run_id(), sha256_file() (+39 more)
+Nodes (49): append_ledger(), ensure_phase_dirs(), git_commit(), metrics_from_prediction(), Path, Utilitaires partagés par les campagnes de renforcement des datasets., relative(), run_id() (+41 more)
 
 ### Community 153 - ".merge-main-staging/src/logminer/api.py"
-Cohesion: 0.15
-Nodes (46): agents_status(), alert_decision(), _audit(), collect_discover(), collect_windows_privileged(), correlate(), _count_rows(), detect() (+38 more)
+Cohesion: 0.14
+Nodes (48): agents_status(), alert_decision(), _audit(), collect_discover(), collect_windows_privileged(), correlate(), _count_rows(), detect() (+40 more)
 
 ### Community 154 - "ARIEL_LOGMINER_MEMOIRE_FINAL/revision_reports/generate_final_scientific_figures.py"
 Cohesion: 0.17
@@ -1709,8 +1699,8 @@ Cohesion: 0.17
 Nodes (11): Architecture multi-agents autonome légère de Logminer, Composants, Contrat de message préservé, Cycle Contract Net, Distribution Redis, Idempotence et reprise, Portée, Refus (+3 more)
 
 ### Community 162 - ".merge-main-staging/docs/memoire/pack_redaction_final/09_code_et_scripts_preuves/api.py"
-Cohesion: 0.11
-Nodes (59): alert_decision(), AlertDecisionRequest, _audit(), collect_discover(), collect_windows_privileged(), correlate(), CorrelateRequest, _count_rows() (+51 more)
+Cohesion: 0.15
+Nodes (45): alert_decision(), _audit(), collect_discover(), collect_windows_privileged(), correlate(), _count_rows(), detect(), events() (+37 more)
 
 ### Community 163 - "Logminer recupere"
 Cohesion: 0.17
@@ -1840,9 +1830,9 @@ Nodes (9): 8. Logistic Regression à 0,233670, ACTION À TRANSMETTRE À LUNA, CE
 Cohesion: 0.06
 Nodes (33): A.1 — Annexe A.3, matrice résultats–preuves, A.2 — Chapitre 7, section « Organisation des preuves », A.3 — Chapitre 7, section « Chaîne de reproduction », A.4 — Chapitre 7 : nouvelle section « Dépôt public et archivage », A.5 — Chapitre 7, section « Reproduction de la campagne multi-VM », A.6 — Champ DOI, B.0 — Traçabilité des valeurs de la section des limites, B.10 — Allègement du chapitre 7 (+25 more)
 
-### Community 195 - "ResourceSampler"
-Cohesion: 0.14
-Nodes (6): Mesure documentée : temps CPU du processus et pic RSS échantillonné., ResourceSampler, AgentPolicyWeights, Poids configurables du score d'utilité local, sans prétention d'optimalité., Mesure documentée : temps CPU du processus et pic RSS échantillonné., ResourceSampler
+### Community 195 - "score_events"
+Cohesion: 0.23
+Nodes (12): detect_baseline(), main(), DataFrame, Path, _rarity_score(), Detecteur baseline explicable pour l'objectif 2. Ce module sert de point de…, Produit un CSV d'anomalies candidates avec la baseline explicable., Retourne une colonne texte meme si elle est absente du CSV. (+4 more)
 
 ### Community 196 - "Rapport de livraison finale"
 Cohesion: 0.25
@@ -1956,17 +1946,17 @@ Nodes (6): Captures Dashboard, Conclusion, Figures, Images Disponibles, Politiqu
 Cohesion: 0.29
 Nodes (6): Compilation Overleaf, Fichier Principal, Images, Memoire Logminer LaTeX Overleaf, Remarques, Structure
 
-### Community 224 - "relative"
-Cohesion: 0.16
-Nodes (34): append_ledger(), ensure_phase_dirs(), git_commit(), _json_default(), Any, Path, Utilitaires reproductibles de la consolidation scientifique finale., relative() (+26 more)
+### Community 224 - ".merge-main-staging/scripts/run_multisource_cnp_model_inference.py"
+Cohesion: 0.11
+Nodes (55): append_ledger(), ensure_phase_dirs(), git_commit(), _json_default(), Any, Path, Utilitaires reproductibles de la consolidation scientifique finale., relative() (+47 more)
 
 ### Community 225 - "Incertitudes P0 fermées"
 Cohesion: 0.14
 Nodes (13): Ablation du routage, Ancien score ambigu, Audit scientifique final du mémoire, Campagne multi-VM, Contrat `AgentMessage`, Contrôles rédactionnels, CPU et RAM, Drain3 HDFS (+5 more)
 
-### Community 226 - "write_audit"
-Cohesion: 0.43
-Nodes (6): AuditEntry, Any, Path, Journal d'audit applicatif Logminer., read_audit(), write_audit()
+### Community 226 - "_audit"
+Cohesion: 0.29
+Nodes (9): AuditEntry, Any, Path, Journal d'audit applicatif Logminer., read_audit(), write_audit(), _audit(), collect_discover() (+1 more)
 
 ### Community 227 - "État de la consolidation scientifique finale"
 Cohesion: 0.29
@@ -2136,9 +2126,9 @@ Nodes (3): Campagne Redis Endurance 6h Agents Intelligents, Repartition Par Agen
 Cohesion: 0.50
 Nodes (3): Campagne Redis Longue Agents Intelligents, Repartition Par Agent, Repartition Par Type
 
-### Community 507 - "AgentCapability"
-Cohesion: 0.16
-Nodes (10): AgentCapability, AgentMemory, MessageBus, Path, SQLiteIdempotencyStore, TaskHandler, Memoire locale simple pour apprendre des executions precedentes., Competence qu'un agent peut annoncer et utiliser. (+2 more)
+### Community 507 - "Protocole préenregistré — E-H5-MEMORY-RELIABILITY"
+Cohesion: 0.17
+Nodes (11): Analyse prévue et portée, Artefacts attendus, Commande, Comparateurs, Conditions expérimentales, Conséquence préfixée sur H5, Entrées et programme gelés, Métriques et critère numérique (+3 more)
 
 ### Community 516 - "RedisMessageBus"
 Cohesion: 0.08
@@ -2170,7 +2160,7 @@ Nodes (40): _candidate_models(), aggregate(), append_ledger(), artifact_valid(),
 
 ### Community 546 - ".merge-main-staging/src/logminer/agents/supervisor_agent.py"
 Cohesion: 0.10
-Nodes (41): Charge le superviseur historique uniquement lorsqu'il est demandé. Le…, run_supervisor_cycle(), act(), decide(), load_memory(), main(), perceive(), _project_path() (+33 more)
+Nodes (39): act(), decide(), load_memory(), main(), perceive(), _project_path(), Any, MessageBus (+31 more)
 
 ### Community 547 - ".merge-main-staging/src/logminer/detectors/file_detector.py"
 Cohesion: 0.08
@@ -2184,13 +2174,13 @@ Nodes (36): 10. Résultats exploratoires, 11. Résultats invalidés ou supprimé
 Cohesion: 0.05
 Nodes (36): 10. Résultats exploratoires, 11. Résultats invalidés ou supprimés, 12. Affirmations désormais autorisées, 13. Affirmations interdites, 14. Statut de la contribution architecturale, 15. Statut de la contribution méthodologique, 16. Statut de la contribution expérimentale, 17. Statut de la contribution logicielle (+28 more)
 
-### Community 550 - "MessageBus"
-Cohesion: 0.13
-Nodes (14): MessageBus, Protocol, Contrat minimal partage par les bus JSONL et Redis., ActionOutcome, AgentCapability, AgentContext, AgentPerception, AgentPolicyWeights (+6 more)
+### Community 550 - "Protocole préenregistré — E-CNP-STATIC-ASSIGNMENT"
+Cohesion: 0.18
+Nodes (10): Analyse prévue et portée, Artefacts attendus, Commande, Comparateurs, Entrées et programme gelés, Métriques et critère numérique, Protocole préenregistré — E-CNP-STATIC-ASSIGNMENT, Question (+2 more)
 
 ### Community 551 - "AgentTask"
-Cohesion: 0.08
-Nodes (22): MessageBus, Protocol, Contrat minimal partage par les bus JSONL et Redis., AgentTask, InMemoryTaskSource, MultiTaskIntelligentAgent, Any, Protocol (+14 more)
+Cohesion: 0.03
+Nodes (72): AgentMessage, MessageBus, Protocol, Message standard echange entre agents., Contrat minimal partage par les bus JSONL et Redis., Mesure documentée : temps CPU du processus et pic RSS échantillonné., ResourceSampler, AgentMessage (+64 more)
 
 ### Community 552 - ".merge-main-staging/Stitch web/server.mjs"
 Cohesion: 0.12
@@ -2201,8 +2191,8 @@ Cohesion: 0.12
 Nodes (32): callOpenAiExplanation(), dataFiles, dynamicDataPatterns, extractOpenAiText(), fetchJson(), formatMetric(), handleAgentsStatus(), handleAlertDecision() (+24 more)
 
 ### Community 554 - "SQLiteIdempotencyStore"
-Cohesion: 0.10
-Nodes (21): IdempotencyRecord, Any, Connection, Path, Row, Registre persistant d'idempotence pour les effets des tâches Logminer. La clé…, Rend le résultat durable avant l'ACK du transport., Libère une réservation échouée afin qu'une reprise puisse retenter. (+13 more)
+Cohesion: 0.13
+Nodes (15): IdempotencyRecord, Any, Connection, Path, Row, Registre persistant d'idempotence pour les effets des tâches Logminer. La clé…, Rend le résultat durable avant l'ACK du transport., Libère une réservation échouée afin qu'une reprise puisse retenter. (+7 more)
 
 ### Community 555 - ".merge-main-staging/src/logminer/parsers/windows_event.py"
 Cohesion: 0.10
@@ -2212,37 +2202,37 @@ Nodes (29): parse_line(), Parser, _children(), clean(), _event_data_to_message()
 Cohesion: 0.06
 Nodes (31): D001, D002, D003, D004, D005, D006, D007, D008 (+23 more)
 
-### Community 557 - ".merge-main-staging/scripts/run_multisource_cnp_model_inference.py"
-Cohesion: 0.18
-Nodes (26): candidate_rule(), load_raw_units(), normalize_unit(), AgentTask, Any, real_handler(), build_agents(), common_candidate_fields() (+18 more)
+### Community 557 - ".merge-main-staging/scripts/run_multisource_cnp_e2e_strengthening.py"
+Cohesion: 0.29
+Nodes (11): build_agents(), candidate_rule(), load_raw_units(), make_agent_figure(), make_funnel_figure(), normalize_unit(), AgentTask, Any (+3 more)
 
 ### Community 558 - "correlate_anomalies"
-Cohesion: 0.29
-Nodes (16): correlate_anomalies(), _first_non_empty(), _incident_row(), main(), _priority_details(), _priority_label(), DataFrame, LocalMessageBus (+8 more)
+Cohesion: 0.13
+Nodes (27): correlate_anomalies(), _first_non_empty(), _incident_row(), main(), _priority_details(), _priority_label(), DataFrame, LocalMessageBus (+19 more)
 
 ### Community 559 - "scripts/run_multisource_cnp_model_inference.py"
-Cohesion: 0.23
-Nodes (20): build_agents(), common_candidate_fields(), compatible_truth(), condition_resource_snapshot(), condition_summary(), handler(), infer_one(), load_artifact() (+12 more)
+Cohesion: 0.14
+Nodes (32): build_agents(), candidate_rule(), load_raw_units(), main(), make_agent_figure(), make_funnel_figure(), normalize_unit(), AgentTask (+24 more)
 
-### Community 560 - "AgentMessage"
-Cohesion: 0.07
-Nodes (21): AgentMessage, filter_messages(), LocalMessageBus, MqttMessageBus, Any, Path, Bus de communication entre agents Logminer. La V1 conserve un bus JSONL local,…, Bus Redis Streams pour les runs FastAPI/agents distribues. (+13 more)
+### Community 560 - "RedisMessageBus"
+Cohesion: 0.09
+Nodes (13): MqttMessageBus, Any, Bus Redis Streams pour les runs FastAPI/agents distribues., Retourne un etat leger du Stream Redis., Cree un consumer group Redis Streams si necessaire., Publie un job persistant pour un worker separe., Lit des jobs via consumer group pour repartir le travail entre workers., Reclame des jobs pending restes trop longtemps sans ack. (+5 more)
 
 ### Community 561 - "Rapport final — transformation multi-agents d’Ariel Logminer"
 Cohesion: 0.07
 Nodes (27): 10. Analyse statistique, 11. Résultats négatifs, 12. Limites, 13. Impact sur H1–H5, 14. Impact sur QR1–QR6, 15. Affirmations désormais soutenables, 16. Affirmations toujours non démontrées, 17. Fichiers modifiés (+19 more)
 
 ### Community 562 - "RedisContractNetTransport"
-Cohesion: 0.11
-Nodes (18): append_ledger(), main(), percentile(), Path, Validation du Contract Net Logminer entre processus distincts via Redis., write_manifest(), _decode_message(), _message_fields() (+10 more)
+Cohesion: 0.10
+Nodes (21): append_ledger(), main(), percentile(), Path, Campagne Contract Net avec agents déjà lancés sur plusieurs VM., write_manifest(), append_ledger(), main() (+13 more)
 
 ### Community 563 - "run_pipeline"
 Cohesion: 0.11
 Nodes (25): main(), _default_output_name(), detect_kind(), _ensure_dir(), iter_files(), _load_parser(), _looks_like_pcap(), _merge_csv_files() (+17 more)
 
 ### Community 564 - ".merge-main-staging/scripts/run_hdfs_block_strengthening.py"
-Cohesion: 0.14
-Nodes (36): binary_metrics(), load_config(), Any, ndarray, select_threshold(), block_mean_frame(), bootstrap_block_metrics(), describe_bootstrap() (+28 more)
+Cohesion: 0.17
+Nodes (27): binary_metrics(), load_config(), Any, ndarray, select_threshold(), aggregate_blocks(), assign_templates(), collect_selected_events() (+19 more)
 
 ### Community 565 - "Rapport final de consolidation scientifique d’Ariel Logminer"
 Cohesion: 0.08
@@ -2269,16 +2259,16 @@ Cohesion: 0.24
 Nodes (21): _copy_with_backup(), _detect_label_column(), evaluate_model(), _expand_command(), export_feedback_dataset(), _infer_sep(), _labels_from_frame(), load_plan() (+13 more)
 
 ### Community 571 - ".merge-main-staging/src/logminer/agents/model_router.py"
-Cohesion: 0.20
-Nodes (21): _active_column(), _first_alias(), _has_column(), _linux_auth_features(), _non_empty_ratio(), _positive_class_probability(), DataFrame, ndarray (+13 more)
+Cohesion: 0.06
+Nodes (65): _count_priority(), main(), DataFrame, FeedbackProfile, Path, Ablation de la memoire de feedback analyste sur les anomalies Logminer. Le…, run_ablation(), _simulated_profile() (+57 more)
 
 ### Community 572 - ".merge-main-staging/tests/test_dataset_strengthening.py"
-Cohesion: 0.11
-Nodes (12): Route un tableau sans exploiter son chemin ou son nom de fichier. Cette entrée…, route_dataframe(), Path, Garde-fous méthodologiques des campagnes de renforcement des datasets., test_drain3_is_fitted_on_train_then_match_only(), test_external_deduplication_drops_ambiguous_feature_vectors(), test_external_features_exclude_timestamp_label_and_identifiers(), test_hdfs_block_split_is_disjoint() (+4 more)
+Cohesion: 0.12
+Nodes (11): Path, temporal_files(), Path, Garde-fous méthodologiques des campagnes de renforcement des datasets., test_drain3_is_fitted_on_train_then_match_only(), test_external_deduplication_drops_ambiguous_feature_vectors(), test_external_features_exclude_timestamp_label_and_identifiers(), test_hdfs_and_bgl_parsers_emit_normalized_rows() (+3 more)
 
 ### Community 573 - "detect_anomalies"
-Cohesion: 0.21
-Nodes (14): align_features(), detect_anomalies(), load_model_artifact(), main(), DataFrame, IsolationForest, LocalMessageBus, Path (+6 more)
+Cohesion: 0.14
+Nodes (19): align_features(), detect_anomalies(), load_model_artifact(), main(), DataFrame, IsolationForest, LocalMessageBus, Path (+11 more)
 
 ### Community 574 - "Catalogue des figures scientifiques finales"
 Cohesion: 0.10
@@ -2296,9 +2286,9 @@ Nodes (20): Abstract Recommande, Abstract Recommande, Article 1 - Conference IEE
 Cohesion: 0.10
 Nodes (20): 1. Chaine Complete Multi-Agent, 1. Revue Scientifique Vs Prototype Operationnel, 2. Comparaison Plus Large Que Le Deep Learning, 2. Deep Learning Central Vs Approche Hybride, 3. Pretraitement Par Log Keys Vs Schema Normalise Multi-Format, 3. Selection Multicritere, 4. Evaluation De La Litterature Vs Validation Locale Reproductible, 4. Preparation Pour Le Cloud (+12 more)
 
-### Community 578 - "MqttMessageBus"
-Cohesion: 0.13
-Nodes (20): MqttMessageBus, Bus MQTT leger pour collecteurs et traces temps reel non persistantes., MQTT est pub/sub; l'historique n'est pas relu comme JSONL/Redis., AlertDecisionRequest, CorrelateRequest, DetectRequest, DiscoverRequest, EventsRequest (+12 more)
+### Community 578 - "RedisMessageBus"
+Cohesion: 0.09
+Nodes (38): AlertDecisionRequest, CorrelateRequest, DetectRequest, DiscoverRequest, EventsRequest, MqttPublishRequest, ParseRequest, PrivilegedWindowsCollectRequest (+30 more)
 
 ### Community 579 - "Analyse Critique - Reference Deep Learning For Anomaly Detection In Log Data"
 Cohesion: 0.10
@@ -2309,8 +2299,8 @@ Cohesion: 0.17
 Nodes (20): append_file(), build_dataset(), collect_columns(), _data_files(), _deduplicate_files(), _file_key(), _infer_csv_sep(), main() (+12 more)
 
 ### Community 581 - ".merge-main-staging/tests/test_final_scientific_consolidation.py"
-Cohesion: 0.15
-Nodes (7): apply_open_set_rejection(), Applique un rejet explicable à une route déjà calculée. La politique est…, Garde-fous de la consolidation scientifique finale P1–P4., test_hdfs_bootstrap_uses_frozen_threshold_for_every_replicate(), test_label_permutation_changes_order_and_preserves_class_counts(), test_model_registry_artifacts_and_schemas_are_explicit(), test_open_set_rejection_preserves_route_and_marks_margin_non_probability()
+Cohesion: 0.11
+Nodes (15): apply_policy_to_record(), calibrate_policy(), Any, Construit des folds pseudo-open exclusivement à partir des familles connues., route_statistics(), validation_metrics(), validation_records(), apply_open_set_rejection() (+7 more)
 
 ### Community 582 - "PHASE 13A — DATA TRACEABILITY REPORT"
 Cohesion: 0.10
@@ -2320,9 +2310,9 @@ Nodes (19): 10. Linux/auth local ou autre origine vérifiée, 11. Wazuh/Elastic 
 Cohesion: 0.10
 Nodes (19): 10. Linux/auth local ou autre origine vérifiée, 11. Wazuh/Elastic local, 12. Données synthétiques, 13. Comparaisons de hashes, 14. Sources bibliographiques, 15. Informations toujours inconnues, 16. Formulations autorisées pour Luna, 17. Formulations interdites pour Luna (+11 more)
 
-### Community 584 - "ContractNetCoordinator"
-Cohesion: 0.11
-Nodes (19): MessageBus, Protocol, Contrat minimal partage par les bus JSONL et Redis., ContractNetCoordinator, NegotiationResult, AgentMessage, AgentTask, Any (+11 more)
+### Community 584 - ".negotiate"
+Cohesion: 0.17
+Nodes (8): AgentMessage, AgentTask, Any, BidEvaluation, MessageBus, MultiTaskIntelligentAgent, Négocie, attribue et exécute une tâche selon un cycle CNP observable., Exécute plusieurs négociations, éventuellement en parallèle.
 
 ### Community 585 - ".merge-main-staging/docs/memoire/pack_redaction_final/09_code_et_scripts_preuves/run_family_routing_ablation.py"
 Cohesion: 0.25
@@ -2380,9 +2370,9 @@ Nodes (16): Agent Runtime Docker, Autorisation Des Journaux Sensibles, Endpoints
 Cohesion: 0.26
 Nodes (16): env(), extract_json(), main(), normalize_metrics(), process_tree(), Any, Namespace, Path (+8 more)
 
-### Community 599 - "run_routed_detection"
-Cohesion: 0.21
-Nodes (17): _default_output(), _detect_linux_auth_model(), _detect_supervised_model(), _infer_sep(), _load_model_artifact(), main(), Path, Detecte rapidement le separateur d'un CSV sans charger le fichier. (+9 more)
+### Community 599 - "Livrable 5 — Architecture multi-agents : preuves et limites"
+Cohesion: 0.20
+Nodes (9): 1. Périmètre et sources, 2. Synthèse, 3. E-H5 : mémoire sous fiabilité hétérogène, 4. E-CNP : Contract Net contre table statique, 5. Avis et décisions, 6. Sections et intégration, 7. Points en suspens, Livrable 5 — Architecture multi-agents : preuves et limites (+1 more)
 
 ### Community 600 - "correlate_anomalies"
 Cohesion: 0.29
@@ -2416,9 +2406,9 @@ Nodes (15): _bgl_label_to_binary(), _bgl_timestamp_to_iso(), _can_add(), _label_
 Cohesion: 0.29
 Nodes (15): append_ledger(), build_corpus(), git_commit(), ledger_latest(), load_source(), main(), make_outputs(), metrics() (+7 more)
 
-### Community 608 - ".merge-main-staging/src/logminer/agents/feedback_memory.py"
-Cohesion: 0.23
-Nodes (15): apply_feedback_memory(), apply_feedback_memory_to_csv(), feedback_key_from_row(), feedback_key_from_values(), FeedbackProfile, load_feedback_profile(), _norm(), DataFrame (+7 more)
+### Community 608 - "_run_detector_tasks"
+Cohesion: 0.29
+Nodes (7): DetectorTask, Execute un detecteur et mesure le pic memoire Python. La duree reste mesuree…, Execute un detecteur dans un lot parallele. `tracemalloc` est global au…, Execute les detecteurs independants en conservant leur ordre logique., _run_detector_tasks(), _run_with_resource_tracking(), _run_without_tracemalloc_tracking()
 
 ### Community 609 - "main"
 Cohesion: 0.32
@@ -2568,9 +2558,9 @@ Nodes (12): CandidateResult, evaluate(), main(), _metrics(), DataFrame, ndarray,
 Cohesion: 0.31
 Nodes (13): ControlledResult, evaluate_dataset(), _fit_score(), main(), _metrics(), DataFrame, ndarray, Path (+5 more)
 
-### Community 647 - "EffectLedger"
-Cohesion: 0.24
-Nodes (14): EffectLedger, main(), PlainWorker, AgentTask, Any, Path, SQLiteIdempotencyStore, Panne contrôlée appariée sur les architectures A, B, C et D. Point de panne… (+6 more)
+### Community 647 - "run_e_h5_e_cnp.py"
+Cohesion: 0.08
+Nodes (42): EffectLedger, main(), PlainWorker, AgentTask, Any, Path, SQLiteIdempotencyStore, Panne contrôlée appariée sur les architectures A, B, C et D. Point de panne… (+34 more)
 
 ### Community 648 - ".merge-main-staging/scripts/prepare_dashboard_capture_data.py"
 Cohesion: 0.29
@@ -2589,7 +2579,7 @@ Cohesion: 0.21
 Nodes (10): emit(), normalize_event(), open_writer(), Any, DictWriter, Ecriture CSV normalisee pour Logminer. Ce module est volontairement simple:…, Fallback minimal quand les normalizers ne sont pas disponibles., Ouvre un fichier CSV et ecrit l'en-tete normalise. Args: base_out: Chemin du… (+2 more)
 
 ### Community 652 - "Any"
-Cohesion: 0.14
+Cohesion: 0.15
 Nodes (7): Any, Retourne un etat leger du Stream Redis., Cree un consumer group Redis Streams si necessaire., Publie un job persistant pour un worker separe., Lit des jobs via consumer group pour repartir le travail entre workers., Reclame des jobs pending restes trop longtemps sans ack., Expose un resume des jobs non acquittes.
 
 ### Community 653 - "evaluate_split"
@@ -2708,9 +2698,9 @@ Nodes (10): _cpu_seconds(), _env(), main(), _process_tree(), Any, Path, Controll
 Cohesion: 0.36
 Nodes (10): append_ledger(), build_data(), current_git_commit(), evaluate(), main(), now_iso(), DataFrame, Validation contrôlée du corrélateur sur une vérité terrain synthétique figée. (+2 more)
 
-### Community 683 - ".merge-main-staging/scripts/run_router_independent_strengthening.py"
-Cohesion: 0.44
-Nodes (10): load_source(), measure(), plot_confusion(), Any, DataFrame, Path, read_bgl(), read_csv_sample() (+2 more)
+### Community 683 - "load_source"
+Cohesion: 0.62
+Nodes (7): load_source(), DataFrame, Path, read_bgl(), read_csv_sample(), read_hdfs(), read_windows()
 
 ### Community 684 - "prepare_linux_auth_frame"
 Cohesion: 0.33
@@ -2728,9 +2718,9 @@ Nodes (10): create_windows_admin_launcher(), main(), PrivilegedRequest, Path, _q
 Cohesion: 0.36
 Nodes (10): append_ledger(), build_data(), current_git_commit(), evaluate(), main(), now_iso(), DataFrame, Validation contrôlée du corrélateur sur une vérité terrain synthétique figée. (+2 more)
 
-### Community 688 - "agent5_correlation_extended.py"
-Cohesion: 0.25
-Nodes (13): blank(), cp(), generate(), iso(), main(), pair_metrics(), pooled(), DataFrame (+5 more)
+### Community 688 - "datetime"
+Cohesion: 0.07
+Nodes (33): datetime, Parser, Parseur léger pour le journal Blue Gene/L publié dans Loghub., _severity(), _timestamp(), Parser, Parseur léger pour les journaux HDFS de Loghub. Le format court utilisé par…, _severity() (+25 more)
 
 ### Community 689 - "Registre Des Modeles Entraines"
 Cohesion: 0.20
@@ -2844,9 +2834,9 @@ Nodes (9): 8. Logistic Regression à 0,233670, ACTION À TRANSMETTRE À LUNA, CE
 Cohesion: 0.31
 Nodes (8): build_agent(), main(), AgentTask, MultiTaskIntelligentAgent, Namespace, RedisMessageBus, Processus agent autonome répondant aux contrats via Redis Streams., synthetic_effect()
 
-### Community 717 - "run_ablation"
-Cohesion: 0.36
-Nodes (8): _count_priority(), main(), DataFrame, FeedbackProfile, Path, Ablation de la memoire de feedback analyste sur les anomalies Logminer. Le…, run_ablation(), _simulated_profile()
+### Community 717 - "Livrable 4 — Méthodologie expérimentale et baselines"
+Cohesion: 0.29
+Nodes (6): E-H3 — faisabilité de la comparaison du routeur, E-H3b — modèles communs et spécialisés, E-H4 — baselines HDFS au niveau bloc, Intégration et portée, Livrable 4 — Méthodologie expérimentale et baselines, Synthèse
 
 ### Community 718 - "main"
 Cohesion: 0.47
@@ -2924,9 +2914,9 @@ Nodes (7): build_summary(), main(), merge_counts(), percentile(), Path, Campagne
 Cohesion: 0.54
 Nodes (7): count_rows(), main(), Path, Controle robustesse et scalabilite Logminer. Ce script couvre les objectifs 6…, rows_by_filepath(), run_checks(), write_samples()
 
-### Community 737 - "datetime"
-Cohesion: 0.10
-Nodes (18): datetime, _clean(), Parser, Any, Parseur syslog RFC3164/RFC5424 heuristique., _severity(), _timestamp_3164(), main() (+10 more)
+### Community 737 - ".merge-main-staging/src/logminer/parsers/syslog.py"
+Cohesion: 0.36
+Nodes (6): _clean(), Parser, Any, Parseur syslog RFC3164/RFC5424 heuristique., _severity(), _timestamp_3164()
 
 ### Community 738 - "Campagne Redis Agents Intelligents"
 Cohesion: 0.29
@@ -3025,8 +3015,8 @@ Cohesion: 0.52
 Nodes (6): _add_proof_columns(), main(), DataFrame, Build final supervised proof CSVs and thesis tables., _write_proof(), _write_strict_table()
 
 ### Community 762 - ".merge-main-staging/scripts/run_external_csecicids2018_strengthening.py"
-Cohesion: 0.22
-Nodes (23): descriptive(), metrics_from_prediction(), aggregate(), deduplicate_unambiguous(), main(), Any, DataFrame, aggregate() (+15 more)
+Cohesion: 0.29
+Nodes (17): descriptive(), aggregate(), build_priority_pool(), candidate_models(), clean_columns(), feature_columns(), label_column(), main() (+9 more)
 
 ### Community 763 - "scripts/evaluate_cicids_model_candidates.py"
 Cohesion: 0.35
@@ -3148,13 +3138,13 @@ Nodes (11): _category(), _default_month_files(), main(), _normalise_chunk(), nor
 Cohesion: 0.53
 Nodes (5): append_completed(), main(), Path, Verify promotion/rejection integrity and emit the required phase-4 evidence…, sha256_file()
 
-### Community 795 - ".merge-main-staging/src/logminer/parsers/bgl.py"
-Cohesion: 0.47
-Nodes (4): Parser, Parseur léger pour le journal Blue Gene/L publié dans Loghub., _severity(), _timestamp()
+### Community 795 - "scripts/verify_model_update_e2e.py"
+Cohesion: 0.53
+Nodes (5): append_completed(), main(), Path, Verify promotion/rejection integrity and emit the required phase-4 evidence…, sha256_file()
 
-### Community 796 - "finalize_cnp_endurance_artifacts.py"
-Cohesion: 0.60
-Nodes (5): main(), Path, sha256_file(), utc_now(), write_json_atomic()
+### Community 796 - "run_local_pipeline"
+Cohesion: 0.40
+Nodes (5): main(), Path, Orchestrateur local des agents Logminer. Il fournit la premiere forme de…, Execute parseur puis detecteur en partageant le meme bus., run_local_pipeline()
 
 ### Community 798 - "HANDOFF — Révision finale du mémoire Ariel Logminer"
 Cohesion: 0.17
@@ -3177,8 +3167,8 @@ Cohesion: 0.40
 Nodes (4): Contrat Des Messages Agents, Format Canonique, Regles De Fidélité Au Document Directeur, Types De Messages Attendues
 
 ### Community 803 - "LocalMessageBus"
-Cohesion: 0.25
-Nodes (6): filter_messages(), LocalMessageBus, Path, Bus de communication entre agents Logminer. La V1 conserve un bus JSONL local,…, Filtre les messages d'un run donne., Bus append-only stocke dans un fichier JSONL.
+Cohesion: 0.40
+Nodes (3): LocalMessageBus, Path, Bus append-only stocke dans un fichier JSONL.
 
 ### Community 804 - "Comparaison avec le memoire de Daniel Mabanza"
 Cohesion: 0.40
@@ -3236,9 +3226,9 @@ Nodes (3): Campagne Redis Endurance 6h Agents Intelligents, Repartition Par Agen
 Cohesion: 0.40
 Nodes (5): enrich_sequence_windows(), main(), Path, Agent de fenetrage glissant pour HDFS/BGL. Il enrichit un CSV Logminer avec des…, Lit un CSV normalise, ajoute les features sequentielles et l'ecrit.
 
-### Community 818 - "GoalState"
-Cohesion: 0.17
-Nodes (8): AutonomyLimits, GoalState, Any, Garde-fous d'une boucle autonome locale., État persistant et borné d'un objectif poursuivi par un agent., Crée et persiste un objectif sans encore exécuter ses tâches., Poursuit un objectif jusqu'à sa terminaison ou un garde-fou. ``delegate`` reste…, Reprend un objectif persistant encore exécutable.
+### Community 818 - "supervisor_campaign"
+Cohesion: 0.33
+Nodes (6): Execute un cycle autonome perception-etat-decision-action., Execute plusieurs cycles autonomes avec memoire persistante., supervisor_campaign(), supervisor_cycle(), SupervisorCampaignRequest, SupervisorCycleRequest
 
 ### Community 819 - "Campagne Redis Endurance 6h Agents Intelligents"
 Cohesion: 0.50
@@ -3304,9 +3294,9 @@ Nodes (14): _candidate_models(), main(), DataFrame, Path, Series, Prepare isolat
 Cohesion: 0.25
 Nodes (7): 1. Nouvelle sous-section : définition formelle du détecteur Histogram, 2. BGL : « fenêtres » → événements, 3. Chapitre 5 : section HDFS, 4. Résumés (FR, EN, lingala), conclusion, chapitre 6, annexe, PATCH NOTES — Agent 2, Histogram et HDFS, Registre des preuves, Résultats
 
-### Community 1149 - "MultiTaskIntelligentAgent"
-Cohesion: 0.11
-Nodes (14): AgentMemory, BidEvaluation, MultiTaskIntelligentAgent, MessageBus, Path, SQLiteIdempotencyStore, TaskHandler, Memoire locale simple pour apprendre des executions precedentes. (+6 more)
+### Community 1149 - "_anomaly_strength"
+Cohesion: 0.50
+Nodes (4): _anomaly_strength(), Indique si un score fort ou faible represente une anomalie., Transforme les scores heterogenes en force d'anomalie 0..1., _score_direction()
 
 ### Community 1150 - "Plan de publication du dépôt Ariel Logminer"
 Cohesion: 0.29
@@ -3340,29 +3330,17 @@ Nodes (4): Références demandées déjà présentes dans `references.bib`, Réf
 Cohesion: 0.22
 Nodes (16): build_feature_frame(), _categorical_features(), _generic_numeric_features(), load_events(), _message_features(), DataFrame, Path, Series (+8 more)
 
-### Community 1166 - ".merge-main-staging/src/logminer/parsers/hdfs.py"
-Cohesion: 0.47
-Nodes (4): Parser, Parseur léger pour les journaux HDFS de Loghub. Le format court utilisé par…, _severity(), _timestamp()
-
 ### Community 1167 - "LIVRABLE 1 — Intégrité factuelle et cohérence documentaire"
 Cohesion: 0.12
 Nodes (16): 1. Périmètre traité, 2. Méthode, 3.1 Résumés (`main.tex`) — fichiers `sections/main.tex__resume_fr.tex`, `__abstract_en.tex`, `__bokuse_ln.tex`, 3.2 Introduction, §1.8.2, chapitre 4, chapitre 5, 3.3 Conclusion (tableau 7.1, QR3, QR6), 3.4 Annexes, 3. Tableau de correction ligne par ligne, 4.1 Chiffres du texte actuel (+8 more)
 
 ### Community 1168 - "ETAT_CHANTIER — révision académique du mémoire Ariel Logminer"
-Cohesion: 0.12
-Nodes (16): Arbitrages du coordinateur sur le livrable 1 (2026-11-05), Arbitrages du coordinateur sur le livrable 2 (2026-11-05), Décisions de l'Agent 1 (2026-11-05), Décisions de l'Agent 2 (2026-11-05), Décisions de l'Agent 3 (2026-11-05), Décisions de l'Agent 6 (2026-11-05), Décisions de l'auteur sur le livrable 2 (2026-11-05), Décisions du coordinateur (+8 more)
-
-### Community 1169 - "correlate_anomalies"
-Cohesion: 0.29
-Nodes (15): correlate_anomalies(), _first_non_empty(), main(), _priority_details(), _priority_label(), DataFrame, LocalMessageBus, Path (+7 more)
+Cohesion: 0.10
+Nodes (19): Arbitrages du coordinateur sur le livrable 1 (2026-11-05), Arbitrages du coordinateur sur le livrable 2 (2026-11-05), Audit de la reprise (2026-11-05, Claude Code), Décisions de l'Agent 1 (2026-11-05), Décisions de l'Agent 2 (2026-11-05), Décisions de l'Agent 3 (2026-11-05), Décisions de l'Agent 5 (2026-11-05), Décisions de l'Agent 6 (2026-11-05) (+11 more)
 
 ### Community 1170 - "src/logminer/agents/feedback_memory.py"
 Cohesion: 0.23
 Nodes (15): apply_feedback_memory(), apply_feedback_memory_to_csv(), feedback_key_from_row(), feedback_key_from_values(), FeedbackProfile, load_feedback_profile(), _norm(), DataFrame (+7 more)
-
-### Community 1171 - "detect_anomalies"
-Cohesion: 0.21
-Nodes (14): align_features(), detect_anomalies(), load_model_artifact(), main(), DataFrame, IsolationForest, LocalMessageBus, Path (+6 more)
 
 ### Community 1172 - "detect_anomalies"
 Cohesion: 0.21
@@ -3373,8 +3351,8 @@ Cohesion: 0.13
 Nodes (14): 1. Périmètre traité, 2.1 Traçabilité présente, reproduction indépendante non établie, 2.2 Campagnes exécutées avec assistance IA, 2.3 Préenregistrement, 2.4 Déclaration IA actuelle, 2.5 Annexe A : incohérence d'artefact, 2. Diagnostic, 3.1 Déclaration IA (+6 more)
 
 ### Community 1174 - "2. Inventaire campagne par campagne"
-Cohesion: 0.13
-Nodes (14): 1. Position générale à tenir, 2.1 HDFS principal sur le test complet, 2.2 BGL, 2.3 Audit CSE-CIC-IDS2018, 2.4 Routeur open-set étendu, 2.5 Panne appariée et H2, 2.6 Saturation multi-VM, 2.7 Détection HDFS distribuée (+6 more)
+Cohesion: 0.12
+Nodes (15): 1. Position générale à tenir, 2.1 HDFS principal sur le test complet, 2.2 BGL, 2.3 Audit CSE-CIC-IDS2018, 2.4 Routeur open-set étendu, 2.5 Panne appariée et H2, 2.6 Saturation multi-VM, 2.7 Détection HDFS distribuée (+7 more)
 
 ### Community 1175 - "scripts/run_cicids_temporal_strengthening.py"
 Cohesion: 0.30
@@ -3384,25 +3362,13 @@ Nodes (14): aggregate(), build_priority_pool(), candidate_models(), comparison_r
 Cohesion: 0.14
 Nodes (13): Agent 0 — Coordinateur, Agent 1 — Intégrité factuelle et cohérence documentaire, Agent 2 — Statut des hypothèses et critères de décision, Agent 3 — État de l'art et positionnement, Agent 4 — Méthodologie expérimentale et baselines, Agent 5 — Architecture multi-agents : preuves et limites, Agent 6 — Reproductibilité, artefacts et déclaration IA, Agent 7 — Forme, style et coquilles (+5 more)
 
-### Community 1177 - "run_local_pipeline"
-Cohesion: 0.19
-Nodes (11): main(), Path, Orchestrateur local des agents Logminer. Il fournit la premiere forme de…, Execute parseur puis detecteur en partageant le meme bus., run_local_pipeline(), main(), parse_logs(), LocalMessageBus (+3 more)
-
 ### Community 1178 - "evaluate_split"
 Cohesion: 0.35
 Nodes (12): _align(), evaluate_split(), _histogram_scores(), _labels(), main(), DataFrame, Path, Series (+4 more)
 
-### Community 1179 - "run_local_pipeline"
-Cohesion: 0.19
-Nodes (11): main(), Path, Orchestrateur local des agents Logminer. Il fournit la premiere forme de…, Execute parseur puis detecteur en partageant le meme bus., run_local_pipeline(), main(), parse_logs(), LocalMessageBus (+3 more)
-
-### Community 1180 - "AgentMessage"
-Cohesion: 0.17
-Nodes (5): AgentMessage, Message standard echange entre agents., RowCollector, test_hdfs_and_bgl_parsers_emit_normalized_rows(), RowCollector
-
-### Community 1181 - "DataFrame"
-Cohesion: 0.27
-Nodes (11): _active_column(), _has_column(), _non_empty_ratio(), DataFrame, Construit un profil de features pour router le fichier. Ce profil combine…, Attribue un score a chaque famille de logs. Le routage reste volontairement…, Prepare les features attendues par un modele supervise tabulaire. Le…, _sample_profile() (+3 more)
+### Community 1179 - "parse_logs"
+Cohesion: 0.38
+Nodes (6): main(), parse_logs(), LocalMessageBus, Path, Agent parseur/normaliseur. Cet agent encapsule `pipeline.run_pipeline` et…, Parse un fichier/dossier et publie les messages de cycle de vie.
 
 ### Community 1182 - "Protocole préenregistré — E-H3B-FAMILY-MODELS"
 Cohesion: 0.20
@@ -3416,57 +3382,37 @@ Nodes (9): Analyse prévue, Artefacts attendus, Commande, Comparateurs, Entrées
 Cohesion: 0.36
 Nodes (8): load_source_module(), main(), paired_interval(), ndarray, Path, E-H3b: modèle commun contre modèles spécialisés par famille, cinq graines., relative(), sha256()
 
-### Community 1185 - "main"
-Cohesion: 0.52
-Nodes (6): append_ledger(), main(), percentile(), Path, Campagne Contract Net avec agents déjà lancés sur plusieurs VM., write_manifest()
-
-### Community 1186 - "run_local_pipeline"
-Cohesion: 0.40
-Nodes (5): main(), Path, Orchestrateur local des agents Logminer. Il fournit la premiere forme de…, Execute parseur puis detecteur en partageant le meme bus., run_local_pipeline()
-
-### Community 1187 - "detect_kind"
-Cohesion: 0.33
-Nodes (6): detect_kind(), _looks_like_pcap(), Lit un petit echantillon texte pour la detection heuristique., Detecte rapidement les signatures binaires pcap/pcapng., Detecte le type de journal a partir de l'extension et du contenu. Cette…, _sample_text()
-
 ### Community 1188 - ".merge-main-staging/scripts/train_model_update_candidate.py"
 Cohesion: 0.53
 Nodes (5): main(), Path, Train a real phase-4 candidate from the frozen CICIDS train bundle., sha256_file(), train()
 
-### Community 1189 - "run_local_pipeline"
-Cohesion: 0.40
-Nodes (5): main(), Path, Orchestrateur local des agents Logminer. Il fournit la premiere forme de…, Execute parseur puis detecteur en partageant le meme bus., run_local_pipeline()
-
 ### Community 1190 - "bgl_anomaly_family_map.py"
 Cohesion: 0.40
 Nodes (5): family(), main(), Agent 4 -- BGL : localisation des familles d'anomalies dans le journal…, apply_open_set_rejection(), Applique un rejet explicable à une route déjà calculée. La politique est…
-
-### Community 1191 - "clean"
-Cohesion: 0.33
-Nodes (4): parse_line(), Parser, clean(), Nettoie un message sans dependre de `common.py`. Le fichier `common.py`…
 
 ### Community 1192 - "Consignes communes à tous les agents du chantier (2026-11-05)"
 Cohesion: 0.40
 Nodes (4): Consignes communes à tous les agents du chantier (2026-11-05), Fin de tâche, Repères, Règles impératives
 
 ## Knowledge Gaps
-- **3365 isolated node(s):** `name`, `version`, `private`, `type`, `dev` (+3360 more)
+- **3400 isolated node(s):** `name`, `version`, `private`, `type`, `dev` (+3395 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **508 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **509 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `detect_anomalies()` connect `detect_anomalies` to `build_feature_frame`, `src/logminer/agents/model_router.py`, `run_local_pipeline`?**
-  _High betweenness centrality (0.017) - this node is a cross-community bridge._
-- **Why does `compare_models()` connect `src/logminer/agents/model_compare.py` to `build_feature_frame`, `_run_detector_tasks`, `add_sequence_window_features`?**
-  _High betweenness centrality (0.014) - this node is a cross-community bridge._
-- **Why does `detect_anomalies()` connect `detect_anomalies` to `build_feature_frame`, `.merge-main-staging/docs/memoire/pack_redaction_final/09_code_et_scripts_preuves/model_router.py`, `run_local_pipeline`?**
   _High betweenness centrality (0.009) - this node is a cross-community bridge._
+- **Why does `MultiTaskIntelligentAgent` connect `AgentTask` to `SQLiteIdempotencyStore`, `ContractNetCoordinator`, `AgentTask`?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+- **Why does `detect_anomalies()` connect `.merge-main-staging/docs/memoire/pack_redaction_final/09_code_et_scripts_preuves/model_router.py` to `build_feature_frame`?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `datetime` (e.g. with `_timestamp_3164()` and `_timestamp_3164()`) actually correct?**
   _`datetime` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 64 inferred relationships involving `RedisMessageBus` (e.g. with `AlertDecisionRequest` and `CorrelateRequest`) actually correct?**
   _`RedisMessageBus` has 64 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 23 inferred relationships involving `AgentTask` (e.g. with `main()` and `main()`) actually correct?**
+  _`AgentTask` has 23 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 36 inferred relationships involving `SQLiteIdempotencyStore` (e.g. with `end_to_end_experiment()` and `recovery_experiment()`) actually correct?**
   _`SQLiteIdempotencyStore` has 36 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 21 inferred relationships involving `AgentTask` (e.g. with `main()` and `main()`) actually correct?**
-  _`AgentTask` has 21 INFERRED edges - model-reasoned connections that need verification._

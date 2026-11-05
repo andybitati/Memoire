@@ -6,7 +6,7 @@ L'implémentation Python reprend les frontières définies dans l'architecture p
 
 Cette organisation permet d'isoler une étape lorsqu'un comportement doit être diagnostiqué, sans devoir exécuter systématiquement toute la chaîne. Lors d'une campagne complète, les traitements restent néanmoins reliés par un même \texttt{run\_id}, ce qui permet de retrouver les opérations appartenant à une exécution donnée.
 
-Le prototype a été conçu pour rester relativement léger. En configuration locale, il peut fonctionner avec un bus en mémoire et une persistance SQLite. Redis intervient lorsque plusieurs processus ou plusieurs machines doivent partager les échanges et l'état d'idempotence. Le changement de transport ne modifie pas le contrat métier utilisé par les composants.
+Le prototype a été conçu pour rester relativement léger. En configuration locale, il fonctionne avec un bus en mémoire et une persistance SQLite. Redis intervient lorsque plusieurs processus ou plusieurs machines doivent partager les échanges et l'état d'idempotence. Le changement de transport ne modifie pas le contrat métier utilisé par les composants.
 
 
 \section{Environnement logiciel}
@@ -31,7 +31,7 @@ La normalisation expose les attributs communs nécessaires au routage, tout en c
 
 \section{Routeur et registre de modèles}
 
-Le routeur examine la structure d'un fichier ou d'un échantillon et calcule des scores pour les différentes familles connues. Il retient ensuite le candidat le mieux classé et conserve la marge qui le sépare des autres possibilités. Dans le protocole open-set, un seuil de score principal est fixé avant l'évaluation afin de permettre le rejet des entrées insuffisamment compatibles avec les familles connues ; une entrée dont la meilleure famille est le fallback est également rejetée. Pour les journaux texte, les scores intègrent les colonnes \texttt{dataset} et \texttt{subtype} renseignées par le parseur de format, si bien que le routage reprend en partie la détection de format.
+Le routeur examine la structure d'un fichier ou d'un échantillon (extension, noms de colonnes, contenu des premières lignes et, pour certaines familles, nom du fichier) et calcule des scores pour les différentes familles connues. Il retient ensuite le candidat le mieux classé et conserve la marge qui le sépare des autres possibilités. Dans le protocole open-set, un seuil de score principal est fixé avant l'évaluation afin de permettre le rejet des entrées insuffisamment compatibles avec les familles connues ; une entrée dont la meilleure famille est le fallback est également rejetée. Pour les journaux texte, les scores intègrent les colonnes \texttt{dataset} et \texttt{subtype} renseignées par le parseur de format, si bien que le routage reprend en partie la détection de format : le rejet des entrées inconnues mesure donc aussi la capacité du parseur à ne pas reconnaître un format. Cette circularité partielle est reprise dans les limites (section~\ref{sec:limites}).
 
 Une fois la famille déterminée, le registre fournit le modèle associé, son prétraitement ainsi que ses métadonnées. Cette séparation protège notamment contre l'utilisation d'un modèle sur un espace de caractéristiques qui ne lui correspond pas.
 
@@ -40,7 +40,7 @@ Le registre conserve également la provenance de l'artefact chargé. Si aucun mo
 
 \section{Implémentation des agents}
 
-La classe \texttt{MultiTaskIntelligentAgent} peut enregistrer plusieurs capacités et plusieurs handlers. Son état local contient les informations utilisées lors de la décision : disponibilité, charge, santé et mémoire. Lorsqu'un objectif lui est confié, l'agent classe les tâches compatibles à partir de la même utilité que celle employée pour les propositions Contract Net. Il peut exécuter une tâche, produire les sous-tâches suivantes ou refuser une opération qui ne satisfait pas ses contraintes. Dans ce protocole, un refus constitue un comportement normal et non une exception.
+La classe \texttt{MultiTaskIntelligentAgent}, dont le nom est hérité du code et ne qualifie pas le comportement, enregistre plusieurs capacités et plusieurs handlers. Son état local contient les informations utilisées lors de la décision : disponibilité, charge, santé et mémoire. Lorsqu'un objectif lui est confié, l'agent classe les tâches compatibles à partir de la même utilité que celle employée pour les propositions Contract Net. Il exécute une tâche, produit les sous-tâches suivantes ou refuse une opération qui ne satisfait pas ses contraintes. Dans ce protocole, un refus constitue un comportement normal et non une exception.
 
 L'attribution locale est coordonnée par \texttt{ContractNetCoordinator}. Lorsque la négociation passe par Redis, \texttt{RedisContractNetCoordinator} s'appuie sur \texttt{RedisContractNetTransport}. Les deux chemins utilisent les types de messages décrits à la section~\ref{sec:agentmessage}. Les traces expérimentales distinguent propositions, refus, attributions, résultats et échecs afin de rendre le cycle observable.
 
@@ -48,7 +48,7 @@ Pour les essais locaux, \texttt{LocalMessageBus} permet d'exécuter les échange
 
 Le contrat \texttt{ActionOutcome} associe le résultat d'un handler aux éventuelles sous-tâches qu'il produit. \texttt{GoalState} conserve l'objectif, son statut, les tâches en attente, les résultats récents et les compteurs d'exécution. \texttt{AutonomyLimits} fixe les budgets d'actions, de profondeur, de tentatives et de tâches en attente. Ces objets sont sérialisables dans la mémoire JSON déjà utilisée par l'agent et ne nécessitent aucun service d'orchestration supplémentaire.
 
-La méthode \texttt{pursue\_goal} exécute la boucle jusqu'à la terminaison, au blocage, à l'échec ou à l'épuisement du budget. \texttt{resume\_goal} recharge l'état persistant ; un budget épuisé ne peut être prolongé que par un nombre d'actions explicitement accordé. Le callback de délégation peut être directement relié à \texttt{ContractNetCoordinator.negotiate}, ce qui conserve un seul mécanisme d'attribution pour les tâches non exécutables localement.
+La méthode \texttt{pursue\_goal} exécute la boucle jusqu'à la terminaison, au blocage, à l'échec ou à l'épuisement du budget. \texttt{resume\_goal} recharge l'état persistant ; un budget épuisé ne peut être prolongé que par un nombre d'actions explicitement accordé. Dans les tests, le callback de délégation est relié à \texttt{ContractNetCoordinator.negotiate}, ce qui conserve un seul mécanisme d'attribution pour les tâches non exécutables localement.
 
 \input{chapters/spec_utilite}
 
@@ -56,7 +56,7 @@ La méthode \texttt{pursue\_goal} exécute la boucle jusqu'à la terminaison, au
 
 Deux mécanismes de persistance sont disponibles pour l'idempotence. \texttt{SQLiteIdempotencyStore} est adapté à l'exécution locale, tandis que \texttt{RedisIdempotencyStore} rend cet état accessible à plusieurs agents.
 
-Avant d'appliquer l'effet associé à une tâche, l'agent vérifie sa clé logique. Lorsque l'opération se termine correctement, cette clé est enregistrée. Si la même tâche est rejouée par la suite, le système peut reconnaître qu'un effet a déjà été produit et éviter de le répéter. Le replay devient ainsi observable sans nécessairement provoquer un second effet.
+Avant d'appliquer l'effet associé à une tâche, l'agent vérifie sa clé logique. Lorsque l'opération se termine correctement, cette clé est enregistrée. Si la même tâche est rejouée par la suite, le système reconnaît qu'un effet a déjà été produit et ne le répète pas. Le rejeu devient ainsi observable sans provoquer de second effet.
 
 Cette protection a cependant une portée précise. Elle couvre les opérations effectivement instrumentées par le protocole et ne transforme pas toutes les interactions du système en transactions atomiques. Par exemple, un arrêt survenant après une opération externe non transactionnelle mais avant l'enregistrement de la clé demanderait une stratégie supplémentaire dans un déploiement industriel.
 
@@ -79,7 +79,7 @@ Les scores produits au niveau événement sont ensuite agrégés par moyenne sel
 \subsection{Détecteur Histogram}
 \label{subsec:histogram}
 
-Le détecteur Histogram attribue à chaque événement un score de rareté calculé à partir des seuls événements normaux de l'entraînement. Soit $N$ le nombre d'événements normaux d'entraînement et, pour un événement $e$, $\tau(e)$ son template Drain3, $s(e)$ sa source et $v(e)$ sa sévérité. Pour chaque attribut $a \in \{\tau, s, v\}$, on note $n_a(x)$ le nombre d'événements normaux d'entraînement prenant la valeur $x$ et l'on définit la fréquence lissée
+Le détecteur suit le principe de HBOS \cite{goldstein2012hbos}, restreint à des attributs catégoriels : il en est une instance sur trois attributs des journaux, sans idée nouvelle, et sert de détecteur léger de référence. Il attribue à chaque événement un score de rareté calculé à partir des seuls événements normaux de l'entraînement. Soit $N$ le nombre d'événements normaux d'entraînement et, pour un événement $e$, $\tau(e)$ son template Drain3, $s(e)$ sa source et $v(e)$ sa sévérité. Pour chaque attribut $a \in \{\tau, s, v\}$, on note $n_a(x)$ le nombre d'événements normaux d'entraînement prenant la valeur $x$ et l'on définit la fréquence lissée
 \[
   \tilde{p}_a(x) = \frac{\max\bigl(n_a(x), 1\bigr)}{N}.
 \]
@@ -108,21 +108,17 @@ prédiction(u) <- [R(u) >= theta]
 
 L'implémentation correspond à la fonction \texttt{histogram\_scores} de \texttt{scripts/run\_strict\_sequence\_experiments.py} et de \texttt{scripts/run\_hdfs\_block\_strengthening.py}, et à \texttt{select\_threshold} de \texttt{scripts/dataset\_strengthening\_common.py}.
 
-BGL suit un protocole différent : l'unité évaluée est l'événement, sans fenêtre ni agrégation (sous-section~\ref{subsec:histogram}). L'évaluation Histogram est complétée par une séparation entre templates connus et inconnus ainsi que par la baseline \texttt{UnknownTemplateBaseline}. Cette instrumentation permet de vérifier quelle part de la performance peut être liée à la simple nouveauté d'un template, plutôt que d'attribuer automatiquement l'ensemble du F1 à une modélisation plus générale de la dynamique des journaux.
+Pour BGL, l'évaluation Histogram est complétée par une séparation entre templates connus et inconnus ainsi que par la baseline \texttt{UnknownTemplateBaseline}. Cette instrumentation mesure quelle part de la performance tient à la simple nouveauté d'un template, plutôt que d'attribuer automatiquement l'ensemble du F1 à une modélisation plus générale de la dynamique des journaux.
 
 
 \section{Corrélation}
 
-La couche de corrélation reçoit les alertes déjà normalisées et regroupe celles qui tombent dans la même fenêtre temporelle fixe (plancher à 15 minutes par défaut) et partagent exactement sept clés : hôte, utilisateur, source, catégorie, sous-catégorie, protocole et port de destination. La liste d’événements publiée pour chaque incident est limitée à vingt identifiants ; le nombre total d’événements reste conservé dans \texttt{event\_count}. Lorsqu'un groupe est créé, il reçoit un identifiant d'incident distinct des identifiants utilisés pour les messages.
-
-Les événements sources restent référencés. Il devient ainsi possible de revenir du groupe corrélé vers les éléments qui l'ont constitué et de vérifier a posteriori pourquoi le rapprochement a été effectué.
-
-L'évaluation de cette couche utilise un corpus synthétique dans lequel les groupes attendus sont connus. Les incidents produits sont comparés à cette vérité de regroupement. Ce protocole isole le comportement du corrélateur ; il ne reproduit toutefois pas toute la diversité ni toutes les ambiguïtés que l'on rencontrerait dans un environnement SOC réel.
+Le corrélateur décrit à la section~\ref{sec:modele-correlation} arrondit l'horodatage de chaque alerte normalisée à une fenêtre fixe (15 minutes par défaut), puis regroupe les alertes de même fenêtre qui partagent les sept clés. La liste d'événements publiée pour chaque incident est limitée à vingt identifiants ; le nombre total reste conservé dans \texttt{event\_count}. Chaque groupe reçoit un identifiant d'incident distinct des identifiants de messages, et les événements sources restent référencés, ce qui permet de vérifier a posteriori pourquoi le rapprochement a été effectué. L'évaluation utilise un corpus synthétique dont les groupes attendus sont connus ; construit avec les clés mêmes du corrélateur, ce corpus constitue un circuit fermé (section~\ref{sec:limites}).
 
 
 \section{Mémoire et gouvernance}
 
-La mémoire des agents conserve des informations issues des traitements et des retours disponibles. Ces informations peuvent intervenir dans le calcul de l'utilité configurée. Pour vérifier leur effet, le benchmark compare des conditions exécutées avec mémoire activée et désactivée sur les mêmes niveaux de charge.
+La mémoire des agents conserve, par type de tâche, les exécutions réussies et échouées ainsi que les durées récentes. Lorsqu'elle est activée, ces informations déterminent les composantes $H$ et $T$ de l'utilité ; désactivée, ces composantes prennent une valeur neutre. Pour vérifier leur effet, le benchmark compare des conditions exécutées avec mémoire activée et désactivée sur les mêmes niveaux de charge.
 
 La présence de cette fonctionnalité est donc testable indépendamment de son bénéfice. Si la mémoire ne produit pas de gain systématique sur une métrique, ce résultat doit rester visible plutôt que d'être interprété comme un défaut d'implémentation.
 
@@ -151,11 +147,6 @@ Les tests automatisés vérifient notamment les contrats, les transitions du pro
 
 Il faut toutefois distinguer deux types de conclusion. Un test fonctionnel réussi montre qu'un chemin du code produit le comportement attendu dans les conditions prévues. Il ne démontre pas qu'une méthode est statistiquement meilleure qu'une autre. Cette seconde question nécessite un protocole expérimental et des métriques adaptées.
 
-Les manifestes conservent la provenance des jeux de données ainsi que l'unité d'analyse retenue pour chaque campagne. Dans le cas du routeur open-set, les contrôles évitent également d'interpréter le score heuristique comme une probabilité calibrée. De la même manière, les expériences distribuées distinguent le fonctionnement du transport Redis de l'autonomie décisionnelle des agents.
+Les manifestes conservent la provenance des jeux de données ainsi que l'unité d'analyse retenue pour chaque campagne. Dans le cas du routeur open-set, les contrôles évitent également d'interpréter le score heuristique comme une probabilité calibrée. De la même manière, les expériences distribuées distinguent le fonctionnement du transport Redis de la décision des agents.
 
-
-\section{Lien entre code et preuves}
-
-Chaque campagne possède un identifiant d'exécution et enregistre ses paramètres avec les résultats qu'elle produit. Cette liaison permet de retrouver l'origine d'une valeur sans dépendre d'une transcription manuelle.
-
-Les figures présentées dans le chapitre suivant sont générées directement à partir de ces artefacts CSV ou JSON. Un script commun centralise le style des graphiques, les unités et les sources utilisées. Cette organisation réduit le risque qu'un tableau, une figure et le texte du mémoire rapportent des valeurs différentes pour une même expérience.
+Chaque campagne possède un identifiant d'exécution et enregistre ses paramètres avec ses résultats ; les figures du chapitre suivant sont générées à partir de ces artefacts CSV ou JSON. La correspondance entre chaque résultat et ses preuves est donnée en annexe (tableau~\ref{tab:preuves-experimentales}).

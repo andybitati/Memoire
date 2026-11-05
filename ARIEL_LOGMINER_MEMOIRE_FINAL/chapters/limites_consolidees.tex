@@ -1,62 +1,98 @@
 \section{Limites du travail}
 \label{sec:limites}
 
-Cette section rassemble les limites du travail. Les autres chapitres y renvoient sans les
-reprendre intégralement.
+Cette section est la seule qui rassemble les limites du travail ; les autres chapitres y
+renvoient sans les reprendre.
 
 \paragraph{Données et généralisation.}
-CICIDS2017 et CSE-CIC-IDS2018 reposent sur des scénarios construits et sur des
-caractéristiques de flux déjà extraites. Sur CICIDS2017, le F1 du Random Forest passe de
-$0{,}9951$ en séparation aléatoire à $0{,}1577$ en holdout par scénario : le transfert
-vers une attaque absente de l'entraînement n'est pas acquis. Sur CSE-CIC-IDS2018,
-\texttt{Dst Port} seul atteint un F1 de $0{,}9997$ et le retrait des dix premières
-caractéristiques ramène le F1 à $0{,}6579$ ; un artefact lié aux journées retenues ou au
-processus de génération du jeu ne peut être exclu. Aucun de ces résultats ne se transpose
-sans nouvelle évaluation à d'autres capteurs, topologies ou périodes d'observation.
+CICIDS2017 repose sur des scénarios construits et sur des caractéristiques de flux déjà
+extraites ; les CSV d'origine sont employés, sans les corrections publiées
+\cite{engelen2021troubleshooting,lanvin2023errors}. Le score dépend fortement du
+protocole : le même Random Forest passe de $0{,}9951$ en séparation aléatoire à $0{,}4374$
+en séparation temporelle. Dans la campagne d'origine du holdout par scénario,
+l'échantillonnage retenait les premières lignes du premier fichier lu, si bien que
+l'entraînement ne couvrait qu'un seul scénario d'attaque ; cette campagne a été corrigée et
+réexécutée, et ses anciens chiffres ne sont plus utilisés. Après correction, aucun des cinq
+modèles évalués ne dépasse la prédiction systématiquement positive
+(section~\ref{sec:cicids-resultats}). La provenance des deux fichiers CSE-CIC-IDS2018 a été
+vérifiée par un nouveau téléchargement depuis la source : leurs empreintes coïncident avec
+les copies utilisées par les campagnes. Seules les journées des 15 et 16 février sont
+cependant évaluées, et les fichiers s'arrêtent à une limite de lignes compatible avec une
+exportation par tableur. Le score du 15 vers le 16 repose sur le port de destination et ne
+se transfère pas dans le sens inverse (section~\ref{sec:csecic-resultats}). Le corpus
+Linux/auth est un jeu public entièrement synthétique, généré avec la bibliothèque Faker et
+diffusé sur Kaggle ; ses variables \texttt{status} et \texttt{service} peuvent servir de
+mandataires de l'étiquette. Aucun résultat obtenu sur Linux/auth ne vaut pour des journaux
+d'authentification réels. Aucun de ces résultats ne se transpose sans nouvelle évaluation à
+d'autres capteurs, topologies ou périodes d'observation.
 
 \paragraph{Corpus et incertitude.}
 Le test HDFS couvre les $115\,013$ blocs de la partition finale, dont $1\,679$ positifs.
-L'intervalle bootstrap du F1, $[0{,}8568\,;\,0{,}879493]$, décrit l'incertitude sur ce
-corpus d'un seul système, non sur une population de systèmes distribués. Sur BGL, le groupe
-des templates connus ($2\,029$ événements) ne contient aucune anomalie : le rappel des
-anomalies à template connu ne peut pas être estimé, et $89{,}8081\,\%$ du test relève d'un
-template inconnu de l'entraînement. La politique open-set rejette $20/20$ fichiers inconnus
-mais écarte aussi $3/46$ fichiers connus ; les fichiers partageant un schéma ne sont pas
-indépendants et la \texttt{decision\_margin} n'est pas une probabilité calibrée. La baseline
-HDFS fondée sur la surprise moyenne des templates atteint un F1 de $0{,}8724$, contre
-$0{,}8684$ pour Histogram sur les mêmes blocs ; l'avantage prédictif d'Histogram n'est
-donc pas établi dans ce protocole. La comparaison du routeur à une table statique n'a pas
-été exécutée : après l'évaluation open-set, l'inventaire local ne fournit au plus que 45
-candidats pour les 90 sources indépendantes requises. La voie Apache repose sur une seule
-fixture.
+L'intervalle bootstrap du F1, $[0{,}8568\,;\,0{,}8795]$, décrit l'incertitude sur ce corpus
+d'un seul système, non sur une population de systèmes distribués. Les cinq graines ne
+modifient que l'échantillon d'ajustement du parseur et donnent la même matrice de
+confusion : elles constituent une seule observation du test. La sensibilité du résultat à la
+taille de cet échantillon, $6\,000$ blocs, n'a pas été évaluée, et la prévalence plus faible
+du test ($1{,}46\,\%$ contre $3{,}48\,\%$ en validation) abaisse mécaniquement la précision
+au seuil choisi en validation. Sur BGL, le groupe des templates connus ne contient aucune
+anomalie et $89{,}81\,\%$ du test relève d'un template inconnu de l'entraînement ;
+Histogram y applique exactement la règle « sévérité absente de l'entraînement ». Les
+variantes de protocole BGL, dont l'une a été conçue après lecture du test, sont
+exploratoires et ne remplacent pas le protocole principal.
+
+\paragraph{Routage et normalisation.}
+La politique open-set rejette $20/20$ fichiers inconnus mais écarte aussi $3/46$ fichiers
+connus. Ses scores reprennent pour les journaux texte les colonnes \texttt{dataset} et
+\texttt{subtype} du parseur de format : le rejet mesure donc en partie la capacité du
+parseur à ne pas reconnaître un format. Sa calibration ne repose que sur trois fichiers
+inconnus, les fichiers d'un même schéma ne sont pas indépendants et la
+\texttt{decision\_margin} n'est pas une probabilité calibrée. La comparaison à une chaîne
+sans routage n'a pas été exécutée ; H3 reste non tranchée. La couverture multi-format mesure
+la lecture, le parsing et l'émission des unités présentes ; la voie Apache repose sur une
+seule fixture, et les flux réseau tabulaires ne renseignent aucun des sept champs standard
+mesurés.
 
 \paragraph{Grandeurs non mesurées.}
-Les sources de la campagne multi-source ne partagent pas de vérité terrain homogène :
-aucune exactitude globale n'est calculée. La couverture multi-format mesure la lecture, le
-parsing et la normalisation des unités présentes, non la complétude des champs ni la
-conservation intégrale du contenu brut. La corrélation est évaluée sur des corpus
-synthétiques construits. L'utilisabilité du tableau de bord, le temps d'investigation et la charge cognitive n'ont fait l'objet d'aucune étude auprès d'analystes. Aucune expérience n'analyse conjointement un même incident à partir de journaux système et de flux réseau réels. La priorisation des anomalies, les traitements périodiques et l'exécution par micro-lots, prévus par la conception, ne sont pas évalués.
+Les sources ne partagent pas de vérité terrain homogène : aucune exactitude globale n'est
+calculée. Aucune expérience n'analyse conjointement un même incident à partir de journaux
+système et de flux réseau ; l'hétérogénéité étudiée est celle des formats, lus séparément.
+La corrélation est évaluée en circuit fermé, sur des corpus synthétiques construits avec les
+clés mêmes du corrélateur. L'utilisabilité du tableau de bord, le temps d'investigation et
+la charge cognitive n'ont fait l'objet d'aucune étude auprès d'analystes. La priorisation
+des anomalies, les traitements périodiques et l'exécution par micro-lots ne sont pas
+évalués. Le budget local de temps et de mémoire associé à H4 n'a jamais été fixé, et il ne
+l'est pas après coup.
 
 \paragraph{Distribution et exploitation.}
 La validation distribuée porte sur deux machines virtuelles et un Redis central. La
-campagne d'endurance dure $3\,605{,}1$~s ; le test de saturation situe le coude entre 8
-et 16 tâches/s et compte trois expirations de délai sur $11\,430$ tâches. Le goulot n'est
-pas isolé. Ni panne du broker, ni partition réseau, ni fonctionnement multi-site, ni charge
-industrielle prolongée, ni vieillissement sur plusieurs jours ne sont testés. TLS, contrôle
-d'accès, gestion des secrets, journalisation protégée contre l'altération, réplication,
-sauvegarde et observabilité distribuée ne sont pas évalués.
+campagne d'endurance offre environ $0{,}5$ tâche par seconde, loin de la capacité, et la
+répartition de ses tâches suit les profils de confiance déclarés. En saturation, le coude se
+situe entre 8 et 16 tâches/s, avec trois expirations de délai sur $11\,430$ tâches, et la
+seconde machine ne traite que $1{,}23\,\%$ des tâches réussies : la distribution est
+fonctionnelle, mais elle n'accroît pas la capacité observée. Dans la détection HDFS
+répartie, les utilités égales sont départagées par un ordre fixe et toutes les tâches vont
+au même agent ; l'inférence n'y est pas recalculée sur les machines virtuelles. La trace de
+messages de l'endurance est tronquée à $10\,001$ événements, ce qui rend ses compteurs non
+conclusifs. Ni panne du broker, ni partition réseau, ni fonctionnement multi-site, ni
+vieillissement sur plusieurs jours ne sont testés. TLS, contrôle d'accès, gestion des
+secrets, journalisation protégée, réplication, sauvegarde et observabilité distribuée ne
+sont pas évalués.
 
 \paragraph{Mécanismes adaptatifs.}
-Les poids de la fonction d'utilité sont fixés et non appris
-(section~\ref{sec:spec-utilite}). Le benchmark sur des micro-tâches ne montre pas de gain de débit, de latence ou d'équité lié à la mémoire, et le protocole à fiabilité hétérogène n'établit un gain qu'à une probabilité d'échec de $0{,}9$ (section~\ref{sec:e-h5}). Contract Net n'obtient aucun avantage sur un répartiteur au moindre chargé (section~\ref{sec:e-cnp-moindre}) ; cette comparaison repose sur des tâches synthétiques dans un seul processus et n'a pas été reprise en exécution distribuée. Dans l'expérience de panne
-appariée, l'absence de doublon provient du magasin d'idempotence : le même mécanisme évite
-aussi les doublons lorsqu'il est ajouté aux architectures de référence. La poursuite
-d'objectifs, l'enchaînement, la délégation et la reprise sont vérifiés fonctionnellement,
-sans campagne quantitative dédiée à leur coût. La mise à jour contrôlée des modèles dispose
-d'une implémentation et d'un mode \textit{dry-run}, mais d'aucun cycle complet et répété de
-promotion et de rejet suivi d'une mesure indépendante
+La fonction d'utilité est un classement à poids fixes, non appris
+(section~\ref{sec:spec-utilite}). La mémoire n'apporte de gain qu'à une probabilité d'échec
+de $0{,}9$, avec une équité moindre, dans un protocole où la confiance déclarée est
+volontairement éloignée de la fiabilité réelle (section~\ref{sec:e-h5}). Contract Net
+n'obtient aucun avantage sur un répartiteur au moindre chargé
+(section~\ref{sec:e-cnp-moindre}) ; ce répartiteur lit l'état des agents dans un seul
+processus, sans coût de communication ni information périmée, et la comparaison n'a pas été
+reprise en exécution distribuée. Sous Contract Net, quelques tâches sont perdues, parce que
+la liste de repli est figée au moment de l'appel d'offres. Dans la panne appariée, l'absence
+de doublon provient du magasin d'idempotence, qui l'évite aussi lorsqu'il est ajouté aux
+architectures de référence. La mise à jour contrôlée des modèles dispose d'un mode
+\textit{dry-run}, mais d'aucun cycle complet et répété de promotion et de rejet
 (tableau~\ref{tab:statut-model-update}).
 
 \paragraph{Statut du système.}
-Ariel \logminer{} est en conséquence un prototype de laboratoire. Il ne constitue ni une
-plateforme opérationnelle de SOC ni un système autonome prêt pour la production.
+Ariel \logminer{} est un prototype de laboratoire. Il ne constitue ni une plateforme
+opérationnelle de SOC ni un système autonome prêt pour la production.

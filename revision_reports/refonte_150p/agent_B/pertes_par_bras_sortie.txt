@@ -1,0 +1,45 @@
+E-CNP-STATIC-ASSIGNMENT
+   ('s0_cost_no_service', 'C', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s0_cost_no_service', 'D', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s0_cost_no_service', 'static', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s1_nominal', 'C', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s1_nominal', 'D', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s1_nominal', 'static', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s2_best_declared_failure_p30', 'C', '3') echecs_finaux= 4 executions= 30 taches= 30000 executions_avec_perte= 3
+   ('s2_best_declared_failure_p30', 'D', '3') echecs_finaux= 8 executions= 30 taches= 30000 executions_avec_perte= 7
+   ('s2_best_declared_failure_p30', 'static', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s3_silent_gamma_failure', 'C', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s3_silent_gamma_failure', 'D', '3') echecs_finaux= 50 executions= 30 taches= 30000 executions_avec_perte= 8
+   ('s3_silent_gamma_failure', 'static', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s4_slow_gamma', 'C', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s4_slow_gamma', 'D', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s4_slow_gamma', 'static', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+E-CNP-LEAST-LOADED
+   ('s0_cost_no_service', 'C', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s0_cost_no_service', 'least_loaded', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s0_cost_no_service', 'static', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s1_nominal', 'C', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s1_nominal', 'least_loaded', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s1_nominal', 'static', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s2_best_declared_failure_p30', 'C', '3') echecs_finaux= 5 executions= 30 taches= 30000 executions_avec_perte= 5
+   ('s2_best_declared_failure_p30', 'least_loaded', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s2_best_declared_failure_p30', 'static', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s3_silent_gamma_failure', 'C', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s3_silent_gamma_failure', 'least_loaded', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s3_silent_gamma_failure', 'static', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s4_slow_gamma', 'C', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s4_slow_gamma', 'least_loaded', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+   ('s4_slow_gamma', 'static', '3') echecs_finaux= 0 executions= 30 taches= 30000 executions_avec_perte= 0
+E-H5-MEMORY-RELIABILITY
+   ('best_declared_failure_p30', 'C', '1') echecs_finaux= 0 executions= 10 taches= 10000 executions_avec_perte= 0
+   ('best_declared_failure_p30', 'C', '3') echecs_finaux= 3 executions= 30 taches= 30000 executions_avec_perte= 3
+   ('best_declared_failure_p30', 'D', '1') echecs_finaux= 0 executions= 10 taches= 10000 executions_avec_perte= 0
+   ('best_declared_failure_p30', 'D', '3') echecs_finaux= 6 executions= 30 taches= 30000 executions_avec_perte= 5
+   ('best_declared_failure_p60', 'C', '1') echecs_finaux= 0 executions= 10 taches= 10000 executions_avec_perte= 0
+   ('best_declared_failure_p60', 'C', '3') echecs_finaux= 19 executions= 30 taches= 30000 executions_avec_perte= 14
+   ('best_declared_failure_p60', 'D', '1') echecs_finaux= 0 executions= 10 taches= 10000 executions_avec_perte= 0
+   ('best_declared_failure_p60', 'D', '3') echecs_finaux= 4 executions= 30 taches= 30000 executions_avec_perte= 4
+   ('best_declared_failure_p90', 'C', '1') echecs_finaux= 0 executions= 10 taches= 10000 executions_avec_perte= 0
+   ('best_declared_failure_p90', 'C', '3') echecs_finaux= 44 executions= 30 taches= 30000 executions_avec_perte= 20
+   ('best_declared_failure_p90', 'D', '1') echecs_finaux= 0 executions= 10 taches= 10000 executions_avec_perte= 0
+   ('best_declared_failure_p90', 'D', '3') echecs_finaux= 3 executions= 30 taches= 30000 executions_avec_perte= 2
