@@ -23,8 +23,8 @@ de deux fichiers, pas comme une validation externe d'un détecteur d'intrusion.
 
 HDFS illustre une autre menace : l'événement n'est pas l'unité annotée, le bloc l'est.
 L'agrégation modifie alors la matrice de confusion et l'interprétation du F1. Sur le test
-complet, la baseline de surprise moyenne des templates atteint un F1 de $0{,}872434$,
-légèrement supérieur aux $0{,}868373$ d'Histogram : son avantage prédictif n'est donc pas
+complet, la baseline de surprise moyenne des templates atteint un F1 de $0{,}8724$,
+légèrement supérieur aux $0{,}8684$ d'Histogram : son avantage prédictif n'est donc pas
 établi. Sur BGL, le score principal coïncide avec la règle « sévérité absente de l'entraînement normal » ; le
 détecteur ne met en évidence aucune structure plus riche sous ce protocole. Les travaux
 de Le et Zhang montrent précisément que la sélection des données, le regroupement et le
@@ -177,6 +177,8 @@ revendications. La première priorité est de reprendre la comparaison de Contra
 réellement hétérogène où un même incident possède des traces système et réseau, mappées à
 un schéma explicite tel qu'ECS ou OCSF. La troisième est de valider la corrélation sur des
 incidents multi-étapes externes au générateur.
+
+Le constat de fragilité appelle aussi des pistes de correction, qui restent à éprouver. La première consiste à retirer les variables propres à une collecte, repérées par l'audit mono-variable, avant l'apprentissage. La deuxième est de calibrer les seuils sur une validation tenue à l'écart par scénario, et de permettre au détecteur de s'abstenir sur une source éloignée de l'entraînement, comme le routeur rejette déjà les fichiers inconnus. La troisième est d'entraîner sur des groupes de scénarios afin de mesurer ce que chaque famille d'attaques apporte aux autres. Aucune de ces pistes n'a été testée dans ce travail.
 
 Sur le plan prédictif, les prochaines campagnes doivent utiliser des données corrigées ou
 réextraites, des partitions externes, des baselines au même niveau et des règles de seuil

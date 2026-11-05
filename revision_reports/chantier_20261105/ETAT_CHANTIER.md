@@ -1,6 +1,6 @@
 # ETAT_CHANTIER — révision académique du mémoire Ariel Logminer
 
-Dernière mise à jour : 2026-11-05, reprise Claude Code. Statut global : **EN COURS — agents 1, 2, 3, 5 et 6 terminés ; agent 4 complété par la reprise, avec des points restants (voir « Audit de la reprise ») ; prochain : agent 7**. Consignes communes à tous les agents : `CONSIGNES_COMMUNES.md`.
+Dernière mise à jour : 2026-11-05, reprise Claude Code. Statut global : **AGENTS CLOS, verdict provisoire ; reste aux mains de l'auteur (voir « Questions à l'auteur »)**. Consignes communes à tous les agents : `CONSIGNES_COMMUNES.md`.
 
 Retours des trois lecteurs, texte intégral : `revision_reports/chantier_20261105/RETOURS_LECTEURS.md`. Chaque agent lit **les trois retours en entier**, pas seulement les points listés pour son périmètre.
 
@@ -60,11 +60,11 @@ Ces points figurent dans `RETOURS_LECTEURS.md` mais pas dans la liste de tâches
 | 1 Intégrité factuelle | voir MISSION.md + C5 | **COMPLET** le 2026-11-05 (3 questions au coordinateur : Q1-Q3 ci-dessous) | `agent_1/LIVRABLE_1_integrite.md` ; `agent_1/sections/` (15 fichiers, dont 1 option B conditionnelle) |
 | 2 Hypothèses | voir MISSION.md + C5 + C9 | **COMPLET** le 2026-11-05 (5 questions au coordinateur : Q1-Q5 de l'Agent 2 ci-dessous) | `agent_2/LIVRABLE_2_hypotheses.md` ; `agent_2/sections/` (12 fichiers, dont les 3 résumés qui remplacent ceux de l'Agent 1) ; test de compilation sur copie : 0 erreur, 0 débordement, 0 référence indéfinie |
 | 3 État de l'art | voir MISSION.md + C5 + C12 | **COMPLET** le 2026-11-05 (3 dépendances d'intégration A3-Q1 à A3-Q3 ci-dessous) | `agent_3/LIVRABLE_3_etat_art.md` ; `agent_3/references_proposees.bib` (18 entrées) ; `agent_3/sections/` (8 fichiers) ; validation isolée : 0 erreur, 0 citation/référence indéfinie, 0 débordement horizontal |
-| 4 Méthodologie | voir MISSION.md + C5 + C13 | **PARTIEL** (intégré directement, sans `agent_4/sections/` ; compléments de la reprise, voir l'audit) — E-H3b : non-infériorité non établie sur `linux_auth` ; E-H4 : meilleure baseline simple légèrement supérieure à Histogram ; E-H3 : non faisable localement, constat documenté | `agent_4/LIVRABLE_4_methodologie.md` ; protocoles et runners ; résultats et manifestes E-H3b/E-H4 |
+| 4 Méthodologie | voir MISSION.md + C5 + C13 | **COMPLET** le 2026-11-05 après compléments de la reprise (intégré directement ; voir la fin du livrable) — E-H3b : non-infériorité non établie sur `linux_auth` ; E-H4 : meilleure baseline simple légèrement supérieure à Histogram ; E-H3 : non faisable localement, constat documenté | `agent_4/LIVRABLE_4_methodologie.md` ; protocoles et runners ; résultats et manifestes E-H3b/E-H4 |
 | 5 Architecture | voir MISSION.md + C13 | **COMPLET** le 2026-11-05 — E-H5 : gain conditionnel (p = 0,9) ; E-CNP : avantage conditionnel sur la table ; E-CNP-LEAST-LOADED : aucun avantage de la négociation | `agent_5/LIVRABLE_5_architecture.md` ; protocoles, runner, artefacts ; `agent_5/sections/` (6 fichiers) |
 | 6 Reproductibilité / IA | voir MISSION.md + C4 (d) + C5 ; suppression transférée du §7.7 | **COMPLET** le 2026-11-05 (3 points d'intégration A6-Q1 à A6-Q3 ci-dessous) | `agent_6/LIVRABLE_6_reproductibilite.md` ; `agent_6/PREPARATION_SOUTENANCE.md` ; `agent_6/sections/` (4 fichiers : déclaration IA, chapitre 7 complet, introduction de la matrice A.2, ligne BGL G) |
-| 7 Forme | voir MISSION.md | en attente | — |
-| 8 Verdict | synthèse | après clôture de 1 à 7 | — |
+| 7 Forme | voir MISSION.md | **PARTIEL** le 2026-11-05 : forme mécanique faite ; style réservé à l'auteur | `agent_7/LIVRABLE_7_forme.md` |
+| 8 Verdict | synthèse | **PROVISOIRE** le 2026-11-05 : validation conditionnelle, 12/20 selon une grille proposée, évaluateur non indépendant | `agent_8/LIVRABLE_8_verdict.md` |
 
 ## Décisions de l'Agent 1 (2026-11-05)
 
@@ -159,6 +159,7 @@ Détail et sources : `agent_6/LIVRABLE_6_reproductibilite.md` ; inventaire de so
 | A2-a (2026-11-05) | Agent 2 : question centrale et QR resserrées ; nature des preuves ; hypothèses et règles de décision ; objectif général ; réponses QR ; bilan BGL ; statuts H1–H5 ; alignement du tableau 2.3, des micro-lots et de la priorisation | `chapitre1_introduction.tex` ; `chapitre3_modele_propose.tex` ; `chapitre6_conclusion.tex` | OK : 170 pages, 0 erreur, 0 référence/citation indéfinie, 0 débordement horizontal ; cycle complet `pdflatex` → `bibtex` → `pdflatex` ×2 |
 | A5-a (2026-11-05) | Agent 5 : débit A--D avec IC, E-H5, E-CNP, résumés FR/EN/lingala, §5.7, endurance, H5 NON TRANCHÉE. Agent 3 : discussion complète. Reprise : version CICIDS2017, 0,473265, tableau des baselines par jeu, 1 048 575 lignes, H4 « quatre jeux », déclaration IA, A.2, chapitre 7 | `main.tex` ; `chapitre1_introduction.tex` ; `chapitre5_resultats.tex` ; `chapitre6_approfondissements_scientifiques.tex` ; `chapitre6_discussion.tex` ; `chapitre6_conclusion.tex` ; `chapitre7_reproductibilite_deploiement.tex` ; `limites_consolidees.tex` ; `annexes.tex` ; `declaration_ia.tex` | OK : 181 pages, cycle complet, 0 référence/citation indéfinie, 0 débordement horizontal |
 | A5-b (2026-11-05) | E-CNP-LEAST-LOADED et E-H3B-STRICT-HOLDOUT : §4.5 et §4.10, discussion, limites, QR2, QR3, résumés, A.2, chapitre 7, déclaration IA | mêmes fichiers que A5-a, sauf `chapitre6_approfondissements_scientifiques.tex` | OK : 181 pages, cycle complet, 0 référence/citation indéfinie, 0 débordement horizontal |
+| A4-b, A7-a (2026-11-05) | Restes de l'Agent 4 (échantillonnage, seuil, HDFS, BGL, audit CSE-CIC, circuit fermé, pistes) ; forme (bibliographie `plain-fr`, quatre décimales, anglicismes, résumés raccourcis) | `main.tex` ; chapitres 1, 3, 4, 5, 6 ; `limites_consolidees.tex` ; `annexes.tex` | OK : 181 pages, cycle complet, 0 référence/citation indéfinie, 0 débordement horizontal |
 | A3-a (2026-11-05) | Agent 3 : cadres intégrés, ECS/OCSF, concurrents Contract Net, livraison/idempotence, corrélation, gouvernance, critiques CSE-CIC et tableau 1.3 ; fusion des 18 références proposées. La discussion du chapitre 6 attend les résultats C13 et E-CNP. | `chapitre2_etat_art.tex` ; `references.bib` | OK : cycle complet `pdflatex` → `bibtex` → `pdflatex` ×2 ; 0 référence/citation indéfinie, 0 débordement horizontal |
 
 **Attention pour les agents suivants : les numéros de ligne cités dans `LIVRABLE_1_integrite.md` pour ces fichiers sont décalés après le lot A1-a.** Repérer les passages par leur texte.
@@ -195,7 +196,7 @@ Détail et sources : `agent_6/LIVRABLE_6_reproductibilite.md` ; inventaire de so
 | E-H3b, E-H4 : manifestes, hachages, antériorité du commit, décisions | Conformes ; rejeux identiques à l'octet (CSV de métriques). **Un rejeu reproduit aussi les bugs : voir la ligne suivante** |
 | E-H3b : données | **Défauts graves, découverts ensuite** dans `scripts/run_family_routing_ablation.py` : `load_unsw` inclut `target` dans le résumé numérique (F1 spécialisé 0,9926 avec la fuite, 0,9000 sans, trois graines) ; `load_cicids` et `load_linux_auth` prennent les premières lignes (CICIDS = DDoS d'un seul fichier). **Résultat UNSW d'E-H3b invalide.** Script non modifié, car son empreinte figure au manifeste. Écart consigné au registre ; E-H3B-STRICT-HOLDOUT corrige |
 | E-H3, non-faisabilité (C15) | Dénombrement confirmé : 68 chemins utilisés, 44 fichiers restants sous `data/raw/`, 1 échantillon |
-| Agent 4, statut COMPLET | **Surévalué.** Comblés par la reprise : tableau des baselines par jeu (`tab:baselines-par-jeu`), version CICIDS2017, 0,473265. **Restent à traiter :** justification du sous-échantillonnage CICIDS2017 et HDFS, BGL (huit protocoles explorés), avis E-HET, pistes face au « résultat négatif », requalification de CSE-CIC-IDS2018 en audit |
+| Agent 4, statut COMPLET | **Surévalué.** Comblés par la reprise : tableau des baselines par jeu (`tab:baselines-par-jeu`), version CICIDS2017, 0,473265. Le reste est traité : voir la fin de `agent_4/LIVRABLE_4_methodologie.md` |
 | Conclusion, H4 | Incohérence « trois » / « quatre jeux » : **corrigée** (quatre jeux, HDFS compris depuis E-H4) |
 | `chapitre5_resultats.tex`, 1 048 575 lignes | Inexact pour le 16 février : **corrigé** selon `agent4_csecic_shortcut_20261104T144738Z` (question ouverte 6) |
 | C13-proc | Respectée ; C15 et C16 figurent à tort sous « Décisions de l'auteur » alors que ce sont des constats de la reprise |
@@ -207,7 +208,7 @@ Détail : `agent_5/LIVRABLE_5_architecture.md` §5. C6 est clos : option A défi
 
 ## Prochain agent à activer
 
-Lots A2-a, A3-a, A5-a et A5-b intégrés. **Prochain : finir le périmètre restant de l'Agent 4 (`agent_4/LIVRABLE_4_methodologie.md`, fin du fichier), puis Agent 7 (Forme), puis Agent 8 (Verdict).** La section sur le mémoire ne doit plus citer E-H3b comme résultat.
+Tous les lots sont intégrés. **Plus d'agent à activer : le mémoire attend l'auteur** (conditions de `agent_8/LIVRABLE_8_verdict.md` §5). Ensuite seulement : les articles (priorité décidée par l'auteur), dont le score `0,999965`. Le mémoire ne doit plus citer E-H3b comme résultat.
 
 ## Décisions de l'auteur sur la reprise (2026-11-05)
 

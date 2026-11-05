@@ -59,6 +59,22 @@ Comparaison de référence : `protocoles/E-H3B-STRICT-HOLDOUT.md`, commit `88768
 
 La non-infériorité globale n'est pas établie. Sur CICIDS et Linux/auth, les deux modèles restent très sous la prédiction systématiquement positive (0,666667). L'échec d'E-H3b sur Linux/auth disparaît avec un échantillonnage par graine (borne inférieure −0,0076 en référence aléatoire).
 
-## Périmètre restant de l'Agent 4
+## Complément de la reprise : périmètre clos
 
-Déjà comblés par la reprise : tableau des baselines par jeu (`tab:baselines-par-jeu`), version de CICIDS2017, 0,473265, 1 048 575 lignes. **Restent à faire :** justifier les sous-échantillonnages CICIDS2017 et HDFS ; traiter les huit protocoles BGL explorés sans plan préalable ; donner l'avis de faisabilité E-HET ; proposer des pistes face au « résultat négatif » ; décider si la section CSE-CIC-IDS2018 devient un audit de jeu de données ; déposer des sections dans `agent_4/sections/`. Statut : **partiel**.
+Intégré directement au manuscrit, sans dépôt dans `agent_4/sections/` (écart à C1 assumé par le coordinateur).
+
+| Point de la mission | Traitement |
+|---|---|
+| Baselines par jeu | `tab:baselines-par-jeu` |
+| Version de CICIDS2017 | CSV d'origine `MachineLearningCVE`, sans les corrections d'Engelen et al. |
+| 6 435,6 lignes de test | Plafonds de `cicids_final_protocol.json` et `max_chunks_per_file` ; aucun calcul de puissance ; Infiltration : 32 attaques |
+| Seuil des cinq modèles | Règle par défaut (`model.predict`), sans calibration ; le classement en dépend (HistGradientBoosting : F1 0,003568, PR-AUC 0,569002) |
+| HDFS, 6 000 blocs | 1,7 % de l'entraînement ; 24 à 36 clusters selon la graine, matrices identiques : pas cinq observations indépendantes |
+| BGL | Huit variantes sans plan préalable ; G utilise une information sur le test et n'est pas une performance attendue |
+| CSE-CIC-IDS2018 | Requalifié en audit de jeu de données |
+| Corrélation | Circuit fermé déclaré ; défaite face à « hôte + fenêtre » déjà présente |
+| Pistes face au résultat négatif | Discussion, « Priorités de prolongement » : trois pistes, déclarées non testées |
+
+**Avis E-HET.** Non exécutée, conformément à C13. Le seul support local apparié est DARPA 1998, `data/raw/Datasets/DARPA_eval_b/` : une journée, 13 sessions d'attaque dans `bsm.list` et 39 dans `tcpdump.list`, jeu ancien et critiqué. Cela permettrait une démonstration, pas une estimation. Une preuve solide demanderait un scénario contrôlé dans les deux VM. Le point de non-recevabilité du lecteur 3 reste donc ouvert et déclaré dans le manuscrit.
+
+Statut : **complet**, sous ces réserves.

@@ -528,7 +528,7 @@ Le noyau peut notamment contenir des informations telles que :
 
 \end{itemize}
 
-Il serait toutefois incorrect d'affirmer que toutes les sources traversent toujours cette
+Toutes les sources ne traversent toutefois pas toujours cette
 étape sans perte. Le modèle architectural prévoit une normalisation commune, tandis que
 sa couverture réelle dépend des adaptateurs effectivement implémentés. Cette propriété est
 mesurée dans le chapitre expérimental.
@@ -671,8 +671,7 @@ Lorsque deux familles obtiennent des scores proches, le système peut conserver 
 entre les deux meilleures valeurs.
 Cette \textbf{marge n'est pas une probabilité calibrée}. Elle indique uniquement la
 distance entre deux scores produits par les règles du routeur.
-Il serait donc incorrect d'interpréter une marge de 80 comme ``80\,\% de probabilité'' que
-la famille soit correcte.
+Une marge de 80 ne signifie donc pas une probabilité de $80\,\%$ que la famille soit correcte.
 
 \subsection{Fallback}
 
@@ -926,7 +925,7 @@ Lorsqu'une information complémentaire est nécessaire, elle peut être placée 
 \texttt{run\_id} sert à corréler les messages appartenant à une même exécution.
 Il ne représente pas l'identifiant unique de chaque événement métier.
 Plusieurs messages peuvent donc partager le même \texttt{run\_id} lorsqu'ils appartiennent
-à un même run.
+à une même exécution.
 
 \subsection{Pourquoi un contrat minimal}
 

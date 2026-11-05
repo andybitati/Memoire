@@ -7,24 +7,24 @@ reprendre intégralement.
 \paragraph{Données et généralisation.}
 CICIDS2017 et CSE-CIC-IDS2018 reposent sur des scénarios construits et sur des
 caractéristiques de flux déjà extraites. Sur CICIDS2017, le F1 du Random Forest passe de
-$0{,}995142$ en séparation aléatoire à $0{,}157744$ en holdout par scénario : le transfert
+$0{,}9951$ en séparation aléatoire à $0{,}1577$ en holdout par scénario : le transfert
 vers une attaque absente de l'entraînement n'est pas acquis. Sur CSE-CIC-IDS2018,
-\texttt{Dst Port} seul atteint un F1 de $0{,}999720$ et le retrait des dix premières
-caractéristiques ramène le F1 à $0{,}657859$ ; un artefact lié aux journées retenues ou au
+\texttt{Dst Port} seul atteint un F1 de $0{,}9997$ et le retrait des dix premières
+caractéristiques ramène le F1 à $0{,}6579$ ; un artefact lié aux journées retenues ou au
 processus de génération du jeu ne peut être exclu. Aucun de ces résultats ne se transpose
 sans nouvelle évaluation à d'autres capteurs, topologies ou périodes d'observation.
 
 \paragraph{Corpus et incertitude.}
 Le test HDFS couvre les $115\,013$ blocs de la partition finale, dont $1\,679$ positifs.
-L'intervalle bootstrap du F1, $[0{,}856771\,;\,0{,}879493]$, décrit l'incertitude sur ce
+L'intervalle bootstrap du F1, $[0{,}8568\,;\,0{,}879493]$, décrit l'incertitude sur ce
 corpus d'un seul système, non sur une population de systèmes distribués. Sur BGL, le groupe
 des templates connus ($2\,029$ événements) ne contient aucune anomalie : le rappel des
 anomalies à template connu ne peut pas être estimé, et $89{,}8081\,\%$ du test relève d'un
 template inconnu de l'entraînement. La politique open-set rejette $20/20$ fichiers inconnus
 mais écarte aussi $3/46$ fichiers connus ; les fichiers partageant un schéma ne sont pas
 indépendants et la \texttt{decision\_margin} n'est pas une probabilité calibrée. La baseline
-HDFS fondée sur la surprise moyenne des templates atteint un F1 de $0{,}872434$, contre
-$0{,}868373$ pour Histogram sur les mêmes blocs ; l'avantage prédictif d'Histogram n'est
+HDFS fondée sur la surprise moyenne des templates atteint un F1 de $0{,}8724$, contre
+$0{,}8684$ pour Histogram sur les mêmes blocs ; l'avantage prédictif d'Histogram n'est
 donc pas établi dans ce protocole. La comparaison du routeur à une table statique n'a pas
 été exécutée : après l'évaluation open-set, l'inventaire local ne fournit au plus que 45
 candidats pour les 90 sources indépendantes requises. La voie Apache repose sur une seule
@@ -39,7 +39,7 @@ synthétiques construits. L'utilisabilité du tableau de bord, le temps d'invest
 
 \paragraph{Distribution et exploitation.}
 La validation distribuée porte sur deux machines virtuelles et un Redis central. La
-campagne d'endurance dure $3\,605{,}110$~s ; le test de saturation situe le coude entre 8
+campagne d'endurance dure $3\,605{,}1$~s ; le test de saturation situe le coude entre 8
 et 16 tâches/s et compte trois expirations de délai sur $11\,430$ tâches. Le goulot n'est
 pas isolé. Ni panne du broker, ni partition réseau, ni fonctionnement multi-site, ni charge
 industrielle prolongée, ni vieillissement sur plusieurs jours ne sont testés. TLS, contrôle

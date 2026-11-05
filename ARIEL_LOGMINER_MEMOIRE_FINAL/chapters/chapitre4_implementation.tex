@@ -108,7 +108,7 @@ prédiction(u) <- [R(u) >= theta]
 
 L'implémentation correspond à la fonction \texttt{histogram\_scores} de \texttt{scripts/run\_strict\_sequence\_experiments.py} et de \texttt{scripts/run\_hdfs\_block\_strengthening.py}, et à \texttt{select\_threshold} de \texttt{scripts/dataset\_strengthening\_common.py}.
 
-BGL suit un protocole différent : l'unité évaluée est l'événement, sans fenêtre ni agrégation (sous-section~\ref{subsec:histogram}). L'évaluation Histogram est complétée par une séparation entre templates connus et inconnus ainsi que par le baseline \texttt{UnknownTemplateBaseline}. Cette instrumentation permet de vérifier quelle part de la performance peut être liée à la simple nouveauté d'un template, plutôt que d'attribuer automatiquement l'ensemble du F1 à une modélisation plus générale de la dynamique des journaux.
+BGL suit un protocole différent : l'unité évaluée est l'événement, sans fenêtre ni agrégation (sous-section~\ref{subsec:histogram}). L'évaluation Histogram est complétée par une séparation entre templates connus et inconnus ainsi que par la baseline \texttt{UnknownTemplateBaseline}. Cette instrumentation permet de vérifier quelle part de la performance peut être liée à la simple nouveauté d'un template, plutôt que d'attribuer automatiquement l'ensemble du F1 à une modélisation plus générale de la dynamique des journaux.
 
 
 \section{Corrélation}

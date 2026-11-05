@@ -171,7 +171,7 @@ Test complet (cinq graines) & TP $1\,679$, FP 509, TN $112\,825$, FN 0 ; F1 $0{,
 \toprule
 \textbf{Champ} & \textbf{Valeur} \\
 \midrule
-Run & \texttt{cnp\_endurance\_multivm\_20260918T130822Z} \\
+Identifiant & \texttt{cnp\_endurance\_multivm\_20260918T130822Z} \\
 Coordinateur & \texttt{andy-aaron} \\
 Transport & Redis 7.4.9 centralisé, base 0 \\
 Agent Debian & \texttt{debian-alpha}, Linux 6.12.96 Debian 13, Python 3.13.5 \\
@@ -179,7 +179,7 @@ Agent Ubuntu & \texttt{ubuntu-beta}, Linux 5.4.0-70, Python 3.8.10 \\
 Parallélisme & un traitement simultané par agent \\
 Durée & $3\,605{,}110$ s observées pour $3\,600$ s ciblées \\
 Tâches & $1\,800$ réussies sur $1\,800$ ; Debian 451, Ubuntu $1\,349$ \\
-Latence & médiane 53,983 ms ; p95 156,3017 ms ; p99 836,72528 ms \\
+Latence & médiane 53,98 ms ; p95 156,30 ms ; p99 836,73 ms \\
 Reprise & arrêt post-persistance/pré-\texttt{RESULT}, une réattribution \\
 Idempotence & rejeu du résultat, un effet persistant, zéro effet dupliqué \\
 Trace de messages & fenêtre terminale de $10\,001$ événements ; compteurs non conclusifs \\
@@ -250,7 +250,7 @@ Sur le test complet, $20\,000$ réplications multinomiales donnent l’intervall
 \paragraph{Figure~\ref{fig:bgl-connu-inconnu} -- connaissance des templates BGL.}
 Le groupe \texttt{KNOWN\_TEMPLATE} contient $2\,029$ unités et aucune anomalie ; aucun rappel d’anomalies connues ne peut donc y être estimé. Le F1 global est porté par le groupe des templates inconnus, ce qui limite son interprétation comme apprentissage de comportement.
 
-\paragraph{Figure~\ref{fig:bgl-baseline} -- comparaison au baseline BGL.}
+\paragraph{Figure~\ref{fig:bgl-baseline} -- comparaison à la baseline BGL.}
 Histogram passe de 0,277885, F1 de la règle « template inconnu », à 0,913698 ; la règle « sévérité absente de l’entraînement » produit pourtant exactement la même matrice de confusion. Le gain traduit donc une nouveauté de sévérité, non une modélisation de la dynamique des journaux, et ne résout pas l’absence de positifs parmi les templates connus.
 
 \paragraph{Figure~\ref{fig:csecic-lr-rf} -- modèles CSE-CIC-IDS2018.}
