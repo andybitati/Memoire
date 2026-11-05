@@ -109,24 +109,31 @@ def _numeric_summary(frame: pd.DataFrame) -> pd.DataFrame:
     )
 
 
-def load_linux_auth(path: Path, *, normal: int, anomaly: int, random_state: int) -> pd.DataFrame:
-    parts: list[pd.DataFrame] = []
-    normal_seen = anomaly_seen = 0
-    for chunk in pd.read_csv(path, dtype=str, keep_default_na=False, chunksize=100_000):
-        labels = chunk["anomaly_label"].astype(str).str.lower().str.strip()
-        chunk = chunk.assign(target=(labels.ne("normal")).astype(int))
-        normal_part = chunk[chunk["target"] == 0].head(max(0, normal - normal_seen))
-        anomaly_part = chunk[chunk["target"] == 1].head(max(0, anomaly - anomaly_seen))
-        if not normal_part.empty:
-            parts.append(normal_part)
-            normal_seen += len(normal_part)
-        if not anomaly_part.empty:
-            parts.append(anomaly_part)
-            anomaly_seen += len(anomaly_part)
-        if normal_seen >= normal and anomaly_seen >= anomaly:
-            break
+def _seeded_selection(
+    chunks: Iterable[pd.DataFrame], *, normal: int, anomaly: int, random_state: int
+) -> pd.DataFrame:
+    """Tire uniformément, par classe et selon la graine, sans charger tout le jeu en mémoire."""
 
-    raw = pd.concat(parts, ignore_index=True)
+    rng = np.random.default_rng(random_state)
+    quotas = {0: normal, 1: anomaly}
+    kept: dict[int, pd.DataFrame] = {}
+    for chunk in chunks:
+        chunk = chunk.assign(_selection_key=rng.random(len(chunk)))
+        for value, quota in quotas.items():
+            part = chunk[chunk["target"] == value]
+            if value in kept:
+                part = pd.concat([kept[value], part], ignore_index=True)
+            kept[value] = part.nsmallest(quota, "_selection_key")
+    return pd.concat(kept.values(), ignore_index=True).drop(columns="_selection_key")
+
+
+def load_linux_auth(path: Path, *, normal: int, anomaly: int, random_state: int) -> pd.DataFrame:
+    def chunks() -> Iterable[pd.DataFrame]:
+        for chunk in pd.read_csv(path, dtype=str, keep_default_na=False, chunksize=100_000):
+            labels = chunk["anomaly_label"].astype(str).str.lower().str.strip()
+            yield chunk.assign(target=(labels.ne("normal")).astype(int))
+
+    raw = _seeded_selection(chunks(), normal=normal, anomaly=anomaly, random_state=random_state)
     ts = pd.to_datetime(raw["timestamp"], errors="coerce", utc=True)
     prepared = pd.DataFrame(index=raw.index)
     prepared["family"] = "linux_auth"
@@ -149,28 +156,15 @@ def load_linux_auth(path: Path, *, normal: int, anomaly: int, random_state: int)
 
 
 def load_cicids(input_dir: Path, *, normal: int, anomaly: int, random_state: int) -> pd.DataFrame:
-    parts: list[pd.DataFrame] = []
-    normal_seen = anomaly_seen = 0
-    for csv_path in sorted(input_dir.glob("*.csv")):
-        for chunk in pd.read_csv(csv_path, dtype=str, keep_default_na=False, chunksize=100_000, encoding_errors="ignore"):
-            chunk.columns = [str(c).strip().lstrip("\ufeff") for c in chunk.columns]
-            label_col = next(c for c in chunk.columns if c.lower() == "label")
-            labels = chunk[label_col].astype(str).str.strip().str.upper()
-            chunk = chunk.assign(target=(labels.ne("BENIGN")).astype(int))
-            normal_part = chunk[chunk["target"] == 0].head(max(0, normal - normal_seen))
-            anomaly_part = chunk[chunk["target"] == 1].head(max(0, anomaly - anomaly_seen))
-            if not normal_part.empty:
-                parts.append(normal_part)
-                normal_seen += len(normal_part)
-            if not anomaly_part.empty:
-                parts.append(anomaly_part)
-                anomaly_seen += len(anomaly_part)
-            if normal_seen >= normal and anomaly_seen >= anomaly:
-                break
-        if normal_seen >= normal and anomaly_seen >= anomaly:
-            break
+    def chunks() -> Iterable[pd.DataFrame]:
+        for csv_path in sorted(input_dir.glob("*.csv")):
+            for chunk in pd.read_csv(csv_path, dtype=str, keep_default_na=False, chunksize=100_000, encoding_errors="ignore"):
+                chunk.columns = [str(c).strip().lstrip("\ufeff") for c in chunk.columns]
+                label_col = next(c for c in chunk.columns if c.lower() == "label")
+                labels = chunk[label_col].astype(str).str.strip().str.upper()
+                yield chunk.assign(target=(labels.ne("BENIGN")).astype(int))
 
-    raw = pd.concat(parts, ignore_index=True)
+    raw = _seeded_selection(chunks(), normal=normal, anomaly=anomaly, random_state=random_state)
     numeric_cols = raw.drop(columns=[c for c in raw.columns if c.lower() == "label"] + ["target"], errors="ignore")
     summary = _numeric_summary(numeric_cols.astype(str).replace(["Infinity", "INF", "-Infinity"], np.nan))
     prepared = pd.DataFrame(index=raw.index)
@@ -202,7 +196,8 @@ def load_unsw(train_path: Path, test_path: Path, *, normal: int, anomaly: int, r
     raw = pd.concat([pd.read_parquet(train_path), pd.read_parquet(test_path)], ignore_index=True)
     raw = raw.assign(target=pd.to_numeric(raw["label"], errors="coerce").fillna(0).astype(int))
     raw = _balanced(raw, normal=normal, anomaly=anomaly, random_state=random_state)
-    summary = _numeric_summary(raw.drop(columns=["label", "attack_cat"], errors="ignore").astype(str))
+    # ``target`` est exclu : l'étiquette ne doit pas entrer dans les variables du modèle.
+    summary = _numeric_summary(raw.drop(columns=["label", "attack_cat", "target"], errors="ignore").astype(str))
     prepared = pd.DataFrame(index=raw.index)
     prepared["family"] = "unsw"
     prepared["target"] = raw["target"].astype(int)

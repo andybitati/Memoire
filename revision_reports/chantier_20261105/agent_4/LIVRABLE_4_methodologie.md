@@ -47,7 +47,7 @@ Les résultats E-H3b et E-H4, la non-faisabilité d'E-H3 et leurs limites sont i
 
 ## Correction de la reprise : E-H3b n'est plus retenue
 
-Les défauts suivants, découverts après la rédaction ci-dessus, invalident la lecture d'E-H3b donnée plus haut. Le runner importe `scripts/run_family_routing_ablation.py`, dont `load_unsw` inclut `target` dans le résumé numérique et dont `load_cicids` et `load_linux_auth` retiennent les premières lignes. La famille CICIDS ne contient donc que des DDoS d'un seul fichier, et le F1 UNSW est gonflé (0,9926 contre 0,9000 sur trois graines de diagnostic). Le script n'est pas modifié, car le manifeste d'E-H3b enregistre son empreinte ; **il reste à corriger avant toute réutilisation.**
+Les défauts suivants, découverts après la rédaction ci-dessus, invalident la lecture d'E-H3b donnée plus haut. Le runner importe `scripts/run_family_routing_ablation.py`, dont `load_unsw` inclut `target` dans le résumé numérique et dont `load_cicids` et `load_linux_auth` retiennent les premières lignes. La famille CICIDS ne contient donc que des DDoS d'un seul fichier, et le F1 UNSW est gonflé (0,9926 contre 0,9000 sur trois graines de diagnostic). `scripts/run_family_routing_ablation.py` a été corrigé après ces exécutions (fuite de `target` sur UNSW, sélection par premières lignes). Les manifestes d'E-H3B-FAMILY-MODELS et d'E-H3B-STRICT-HOLDOUT enregistrent l'empreinte d'origine `8de67257efc2c85e3a6b61d39d4a60a29e1caf51397a4b218a8eae4160a75dec`, donc leur ligne `source_script` ne correspond plus au fichier courant. La version d'origine reste accessible : `git show 27deb22:scripts/run_family_routing_ablation.py`.
 
 Comparaison de référence : `protocoles/E-H3B-STRICT-HOLDOUT.md`, commit `8876861`, runner `run_e_h3b_strict.py`.
 

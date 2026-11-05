@@ -224,7 +224,8 @@ Résultats intégrés (lot A5-b). E-CNP-LEAST-LOADED : aucun avantage de la nég
 
 ## Questions à l'auteur (reprise du 2026-11-05)
 
-1. Commit du manuscrit, des runners et des artefacts : non autorisé à ce jour (seuls les protocoles sont commités).
+1. ~~Commit du manuscrit, des runners et des artefacts~~ : fait par l'auteur, commit `27deb22`, contrôlé (aucune suppression, aucun fichier sensible, manifestes valides).
 2. Relecture du Bokuse par un locuteur du lingala (C19).
 3. Questions déjà ouvertes : A6-Q1 (mode de remise du dépôt), A6-Q3 (validation de `agent_6/PREPARATION_SOUTENANCE.md`).
-4. Correction de `scripts/run_family_routing_ablation.py` : à décider. Le corriger rompt le manifeste d'E-H3b ; ne pas le corriger laisse un script fautif dans le dépôt remis au jury.
+4. ~~Correction de `scripts/run_family_routing_ablation.py`~~ : faite à la demande de l'auteur ; rupture des manifestes documentée au registre.
+5. Documents antérieurs citant `family_routing_ablation.csv`, produit par le script fautif : `docs/memoire/pack_articles_scientifiques.md`, `docs/memoire/pack_redaction_final/` (dont `07_articles_et_reponses/`, `06_reproductibilite_preuves/`), `DIAGNOSTIC_SCIENTIFIQUE_MEMOIRE.md`, `FERMETURE_INCERTITUDES_FACTUELLES_P0.md`. Non modifiés. À décider : régénérer l'artefact et corriger ces documents, surtout si un article en dérive. Le manuscrit ne cite plus cet artefact.
