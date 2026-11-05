@@ -1,0 +1,55 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/annexes.tex
+%   (Annexe A.4 « Paramètres HDFS », tableau A.3, PDF p. 133)
+% Lignes à remplacer : 91 à 112 (de « \begin{table}[H] » suivant
+%   « \section{Paramètres HDFS} » jusqu'au « \end{table} » correspondant).
+% Auteur : Agent 1 (intégrité factuelle), chantier 2026-11-05.
+% Justification : le tableau actuel, intitulé « Configuration HDFS vérifiée »,
+%   décrit l'échantillon 6 000/2 000/2 000 blocs de
+%   ds_hdfs_block_20260910T081756Z (TP 29, FP 7, TN 1 964, FN 0), et non le
+%   résultat principal du corps (test complet de 115 013 blocs, §4.3). Le
+%   tableau corrigé décrit le protocole principal et isole l'échantillon de
+%   2 000 blocs, qui ne sert qu'à l'exécution distribuée (§4.11.4).
+% Sources (relues le 2026-11-05) :
+%   experiments/phase_revision_20261104/agent_2_hdfs/
+%     agent2_hdfs_full_20261104T131314Z__partition_prevalence.csv
+%       345 036 / 115 012 / 115 013 blocs ; positifs 11 158 / 4 001 / 1 679 ;
+%       échantillon d'entraînement 6 000 blocs, 194 positifs, graines 42-46 ;
+%     agent2_hdfs_full_20261104T131314Z__result.json
+%       événements validation 2 122 752, test 1 766 455 ; clusters Drain3
+%       28, 26, 24, 36, 32 (graines 42-46) ; état inchangé après inférence ;
+%     agent2_hdfs_full_20261104T131314Z__seed_metrics.csv
+%       agrégateur « mean » pour les 5 graines ; seuils 1,272943 / 1,273634 /
+%       1,272927 / 1,274817 / 1,273161 ; TP 1 679, FP 509, TN 112 825, FN 0 ;
+%       F1 0,868373 ;
+%   experiments/phase_dataset_strengthening/raw/
+%     ds_hdfs_block_20260910T081756Z__hdfs_block_result.json
+%       échantillon de test 2 000 blocs, 29 positifs, seuil 1,2729429... ;
+%   matrice TP 29, FP 7, TN 1 964, FN 0 et F1 0,892308 :
+%     chapitre5_resultats.tex l. 617 ; hdfs_multivm_cnp_20261104T135345Z.
+% NB (forme, Agent 7) : la précision du seuil (16 chiffres dans la version
+%   actuelle) est ramenée à six décimales, comme dans le corps (§4.3, §7.4).
+% ============================================================================
+
+\begin{table}[H]
+\centering
+\caption{Configuration du protocole HDFS principal (test complet).}
+\label{tab:hdfs-parametres-annexe}
+\begin{tabularx}{\textwidth}{p{0.33\textwidth} X}
+\toprule
+\textbf{Paramètre} & \textbf{Valeur} \\
+\midrule
+Unité de split & \texttt{block\_id} ordonné par première apparition \\
+Partition complète & 60\,\% / 20\,\% / 20\,\%, soit $345\,036$ / $115\,012$ / $115\,013$ blocs \\
+Blocs positifs & $11\,158$ / $4\,001$ / $1\,679$ \\
+Ajustement du parseur & échantillon stratifié de $6\,000$ blocs d'entraînement (194 positifs) pour chacune des graines 42 à 46 \\
+Validation et test & partitions complètes ; $2\,122\,752$ et $1\,766\,455$ événements \\
+Drain3 & ajusté sur l'échantillon d'entraînement seul ; \texttt{match\_only} en validation/test ; \texttt{sim\_th=0.4}, profondeur 4, 100 enfants ; 24 à 36 clusters selon la graine, état inchangé après inférence \\
+Représentation & score de rareté événementiel, agrégé par bloc \\
+Agrégateur retenu & moyenne, choisie sur validation pour les cinq graines \\
+Seuil gelé & entre $1{,}272927$ et $1{,}274817$ selon la graine, choisi sur validation \\
+Test complet (cinq graines) & TP $1\,679$, FP 509, TN $112\,825$, FN 0 ; F1 $0{,}868373$ \\
+Échantillon de $2\,000$ blocs du test (exécution distribuée, section~\ref{sec:hdfs-distribue}) & 29 positifs ; seuil $1{,}272943$ (graine 42) ; TP 29, FP 7, TN $1\,964$, FN 0 ; F1 $0{,}892308$ \\
+\bottomrule
+\end{tabularx}
+\end{table}

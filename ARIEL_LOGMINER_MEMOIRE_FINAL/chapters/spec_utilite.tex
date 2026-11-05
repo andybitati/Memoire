@@ -1,0 +1,98 @@
+\subsection{Spécification de la fonction d'utilité}
+\label{sec:spec-utilite}
+
+Cette sous-section décrit la fonction d'utilité telle qu'elle est implémentée dans
+\texttt{src/logminer/agents/intelligent\_runtime.py}. Soit un agent $a$ et une tâche
+$\tau$ de type $t$. On note $\mathcal{K}_a(\tau)$ l'ensemble des capacités de $a$ qui
+supportent $t$, $n_a$ son nombre de tâches actives,
+$P_a=\max(1,\texttt{max\_parallel\_tasks})$ et
+$\rho_a=\min(1,n_a/P_a)$ son taux de charge. Pour le type $t$, $s_t$ et $e_t$
+désignent les nombres cumulés d'exécutions terminées respectivement avec le statut
+\texttt{ok} et avec un autre statut ; $D_t$ contient les durées des cinquante dernières
+exécutions. Enfin, $\mu\in\{0,1\}$ indique si la mémoire est activée.
+
+\paragraph{Règles de refus.}
+Avant de calculer une offre, l'agent vérifie successivement la présence d'une capacité
+compatible, des modèles et dépendances exigés, son état de santé et sa capacité de charge.
+Ces contrôles produisent respectivement les motifs
+\texttt{capability\_missing}, \texttt{model\_missing},
+\texttt{dependency\_unavailable}, \texttt{agent\_unhealthy} et
+\texttt{agent\_overloaded}. Une sixième règle produit
+\texttt{low\_expected\_utility} lorsque $U<u_{\min}$, avec
+$u_{\min}=\min(1,\max(0,\texttt{minimum\_utility}))$. Sa valeur par défaut est 0 :
+elle ne filtre donc aucune offre tant qu'un seuil strictement positif n'est pas configuré.
+
+\paragraph{Composantes.}
+Lorsque les cinq premiers contrôles sont satisfaits, les composantes sont calculées comme
+indiqué au tableau~\ref{tab:spec-utilite}.
+
+\begin{table}[H]
+\centering
+\caption{Définition opérationnelle des composantes de l'utilité}
+\label{tab:spec-utilite}
+\small
+\begin{tabularx}{\textwidth}{p{0.09\textwidth} p{0.55\textwidth} X}
+\toprule
+\textbf{Comp.} & \textbf{Calcul implémenté} & \textbf{Interprétation} \\
+\midrule
+$C$ & $\min\!\left(1,\max\!\left(0,\max_{k\in\mathcal{K}_a(\tau)}c_k\right)\right)$
+& Confiance maximale parmi les capacités compatibles. \\
+$H$ & $\mu\dfrac{s_t+1}{s_t+e_t+2}+(1-\mu)\dfrac{1}{2}$
+& Fiabilité historique lissée ; valeur neutre $0{,}5$ sans mémoire. \\
+$M$ & $1$
+& Compatibilité du modèle ; elle agit comme filtre préalable et non comme score variable. \\
+$A$ & $\max(0,1-\rho_a)$
+& Disponibilité dérivée de la capacité d'exécution restante. \\
+$L$ & $\max(0,1-\rho_a)$
+& Charge, calculée par la même expression que $A$. \\
+$T$ & $1/(1+\bar d_t)$ si $\mu=1$ et $D_t\neq\varnothing$, $0{,}5$ sinon
+& Latence historique, avec $\bar d_t$ moyenne des durées en secondes. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La compatibilité des modèles n'intervient ainsi que comme filtre : $M=1$ pour toute offre
+émise. De même, $A$ et $L$ ne se distinguent dans le calcul que par leur poids. Enfin,
+$T$ dépend de l'unité de temps retenue, la seconde, puisque la durée moyenne n'est pas
+rapportée à une durée de référence.
+
+\paragraph{Agrégation.}
+L'utilité est la combinaison convexe
+\[
+U=\min\!\left(1,\max\!\left(0,
+w_CC+w_HH+w_MM+w_AA+w_LL+w_TT\right)\right),
+\]
+avec, par défaut,
+$(w_C,w_H,w_M,w_A,w_L,w_T)=(0{,}30;0{,}20;0{,}20;0{,}15;0{,}10;0{,}05)$.
+Les poids sont configurables, positifs ou nuls, et leur somme doit être égale à 1 à
+$10^{-9}$ près. Comme $M=1$ et $A=L$, toute offre émise vérifie, avec ces poids,
+\[
+U=0{,}20+0{,}30C+0{,}20H+0{,}25(1-\rho_a)+0{,}05T.
+\]
+Dans les campagnes Redis, $P_a=1$. Une offre suppose alors $n_a=0$, donc $\rho_a=0$ et
+\[
+U=0{,}65+0{,}30C+0{,}20H+0{,}05T.
+\]
+Le paramètre \texttt{minimum\_utility} n'y est pas transmis ; le refus pour faible utilité
+y reste donc inactif.
+
+\paragraph{Mise à jour et rôle décisionnel.}
+$H$ et $T$ évoluent après une exécution locale par l'appel à \texttt{learn}, uniquement
+si la mémoire est activée. Les messages \texttt{FEEDBACK} et \texttt{REJECT} ne modifient
+pas cette mémoire. Dans le Contract Net local comme dans son transport Redis, $U$ sert à
+classer les offres par ordre décroissant ; une égalité est départagée par l'identifiant de
+l'agent. Le coordinateur ne compare pas $U$ à un seuil supplémentaire.
+
+Pour la poursuite locale d'un objectif, l'utilité n'est qu'un terme du score
+\begin{multline*}
+S=\pi+20U-100\,\mathbf{1}[\tau\in\mathcal{E}]
+-1{,}5r\,\mathbf{1}[r\geq4] \\
+{}+\bigl(10+\max(0,5-\delta)\bigr)\mathbf{1}[\delta<5]
+-2\min(\alpha,5)\mathbf{1}[\alpha>0],
+\end{multline*}
+où $\pi$ est la priorité, $\mathcal{E}$ l'historique récent, $r$ la répétition du type,
+$\delta$ l'échéance et $\alpha$ le nombre de tentatives. La priorité et les correctifs
+peuvent donc dominer $20U$. L'autonomie demeure bornée par défaut à 20 actions, une
+profondeur de 5, deux tentatives par tâche et 100 tâches en attente. À épuisement de ces
+limites, l'objectif est bloqué, échoue ou passe à l'état
+\texttt{budget\_exhausted} selon le garde-fou concerné.

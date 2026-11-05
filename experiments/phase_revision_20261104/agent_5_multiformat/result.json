@@ -1,0 +1,117 @@
+{
+  "run_id": "agent5_multiformat_20261104T150111Z",
+  "status": "COMPLETED",
+  "reference_run": "multiformat_balanced_20260910T094422Z",
+  "inputs": [
+    "experiments/phase_dataset_strengthening/aggregated/multiformat_balanced_summary.csv",
+    "experiments/phase_dataset_strengthening/aggregated/multiformat_mandatory_field_completeness.csv",
+    "scripts/run_multiformat_validation.py (analyse_item : n_normalise = n_parse = nombre de lignes émises)"
+  ],
+  "total_read": 7001,
+  "total_normalized": 7001,
+  "real_sources_units": 7000,
+  "real_sources_count": 7,
+  "apache_fixture_units": 1,
+  "apache_routed_family": "fallback",
+  "definition_note": "« normalisé » compte les lignes émises par l'adaptateur ; il est égal à « parsé » par construction et ne garantit pas le remplissage du schéma commun.",
+  "per_source": [
+    {
+      "source_id": "windows_event",
+      "source_status": "native_local_evtx",
+      "read": 1000,
+      "normalized": 1000,
+      "routed_family": "windows",
+      "standard_fields_complete_7": "5/7",
+      "standard_fields_empty": []
+    },
+    {
+      "source_id": "linux_auth",
+      "source_status": "local_labeled_csv",
+      "read": 1000,
+      "normalized": 1000,
+      "routed_family": "linux_auth",
+      "standard_fields_complete_7": "4/7",
+      "standard_fields_empty": [
+        "family",
+        "category",
+        "severity"
+      ]
+    },
+    {
+      "source_id": "wazuh",
+      "source_status": "local_wazuh_export_csv",
+      "read": 1000,
+      "normalized": 1000,
+      "routed_family": "wazuh",
+      "standard_fields_complete_7": "4/7",
+      "standard_fields_empty": [
+        "timestamp"
+      ]
+    },
+    {
+      "source_id": "syslog",
+      "source_status": "local_linux_log_corpus",
+      "read": 1000,
+      "normalized": 1000,
+      "routed_family": "linux",
+      "standard_fields_complete_7": "7/7",
+      "standard_fields_empty": []
+    },
+    {
+      "source_id": "apache",
+      "source_status": "existing_synthetic_fixture_one_line",
+      "read": 1,
+      "normalized": 1,
+      "routed_family": "fallback",
+      "standard_fields_complete_7": "6/7",
+      "standard_fields_empty": [
+        "host"
+      ]
+    },
+    {
+      "source_id": "hdfs",
+      "source_status": "verified_loghub_exact_local_source",
+      "read": 1000,
+      "normalized": 1000,
+      "routed_family": "hdfs",
+      "standard_fields_complete_7": "6/7",
+      "standard_fields_empty": [
+        "host"
+      ]
+    },
+    {
+      "source_id": "bgl",
+      "source_status": "local_public_copy_exact_match_not_proven",
+      "read": 1000,
+      "normalized": 1000,
+      "routed_family": "bgl",
+      "standard_fields_complete_7": "7/7",
+      "standard_fields_empty": []
+    },
+    {
+      "source_id": "network_tabular",
+      "source_status": "local_cicids2017_csv_provenance_unverified",
+      "read": 1000,
+      "normalized": 1000,
+      "routed_family": "network_cicids",
+      "standard_fields_complete_7": "0/7",
+      "standard_fields_empty": [
+        "timestamp",
+        "source",
+        "host",
+        "family",
+        "category",
+        "severity",
+        "message"
+      ]
+    }
+  ],
+  "real_apache_corpus_found_locally": false,
+  "apache_search_scope": [
+    "data/ (glob **/*{pache,ccess}*)",
+    "dépôt complet (git ls-files --cached --others | grep -i apache|access.log|loghub)",
+    "E:/Mémoire (glob)",
+    "C:/Users/aoliv/Downloads (glob)",
+    "E:/ récursif : interrompu par la limite de temps (expérience HDFS concurrente), résultat non conclusif"
+  ]
+}

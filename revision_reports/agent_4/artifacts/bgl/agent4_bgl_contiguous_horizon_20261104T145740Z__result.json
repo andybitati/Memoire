@@ -1,0 +1,265 @@
+{
+  "run_id": "agent4_bgl_contiguous_horizon_20261104T145740Z",
+  "generated_at": "2026-11-04T14:58:19.973653+00:00",
+  "git_commit": "35da3a9ea6f3ca1a0cfe01766ca1d14fa3da6930",
+  "inputs": {
+    "raw_log": "data/raw/Datasets/BGL/BGL.log",
+    "raw_log_sha256": "666130b15ef44eb32fd02bd053e6c6e007c37696b5e7e8b9d8e45b729876a5d2"
+  },
+  "ranges_one_based_inclusive": {
+    "train": [
+      [
+        4163167,
+        4243166
+      ]
+    ],
+    "validation": [
+      [
+        4243167,
+        4263166
+      ]
+    ],
+    "test": [
+      [
+        4263167,
+        4283166
+      ]
+    ]
+  },
+  "selection_uses_labels": false,
+  "selection_note": "plages fixees par regle positionnelle relative au test R0, sans label",
+  "observation_unit": "raw log event",
+  "results": [
+    {
+      "protocol": "G_contiguous_short_horizon",
+      "description": "Test R0 ; validation 4243167-4263166 ; train contigu 4163167-4243166 (80 000 lignes).",
+      "drain3_fit_partitions": [
+        "train"
+      ],
+      "drain3_state_sha256": "b785056115e991781d9cbc67dda500db8508b8614e251f62f7a3f53cc69655b2",
+      "drain3_state_path": "revision_reports/agent_4/artifacts/bgl/agent4_bgl_contiguous_horizon_20261104T145740Z__G_contiguous_short_horizon_drain3_state.bin",
+      "split_rows": {
+        "train": 74162,
+        "validation": 19999,
+        "test": 19908
+      },
+      "split_positives": {
+        "train": 10327,
+        "validation": 3946,
+        "test": 2885
+      },
+      "threshold": 6.977042351996222,
+      "threshold_selected_on": "validation_only",
+      "validation_metrics": {
+        "precision": 1.0,
+        "recall": 0.9989863152559554,
+        "f1": 0.9994929006085193,
+        "pr_auc": 0.9999793639153398,
+        "mcc": 0.9993685282421819,
+        "fpr": 0.0,
+        "tn": 16053,
+        "fp": 0,
+        "fn": 4,
+        "tp": 3942,
+        "predicted_positive": 3942
+      },
+      "test_metrics_histogram": {
+        "precision": 0.8918835192069393,
+        "recall": 0.9979202772963605,
+        "f1": 0.9419270407328644,
+        "pr_auc": 0.8075136220145633,
+        "mcc": 0.9334837727767135,
+        "fpr": 0.020501674205486695,
+        "tn": 16674,
+        "fp": 349,
+        "fn": 6,
+        "tp": 2879,
+        "predicted_positive": 3228,
+        "pr_auc_hist": 0.8075136220145633
+      },
+      "coverage": {
+        "test_events": 19908,
+        "test_positives": 2885,
+        "unknown_template_rate_all": 0.009292746634518786,
+        "unknown_template_rate_validation": 0.09955497774888744,
+        "unknown_rate_among_positives": 0.0017331022530329288,
+        "unknown_rate_among_negatives": 0.010573929389649298,
+        "positives_known_template": 2880,
+        "positives_unknown_template": 5,
+        "negatives_known_template": 16843,
+        "negatives_unknown_template": 180,
+        "drain3_clusters": 299,
+        "test_distinct_templates_known": 92
+      },
+      "histogram_decision_decomposition": {
+        "train_normal_events": 63835,
+        "train_positive_events": 10327,
+        "train_normal_severities": [
+          "FATAL",
+          "INFO"
+        ],
+        "max_possible_histogram_score_log_n_normal": 11.064056908254452,
+        "threshold_equals_max_possible_score": false,
+        "hist_pred_equals_severity_novelty": false,
+        "hist_pred_equals_sev_and_src_and_tpl_absent": false,
+        "test_severity_by_label": {
+          "ERROR|0": 1,
+          "FAILURE|1": 1,
+          "FATAL|0": 544,
+          "FATAL|1": 2884,
+          "INFO|0": 16478
+        }
+      },
+      "group_rows": [
+        {
+          "run_id": "agent4_bgl_contiguous_horizon_20261104T145740Z",
+          "protocol": "G_contiguous_short_horizon",
+          "model": "Histogram",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 2879,
+          "fp": 349,
+          "tn": 16674,
+          "fn": 6,
+          "precision": 0.8918835192069393,
+          "recall": 0.9979202772963605,
+          "f1": 0.9419270407328643,
+          "fpr": 0.020501674205486695
+        },
+        {
+          "run_id": "agent4_bgl_contiguous_horizon_20261104T145740Z",
+          "protocol": "G_contiguous_short_horizon",
+          "model": "Histogram",
+          "group": "KNOWN_TEMPLATE",
+          "n": 19723,
+          "positives": 2880,
+          "tp": 2875,
+          "fp": 201,
+          "tn": 16642,
+          "fn": 5,
+          "precision": 0.9346553966189857,
+          "recall": 0.9982638888888888,
+          "f1": 0.9654130288784418,
+          "fpr": 0.011933741020008312
+        },
+        {
+          "run_id": "agent4_bgl_contiguous_horizon_20261104T145740Z",
+          "protocol": "G_contiguous_short_horizon",
+          "model": "Histogram",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 185,
+          "positives": 5,
+          "tp": 4,
+          "fp": 148,
+          "tn": 32,
+          "fn": 1,
+          "precision": 0.02631578947368421,
+          "recall": 0.8,
+          "f1": 0.05095541401273885,
+          "fpr": 0.8222222222222222
+        },
+        {
+          "run_id": "agent4_bgl_contiguous_horizon_20261104T145740Z",
+          "protocol": "G_contiguous_short_horizon",
+          "model": "UnknownTemplateBaseline",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 5,
+          "fp": 180,
+          "tn": 16843,
+          "fn": 2880,
+          "precision": 0.02702702702702703,
+          "recall": 0.0017331022530329288,
+          "f1": 0.0032573289902280127,
+          "fpr": 0.010573929389649298
+        },
+        {
+          "run_id": "agent4_bgl_contiguous_horizon_20261104T145740Z",
+          "protocol": "G_contiguous_short_horizon",
+          "model": "UnknownTemplateBaseline",
+          "group": "KNOWN_TEMPLATE",
+          "n": 19723,
+          "positives": 2880,
+          "tp": 0,
+          "fp": 0,
+          "tn": 16843,
+          "fn": 2880,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_contiguous_horizon_20261104T145740Z",
+          "protocol": "G_contiguous_short_horizon",
+          "model": "UnknownTemplateBaseline",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 185,
+          "positives": 5,
+          "tp": 5,
+          "fp": 180,
+          "tn": 0,
+          "fn": 0,
+          "precision": 0.02702702702702703,
+          "recall": 1.0,
+          "f1": 0.052631578947368425,
+          "fpr": 1.0
+        },
+        {
+          "run_id": "agent4_bgl_contiguous_horizon_20261104T145740Z",
+          "protocol": "G_contiguous_short_horizon",
+          "model": "SeverityNoveltyBaseline",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 1,
+          "fp": 1,
+          "tn": 17022,
+          "fn": 2884,
+          "precision": 0.5,
+          "recall": 0.0003466204506065858,
+          "f1": 0.0006927606511950121,
+          "fpr": 5.8744052164718324e-05
+        },
+        {
+          "run_id": "agent4_bgl_contiguous_horizon_20261104T145740Z",
+          "protocol": "G_contiguous_short_horizon",
+          "model": "SeverityNoveltyBaseline",
+          "group": "KNOWN_TEMPLATE",
+          "n": 19723,
+          "positives": 2880,
+          "tp": 0,
+          "fp": 0,
+          "tn": 16843,
+          "fn": 2880,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_contiguous_horizon_20261104T145740Z",
+          "protocol": "G_contiguous_short_horizon",
+          "model": "SeverityNoveltyBaseline",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 185,
+          "positives": 5,
+          "tp": 1,
+          "fp": 1,
+          "tn": 179,
+          "fn": 4,
+          "precision": 0.5,
+          "recall": 0.2,
+          "f1": 0.28571428571428575,
+          "fpr": 0.005555555555555556
+        }
+      ],
+      "elapsed_sec": 12.911087499931455
+    }
+  ],
+  "artifacts": [
+    "revision_reports/agent_4/artifacts/bgl/agent4_bgl_contiguous_horizon_20261104T145740Z__group_metrics.csv"
+  ]
+}

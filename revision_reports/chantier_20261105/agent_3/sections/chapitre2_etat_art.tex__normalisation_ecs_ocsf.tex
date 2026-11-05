@@ -1,0 +1,70 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre2_etat_art.tex
+% Passage à remplacer : de « \section{Normalisation de journaux hétérogènes} »
+%   (inclus) à « \section{Analyse séquentielle des journaux} » (exclu).
+% Agent : Agent 3 — État de l'art et positionnement, chantier 2026-11-05.
+% Sources : spécifications officielles ECS et OCSF ; résultats multiformat du corps.
+% ============================================================================
+
+\section{Normalisation de journaux hétérogènes}
+
+\subsection{Du format source au contrat commun}
+
+Le parsing et la normalisation répondent à deux questions distinctes. Le parsing extrait
+la structure d'une source ; la normalisation projette les informations extraites dans un
+vocabulaire commun afin que des règles, des recherches et des visualisations puissent
+être réutilisées. Un contrat local peut remplir cette fonction dans un prototype, mais il
+doit être comparé aux schémas déjà employés par les plateformes de sécurité.
+
+L'\textit{Elastic Common Schema} (ECS) définit des noms de champs, leurs types et des
+conventions d'extension pour des événements issus de sources variées. Son objectif est de
+permettre l'analyse, la visualisation et la corrélation de données normalisées dans
+l'écosystème Elastic \cite{elastic2026ecs}. L'\textit{Open Cybersecurity Schema
+Framework} (OCSF) propose pour sa part un schéma de sécurité indépendant du fournisseur,
+structuré autour d'une taxonomie, de classes d'événements, d'objets et d'un dictionnaire
+d'attributs ; il est indépendant du format de stockage et du processus d'ingestion
+\cite{ocsf2026schema}. ECS est ainsi étroitement articulé à une pile d'analyse donnée,
+tandis qu'OCSF vise d'abord l'interopérabilité sémantique entre producteurs et
+consommateurs.
+
+\begin{table}[H]
+\centering
+\caption{Schémas de normalisation et contrat local}
+\label{tab:schemas-normalisation}
+\small
+\begin{tabularx}{\textwidth}{p{2.3cm}p{3.2cm}p{3.5cm}X}
+\toprule
+\textbf{Schéma} & \textbf{Portée} & \textbf{Mécanisme principal} &
+\textbf{Portée pour le prototype} \\
+\midrule
+ECS \cite{elastic2026ecs} & Événements, journaux et métriques analysés dans la pile Elastic. &
+Champs typés, niveaux de champ et conventions pour les extensions. &
+Référence concrète pour nommer les attributs usuels et réutiliser du contenu analytique. \\
+OCSF \cite{ocsf2026schema} & Événements de cybersécurité indépendants du fournisseur et du stockage. &
+Taxonomie, classes, objets, attributs, profils et extensions. &
+Référence pour distinguer le noyau commun d'une taxonomie complète et versionnée. \\
+Contrat local & Enveloppe interne du prototype. &
+Petit noyau de champs et conservation d'attributs spécifiques ou de l'événement brut. &
+Facilite les échanges internes, sans établir une conformité ECS ou OCSF. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Extension, conservation et preuve de conformité}
+
+Une normalisation trop agressive supprime des attributs propres à une source ; une
+normalisation trop permissive produit un champ commun nominalement présent mais vide ou
+sans sémantique stable. ECS comme OCSF prévoient des mécanismes d'extension, ce qui
+confirme qu'un schéma commun ne doit pas remplacer l'événement source. Conserver le brut
+ou une zone d'extension reste nécessaire pour l'audit et pour les traitements
+spécialisés.
+
+La conformité doit donc être évaluée champ par champ : présence, type, sémantique,
+provenance et taux de remplissage. La simple émission d'une enveloppe ne prouve ni la
+qualité du mapping ni l'interopérabilité avec un standard. Dans le protocole multiformat
+de ce mémoire, les flux tabulaires ne renseignent aucun des sept champs standard retenus.
+Le résultat démontre la lecture et l'émission d'un format interne sur les sources testées,
+mais pas une normalisation complète au sens d'ECS ou d'OCSF. Le positionnement scientifique
+est par conséquent celui d'une \textbf{projection commune partielle et extensible}, dont
+la couverture doit être mesurée, et non celui d'un nouveau standard de normalisation.
+

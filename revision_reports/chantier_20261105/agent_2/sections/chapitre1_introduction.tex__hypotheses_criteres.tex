@@ -1,0 +1,78 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre1_introduction.tex
+%   (Introduction générale, section « Hypothèses de recherche », PDF p. 6-7)
+% Passage à remplacer : de « \section*{Hypothèses de recherche} » jusqu'à la
+%   fin du paragraphe « H5 introduit enfin la mémoire persistante. [...] support
+%   à une procédure de mise à jour contrôlée. » (inclus), juste avant
+%   « \section*{Objectif général et objectifs spécifiques} ».
+% Auteur : Agent 2 (statut des hypothèses), chantier 2026-11-05.
+% REMPLACE le fichier de l'Agent 1
+%   agent_1/sections/chapitre1_introduction.tex__hypotheses_preenregistrement.tex
+%   (décision C9), dont il reprend et complète la phrase sur le préenregistrement.
+%
+% GARDE-FOU (anti-HARKing) : les cinq énoncés H1-H5 et leurs critères de
+%   réfutation sont repris MOT POUR MOT du manuscrit (ancienne l. 130-143). Ils
+%   sont jugés tels quels dans la conclusion. Seuls changent :
+%   (1) le titre de section (« et critères de décision ») ;
+%   (2) le paragraphe qui suit les énoncés : l'ancienne phrase « Les seuils
+%       numériques et les budgets sont fixés dans le protocole avant
+%       l'exécution, et non choisis après lecture des résultats » n'est pas
+%       prouvable et est contredite par le tableau 7.1 (budget de H4) et par
+%       §4.4.1 (protocole G) : point de non-recevabilité B (L2), L1 A.2,
+%       décision C4 (c). Elle est ramenée à ce qui est vérifiable ;
+%   (3) un paragraphe sur la nature des hypothèses (réduction de portée de H1
+%       et H2, L2 §2.1 et L3 §1), qui ne dépend pas des résultats ;
+%   (4) « seront donc examinés séparément » (H3) devient « doivent », car la
+%       comparaison du gain prédictif n'est présentée nulle part dans le corps.
+% Sources :
+%   - seuils choisis sur validation : intro (Démarche) ; chapitre5_resultats.tex
+%     §4.3 (HDFS) et §4.4 (BGL) ;
+%   - seuil du routeur gelé : §4.7 ; experiments/phase_revision_20261104/
+%     agent_5_router_open_set/result.json (« recalibrated »: false) ;
+%   - grandeurs jamais définies : aucune occurrence d'un taux d'exécutions
+%     incompatibles, d'un taux d'erreur de référence, d'un budget local ni d'une
+%     métrique de priorisation dans chapters/*.tex (recherche « budget »,
+%     « prioris », « incompatib ») ; tableau 7.1 (budget non préenregistré) ;
+%   - protocole G : chapitre5_resultats.tex §4.4.1 (« sa conception tient compte
+%     de la position des familles d'anomalies »).
+% Labels utilisés (existants) : sec:bgl-second-protocole, tab:statut-hypotheses.
+% ============================================================================
+
+\section*{Hypothèses de recherche et critères de décision}
+
+\addcontentsline{toc}{section}{Hypothèses de recherche et critères de décision}
+
+Cinq hypothèses structurent les expériences. Elles constituent des propositions à confronter aux observations et ne préjugent pas de leur validation.
+
+\begin{description}[leftmargin=1.6cm, style=nextline]
+
+    \item[\textbf{H1.}]
+    Pour chaque unité des formats retenus, la normalisation produit un événement conforme au noyau commun et conserve une référence vérifiable vers la donnée source. L'hypothèse est réfutée si une unité présente ne peut être lue, normalisée ou retracée.
+
+    \item[\textbf{H2.}]
+    Dans l'architecture à agents, lors d'un arrêt contrôlé après persistance et avant émission du résultat, l'activation de l'idempotence permet de terminer la tâche sans perte ni effet dupliqué, contrairement à la même exécution sans idempotence. L'hypothèse est réfutée si cette différence n'est pas observée.
+
+    \item[\textbf{H3.}]
+    Sur un corpus comprenant des familles connues et inconnues, le routage par famille réduit le taux d'exécutions incompatibles par rapport à la même chaîne sans routage, sans accroître le taux d'erreur prédictive fixé par le protocole. L'hypothèse est réfutée en l'absence de réduction mesurée.
+
+    \item[\textbf{H4.}]
+    Sous une séparation stricte fixée avant l'expérience, au moins un modèle léger surpasse la baseline déclarée en F1 sur le test tenu à l'écart et reproduit ce résultat dans le budget local de temps et de mémoire fixé par le protocole. L'hypothèse est réfutée si aucun candidat ne satisfait conjointement ces critères.
+
+    \item[\textbf{H5.}]
+    À protocole et tâches identiques, l'activation de la mémoire persistante améliore au moins une métrique de priorisation fixée à l'avance sans dégrader les autres métriques principales, et la procédure de mise à jour ne remplace le modèle actif que lorsqu'un candidat satisfait la règle de promotion. L'hypothèse est réfutée si aucun gain n'est observé ou si une promotion contraire à la règle se produit.
+
+\end{description}
+
+Chaque hypothèse définit une observation susceptible de la réfuter. Les seuils de décision des détecteurs sont choisis sur la validation et jamais sur le test, et le seuil du routeur est gelé avant d'être appliqué aux sources supplémentaires. Aucun critère n'a en revanche fait l'objet d'un préenregistrement, et plusieurs grandeurs que les énoncés supposent fixées à l'avance ne l'ont pas été : le taux d'exécutions incompatibles et le taux d'erreur de référence de H3, le budget local de temps et de mémoire de H4, la métrique de priorisation de H5. Certains protocoles complémentaires ont par ailleurs été conçus après lecture de résultats antérieurs, comme le protocole contigu G sur BGL (section~\ref{sec:bgl-second-protocole}). Une hypothèse reste non tranchée lorsque le comparateur requis n'a pas été exécuté, et une grandeur qui n'a pas été fixée avant l'exécution n'est pas fixée après coup ; la conclusion applique ces règles (tableau~\ref{tab:statut-hypotheses}).
+
+Les cinq hypothèses ne sont pas de même nature. H1 et H2 portent sur des exigences de réalisation : leur issue dépend de la correction de l'implémentation, et, sans magasin d'idempotence, le rejeu d'une tâche dont l'effet est déjà persistant répète cet effet par construction. Elles vérifient que le prototype fait ce qu'il annonce, sans constituer des propositions explicatives. H3, H4 et H5 sont comparatives : elles opposent le prototype à une chaîne sans routage, à une baseline ou à une exécution sans mémoire, et seules ces comparaisons peuvent apporter une connaissance au-delà du fonctionnement du code.
+
+H1 découle directement de l'hétérogénéité des formats. Elle sera examinée à partir du comportement des adaptateurs et du pipeline de normalisation. Il ne s'agit pas de supposer qu'un schéma unique puisse représenter parfaitement toutes les propriétés de toutes les sources, mais de déterminer si plusieurs journaux peuvent être rapprochés sans perdre les informations nécessaires à leur analyse et à leur audit.
+
+Avec H2, l'attention se déplace vers l'architecture. La modularité et la traçabilité peuvent être observées dans la conception et dans les traces d'exécution ; la robustesse, elle, nécessite des scénarios de reprise et de défaillance contrôlée. La comparaison avec une exécution plus monolithique permettra également de mesurer le prix de cette organisation.
+
+H3 porte sur le routage. Les familles de journaux ayant des structures et des variables différentes, orienter chaque source vers un traitement compatible devrait limiter certaines incohérences. Cette hypothèse ne suppose toutefois pas qu'un modèle spécialisé soit automatiquement supérieur à un modèle plus général. Compatibilité architecturale et gain prédictif doivent donc être examinés séparément.
+
+H4 concerne le choix de modèles relativement légers. Ce choix est cohérent avec le périmètre local du prototype et avec l'objectif de reproductibilité. Il ne constitue pas une affirmation de supériorité face aux architectures profondes. L'intérêt de ces modèles sera jugé à partir des données, du protocole expérimental, du coût de calcul, de l'interprétabilité et de leur intégration dans la chaîne.
+
+H5 introduit enfin la mémoire persistante. Celle-ci n'est pas considérée comme un mécanisme d'apprentissage continu capable de modifier spontanément les modèles en production. Son rôle consiste à conserver des informations sur les exécutions, les décisions, les erreurs et certains retours de l'analyste, tout en fournissant un support à une procédure de mise à jour contrôlée.

@@ -1,0 +1,47 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre2_etat_art.tex
+% Passage à remplacer : de « \section{Corrélation d'événements} » (inclus) à
+%   « \section{Mémoire persistante et feedback humain} » (exclu).
+% Agent : Agent 3 — État de l'art et positionnement, chantier 2026-11-05.
+% Sources : Cuppens et Miège (IEEE S&P 2002) ; Valeur et al. (IEEE TDSC 2004).
+% ============================================================================
+
+\section{Corrélation d'alertes}
+
+\subsection{Des alertes élémentaires aux scénarios}
+
+La corrélation ne se réduit pas à placer des alertes proches dans une même fenêtre.
+Cuppens et Miège distinguent la gestion de la base d'alertes, le regroupement d'alertes
+similaires, leur fusion, puis la corrélation d'étapes compatibles avec un scénario
+d'intrusion \cite{cuppens2002alert}. Valeur et al. proposent de même une chaîne de
+composants couvrant normalisation, fusion, vérification, corrélation de scénarios,
+priorisation et intention ; ils montrent que l'efficacité de chaque composant dépend
+fortement du jeu de données \cite{valeur2004correlation}. Ces travaux classiques font de
+la corrélation un processus multi-étapes dont les entrées doivent déjà partager une
+sémantique minimale.
+
+Trois familles de relations peuvent être distinguées. La similarité rapproche les
+doublons ou variantes d'une même alerte. La coïncidence relie des événements proches dans
+le temps et le contexte. Enfin, une relation causale peut associer les préconditions et
+les conséquences des étapes d'une attaque. Les deux premières réduisent le volume ou
+forment des groupes. La troisième prétend reconstruire un scénario et exige un modèle
+plus riche des actions, des actifs et de leurs dépendances.
+
+\subsection{Compromis et protocole d'évaluation}
+
+Une règle trop stricte fragmente un incident entre plusieurs groupes ; une règle trop
+large fusionne des événements indépendants. La fenêtre temporelle, les clés d'entité et
+la stabilité des identifiants déterminent ce compromis. L'évaluation doit donc comparer
+le regroupement produit à des incidents de référence, rapporter précision et rappel, et
+inclure des baselines plus simples telles que « hôte + fenêtre » ou « fenêtre seule ».
+
+Le corrélateur d'Ariel Logminer appartient à la famille temporelle et contextuelle : il
+regroupe les alertes sur une fenêtre fixe et l'égalité de plusieurs clés. Il ne modélise
+ni préconditions d'attaque ni causalité. Son corpus synthétique reprend les clés attendues
+par la règle, ce qui permet un test fonctionnel mais crée un circuit fermé. Le résultat
+doit être interprété au regard de la littérature : précision élevée sur des clés stables,
+mais fragmentation des incidents multi-étapes, précisément lorsque des catégories
+différentes devraient être reliées. Une validation externe demanderait des incidents
+authentifiés, multi-sources et multi-étapes qui n'ont pas servi à concevoir le
+corrélateur.
+

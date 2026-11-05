@@ -1,0 +1,76 @@
+{
+  "run_id": "agent5_correlation_20261104T141916Z",
+  "protocol_id": "agent5_correlation_extended_v1",
+  "algorithm": "src/logminer/agents/correlator.py::correlate_anomalies (inchangé)",
+  "window_minutes": 15,
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "scenarios": {
+    "S1_cles_stables": {
+      "p_multistage": 0.0
+    },
+    "S2_multi_etapes": {
+      "p_multistage": 0.3
+    }
+  },
+  "generator": {
+    "horizon_hours": 12,
+    "start": "2026-01-15T00:00:00Z",
+    "n_incidents": 80,
+    "events_per_incident": "1 + Poisson(3), plafonné à 10",
+    "inter_event_gap_minutes": "Exponentielle(moyenne 3), arrondie à la seconde",
+    "n_isolated_anomalies": 20,
+    "n_noise_non_anomalous": 40,
+    "incident_types": [
+      "auth_bruteforce",
+      "network_scan",
+      "authz_denied",
+      "process_spawn"
+    ],
+    "multistage_chain": "LOGIN_FAILURE(auth.log) -> LOGIN_SUCCESS(auth.log) -> SPAWN(sysmon), même hôte et utilisateur",
+    "host_pool_per_type": 8,
+    "user_pool": 6,
+    "scan_ports": [
+      22,
+      80,
+      445,
+      3389
+    ],
+    "db_ports": [
+      3306,
+      5432
+    ]
+  },
+  "methods": {
+    "M_keys": "corrélateur complet : floor(t,15min)+host+user+source+category+subcategory+proto+dst_port",
+    "B_host_time": "même code, clés vidées sauf host : floor(t,15min)+host",
+    "B_time": "même code, toutes les clés vidées : floor(t,15min) seule"
+  },
+  "unit_of_metric": "paires d'événements anomaux (vérité = même incident vrai)",
+  "ci_methods": {
+    "seed_level": "IC 95 % de Student sur la moyenne des 20 graines (graines = corpus indépendants)",
+    "seed_bootstrap": "IC 95 % percentile, bootstrap des graines (B=5000, rng=12345) sur la métrique agrégée",
+    "clopper_pearson_pairs": "IC exact sur paires agrégées, INDICATIF : les paires ne sont pas indépendantes"
+  },
+  "interpretation_ceiling": "Corpus synthétique construit par l'auteur ; ne valide pas une performance SOC réelle."
+}

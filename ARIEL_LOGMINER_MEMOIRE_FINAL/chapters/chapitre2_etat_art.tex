@@ -308,7 +308,10 @@ tous les systèmes. Un dataset est le résultat d'un environnement, d'une pério
 méthode de collecte et d'un ensemble de scénarios.
 Sommer et Paxson mettent en garde contre l'application naïve de méthodes de machine
 learning issues d'un environnement expérimental à des réseaux réels
-\cite{sommer2010outside}. Cette remarque reste centrale : la qualité d'un modèle dépend
+\cite{sommer2010outside}. Arp et al. recensent dix écueils récurrents dans les travaux
+d'apprentissage automatique appliqué à la sécurité, parmi lesquels le biais
+d'échantillonnage, la fuite d'information entre entraînement et test et le choix de
+métriques inadaptées \cite{arp2022dos}. Ces remarques restent centrales : la qualité d'un modèle dépend
 autant du protocole d'évaluation que de l'algorithme.
 
 \subsection{CICIDS2017}
@@ -330,7 +333,32 @@ Cette précaution méthodologique s'inscrit dans un débat documenté par la lit
 Plusieurs travaux ont réexaminé CICIDS2017 après sa publication et identifié des
 problèmes de génération du trafic, de construction des flux, d'extraction des
 caractéristiques et d'étiquetage susceptibles de modifier sensiblement les performances
-mesurées~\cite{engelen2021troubleshooting,lanvin2023errors}. La chute du F1 observée ici entre séparation aléatoire et séparation par scénario (section~6.2) est donc cohérente avec ces constats indépendants portant sur le même corpus.
+mesurées~\cite{engelen2021troubleshooting,lanvin2023errors}. La chute du F1 observée ici entre séparation aléatoire et séparation par scénario (section~\ref{sec:cicids-resultats}) est donc cohérente avec ces constats indépendants portant sur le même corpus.
+
+\subsection{CSE-CIC-IDS2018}
+
+CSE-CIC-IDS2018 prolonge la méthode de génération de CICIDS2017 dans une
+infrastructure plus vaste et publie des captures, des journaux et des flux décrits par
+des caractéristiques extraites avec CICFlowMeter
+\cite{sharafaldin2018cicids,cic2018csecicids}. Sa taille et la diversité annoncée des
+scénarios expliquent son emploi fréquent comme benchmark. Elles n'en font toutefois pas
+un jeu indépendant de CICIDS2017 : les deux corpus partagent des principes de génération,
+un extracteur de flux et plusieurs catégories d'attaque.
+
+Liu et al. ont réexaminé CICIDS2017 et CSE-CIC-IDS2018 sur l'ensemble de leur chaîne de
+création. Ils documentent des erreurs dans l'orchestration des attaques, la génération
+des caractéristiques, la documentation et l'étiquetage, puis montrent que ces erreurs
+peuvent déstabiliser les résultats expérimentaux \cite{liu2022error}. Leur conclusion ne
+consiste pas à proscrire le corpus, mais à imposer trois précautions : identifier
+précisément les fichiers utilisés, contrôler leur intégrité, et éviter qu'une variable
+liée au dispositif de collecte serve de substitut à la classe.
+
+Dans ce mémoire, CSE-CIC-IDS2018 est donc traité comme un objet d'audit de la validité
+externe plutôt que comme une preuve autonome de transfert. Une performance élevée sur
+deux journées ne devient interprétable qu'après inversion du sens de transfert, ablation
+des variables dominantes et comparaison avec des règles mono-variable. Cette lecture
+critique rattache directement le protocole du chapitre expérimental aux limites déjà
+établies dans la littérature.
 
 \subsection{HDFS}
 
@@ -361,7 +389,12 @@ BGL.
 
 Loghub rassemble plusieurs datasets de journaux largement utilisés dans la recherche
 \cite{zhu2023loghub}. Cette collection facilite la comparaison d'approches de parsing et
-de détection sur des sources hétérogènes.
+de détection sur des sources hétérogènes. Elle a servi de base à plusieurs évaluations
+comparatives : He et al. comparent des détecteurs supervisés et non supervisés sur HDFS et
+BGL \cite{he2016experience}, Le et Zhang réévaluent des modèles profonds en faisant varier
+la sélection des données d'entraînement, le regroupement des événements et le déséquilibre
+des classes \cite{le2022logbased}, et Landauer et al. proposent une synthèse des méthodes
+d'apprentissage profond pour la détection d'anomalies dans les journaux \cite{landauer2023deep}.
 Son intérêt dépasse la simple disponibilité de fichiers. La diversité des systèmes
 représentés rappelle qu'un résultat obtenu sur un corpus ne doit pas automatiquement être
 généralisé à tous les autres. Les formats, le vocabulaire, la structure et les mécanismes
@@ -417,40 +450,65 @@ simple détail d'implémentation.
 
 \section{Normalisation de journaux hétérogènes}
 
-\subsection{Objectif de la normalisation}
+\subsection{Du format source au contrat commun}
 
-Le parsing et la normalisation répondent à deux questions différentes. Le parsing cherche
-à comprendre la structure d'une source. La normalisation cherche à présenter certaines
-informations selon une représentation commune.
-Dans une architecture multi-source, des champs génériques peuvent notamment représenter :
-\begin{itemize}
-    \item l'horodatage ;
-    \item la source ;
-    \item l'hôte ;
-    \item le type ou la catégorie de l'événement ;
-    \item la sévérité ;
-    \item le message ;
-    \item les informations nécessaires au traitement spécialisé.
-\end{itemize}
-L'intérêt pratique est de permettre aux composants aval de recevoir une enveloppe
-relativement cohérente, même lorsque la structure d'origine est différente.
+Le parsing et la normalisation répondent à deux questions distinctes. Le parsing extrait
+la structure d'une source ; la normalisation projette les informations extraites dans un
+vocabulaire commun afin que des règles, des recherches et des visualisations puissent
+être réutilisées. Un contrat local peut remplir cette fonction dans un prototype, mais il
+doit être comparé aux schémas déjà employés par les plateformes de sécurité.
 
-\subsection{Risque de perte d'information}
+L'\textit{Elastic Common Schema} (ECS) définit des noms de champs, leurs types et des
+conventions d'extension pour des événements issus de sources variées. Son objectif est de
+permettre l'analyse, la visualisation et la corrélation de données normalisées dans
+l'écosystème Elastic \cite{elastic2026ecs}. L'\textit{Open Cybersecurity Schema
+Framework} (OCSF) propose pour sa part un schéma de sécurité indépendant du fournisseur,
+structuré autour d'une taxonomie, de classes d'événements, d'objets et d'un dictionnaire
+d'attributs ; il est indépendant du format de stockage et du processus d'ingestion
+\cite{ocsf2026schema}. ECS est ainsi étroitement articulé à une pile d'analyse donnée,
+tandis qu'OCSF vise d'abord l'interopérabilité sémantique entre producteurs et
+consommateurs.
 
-Une normalisation trop agressive peut supprimer des informations importantes. Un champ spécifique à Windows, à Wazuh ou à une application n'a pas toujours d'équivalent direct dans le schéma commun.
+\begin{table}[H]
+\centering
+\caption{Schémas de normalisation et contrat local}
+\label{tab:schemas-normalisation}
+\small
+\begin{tabularx}{\textwidth}{p{2.3cm}p{3.2cm}p{3.5cm}X}
+\toprule
+\textbf{Schéma} & \textbf{Portée} & \textbf{Mécanisme principal} &
+\textbf{Portée pour le prototype} \\
+\midrule
+ECS \cite{elastic2026ecs} & Événements, journaux et métriques analysés dans la pile Elastic. &
+Champs typés, niveaux de champ et conventions pour les extensions. &
+Référence concrète pour nommer les attributs usuels et réutiliser du contenu analytique. \\
+OCSF \cite{ocsf2026schema} & Événements de cybersécurité indépendants du fournisseur et du stockage. &
+Taxonomie, classes, objets, attributs, profils et extensions. &
+Référence pour distinguer le noyau commun d'une taxonomie complète et versionnée. \\
+Contrat local & Enveloppe interne du prototype. &
+Petit noyau de champs et conservation d'attributs spécifiques ou de l'événement brut. &
+Facilite les échanges internes, sans établir une conformité ECS ou OCSF. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
-Une solution radicale consisterait à imposer un schéma strict et à écarter tout ce qui n'y entre pas. Le traitement devient plus simple, mais les données s'appauvrissent dès qu'une source possède des attributs propres.
+\subsection{Extension, conservation et preuve de conformité}
 
-L'autre possibilité est d'utiliser un \textbf{noyau commun extensible}. Les informations partagées alimentent les champs normalisés, tandis que les attributs spécifiques restent accessibles dans une structure complémentaire ou dans l'événement brut conservé. Ce choix convient mieux à un prototype orienté audit : le schéma commun facilite les opérations transversales sans prétendre remplacer l'événement original.
+Une normalisation trop agressive supprime des attributs propres à une source ; une
+normalisation trop permissive produit un champ commun nominalement présent mais vide ou
+sans sémantique stable. ECS comme OCSF prévoient des mécanismes d'extension, ce qui
+confirme qu'un schéma commun ne doit pas remplacer l'événement source. Conserver le brut
+ou une zone d'extension reste nécessaire pour l'audit et pour les traitements
+spécialisés.
 
-\subsection{Normalisation et robustesse réelle}
-
-La présence d'un schéma commun ne suffit pas à démontrer qu'un système supporte
-universellement plusieurs formats. Il faut vérifier que chaque adaptateur transforme
-effectivement les entrées attendues et mesurer les cas d'échec.
-La validation multiformat sépare la \textit{capacité prévue par l'architecture} de la
-\textit{capacité effectivement observée}. Il s'agit d'une expérience fonctionnelle sur les
-formats testés, et non d'une garantie de compatibilité avec tout type de journal.
+La conformité doit donc être évaluée champ par champ : présence, type, sémantique,
+provenance et taux de remplissage. La simple émission d'une enveloppe ne prouve ni la
+qualité du mapping ni l'interopérabilité avec un standard. Dans le protocole multiformat
+de ce mémoire, les flux tabulaires ne renseignent aucun des sept champs standard retenus.
+Le résultat démontre la lecture et l'émission d'un format interne sur les sources testées,
+mais pas une normalisation complète au sens d'ECS ou d'OCSF. Le positionnement scientifique
+est par conséquent celui d'une \textbf{projection commune partielle et extensible}, dont
+la couverture doit être mesurée, et non celui d'un nouveau standard de normalisation.
 
 \section{Analyse séquentielle des journaux}
 
@@ -500,6 +558,20 @@ rapport aux méthodes spécialisées de l'état de l'art. Le travail privilégie
 plus légers et s'intéresse davantage à l'intégration de plusieurs étapes qu'à la recherche
 du meilleur modèle profond sur un benchmark unique.
 
+\subsection{Sensibilité des benchmarks au protocole}
+
+Les scores publiés sur HDFS et BGL dépendent fortement du protocole. Le et Zhang montrent
+que, sur BGL regroupé en fenêtres d'une heure, le F1 de DeepLog passe de $0{,}927$ avec
+une sélection aléatoire des séquences d'entraînement à $0{,}426$ avec une sélection
+chronologique ; ils attribuent l'écart à une fuite d'information temporelle et recommandent
+la partition chronologique \cite{le2022logbased}. Les mêmes auteurs observent que les
+modèles supervisés surpassent nettement les modèles semi-supervisés lorsque des anomalies
+étiquetées sont disponibles à l'entraînement. Yu et al. rapportent par ailleurs que des
+méthodes d'apprentissage classiques peuvent égaler ou dépasser les modèles profonds, en
+précision comme en temps de calcul, sur plusieurs jeux publics \cite{yu2024deep}. Ces
+constats justifient de privilégier ici des partitions chronologiques ou par scénario et de
+ne pas écarter a priori les modèles légers (H4).
+
 \section{Représentation sémantique et évolution récente de l'analyse de logs}
 
 L'évolution des méthodes de traitement automatique du langage a progressivement influencé
@@ -525,85 +597,162 @@ pipeline reposant uniquement sur des variables tabulaires ou des fréquences. El
 constituent une perspective pertinente lorsque l'objectif devient l'analyse de séquences
 longues et de messages fortement dépendants du contexte.
 
-\section{Systèmes multi-agents}
+\section{Cadres intégrés et bibliothèques d'analyse de journaux}
 
-\subsection{Concept général}
+L'intégration de l'ingestion, de la détection, de la corrélation et de la restitution
+n'est pas une lacune générale de l'offre existante. Plusieurs plateformes réunissent déjà
+ces fonctions, tandis que des bibliothèques de recherche unifient le parsing et
+l'évaluation de détecteurs. Elles constituent des références de positionnement, même si
+leurs objectifs, leurs coûts et leurs protocoles ne sont pas identiques à ceux d'un
+prototype académique léger.
 
-Un système multi-agent décompose un problème entre plusieurs entités capables d'exécuter
-des tâches et de communiquer. Dans sa forme la plus générale, un agent peut posséder un
-état, des objectifs, des capacités et un mécanisme de décision.
-Les premières architectures distribuées de détection ont déjà exploré cette logique.
-AAFID, par exemple, repose sur une architecture d'agents autonomes pour la détection
-d'intrusion \cite{balasubramaniyan1998aafid}. La motivation principale est de répartir
-les fonctions et de réduire la dépendance à un composant unique réalisant toutes les
-analyses.
-Cette logique connaît un regain d'intérêt récent avec l'intégration de grands modèles de
-langage dans les agents spécialisés. Audit-LLM organise ainsi plusieurs agents collaboratifs
-pour la détection de menaces internes à partir de journaux~\cite{song2024auditllm}, et
-Hmimou et al. proposent une architecture multi-agent où des agents spécialisés (vérification
-d'e-mails, analyse de journaux, analyse d'adresses IP) coopèrent via un système de
-recommandation contextuel pour corréler des menaces~\cite{hmimou2025multiagent}. Ariel
-Logminer se distingue de ces approches en s'appuyant sur des modèles légers et un protocole
-Contract Net plutôt que sur des appels systématiques à un LLM, ce qui répond à l'objectif de
-reproductibilité locale (H4) au prix d'une interprétation sémantique plus limitée.
+Wazuh associe des agents de collecte à un serveur d'analyse, un indexeur et un tableau de
+bord ; son architecture documente aussi des déploiements centralisés ou en grappe
+\cite{wazuh2026architecture}. Elastic Security s'appuie sur des données normalisées avec
+ECS et propose des règles de détection, de la corrélation d'événements, des alertes et des
+outils d'investigation \cite{elastic2026ecs,elastic2026security}. OpenSearch Security
+Analytics organise les journaux par types, applique des règles aux détecteurs, produit
+des constats et des alertes, et inclut un moteur de corrélation entre types de journaux
+\cite{opensearch2026securityanalytics}. Ces trois cadres couvrent donc déjà une part
+substantielle de la chaîne fonctionnelle revendiquée par Ariel Logminer.
 
-\subsection{Intérêt architectural}
+Du côté de la recherche, Loglizer fournit une boîte à outils de détection d'anomalies
+fondée sur l'apprentissage automatique et associée à une comparaison de méthodes sur des
+journaux système \cite{he2016experience,logpai2026loglizer}. LogAI propose une interface
+commune pour le résumé, le regroupement et la détection d'anomalies, plusieurs familles de
+modèles, le modèle de données OpenTelemetry et une interface interactive
+\cite{cheng2023logai}. Ces bibliothèques réduisent le travail nécessaire pour comparer des
+algorithmes, mais ne se présentent pas comme des SIEM complets.
 
-L'intérêt d'une architecture à agents tient d'abord à la manière dont elle découpe le travail. Le parsing, le routage ou la détection peuvent être confiés à des composants distincts, avec des responsabilités plus faciles à identifier. Cette séparation facilite aussi l'\textbf{extensibilité} : ajouter un traitement devient plus simple lorsqu'il respecte un contrat d'entrée et de sortie explicite.
+\begin{table}[H]
+\centering
+\caption{Cadres intégrés et bibliothèques proches du périmètre étudié}
+\label{tab:cadres-integres}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.25cm}p{2.1cm}p{3.5cm}X}
+\toprule
+\textbf{Cadre} & \textbf{Nature} & \textbf{Fonctions documentées pertinentes} &
+\textbf{Différence avec l'objet de ce mémoire} \\
+\midrule
+Wazuh \cite{wazuh2026architecture} & Plateforme de sécurité &
+Collecte par agents, analyse, indexation, alertes et tableau de bord ; déploiement en grappe. &
+Plateforme opérationnelle ; ce mémoire ne la compare ni en débit ni en qualité de détection. \\
+Elastic Security \cite{elastic2026security} & SIEM et sécurité des terminaux &
+Normalisation ECS, règles, corrélation, alertes, investigation et réponse. &
+Écosystème intégré et étendu ; Ariel Logminer vise une instrumentation expérimentale plus réduite. \\
+OpenSearch Security Analytics \cite{opensearch2026securityanalytics} & Extension SIEM d'OpenSearch &
+Types de journaux, règles, détecteurs, constats, alertes et corrélation. &
+Alternative directe pour plusieurs fonctions ; aucune comparaison expérimentale n'est réalisée ici. \\
+LogAI \cite{cheng2023logai} & Bibliothèque de recherche &
+Prétraitement, résumé, regroupement, détection, modèles classiques et profonds, interface. &
+Pas d'allocation Contract Net ; cadre plus large pour comparer les méthodes d'analyse. \\
+Loglizer \cite{he2016experience,logpai2026loglizer} & Boîte à outils de recherche &
+Extraction de caractéristiques et détecteurs d'anomalies sur journaux. &
+Centré sur l'analyse algorithmique, sans chaîne SOC intégrée. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
-L'\textbf{auditabilité} constitue un autre apport. Lorsque les tâches et les échanges sont identifiables, le chemin suivi par un traitement peut être reconstruit. Enfin, si le mécanisme de transport conserve l'état des tâches, l'architecture peut soutenir la \textbf{reprise} : une tâche non acquittée peut, dans certaines conditions, être réattribuée après l'arrêt d'un worker.
+Cette comparaison retire toute prétention à combler un vide fonctionnel. Ariel Logminer
+ne remplace pas ces cadres et aucune expérience ne démontre qu'il les surpasse. Son objet
+défendable est plus étroit : rendre explicites, dans une chaîne locale, les unités
+d'analyse, les protocoles de séparation, le routage, l'allocation et les traces de preuve,
+afin d'étudier les limites d'une intégration légère. L'originalité éventuelle doit être
+cherchée dans cette instrumentation et dans les comparaisons contrôlées, pas dans la
+simple coexistence des fonctions.
 
-Ces propriétés sont architecturales. Elles ne permettent pas de conclure, sans mesure, qu'un système à agents sera plus rapide qu'une exécution monolithique.
+\section{Agents, files de tâches et moteurs de workflow}
 
-\subsection{Coût de l'orchestration}
+\subsection{Ce qui distingue théoriquement un agent d'un worker}
 
-Distribuer le traitement a un prix. La sérialisation des messages, leur passage par un bus, les changements de contexte, les heartbeats, la persistance et les mécanismes d'acquittement ajoutent tous du travail qui n'existe pas dans une exécution directe.
+Un système multi-agent décompose un problème entre des entités qui possèdent un état,
+des capacités et une politique de décision. Wooldridge associe classiquement l'agent à
+l'autonomie, la réactivité, la proactivité et la capacité sociale
+\cite{wooldridge2009introduction}. Ces propriétés excèdent la simple exécution d'une
+fonction reçue dans une file. Elles ne sont cependant pas acquises par le vocabulaire
+employé : un worker muni d'une table de capacités et d'un score fixe reste
+fonctionnellement proche d'un ordonnanceur déterministe si ses décisions ne diffèrent pas
+de celles de cette table.
 
-Sur des microtâches, ce coût fixe peut même dépasser le bénéfice du parallélisme. La question utile n'est donc pas seulement de savoir si les agents sont plus rapides. Il faut plutôt déterminer ce qu'ils apportent en modularité, traçabilité ou reprise, puis mesurer le coût associé.
+Le protocole Contract Net de Smith organise une allocation négociée : un gestionnaire
+annonce une tâche, les contractants potentiels soumettent une offre, puis une offre est
+retenue \cite{smith1980contract}. La spécification FIPA précise les actes
+\texttt{cfp}, \texttt{propose}, \texttt{refuse}, \texttt{accept-proposal},
+\texttt{reject-proposal} et les notifications finales
+\cite{fipa2002contractnet,fipa2002aclmessage,fipa2002cal}. Le protocole d'Ariel Logminer
+en reprend la structure sous une nomenclature propre, avec des extensions
+\texttt{ACCEPT} et \texttt{FEEDBACK} ; il revendique une parenté, non une conformité
+FIPA.
 
-L'évaluation de \logminer{} sépare précisément ces deux dimensions : les propriétés de conception d'un côté, le débit, la latence et les ressources consommées de l'autre.
+\subsection{Le concurrent réel : l'affectation déterministe}
 
-\section{Bus de messages et distribution des tâches}
+Pour une chaîne de journaux, Contract Net doit être comparé non seulement à un monolithe,
+mais à des mécanismes d'orchestration plus simples. Celery associe des noms de tâches à
+des fonctions et permet aux workers de consommer des files ; Kafka répartit les
+enregistrements entre consommateurs et documente explicitement les garanties de
+livraison ; Redis Streams maintient des groupes de consommateurs et une liste des
+messages livrés mais non acquittés ; Temporal persiste l'historique d'un workflow et
+place ses unités de travail dans des files interrogées par des workers
+\cite{celery2026tasks,kafka2026semantics,redis2026streams,temporal2026tasks}.
+Dans chacun de ces cadres, une table de routage, des files nommées ou l'inscription de
+workers par capacité peuvent affecter une tâche sans appel d'offres.
 
-\subsection{Découplage des composants}
+\begin{table}[H]
+\centering
+\caption{Contract Net et alternatives d'orchestration}
+\label{tab:concurrents-orchestration}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.3cm}p{3cm}p{3.2cm}X}
+\toprule
+\textbf{Mécanisme} & \textbf{Décision d'affectation} & \textbf{État et reprise} &
+\textbf{Question comparative} \\
+\midrule
+Table statique / files nommées & Règle source--pipeline ou type--file fixée à l'avance. &
+Dépendent du broker et du magasin applicatif. &
+La négociation modifie-t-elle l'affectation ou seulement son protocole ? \\
+Groupe de consommateurs & Le broker distribue les messages entre workers d'un groupe. &
+Messages en vol, acquittements et réattribution selon le broker. &
+Une utilité locale améliore-t-elle débit, équité ou compatibilité ? \\
+Moteur de workflow & Graphe ou code de workflow durable, tâches placées dans des files. &
+Historique persistant, reprises et tentatives explicites. &
+Le modèle par objectifs apporte-t-il une propriété absente du workflow ? \\
+Contract Net & Appel à propositions, offres, puis attribution. &
+À construire au-dessus du transport et des magasins. &
+Le coût des offres est-il compensé par de meilleures décisions ? \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
-Un bus de messages permet à un producteur et à un consommateur de communiquer sans
-nécessairement s'exécuter au même moment ni dans le même processus.
-Dans une architecture d'analyse de logs, ce découplage peut être utile lorsque plusieurs
-workers traitent des tâches différentes. Le producteur publie une unité de travail, tandis
-qu'un consommateur compatible la récupère.
-Ce découplage facilite la distribution, mais introduit des questions de fiabilité :
-comment savoir qu'une tâche a été traitée ? Que se passe-t-il lorsqu'un worker s'arrête
-après avoir récupéré une tâche ? Comment distinguer un message métier d'un identifiant
-propre au transport ?
+Une justification scientifique de l'architecture à agents exige donc un comparateur
+contrôlé : mêmes tâches, mêmes workers, même transport, mêmes mécanismes de reprise et
+seule politique d'affectation différente. Sans cette ablation, la modularité du code et
+la présence de messages Contract Net démontrent une réalisation, pas la supériorité de la
+négociation.
 
-\subsection{Acquittement}
+\section{Sémantique de livraison, reprise et idempotence}
 
-L'acquittement est un mécanisme essentiel dans une file fiable. Un message lu n'est pas
-nécessairement un message traité avec succès. Il doit donc être possible de distinguer au
-minimum :
-\begin{itemize}
-    \item le message disponible ;
-    \item le message livré à un consommateur ;
-    \item le message en attente de confirmation ;
-    \item le message acquitté.
-\end{itemize}
-Le nombre de messages acquittés renseigne sur le fonctionnement du transport, mais pas sur
-la réussite de toutes les opérations métier associées.
-Dans le chapitre expérimental, cette nuance est conservée lors de l'analyse des campagnes
-multi-VM.
+Les garanties de transport doivent être séparées des garanties métier. Kafka distingue
+les sémantiques \textit{au plus une fois}, \textit{au moins une fois} et
+\textit{exactement une fois}, et limite sa garantie exactement une fois au périmètre de
+transactions et de traitements compatibles \cite{kafka2026semantics}. Dans Redis
+Streams, un groupe conserve les messages non acquittés dans une liste d'attente ; un
+message peut être relu ou réattribué après une panne, donc traité plusieurs fois
+\cite{redis2026streams}. Celery formule la même contrainte : lorsque l'acquittement a lieu
+après l'exécution, une panne peut provoquer une nouvelle exécution et la tâche doit être
+idempotente \cite{celery2026tasks}.
 
-\subsection{Tolérance aux pannes}
+L'idempotence est ainsi une propriété de l'opération ou de son magasin, non une propriété
+spécifique des agents. Elle consiste à rendre plusieurs tentatives équivalentes à une
+seule du point de vue de l'effet observable, par exemple au moyen d'une clé stable et
+d'une écriture conditionnelle. Le broker peut préserver et réattribuer une tâche ; il ne
+peut pas, à lui seul, annuler un effet externe déjà produit. Inversement, un magasin
+d'idempotence peut protéger un monolithe, des workers centralisés ou des agents.
 
-La présence d'un mécanisme de reprise ne suffit pas non plus à démontrer une haute
-disponibilité complète.
-Une architecture réellement hautement disponible doit considérer plusieurs scénarios :
-arrêt d'un worker, panne du broker, partition réseau, duplication de messages, indisponibilité
-du stockage, redémarrage simultané de plusieurs composants et restauration de l'état.
-Une expérience portant sur l'un de ces scénarios apporte une preuve locale pour le
-mécanisme étudié ; elle ne doit pas être généralisée à toutes les formes de panne.
-\logminer{} distingue ainsi la \textit{reprise démontrée} dans un scénario précis de la
-\textit{haute disponibilité} de l'ensemble du système.
+Une preuve de reprise doit donc documenter séparément : la livraison ou la réattribution,
+le nombre de tentatives, l'effet métier, l'acquittement et la persistance du résultat.
+Elle ne vaut que pour les pannes effectivement injectées. Démontrer la reprise d'un
+worker ne démontre ni la tolérance à une panne du broker, ni le fonctionnement pendant
+une partition réseau, ni une sémantique exactement une fois de bout en bout.
 
 \section{Routage et spécialisation des traitements}
 
@@ -637,30 +786,44 @@ pipeline incompatible à une source.
 L'évaluation sépare donc la \textbf{bonne orientation du traitement} du
 \textbf{gain de performance du modèle spécialisé}.
 
-\section{Corrélation d'événements}
+\section{Corrélation d'alertes}
 
-\subsection{Du signal isolé à l'incident potentiel}
+\subsection{Des alertes élémentaires aux scénarios}
 
-Une anomalie isolée fournit souvent peu de contexte. Plusieurs signaux rapprochés dans le
-temps ou associés à la même source peuvent en revanche décrire une situation plus
-cohérente.
-La corrélation cherche à regrouper ou à relier ces événements à partir de critères tels que :
-\begin{itemize}
-    \item proximité temporelle ;
-    \item adresse source ou destination ;
-    \item hôte ;
-    \item utilisateur ;
-    \item type d'événement ;
-    \item ressource concernée ;
-    \item identifiant commun.
-\end{itemize}
-Le résultat peut être un cluster, une chaîne d'événements ou un incident candidat.
+La corrélation ne se réduit pas à placer des alertes proches dans une même fenêtre.
+Cuppens et Miège distinguent la gestion de la base d'alertes, le regroupement d'alertes
+similaires, leur fusion, puis la corrélation d'étapes compatibles avec un scénario
+d'intrusion \cite{cuppens2002alert}. Valeur et al. proposent de même une chaîne de
+composants couvrant normalisation, fusion, vérification, corrélation de scénarios,
+priorisation et intention ; ils montrent que l'efficacité de chaque composant dépend
+fortement du jeu de données \cite{valeur2004correlation}. Ces travaux classiques font de
+la corrélation un processus multi-étapes dont les entrées doivent déjà partager une
+sémantique minimale.
 
-\subsection{Difficultés de la corrélation}
+Trois familles de relations peuvent être distinguées. La similarité rapproche les
+doublons ou variantes d'une même alerte. La coïncidence relie des événements proches dans
+le temps et le contexte. Enfin, une relation causale peut associer les préconditions et
+les conséquences des étapes d'une attaque. Les deux premières réduisent le volume ou
+forment des groupes. La troisième prétend reconstruire un scénario et exige un modèle
+plus riche des actions, des actifs et de leurs dépendances.
 
-La corrélation doit trouver un équilibre entre deux erreurs opposées. Si les critères sont trop stricts, des événements appartenant au même phénomène peuvent être séparés en plusieurs groupes : c'est la \textbf{fragmentation}. À l'inverse, des critères trop larges peuvent réunir des événements indépendants simplement parce qu'ils partagent quelques attributs ; on obtient alors une \textbf{fusion incorrecte}.
+\subsection{Compromis et protocole d'évaluation}
 
-La fenêtre temporelle agit directement sur ce compromis. Trop courte, elle accentue la fragmentation ; trop longue, elle augmente le risque de fusion. La qualité du corrélateur doit donc être évaluée pour elle-même, indépendamment de la performance du détecteur qui produit les anomalies en entrée.
+Une règle trop stricte fragmente un incident entre plusieurs groupes ; une règle trop
+large fusionne des événements indépendants. La fenêtre temporelle, les clés d'entité et
+la stabilité des identifiants déterminent ce compromis. L'évaluation doit donc comparer
+le regroupement produit à des incidents de référence, rapporter précision et rappel, et
+inclure des baselines plus simples telles que « hôte + fenêtre » ou « fenêtre seule ».
+
+Le corrélateur d'Ariel Logminer appartient à la famille temporelle et contextuelle : il
+regroupe les alertes sur une fenêtre fixe et l'égalité de plusieurs clés. Il ne modélise
+ni préconditions d'attaque ni causalité. Son corpus synthétique reprend les clés attendues
+par la règle, ce qui permet un test fonctionnel mais crée un circuit fermé. Le résultat
+doit être interprété au regard de la littérature : précision élevée sur des clés stables,
+mais fragmentation des incidents multi-étapes, précisément lorsque des catégories
+différentes devraient être reliées. Une validation externe demanderait des incidents
+authentifiés, multi-sources et multi-étapes qui n'ont pas servi à concevoir le
+corrélateur.
 
 \section{Mémoire persistante et feedback humain}
 
@@ -693,34 +856,44 @@ des dérives ou propager une erreur.
 Une approche contrôlée consiste plutôt à accumuler les retours, entraîner éventuellement
 un candidat hors ligne, puis comparer ce candidat au modèle courant avant toute promotion.
 
-\section{Mise à jour et gouvernance des modèles}
+\section{Gouvernance des modèles et MLOps}
 
-\subsection{Besoin d'évolution}
+\subsection{Le modèle comme composant d'un système évolutif}
 
-Le comportement d'un système évolue dans le temps. Les applications changent, de nouvelles
-versions sont installées, les utilisateurs modifient leurs habitudes et de nouveaux types
-d'événements apparaissent.
-Un modèle entraîné une fois pour toutes peut donc devenir progressivement moins adapté.
-Cette évolution est souvent décrite par la notion de dérive de distribution ou de dérive
-conceptuelle.
+Le déploiement d'un modèle ne se résume pas à sérialiser un estimateur. Sculley et al.
+montrent que les systèmes d'apprentissage accumulent une dette propre aux dépendances de
+données, aux boucles de rétroaction, à la configuration et aux interactions entre
+composants \cite{sculley2015debt}. Amershi et al. soulignent notamment la difficulté de
+versionner les données, de réutiliser les modèles et de maintenir des composants dont le
+comportement est entremêlé avec celui du système qui les consomme
+\cite{amershi2019software}. Une dérive de distribution, une modification du parseur ou un
+changement de schéma peut donc invalider un modèle sans modification de son code.
 
-\subsection{Mise à jour contrôlée}
+\subsection{Promotion, surveillance et retour arrière}
 
-Une stratégie prudente distingue plusieurs objets :
+La préparation à la production exige des tests sur les données, les caractéristiques,
+les modèles et l'infrastructure, puis une surveillance après déploiement. La grille de
+Breck et al. regroupe précisément des contrôles de préparation et de monitoring pour
+réduire la dette technique \cite{breck2017mltest}. Le NIST AI RMF ajoute une dimension de
+gouvernance : rôles définis, documentation, mesure des risques, suivi continu et revue
+périodique \cite{nist2023airmf}.
+
+Une procédure minimale de promotion doit ainsi conserver :
 \begin{enumerate}
-    \item le modèle actuellement utilisé ;
-    \item le dataset servant à entraîner un candidat ;
-    \item le modèle candidat ;
-    \item le jeu servant à la comparaison ;
-    \item la règle de promotion.
+    \item la version et la provenance des données, du parseur, des caractéristiques et du modèle ;
+    \item un jeu de comparaison gelé et une règle de décision définie avant son évaluation ;
+    \item les métriques prédictives, les coûts et les contrôles par sous-groupes ;
+    \item une validation explicite, l'identité du décideur et l'artefact promu ;
+    \item les conditions de surveillance, d'alerte, de retrait et de retour arrière.
 \end{enumerate}
-La comparaison préalable empêche qu'un nouvel entraînement remplace automatiquement un
-modèle fonctionnel.
-Une règle simple peut par exemple imposer qu'un candidat améliore une métrique minimale
-avant d'être promu. Si l'amélioration est insuffisante ou négative, le modèle existant est
-conservé.
-L'intérêt principal est la gouvernance : la décision devient reproductible et auditable.
-Cette gouvernance ne couvre pas l'apprentissage autonome et continu en production.
+
+Un mode \textit{dry-run}, un registre ou une fonction de comparaison constituent des
+briques de cette chaîne ; ils ne démontrent pas à eux seuls une gouvernance opérationnelle.
+Dans Ariel Logminer, la mémoire persistante et les chemins de promotion fournissent une
+infrastructure auditée par des tests. En l'absence de cycles répétés comprenant candidat,
+décision, déploiement, surveillance et retour arrière, le positionnement doit rester celui
+d'un \textbf{support de gouvernance expérimental}, non d'une plateforme MLOps validée ni
+d'un apprentissage continu autonome.
 
 \section{Tableaux de bord et exploitabilité par l'analyste}
 
@@ -882,6 +1055,11 @@ protocoles et leurs objectifs diffèrent.
 \textbf{Apport} &
 \textbf{Limite ou différence par rapport au présent travail} \\
 \midrule
+Contract Net \cite{smith1980contract,fipa2002contractnet} &
+1980 / 2002 &
+Allocation négociée de tâches &
+Appel à propositions, offres, attribution et normalisation FIPA des actes. &
+Protocole repris avec une nomenclature propre et deux extensions (ACCEPT, FEEDBACK), sans revendication de conformité FIPA. \\
 Denning \cite{denning1987intrusion} &
 1987 &
 Détection d'intrusion &
@@ -897,6 +1075,11 @@ Isolation Forest \cite{liu2008isolation} &
 Détection non supervisée &
 Isolation efficace des observations rares. &
 Produit un score d'anomalie sans interprétation de sécurité complète. \\
+He et al. \cite{he2016experience} &
+2016 &
+Benchmark de détection sur logs &
+Comparaison de détecteurs supervisés et non supervisés sur HDFS et BGL. &
+Évaluation d'algorithmes isolés, sans chaîne multi-source. \\
 DeepLog \cite{du2017deeplog} &
 2017 &
 Détection séquentielle &
@@ -917,6 +1100,11 @@ LogBERT \cite{guo2021logbert} &
 Modélisation Transformer &
 Représentation auto-supervisée de séquences de logs. &
 Exigences de données et de calcul supérieures ; objectif différent de l'intégration légère étudiée ici. \\
+Le et Zhang \cite{le2022logbased} &
+2022 &
+Réévaluation de modèles profonds &
+Effet de la partition, du regroupement et du déséquilibre sur le F1. &
+Motive les partitions chronologiques retenues ici ; les protocoles ne sont pas identiques. \\
 Loghub \cite{zhu2023loghub} &
 2023 &
 Collection de datasets &
@@ -930,122 +1118,107 @@ spécialisées. Certaines améliorent la détection, d'autres le parsing, la rep
 la distribution. Cette spécialisation est scientifiquement légitime, mais laisse ouverte
 la question de leur articulation dans une chaîne de traitement commune.
 
-\section{Lacunes identifiées dans la littérature}
+\section{Tensions de la littérature et espace expérimental}
 
-L'état de l'art ne révèle pas une absence de solutions. Il montre plutôt que les solutions existantes répondent souvent à des morceaux différents du problème. Plusieurs écarts restent donc pertinents pour le cadre de ce mémoire.
+L'état de l'art n'établit pas l'absence d'une chaîne intégrée. Wazuh, Elastic Security et
+OpenSearch Security Analytics couvrent déjà ingestion, règles, alertes, investigation ou
+corrélation à des degrés différents
+\cite{wazuh2026architecture,elastic2026security,opensearch2026securityanalytics}.
+LogAI et Loglizer fournissent par ailleurs des cadres pour comparer des traitements de
+journaux \cite{cheng2023logai,he2016experience}. La lacune initialement formulée comme un
+« espace entre prototype algorithmique et plateforme opérationnelle » ne suffit donc pas
+à établir une nouveauté.
 
-\subsection{Fragmentation des fonctions}
+La tension pertinente est méthodologique. Les travaux algorithmiques isolent souvent le
+détecteur afin d'en mesurer la performance, alors que les plateformes intégrées offrent
+de nombreuses fonctions mais ne constituent pas nécessairement un protocole de recherche
+contrôlant unité d'analyse, partition, baseline, routage et coût d'orchestration. Cette
+tension ouvre un espace pour un banc d'expérimentation instrumenté, à condition de ne pas
+confondre intégration et contribution scientifique.
 
-Une grande partie des travaux de machine learning se concentre sur la performance du
-détecteur. Les données sont supposées disponibles sous une forme déjà exploitable, tandis
-que le parsing, la normalisation, la distribution, la conservation de l'audit ou la
-présentation à l'analyste sont traités séparément.
-À l'inverse, les outils opérationnels intègrent de nombreuses fonctions d'ingénierie, mais
-n'ont pas nécessairement pour objectif de fournir un cadre expérimental permettant de
-comparer plusieurs protocoles et plusieurs modèles.
-Il existe donc un espace entre le \textbf{prototype algorithmique} et la
-\textbf{plateforme opérationnelle complète}. C'est dans cet espace que se situe
-\logminer{}.
+Quatre exigences structurent alors une comparaison défendable :
+\begin{itemize}
+    \item mesurer le mapping vers un schéma reconnu, plutôt que déclarer une enveloppe
+          locale « normalisée » par construction ;
+    \item comparer le routage et Contract Net à une table statique ou à des files
+          spécialisées, et non seulement à un monolithe ;
+    \item évaluer les modèles contre des règles triviales sur la même unité et le même
+          test, avec des partitions qui exposent le transfert ;
+    \item distinguer les propriétés fournies par le broker, par le magasin d'idempotence,
+          par le code des agents et par le modèle prédictif.
+\end{itemize}
 
-\subsection{Hétérogénéité insuffisamment considérée dans les évaluations}
-
-De nombreux travaux évaluent leur méthode sur une famille précise de données. Cette
-stratégie est adaptée à la mesure d'un algorithme, mais elle ne répond pas à la question
-de l'intégration de sources possédant des structures différentes.
-Une chaîne multi-source doit non seulement détecter, mais également déterminer quel
-prétraitement et quel modèle sont compatibles avec l'entrée.
-Le routage et les adaptateurs deviennent alors des composants scientifiques et techniques
-à évaluer, et non de simples détails de programmation.
-
-\subsection{Confusion possible entre score et généralisation}
-
-Un score élevé sur un jeu de données ne garantit pas le transfert du modèle à un contexte
-différent.
-Cette limite est connue dans la littérature sur l'application du machine learning à la
-sécurité \cite{sommer2010outside}. Elle motive l'utilisation de protocoles d'évaluation qui
-tentent de séparer davantage les contextes d'entraînement et de test.
-La comparaison entre partition aléatoire et holdout par scénario examine directement ce
-risque de transfert.
-
-\subsection{Évaluation incomplète des propriétés architecturales}
-
-L'architecture multi-agent est souvent associée à la distribution, à la flexibilité ou à
-la robustesse. Ces propriétés ne doivent cependant pas être confondues.
-Ces propriétés appellent des preuves différentes. La modularité peut être discutée à partir de la structure du logiciel, alors que le débit doit être mesuré. La reprise exige un scénario d'interruption ou de panne contrôlée. Quant à la haute disponibilité, elle demanderait un protocole beaucoup plus large. Associer chaque revendication à la preuve qui lui correspond devient donc une exigence méthodologique en soi.
-
-\subsection{Place de l'analyste}
-
-Une anomalie détectée n'est utile que si elle peut être comprise et replacée dans un
-contexte. Les travaux centrés uniquement sur une métrique ne décrivent pas toujours la
-manière dont le signal est transmis à l'utilisateur.
-L'intégration d'une interface, d'un audit et d'un mécanisme de feedback ne garantit pas
-l'utilisabilité, mais elle permet au moins de fermer la chaîne entre détection technique
-et décision humaine.
+Ariel Logminer satisfait partiellement cette ambition : les artefacts relient plusieurs
+affirmations à des protocoles, et les résultats négatifs révèlent les raccourcis de
+datasets. En revanche, aucune comparaison expérimentale n'est conduite contre les cadres
+intégrés, aucun incident réel ne combine journaux système et flux réseau, et le bénéfice
+propre de la négociation n'est pas établi dans le manuscrit actuel. Les observations sur
+la dépendance aux partitions répliquent des avertissements déjà publiés
+\cite{sommer2010outside,arp2022dos,le2022logbased,engelen2021troubleshooting,liu2022error} ;
+elles ne constituent pas une découverte conceptuelle.
 
 \section{Positionnement scientifique d'Ariel Logminer}
 
-À la lumière de cet état de l'art, \logminer{} se situe entre le prototype centré sur un algorithme et la plateforme SOC complète. Il est considéré ici comme un \textbf{prototype d'intégration et d'expérimentation pour l'analyse de journaux hétérogènes}.
+\logminer{} est positionné comme un \textbf{prototype d'intégration instrumenté pour
+l'étude critique de chaînes légères d'analyse de journaux}. Il n'introduit ni algorithme
+de détection, ni schéma de normalisation, ni protocole d'allocation nouveau. Son apport
+potentiel réside dans la mise en relation, au sein d'un même prototype, de choix
+d'ingénierie et de protocoles dont les effets peuvent être séparés : unité événement ou
+bloc, partition aléatoire ou temporelle, règle triviale ou modèle, routage, orchestration,
+idempotence et corrélation.
 
-Sa contribution n'est donc pas un nouvel algorithme de détection. L'intérêt du prototype vient plutôt de l'assemblage, dans une même chaîne expérimentale, de fonctions souvent étudiées séparément :
+Ce positionnement est une contribution d'ingénierie expérimentale, dont la valeur
+scientifique dépend des comparateurs réellement exécutés. Les cadres intégrés établissent
+que l'assemblage fonctionnel n'est pas nouveau. Les expériences du mémoire établissent
+pour leur part plusieurs limites : forte dépendance aux jeux et aux partitions, coût de
+l'orchestration, distribution déséquilibrée, normalisation partielle et corrélation
+validée seulement en circuit fermé. Le tableau~\ref{tab:positionnement-logminer} sépare
+donc strictement les propriétés observées des revendications non démontrées.
 
-\begin{itemize}
-    \item ingestion de sources différentes ;
-    \item parsing ;
-    \item normalisation ;
-    \item identification de la famille d'entrée ;
-    \item routage vers un traitement ;
-    \item utilisation de plusieurs modèles ;
-    \item génération d'anomalies candidates ;
-    \item corrélation ;
-    \item persistance ;
-    \item audit ;
-    \item feedback ;
-    \item mise à jour contrôlée ;
-    \item visualisation.
-\end{itemize}
-L'évaluation rattache chaque performance de détection à son jeu de données et à son
-protocole. Les résultats non supervisés restent des anomalies candidates. La qualité du
-routage est mesurée indépendamment du gain prédictif des modèles spécialisés, tandis que
-le coût de la distribution par agents fait l'objet d'un benchmark. La campagne multi-VM
-caractérise une topologie de laboratoire, sans couvrir la scalabilité industrielle. Enfin,
-la mémoire et la promotion d'un modèle candidat sont encadrées par des mécanismes
-contrôlés et auditables ; l'apprentissage continu autonome en production n'est pas évalué.
-Le positionnement peut être résumé par le tableau~\ref{tab:positionnement-logminer}.
 \begin{table}[H]
 \centering
 \caption{Positionnement scientifique d'Ariel Logminer}
 \label{tab:positionnement-logminer}
 \small
-\begin{tabularx}{\textwidth}{p{3.4cm}X X}
+\begin{tabularx}{\textwidth}{p{3.15cm}X X}
 \toprule
 \textbf{Dimension} &
-\textbf{Ce que le prototype cherche à démontrer} &
+\textbf{Ce que le prototype établit ou permet d'étudier} &
 \textbf{Ce qu'il ne revendique pas} \\
 \midrule
 Hétérogénéité &
-Traitement d'un ensemble documenté de formats et représentation commune partielle. &
-Compatibilité universelle avec tout format de journal. \\
+Lecture d'un ensemble documenté de formats et projection partielle dans un schéma commun ; chaque source est évaluée séparément. &
+Compatibilité universelle avec tout format de journal ; analyse conjointe d'un même incident à partir de journaux système et de flux réseau. \\
+Normalisation &
+Contrat local extensible et mesure du remplissage de sept champs communs. &
+Conformité ECS ou OCSF ; conservation sémantique complète de chaque source. \\
 Détection &
-Évaluation de plusieurs approches dans des protocoles explicitement définis. &
-Détecteur universel ou meilleur modèle pour tout environnement. \\
+Comparaison de modèles et de protocoles sur plusieurs jeux publics. &
+Supériorité générale sur les règles triviales ou transfert à un environnement opérationnel. \\
 Routage &
-Orientation d'une source vers une famille de traitement compatible. &
-Gain prédictif systématique grâce à la spécialisation. \\
+Orientation de fichiers connus et rejet open-set sous un seuil gelé. &
+Gain prédictif systématique ; avantage établi sur une table de routage statique. \\
 Agents &
-Modularité, séparation des responsabilités, échanges et mécanismes de reprise ciblés. &
-Accélération automatique du traitement ou autonomie cognitive. \\
+Réalisation d'échanges inspirés de Contract Net, état persistant et décisions locales bornées. &
+Autonomie cognitive, apprentissage de la politique ou supériorité de la négociation. \\
 Distribution &
-Fonctionnement multiprocessus et validation multi-VM de laboratoire. &
-Scalabilité industrielle, multi-site ou haute disponibilité complète. \\
+Fonctionnement multiprocessus et campagnes multi-VM de laboratoire. &
+Équilibrage démontré, scalabilité industrielle, multi-site ou haute disponibilité complète. \\
 Corrélation &
-Capacité à regrouper des anomalies dans des scénarios contrôlés. &
-Validation sur incidents SOC réels à grande échelle. \\
+Regroupement temporel et contextuel évalué sur des corpus synthétiques contrôlés. &
+Reconstruction causale ou validation sur incidents SOC réels multi-sources. \\
 Mémoire &
-Persistance de l'historique et support d'une procédure contrôlée. &
-Apprentissage continu totalement autonome en production. \\
+Persistance de l'historique et support d'une procédure de mise à jour contrôlée. &
+Gain mesuré de la mémoire sur l'attribution des tâches ; apprentissage continu autonome en production. \\
+Priorisation &
+Mécanisme prévu par la conception. &
+Amélioration mesurée de l'ordre de traitement des anomalies. \\
+Gouvernance &
+Registre et chemins de comparaison ou de promotion testables. &
+Cycle MLOps validé de bout en bout, surveillance de dérive et retour arrière éprouvé. \\
 Dashboard &
 Restitution fonctionnelle des informations et support de validation. &
-Amélioration d'utilisabilité démontrée par une étude utilisateur. \\
+Amélioration du travail de l'analyste démontrée par une étude utilisateur. \\
 \bottomrule
 \end{tabularx}
 \end{table}

@@ -1,0 +1,103 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre6_conclusion.tex
+%   (Conclusion générale, section « Statut des hypothèses » et tableau 7.1,
+%   PDF p. 126-127)
+% Passage à remplacer : du paragraphe « Le statut des hypothèses est résumé dans
+%   le tableau~\ref{tab:statut-hypotheses}. Aucune n'est considérée comme
+%   totalement validée [...] » jusqu'au « \end{table} » qui clôt le tableau
+%   (inclus). Les lignes « \section*{Statut des hypothèses} » et
+%   « \addcontentsline{...}{Statut des hypothèses} » sont conservées.
+% Auteur : Agent 2 (statut des hypothèses), chantier 2026-11-05.
+% REMPLACE agent_1/sections/chapitre6_conclusion.tex__tableau_7.1.tex (C9),
+%   dont il reprend les faits ajoutés aux lignes H1 et H4.
+%
+% Statuts (avant -> après) et justification complète : LIVRABLE_2_hypotheses.md,
+%   §4 (fiches) et §5 (tableau récapitulatif).
+%   H1 PARTIELLEMENT SOUTENUE -> PARTIELLEMENT SOUTENUE (justification refaite,
+%      composante par composante ; requalifiée exigence de réalisation)
+%   H2 PARTIELLEMENT SOUTENUE -> PARTIELLEMENT SOUTENUE (le bras « agents sans
+%      idempotence » n'a pas été exécuté ; requalifiée exigence de réalisation)
+%   H3 NON TRANCHÉE -> NON TRANCHÉE (« gain prédictif n'est pas systématique »
+%      retiré : il repose sur une ablation absente du corps, point Agent 4)
+%   H4 PARTIELLEMENT SOUTENUE -> NON TRANCHÉE, supériorité infirmée sur trois
+%      jeux ; ne peut plus être validée (budget jamais fixé)
+%   H5 NON TRANCHÉE -> RÉFUTÉE (comparateur C/D exécuté ; aucun gain établi)
+%
+% Règle C8 : chaque chiffre figure dans le corps.
+%   7 001/7 001, fixture Apache, 7/7 à 0/7 : chapitre5_resultats.tex §4.8 ;
+%     experiments/phase_revision_20261104/agent_5_multiformat/result.json.
+%   référence vers la source non mesurée : limites_consolidees.tex (« non la
+%     complétude des champs ni la conservation intégrale du contenu brut »).
+%   C/D sans perte ni doublon, A/B 10 doublons, A+I/B+I 0 : tableau 4.7 ;
+%     agent3_paired_failure_abcd_20261104T141803Z__summary.json.
+%   multi-VM : 1 effet, 0 doublon : tableau 4.8 ;
+%     experiments/phase_cnp_endurance/aggregated/cnp_endurance_multivm_20260918T130822Z__summary.json.
+%   20/20, 3/46, 43/43 : §4.7 ; agent_5_router_open_set/result.json
+%     (summary.P.combined).
+%   0,556615 ; 0,437429 ; 0,666667 : tableau 4.3 et §4.2.3 ;
+%     agent6_cicids_iforest_20261104T141904Z_summary.csv (test_prevalence 0,5).
+%   0,999720 ; 0,999212 : §4.6.1-4.6.2 ;
+%     agent4_csecic_shortcut_20261104T144738Z__printed_summary.txt (part1).
+%   BGL règle de sévérité : §4.4 ; agent4_bgl_second_protocol_20261104T142629Z__result.json
+%     (hist_pred_equals_severity_novelty = true pour R0).
+%   HDFS sans baseline au niveau bloc : §4.3 (figure fig:hdfs-event-bloc :
+%     seules d'autres agrégations d'Histogram) ;
+%     agent2_hdfs_full_20261104T131314Z__result.json (aucune baseline).
+%   mémoire D/C : §4.9 (« ne montre pas d'amélioration systématique du débit,
+%     de la latence ou de l'équité ») ; détail par charge dans
+%     experiments/phase_multi_agent/aggregated/ma_20260909T160812Z_34016__paired_memory_effects.csv
+%     (non cité dans le corps : voir LIVRABLE_2 §9, demande à l'Agent 5).
+%   promotion : §4.13 et tableau A.5.
+% Labels utilisés, tous existants : tab:statut-hypotheses, fig:couverture-multiformat,
+%   sec:limites, sec:panne-appariee, sec:cnp-multivm, fig:routeur-open-set,
+%   tab:cicids-iforest, sec:csecic-resultats, sec:bgl-resultats,
+%   sec:bgl-second-protocole, fig:hdfs-event-bloc, fig:benchmark-abcd,
+%   tab:statut-model-update.
+% ============================================================================
+
+Le tableau~\ref{tab:statut-hypotheses} établit le statut de chaque hypothèse en appliquant son critère tel qu'il est formulé dans l'introduction. Une composante est réfutée lorsque son comparateur a été exécuté et que l'observation prévue par le critère se produit ; elle reste non tranchée lorsque le comparateur requis n'a pas été exécuté ou qu'une grandeur censée être fixée à l'avance ne l'a pas été. Une hypothèse conjonctive est réfutée dès qu'une composante l'est, et partiellement soutenue lorsqu'au moins une composante est établie sans qu'aucune soit réfutée. La baseline d'un test est la meilleure règle que le mémoire évalue sur ce test : ne retenir que la plus faible serait un choix fait après lecture des résultats.
+
+Aucune hypothèse n'est validée. H1 et H2 sont partiellement soutenues, mais ce qu'elles établissent relève d'exigences de réalisation. H3 n'est pas tranchée. H4 ne l'est pas davantage dans son ensemble, et sa condition de supériorité est infirmée sur trois des quatre jeux publics ; aucun budget n'ayant été fixé avant l'exécution, elle ne peut plus être validée par ce travail. H5 est réfutée.
+
+\begin{table}[H]
+
+\centering
+
+\caption{Statut des hypothèses.}
+
+\label{tab:statut-hypotheses}
+
+\scriptsize
+\begin{tabularx}{\textwidth}{p{0.05\textwidth} p{0.19\textwidth} p{0.16\textwidth} X}
+
+\toprule
+
+\textbf{Hyp.} & \textbf{Critère de réfutation} & \textbf{Statut} & \textbf{Éléments observés, par composante} \\
+
+\midrule
+
+H1 & Une unité présente ne peut être lue, normalisée ou retracée. &
+PARTIELLEMENT SOUTENUE &
+\textit{Lecture} : $7\,001/7\,001$ unités sont lues et émises dans le schéma commun, dont une fixture Apache d'une seule ligne (figure~\ref{fig:couverture-multiformat}). \textit{Conformité au noyau commun} : critère non discriminant, une unité pouvant être émise sans qu'aucun champ standard soit rempli ; le remplissage va de sept champs standard sur sept (syslog, BGL) à aucun (flux réseau tabulaires). \textit{Référence vers la source} : non mesurée unité par unité (section~\ref{sec:limites}). Ce qui est établi relève d'une exigence de réalisation. \\
+
+H2 & La différence entre exécution avec et sans idempotence, dans l'architecture à agents, n'est pas observée. &
+PARTIELLEMENT SOUTENUE &
+\textit{Avec idempotence} : C et D reprennent sans perte ni effet dupliqué dans les dix répétitions (section~\ref{sec:panne-appariee}), de même que la campagne multi-VM (section~\ref{sec:cnp-multivm}). \textit{Sans idempotence} : la même exécution à agents n'a pas été réalisée ; les doublons observés concernent A et B, et le magasin d'idempotence les supprime aussi dans ces architectures. La propriété tient au magasin, non à l'organisation en agents ; elle relève d'une exigence de réalisation. \\
+
+H3 & Aucune réduction mesurée des exécutions incompatibles face à la même chaîne sans routage. &
+NON TRANCHÉE &
+La chaîne sans routage n'a pas été exécutée, et ni le taux d'exécutions incompatibles ni le taux d'erreur de référence n'ont été définis. Seul le routeur est mesuré : au seuil gelé, il rejette $20/20$ fichiers inconnus, écarte à tort $3/46$ fichiers connus et oriente correctement les $43$ connus acceptés (figure~\ref{fig:routeur-open-set}). \\
+
+H4 & Aucun candidat ne satisfait conjointement séparation fixée à l'avance, F1 supérieur à la baseline déclarée et budget local fixé. &
+NON TRANCHÉE ; supériorité infirmée sur trois jeux &
+\textit{Budget} : aucun n'a été fixé ; aucun candidat ne peut satisfaire cette condition. \textit{Supériorité} : infirmée sur CICIDS2017 en séparation temporelle, où la régression logistique ($0{,}556615$) et le Random Forest ($0{,}437429$) restent sous la prédiction systématiquement positive ($0{,}666667$, tableau~\ref{tab:cicids-iforest}) ; sur CSE-CIC-IDS2018, où la règle « port de destination inférieur à 1024 » ($0{,}999720$) dépasse la régression logistique ($0{,}999212$, section~\ref{sec:csecic-resultats}) ; sur BGL, où Histogram égale la règle « sévérité absente de l'entraînement » sans la dépasser (section~\ref{sec:bgl-resultats}). Non évaluable sur HDFS : les seuls comparateurs au niveau bloc sont d'autres agrégations d'Histogram (figure~\ref{fig:hdfs-event-bloc}). Les protocoles BGL complémentaires sont exploratoires, et le protocole G a été conçu en connaissant la position des anomalies (section~\ref{sec:bgl-second-protocole}). \\
+
+H5 & Aucun gain n'est observé, ou une promotion contraire à la règle se produit. &
+RÉFUTÉE &
+\textit{Mémoire} : aux mêmes charges, l'activation de la mémoire (D contre C) n'apporte aucune amélioration établie du débit, de la latence ou de l'équité (figure~\ref{fig:benchmark-abcd}) ; aucune métrique de priorisation n'a été définie ni mesurée. \textit{Promotion} : aucune promotion contraire à la règle n'est observée, mais aucun cycle de promotion et de rejet n'a été exécuté (tableau~\ref{tab:statut-model-update}) ; cette composante n'est pas tranchée. \\
+
+\bottomrule
+
+\end{tabularx}
+
+\end{table}

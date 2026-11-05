@@ -310,8 +310,8 @@ rattachables à des preuves.
 \subsection{Plan de contrôle humain}
 
 Le plan de contrôle humain concerne directement l'analyste.
-Le système peut automatiser la préparation et la priorisation des signaux, mais il ne
-supprime pas le besoin d'une interprétation humaine. Le dashboard expose les informations
+Le système peut préparer et ordonner des signaux, mais l'effet de cette priorisation n'est
+pas évalué et le besoin d'une interprétation humaine demeure. Le dashboard expose les informations
 nécessaires à cette inspection et permet, lorsqu'une fonction correspondante est
 disponible, d'enregistrer une validation, un rejet ou un reclassement.
 Cette décision peut ensuite être conservée dans la mémoire et l'audit. Elle ne modifie pas
@@ -430,7 +430,9 @@ inter-processus ; \texttt{SQLiteIdempotencyStore} et \texttt{RedisIdempotencySto
 réexécution contrôlée lorsqu'une clé a déjà produit un résultat. Cette séparation permet
 de tester le même protocole en local, sur plusieurs processus et dans deux machines
 virtuelles.
-Le cycle de négociation est :
+Le cycle de négociation, dérivé du Contract Net \cite{smith1980contract} et de sa
+spécification FIPA \cite{fipa2002contractnet} (correspondance détaillée au
+chapitre~\ref{chap:etat-art}), est :
 
 \begin{center}
 
@@ -444,9 +446,13 @@ La politique expérimentale fixe l'utilité à
 \[
 U=0{,}30C+0{,}20H+0{,}20M+0{,}15A+0{,}10L+0{,}05T,
 \]
-avec des composantes bornées entre 0 et 1. La fiabilité historique est calculée par
-$H_i=(s_i+1)/(s_i+f_i+2)$. Les poids sont configurables et fixés avant les campagnes ;
-ils ne sont pas appris et ne sont pas présentés comme optimaux.
+avec des composantes bornées entre 0 et 1, où $C$ désigne la confiance de capacité,
+$H$ la fiabilité historique, $M$ la compatibilité de modèle, $A$ la disponibilité,
+$L$ la charge et $T$ la latence observée. Les poids sont configurables et fixés avant
+les campagnes ; ils ne sont pas appris et ne sont pas présentés comme optimaux. Le
+calcul exact de chaque composante, les règles de refus et l'usage de $U$ dans le
+Contract Net et la poursuite d'objectifs sont spécifiés à la
+section~\ref{sec:spec-utilite}.
 Les agents proposent ou refusent localement avant l'attribution, puis intègrent le résultat
 de la négociation dans la continuité de l'objectif concerné.
 
@@ -1351,6 +1357,7 @@ Le mode par micro-lots traite périodiquement plusieurs unités.
 Ce fonctionnement se rapproche d'une supervision continue, mais ne répond pas aux
 contraintes d'un système temps réel strict.
 Les micro-lots peuvent être produits par une collecte ou découverts dans une source locale.
+Ce mode est un choix de conception ; ses effets ne sont pas évalués dans les campagnes.
 
 \subsection{Traitement distribué}
 
@@ -1459,13 +1466,13 @@ QR5 &
 
 Mémoire, feedback, gouvernance des modèles. &
 
-Étudier la persistance des décisions et la mise à jour contrôlée. \\
+Mesurer l'effet de la mémoire et vérifier la mise à jour contrôlée. \\
 
 QR6 &
 
-Audit, manifestes, métriques et artefacts. &
+Protocoles, unités d'analyse, règles triviales et artefacts. &
 
-Évaluer le prototype avec des preuves quantitatives et fonctionnelles reproductibles. \\
+Mesurer la dépendance des scores au protocole, à l'unité d'analyse et aux règles triviales. \\
 
 \bottomrule
 

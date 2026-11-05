@@ -1,0 +1,2000 @@
+file,Fri Jan 23 16:55:57 1998, + 0 msec,
+header,147,2,ioctl(2),,Fri Jan 23 16:55:57 1998, + 770003000 msec
+path,/etc/security/audit_data
+attribute,100660,root,other,8388632,4982,0
+argument,2,0x5401,cmd
+argument,3,0xeffff83c,arg
+subject,root,root,other,root,other,5391,5288,0 0 192.168.0.20
+return,failure: Inappropriate ioctl for device,-1
+trailer,147
+header,134,2,close(2),,Fri Jan 23 16:55:57 1998, + 770003000 msec
+argument,1,0x4,fd
+path,/etc/security/audit_data
+attribute,100660,root,other,8388632,4982,0
+subject,root,root,other,root,other,5391,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,120,2,kill(2),,Fri Jan 23 16:55:57 1998, + 780003000 msec
+argument,2,0x10,signal
+process,root,root,other,root,other,5389,5288,0,192.168.0.20
+subject,root,root,other,root,other,5391,5288,0 0 192.168.0.20
+return,success,0
+trailer,120
+header,135,2,close(2),,Fri Jan 23 16:55:57 1998, + 780003000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5391,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,close(2),,Fri Jan 23 16:55:57 1998, + 780003000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5391,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,close(2),,Fri Jan 23 16:55:57 1998, + 780003000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5391,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,123,2,close(2),,Fri Jan 23 16:55:57 1998, + 790005000 msec
+path,/data/se2/dmcclung/reset
+attribute,100755,15566,other,8388631,240851,0
+subject,root,root,other,root,other,5391,5288,0 0 192.168.0.20
+return,success,0
+trailer,123
+header,68,2,exit(2),,Fri Jan 23 16:55:57 1998, + 790005000 msec
+subject,root,root,other,root,other,5391,5288,0 0 192.168.0.20
+return,success,0
+trailer,68
+header,143,2,close(2),,Fri Jan 23 16:55:57 1998, + 800008000 msec
+argument,1,0x0,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,143,2,close(2),,Fri Jan 23 16:55:57 1998, + 800008000 msec
+argument,1,0x1,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,143,2,close(2),,Fri Jan 23 16:55:57 1998, + 810004000 msec
+argument,1,0x2,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,112,2,pipe(2),,Fri Jan 23 16:55:57 1998, + 810004000 msec
+argument,3,0x3,stropen: flag
+argument,3,0x3,stropen: flag
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,4
+trailer,112
+header,86,2,fork(2),,Fri Jan 23 16:55:57 1998, + 810004000 msec
+argument,0,0x1510,child PID
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,86
+header,79,2,close(2),,Fri Jan 23 16:55:57 1998, + 840013000 msec
+argument,1,0x4,fd
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,79
+header,100,2,fcntl(2),,Fri Jan 23 16:55:57 1998, + 840013000 msec
+argument,2,0x3,cmd
+argument,1,0x5,no path: fd
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,2
+trailer,100
+header,146,2,close(2),,Fri Jan 23 16:55:57 1998, + 840013000 msec
+argument,1,0x1,fd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,146
+header,147,2,fcntl(2),,Fri Jan 23 16:55:57 1998, + 840013000 msec
+argument,2,0x3,cmd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,2
+trailer,147
+header,146,2,close(2),,Fri Jan 23 16:55:57 1998, + 840013000 msec
+argument,1,0x2,fd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,146
+header,134,2,close(2),,Fri Jan 23 16:55:57 1998, + 850012000 msec
+argument,1,0x3,fd
+path,/data/se2/dmcclung/reset
+attribute,100755,15566,other,8388631,240851,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,79,2,close(2),,Fri Jan 23 16:55:57 1998, + 850012000 msec
+argument,1,0x5,fd
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,79
+header,147,2,fcntl(2),,Fri Jan 23 16:55:57 1998, + 850012000 msec
+argument,2,0x3,cmd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,2
+trailer,147
+header,134,2,close(2),,Fri Jan 23 16:55:57 1998, + 850012000 msec
+argument,1,0x10,fd
+path,/data/se2/dmcclung/reset
+attribute,100755,15566,other,8388631,240851,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,100,2,fcntl(2),,Fri Jan 23 16:55:57 1998, + 850012000 msec
+argument,2,0x3,cmd
+argument,1,0x1,no path: fd
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,2
+trailer,100
+header,146,2,close(2),,Fri Jan 23 16:55:57 1998, + 850012000 msec
+argument,1,0x11,fd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,146
+header,147,2,fcntl(2),,Fri Jan 23 16:55:57 1998, + 850012000 msec
+argument,2,0x3,cmd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,2
+trailer,147
+header,146,2,close(2),,Fri Jan 23 16:55:57 1998, + 850012000 msec
+argument,1,0x12,fd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,146
+header,147,2,fcntl(2),,Fri Jan 23 16:55:57 1998, + 850012000 msec
+argument,2,0x3,cmd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,2
+trailer,147
+header,146,2,close(2),,Fri Jan 23 16:55:57 1998, + 850012000 msec
+argument,1,0x13,fd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,146
+header,146,2,close(2),,Fri Jan 23 16:55:57 1998, + 860004000 msec
+argument,1,0x0,fd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,146
+header,79,2,close(2),,Fri Jan 23 16:55:57 1998, + 870017000 msec
+argument,1,0x5,fd
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,79
+header,79,2,close(2),,Fri Jan 23 16:55:57 1998, + 870017000 msec
+argument,1,0x1,fd
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,79
+header,146,2,close(2),,Fri Jan 23 16:55:57 1998, + 870017000 msec
+argument,1,0x2,fd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,146
+header,132,2,open(2) - read,,Fri Jan 23 16:55:57 1998, + 870017000 msec
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,132
+header,143,2,close(2),,Fri Jan 23 16:55:57 1998, + 900012000 msec
+argument,1,0x0,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,143,2,close(2),,Fri Jan 23 16:55:57 1998, + 900012000 msec
+argument,1,0x1,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,143,2,close(2),,Fri Jan 23 16:55:57 1998, + 900012000 msec
+argument,1,0x2,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,135,2,close(2),,Fri Jan 23 16:55:57 1998, + 930006000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,88,2,close(2),,Fri Jan 23 16:55:57 1998, + 930006000 msec
+argument,1,0xff692068,no path: fp
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,88
+header,135,2,close(2),,Fri Jan 23 16:55:57 1998, + 930006000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,close(2),,Fri Jan 23 16:55:57 1998, + 930006000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,466,2,execve(2),,Fri Jan 23 16:55:57 1998, + 930006000 msec
+path,/usr/bin/date
+attribute,100555,bin,bin,8388638,7342,0
+exec_args,2,
+date,+%m%d%H%M.ps_results
+exec_env,17,
+HOME=/,HZ=100,LOGNAME=root,MAIL=/var/mail/root,PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/openwin/bin:/opt/gnu/bin,SHELL=/sbin/sh,TERM=sun,TZ=US/Eastern,HOSTTYPE=sun4,VENDOR=sun,OSTYPE=solaris,MACHTYPE=sparc,SHLVL=1,PWD=/data/se2/dmcclung,USER=root,GROUP=other,HOST=pascal
+path,/usr/lib/ld.so.1
+attribute,100755,bin,bin,8388638,23146,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,466
+header,132,2,open(2) - read,,Fri Jan 23 16:55:57 1998, + 940019000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,3
+trailer,132
+header,132,2,mmap(2),,Fri Jan 23 16:55:57 1998, + 940019000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,-276832256
+trailer,132
+header,120,2,open(2) - read,,Fri Jan 23 16:55:57 1998, + 940019000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,4
+trailer,120
+header,120,2,mmap(2),,Fri Jan 23 16:55:57 1998, + 940019000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,120
+header,120,2,mmap(2),,Fri Jan 23 16:55:57 1998, + 950015000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,-277217280
+trailer,120
+header,93,2,munmap(2),,Fri Jan 23 16:55:57 1998, + 950015000 msec
+argument,1,0xef7a3000,addr
+argument,2,0xf000,len
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,93
+header,120,2,mmap(2),,Fri Jan 23 16:55:57 1998, + 950015000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,-277143552
+trailer,120
+header,132,2,mmap(2),,Fri Jan 23 16:55:57 1998, + 950015000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,-277139456
+trailer,132
+header,131,2,close(2),,Fri Jan 23 16:55:57 1998, + 950015000 msec
+argument,1,0x4,fd
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,131
+header,117,2,open(2) - read,,Fri Jan 23 16:55:57 1998, + 960005000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,4
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:57 1998, + 960005000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:57 1998, + 960005000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,-277872640
+trailer,117
+header,93,2,munmap(2),,Fri Jan 23 16:55:57 1998, + 960005000 msec
+argument,1,0xef77e000,addr
+argument,2,0xf000,len
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,93
+header,117,2,mmap(2),,Fri Jan 23 16:55:57 1998, + 960005000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,-277295104
+trailer,117
+header,132,2,mmap(2),,Fri Jan 23 16:55:57 1998, + 970001000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,-277262336
+trailer,132
+header,128,2,close(2),,Fri Jan 23 16:55:57 1998, + 970001000 msec
+argument,1,0x4,fd
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,128
+header,117,2,open(2) - read,,Fri Jan 23 16:55:57 1998, + 970001000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,4
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:57 1998, + 970001000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:57 1998, + 970001000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,-278003712
+trailer,117
+header,93,2,munmap(2),,Fri Jan 23 16:55:57 1998, + 980012000 msec
+argument,1,0xef6e7000,addr
+argument,2,0xf000,len
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,93
+header,117,2,mmap(2),,Fri Jan 23 16:55:57 1998, + 980012000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,-277913600
+trailer,117
+header,128,2,close(2),,Fri Jan 23 16:55:57 1998, + 980012000 msec
+argument,1,0x4,fd
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,128
+header,118,2,open(2) - read,,Fri Jan 23 16:55:57 1998, + 980012000 msec
+path,/usr/lib/libdl.so.1
+attribute,100755,bin,bin,8388638,23154,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,4
+trailer,118
+header,118,2,mmap(2),,Fri Jan 23 16:55:57 1998, + 980012000 msec
+path,/usr/lib/libdl.so.1
+attribute,100755,bin,bin,8388638,23154,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,118
+header,129,2,close(2),,Fri Jan 23 16:55:57 1998, + 990008000 msec
+argument,1,0x4,fd
+path,/usr/lib/libdl.so.1
+attribute,100755,bin,bin,8388638,23154,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,129
+header,112,2,open(2) - read,,Fri Jan 23 16:55:57 1998, + 990008000 msec
+path,/usr/platform/sun4c/lib/libc_psr.so.1
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,failure: No such file or directory,-1
+trailer,112
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 100005000 msec
+argument,1,0x3,fd
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,133,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 110004000 msec
+path,/usr/share/lib/zoneinfo/US/Eastern
+attribute,100644,bin,bin,8388638,51080,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,3
+trailer,133
+header,144,2,close(2),,Fri Jan 23 16:55:58 1998, + 110004000 msec
+argument,1,0x3,fd
+path,/usr/share/lib/zoneinfo/US/Eastern
+attribute,100644,bin,bin,8388638,51080,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,144
+header,112,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 120003000 msec
+argument,1,0x1,no path: fd
+argument,2,0x5401,cmd
+argument,3,0xeffffb4c,arg
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,failure: Invalid argument,-1
+trailer,112
+header,112,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 130005000 msec
+argument,1,0x1,no path: fd
+argument,2,0x5401,cmd
+argument,3,0xeffffb4c,arg
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,failure: Invalid argument,-1
+trailer,112
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 130005000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,88,2,close(2),,Fri Jan 23 16:55:58 1998, + 130005000 msec
+argument,1,0xff692068,no path: fp
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,88
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 130005000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,91,2,exit(2),,Fri Jan 23 16:55:58 1998, + 130005000 msec
+argument,2,0x3,strclose: flag
+subject,root,root,other,root,other,5392,5288,0 0 192.168.0.20
+return,success,0
+trailer,91
+header,102,2,close(2),,Fri Jan 23 16:55:58 1998, + 140002000 msec
+argument,1,0x4,fd
+argument,2,0x3,strclose: flag
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,102
+header,146,2,close(2),,Fri Jan 23 16:55:58 1998, + 150020000 msec
+argument,1,0x0,fd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,146
+header,146,2,close(2),,Fri Jan 23 16:55:58 1998, + 150020000 msec
+argument,1,0x1,fd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,146
+header,146,2,close(2),,Fri Jan 23 16:55:58 1998, + 150020000 msec
+argument,1,0x2,fd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,146
+header,132,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 150020000 msec
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,132
+header,86,2,vfork(2),,Fri Jan 23 16:55:58 1998, + 160006000 msec
+argument,0,0x1511,child PID
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,86
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 160006000 msec
+argument,1,0x0,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 160006000 msec
+argument,1,0x1,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 160006000 msec
+argument,1,0x2,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,123,2,close(2),,Fri Jan 23 16:55:58 1998, + 190009000 msec
+path,/data/se2/dmcclung/reset
+attribute,100755,15566,other,8388631,240851,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,123
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 190009000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 190009000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 190009000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,467,2,execve(2),,Fri Jan 23 16:55:58 1998, + 190009000 msec
+path,/usr/bin/touch
+attribute,100555,bin,bin,8388638,7458,0
+exec_args,2,
+touch,01231655.ps_results
+exec_env,17,
+HOME=/,HZ=100,LOGNAME=root,MAIL=/var/mail/root,PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/openwin/bin:/opt/gnu/bin,SHELL=/sbin/sh,TERM=sun,TZ=US/Eastern,HOSTTYPE=sun4,VENDOR=sun,OSTYPE=solaris,MACHTYPE=sparc,SHLVL=1,PWD=/data/se2/dmcclung,USER=root,GROUP=other,HOST=pascal
+path,/usr/lib/ld.so.1
+attribute,100755,bin,bin,8388638,23146,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,467
+header,132,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 190009000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,4
+trailer,132
+header,132,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 190009000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,-276832256
+trailer,132
+header,120,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 200005000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,5
+trailer,120
+header,120,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 200005000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,120
+header,120,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 200005000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,-277217280
+trailer,120
+header,93,2,munmap(2),,Fri Jan 23 16:55:58 1998, + 200005000 msec
+argument,1,0xef7a3000,addr
+argument,2,0xf000,len
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,93
+header,120,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 210006000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,-277143552
+trailer,120
+header,132,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 210006000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,-277139456
+trailer,132
+header,131,2,close(2),,Fri Jan 23 16:55:58 1998, + 210006000 msec
+argument,1,0x5,fd
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,131
+header,117,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 210006000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,5
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 210006000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 220002000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,-277872640
+trailer,117
+header,93,2,munmap(2),,Fri Jan 23 16:55:58 1998, + 220002000 msec
+argument,1,0xef77e000,addr
+argument,2,0xf000,len
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,93
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 220002000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,-277295104
+trailer,117
+header,132,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 220002000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,-277262336
+trailer,132
+header,128,2,close(2),,Fri Jan 23 16:55:58 1998, + 220002000 msec
+argument,1,0x5,fd
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,128
+header,117,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 220002000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,5
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 230003000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 230003000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,-278003712
+trailer,117
+header,93,2,munmap(2),,Fri Jan 23 16:55:58 1998, + 230003000 msec
+argument,1,0xef6e7000,addr
+argument,2,0xf000,len
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,93
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 230003000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,-277913600
+trailer,117
+header,128,2,close(2),,Fri Jan 23 16:55:58 1998, + 240005000 msec
+argument,1,0x5,fd
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,128
+header,118,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 240005000 msec
+path,/usr/lib/libdl.so.1
+attribute,100755,bin,bin,8388638,23154,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,5
+trailer,118
+header,118,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 240005000 msec
+path,/usr/lib/libdl.so.1
+attribute,100755,bin,bin,8388638,23154,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,118
+header,129,2,close(2),,Fri Jan 23 16:55:58 1998, + 240005000 msec
+argument,1,0x5,fd
+path,/usr/lib/libdl.so.1
+attribute,100755,bin,bin,8388638,23154,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,129
+header,112,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 250004000 msec
+path,/usr/platform/sun4c/lib/libc_psr.so.1
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,failure: No such file or directory,-1
+trailer,112
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 300009000 msec
+argument,1,0x4,fd
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,110,2,stat(2),,Fri Jan 23 16:55:58 1998, + 310003000 msec
+path,/data/se2/dmcclung/01231655.ps_results
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,failure: No such file or directory,-1
+trailer,110
+header,135,2,creat(2),,Fri Jan 23 16:55:58 1998, + 349999000 msec
+path,/data/se2/dmcclung/01231655.ps_results
+attribute,100644,root,other,8388631,240861,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,4
+trailer,135
+header,146,2,close(2),,Fri Jan 23 16:55:58 1998, + 360001000 msec
+argument,1,0x4,fd
+path,/data/se2/dmcclung/01231655.ps_results
+attribute,100644,root,other,8388631,240861,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,146
+header,135,2,stat(2),,Fri Jan 23 16:55:58 1998, + 360001000 msec
+path,/data/se2/dmcclung/01231655.ps_results
+attribute,100644,root,other,8388631,240861,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,old utime(2),,Fri Jan 23 16:55:58 1998, + 360001000 msec
+path,/data/se2/dmcclung/01231655.ps_results
+attribute,100644,root,other,8388631,240861,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 360001000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 360001000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 360001000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,123,2,close(2),,Fri Jan 23 16:55:58 1998, + 360001000 msec
+path,/data/se2/dmcclung/reset
+attribute,100755,15566,other,8388631,240851,0
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,123
+header,68,2,exit(2),,Fri Jan 23 16:55:58 1998, + 360001000 msec
+subject,root,root,other,root,other,5393,5288,0 0 192.168.0.20
+return,success,0
+trailer,68
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 380005000 msec
+argument,1,0x0,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 380005000 msec
+argument,1,0x1,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 380005000 msec
+argument,1,0x2,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,146,2,close(2),,Fri Jan 23 16:55:58 1998, + 390024000 msec
+argument,1,0x0,fd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,146
+header,146,2,close(2),,Fri Jan 23 16:55:58 1998, + 390024000 msec
+argument,1,0x1,fd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,146
+header,146,2,close(2),,Fri Jan 23 16:55:58 1998, + 390024000 msec
+argument,1,0x2,fd
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,146
+header,132,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 390024000 msec
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,132
+header,86,2,vfork(2),,Fri Jan 23 16:55:58 1998, + 390024000 msec
+argument,0,0x1512,child PID
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,86
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 400002000 msec
+argument,1,0x0,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 400002000 msec
+argument,1,0x1,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,135,2,open(2) - write,,Fri Jan 23 16:55:58 1998, + 400002000 msec
+path,/data/se2/dmcclung/01231655.ps_results
+attribute,100644,root,other,8388631,240861,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,1
+trailer,135
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 400002000 msec
+argument,1,0x2,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,123,2,close(2),,Fri Jan 23 16:55:58 1998, + 420005000 msec
+path,/data/se2/dmcclung/reset
+attribute,100755,15566,other,8388631,240851,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,123
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 420005000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 420005000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 420005000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,445,2,execve(2),,Fri Jan 23 16:55:58 1998, + 420005000 msec
+path,/usr/bin/date
+attribute,100555,bin,bin,8388638,7342,0
+exec_args,1,
+date
+exec_env,17,
+HOME=/,HZ=100,LOGNAME=root,MAIL=/var/mail/root,PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/openwin/bin:/opt/gnu/bin,SHELL=/sbin/sh,TERM=sun,TZ=US/Eastern,HOSTTYPE=sun4,VENDOR=sun,OSTYPE=solaris,MACHTYPE=sparc,SHLVL=1,PWD=/data/se2/dmcclung,USER=root,GROUP=other,HOST=pascal
+path,/usr/lib/ld.so.1
+attribute,100755,bin,bin,8388638,23146,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,445
+header,132,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 430011000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,4
+trailer,132
+header,132,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 430011000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,-276832256
+trailer,132
+header,120,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 430011000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,5
+trailer,120
+header,120,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 440003000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,120
+header,120,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 440003000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,-277217280
+trailer,120
+header,93,2,munmap(2),,Fri Jan 23 16:55:58 1998, + 440003000 msec
+argument,1,0xef7a3000,addr
+argument,2,0xf000,len
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,93
+header,120,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 440003000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,-277143552
+trailer,120
+header,132,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 450006000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,-277139456
+trailer,132
+header,131,2,close(2),,Fri Jan 23 16:55:58 1998, + 450006000 msec
+argument,1,0x5,fd
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,131
+header,117,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 450006000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,5
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 450006000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 450006000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,-277872640
+trailer,117
+header,93,2,munmap(2),,Fri Jan 23 16:55:58 1998, + 450006000 msec
+argument,1,0xef77e000,addr
+argument,2,0xf000,len
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,93
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 450006000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,-277295104
+trailer,117
+header,132,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 460004000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,-277262336
+trailer,132
+header,128,2,close(2),,Fri Jan 23 16:55:58 1998, + 460004000 msec
+argument,1,0x5,fd
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,128
+header,117,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 460004000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,5
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 470004000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 470004000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,-278003712
+trailer,117
+header,93,2,munmap(2),,Fri Jan 23 16:55:58 1998, + 470004000 msec
+argument,1,0xef6e7000,addr
+argument,2,0xf000,len
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,93
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 470004000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,-277913600
+trailer,117
+header,128,2,close(2),,Fri Jan 23 16:55:58 1998, + 470004000 msec
+argument,1,0x5,fd
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,128
+header,118,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 480004000 msec
+path,/usr/lib/libdl.so.1
+attribute,100755,bin,bin,8388638,23154,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,5
+trailer,118
+header,118,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 480004000 msec
+path,/usr/lib/libdl.so.1
+attribute,100755,bin,bin,8388638,23154,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,118
+header,129,2,close(2),,Fri Jan 23 16:55:58 1998, + 480004000 msec
+argument,1,0x5,fd
+path,/usr/lib/libdl.so.1
+attribute,100755,bin,bin,8388638,23154,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,129
+header,112,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 480004000 msec
+path,/usr/platform/sun4c/lib/libc_psr.so.1
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,failure: No such file or directory,-1
+trailer,112
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 530001000 msec
+argument,1,0x4,fd
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,133,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 560013000 msec
+path,/usr/share/lib/zoneinfo/US/Eastern
+attribute,100644,bin,bin,8388638,51080,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,4
+trailer,133
+header,144,2,close(2),,Fri Jan 23 16:55:58 1998, + 560013000 msec
+argument,1,0x4,fd
+path,/usr/share/lib/zoneinfo/US/Eastern
+attribute,100644,bin,bin,8388638,51080,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,144
+header,159,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 570005000 msec
+path,/data/se2/dmcclung/01231655.ps_results
+attribute,100644,root,other,8388631,240861,0
+argument,2,0x5401,cmd
+argument,3,0xeffffb64,arg
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,failure: Inappropriate ioctl for device,-1
+trailer,159
+header,159,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 570005000 msec
+path,/data/se2/dmcclung/01231655.ps_results
+attribute,100644,root,other,8388631,240861,0
+argument,2,0x5401,cmd
+argument,3,0xeffffb64,arg
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,failure: Inappropriate ioctl for device,-1
+trailer,159
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 580005000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 580005000 msec
+path,/data/se2/dmcclung/01231655.ps_results
+attribute,100644,root,other,8388631,240861,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 580005000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,123,2,close(2),,Fri Jan 23 16:55:58 1998, + 580005000 msec
+path,/data/se2/dmcclung/reset
+attribute,100755,15566,other,8388631,240851,0
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,123
+header,68,2,exit(2),,Fri Jan 23 16:55:58 1998, + 580005000 msec
+subject,root,root,other,root,other,5394,5288,0 0 192.168.0.20
+return,success,0
+trailer,68
+header,86,2,vfork(2),,Fri Jan 23 16:55:58 1998, + 590004000 msec
+argument,0,0x1513,child PID
+subject,root,root,other,root,other,5346,5288,0 0 192.168.0.20
+return,success,0
+trailer,86
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 600028000 msec
+argument,1,0x0,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 600028000 msec
+argument,1,0x1,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,135,2,open(2) - write,,Fri Jan 23 16:55:58 1998, + 600028000 msec
+path,/data/se2/dmcclung/01231655.ps_results
+attribute,100644,root,other,8388631,240861,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,1
+trailer,135
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 600028000 msec
+argument,1,0x2,fd
+path,/devices/pseudo/mm@0:null
+attribute,20666,root,sys,8388632,2469,3407874
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,123,2,close(2),,Fri Jan 23 16:55:58 1998, + 620007000 msec
+path,/data/se2/dmcclung/reset
+attribute,100755,15566,other,8388631,240851,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,123
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 620007000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 620007000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,135,2,close(2),,Fri Jan 23 16:55:58 1998, + 620007000 msec
+path,/devices/pseudo/cn@0:console
+attribute,20620,root,tty,8388632,2461,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,135
+header,446,2,execve(2),,Fri Jan 23 16:55:58 1998, + 620007000 msec
+path,/usr/bin/ps
+attribute,104555,root,sys,8388638,7439,0
+exec_args,2,
+ps,-elf
+exec_env,17,
+HOME=/,HZ=100,LOGNAME=root,MAIL=/var/mail/root,PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/openwin/bin:/opt/gnu/bin,SHELL=/sbin/sh,TERM=sun,TZ=US/Eastern,HOSTTYPE=sun4,VENDOR=sun,OSTYPE=solaris,MACHTYPE=sparc,SHLVL=1,PWD=/data/se2/dmcclung,USER=root,GROUP=other,HOST=pascal
+path,/usr/lib/ld.so.1
+attribute,100755,bin,bin,8388638,23146,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,446
+header,132,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 630005000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,4
+trailer,132
+header,132,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 630005000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,-276832256
+trailer,132
+header,117,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 640012000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,5
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 640012000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 640012000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,-277217280
+trailer,117
+header,93,2,munmap(2),,Fri Jan 23 16:55:58 1998, + 650018000 msec
+argument,1,0xef7a7000,addr
+argument,2,0xf000,len
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,93
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 650018000 msec
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,-277127168
+trailer,117
+header,128,2,close(2),,Fri Jan 23 16:55:58 1998, + 650018000 msec
+argument,1,0x5,fd
+path,/usr/lib/libw.so.1
+attribute,100755,bin,bin,8388638,23178,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,128
+header,120,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 650018000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,5
+trailer,120
+header,120,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 650018000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,120
+header,120,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 650018000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,-277348352
+trailer,120
+header,93,2,munmap(2),,Fri Jan 23 16:55:58 1998, + 660016000 msec
+argument,1,0xef783000,addr
+argument,2,0xf000,len
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,93
+header,120,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 660016000 msec
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,-277274624
+trailer,120
+header,132,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 660016000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,-277270528
+trailer,132
+header,131,2,close(2),,Fri Jan 23 16:55:58 1998, + 660016000 msec
+argument,1,0x5,fd
+path,/usr/lib/libintl.so.1
+attribute,100755,bin,bin,8388638,23157,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,131
+header,117,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 660016000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,5
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 670007000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,117
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 670007000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,-278003712
+trailer,117
+header,93,2,munmap(2),,Fri Jan 23 16:55:58 1998, + 670007000 msec
+argument,1,0xef75e000,addr
+argument,2,0xf000,len
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,93
+header,117,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 670007000 msec
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,-277426176
+trailer,117
+header,132,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 670007000 msec
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,-277393408
+trailer,132
+header,128,2,close(2),,Fri Jan 23 16:55:58 1998, + 680008000 msec
+argument,1,0x5,fd
+path,/usr/lib/libc.so.1
+attribute,100755,bin,bin,8388638,23152,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,128
+header,118,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 680008000 msec
+path,/usr/lib/libdl.so.1
+attribute,100755,bin,bin,8388638,23154,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,5
+trailer,118
+header,118,2,mmap(2),,Fri Jan 23 16:55:58 1998, + 680008000 msec
+path,/usr/lib/libdl.so.1
+attribute,100755,bin,bin,8388638,23154,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,-277086208
+trailer,118
+header,129,2,close(2),,Fri Jan 23 16:55:58 1998, + 680008000 msec
+argument,1,0x5,fd
+path,/usr/lib/libdl.so.1
+attribute,100755,bin,bin,8388638,23154,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,129
+header,112,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 680008000 msec
+path,/usr/platform/sun4c/lib/libc_psr.so.1
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,failure: No such file or directory,-1
+trailer,112
+header,143,2,close(2),,Fri Jan 23 16:55:58 1998, + 740001000 msec
+argument,1,0x4,fd
+path,/devices/pseudo/mm@0:zero
+attribute,20666,root,sys,8388632,2470,3407884
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,143
+header,159,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 750006000 msec
+path,/data/se2/dmcclung/01231655.ps_results
+attribute,100644,root,other,8388631,240861,0
+argument,2,0x5401,cmd
+argument,3,0xeffff4ac,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,failure: Inappropriate ioctl for device,-1
+trailer,159
+header,111,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 760004000 msec
+path,/tmp/ps_data
+attribute,100664,root,sys,0,3,2
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,4
+trailer,111
+header,122,2,close(2),,Fri Jan 23 16:55:58 1998, + 770008000 msec
+argument,1,0x4,fd
+path,/tmp/ps_data
+attribute,100664,root,sys,0,3,2
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,122
+header,104,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 770008000 msec
+path,/proc
+attribute,40555,root,root,40894464,2,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,4
+trailer,104
+header,110,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 780004000 msec
+path,/proc/00000
+attribute,100600,root,root,40894464,64,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,5
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 780004000 msec
+path,/proc/00000
+attribute,100600,root,root,40894464,64,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:58 1998, + 780004000 msec
+argument,1,0x5,fd
+path,/proc/00000
+attribute,100600,root,root,40894464,64,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,122,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 780004000 msec
+path,/etc/.name_service_door
+attribute,150444,root,root,42991616,2,42205184
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,5
+trailer,122
+header,133,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 800001000 msec
+path,/usr/share/lib/zoneinfo/US/Eastern
+attribute,100644,bin,bin,8388638,51080,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,133
+header,144,2,close(2),,Fri Jan 23 16:55:58 1998, + 810006000 msec
+argument,1,0x6,fd
+path,/usr/share/lib/zoneinfo/US/Eastern
+attribute,100644,bin,bin,8388638,51080,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,144
+header,110,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 810006000 msec
+path,/proc/00001
+attribute,100600,root,root,40894464,65,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 819999000 msec
+path,/proc/00001
+attribute,100600,root,root,40894464,65,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:58 1998, + 819999000 msec
+argument,1,0x6,fd
+path,/proc/00001
+attribute,100600,root,root,40894464,65,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 830011000 msec
+path,/proc/00002
+attribute,100600,root,root,40894464,66,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 830011000 msec
+path,/proc/00002
+attribute,100600,root,root,40894464,66,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:58 1998, + 830011000 msec
+argument,1,0x6,fd
+path,/proc/00002
+attribute,100600,root,root,40894464,66,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 840003000 msec
+path,/proc/00003
+attribute,100600,root,root,40894464,67,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 840003000 msec
+path,/proc/00003
+attribute,100600,root,root,40894464,67,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:58 1998, + 840003000 msec
+argument,1,0x6,fd
+path,/proc/00003
+attribute,100600,root,root,40894464,67,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 850003000 msec
+path,/proc/00259
+attribute,100600,root,root,40894464,323,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 850003000 msec
+path,/proc/00259
+attribute,100600,root,root,40894464,323,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:58 1998, + 850003000 msec
+argument,1,0x6,fd
+path,/proc/00259
+attribute,100600,root,root,40894464,323,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 860004000 msec
+path,/proc/00120
+attribute,100600,root,root,40894464,184,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 860004000 msec
+path,/proc/00120
+attribute,100600,root,root,40894464,184,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:58 1998, + 860004000 msec
+argument,1,0x6,fd
+path,/proc/00120
+attribute,100600,root,root,40894464,184,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 870009000 msec
+path,/proc/00256
+attribute,100600,root,root,40894464,320,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 870009000 msec
+path,/proc/00256
+attribute,100600,root,root,40894464,320,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:58 1998, + 870009000 msec
+argument,1,0x6,fd
+path,/proc/00256
+attribute,100600,root,root,40894464,320,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 880004000 msec
+path,/proc/00096
+attribute,100600,root,root,40894464,160,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 880004000 msec
+path,/proc/00096
+attribute,100600,root,root,40894464,160,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:58 1998, + 880004000 msec
+argument,1,0x6,fd
+path,/proc/00096
+attribute,100600,root,root,40894464,160,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 900003000 msec
+path,/proc/00098
+attribute,100600,root,root,40894464,162,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 900003000 msec
+path,/proc/00098
+attribute,100600,root,root,40894464,162,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:58 1998, + 900003000 msec
+argument,1,0x6,fd
+path,/proc/00098
+attribute,100600,root,root,40894464,162,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 910003000 msec
+path,/proc/00146
+attribute,100600,root,root,40894464,210,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 910003000 msec
+path,/proc/00146
+attribute,100600,root,root,40894464,210,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:58 1998, + 910003000 msec
+argument,1,0x6,fd
+path,/proc/00146
+attribute,100600,root,root,40894464,210,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 920009000 msec
+path,/proc/00117
+attribute,100600,root,root,40894464,181,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:58 1998, + 930006000 msec
+path,/proc/00117
+attribute,100600,root,root,40894464,181,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:58 1998, + 930006000 msec
+argument,1,0x6,fd
+path,/proc/00117
+attribute,100600,root,root,40894464,181,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:58 1998, + 979997000 msec
+path,/proc/00104
+attribute,100600,root,root,40894464,168,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 59997000 msec
+path,/proc/00104
+attribute,100600,root,root,40894464,168,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 99997000 msec
+argument,1,0x6,fd
+path,/proc/00104
+attribute,100600,root,root,40894464,168,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 110005000 msec
+path,/proc/00108
+attribute,100600,root,root,40894464,172,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 110005000 msec
+path,/proc/00108
+attribute,100600,root,root,40894464,172,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 110005000 msec
+argument,1,0x6,fd
+path,/proc/00108
+attribute,100600,root,root,40894464,172,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 119999000 msec
+path,/proc/00122
+attribute,100600,root,root,40894464,186,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 119999000 msec
+path,/proc/00122
+attribute,100600,root,root,40894464,186,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 119999000 msec
+argument,1,0x6,fd
+path,/proc/00122
+attribute,100600,root,root,40894464,186,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 169997000 msec
+path,/proc/00142
+attribute,100600,root,root,40894464,206,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 259998000 msec
+path,/proc/00142
+attribute,100600,root,root,40894464,206,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 299996000 msec
+argument,1,0x6,fd
+path,/proc/00142
+attribute,100600,root,root,40894464,206,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 310006000 msec
+path,/proc/00180
+attribute,100600,root,root,40894464,244,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 310006000 msec
+path,/proc/00180
+attribute,100600,root,root,40894464,244,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 310006000 msec
+argument,1,0x6,fd
+path,/proc/00180
+attribute,100600,root,root,40894464,244,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 369998000 msec
+path,/proc/00162
+attribute,100600,root,root,40894464,226,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 469998000 msec
+path,/proc/00162
+attribute,100600,root,root,40894464,226,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 529998000 msec
+argument,1,0x6,fd
+path,/proc/00162
+attribute,100600,root,root,40894464,226,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 540006000 msec
+path,/proc/00156
+attribute,100600,root,root,40894464,220,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 540006000 msec
+path,/proc/00156
+attribute,100600,root,root,40894464,220,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 540006000 msec
+argument,1,0x6,fd
+path,/proc/00156
+attribute,100600,root,root,40894464,220,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 550002000 msec
+path,/proc/00172
+attribute,100600,root,root,40894464,236,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 550002000 msec
+path,/proc/00172
+attribute,100600,root,root,40894464,236,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 550002000 msec
+argument,1,0x6,fd
+path,/proc/00172
+attribute,100600,root,root,40894464,236,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 560003000 msec
+path,/proc/00181
+attribute,100600,root,root,40894464,245,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 560003000 msec
+path,/proc/00181
+attribute,100600,root,root,40894464,245,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 560003000 msec
+argument,1,0x6,fd
+path,/proc/00181
+attribute,100600,root,root,40894464,245,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 609998000 msec
+path,/proc/00200
+attribute,100600,root,root,40894464,264,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 699999000 msec
+path,/proc/00200
+attribute,100600,root,root,40894464,264,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 739999000 msec
+argument,1,0x6,fd
+path,/proc/00200
+attribute,100600,root,root,40894464,264,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 750007000 msec
+path,/proc/00191
+attribute,100600,root,root,40894464,255,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 750007000 msec
+path,/proc/00191
+attribute,100600,root,root,40894464,255,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 750007000 msec
+argument,1,0x6,fd
+path,/proc/00191
+attribute,100600,root,root,40894464,255,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 760003000 msec
+path,/proc/05346
+attribute,100600,root,other,40894464,5410,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 760003000 msec
+path,/proc/05346
+attribute,100600,root,other,40894464,5410,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 760003000 msec
+argument,1,0x6,fd
+path,/proc/05346
+attribute,100600,root,other,40894464,5410,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 770003000 msec
+path,/proc/05288
+attribute,100600,root,other,40894464,5352,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 770003000 msec
+path,/proc/05288
+attribute,100600,root,other,40894464,5352,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 770003000 msec
+argument,1,0x6,fd
+path,/proc/05288
+attribute,100600,root,other,40894464,5352,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 780016000 msec
+path,/proc/05340
+attribute,100600,root,other,40894464,5404,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 790005000 msec
+path,/proc/05340
+attribute,100600,root,other,40894464,5404,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 790005000 msec
+argument,1,0x6,fd
+path,/proc/05340
+attribute,100600,root,other,40894464,5404,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 790005000 msec
+path,/proc/05344
+attribute,100600,root,other,40894464,5408,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 800001000 msec
+path,/proc/05344
+attribute,100600,root,other,40894464,5408,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 800001000 msec
+argument,1,0x6,fd
+path,/proc/05344
+attribute,100600,root,other,40894464,5408,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 800001000 msec
+path,/proc/05395
+attribute,100600,root,other,40894464,5459,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 810001000 msec
+path,/proc/05395
+attribute,100600,root,other,40894464,5459,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,134
+header,121,2,close(2),,Fri Jan 23 16:55:59 1998, + 810001000 msec
+argument,1,0x6,fd
+path,/proc/05395
+attribute,100600,root,other,40894464,5459,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0
+trailer,121
+header,110,2,open(2) - read,,Fri Jan 23 16:55:59 1998, + 860000000 msec
+path,/proc/03491
+attribute,100600,root,root,40894464,3555,0
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,6
+trailer,110
+header,134,2,ioctl(2),,Fri Jan 23 16:55:59 1998, + 940000000 msec
+path,/proc/03491
+attribute,100600,root,root,40894464,3555,0
+argument,2,0x711e,cmd
+argument,3,0xeffff588,arg
+subject,root,root,other,root,other,5395,5288,0 0 192.168.0.20
+return,success,0

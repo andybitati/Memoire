@@ -1,0 +1,30 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre6_approfondissements_scientifiques.tex
+%   (§5.7 « Conclusions soutenues », PDF p. 112)
+% Ligne à remplacer : 118 (« Le comportement des agents est également
+%   observable ... Dans la campagne multi-VM, ils proposent ou refusent des
+%   tâches, ... »).
+% Auteur : Agent 1 (intégrité factuelle), chantier 2026-11-05.
+% Justification : la campagne multi-VM du corps est
+%   cnp_endurance_multivm_20260918T130822Z. Ses compteurs de messages ne
+%   portent que sur une fenêtre terminale de 10 001 événements et sont
+%   déclarés non conclusifs (tableau A.4, annexes.tex l. 136 ;
+%   chapitre7_reproductibilite_deploiement.tex l. 75). Dans cette fenêtre,
+%   aucun message REFUSE n'apparaît (experiments/phase_cnp_endurance/aggregated/
+%   cnp_endurance_multivm_20260918T130822Z__summary.json, champ message_counts).
+%   Aucun refus n'est donc établi pour cette campagne.
+%   Faits retenus : 1 800/1 800 tâches, 451 Debian / 1 349 Ubuntu,
+%   réattribution 1, persistent_effects 1, duplicate_effects 0 (même fichier).
+% Deux variantes : A (par défaut, corps actuel) ; B (seulement si le
+%   coordinateur décide d'introduire dans le corps la campagne
+%   multivm_cnp_20260909T202632Z_37592, voir fichier
+%   chapitre5_resultats.tex__s4.11_OPTION_B_campagne_60.tex).
+% Point relevant de l'Agent 5 : la phrase « au-delà d'une simple description
+%   architecturale » et la portée de « comportement des agents ».
+% ============================================================================
+
+% --- Variante A (recommandée si la campagne de 60 tâches n'entre pas dans le corps)
+Le comportement des agents est également observable au-delà d'une simple description architecturale. Dans la campagne multi-VM, les tâches sont attribuées par Contract Net aux deux agents, exécutées et menées à terme ; après l'échec contrôlé, la tâche est réattribuée et le rejeu instrumenté ne produit pas de second effet persistant. Les compteurs de messages de cette campagne n'étant pas conclusifs (tableau~\ref{tab:multivm-parametres-annexe}), elle ne permet pas de dénombrer les propositions et les refus.
+
+% --- Variante B (seulement avec l'option B : campagne de 60 tâches introduite au §4.11)
+% Le comportement des agents est également observable au-delà d'une simple description architecturale. Dans la campagne d'endurance multi-VM, les tâches sont attribuées par Contract Net aux deux agents, exécutées et menées à terme ; après l'échec contrôlé, la tâche est réattribuée et le rejeu instrumenté ne produit pas de second effet persistant. Les refus sont établis par la campagne courte de 60 tâches sur la même topologie, où l'agent Debian, dépourvu de la capacité de corrélation, refuse explicitement les 15 tâches de ce type (section~\ref{sec:cnp-multivm}) ; les compteurs de messages de la campagne d'endurance ne sont pas conclusifs (tableau~\ref{tab:multivm-parametres-annexe}).

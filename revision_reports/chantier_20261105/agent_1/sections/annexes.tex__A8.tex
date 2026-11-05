@@ -1,0 +1,20 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/annexes.tex
+%   (Annexe A.8 « Conditions d'interprétation des résultats », PDF p. 135)
+% Ligne à remplacer : 169 (« Le périmètre expérimental exclut la haute
+%   disponibilité Redis, ... Le routage open-set porte sur trois inconnus. ... »).
+% Auteur : Agent 1 (intégrité factuelle), chantier 2026-11-05.
+% Justification et sources :
+%   - « trois inconnus » = calibration ; l'évaluation retenue porte sur 20
+%     inconnus et 46 connus, avec 3 faux rejets (chapitre5_resultats.tex
+%     l. 426 ; agent5_router_open_set_20261104T145601Z, summary.P.combined) ;
+%   - BGL : « aucun rappel pour les anomalies à template connu » vaut pour le
+%     protocole principal seulement (le protocole G contient 2 880 positifs à
+%     template connu, chapitre5_resultats.tex l. 241, 266) ; coïncidence avec
+%     la règle de sévérité : l. 224 ;
+%   - CSE-CIC : « dépend fortement de certaines caractéristiques » est en
+%     retrait sur le §4.6.4 (raccourci propre à la journée de test, l. 350,
+%     418) ; aligné sur le corps.
+% ============================================================================
+
+Le périmètre expérimental exclut la haute disponibilité Redis, la tolérance aux partitions, la sécurité opérationnelle complète et les performances à très grande échelle. Le rejet open-set est évalué sur 20 fichiers inconnus et 46 fichiers connus ; le seuil gelé écarte aussi 3 fichiers connus, et les fichiers partageant un schéma ne sont pas indépendants. Dans le protocole BGL principal, le F1 ne fournit aucun rappel pour les anomalies à template connu, et la décision d'Histogram coïncide avec la règle « sévérité absente de l'entraînement ». Le score CSE-CIC-IDS2018 repose sur un raccourci par le port de destination propre à la journée de test. La mémoire influence une décision, mais n'améliore pas systématiquement les métriques. Aucune exactitude globale multi-source n'est disponible.

@@ -1,0 +1,52 @@
+{
+  "run_id": "agent2_hdfs_full_20261104T131314Z__test_block_ci",
+  "source_run_id": "agent2_hdfs_full_20261104T131314Z",
+  "source": "revision_reports/agent_2/agent2_hdfs_full_20261104T131314Z__seed_metrics.csv",
+  "confusion_matrix_all_seeds": {
+    "tp": 1679,
+    "fp": 509,
+    "tn": 112825,
+    "fn": 0,
+    "n": 115013
+  },
+  "precision": {
+    "value": 0.7673674588665448,
+    "ci95_clopper_pearson": [
+      0.7490838863971527,
+      0.7849321226107866
+    ]
+  },
+  "recall": {
+    "value": 1.0,
+    "ci95_clopper_pearson": [
+      0.9978053424310609,
+      1.0
+    ]
+  },
+  "fpr": {
+    "value": 0.004491150052058517,
+    "ci95_clopper_pearson": [
+      0.004110176870057293,
+      0.0048978095697151496
+    ]
+  },
+  "f1": {
+    "value": 0.8683734160848203,
+    "ci95_bootstrap_percentile": [
+      0.8567714763592083,
+      0.879492627184414
+    ]
+  },
+  "mcc": {
+    "value": 0.8740257985115247,
+    "ci95_bootstrap_percentile": [
+      0.863628992203283,
+      0.8841067377338289
+    ]
+  },
+  "bootstrap": {
+    "replicates": 20000,
+    "seed": 20261104,
+    "method": "multinomial resampling of test blocks from the confusion matrix"
+  }
+}

@@ -1,0 +1,30 @@
+{
+ "f1": 0.9419270407328644,
+ "tp": 2879,
+ "fp": 349,
+ "fn": 6,
+ "tn": 16674,
+ "test_events": 19908,
+ "test_positives": 2885,
+ "unknown_template_rate_all": 0.009292746634518786,
+ "unknown_template_rate_validation": 0.09955497774888744,
+ "unknown_rate_among_positives": 0.0017331022530329288,
+ "unknown_rate_among_negatives": 0.010573929389649298,
+ "positives_known_template": 2880,
+ "positives_unknown_template": 5,
+ "negatives_known_template": 16843,
+ "negatives_unknown_template": 180,
+ "drain3_clusters": 299,
+ "test_distinct_templates_known": 92,
+ "eq_sev": false
+}
+Histogram ALL 19908 2885 f1=0.941927 rec=0.9979
+Histogram KNOWN_TEMPLATE 19723 2880 f1=0.965413 rec=0.9983
+Histogram UNKNOWN_TEMPLATE 185 5 f1=0.050955 rec=0.8000
+UnknownTemplateBaseline ALL 19908 2885 f1=0.003257 rec=0.0017
+UnknownTemplateBaseline KNOWN_TEMPLATE 19723 2880 f1=0.000000 rec=0.0000
+UnknownTemplateBaseline UNKNOWN_TEMPLATE 185 5 f1=0.052632 rec=1.0000
+SeverityNoveltyBaseline ALL 19908 2885 f1=0.000693 rec=0.0003
+SeverityNoveltyBaseline KNOWN_TEMPLATE 19723 2880 f1=0.000000 rec=0.0000
+SeverityNoveltyBaseline UNKNOWN_TEMPLATE 185 5 f1=0.285714 rec=0.2000
+E:\Cours\TFE\revision_reports\agent_4\artifacts\bgl\agent4_bgl_contiguous_horizon_20261104T145740Z__result.json

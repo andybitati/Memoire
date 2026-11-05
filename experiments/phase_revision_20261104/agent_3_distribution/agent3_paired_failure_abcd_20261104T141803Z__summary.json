@@ -1,0 +1,87 @@
+{
+  "run_id": "agent3_paired_failure_abcd_20261104T141803Z",
+  "created_at": "2026-11-04T14:20:31.449163+00:00",
+  "protocol": {
+    "failure_point": "after_durable_effect_and_persistence_before_RESULT",
+    "retry_policy": "one replay on a live worker (process restart for A); identical for all architectures",
+    "detection_timeout": "common parameter, not simulated; excluded from recovery latency",
+    "workload": "scripts/run_true_multi_agent_experiments.py:generate_workload(load=40, seed)",
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51
+    ],
+    "crash_index": 9,
+    "workers_B": 3,
+    "agents_C_D": "scripts/run_true_multi_agent_experiments.py:build_agents (alpha, beta, gamma)",
+    "reference_run_id": "ma_20260909T160812Z_34016",
+    "transport": "in-process (LocalMessageBus / direct calls), not Redis"
+  },
+  "summary": {
+    "A": {
+      "repetitions": 10,
+      "lost_tasks_total": 0,
+      "duplicate_effects_total": 10,
+      "recovered_tasks_total": 10,
+      "idempotency_replays": 0,
+      "recovery_latency_median_ms": 0.02205,
+      "recovery_latency_max_ms": 0.0273
+    },
+    "B": {
+      "repetitions": 10,
+      "lost_tasks_total": 0,
+      "duplicate_effects_total": 10,
+      "recovered_tasks_total": 10,
+      "idempotency_replays": 0,
+      "recovery_latency_median_ms": 0.02095,
+      "recovery_latency_max_ms": 0.0554
+    },
+    "C": {
+      "repetitions": 10,
+      "lost_tasks_total": 0,
+      "duplicate_effects_total": 0,
+      "recovered_tasks_total": 10,
+      "idempotency_replays": 10,
+      "recovery_latency_median_ms": 5.8192,
+      "recovery_latency_max_ms": 18.2855
+    },
+    "D": {
+      "repetitions": 10,
+      "lost_tasks_total": 0,
+      "duplicate_effects_total": 0,
+      "recovered_tasks_total": 10,
+      "idempotency_replays": 10,
+      "recovery_latency_median_ms": 5.86355,
+      "recovery_latency_max_ms": 8.4228
+    },
+    "A+I": {
+      "repetitions": 10,
+      "lost_tasks_total": 0,
+      "duplicate_effects_total": 0,
+      "recovered_tasks_total": 10,
+      "idempotency_replays": 10,
+      "recovery_latency_median_ms": 5.0703,
+      "recovery_latency_max_ms": 10.7817
+    },
+    "B+I": {
+      "repetitions": 10,
+      "lost_tasks_total": 0,
+      "duplicate_effects_total": 0,
+      "recovered_tasks_total": 10,
+      "idempotency_replays": 10,
+      "recovery_latency_median_ms": 4.716,
+      "recovery_latency_max_ms": 5.8636
+    }
+  },
+  "artifacts": [
+    "revision_reports/agent_3/agent3_paired_failure_abcd_20261104T141803Z__runs.csv",
+    "revision_reports/agent_3/agent3_paired_failure_abcd_20261104T141803Z__summary.json"
+  ]
+}

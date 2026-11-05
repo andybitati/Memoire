@@ -1,0 +1,37 @@
+{
+  "run_id": "agent6_cicids_iforest_20261104T141904Z",
+  "started_at": "2026-11-04T14:19:04.268767+00:00",
+  "completed_at": "2026-11-04T14:20:03.124698+00:00",
+  "script": "revision_reports/agent_6/scripts/run_cicids_isolation_forest_temporal.py",
+  "source_run": "cicids_temporal_20260910T083015Z",
+  "inputs": {
+    "experiments/phase_dataset_strengthening/processed/cicids_temporal_20260910T083015Z_train_pool.csv.gz": "d4c9a13576c4ba7cb12ea904fd645400a0f16f294d83b098ed346f9b6dbeef14",
+    "experiments/phase_dataset_strengthening/processed/cicids_temporal_20260910T083015Z_test_pool.csv.gz": "fbc94c1b1d87bb90171faae2c62b6bf0a42315003c84a954d98a935ac9ed77fc",
+    "experiments/phase_dataset_strengthening/raw/cicids_temporal_20260910T083015Z_metrics.csv": "dee49f097b6dd1d6eab6c9fd28036045897da739af7e2c8e893400f66416efe8"
+  },
+  "protocol": {
+    "fit": "10000 BENIGN flows Mon-Thu, no attack label used",
+    "validation": "5000 BENIGN + 5000 attacks Mon-Thu, disjoint from fit",
+    "test": "Friday, seed_sample(per_class=10000, seed) identical to supervised LR/RF run",
+    "threshold_rules": {
+      "benign_q99": "99th percentile of validation BENIGN scores",
+      "val_maxf1": "argmax F1 on validation (tie-break lower FPR)"
+    },
+    "model": "IsolationForest(n_estimators=200, max_samples=256, n_jobs=2), score=-score_samples",
+    "features": 78,
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ]
+  },
+  "environment": {
+    "python": "3.12.3",
+    "sklearn": "1.8.0",
+    "pandas": "3.0.3",
+    "numpy": "2.4.5"
+  },
+  "caveat": "Test balanced 50/50 (prevalence non realiste pour la detection d'anomalies); attaques du vendredi (DDoS, PortScan, Bot) absentes de lundi-jeudi."
+}

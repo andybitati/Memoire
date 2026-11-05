@@ -1,0 +1,71 @@
+% ============================================================
+% Section unique des limites (agent 7)
+% À insérer dans chapters/chapitre6_approfondissements_scientifiques.tex
+% (chapitre 5 « Validité scientifique » du PDF), après la section
+% « Conclusions soutenues » (fin de fichier).
+% Chaque valeur est tracée dans PATCH_NOTES.md, partie B, tableau B.0.
+% ============================================================
+
+\section{Limites du travail}
+\label{sec:limites}
+
+Cette section rassemble les limites du travail. Les autres chapitres y
+renvoient sans les reprendre.
+
+\paragraph{Données et généralisation.}
+CICIDS2017 et CSE-CIC-IDS2018 reposent sur des scénarios construits et sur
+des caractéristiques de flux déjà extraites. Sur CICIDS2017, le F1 du Random
+Forest passe de $0{,}995142$ en séparation aléatoire à $0{,}157744$ en
+holdout par scénario : le transfert vers une attaque absente de
+l'entraînement n'est pas acquis. Sur CSE-CIC-IDS2018, \texttt{Dst Port} seul
+atteint un F1 de $0{,}999720$ et le retrait des dix premières
+caractéristiques ramène le F1 à $0{,}657859$ ; un artefact lié aux journées
+retenues ou au processus de génération du jeu ne peut être exclu. Aucun de
+ces résultats ne se transpose sans nouvelle évaluation à d'autres capteurs,
+topologies ou périodes d'observation.
+
+\paragraph{Taille des échantillons.}
+Le test HDFS compte 29 blocs positifs sur $2\,000$ ; l'intervalle bootstrap
+traduit cette faiblesse sans corriger un éventuel biais de sélection du
+corpus. Sur BGL, le groupe des templates connus ($2\,029$ unités) ne contient
+aucune anomalie : le rappel des anomalies à template connu ne peut pas être
+estimé, et $89{,}8081\,\%$ des unités de test relèvent d'un template inconnu
+de l'entraînement. L'évaluation open-set du routeur repose sur trois fichiers
+inconnus et 28 fichiers connus, et la \texttt{decision\_margin} n'est pas une
+probabilité calibrée. La voie Apache repose sur une seule fixture.
+
+\paragraph{Grandeurs non mesurées.}
+Les sources de la campagne multi-source ne partagent pas de vérité terrain
+homogène : aucune exactitude globale n'est calculée et le F1 obtenu sur
+Linux/auth reste propre à cette source. La couverture multi-format mesure la
+lecture, le parsing et la normalisation des unités présentes, non la
+complétude des champs ni la conservation intégrale du contenu brut. La
+corrélation est évaluée sur un corpus synthétique. L'utilisabilité du tableau
+de bord, le temps d'investigation et la charge cognitive n'ont fait l'objet
+d'aucune étude auprès d'analystes.
+
+\paragraph{Distribution et exploitation.}
+La validation distribuée porte sur deux machines virtuelles et un Redis
+central pendant $3\,605{,}110$~s. Ni panne du broker, ni partition réseau, ni
+fonctionnement multi-site, ni charge industrielle, ni vieillissement sur
+plusieurs jours ne sont testés. Les mesures CPU et mémoire décrivent des
+processus locaux et non une infrastructure complète. TLS, contrôle d'accès,
+gestion des secrets, journalisation protégée contre l'altération, réplication,
+sauvegarde et observabilité distribuée ne sont pas évalués.
+
+\paragraph{Mécanismes adaptatifs.}
+Les poids de la fonction d'utilité sont fixés et non appris
+(section~\ref{sec:spec-utilite}). La mémoire modifie certaines décisions, mais
+le benchmark A--D ne montre pas de gain systématique de débit, de latence ou
+d'équité ; ce benchmark porte sur des micro-tâches, et l'effet de tâches plus
+coûteuses reste une hypothèse. La poursuite d'objectifs, l'enchaînement, la
+délégation et la reprise sont vérifiés par des tests fonctionnels, sans
+campagne quantitative mesurant leur coût ou leur bénéfice. La mise à jour
+contrôlée des modèles dispose d'une implémentation et d'un mode
+\textit{dry-run}, mais d'aucun cycle complet et répété de promotion et de
+rejet suivi d'une mesure indépendante (tableau~\ref{tab:statut-model-update}).
+
+\paragraph{Statut du système.}
+Ariel \logminer{} est en conséquence un prototype de laboratoire. Il ne
+constitue ni une plateforme opérationnelle de SOC ni un système autonome prêt
+pour la production.

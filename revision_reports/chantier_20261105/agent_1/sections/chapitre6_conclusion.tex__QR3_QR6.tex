@@ -1,0 +1,34 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre6_conclusion.tex
+%   (Conclusion générale, « Réponse aux questions de recherche », PDF p. 125-126)
+% Modifications :
+%   (a) lignes 28-29 : item QR3 (« \item[\textbf{QR3.}] / Sur le jeu
+%       indépendant retenu, le routeur oriente correctement les 28 fichiers
+%       connus et rejette les trois inconnus ... ») -> remplacer par (a) ;
+%   (b) lignes 37-38 : item QR6 (« \item[\textbf{QR6.}] / C'est la question
+%       la mieux couverte ... La campagne multi-VM ajoute des preuves portant
+%       sur la répartition des tâches, les refus, ... ») -> remplacer par (b).
+% Auteur : Agent 1 (intégrité factuelle), chantier 2026-11-05.
+% Justification :
+%   (a) 28/3 sont les chiffres de la calibration (31 fichiers), qui n'est pas
+%       un « jeu indépendant » ; le résultat du test étendu sans recalibration
+%       est 20/20 inconnus rejetés, 3/46 connus rejetés à tort, 43/43 acceptés
+%       correctement orientés (chapitre5_resultats.tex l. 424-426 ;
+%       experiments/phase_revision_20261104/agent_5_router_open_set/result.json,
+%       summary.P.combined). La mention « pas observé dans toutes les familles
+%       et toutes les graines » renvoie à une ablation sans artefact cité
+%       (point Agent 4) ; elle est remplacée par le constat du tableau 7.1
+%       (comparateur sans routage manquant).
+%   (b) les refus ne sont pas établis par la campagne multi-VM du corps
+%       (compteurs non conclusifs, tableau A.4) ; voir s5.7. Le jugement
+%       « la mieux couverte » est conservé tel quel : son bien-fondé relève de
+%       l'Agent 2 (critique du lecteur 2, §2.1).
+% ============================================================================
+
+% --- (a) remplace les lignes 28-29
+    \item[\textbf{QR3.}]
+    Au seuil gelé, appliqué sans recalibration au corpus étendu, le routeur rejette les $20$ fichiers inconnus et écarte à tort $3$ des $46$ fichiers connus ; les $43$ fichiers connus acceptés sont correctement orientés. Ce résultat soutient sa fonction de sélection d'un traitement compatible pour les schémas évalués. Il ne permet pas d'en déduire que la spécialisation améliore les performances prédictives : aucune comparaison avec une chaîne sans routage n'a été exécutée (tableau~\ref{tab:statut-hypotheses}).
+
+% --- (b) remplace les lignes 37-38
+    \item[\textbf{QR6.}]
+    C'est la question la mieux couverte dans le périmètre du laboratoire. L'évaluation combine métriques prédictives, couverture fonctionnelle, latence, ressources, captures et artefacts reproductibles. La campagne multi-VM ajoute des preuves portant sur la répartition des tâches, la reprise et l'idempotence ; ses compteurs de messages n'étant pas conclusifs, elle n'établit pas de décompte des refus. La portée de cette réponse reste celle de l'environnement expérimental étudié.

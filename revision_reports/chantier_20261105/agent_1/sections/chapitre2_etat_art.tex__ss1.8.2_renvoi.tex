@@ -1,0 +1,21 @@
+% ============================================================================
+% Fichier cible 1 : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre2_etat_art.tex
+%   (§1.8.2 « CICIDS2017 », PDF p. 22)
+% Ligne à modifier : 336 (« mesurées~\cite{engelen2021troubleshooting,
+%   lanvin2023errors}. La chute du F1 observée ici entre séparation aléatoire
+%   et séparation par scénario (section~6.2) ... »).
+% Fichier cible 2 : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre5_resultats.tex
+%   Insérer un label après la ligne 53 (« \section{CICIDS2017 : influence du
+%   protocole} »), la section n'en ayant pas.
+% Auteur : Agent 1 (intégrité factuelle), chantier 2026-11-05.
+% Justification : la section 6.2 du PDF est « Valeur de la spécialisation »
+%   (main.toc) ; la chute du F1 CICIDS2017 est présentée en section 4.2
+%   (« CICIDS2017 : influence du protocole », PDF p. 81). Un renvoi par
+%   \ref évite qu'une renumérotation recrée l'erreur.
+% ============================================================================
+
+% --- (1) chapitre5_resultats.tex, après la ligne 53 : ajouter
+\label{sec:cicids-resultats}
+
+% --- (2) chapitre2_etat_art.tex, ligne 336 : remplacer la ligne par
+mesurées~\cite{engelen2021troubleshooting,lanvin2023errors}. La chute du F1 observée ici entre séparation aléatoire et séparation par scénario (section~\ref{sec:cicids-resultats}) est donc cohérente avec ces constats indépendants portant sur le même corpus.

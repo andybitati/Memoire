@@ -1,0 +1,115 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre2_etat_art.tex
+% Passage à remplacer : de « \section{Lacunes identifiées dans la littérature} »
+%   (inclus) à « \section{Synthèse du chapitre} » (exclu).
+% Agent : Agent 3 — État de l'art et positionnement, chantier 2026-11-05.
+% Sources : état de l'art du chapitre ; cadres intégrés et schémas ajoutés par
+%   l'Agent 3 ; résultats du corps ; C12 et fichier Agent 2
+%   chapitre2_etat_art.tex__tableau_1.3_positionnement.tex.
+% ============================================================================
+
+\section{Tensions de la littérature et espace expérimental}
+
+L'état de l'art n'établit pas l'absence d'une chaîne intégrée. Wazuh, Elastic Security et
+OpenSearch Security Analytics couvrent déjà ingestion, règles, alertes, investigation ou
+corrélation à des degrés différents
+\cite{wazuh2026architecture,elastic2026security,opensearch2026securityanalytics}.
+LogAI et Loglizer fournissent par ailleurs des cadres pour comparer des traitements de
+journaux \cite{cheng2023logai,he2016experience}. La lacune initialement formulée comme un
+« espace entre prototype algorithmique et plateforme opérationnelle » ne suffit donc pas
+à établir une nouveauté.
+
+La tension pertinente est méthodologique. Les travaux algorithmiques isolent souvent le
+détecteur afin d'en mesurer la performance, alors que les plateformes intégrées offrent
+de nombreuses fonctions mais ne constituent pas nécessairement un protocole de recherche
+contrôlant unité d'analyse, partition, baseline, routage et coût d'orchestration. Cette
+tension ouvre un espace pour un banc d'expérimentation instrumenté, à condition de ne pas
+confondre intégration et contribution scientifique.
+
+Quatre exigences structurent alors une comparaison défendable :
+\begin{itemize}
+    \item mesurer le mapping vers un schéma reconnu, plutôt que déclarer une enveloppe
+          locale « normalisée » par construction ;
+    \item comparer le routage et Contract Net à une table statique ou à des files
+          spécialisées, et non seulement à un monolithe ;
+    \item évaluer les modèles contre des règles triviales sur la même unité et le même
+          test, avec des partitions qui exposent le transfert ;
+    \item distinguer les propriétés fournies par le broker, par le magasin d'idempotence,
+          par le code des agents et par le modèle prédictif.
+\end{itemize}
+
+Ariel Logminer satisfait partiellement cette ambition : les artefacts relient plusieurs
+affirmations à des protocoles, et les résultats négatifs révèlent les raccourcis de
+datasets. En revanche, aucune comparaison expérimentale n'est conduite contre les cadres
+intégrés, aucun incident réel ne combine journaux système et flux réseau, et le bénéfice
+propre de la négociation n'est pas établi dans le manuscrit actuel. Les observations sur
+la dépendance aux partitions répliquent des avertissements déjà publiés
+\cite{sommer2010outside,arp2022dos,le2022logbased,engelen2021troubleshooting,liu2022error} ;
+elles ne constituent pas une découverte conceptuelle.
+
+\section{Positionnement scientifique d'Ariel Logminer}
+
+\logminer{} est positionné comme un \textbf{prototype d'intégration instrumenté pour
+l'étude critique de chaînes légères d'analyse de journaux}. Il n'introduit ni algorithme
+de détection, ni schéma de normalisation, ni protocole d'allocation nouveau. Son apport
+potentiel réside dans la mise en relation, au sein d'un même prototype, de choix
+d'ingénierie et de protocoles dont les effets peuvent être séparés : unité événement ou
+bloc, partition aléatoire ou temporelle, règle triviale ou modèle, routage, orchestration,
+idempotence et corrélation.
+
+Ce positionnement est une contribution d'ingénierie expérimentale, dont la valeur
+scientifique dépend des comparateurs réellement exécutés. Les cadres intégrés établissent
+que l'assemblage fonctionnel n'est pas nouveau. Les expériences du mémoire établissent
+pour leur part plusieurs limites : forte dépendance aux jeux et aux partitions, coût de
+l'orchestration, distribution déséquilibrée, normalisation partielle et corrélation
+validée seulement en circuit fermé. Le tableau~\ref{tab:positionnement-logminer} sépare
+donc strictement les propriétés observées des revendications non démontrées.
+
+\begin{table}[H]
+\centering
+\caption{Positionnement scientifique d'Ariel Logminer}
+\label{tab:positionnement-logminer}
+\small
+\begin{tabularx}{\textwidth}{p{3.15cm}X X}
+\toprule
+\textbf{Dimension} &
+\textbf{Ce que le prototype établit ou permet d'étudier} &
+\textbf{Ce qu'il ne revendique pas} \\
+\midrule
+Hétérogénéité &
+Lecture d'un ensemble documenté de formats et projection partielle dans un schéma commun ; chaque source est évaluée séparément. &
+Compatibilité universelle avec tout format de journal ; analyse conjointe d'un même incident à partir de journaux système et de flux réseau. \\
+Normalisation &
+Contrat local extensible et mesure du remplissage de sept champs communs. &
+Conformité ECS ou OCSF ; conservation sémantique complète de chaque source. \\
+Détection &
+Comparaison de modèles et de protocoles sur plusieurs jeux publics. &
+Supériorité générale sur les règles triviales ou transfert à un environnement opérationnel. \\
+Routage &
+Orientation de fichiers connus et rejet open-set sous un seuil gelé. &
+Gain prédictif systématique ; avantage établi sur une table de routage statique. \\
+Agents &
+Réalisation d'échanges inspirés de Contract Net, état persistant et décisions locales bornées. &
+Autonomie cognitive, apprentissage de la politique ou supériorité de la négociation. \\
+Distribution &
+Fonctionnement multiprocessus et campagnes multi-VM de laboratoire. &
+Équilibrage démontré, scalabilité industrielle, multi-site ou haute disponibilité complète. \\
+Corrélation &
+Regroupement temporel et contextuel évalué sur des corpus synthétiques contrôlés. &
+Reconstruction causale ou validation sur incidents SOC réels multi-sources. \\
+Mémoire &
+Persistance de l'historique et support d'une procédure de mise à jour contrôlée. &
+Gain mesuré de la mémoire sur l'attribution des tâches ; apprentissage continu autonome en production. \\
+Priorisation &
+Mécanisme prévu par la conception. &
+Amélioration mesurée de l'ordre de traitement des anomalies. \\
+Gouvernance &
+Registre et chemins de comparaison ou de promotion testables. &
+Cycle MLOps validé de bout en bout, surveillance de dérive et retour arrière éprouvé. \\
+Dashboard &
+Restitution fonctionnelle des informations et support de validation. &
+Amélioration du travail de l'analyste démontrée par une étude utilisateur. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+

@@ -1,0 +1,84 @@
+{
+  "run_id": "hdfs_multivm_cnp_20261104T135345Z",
+  "status": "COMPLETED",
+  "source_run_id": "ds_hdfs_block_20260910T081756Z",
+  "input": "experiments/phase_final_scientific_consolidation/processed/hdfs_test_block_frozen_mean_scores.csv",
+  "coordinator_host": "andy-aaron",
+  "redis_url": "redis://127.0.0.1:6379/0",
+  "agents": {
+    "debian-alpha": {
+      "agent_id": "debian-alpha",
+      "run_id": "hdfs_multivm_cnp_20261104T135345Z",
+      "updated_at": "2026-11-04T13:54:35.427259+00:00",
+      "pid": 3042,
+      "host": "andy",
+      "os": "Linux-6.12.96+deb13-amd64-x86_64-with-glibc2.41",
+      "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+      "profile": "hdfs-equal-confidence",
+      "perception": {
+        "agent_id": "debian-alpha",
+        "healthy": true,
+        "active_tasks": 0,
+        "max_parallel_tasks": 1,
+        "load_ratio": 0.0,
+        "available_models": [
+          "*"
+        ],
+        "available_dependencies": [
+          "*"
+        ],
+        "memory_enabled": false,
+        "observed_at": "2026-11-04T13:54:35.427173+00:00"
+      }
+    },
+    "ubuntu-beta": {
+      "agent_id": "ubuntu-beta",
+      "run_id": "hdfs_multivm_cnp_20261104T135345Z",
+      "updated_at": "2026-11-04T13:55:51.911571+00:00",
+      "pid": 2647,
+      "host": "andy-VirtualBox",
+      "os": "Linux-5.4.0-70-generic-x86_64-with-glibc2.29",
+      "python": "3.8.10 (default, Mar 18 2025, 20:04:55) \n[GCC 9.4.0]",
+      "profile": "hdfs-equal-confidence",
+      "perception": {
+        "agent_id": "ubuntu-beta",
+        "healthy": true,
+        "active_tasks": 0,
+        "max_parallel_tasks": 1,
+        "load_ratio": 0.0,
+        "available_models": [
+          "*"
+        ],
+        "available_dependencies": [
+          "*"
+        ],
+        "memory_enabled": false,
+        "observed_at": "2026-11-04T13:55:51.911331+00:00"
+      }
+    }
+  },
+  "distinct_agent_hosts": [
+    "andy",
+    "andy-VirtualBox"
+  ],
+  "blocks": 2000,
+  "successful_blocks": 2000,
+  "duration_sec": 134.023398,
+  "throughput_blocks_sec": 14.922767,
+  "latency_mean_ms": 66.865859,
+  "latency_median_ms": 57.6865,
+  "latency_p95_ms": 104.2298,
+  "latency_p99_ms": 236.22895,
+  "tasks_by_agent": {
+    "debian-alpha": 2000
+  },
+  "threshold": 1.2729429339548877,
+  "tp": 29,
+  "fp": 7,
+  "tn": 1964,
+  "fn": 0,
+  "precision": 0.8055555555555556,
+  "recall": 1.0,
+  "f1": 0.8923076923076924,
+  "scope": "transport et décision distribués sur des scores HDFS figés; calcul des scores non rejoué dans les VM"
+}

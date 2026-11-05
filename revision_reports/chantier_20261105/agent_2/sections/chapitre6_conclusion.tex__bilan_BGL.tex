@@ -1,0 +1,22 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre6_conclusion.tex
+%   (Conclusion générale, section « Bilan », troisième paragraphe, PDF p. 125)
+% Passage à remplacer : la phrase « Sur BGL, le F1 de $0{,}913698$ doit être
+%   interprété avec le taux élevé de templates inconnus, soit $89{,}8081\,\%$,
+%   et avec le baseline de nouveauté qui obtient $0{,}277885$. »
+% Auteur : Agent 2, chantier 2026-11-05.
+% Motif : la phrase ne cite que la baseline la plus faible (template inconnu)
+%   et omet la règle de sévérité, qui obtient exactement le même F1 que
+%   Histogram (§4.4). Citer la seule baseline battue est précisément le défaut
+%   relevé par L2 §2.4 (« baselines triviales appliquées là où elles
+%   arrangent ») ; cela fonde le statut de H4. « templates inconnus » corrigé
+%   en « événements de test portant un template inconnu » (unité du corps,
+%   correction K12 de l'Agent 1).
+% Sources : chapitre5_resultats.tex §4.4 ;
+%   experiments/phase_revision_20261104/agent_4_bgl/agent4_bgl_second_protocol_20261104T142629Z__result.json
+%   (hist_pred_equals_severity_novelty = true) et __group_metrics.csv
+%   (UnknownTemplateBaseline f1 0,277885) ; unknown_template_rate 0,898081 :
+%   experiments/phase_dataset_strengthening/raw/ds_bgl_known_unknown_20260910T082706Z__bgl_known_unknown_result.json.
+% ============================================================================
+
+Sur BGL, le F1 de $0{,}913698$ dépasse la règle « template inconnu » ($0{,}277885$), mais il est identique à celui de la règle « sévérité absente de l'entraînement », alors que $89{,}8081\,\%$ des événements de test portent un template inconnu : ce score mesure une nouveauté de sévérité, non une modélisation des journaux.

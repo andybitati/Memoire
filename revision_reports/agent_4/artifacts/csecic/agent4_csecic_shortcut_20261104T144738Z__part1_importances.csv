@@ -1,0 +1,547 @@
+seed,model,kind,feature,importance
+42,RandomForest,impurity,Dst Port,0.066679844926133
+42,RandomForest,impurity,Protocol,0.002418597945132386
+42,RandomForest,impurity,Flow Duration,0.01679597130354716
+42,RandomForest,impurity,Tot Fwd Pkts,0.003663160835007488
+42,RandomForest,impurity,Tot Bwd Pkts,0.02537003551522961
+42,RandomForest,impurity,TotLen Fwd Pkts,0.003510172654080813
+42,RandomForest,impurity,TotLen Bwd Pkts,0.009297237611307692
+42,RandomForest,impurity,Fwd Pkt Len Max,0.005441576617458641
+42,RandomForest,impurity,Fwd Pkt Len Min,0.0007256359331289958
+42,RandomForest,impurity,Fwd Pkt Len Mean,0.0035298545065257773
+42,RandomForest,impurity,Fwd Pkt Len Std,0.006785935846803375
+42,RandomForest,impurity,Bwd Pkt Len Max,0.017292119906341344
+42,RandomForest,impurity,Bwd Pkt Len Min,5.091414836180155e-05
+42,RandomForest,impurity,Bwd Pkt Len Mean,0.00415728595662995
+42,RandomForest,impurity,Bwd Pkt Len Std,0.0033469094567107087
+42,RandomForest,impurity,Flow Byts/s,0.0110869707335379
+42,RandomForest,impurity,Flow Pkts/s,0.08746778351086189
+42,RandomForest,impurity,Flow IAT Mean,0.04965802012123603
+42,RandomForest,impurity,Flow IAT Std,0.011224844698161573
+42,RandomForest,impurity,Flow IAT Max,0.0497752029543852
+42,RandomForest,impurity,Flow IAT Min,0.01749233852629132
+42,RandomForest,impurity,Fwd IAT Tot,0.030962821170656962
+42,RandomForest,impurity,Fwd IAT Mean,0.015772539417279893
+42,RandomForest,impurity,Fwd IAT Std,0.001182361795988753
+42,RandomForest,impurity,Fwd IAT Max,0.022837365195580137
+42,RandomForest,impurity,Fwd IAT Min,0.016441216781187495
+42,RandomForest,impurity,Bwd IAT Tot,0.0028983696732903515
+42,RandomForest,impurity,Bwd IAT Mean,0.0017805461757526924
+42,RandomForest,impurity,Bwd IAT Std,0.0005343474308143159
+42,RandomForest,impurity,Bwd IAT Max,0.001989045944906196
+42,RandomForest,impurity,Bwd IAT Min,0.006041280962074066
+42,RandomForest,impurity,Fwd PSH Flags,0.0005002288899633125
+42,RandomForest,impurity,Bwd PSH Flags,0.0
+42,RandomForest,impurity,Fwd URG Flags,0.0
+42,RandomForest,impurity,Bwd URG Flags,0.0
+42,RandomForest,impurity,Fwd Header Len,0.055198851905191824
+42,RandomForest,impurity,Bwd Header Len,0.017744842750833874
+42,RandomForest,impurity,Fwd Pkts/s,0.05301783704338785
+42,RandomForest,impurity,Bwd Pkts/s,0.01679613974858491
+42,RandomForest,impurity,Pkt Len Min,0.004630315330816327
+42,RandomForest,impurity,Pkt Len Max,0.01371945124175213
+42,RandomForest,impurity,Pkt Len Mean,0.005791470705106081
+42,RandomForest,impurity,Pkt Len Std,0.0050792900260096556
+42,RandomForest,impurity,Pkt Len Var,0.004030778033887285
+42,RandomForest,impurity,FIN Flag Cnt,0.0006165857297770804
+42,RandomForest,impurity,SYN Flag Cnt,0.0018400001503466436
+42,RandomForest,impurity,RST Flag Cnt,4.7579613143282314e-05
+42,RandomForest,impurity,PSH Flag Cnt,0.001526691617741588
+42,RandomForest,impurity,ACK Flag Cnt,0.003599785632183401
+42,RandomForest,impurity,URG Flag Cnt,7.706776451880911e-05
+42,RandomForest,impurity,CWE Flag Count,0.0
+42,RandomForest,impurity,ECE Flag Cnt,1.975268537562785e-05
+42,RandomForest,impurity,Down/Up Ratio,0.00025129198949468937
+42,RandomForest,impurity,Pkt Size Avg,0.0037463560716001236
+42,RandomForest,impurity,Fwd Seg Size Avg,0.003777457349196045
+42,RandomForest,impurity,Bwd Seg Size Avg,0.00474785564102545
+42,RandomForest,impurity,Fwd Byts/b Avg,0.0
+42,RandomForest,impurity,Fwd Pkts/b Avg,0.0
+42,RandomForest,impurity,Fwd Blk Rate Avg,0.0
+42,RandomForest,impurity,Bwd Byts/b Avg,0.0
+42,RandomForest,impurity,Bwd Pkts/b Avg,0.0
+42,RandomForest,impurity,Bwd Blk Rate Avg,0.0
+42,RandomForest,impurity,Subflow Fwd Pkts,0.006735040559963658
+42,RandomForest,impurity,Subflow Fwd Byts,0.004935596226794427
+42,RandomForest,impurity,Subflow Bwd Pkts,0.019364961990614257
+42,RandomForest,impurity,Subflow Bwd Byts,0.020169253922819583
+42,RandomForest,impurity,Init Fwd Win Byts,0.06088568905385164
+42,RandomForest,impurity,Init Bwd Win Byts,0.010282311425717432
+42,RandomForest,impurity,Fwd Act Data Pkts,0.0015163417026050929
+42,RandomForest,impurity,Fwd Seg Size Min,0.173988740766838
+42,RandomForest,impurity,Active Mean,0.0009134420169333857
+42,RandomForest,impurity,Active Std,0.0006796710628445979
+42,RandomForest,impurity,Active Max,0.00036205397501773217
+42,RandomForest,impurity,Active Min,0.001649893078937304
+42,RandomForest,impurity,Idle Mean,0.0004728705723617661
+42,RandomForest,impurity,Idle Std,0.0010859090163115612
+42,RandomForest,impurity,Idle Max,0.0004006402441679368
+42,RandomForest,impurity,Idle Min,0.0035876462098822647
+42,RandomForest,permutation_f1_test_balanced_4000,Dst Port,0.21259783418371866
+42,RandomForest,permutation_f1_test_balanced_4000,Protocol,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Flow Duration,-0.3473279796192145
+42,RandomForest,permutation_f1_test_balanced_4000,Tot Fwd Pkts,-0.00955630025194637
+42,RandomForest,permutation_f1_test_balanced_4000,Tot Bwd Pkts,0.016696370517882548
+42,RandomForest,permutation_f1_test_balanced_4000,TotLen Fwd Pkts,0.004038959761377359
+42,RandomForest,permutation_f1_test_balanced_4000,TotLen Bwd Pkts,-0.020250733194543808
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd Pkt Len Max,-0.0027479833879462214
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd Pkt Len Min,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd Pkt Len Mean,-0.0036159200307105768
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd Pkt Len Std,-0.2800148448530108
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd Pkt Len Max,0.002224363211068392
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd Pkt Len Min,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd Pkt Len Mean,0.00036854763915798266
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd Pkt Len Std,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Flow Byts/s,0.004617275635200757
+42,RandomForest,permutation_f1_test_balanced_4000,Flow Pkts/s,-0.03367573147405171
+42,RandomForest,permutation_f1_test_balanced_4000,Flow IAT Mean,-0.22029071617374005
+42,RandomForest,permutation_f1_test_balanced_4000,Flow IAT Std,0.07037629487877956
+42,RandomForest,permutation_f1_test_balanced_4000,Flow IAT Max,-0.33679156527159165
+42,RandomForest,permutation_f1_test_balanced_4000,Flow IAT Min,0.07397751428715903
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd IAT Tot,-0.002265027463874932
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd IAT Mean,-0.24214222207247613
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd IAT Std,-0.021446266797029656
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd IAT Max,-0.2902447311166763
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd IAT Min,0.06274346620742847
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd IAT Tot,0.009487672814476525
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd IAT Mean,0.02272420576948449
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd IAT Std,0.00848540219473489
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd IAT Max,0.08373943003608252
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd IAT Min,-0.022205129279693852
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd PSH Flags,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd PSH Flags,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd URG Flags,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd URG Flags,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd Header Len,0.011297099365464377
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd Header Len,-0.011776054204654477
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd Pkts/s,-0.2451277758158045
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd Pkts/s,0.08232209443779988
+42,RandomForest,permutation_f1_test_balanced_4000,Pkt Len Min,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Pkt Len Max,0.10735860132625151
+42,RandomForest,permutation_f1_test_balanced_4000,Pkt Len Mean,-0.003106817606107241
+42,RandomForest,permutation_f1_test_balanced_4000,Pkt Len Std,-0.005499249756509265
+42,RandomForest,permutation_f1_test_balanced_4000,Pkt Len Var,-0.04252067846005416
+42,RandomForest,permutation_f1_test_balanced_4000,FIN Flag Cnt,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,SYN Flag Cnt,-0.0002299617626909667
+42,RandomForest,permutation_f1_test_balanced_4000,RST Flag Cnt,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,PSH Flag Cnt,0.02229438823208063
+42,RandomForest,permutation_f1_test_balanced_4000,ACK Flag Cnt,0.023003954038763264
+42,RandomForest,permutation_f1_test_balanced_4000,URG Flag Cnt,0.00034816626911288173
+42,RandomForest,permutation_f1_test_balanced_4000,CWE Flag Count,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,ECE Flag Cnt,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Down/Up Ratio,0.029989506231577368
+42,RandomForest,permutation_f1_test_balanced_4000,Pkt Size Avg,0.001395941472665992
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd Seg Size Avg,-0.03564552805073216
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd Seg Size Avg,-0.0006095931817719317
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd Byts/b Avg,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd Pkts/b Avg,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd Blk Rate Avg,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd Byts/b Avg,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd Pkts/b Avg,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Bwd Blk Rate Avg,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Subflow Fwd Pkts,-0.0014769407303749094
+42,RandomForest,permutation_f1_test_balanced_4000,Subflow Fwd Byts,-0.2717844401251639
+42,RandomForest,permutation_f1_test_balanced_4000,Subflow Bwd Pkts,0.005606816921206292
+42,RandomForest,permutation_f1_test_balanced_4000,Subflow Bwd Byts,0.010257431652524926
+42,RandomForest,permutation_f1_test_balanced_4000,Init Fwd Win Byts,0.0902592534429651
+42,RandomForest,permutation_f1_test_balanced_4000,Init Bwd Win Byts,0.12319094189851075
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd Act Data Pkts,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Fwd Seg Size Min,0.016453604303459195
+42,RandomForest,permutation_f1_test_balanced_4000,Active Mean,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Active Std,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Active Max,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Active Min,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Idle Mean,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Idle Std,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Idle Max,0.0
+42,RandomForest,permutation_f1_test_balanced_4000,Idle Min,4.9797644219103564e-05
+42,LogisticRegression,permutation_f1_test_balanced_4000,Dst Port,0.5004331810288466
+42,LogisticRegression,permutation_f1_test_balanced_4000,Protocol,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Flow Duration,0.0015293866430061698
+42,LogisticRegression,permutation_f1_test_balanced_4000,Tot Fwd Pkts,-0.0005950803441722904
+42,LogisticRegression,permutation_f1_test_balanced_4000,Tot Bwd Pkts,0.0029683831058718857
+42,LogisticRegression,permutation_f1_test_balanced_4000,TotLen Fwd Pkts,0.01945425786466104
+42,LogisticRegression,permutation_f1_test_balanced_4000,TotLen Bwd Pkts,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd Pkt Len Max,-0.0008502453060933816
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd Pkt Len Min,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd Pkt Len Mean,-0.001105540920853872
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd Pkt Len Std,-0.0016166117127678719
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd Pkt Len Max,-0.0010205295960308651
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd Pkt Len Min,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd Pkt Len Mean,0.017783367393975236
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd Pkt Len Std,0.0005940810757484316
+42,LogisticRegression,permutation_f1_test_balanced_4000,Flow Byts/s,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Flow Pkts/s,0.012160042948336799
+42,LogisticRegression,permutation_f1_test_balanced_4000,Flow IAT Mean,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Flow IAT Std,-0.00016997943318664
+42,LogisticRegression,permutation_f1_test_balanced_4000,Flow IAT Max,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Flow IAT Min,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd IAT Tot,0.002715210170850968
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd IAT Mean,8.492452376548017e-05
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd IAT Std,0.00440712866606785
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd IAT Max,-0.00051006888551793
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd IAT Min,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd IAT Tot,0.0022096136575853556
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd IAT Mean,0.0001697621793184482
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd IAT Std,0.0009334321306584403
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd IAT Max,0.0004242753790549836
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd IAT Min,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd PSH Flags,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd PSH Flags,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd URG Flags,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd URG Flags,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd Header Len,-0.001190857503921931
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd Header Len,0.0032230288692060758
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd Pkts/s,0.004649967887496831
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd Pkts/s,0.0006021091284590385
+42,LogisticRegression,permutation_f1_test_balanced_4000,Pkt Len Min,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Pkt Len Max,-0.0017018847785302456
+42,LogisticRegression,permutation_f1_test_balanced_4000,Pkt Len Mean,-0.0013610544911051663
+42,LogisticRegression,permutation_f1_test_balanced_4000,Pkt Len Std,0.0010459827675756521
+42,LogisticRegression,permutation_f1_test_balanced_4000,Pkt Len Var,0.12019050202456165
+42,LogisticRegression,permutation_f1_test_balanced_4000,FIN Flag Cnt,0.0004244923997773764
+42,LogisticRegression,permutation_f1_test_balanced_4000,SYN Flag Cnt,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,RST Flag Cnt,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,PSH Flag Cnt,0.04800942080218007
+42,LogisticRegression,permutation_f1_test_balanced_4000,ACK Flag Cnt,0.015787519479335727
+42,LogisticRegression,permutation_f1_test_balanced_4000,URG Flag Cnt,0.0017005859897670783
+42,LogisticRegression,permutation_f1_test_balanced_4000,CWE Flag Count,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,ECE Flag Cnt,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Down/Up Ratio,8.553500926996212e-05
+42,LogisticRegression,permutation_f1_test_balanced_4000,Pkt Size Avg,-0.001446196602598926
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd Seg Size Avg,-0.001105540920853872
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd Seg Size Avg,0.017783367393975236
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd Byts/b Avg,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd Pkts/b Avg,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd Blk Rate Avg,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd Byts/b Avg,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd Pkts/b Avg,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Bwd Blk Rate Avg,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Subflow Fwd Pkts,-0.0005950803441722904
+42,LogisticRegression,permutation_f1_test_balanced_4000,Subflow Fwd Byts,0.01945425786466104
+42,LogisticRegression,permutation_f1_test_balanced_4000,Subflow Bwd Pkts,0.0029683831058718857
+42,LogisticRegression,permutation_f1_test_balanced_4000,Subflow Bwd Byts,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Init Fwd Win Byts,0.022728476807975777
+42,LogisticRegression,permutation_f1_test_balanced_4000,Init Bwd Win Byts,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd Act Data Pkts,0.00390620724351017
+42,LogisticRegression,permutation_f1_test_balanced_4000,Fwd Seg Size Min,0.1391182039641089
+42,LogisticRegression,permutation_f1_test_balanced_4000,Active Mean,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Active Std,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Active Max,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Active Min,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Idle Mean,0.00016984904753096033
+42,LogisticRegression,permutation_f1_test_balanced_4000,Idle Std,0.0
+42,LogisticRegression,permutation_f1_test_balanced_4000,Idle Max,-0.00025494740771891955
+42,LogisticRegression,permutation_f1_test_balanced_4000,Idle Min,0.00016984904753096033
+43,RandomForest,impurity,Dst Port,0.03603725178418032
+43,RandomForest,impurity,Protocol,0.0006095180359717158
+43,RandomForest,impurity,Flow Duration,0.041317917648026135
+43,RandomForest,impurity,Tot Fwd Pkts,0.0059217976195489
+43,RandomForest,impurity,Tot Bwd Pkts,0.022722977961220966
+43,RandomForest,impurity,TotLen Fwd Pkts,0.002108049310192627
+43,RandomForest,impurity,TotLen Bwd Pkts,0.014259753774613557
+43,RandomForest,impurity,Fwd Pkt Len Max,0.006949552827207957
+43,RandomForest,impurity,Fwd Pkt Len Min,0.0031327837673302706
+43,RandomForest,impurity,Fwd Pkt Len Mean,0.0008789842483155352
+43,RandomForest,impurity,Fwd Pkt Len Std,0.002077498904348748
+43,RandomForest,impurity,Bwd Pkt Len Max,0.014222821100993464
+43,RandomForest,impurity,Bwd Pkt Len Min,0.000335516529802757
+43,RandomForest,impurity,Bwd Pkt Len Mean,0.003803450128950697
+43,RandomForest,impurity,Bwd Pkt Len Std,0.0052993078658998966
+43,RandomForest,impurity,Flow Byts/s,0.005422186043686098
+43,RandomForest,impurity,Flow Pkts/s,0.052135933290217595
+43,RandomForest,impurity,Flow IAT Mean,0.05793844539606823
+43,RandomForest,impurity,Flow IAT Std,0.007613753208668595
+43,RandomForest,impurity,Flow IAT Max,0.04817597601352686
+43,RandomForest,impurity,Flow IAT Min,0.010570392078154389
+43,RandomForest,impurity,Fwd IAT Tot,0.027301962032109058
+43,RandomForest,impurity,Fwd IAT Mean,0.02120031741547837
+43,RandomForest,impurity,Fwd IAT Std,0.0017240528776137482
+43,RandomForest,impurity,Fwd IAT Max,0.017366783504785415
+43,RandomForest,impurity,Fwd IAT Min,0.020974389764113303
+43,RandomForest,impurity,Bwd IAT Tot,0.004056431502742915
+43,RandomForest,impurity,Bwd IAT Mean,0.0009222906853803106
+43,RandomForest,impurity,Bwd IAT Std,0.0024835866667276543
+43,RandomForest,impurity,Bwd IAT Max,0.0025929807254243794
+43,RandomForest,impurity,Bwd IAT Min,0.008757715634063423
+43,RandomForest,impurity,Fwd PSH Flags,0.0008151636510715244
+43,RandomForest,impurity,Bwd PSH Flags,0.0
+43,RandomForest,impurity,Fwd URG Flags,0.0
+43,RandomForest,impurity,Bwd URG Flags,0.0
+43,RandomForest,impurity,Fwd Header Len,0.042310128488011925
+43,RandomForest,impurity,Bwd Header Len,0.0139031572885367
+43,RandomForest,impurity,Fwd Pkts/s,0.056551148984695765
+43,RandomForest,impurity,Bwd Pkts/s,0.012164904623560636
+43,RandomForest,impurity,Pkt Len Min,4.928205426140312e-05
+43,RandomForest,impurity,Pkt Len Max,0.01201082740227078
+43,RandomForest,impurity,Pkt Len Mean,0.004190068453278979
+43,RandomForest,impurity,Pkt Len Std,0.004744540232936502
+43,RandomForest,impurity,Pkt Len Var,0.008381731137852129
+43,RandomForest,impurity,FIN Flag Cnt,0.0008243499432447065
+43,RandomForest,impurity,SYN Flag Cnt,0.0007723960290829297
+43,RandomForest,impurity,RST Flag Cnt,5.4835131583729494e-05
+43,RandomForest,impurity,PSH Flag Cnt,0.0005102751852161484
+43,RandomForest,impurity,ACK Flag Cnt,0.003338235479237812
+43,RandomForest,impurity,URG Flag Cnt,0.00012289891151035968
+43,RandomForest,impurity,CWE Flag Count,0.0
+43,RandomForest,impurity,ECE Flag Cnt,6.850365671119563e-05
+43,RandomForest,impurity,Down/Up Ratio,0.0005257049515617883
+43,RandomForest,impurity,Pkt Size Avg,0.002487616230775422
+43,RandomForest,impurity,Fwd Seg Size Avg,0.005722656280472574
+43,RandomForest,impurity,Bwd Seg Size Avg,0.009258704010686904
+43,RandomForest,impurity,Fwd Byts/b Avg,0.0
+43,RandomForest,impurity,Fwd Pkts/b Avg,0.0
+43,RandomForest,impurity,Fwd Blk Rate Avg,0.0
+43,RandomForest,impurity,Bwd Byts/b Avg,0.0
+43,RandomForest,impurity,Bwd Pkts/b Avg,0.0
+43,RandomForest,impurity,Bwd Blk Rate Avg,0.0
+43,RandomForest,impurity,Subflow Fwd Pkts,0.004550870800931417
+43,RandomForest,impurity,Subflow Fwd Byts,0.0016951470234193872
+43,RandomForest,impurity,Subflow Bwd Pkts,0.015562393021479121
+43,RandomForest,impurity,Subflow Bwd Byts,0.008135556530656455
+43,RandomForest,impurity,Init Fwd Win Byts,0.05369860328855846
+43,RandomForest,impurity,Init Bwd Win Byts,0.00772391517498658
+43,RandomForest,impurity,Fwd Act Data Pkts,0.0013062271141760647
+43,RandomForest,impurity,Fwd Seg Size Min,0.2701129243652862
+43,RandomForest,impurity,Active Mean,0.0016684450993593892
+43,RandomForest,impurity,Active Std,0.00034188702475093766
+43,RandomForest,impurity,Active Max,0.0007533883181055512
+43,RandomForest,impurity,Active Min,0.00021654939864203506
+43,RandomForest,impurity,Idle Mean,0.002121215595930615
+43,RandomForest,impurity,Idle Std,0.00028967390642810223
+43,RandomForest,impurity,Idle Max,0.0035337697267441236
+43,RandomForest,impurity,Idle Min,0.0005679271386218911
+44,RandomForest,impurity,Dst Port,0.03343924664225191
+44,RandomForest,impurity,Protocol,0.0026418327226233346
+44,RandomForest,impurity,Flow Duration,0.025790096641435892
+44,RandomForest,impurity,Tot Fwd Pkts,0.005008087046774555
+44,RandomForest,impurity,Tot Bwd Pkts,0.01282854157514908
+44,RandomForest,impurity,TotLen Fwd Pkts,0.003089230016346342
+44,RandomForest,impurity,TotLen Bwd Pkts,0.019674245496881848
+44,RandomForest,impurity,Fwd Pkt Len Max,0.010492865347748199
+44,RandomForest,impurity,Fwd Pkt Len Min,0.007613307461493495
+44,RandomForest,impurity,Fwd Pkt Len Mean,0.003832863424825655
+44,RandomForest,impurity,Fwd Pkt Len Std,0.007663976522254223
+44,RandomForest,impurity,Bwd Pkt Len Max,0.009340413438869766
+44,RandomForest,impurity,Bwd Pkt Len Min,0.000723645046259722
+44,RandomForest,impurity,Bwd Pkt Len Mean,0.003597575667089886
+44,RandomForest,impurity,Bwd Pkt Len Std,0.004297854843656389
+44,RandomForest,impurity,Flow Byts/s,0.01896907433337136
+44,RandomForest,impurity,Flow Pkts/s,0.054360668998269676
+44,RandomForest,impurity,Flow IAT Mean,0.06993918899904727
+44,RandomForest,impurity,Flow IAT Std,0.00451697337350711
+44,RandomForest,impurity,Flow IAT Max,0.0426609374214821
+44,RandomForest,impurity,Flow IAT Min,0.012193553493262198
+44,RandomForest,impurity,Fwd IAT Tot,0.025231980317543267
+44,RandomForest,impurity,Fwd IAT Mean,0.014468205207784446
+44,RandomForest,impurity,Fwd IAT Std,0.00041164671666993726
+44,RandomForest,impurity,Fwd IAT Max,0.027259580423919946
+44,RandomForest,impurity,Fwd IAT Min,0.024371624797987212
+44,RandomForest,impurity,Bwd IAT Tot,0.0009139688534550302
+44,RandomForest,impurity,Bwd IAT Mean,0.0033187890441556175
+44,RandomForest,impurity,Bwd IAT Std,0.00018460770557538663
+44,RandomForest,impurity,Bwd IAT Max,0.0009037885749301256
+44,RandomForest,impurity,Bwd IAT Min,0.005300585938565039
+44,RandomForest,impurity,Fwd PSH Flags,0.0009125595409116162
+44,RandomForest,impurity,Bwd PSH Flags,0.0
+44,RandomForest,impurity,Fwd URG Flags,0.0
+44,RandomForest,impurity,Bwd URG Flags,0.0
+44,RandomForest,impurity,Fwd Header Len,0.04063533697191223
+44,RandomForest,impurity,Bwd Header Len,0.0190276235097024
+44,RandomForest,impurity,Fwd Pkts/s,0.05339012344853019
+44,RandomForest,impurity,Bwd Pkts/s,0.018155701704279454
+44,RandomForest,impurity,Pkt Len Min,0.0008734985766278758
+44,RandomForest,impurity,Pkt Len Max,0.009258868555157812
+44,RandomForest,impurity,Pkt Len Mean,0.005786763382459641
+44,RandomForest,impurity,Pkt Len Std,0.007398848821713832
+44,RandomForest,impurity,Pkt Len Var,0.007022926486290922
+44,RandomForest,impurity,FIN Flag Cnt,0.0002720752509013809
+44,RandomForest,impurity,SYN Flag Cnt,0.0009048202754346818
+44,RandomForest,impurity,RST Flag Cnt,1.937555942668598e-05
+44,RandomForest,impurity,PSH Flag Cnt,0.0013265067687696665
+44,RandomForest,impurity,ACK Flag Cnt,0.0013524992481271346
+44,RandomForest,impurity,URG Flag Cnt,5.40660408235659e-05
+44,RandomForest,impurity,CWE Flag Count,0.0
+44,RandomForest,impurity,ECE Flag Cnt,2.2976328250156316e-05
+44,RandomForest,impurity,Down/Up Ratio,0.0007668151842263218
+44,RandomForest,impurity,Pkt Size Avg,0.00401298995181084
+44,RandomForest,impurity,Fwd Seg Size Avg,0.0019211657971434006
+44,RandomForest,impurity,Bwd Seg Size Avg,0.0028010219037643523
+44,RandomForest,impurity,Fwd Byts/b Avg,0.0
+44,RandomForest,impurity,Fwd Pkts/b Avg,0.0
+44,RandomForest,impurity,Fwd Blk Rate Avg,0.0
+44,RandomForest,impurity,Bwd Byts/b Avg,0.0
+44,RandomForest,impurity,Bwd Pkts/b Avg,0.0
+44,RandomForest,impurity,Bwd Blk Rate Avg,0.0
+44,RandomForest,impurity,Subflow Fwd Pkts,0.007065734050100459
+44,RandomForest,impurity,Subflow Fwd Byts,0.0016125210683352216
+44,RandomForest,impurity,Subflow Bwd Pkts,0.02619838899516191
+44,RandomForest,impurity,Subflow Bwd Byts,0.014488560224376043
+44,RandomForest,impurity,Init Fwd Win Byts,0.052228220356866605
+44,RandomForest,impurity,Init Bwd Win Byts,0.00953319397152665
+44,RandomForest,impurity,Fwd Act Data Pkts,0.005041803318710765
+44,RandomForest,impurity,Fwd Seg Size Min,0.24494900711283152
+44,RandomForest,impurity,Active Mean,0.0015397625018031943
+44,RandomForest,impurity,Active Std,8.751718038653668e-05
+44,RandomForest,impurity,Active Max,0.0007388481922383727
+44,RandomForest,impurity,Active Min,0.0009325629905058553
+44,RandomForest,impurity,Idle Mean,0.0021373133807887504
+44,RandomForest,impurity,Idle Std,0.0010519526446690082
+44,RandomForest,impurity,Idle Max,0.0010357419835427485
+44,RandomForest,impurity,Idle Min,0.0004033526287062538
+45,RandomForest,impurity,Dst Port,0.034385391616734776
+45,RandomForest,impurity,Protocol,0.0007519459619777871
+45,RandomForest,impurity,Flow Duration,0.04154848170085544
+45,RandomForest,impurity,Tot Fwd Pkts,0.004501947953294813
+45,RandomForest,impurity,Tot Bwd Pkts,0.014007215651797376
+45,RandomForest,impurity,TotLen Fwd Pkts,0.0019117814140310514
+45,RandomForest,impurity,TotLen Bwd Pkts,0.01355987131659609
+45,RandomForest,impurity,Fwd Pkt Len Max,0.004705825941136464
+45,RandomForest,impurity,Fwd Pkt Len Min,0.003491459789254228
+45,RandomForest,impurity,Fwd Pkt Len Mean,0.002715685105749594
+45,RandomForest,impurity,Fwd Pkt Len Std,0.006837124982225591
+45,RandomForest,impurity,Bwd Pkt Len Max,0.011872986281589872
+45,RandomForest,impurity,Bwd Pkt Len Min,0.005115113975985264
+45,RandomForest,impurity,Bwd Pkt Len Mean,0.004420054143442558
+45,RandomForest,impurity,Bwd Pkt Len Std,0.0020942410259625743
+45,RandomForest,impurity,Flow Byts/s,0.014795613356579713
+45,RandomForest,impurity,Flow Pkts/s,0.05763931562380546
+45,RandomForest,impurity,Flow IAT Mean,0.0671708499273274
+45,RandomForest,impurity,Flow IAT Std,0.005489216370889448
+45,RandomForest,impurity,Flow IAT Max,0.038966155138044176
+45,RandomForest,impurity,Flow IAT Min,0.00881109812625067
+45,RandomForest,impurity,Fwd IAT Tot,0.022682086129431223
+45,RandomForest,impurity,Fwd IAT Mean,0.02902336203882209
+45,RandomForest,impurity,Fwd IAT Std,0.003727010037101561
+45,RandomForest,impurity,Fwd IAT Max,0.018311146683178858
+45,RandomForest,impurity,Fwd IAT Min,0.016082026147401656
+45,RandomForest,impurity,Bwd IAT Tot,0.00044898782457319345
+45,RandomForest,impurity,Bwd IAT Mean,0.0033923820767412433
+45,RandomForest,impurity,Bwd IAT Std,0.004341893829706656
+45,RandomForest,impurity,Bwd IAT Max,0.0033073734339041155
+45,RandomForest,impurity,Bwd IAT Min,0.008665680583377395
+45,RandomForest,impurity,Fwd PSH Flags,0.0011660796563033704
+45,RandomForest,impurity,Bwd PSH Flags,0.0
+45,RandomForest,impurity,Fwd URG Flags,0.0
+45,RandomForest,impurity,Bwd URG Flags,0.0
+45,RandomForest,impurity,Fwd Header Len,0.060132058428657265
+45,RandomForest,impurity,Bwd Header Len,0.01767185246767635
+45,RandomForest,impurity,Fwd Pkts/s,0.04288289778141742
+45,RandomForest,impurity,Bwd Pkts/s,0.01810928546159594
+45,RandomForest,impurity,Pkt Len Min,0.0024961923408161617
+45,RandomForest,impurity,Pkt Len Max,0.012194370013279426
+45,RandomForest,impurity,Pkt Len Mean,0.00736184595606978
+45,RandomForest,impurity,Pkt Len Std,0.008478205565069494
+45,RandomForest,impurity,Pkt Len Var,0.005343115707022767
+45,RandomForest,impurity,FIN Flag Cnt,0.0004928036687540382
+45,RandomForest,impurity,SYN Flag Cnt,0.000995109682918349
+45,RandomForest,impurity,RST Flag Cnt,0.0005985878450084598
+45,RandomForest,impurity,PSH Flag Cnt,0.0029488911148301622
+45,RandomForest,impurity,ACK Flag Cnt,0.0030573509351986767
+45,RandomForest,impurity,URG Flag Cnt,8.933635581088443e-05
+45,RandomForest,impurity,CWE Flag Count,0.0
+45,RandomForest,impurity,ECE Flag Cnt,8.20898854769107e-06
+45,RandomForest,impurity,Down/Up Ratio,0.000912930856194507
+45,RandomForest,impurity,Pkt Size Avg,0.003868635066417831
+45,RandomForest,impurity,Fwd Seg Size Avg,0.001458599500966602
+45,RandomForest,impurity,Bwd Seg Size Avg,0.0036565271716525074
+45,RandomForest,impurity,Fwd Byts/b Avg,0.0
+45,RandomForest,impurity,Fwd Pkts/b Avg,0.0
+45,RandomForest,impurity,Fwd Blk Rate Avg,0.0
+45,RandomForest,impurity,Bwd Byts/b Avg,0.0
+45,RandomForest,impurity,Bwd Pkts/b Avg,0.0
+45,RandomForest,impurity,Bwd Blk Rate Avg,0.0
+45,RandomForest,impurity,Subflow Fwd Pkts,0.0082686452328059
+45,RandomForest,impurity,Subflow Fwd Byts,0.003266151673804715
+45,RandomForest,impurity,Subflow Bwd Pkts,0.018465705407039512
+45,RandomForest,impurity,Subflow Bwd Byts,0.007496138759228116
+45,RandomForest,impurity,Init Fwd Win Byts,0.06937983429444326
+45,RandomForest,impurity,Init Bwd Win Byts,0.017555007240159244
+45,RandomForest,impurity,Fwd Act Data Pkts,0.00252385741558673
+45,RandomForest,impurity,Fwd Seg Size Min,0.2177691910699128
+45,RandomForest,impurity,Active Mean,0.00043876037781411474
+45,RandomForest,impurity,Active Std,0.0012085014439452773
+45,RandomForest,impurity,Active Max,0.0012007570875433807
+45,RandomForest,impurity,Active Min,0.0007858644721983372
+45,RandomForest,impurity,Idle Mean,0.00048217055476479256
+45,RandomForest,impurity,Idle Std,0.0007391230146224333
+45,RandomForest,impurity,Idle Max,0.0006643362067726831
+45,RandomForest,impurity,Idle Min,0.0010597469973828717
+46,RandomForest,impurity,Dst Port,0.047572406689230455
+46,RandomForest,impurity,Protocol,0.0007497935756297919
+46,RandomForest,impurity,Flow Duration,0.037773552984135726
+46,RandomForest,impurity,Tot Fwd Pkts,0.004855457096049731
+46,RandomForest,impurity,Tot Bwd Pkts,0.021045543944705224
+46,RandomForest,impurity,TotLen Fwd Pkts,0.003292678005512731
+46,RandomForest,impurity,TotLen Bwd Pkts,0.017317046638963267
+46,RandomForest,impurity,Fwd Pkt Len Max,0.008699597788314925
+46,RandomForest,impurity,Fwd Pkt Len Min,0.007510565425987436
+46,RandomForest,impurity,Fwd Pkt Len Mean,0.00471771124213143
+46,RandomForest,impurity,Fwd Pkt Len Std,0.0052819816642182575
+46,RandomForest,impurity,Bwd Pkt Len Max,0.012669644124962003
+46,RandomForest,impurity,Bwd Pkt Len Min,0.0019719403570859664
+46,RandomForest,impurity,Bwd Pkt Len Mean,0.006137346620704195
+46,RandomForest,impurity,Bwd Pkt Len Std,0.005482695849705955
+46,RandomForest,impurity,Flow Byts/s,0.011720712172574938
+46,RandomForest,impurity,Flow Pkts/s,0.047117741520504096
+46,RandomForest,impurity,Flow IAT Mean,0.07422862432305909
+46,RandomForest,impurity,Flow IAT Std,0.011433458781918317
+46,RandomForest,impurity,Flow IAT Max,0.035010685543577974
+46,RandomForest,impurity,Flow IAT Min,0.011523635772434612
+46,RandomForest,impurity,Fwd IAT Tot,0.012885624946916937
+46,RandomForest,impurity,Fwd IAT Mean,0.021500788060956684
+46,RandomForest,impurity,Fwd IAT Std,0.0024488920767598127
+46,RandomForest,impurity,Fwd IAT Max,0.02795641696978167
+46,RandomForest,impurity,Fwd IAT Min,0.015276846870665103
+46,RandomForest,impurity,Bwd IAT Tot,0.0015951393573970065
+46,RandomForest,impurity,Bwd IAT Mean,0.007304756971483928
+46,RandomForest,impurity,Bwd IAT Std,0.0010945686476411004
+46,RandomForest,impurity,Bwd IAT Max,0.0023382612042127265
+46,RandomForest,impurity,Bwd IAT Min,0.008602555204676125
+46,RandomForest,impurity,Fwd PSH Flags,0.0007814471692006833
+46,RandomForest,impurity,Bwd PSH Flags,0.0
+46,RandomForest,impurity,Fwd URG Flags,0.0
+46,RandomForest,impurity,Bwd URG Flags,0.0
+46,RandomForest,impurity,Fwd Header Len,0.062257156839245896
+46,RandomForest,impurity,Bwd Header Len,0.024050077715426367
+46,RandomForest,impurity,Fwd Pkts/s,0.04551605428837799
+46,RandomForest,impurity,Bwd Pkts/s,0.014340040912093618
+46,RandomForest,impurity,Pkt Len Min,0.001784183740628898
+46,RandomForest,impurity,Pkt Len Max,0.015426289635529574
+46,RandomForest,impurity,Pkt Len Mean,0.0064929497485665425
+46,RandomForest,impurity,Pkt Len Std,0.006804026591688302
+46,RandomForest,impurity,Pkt Len Var,0.005159590539048139
+46,RandomForest,impurity,FIN Flag Cnt,0.0004047926887231427
+46,RandomForest,impurity,SYN Flag Cnt,0.001634935994222699
+46,RandomForest,impurity,RST Flag Cnt,5.739313638390131e-05
+46,RandomForest,impurity,PSH Flag Cnt,0.0015240501315014895
+46,RandomForest,impurity,ACK Flag Cnt,0.00276398649757883
+46,RandomForest,impurity,URG Flag Cnt,8.244535650052699e-05
+46,RandomForest,impurity,CWE Flag Count,0.0
+46,RandomForest,impurity,ECE Flag Cnt,0.00035758620007223077
+46,RandomForest,impurity,Down/Up Ratio,0.0012574916606134879
+46,RandomForest,impurity,Pkt Size Avg,0.0022062432816715456
+46,RandomForest,impurity,Fwd Seg Size Avg,0.002641137624944746
+46,RandomForest,impurity,Bwd Seg Size Avg,0.0067612022151158045
+46,RandomForest,impurity,Fwd Byts/b Avg,0.0
+46,RandomForest,impurity,Fwd Pkts/b Avg,0.0
+46,RandomForest,impurity,Fwd Blk Rate Avg,0.0
+46,RandomForest,impurity,Bwd Byts/b Avg,0.0
+46,RandomForest,impurity,Bwd Pkts/b Avg,0.0
+46,RandomForest,impurity,Bwd Blk Rate Avg,0.0
+46,RandomForest,impurity,Subflow Fwd Pkts,0.008123102195453384
+46,RandomForest,impurity,Subflow Fwd Byts,0.004242780582293003
+46,RandomForest,impurity,Subflow Bwd Pkts,0.022260976133869757
+46,RandomForest,impurity,Subflow Bwd Byts,0.01596956349058415
+46,RandomForest,impurity,Init Fwd Win Byts,0.05638760643227577
+46,RandomForest,impurity,Init Bwd Win Byts,0.01464192004428251
+46,RandomForest,impurity,Fwd Act Data Pkts,0.0011867407202084336
+46,RandomForest,impurity,Fwd Seg Size Min,0.19090546775440467
+46,RandomForest,impurity,Active Mean,0.00024687896876536954
+46,RandomForest,impurity,Active Std,1.8560922012332475e-05
+46,RandomForest,impurity,Active Max,0.000718223832301209
+46,RandomForest,impurity,Active Min,0.0012847423783548138
+46,RandomForest,impurity,Idle Mean,0.0005783183915857391
+46,RandomForest,impurity,Idle Std,0.00010846164183541124
+46,RandomForest,impurity,Idle Max,0.0011960891272440664
+46,RandomForest,impurity,Idle Min,0.0027108149854976524

@@ -1,0 +1,92 @@
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre5_resultats.tex
+% Passage : à insérer juste avant « \section{Exécution de bout en bout avec modèles réels} »
+% Agent : 5 — Architecture multi-agents
+% Sources : experiments/phase_revision_20261105/E-H5-MEMORY-RELIABILITY/{summary.json,runs.csv} ;
+%           experiments/phase_revision_20261105/E-CNP-STATIC-ASSIGNMENT/{summary.json,runs.csv}
+
+\subsection{Mémoire sous fiabilité hétérogène}
+\label{sec:e-h5}
+
+Le protocole préenregistré E-H5 compare C et D lorsque la fiabilité réelle des agents s'écarte de leur confiance déclarée. Pour chaque type de tâche, l'agent de plus forte confiance déclarée échoue avec une probabilité $p$, selon un tirage commun aux deux bras ; les autres agents ne reçoivent aucun échec. Chaque exécution porte sur $1\,000$ tâches synthétiques de 2~ms, avec trois coordinateurs concurrents et 30 graines. Le gain à un niveau exige que l'IC à 95~\% du delta du taux d'échec à la première exécution soit strictement négatif et que la borne inférieure de l'IC du rapport de débit atteigne au moins $0{,}95$.
+
+\begin{table}[H]
+\centering
+\caption{E-H5 : mémoire activée (D) contre désactivée (C), 30 graines appariées. }
+\label{tab:e-h5}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccc}
+\toprule
+$p$ & \textbf{Échec initial C / D} & \textbf{Delta D $-$ C [IC 95~\%]} & \textbf{Débit D/C [IC 95~\%]} & \textbf{Gain} \\
+\midrule
+0,3 & 0,1096 / 0,1069 & $-0{,}0027$ [$-0{,}0086$ ; $0{,}0031$] & 0,972 [0,954 ; 0,991] & non \\
+0,6 & 0,2405 / 0,2103 & $-0{,}0302$ [$-0{,}0389$ ; $-0{,}0215$] & 0,975 [0,942 ; 1,008] & non \\
+0,9 & 0,3729 / 0,0736 & $-0{,}2993$ [$-0{,}3138$ ; $-0{,}2848$] & 1,210 [1,194 ; 1,225] & oui \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Selon le critère préenregistré, le gain est conditionnel : il n'est établi que pour $p = 0{,}9$. À $p = 0{,}6$, le taux d'échec diminue, mais le garde-fou de débit n'est pas satisfait ; à $p = 0{,}3$, l'intervalle contient zéro. Sur $30\,000$ tâches par niveau, les échecs finaux passent de 3 à 6, de 19 à 4 et de 44 à 3 entre C et D. Même au niveau favorable, l'indice de Jain recule ($-0{,}037$ [$-0{,}041$ ; $-0{,}033$]). La mémoire n'apporte donc un bénéfice net que lorsque la déclaration de confiance est très éloignée de la fiabilité réelle.
+
+L'analyse de sensibilité en exécution séquentielle, sur dix graines, ne participe pas à la décision. Elle montre un écart bien plus marqué : le taux de C reste voisin de $p$ ($0{,}303$ ; $0{,}602$ ; $0{,}901$), celui de D tombe à $0{,}033$, $0{,}006$ et $0{,}004$, tandis que l'indice de Jain recule de $0{,}37$ à $0{,}41$. Sans concurrence, le terme de charge ne disperse plus les tâches : C reste sur l'agent défaillant et D se concentre sur un agent qui a réussi. Ce contraste indique que, sous concurrence, l'étalement dû à la charge masque une grande partie de l'effet de la mémoire. L'expérience reste synthétique : échecs injectés, processus unique et confiance volontairement erronée. Elle concerne la priorisation de l'attribution entre agents, non celle des anomalies, qui reste non mesurée.
+
+\subsection{Contract Net face à une table statique}
+\label{sec:e-cnp}
+
+Le protocole préenregistré E-CNP compare, sur les mêmes tâches et les mêmes agents, Contract Net sans mémoire (C), Contract Net avec mémoire (D) et une table statique. Celle-ci associe à chaque type de tâche la liste des agents par confiance déclarée décroissante, et passe à l'agent suivant en cas de refus ou d'échec. Elle exploite ainsi la même information déclarée, sans négociation, sans mémoire et sans observation de la charge. Le plan croise cinq scénarios, trois bras et 30 graines, pour $1\,000$ tâches par exécution et trois coordinateurs concurrents ; le scénario sans durée de service mesure le coût pur et n'entre pas dans la règle de décision.
+
+\begin{table}[H]
+\centering
+\caption{E-CNP : Contract Net contre table statique, 30 graines appariées ; débits en tâches/s ; l'échec initial désigne l'échec à la première exécution.}
+\label{tab:e-cnp}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{X>{\centering\arraybackslash}p{2.1cm}>{\centering\arraybackslash}p{3.0cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{1.9cm}}
+\toprule
+\textbf{Scénario} & \textbf{Débit table / C} & \textbf{C/table [IC 95~\%]} & \textbf{Échec initial table / C} & \textbf{Décision C / D} \\
+\midrule
+Coût pur, sans service & $13\,283$ / $2\,704$ & 0,211 [0,193 ; 0,229] & 0 / 0 & hors règle \\
+Nominal, 2~ms & $1\,103$ / 956 & 0,867 [0,856 ; 0,878] & 0 / 0 & défav. / défav. \\
+Fiabilité hétérogène, $p = 0{,}3$ & 856 / 865 & 1,011 [1,001 ; 1,020] & 0,2971 / 0,1095 & fav. / fav. \\
+Panne silencieuse de \texttt{gamma} & 825 / 801 & 0,971 [0,964 ; 0,977] & 0,3500 / 0,2101 & fav. / fav. \\
+\texttt{gamma} lent, 10~ms & 636 / 736 & 1,157 [1,149 ; 1,165] & 0 / 0 & fav. / indét. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La décision préenregistrée est un avantage conditionnel : favorable sur trois des quatre scénarios, défavorable en régime nominal. Contract Net échange environ dix messages par tâche. Il réduit le débit de 13~\% lorsque le service dure 2~ms et ne conserve qu'un cinquième du débit de la table lorsque la tâche ne fait presque rien.
+
+La lecture de ces gains appelle deux réserves. D'abord, ils ne proviennent pas d'une décision informée par les échecs : C n'a pas de mémoire et ignore ces derniers. Ils coïncident avec l'étalement produit par le terme de charge de l'utilité : en régime nominal, C répartit les exécutions à parts égales entre les trois agents, alors que la table en confie $49{,}3~\%$ à \texttt{agent-gamma}. Le nom \texttt{gamma} désigne ici \texttt{agent-gamma}. Comme les défaillances et la lenteur injectées visent les agents les plus sollicités par la table, s'en écarter suffit à les éviter. Le contraste C $-$ table ne sépare donc pas la négociation de la simple prise en compte de la charge ; la section~\ref{sec:e-cnp-moindre} teste ce point. Ensuite, la table n'enregistre aucun échec final sur $30\,000$ tâches par scénario, alors que Contract Net perd quelques tâches lorsque des agents défaillent : 4 pour C et 8 pour D sous fiabilité hétérogène, 50 pour D sous panne silencieuse. D'après le code, un agent occupé lors de l'appel d'offres ne propose pas et n'entre pas dans la liste de repli de ce contrat. Ces échecs restent rares (au plus 50 sur $30\,000$), mais ils constituent une faiblesse propre au protocole tel qu'il est implémenté.
+
+Ces résultats n'établissent donc pas la valeur de la négociation en tant que telle.
+
+\subsection{Contract Net face à un répartiteur au moindre chargé}
+\label{sec:e-cnp-moindre}
+
+Le protocole préenregistré E-CNP-LEAST-LOADED, décidé après lecture de la comparaison précédente, sépare la négociation de la prise en compte de la charge. Un répartiteur choisit l'agent le moins occupé, avec la confiance déclarée en départage et le même repli, sans offre, sans mémoire et sans message de protocole. Les scénarios et la règle de décision sont inchangés ; les 30 graines sont nouvelles, soit 450 exécutions.
+
+\begin{table}[H]
+\centering
+\caption{E-CNP-LEAST-LOADED : Contract Net sans mémoire (C) contre répartiteur au moindre chargé, 30 graines appariées ; débits en tâches/s.}
+\label{tab:e-cnp-moindre}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{X>{\centering\arraybackslash}p{2.1cm}>{\centering\arraybackslash}p{3.0cm}>{\centering\arraybackslash}p{2.4cm}>{\centering\arraybackslash}p{1.7cm}}
+\toprule
+\textbf{Scénario} & \textbf{Débit répartiteur / C} & \textbf{C/répartiteur [IC 95~\%]} & \textbf{Échec initial répartiteur / C} & \textbf{Décision} \\
+\midrule
+Coût pur, sans service & $8\,402$ / $2\,598$ & 0,321 [0,298 ; 0,343] & 0 / 0 & hors règle \\
+Nominal, 2~ms & $1\,098$ / 955 & 0,870 [0,857 ; 0,883] & 0 / 0 & défavorable \\
+Fiabilité hétérogène, $p = 0{,}3$ & 962 / 824 & 0,859 [0,821 ; 0,897] & 0,1093 / 0,1094 & défavorable \\
+Panne silencieuse de \texttt{gamma} & 882 / 783 & 0,890 [0,869 ; 0,912] & 0,2103 / 0,2099 & défavorable \\
+\texttt{gamma} lent, 10~ms & 832 / 733 & 0,881 [0,868 ; 0,894] & 0 / 0 & défavorable \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La décision préenregistrée est l'absence d'avantage : Contract Net est défavorable sur les quatre scénarios. Le répartiteur atteint les mêmes taux d'échec à la première exécution, les intervalles des deltas contenant zéro, et Contract Net perd 11 à 14~\% de débit pour environ dix messages par tâche. Sur $30\,000$ tâches, le répartiteur ne perd aucune tâche sous fiabilité hétérogène, contre 5 pour Contract Net. Face à la table statique, le répartiteur est favorable sur les trois scénarios de charge inégale ou de défaillance et indéterminé en régime nominal (rapport de débit 0,991 [0,983 ; 1,000]). La prise en compte de la charge suffit donc à produire ces gains, et la négociation n'y ajoute rien de mesurable.
+
+Sur ces nouvelles graines, C reste favorable face à la table lorsque \texttt{gamma} est lent et défavorable en régime nominal. Sous fiabilité hétérogène et panne silencieuse, il devient indéterminé : les échecs initiaux baissent autant ($-0{,}1853$ et $-0{,}1400$), mais le garde-fou de débit n'est plus satisfait (bornes inférieures 0,935 et 0,939). Les décisions favorables de la section~\ref{sec:e-cnp} sur ces deux scénarios ne sont donc pas stables d'un ensemble de graines à l'autre.
+
+Cette comparaison avantage le répartiteur par construction : il lit directement l'état des agents, dans un seul processus, sans coût de transport ni information périmée. Une exécution distribuée, où connaître la charge a un coût, pourrait modifier ce rapport ; elle n'a pas été testée. L'expérience ne compare pas non plus Contract Net à Celery, à Kafka ou à un moteur de workflow. Dans le périmètre évalué, l'avantage propre de la négociation n'est pas établi, et aucun résultat ne justifie son coût face à une règle de moindre charge.
+

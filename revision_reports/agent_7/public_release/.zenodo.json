@@ -1,0 +1,49 @@
+{
+  "title": "Ariel Logminer : prototype multi-agents pour l'analyse de journaux système et réseau hétérogènes (code, artefacts expérimentaux et mémoire)",
+  "upload_type": "software",
+  "version": "1.0.0",
+  "language": "fra",
+  "creators": [
+    {
+      "name": "MARHEGANE BITATI, André Olivier",
+      "affiliation": "Université de Kinshasa, Faculté polytechnique"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "KYANDOGHERE KYAMAKYA, Jean Vianney",
+      "type": "Supervisor",
+      "affiliation": "Université de Kinshasa, Faculté polytechnique"
+    },
+    {
+      "name": "KAMBALE WITESYAVWIRWA, Vianney",
+      "type": "Supervisor",
+      "affiliation": "[À COMPLÉTER]"
+    },
+    {
+      "name": "MUGISHA MUHIRE, Jean-Pierre",
+      "type": "Supervisor",
+      "affiliation": "[À COMPLÉTER]"
+    }
+  ],
+  "description": "<p>Prototype multi-agents léger pour l'analyse de journaux système et réseau hétérogènes : normalisation multi-format, routage open-set, portefeuille de modèles légers, négociation Contract Net sur bus local ou Redis Streams, idempotence et corrélation. L'archive contient le code, les tests, les artefacts des campagnes expérimentales (configurations, sorties brutes et agrégées, manifestes SHA-256, registre des exécutions) et les sources LaTeX du mémoire associé.</p><p>Prototype de laboratoire, non destiné à la production. Les jeux de données publics utilisés ne sont pas redistribués ; voir README.md et DATA_LICENSES.md.</p>",
+  "license": "MIT",
+  "access_right": "open",
+  "keywords": [
+    "cybersécurité",
+    "journaux système",
+    "détection d'anomalies",
+    "systèmes multi-agents",
+    "Contract Net",
+    "Redis Streams",
+    "reproductibilité"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.8196385",
+      "relation": "references",
+      "resource_type": "dataset"
+    }
+  ],
+  "notes": "Mémoire présenté en vue de l'obtention du titre d'ingénieur civil électricien, orientation informatique, Université de Kinshasa, année académique 2025-2026."
+}

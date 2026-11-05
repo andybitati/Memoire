@@ -32,11 +32,11 @@ CICIDS2017 & flux réseau & Sensibilité au split et choix parmi cinq candidats.
 
 HDFS & bloc & Détection alignée sur le label, parseur ajusté sur train seulement. \\
 
-BGL & fenêtre/template & Apport d’Histogram au-delà d’un baseline de nouveauté. \\
+BGL & événement/template &Apport d’Histogram au-delà d’un baseline de nouveauté. \\
 
 CSE-CIC-IDS2018 & flux réseau & Transfert journalier et dépendance aux caractéristiques. \\
 
-Routeur & fichier & Reconnaissance des sources connues et rejet de trois inconnues. \\
+Routeur & fichier & Reconnaissance des sources connues et rejet de 20 sources inconnues. \\
 
 Multi-format & unité native & Lecture, parsing et normalisation des sources testées. \\
 
@@ -51,10 +51,11 @@ Multi-VM & tâche & Répartition Debian--Ubuntu, reprise et idempotence. \\
 \end{table}
 
 \section{CICIDS2017 : influence du protocole}
+\label{sec:cicids-resultats}
 
 \subsection{Question et données}
 
-La campagne compare trois partitions sur CICIDS2017. La séparation aléatoire stratifiée mélange les scénarios avant la constitution des ensembles. Le holdout par fichier ou scénario réserve une famille à l’évaluation. Le protocole temporel entraîne sur les données du lundi au jeudi et teste le vendredi. Les valeurs agrégées proviennent de cinq graines pour la séparation aléatoire et le protocole temporel ; le holdout par scénario rassemble vingt-cinq évaluations.
+Les fichiers utilisés sont les CSV d'origine diffusés par le CIC (\texttt{MachineLearningCVE}), sans les corrections proposées par Engelen et al.~\cite{engelen2021troubleshooting}. La campagne compare trois partitions sur CICIDS2017. La séparation aléatoire stratifiée mélange les scénarios avant la constitution des ensembles. Le holdout par fichier ou scénario réserve une famille à l’évaluation. Le protocole temporel entraîne sur les données du lundi au jeudi et teste le vendredi. Les valeurs agrégées proviennent de cinq graines pour la séparation aléatoire et le protocole temporel ; le holdout par scénario rassemble vingt-cinq évaluations.
 
 \begin{figure}[H]
 
@@ -72,13 +73,13 @@ La lecture change nettement avec la partition. Lorsque l’entraînement et le t
 
 \subsection{Comparaison de cinq candidats}
 
-Une expérience distincte compare \texttt{LogisticRegression}, \texttt{RandomForest}, \texttt{SGDLogistic}, \texttt{ExtraTrees} et \texttt{HistGradientBoosting} dans un espace commun. La partition est un holdout fichier ou scénario, les graines sont 42 à 46 et le nombre moyen de lignes de test est $6\,435{,}6$. Les transformations, tailles et graines sont appariées afin que le modèle soit la principale différence.
+Une expérience distincte compare \texttt{LogisticRegression}, \texttt{RandomForest}, \texttt{SGDLogistic}, \texttt{ExtraTrees} et \texttt{HistGradientBoosting} dans un espace commun. La partition est un holdout fichier ou scénario : chacune des graines 42 à 46 tient hors entraînement un scénario différent (DDoS, PortScan, Bot, Infiltration et WebAttacks, dans cet ordre), soit cinq évaluations par modèle, et le nombre moyen de lignes de test est $6\,435{,}6$. Les transformations, tailles et graines sont appariées afin que le modèle soit la principale différence. Ce plan diffère de la comparaison des protocoles (figure~\ref{fig:cicids-protocoles}), où chaque scénario est tenu hors entraînement pour chacune des cinq graines, soit vingt-cinq évaluations : le F1 moyen du Random Forest y vaut $0{,}157744$, contre $0{,}157827$ ici.
 
 \begin{table}[H]
 
 \centering
 
-\caption{Candidats CICIDS2017 sur holdout fichier/scénario, cinq graines.}
+\caption{Candidats CICIDS2017 sur holdout fichier/scénario, une évaluation par graine.}
 
 \label{tab:cicids-candidats}
 
@@ -120,15 +121,57 @@ HistGradientBoosting & 0,003568 & 0,001800 & 0,007978 \\
 
 \end{figure}
 
-Dans ce protocole précis, la régression logistique arrive en tête selon le F1 moyen. Le niveau reste cependant faible et la dispersion élevée, signe que les scénarios n’ont pas tous la même difficulté. HistGradientBoosting présente un comportement différent : sa PR-AUC macro atteint 0,567697 dans l’artefact complémentaire, mais cette capacité de classement ne se traduit pas par un bon F1 au seuil retenu.
+Dans ce protocole précis, la régression logistique arrive en tête selon le F1 moyen. Le niveau reste cependant faible et la dispersion élevée, signe que les scénarios n’ont pas tous la même difficulté. HistGradientBoosting présente un comportement différent : sa PR-AUC macro atteint 0,569002 dans l’artefact complémentaire, mais cette capacité de classement ne se traduit pas par un bon F1 au seuil retenu. Sur ces mêmes scénarios, une prédiction systématiquement positive obtient un F1 moyen de $0{,}473265$, supérieur à celui des cinq candidats (section~\ref{sec:baselines-par-jeu}).
+
+\subsection{Contrôle non supervisé sous protocole temporel}
+
+Les campagnes précédentes relèvent de la classification supervisée. Pour
+mesurer le comportement d'un détecteur n'ayant vu aucune attaque à
+l'apprentissage, un Isolation Forest \cite{liu2008isolation} est ajusté sur
+$10\,000$ flux bénins de lundi à jeudi, puis évalué sur les mêmes tests du
+vendredi que la régression logistique et le Random Forest du protocole
+temporel, pour les graines 42 à 46. Deux seuils sont fixés sur une validation
+disjointe de l'ajustement : le quantile 99~\% des scores bénins, qui n'utilise
+que des données normales, et le seuil maximisant le F1 de validation, qui
+utilise aussi les attaques de cette partition.
+
+\begin{table}[H]
+\centering
+\caption[Contrôle Isolation Forest sur CICIDS2017.]{Isolation Forest et
+modèles supervisés sur le même test temporel CICIDS2017, cinq graines.
+Sources : \texttt{agent6\_cicids\_iforest\_20261104T141904Z\_summary.csv} et
+\texttt{cicids\_temporal\_20260910T083015Z\_metrics.csv}.}
+\label{tab:cicids-iforest}
+\small
+\begin{tabular}{llrrrr}
+\toprule
+\textbf{Modèle} & \textbf{Seuil} & \textbf{F1 moyen} & \textbf{Rappel} & \textbf{FPR} & \textbf{PR-AUC} \\
+\midrule
+Isolation Forest & quantile bénin 99~\% & 0,115719 & 0,063500 & 0,033440 & 0,571803 \\
+Isolation Forest & max. F1 validation & 0,521436 & 0,519480 & 0,312340 & 0,571803 \\
+LogisticRegression & supervisé & 0,556615 & 0,400960 & 0,039360 & 0,871448 \\
+RandomForest & supervisé & 0,437429 & 0,280620 & 0,002400 & 0,830759 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Le classement produit par Isolation Forest reste peu discriminant, avec une
+ROC-AUC moyenne de $0{,}639037$. Le seuil appris sur le trafic bénin seul ne
+détecte que $6{,}35\,\%$ des attaques ; le seuil optimisé sur la validation
+relève le rappel au prix d'un FPR moyen de $0{,}312340$ et d'une forte
+dispersion du F1 entre graines ($0{,}170794$). Sur ce test équilibré, une
+prédiction systématiquement positive obtiendrait un F1 de $0{,}666667$. Ce
+contrôle ne soutient donc pas le remplacement des classificateurs supervisés
+par ce détecteur générique ; l'évaluation des flux réseau porte principalement
+sur une classification supervisée.
 
 \section{HDFS : décision au niveau bloc}
 
 \subsection{Protocole sans contamination du parseur}
 
-Le fichier HDFS contient $11\,175\,629$ lignes et $575\,061$ blocs annotés. Les blocs sont ordonnés par première apparition, puis répartis selon des proportions 60/20/20. Le protocole échantillonne $6\,000$ blocs d’entraînement, $2\,000$ de validation et $2\,000$ de test avec la graine 42. Ces ensembles contiennent respectivement 194, 70 et 29 blocs positifs.
+Le fichier HDFS contient $11\,175\,629$ lignes et $575\,061$ blocs annotés. Les blocs sont ordonnés par première apparition, puis répartis selon des proportions 60/20/20 : $345\,036$ blocs d'entraînement, $115\,012$ de validation et $115\,013$ de test, dont respectivement $11\,158$, $4\,001$ et $1\,679$ positifs (\texttt{agent2\_hdfs\_full\_20261104T131314Z}). La prévalence vaut donc $3{,}23\,\%$, $3{,}48\,\%$ et $1{,}46\,\%$ : la baisse au test tient à l'ordre chronologique de la partition et non à un échantillonnage. Pour chacune des graines 42 à 46, $6\,000$ blocs d'entraînement (194 positifs) sont tirés de façon stratifiée pour ajuster le parseur ; la validation et le test sont utilisés en entier.
 
-Drain3 est ajusté uniquement sur les $126\,368$ événements d’entraînement avec \texttt{sim\_th=0.4}, profondeur 4 et 100 enfants au maximum. La validation et le test utilisent \texttt{match\_only}. Le hash de l’état et le nombre de 28 clusters sont identiques avant et après inférence, ce qui confirme l’absence de mise à jour du parseur. Les scores de rareté événementiels sont regroupés par bloc ; l’agrégateur et le seuil sont choisis sur validation seulement.
+Pour chaque graine, Drain3 est ajusté uniquement sur les événements des blocs d'entraînement tirés avec \texttt{sim\_th=0.4}, profondeur 4 et 100 enfants au maximum. La validation et le test utilisent \texttt{match\_only}. Le hash de l’état et le nombre de clusters (24 à 36 selon la graine) sont identiques avant et après inférence, ce qui confirme l’absence de mise à jour du parseur ; deux exécutions indépendantes produisent des états de même empreinte et des métriques identiques. Les scores de rareté événementiels sont regroupés par bloc ; l’agrégateur et le seuil sont choisis sur validation seulement.
 
 \begin{figure}[H]
 
@@ -136,17 +179,17 @@ Drain3 est ajusté uniquement sur les $126\,368$ événements d’entraînement 
 
   \includegraphics[width=0.96\textwidth]{fig_hdfs_event_vs_block.png}
 
-  \caption[Scores HDFS au niveau événement et au niveau bloc.]{Scores HDFS au niveau événement et au niveau bloc. Source : \texttt{ds\_hdfs\_block\_20260910T081756Z\_\_hdfs\_block\_result.json}.}
+  \caption[F1 HDFS au niveau événement et au niveau bloc.]{F1 de test HDFS au niveau événement et pour les trois agrégations par bloc, sur les $115\,013$ blocs du test, moyenne des graines 42 à 46. Source : \texttt{agent2\_hdfs\_full\_20261104T131314Z}.}
 
   \label{fig:hdfs-event-bloc}
 
 \end{figure}
 
-L’agrégateur retenu est la moyenne et le seuil gelé vaut $1{,}2729429339548877$. Sur les $2\,000$ blocs testés, la matrice de confusion est : 29 vrais positifs, 7 faux positifs, $1\,964$ vrais négatifs et aucun faux négatif. Le F1 atteint $0{,}892308$. Le faible nombre de positifs impose néanmoins de quantifier l’incertitude.
+La validation retient la moyenne pour les cinq graines, avec un seuil compris entre $1{,}272927$ et $1{,}274817$. Sur les $115\,013$ blocs de test, les cinq graines produisent la même matrice de confusion : $1\,679$ vrais positifs, 509 faux positifs, $112\,825$ vrais négatifs et aucun faux négatif. La précision vaut $0{,}767367$ (intervalle exact à 95~\% : $[0{,}749084\,;\,0{,}784932]$), le rappel $1$ ($[0{,}997805\,;\,1]$), le FPR $0{,}004491$ et le F1 $0{,}868373$ (intervalle bootstrap à 95~\% : $[0{,}856771\,;\,0{,}879493]$). La PR-AUC varie de $0{,}844940$ à $0{,}850179$ selon la graine.
 
-\subsection{Bootstrap par bloc}
+\subsection{Incertitude}
 
-Mille réplications bootstrap rééchantillonnent les unités indépendantes \texttt{block\_id}. La médiane du F1 est 0,894737 et l’intervalle empirique rapporté est [0,800000 ; 0,961039].
+Le choix de la graine d'échantillonnage du parseur n'induit aucune variation de la matrice de confusion. L'incertitude rapportée porte donc sur les blocs de test : intervalles exacts de Clopper-Pearson pour la précision, le rappel et le FPR, et bootstrap multinomial de $20\,000$ réplications pour le F1. Sur un échantillon de $2\,000$ blocs du test, dont 29 positifs, également utilisé pour l'exécution distribuée (section~\ref{sec:hdfs-distribue}), le F1 vaut $0{,}892308$ ; mille réplications bootstrap par \texttt{block\_id} donnent une médiane de $0{,}894737$ et un intervalle empirique $[0{,}800000\,;\,0{,}961039]$. Cette valeur se situe hors de l'intervalle du test complet : un échantillon de cette taille surestime la performance.
 
 \begin{figure}[H]
 
@@ -154,17 +197,41 @@ Mille réplications bootstrap rééchantillonnent les unités indépendantes \te
 
   \includegraphics[width=0.96\textwidth]{fig_hdfs_bootstrap_distribution.png}
 
-  \caption[Distribution bootstrap du F1 HDFS.]{Distribution bootstrap du F1 HDFS sur $1\,000$ réplications par bloc. Source : \texttt{hdfs\_block\_robustness\_20260911T002351Z\_bootstrap\_replicates.csv}.}
+  \caption[Distribution bootstrap du F1 HDFS : test complet et échantillon de 2\,000 blocs.]{Distribution bootstrap du F1 HDFS sur le test complet ($115\,013$ blocs, $20\,000$ réplications multinomiales) et sur l'échantillon de $2\,000$ blocs ($1\,000$ réplications par \texttt{block\_id}). Sources : \texttt{agent2\_hdfs\_full\_20261104T131314Z} et \texttt{hdfs\_block\_robustness\_20260911T002351Z}.}
 
   \label{fig:hdfs-bootstrap}
 
 \end{figure}
 
-Le protocole soutient donc une détection efficace sur l’échantillon de blocs testé, avec un parseur et un seuil isolés du test. La portée reste limitée par l’échantillonnage de $2\,000$ blocs et par 29 positifs seulement.
+Le seuil retenu détecte tous les blocs positifs de cette partition, mais ce résultat ne suffit pas à établir un avantage sur une règle simple. Le protocole préenregistré de comparaison au niveau bloc évalue les mêmes règles sur les mêmes partitions et les mêmes graines.
+
+\subsection{Comparaison avec des baselines au niveau bloc}
+
+La baseline \texttt{template\_only\_mean\_surprisal} calcule, pour chaque bloc, la surprise moyenne de ses templates selon leur fréquence parmi les événements normaux des blocs d'entraînement ; son seuil est choisi sur la validation. Le comparateur Histogram reprend le résultat gelé, qui agrège les surprises de template, de source et de sévérité. Les quatre règles sont évaluées sur les mêmes $115\,013$ blocs de test. Le tableau~\ref{tab:hdfs-block-baselines} rapporte les moyennes des graines 42 à 46.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Baselines préenregistrées au niveau bloc sur le test HDFS complet.}
+\label{tab:hdfs-block-baselines}
+\begin{tabularx}{\textwidth}{Xrrrr}
+\toprule
+\textbf{Règle} & \textbf{F1 moyen} & \textbf{Précision} & \textbf{Rappel} & \textbf{FPR} \\
+\midrule
+Tout positif & 0,028777 & 0,014598 & 1,000000 & 1,000000 \\
+Au moins un template inédit & 0,019076 & 0,945614 & 0,009649 & 0,000011 \\
+Surprise moyenne du template & 0,872434 & 0,773733 & 1,000000 & 0,004332 \\
+Histogram (template, source, sévérité) & 0,868373 & 0,767367 & 1,000000 & 0,004491 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La meilleure baseline simple dépasse Histogram de $0{,}004061$ en F1 moyen ; le critère préenregistré exigeait un avantage d'au moins $0{,}01$. La baseline choisie sur validation a un F1 de $0{,}955121$ à $0{,}955235$ selon la graine. Sur le test, elle et Histogram ont chacun un rappel de 1 pour les cinq graines, mais la baseline produit 491 faux positifs contre 509 et un FPR de $0{,}004332$ contre $0{,}004491$. Selon la règle de décision préétablie, le résultat est dominé par une règle simple ; les F1 de chaque graine figurent au tableau~\ref{tab:hdfs-baselines-seeds}.
 
 \section{BGL : templates connus et inconnus}
+\label{sec:bgl-resultats}
 
-Le détecteur Histogram est évalué sur $19\,908$ unités, dont $2\,885$ positives. Son seuil vaut $10{,}81975828421028$. Il produit $2\,885$ vrais positifs, 545 faux positifs, $16\,478$ vrais négatifs et aucun faux négatif, soit un F1 de $0{,}913698$. Toutefois, $17\,879$ unités, soit $89{,}8081\,\%$, portent un template inconnu.
+Le détecteur Histogram est évalué sur $19\,908$ événements, dont $2\,885$ positifs. Son seuil vaut $10{,}81975828421028$. Il produit $2\,885$ vrais positifs, 545 faux positifs, $16\,478$ vrais négatifs et aucun faux négatif, soit un F1 de $0{,}913698$. Toutefois, $17\,879$ événements, soit $89{,}8081\,\%$, portent un template inconnu.
 
 \begin{figure}[H]
 
@@ -172,13 +239,13 @@ Le détecteur Histogram est évalué sur $19\,908$ unités, dont $2\,885$ positi
 
   \includegraphics[width=0.96\textwidth]{fig_bgl_known_unknown.png}
 
-  \caption[Résultats BGL selon la connaissance du template.]{Résultats BGL selon la connaissance du template. Source : \texttt{ds\_bgl\_known\_unknown\_20260910T082706Z\_\_bgl\_group\_metrics.csv}.}
+  \caption[Résultats BGL selon la connaissance du template.]{F1 d'Histogram sur BGL selon la connaissance du template ; le groupe des templates connus ne contient aucune anomalie. Source : \texttt{agent4\_bgl\_second\_protocol\_20261104T142629Z}, protocole principal.}
 
   \label{fig:bgl-connu-inconnu}
 
 \end{figure}
 
-Le baseline \texttt{UnknownTemplateBaseline} prédit une anomalie pour tout template inconnu. Il atteint seulement un F1 de $0{,}277885$, avec $14\,994$ faux positifs. Histogram dépasse donc nettement une règle de nouveauté brute, mais la composition du test demeure déterminante.
+Le baseline \texttt{UnknownTemplateBaseline} prédit une anomalie pour tout template inconnu. Il atteint seulement un F1 de $0{,}277885$, avec $14\,994$ faux positifs. Histogram dépasse donc la nouveauté de template, mais pas toute règle de nouveauté. Les $49\,999$ événements d'entraînement sont tous de sévérité \texttt{INFO} et Drain3 n'y forme que 7 clusters. Le seuil choisi sur validation est égal à $\ln 49\,999$, soit le score maximal possible : un événement n'est déclaré anormal que si son template, sa source et sa sévérité sont tous absents de l'entraînement. Sur ce test, cette décision coïncide exactement avec la règle « sévérité absente de l'entraînement normal », qui produit la même matrice de confusion et le même F1 (\texttt{agent4\_bgl\_second\_protocol\_20261104T142629Z}). Ce protocole mesure donc une nouveauté de sévérité, non une modélisation de la dynamique des journaux. Le contraste entre validation et test le confirme : le F1 de validation n'est que de $0{,}733460$, pour un FPR de $0{,}6128$, contre $0{,}0320$ au test, les deux périodes ayant des compositions très différentes.
 
 \begin{figure}[H]
 
@@ -186,17 +253,96 @@ Le baseline \texttt{UnknownTemplateBaseline} prédit une anomalie pour tout temp
 
   \includegraphics[width=0.96\textwidth]{fig_bgl_histogram_vs_unknown_baseline.png}
 
-  \caption[Histogram et baseline « template inconnu » sur BGL.]{Histogram et baseline « template inconnu » sur BGL. Source : \texttt{ds\_bgl\_known\_unknown\_20260910T082706Z\_\_bgl\_group\_metrics.csv}.}
+  \caption[Histogram et deux règles de nouveauté sur BGL.]{Histogram face aux règles « template inconnu » et « sévérité absente de l'entraînement » sur BGL. Source : \texttt{agent4\_bgl\_second\_protocol\_20261104T142629Z}, protocole principal.}
 
   \label{fig:bgl-baseline}
 
 \end{figure}
 
+\subsection{Anomalies à template connu}
+\label{sec:bgl-second-protocol}
+\label{sec:bgl-second-protocole}
+
+Le protocole principal ne contient aucun positif sur un template connu. Plusieurs variantes sont évaluées sur la même plage de test, avec un seuil choisi sur validation, un Drain3 ajusté sans label sur le seul entraînement puis gelé, et des histogrammes calculés sur les événements normaux de l'entraînement. Les variantes à entraînement élargi ou adapté laissent au plus 7 positifs sur un template connu : $2\,874$ des $2\,885$ positifs du test appartiennent à une seule famille de messages (\texttt{ciod: Error reading message prefix on CioStream socket}), apparue peu avant le test. Un entraînement contigu de $80\,000$ lignes placé juste avant la validation (protocole G) couvre cette famille : $2\,880$ positifs du test portent alors un template connu.
+
+\begin{table}[H]
+\centering
+\caption{BGL : protocoles complémentaires, test et seuil indépendants.}
+\label{tab:bgl-protocoles}
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Protocole} & \textbf{N test / positifs} & \textbf{Positifs connus} & \textbf{F1 Histogram} & \textbf{F1 template inconnu} \\
+\midrule
+Principal ($49\,999$ lignes) & $19\,908$ / $2\,885$ & 0 & 0,913698 & 0,277885 \\
+5 blocs de $10\,000$ lignes & $19\,908$ / $2\,885$ & 4 & 0,923791 & 0,280130 \\
+10 blocs & $19\,908$ / $2\,885$ & 5 & 0,891293 & 0,280333 \\
+20 blocs & $19\,908$ / $2\,885$ & 6 & 0,730935 & 0,292433 \\
+Drain3 adapté sur validation & $19\,908$ / $2\,885$ & 4 & 0,913698 & 0,279627 \\
+Chronologique 60/20/20 & $97\,107$ / $2\,439$ & 7 & 0,598528 & 0,057592 \\
+20 blocs avant le test & $19\,908$ / $2\,885$ & 6 & 0,940466 & 0,915567 \\
+G : $80\,000$ lignes contiguës & $19\,908$ / $2\,885$ & $2\,880$ & 0,941927 & 0,003257 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Dans le protocole G (\texttt{agent4\_bgl\_contiguous\_horizon\_20261104T145740Z}), le seuil vaut $6{,}977042$ et la matrice de confusion compte $2\,879$ vrais positifs, 349 faux positifs, $16\,674$ vrais négatifs et 6 faux négatifs. Sur les $19\,723$ événements à template connu, dont $2\,880$ positifs, Histogram atteint une précision de $0{,}934655$, un rappel de $0{,}998264$ et un F1 de $0{,}965413$. La part d'événements de test à template inconnu tombe à $0{,}9293\,\%$, et la règle de sévérité inconnue n'obtient plus qu'un F1 de $0{,}000693$ : la décision ne repose plus sur la nouveauté de sévérité.
+
+La couverture du parseur dépend donc surtout de la proximité temporelle entre entraînement et test, les familles d'anomalies de BGL survenant en rafales ; Drain3 reconnaît la totalité des messages de la famille dominante dès qu'il l'a rencontrée. Le F1 varie de $0{,}598528$ à $0{,}941927$ selon le protocole, sans évolution monotone avec la taille de l'entraînement : aucune valeur unique ne résume la performance sur BGL. Le protocole G suit une règle positionnelle sans label, mais sa conception tient compte de la position des familles d'anomalies : il établit un mécanisme et ne constitue pas une estimation indépendante.
+
+\section{Mise en perspective avec des résultats publiés sur HDFS et BGL}
+
+Le tableau~\ref{tab:baselines-publiees} rappelle plusieurs scores publiés avec
+leur protocole. Ils ne forment pas un classement direct : l'unité évaluée, le
+fenêtrage, la taille et la prévalence du test, la partition et l'usage des
+labels diffèrent selon les travaux.
+
+\begin{table}[H]
+\centering
+\caption[Résultats publiés sur HDFS et BGL.]{Scores F1 publiés sur HDFS et
+BGL, accompagnés de leur protocole. Sources : articles cités et artefacts du
+présent travail.}
+\label{tab:baselines-publiees}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.25cm}p{0.80cm}p{1.85cm}p{1.8cm}Xr}
+\toprule
+\textbf{Source} & \textbf{Jeu} & \textbf{Méthode} & \textbf{Cadre} & \textbf{Unité et partition} & \textbf{F1} \\
+\midrule
+DeepLog \cite{du2017deeplog} & HDFS & DeepLog & semi-supervisé & session ; $4\,855$ sessions normales au train & 0,96 \\
+LogBERT \cite{guo2021logbert} & HDFS & LogBERT & auto-supervisé & session ; environ $5\,000$ séquences normales & 0,8232 \\
+LogBERT \cite{guo2021logbert} & HDFS & Isolation Forest & non supervisé & même protocole & 0,6049 \\
+LogBERT \cite{guo2021logbert} & BGL & LogBERT & auto-supervisé & fenêtre de 5 min & 0,9083 \\
+LogBERT \cite{guo2021logbert} & BGL & Isolation Forest & non supervisé & fenêtre de 5 min & 0,3065 \\
+Le et Zhang \cite{le2022logbased} & HDFS & DeepLog & semi-supervisé & session ; partition aléatoire 80:20 & 0,908 \\
+Le et Zhang \cite{le2022logbased} & HDFS & LogRobust & supervisé & session ; partition aléatoire 80:20 & 0,980 \\
+Le et Zhang \cite{le2022logbased} & BGL & DeepLog & semi-supervisé & fenêtre d'une heure ; aléatoire / chronologique & 0,927 / 0,426 \\
+Le et Zhang \cite{le2022logbased} & BGL & LogRobust & supervisé & fenêtre d'une heure ; aléatoire / chronologique & 0,981 / 0,967 \\
+\midrule
+Ce travail & HDFS & Histogram, moyenne & score sans label, seuil validé & bloc ; chronologique 60/20/20, test complet & 0,868373 \\
+Ce travail & BGL & Histogram & nouveauté, seuil validé & événement ; trois périodes chronologiques & 0,913698 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Deux enseignements sont défendables. D'une part, le F1 HDFS de
+$0{,}868373$ se situe dans l'ordre de grandeur de plusieurs résultats publiés,
+sans leur être directement comparable. D'autre part, la sensibilité au
+protocole observée dans ce travail rejoint celle rapportée par Le et Zhang :
+sur BGL, le F1 de DeepLog passe de $0{,}927$ à $0{,}426$ lorsque la partition
+devient chronologique \cite{le2022logbased}. Les Isolation Forest stricts déjà
+présents dans le dépôt atteignent pour leur part un F1 moyen de $0{,}204530$
+au niveau événement sur HDFS et de $0{,}253473$ sur BGL
+(\texttt{agent6\_strict\_e3\_aggregate\_20261104T143019Z}), ce dernier niveau
+étant voisin de la prédiction systématiquement positive ($0{,}253148$).
+
 \section{CSE-CIC-IDS2018 : transfert et dépendance aux variables}
+\label{sec:csecic-resultats}
 
 \subsection{Protocole principal}
 
-L’entraînement utilise le 15 février 2018 et le test le 16 février 2018. Pour chacune des graines 42 à 46, $20\,000$ lignes d’entraînement et $20\,000$ de test sont équilibrées, avec 78 caractéristiques. La régression logistique atteint un F1 moyen de $0{,}999212$, contre $0{,}401375$ pour le Random Forest.
+L’entraînement utilise le 15 février 2018 et le test le 16 février 2018 ; ce sont les deux seules journées disponibles localement. Pour chacune des graines 42 à 46, $20\,000$ lignes d’entraînement et $20\,000$ de test sont équilibrées, avec 78 caractéristiques. La régression logistique atteint un F1 moyen de $0{,}999212$, contre $0{,}401375$ pour le Random Forest. À la prévalence observée du 16 février ($0{,}5714$ dans l’échantillon de test), avec un entraînement à la prévalence naturelle du 15 février, la régression logistique obtient $0{,}994345$ (min. $0{,}981583$, max. $0{,}999672$) et le Random Forest $0{,}095915$ (\texttt{agent4\_csecic\_shortcut\_20261104T144738Z}).
 
 \begin{figure}[H]
 
@@ -226,7 +372,7 @@ Les coefficients moyens de la régression logistique placent notamment \texttt{D
 
 \end{figure}
 
-L’expérience mono-feature apporte un diagnostic particulièrement important : \texttt{Dst Port}, utilisé seul, atteint déjà un F1 moyen de 0,999720. Plusieurs autres variables sont beaucoup moins informatives et certaines conduisent à des comportements proches du hasard. Le score principal dépend donc fortement de la structure du scénario observé ; il serait excessif de l’interpréter comme une robustesse démontrée face à un changement d’environnement.
+L’expérience mono-feature apporte un diagnostic particulièrement important : \texttt{Dst Port}, utilisé seul, atteint déjà un F1 moyen de 0,999720. Une règle fixe, sans apprentissage, qui déclare attaque tout flux de port de destination inférieur à 1024 obtient exactement le même score. Le 16 février, seuls $0{,}0726\,\%$ des flux bénins vérifient cette condition, alors que toutes les attaques visent les ports 80 (Hulk) et 21 (SlowHTTPTest). Le score principal repose donc sur un raccourci propre à la journée de test, analysé en section~\ref{sec:csecic-raccourci}.
 
 \begin{figure}[H]
 
@@ -256,7 +402,7 @@ Le retrait progressif des variables les mieux classées dégrade la performance.
 
 \end{figure}
 
-Après permutation des labels d’entraînement, les F1 deviennent très instables selon les graines : environ 0,350, 0,575, 0,001, 0,400 et 0,374. On ne retrouve donc plus le comportement stable du protocole principal. Les contrôles effectués ne mettent pas en évidence de fuite triviale parmi les mécanismes testés, sans pour autant exclure toute fuite possible ni un biais structurel entre les deux journées.
+Après permutation des labels d’entraînement, les F1 deviennent très instables selon les graines : environ 0,350, 0,575, 0,001, 0,400 et 0,374. On ne retrouve donc plus le comportement stable du protocole principal. Aucune variable ne code directement le label, mais un biais structurel entre les deux journées est établi (section~\ref{sec:csecic-raccourci}).
 
 \begin{figure}[H]
 
@@ -270,9 +416,39 @@ Après permutation des labels d’entraînement, les F1 deviennent très instabl
 
 \end{figure}
 
+\subsection{Raccourci par le port de destination et échec du Random Forest}
+\label{sec:csecic-raccourci}
+
+Une évaluation complémentaire (\texttt{agent4\_csecic\_shortcut\_20261104T144738Z}) conserve les hyperparamètres du protocole principal mais tire un échantillon uniforme, indépendant du label, de chaque journée. L’entraînement compte $50\,000$ lignes à prévalence naturelle ; le test est évalué à sa prévalence observée. Elle croise quatre directions et trois jeux de variables.
+
+\begin{table}[H]
+\centering
+\caption{CSE-CIC-IDS2018 à prévalence observée, F1 moyen sur cinq graines.}
+\label{tab:csecic-prevalence}
+\small
+\begin{tabular}{llrr}
+\toprule
+\textbf{Direction} & \textbf{Variables} & \textbf{LR} & \textbf{RF} \\
+\midrule
+15 $\rightarrow$ 16 & 78 & 0,994345 & 0,095915 \\
+15 $\rightarrow$ 16 & sans \texttt{Dst Port} & 0,728397 & 0,071316 \\
+15 $\rightarrow$ 16 & \texttt{Dst Port} seul & 0,999728 & 0,869156 \\
+16 $\rightarrow$ 15 & 78 & 0,234195 & 0,144013 \\
+intra 15 & 78 & 0,989686 & 0,998598 \\
+intra 16 & 78 & 0,999942 & 0,999958 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Trois constats en découlent. D’abord, la séparation quasi parfaite tient à la journée du 16 février et non aux attaques DoS. Une règle fixe sur le port de destination (inférieur à 1024) atteint $0{,}999728$ sur le 16 février, mais $0{,}121517$ sur le 15, où $76{,}01\,\%$ des flux bénins visent des ports inférieurs à 1024. Le transfert inverse, du 16 vers le 15, ne dépasse pas $0{,}234195$. Ensuite, la régression logistique perd toute capacité de décision sans \texttt{Dst Port} : elle déclare presque tout flux comme attaque, avec un taux de faux positifs de $0{,}9940$. L’importance par permutation confirme ce rôle, \texttt{Dst Port} causant la plus forte perte de F1 ($0{,}5004$). Enfin, le Random Forest n’est pas faible en soi : il atteint $0{,}998598$ et $0{,}999958$ en intra-journée. Il échoue au transfert parce que ses arbres isolent le port 80, seul port d’attaque du 15 février, au lieu d’en extrapoler une pente. SlowHTTPTest, sur le port 21, n’est ainsi jamais détecté. Avec toutes les variables, ses décisions reposent sur des grandeurs de dynamique des flux qui diffèrent d’une famille DoS à l’autre : le taux de détection de Hulk varie de $0{,}0895$ à $0{,}9952$ selon la graine dans le protocole principal.
+
+L’écart entre les deux modèles ne traduit donc pas une meilleure généralisation de la régression logistique. Il résulte de la rencontre entre son extrapolation monotone sur le port et une particularité du fichier du 16 février. Les deux fichiers disponibles comptent par ailleurs chacun exactement $1\,048\,575$ lignes sous l'en-tête, dont un en-tête répété dans celui du 16 février. Ce total, égal à $2^{20}-1$, est compatible avec une troncature à la limite d'un tableur, ce qui appelle une vérification de leur complétude.
+
 \section{Routeur open-set}
 
-Le jeu indépendant contient 31 fichiers répartis en neuf groupes : 28 connus et 3 inconnus. Sans seuil, le routeur classe correctement tous les connus mais ne rejette aucun inconnu. Le seuil de score principal est calibré sur les seules sources connues, puis gelé. À 100, les trois inconnus sont rejetés et aucun des 28 connus ne l’est.
+Le jeu de calibration contient 31 fichiers répartis en neuf groupes : 28 connus et 3 inconnus. Sans seuil, le routeur classe correctement tous les connus mais ne rejette aucun inconnu. Le seuil de score principal est calibré sur les seules sources connues, puis gelé. À 100, les trois inconnus sont rejetés (intervalle exact à 95~\% : $[0{,}292\,;\,1]$) et aucun des 28 connus ne l’est ($[0\,;\,0{,}123]$).
+
+Le seuil gelé est également appliqué, sans recalibration, à 37 fichiers locaux dont l’étiquette est fixée avant le routage : 17 inconnus relevant de 15 schémas (tables CSV génériques, audit Solaris BSM et listes de sessions DARPA 1998) et 18 connus issus de sources non vues à la calibration (\texttt{agent5\_router\_open\_set\_20261104T145601Z}). Sur l’ensemble des 66 fichiers, $20/20$ inconnus sont rejetés ($[0{,}832\,;\,1]$) et $3/46$ connus le sont à tort ($[0{,}014\,;\,0{,}179]$) : les deux journées CSE-CIC-IDS2018 et la forme structurée de Linux\_2k. Les 43 fichiers connus acceptés sont tous correctement orientés.
 
 \begin{figure}[H]
 
@@ -280,17 +456,44 @@ Le jeu indépendant contient 31 fichiers répartis en neuf groupes : 28 connus e
 
   \includegraphics[width=0.97\textwidth]{fig_router_open_set_tradeoff.png}
 
-  \caption[Compromis open-set du routeur sur 31 fichiers.]{Compromis open-set du routeur sur 31 fichiers indépendants. Source : \texttt{router\_open\_set\_final\_tradeoff\_diagnostic.csv}.}
+  \caption[Rejet open-set du routeur selon le seuil, sur 66 fichiers.]{Rejet des inconnus et faux rejet des connus selon le seuil, sur les 31 fichiers de calibration et sur l'ensemble des 66 fichiers. Le seuil 100 a été fixé sur la calibration puis gelé ; le balayage est un diagnostic a posteriori. Source : \texttt{agent5\_router\_open\_set\_20261104T145601Z}.}
 
   \label{fig:routeur-open-set}
 
 \end{figure}
 
-Le rejet open-set fonctionne donc sur les trois fichiers inconnus inclus dans ce jeu indépendant, sans faux rejet parmi les 28 connus. Ce résultat concerne la décision de routage. Il ne dit pas que les modèles spécialisés prédisent systématiquement mieux : l’ablation montre que l’acheminement fonctionne, mais aucun gain de F1 n’apparaît de manière constante dans toutes les familles et graines comparées.
+Le rejet open-set fonctionne donc sur tous les inconnus évalués, mais le seuil gelé écarte aussi des sources connues dont le schéma n’a pas été vu à la calibration ; les limites de ce résultat sont détaillées au chapitre~\ref{chap:validite}. Cette mesure porte sur le routage des sources, pas sur l'avantage prédictif des modèles sélectionnés.
+
+\section{Spécialisation des modèles}
+\label{sec:e-h3b}
+
+Le protocole préenregistré E-H3B-STRICT-HOLDOUT compare un modèle commun aux trois familles à un modèle propre à chacune, avec le même espace de 17 variables et les mêmes hyperparamètres. Pour chaque famille, chaque catégorie d'attaque est tour à tour absente de l'entraînement, puis testée avec autant de lignes normales, à raison d'au plus $1\,500$ positifs par test, soit 18 catégories et cinq graines. Le test étant équilibré, la prédiction systématiquement positive atteint un F1 de $0{,}666667$. Le modèle spécialisé reçoit la famille correcte ; cette condition oracle ne teste donc pas le classifieur de routage. Le critère de non-infériorité exige, pour chaque famille, une borne inférieure de l'IC apparié à 95~\% d'au moins $-0{,}01$.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Modèle spécialisé et modèle commun, catégorie d'attaque tenue à l'écart, cinq graines appariées.}
+\label{tab:e-h3b-family-models}
+\begin{tabularx}{\textwidth}{XrrrXl}
+\toprule
+\textbf{Famille} & \textbf{F1 commun} & \textbf{F1 spécialisé} & \textbf{$\Delta$ F1} & \textbf{IC à 95~\% de $\Delta$} & \textbf{Critère} \\
+\midrule
+CICIDS & 0,1349 & 0,1514 & $+0{,}0165$ & [$-0{,}0190$ ; $0{,}0520$] & échoué \\
+Linux/auth & 0,0528 & 0,2197 & $+0{,}1669$ & [$0{,}1081$ ; $0{,}2256$] & satisfait \\
+UNSW & 0,7817 & 0,7910 & $+0{,}0093$ & [$0{,}0050$ ; $0{,}0135$] & satisfait \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La non-infériorité globale n'est pas établie, car l'intervalle de CICIDS descend sous la marge. Cet échec tient à l'imprécision de l'estimation et non à un delta défavorable. Sur Linux/auth et UNSW, l'intervalle exclut zéro en faveur du modèle spécialisé. L'écart de Linux/auth provient surtout d'une catégorie : \texttt{port\_scan} ($0{,}7100$ contre $0{,}0675$). Le niveau absolu reste le résultat principal : sur CICIDS et Linux/auth, les deux modèles restent très en dessous de la prédiction systématiquement positive, et le F1 vaut zéro pour Bot, Infiltration et \texttt{brute\_force}. UNSW dépasse ce niveau en moyenne, mais pas sur Fuzzers ($0{,}3391$). Spécialiser le modèle ne corrige donc pas la fragilité face à une attaque absente de l'entraînement. Les effectifs d'Infiltration (72 lignes de test) et de Worms (348) rendent leurs scores peu précis.
+
+Une référence par séparation aléatoire stratifiée, sur les mêmes données corrigées, donne des F1 spécialisés de $0{,}9904$ (CICIDS), $0{,}8157$ (Linux/auth) et $0{,}9035$ (UNSW), et satisfait le critère pour les trois familles. L'écart avec le tableau~\ref{tab:e-h3b-family-models} mesure le coût du retrait d'une catégorie.
+
+La comparaison E-H3b, sous la même marge et en séparation aléatoire, n'est pas retenue : son chargement inclut l'étiquette dans le résumé numérique d'UNSW et réduit CICIDS aux attaques DDoS d'un seul fichier. Son échec sur Linux/auth (borne inférieure $-0{,}012326$) disparaît avec un échantillonnage par graine (borne inférieure $-0{,}0076$). Ses artefacts sont conservés pour le contrôle. Aucune de ces expériences n'établit la qualité du routeur ni la généralisation à une famille absente.
 
 \section{Couverture multi-format}
 
-La campagne \texttt{multiformat\_balanced\_20260910T094422Z} vise $1\,000$ unités par source. Sept sources réelles atteignent ce volume ; Apache utilise une fixture synthétique d’une ligne. Au total, $7\,001$ unités sont lues, parsées et normalisées sans perte enregistrée.
+La campagne \texttt{multiformat\_balanced\_20260910T094422Z} est un test d’intégration des adaptateurs. Elle vise $1\,000$ unités par source. Sept sources réelles fournissent $7\,000$ unités ; Apache n’est représenté que par une fixture synthétique d’une ligne. Au total, $7\,001$ unités sont lues et émises dans le schéma commun sans erreur d’exécution ni perte enregistrée.
 
 \begin{figure}[H]
 
@@ -298,13 +501,13 @@ La campagne \texttt{multiformat\_balanced\_20260910T094422Z} vise $1\,000$ unit�
 
   \includegraphics[width=0.98\textwidth]{fig_multiformat_coverage_by_source.png}
 
-  \caption[Couverture par source du protocole multiformat.]{Couverture par source du protocole multiformat. Source : \texttt{multiformat\_balanced\_summary.csv}.}
+  \caption[Couverture et remplissage du schéma par source.]{Unités lues et émises dans le schéma commun, et nombre de champs standard complets, par source. Sources : \texttt{multiformat\_balanced\_20260910T094422Z} et \texttt{agent5\_multiformat\_20261104T150111Z}.}
 
   \label{fig:couverture-multiformat}
 
 \end{figure}
 
-La campagne établit donc une propriété fonctionnelle : les adaptateurs testés parviennent à alimenter le schéma commun pour les unités présentes dans le protocole. Elle ne mesure ni la complétude universelle des champs ni la compatibilité avec tout format possible. Les preuves de provenance indiquent en outre que certaines copies locales ne disposent pas d’une correspondance officielle démontrée ; aucun score n’est donc attribué à une source officielle qui n’a pas été vérifiée.
+La campagne établit donc une propriété d’intégration : chaque unité présente dans le protocole produit une ligne, sans erreur d’exécution. Le remplissage du schéma commun varie selon la source, de sept champs standard sur sept pour syslog et BGL à aucun pour les flux réseau tabulaires (\texttt{agent5\_multiformat\_20261104T150111Z}). La portée de ce test et la provenance des sources sont discutées au chapitre~\ref{chap:validite}.
 
 \section{Benchmark des architectures A--D}
 
@@ -324,7 +527,156 @@ Le benchmark compare quatre architectures : A, monolithe ; B, workers centralis�
 
 Les unités sont explicites dans l’artefact : débit en tâches par seconde et latence en millisecondes. Le temps CPU est enregistré en secondes de processus ; \texttt{cpu\_core\_equivalent\_percent} rapporte ce temps à la durée comme équivalent d’un cœur, tandis que \texttt{cpu\_machine\_normalized\_percent} le normalise par le nombre de processeurs logiques. La mémoire \texttt{rss\_peak\_mb} est le pic de resident set size en mégaoctets. Ces mesures de processus local ne sont pas des consommations énergétiques et ne doivent pas être comparées à des métriques d’infrastructure.
 
-La mémoire agit bien sur certaines décisions contrôlées, ce qui confirme qu’elle intervient dans le calcul d’utilité. En revanche, la campagne ne montre pas d’amélioration systématique du débit, de la latence ou de l’équité. Son effet démontré est donc comportemental : elle peut modifier une attribution, mais son bénéfice opérationnel reste à établir.
+\begin{table}[H]
+\centering
+\caption{Débit moyen du benchmark A--D (tâches/s) et IC à 95~\%, dix répétitions par charge.}
+\label{tab:benchmark-debit}
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{rcccc}
+\toprule
+\textbf{Charge} & \textbf{A, monolithe} & \textbf{B, workers} & \textbf{C, agents} & \textbf{D, agents + mémoire} \\
+\midrule
+100 & $72\,657$ [$56\,283$ ; $89\,030$] & $12\,694$ [$10\,762$ ; $14\,626$] & $1\,309$ [$1\,103$ ; $1\,514$] & $1\,249$ [$1\,094$ ; $1\,404$] \\
+500 & $79\,197$ [$62\,000$ ; $96\,394$] & $15\,537$ [$12\,734$ ; $18\,341$] & $1\,248$ [$1\,123$ ; $1\,373$] & $1\,186$ [$1\,063$ ; $1\,308$] \\
+$1\,000$ & $79\,378$ [$70\,476$ ; $88\,280$] & $16\,766$ [$12\,407$ ; $21\,125$] & $1\,298$ [$1\,217$ ; $1\,379$] & $1\,185$ [$1\,120$ ; $1\,250$] \\
+$5\,000$ & $84\,728$ [$79\,652$ ; $89\,803$] & $14\,714$ [$13\,059$ ; $16\,368$] & $1\,201$ [$1\,124$ ; $1\,278$] & $1\,178$ [$1\,124$ ; $1\,232$] \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Le monolithe traite donc 55 à 72 fois plus de tâches par seconde que les architectures à agents, et les workers centralisés une dizaine de fois plus. Sur ces microtâches, le coût d'orchestration domine entièrement le travail utile. Il ne préjuge pas du rapport observé lorsque la tâche dure plus longtemps, qu'examine la section~\ref{sec:e-cnp}.
+
+La mémoire agit sur le calcul d'utilité et modifie certaines attributions. Aucune différence appariée D $-$ C n'établit pourtant de gain : l'intervalle du débit contient zéro à chaque charge ($-113$ tâches/s [$-229$ ; $4$] pour $1\,000$ tâches), de même que celui de la latence p95, et l'équité diminue à 500 tâches ($-0{,}040$ [$-0{,}064$ ; $-0{,}017$]). Dans ce benchmark, aucune tâche n'échoue et tous les agents réussissent : la mémoire ne dispose d'aucune information utile à exploiter, situation que traite la section~\ref{sec:e-h5}.
+
+
+\subsection{Panne contrôlée appariée}
+\label{sec:panne-appariee}
+
+Pour comparer la robustesse, la même panne est rejouée sur les quatre architectures (\texttt{agent3\_paired\_failure\_abcd\_20261104T141803Z}). Sur une charge appariée de 40 tâches et dix graines, le worker s'arrête après l'effet durable et sa persistance, avant l'émission du résultat ; la tâche est rejouée une fois sur un worker vivant, ou après redémarrage pour le monolithe. Le délai de détection de la panne, commun à toutes les architectures, n'est pas inclus dans la latence de reprise.
+
+\begin{table}[H]
+\centering
+\caption{Panne après persistance et avant \texttt{RESULT}, dix répétitions par architecture.}
+\label{tab:panne-appariee}
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcrrr}
+\toprule
+\textbf{Architecture} & \textbf{Magasin d'idempotence} & \textbf{Pertes} & \textbf{Effets dupliqués} & \textbf{Reprise médiane (ms)} \\
+\midrule
+A, monolithe & non & 0 & 10 & 0,022 \\
+B, workers centralisés & non & 0 & 10 & 0,021 \\
+C, agents, mémoire désactivée & oui & 0 & 0 & 5,819 \\
+D, agents, mémoire activée & oui & 0 & 0 & 5,864 \\
+A avec magasin & oui & 0 & 0 & 5,070 \\
+B avec magasin & oui & 0 & 0 & 4,716 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Aucune architecture ne perd de tâche. Le monolithe A et les workers centralisés B dupliquent l'effet dans les dix répétitions, alors que les architectures C et D, qui partagent un magasin d'idempotence, rejouent le résultat persistant sans effet dupliqué, pour une latence de reprise médiane d'environ 6~ms. Une ablation dotant A et B du même magasin supprime également les doublons. L'avantage observé provient donc du mécanisme d'idempotence intégré à l'architecture par agents, et non de la négociation Contract Net elle-même. Cette comparaison s'exécute dans un seul processus ; la reprise distribuée est examinée en section~\ref{sec:cnp-multivm}.
+
+\begin{figure}[H]
+
+  \centering
+
+  \includegraphics[width=0.98\textwidth]{fig_paired_failure_abcd.png}
+
+  \caption[Panne appariée : doublons et coût du rejeu selon l'architecture.]{Effets dupliqués et latence de reprise médiane après une panne survenant entre la persistance et l'émission de \texttt{RESULT}, dix répétitions par architecture ; A\,+\,I et B\,+\,I désignent A et B dotés du magasin d'idempotence. Source : \texttt{agent3\_paired\_failure\_abcd\_20261104T141803Z}.}
+
+  \label{fig:panne-appariee}
+
+\end{figure}
+
+\subsection{Mémoire sous fiabilité hétérogène}
+\label{sec:e-h5}
+
+Le protocole préenregistré E-H5 compare C et D lorsque la fiabilité réelle des agents s'écarte de leur confiance déclarée. Pour chaque type de tâche, l'agent de plus forte confiance déclarée échoue avec une probabilité $p$, selon un tirage commun aux deux bras ; les autres agents ne reçoivent aucun échec. Chaque exécution porte sur $1\,000$ tâches synthétiques de 2~ms, avec trois coordinateurs concurrents et 30 graines. Le gain à un niveau exige que l'IC à 95~\% du delta du taux d'échec à la première exécution soit strictement négatif et que la borne inférieure de l'IC du rapport de débit atteigne au moins $0{,}95$.
+
+\begin{table}[H]
+\centering
+\caption{E-H5 : mémoire activée (D) contre désactivée (C), 30 graines appariées. }
+\label{tab:e-h5}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccc}
+\toprule
+$p$ & \textbf{Échec initial C / D} & \textbf{Delta D $-$ C [IC 95~\%]} & \textbf{Débit D/C [IC 95~\%]} & \textbf{Gain} \\
+\midrule
+0,3 & 0,1096 / 0,1069 & $-0{,}0027$ [$-0{,}0086$ ; $0{,}0031$] & 0,972 [0,954 ; 0,991] & non \\
+0,6 & 0,2405 / 0,2103 & $-0{,}0302$ [$-0{,}0389$ ; $-0{,}0215$] & 0,975 [0,942 ; 1,008] & non \\
+0,9 & 0,3729 / 0,0736 & $-0{,}2993$ [$-0{,}3138$ ; $-0{,}2848$] & 1,210 [1,194 ; 1,225] & oui \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Selon le critère préenregistré, le gain est conditionnel : il n'est établi que pour $p = 0{,}9$. À $p = 0{,}6$, le taux d'échec diminue, mais le garde-fou de débit n'est pas satisfait ; à $p = 0{,}3$, l'intervalle contient zéro. Sur $30\,000$ tâches par niveau, les échecs finaux passent de 3 à 6, de 19 à 4 et de 44 à 3 entre C et D. Même au niveau favorable, l'indice de Jain recule ($-0{,}037$ [$-0{,}041$ ; $-0{,}033$]). La mémoire n'apporte donc un bénéfice net que lorsque la déclaration de confiance est très éloignée de la fiabilité réelle.
+
+L'analyse de sensibilité en exécution séquentielle, sur dix graines, ne participe pas à la décision. Elle montre un écart bien plus marqué : le taux de C reste voisin de $p$ ($0{,}303$ ; $0{,}602$ ; $0{,}901$), celui de D tombe à $0{,}033$, $0{,}006$ et $0{,}004$, tandis que l'indice de Jain recule de $0{,}37$ à $0{,}41$. Sans concurrence, le terme de charge ne disperse plus les tâches : C reste sur l'agent défaillant et D se concentre sur un agent qui a réussi. Ce contraste indique que, sous concurrence, l'étalement dû à la charge masque une grande partie de l'effet de la mémoire. L'expérience reste synthétique : échecs injectés, processus unique et confiance volontairement erronée. Elle concerne la priorisation de l'attribution entre agents, non celle des anomalies, qui reste non mesurée.
+
+\subsection{Contract Net face à une table statique}
+\label{sec:e-cnp}
+
+Le protocole préenregistré E-CNP compare, sur les mêmes tâches et les mêmes agents, Contract Net sans mémoire (C), Contract Net avec mémoire (D) et une table statique. Celle-ci associe à chaque type de tâche la liste des agents par confiance déclarée décroissante, et passe à l'agent suivant en cas de refus ou d'échec. Elle exploite ainsi la même information déclarée, sans négociation, sans mémoire et sans observation de la charge. Le plan croise cinq scénarios, trois bras et 30 graines, pour $1\,000$ tâches par exécution et trois coordinateurs concurrents ; le scénario sans durée de service mesure le coût pur et n'entre pas dans la règle de décision.
+
+\begin{table}[H]
+\centering
+\caption{E-CNP : Contract Net contre table statique, 30 graines appariées ; débits en tâches/s ; l'échec initial désigne l'échec à la première exécution.}
+\label{tab:e-cnp}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{X>{\centering\arraybackslash}p{2.1cm}>{\centering\arraybackslash}p{3.0cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{1.9cm}}
+\toprule
+\textbf{Scénario} & \textbf{Débit table / C} & \textbf{C/table [IC 95~\%]} & \textbf{Échec initial table / C} & \textbf{Décision C / D} \\
+\midrule
+Coût pur, sans service & $13\,283$ / $2\,704$ & 0,211 [0,193 ; 0,229] & 0 / 0 & hors règle \\
+Nominal, 2~ms & $1\,103$ / 956 & 0,867 [0,856 ; 0,878] & 0 / 0 & défav. / défav. \\
+Fiabilité hétérogène, $p = 0{,}3$ & 856 / 865 & 1,011 [1,001 ; 1,020] & 0,2971 / 0,1095 & fav. / fav. \\
+Panne silencieuse de \texttt{gamma} & 825 / 801 & 0,971 [0,964 ; 0,977] & 0,3500 / 0,2101 & fav. / fav. \\
+\texttt{gamma} lent, 10~ms & 636 / 736 & 1,157 [1,149 ; 1,165] & 0 / 0 & fav. / indét. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La décision préenregistrée est un avantage conditionnel : favorable sur trois des quatre scénarios, défavorable en régime nominal. Contract Net échange environ dix messages par tâche. Il réduit le débit de 13~\% lorsque le service dure 2~ms et ne conserve qu'un cinquième du débit de la table lorsque la tâche ne fait presque rien.
+
+La lecture de ces gains appelle deux réserves. D'abord, ils ne proviennent pas d'une décision informée par les échecs : C n'a pas de mémoire et ignore ces derniers. Ils coïncident avec l'étalement produit par le terme de charge de l'utilité : en régime nominal, C répartit les exécutions à parts égales entre les trois agents, alors que la table en confie $49{,}3~\%$ à \texttt{agent-gamma}. Le nom \texttt{gamma} désigne ici \texttt{agent-gamma}. Comme les défaillances et la lenteur injectées visent les agents les plus sollicités par la table, s'en écarter suffit à les éviter. Le contraste C $-$ table ne sépare donc pas la négociation de la simple prise en compte de la charge ; la section~\ref{sec:e-cnp-moindre} teste ce point. Ensuite, la table n'enregistre aucun échec final sur $30\,000$ tâches par scénario, alors que Contract Net perd quelques tâches lorsque des agents défaillent : 4 pour C et 8 pour D sous fiabilité hétérogène, 50 pour D sous panne silencieuse. D'après le code, un agent occupé lors de l'appel d'offres ne propose pas et n'entre pas dans la liste de repli de ce contrat. Ces échecs restent rares (au plus 50 sur $30\,000$), mais ils constituent une faiblesse propre au protocole tel qu'il est implémenté.
+
+Ces résultats n'établissent donc pas la valeur de la négociation en tant que telle.
+
+\subsection{Contract Net face à un répartiteur au moindre chargé}
+\label{sec:e-cnp-moindre}
+
+Le protocole préenregistré E-CNP-LEAST-LOADED, décidé après lecture de la comparaison précédente, sépare la négociation de la prise en compte de la charge. Un répartiteur choisit l'agent le moins occupé, avec la confiance déclarée en départage et le même repli, sans offre, sans mémoire et sans message de protocole. Les scénarios et la règle de décision sont inchangés ; les 30 graines sont nouvelles, soit 450 exécutions.
+
+\begin{table}[H]
+\centering
+\caption{E-CNP-LEAST-LOADED : Contract Net sans mémoire (C) contre répartiteur au moindre chargé, 30 graines appariées ; débits en tâches/s.}
+\label{tab:e-cnp-moindre}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{X>{\centering\arraybackslash}p{2.1cm}>{\centering\arraybackslash}p{3.0cm}>{\centering\arraybackslash}p{2.4cm}>{\centering\arraybackslash}p{1.7cm}}
+\toprule
+\textbf{Scénario} & \textbf{Débit répartiteur / C} & \textbf{C/répartiteur [IC 95~\%]} & \textbf{Échec initial répartiteur / C} & \textbf{Décision} \\
+\midrule
+Coût pur, sans service & $8\,402$ / $2\,598$ & 0,321 [0,298 ; 0,343] & 0 / 0 & hors règle \\
+Nominal, 2~ms & $1\,098$ / 955 & 0,870 [0,857 ; 0,883] & 0 / 0 & défavorable \\
+Fiabilité hétérogène, $p = 0{,}3$ & 962 / 824 & 0,859 [0,821 ; 0,897] & 0,1093 / 0,1094 & défavorable \\
+Panne silencieuse de \texttt{gamma} & 882 / 783 & 0,890 [0,869 ; 0,912] & 0,2103 / 0,2099 & défavorable \\
+\texttt{gamma} lent, 10~ms & 832 / 733 & 0,881 [0,868 ; 0,894] & 0 / 0 & défavorable \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La décision préenregistrée est l'absence d'avantage : Contract Net est défavorable sur les quatre scénarios. Le répartiteur atteint les mêmes taux d'échec à la première exécution, les intervalles des deltas contenant zéro, et Contract Net perd 11 à 14~\% de débit pour environ dix messages par tâche. Sur $30\,000$ tâches, le répartiteur ne perd aucune tâche sous fiabilité hétérogène, contre 5 pour Contract Net. Face à la table statique, le répartiteur est favorable sur les trois scénarios de charge inégale ou de défaillance et indéterminé en régime nominal (rapport de débit 0,991 [0,983 ; 1,000]). La prise en compte de la charge suffit donc à produire ces gains, et la négociation n'y ajoute rien de mesurable.
+
+Sur ces nouvelles graines, C reste favorable face à la table lorsque \texttt{gamma} est lent et défavorable en régime nominal. Sous fiabilité hétérogène et panne silencieuse, il devient indéterminé : les échecs initiaux baissent autant ($-0{,}1853$ et $-0{,}1400$), mais le garde-fou de débit n'est plus satisfait (bornes inférieures 0,935 et 0,939). Les décisions favorables de la section~\ref{sec:e-cnp} sur ces deux scénarios ne sont donc pas stables d'un ensemble de graines à l'autre.
+
+Cette comparaison avantage le répartiteur par construction : il lit directement l'état des agents, dans un seul processus, sans coût de transport ni information périmée. Une exécution distribuée, où connaître la charge a un coût, pourrait modifier ce rapport ; elle n'a pas été testée. L'expérience ne compare pas non plus Contract Net à Celery, à Kafka ou à un moteur de workflow. Dans le périmètre évalué, l'avantage propre de la négociation n'est pas établi, et aucun résultat ne justifie son coût face à une règle de moindre charge.
+
 
 \section{Exécution de bout en bout avec modèles réels}
 
@@ -342,7 +694,7 @@ La campagne multi-source contient $1\,401$ unités : une unité Apache et 200 un
 
 \end{figure}
 
-La latence moyenne agrégée est 0,031027\~s pour H et 0,105420\~s pour M. Cette différence quantifie le coût du chargement et de l’inférence dans le protocole local.
+La latence moyenne agrégée est 0,031027~s pour H et 0,105420~s pour M. Cette différence quantifie le coût du chargement et de l’inférence dans le protocole local.
 
 \begin{figure}[H]
 
@@ -359,6 +711,7 @@ La latence moyenne agrégée est 0,031027\~s pour H et 0,105420\~s pour M. Cette
 Il n’est pas pertinent de calculer une exactitude globale sur cette campagne, puisque les sources ne partagent pas une vérité terrain homogène. Le F1 de 0,390244 observé sur Linux/auth reste donc un résultat descriptif propre à cette source ; il ne peut pas servir de résumé de l’exécution multi-source.
 
 \section{Campagne Contract Net multi-VM}
+\label{sec:cnp-multivm}
 
 \subsection{Protocole}
 
@@ -376,7 +729,7 @@ Chaque agent accepte au plus une tâche parallèle. Le protocole soumet une micr
 
 \subsection{Résultats}
 
-La durée observée atteint $3\,605{,}110$~s pour une cible de $3\,600$~s. Les $1\,800$ tâches planifiées se terminent toutes avec succès, soit un débit moyen de $0{,}499291$ tâche/s. La latence moyenne vaut $88{,}250280$~ms, la médiane $53{,}983$~ms, le p95 $156{,}3017$~ms et le p99 $836{,}72528$~ms.
+La durée observée atteint $3\,605{,}110$~s pour une cible de $3\,600$~s. Les $1\,800$ tâches planifiées se terminent toutes avec succès. Le débit de $0{,}499291$ tâche/s correspond à la charge offerte, une tâche toutes les deux secondes : il ne mesure pas une capacité maximale. La latence moyenne vaut $88{,}250280$~ms, la médiane $53{,}983$~ms, le p95 $156{,}3017$~ms et le p99 $836{,}72528$~ms.
 
 \begin{table}[H]
 \centering
@@ -388,7 +741,7 @@ La durée observée atteint $3\,605{,}110$~s pour une cible de $3\,600$~s. Les $
 \midrule
 Durée cible / observée & $3\,600$ / $3\,605{,}110$ s \\
 Tâches réussies & $1\,800/1\,800$ \\
-Débit moyen & $0{,}499291$ tâche/s \\
+Charge offerte (débit observé) & $0{,}499291$ tâche/s \\
 Latence médiane / p95 / p99 & $53{,}983$ / $156{,}3017$ / $836{,}72528$ ms \\
 Répartition & Debian : 451 ; Ubuntu : $1\,349$ \\
 Reprise terminale & réattribution réussie ; rejeu idempotent \\
@@ -397,13 +750,44 @@ Effets persistants / dupliqués & 1 / 0 \\
 \end{tabularx}
 \end{table}
 
-Lors du scénario terminal, Debian persiste le résultat puis s’arrête avant de publier \texttt{RESULT}. Le coordinateur réattribue la tâche à Ubuntu ; le magasin Redis renvoie le résultat déjà persistant au lieu de répéter l’effet. Un seul effet est observé et aucun doublon n’apparaît. La campagne fournit ainsi une preuve directe de l’endurance du protocole, de la reprise contrôlée et de l’idempotence dans cette topologie.
+Lors du scénario terminal, Debian persiste le résultat puis s’arrête avant de publier \texttt{RESULT}. Le coordinateur réattribue la tâche à Ubuntu ; le magasin Redis renvoie le résultat déjà persistant au lieu de répéter l’effet. Un seul effet est observé et aucun doublon n’apparaît. La campagne montre ainsi, à une charge très inférieure à la capacité mesurée plus loin, la continuité du protocole, la reprise contrôlée et l'idempotence dans cette topologie.
 
-La trace de messages ne conserve que la fenêtre terminale de $10\,001$ événements à cause de la rétention approximative configurée pendant ce run. Ses compteurs par type sont donc exclus des conclusions ; les métriques par tâche, le résultat de reprise et le magasin d’idempotence restent complets. Redis demeure par ailleurs un point central : aucun basculement du broker, aucune partition réseau, aucun fonctionnement multi-site et aucune charge industrielle ne sont testés. La campagne valide des mécanismes de distribution en laboratoire, pas une architecture hautement disponible.
+La répartition de 451 tâches pour Debian et $1\,349$ pour Ubuntu découle de la fonction d'utilité et des profils de capacité configurés. Les quatre types de tâches sont soumis en rotation ; le profil de Debian a la confiance la plus élevée pour l'analyse syntaxique ($0{,}95$ contre $0{,}78$), celui d'Ubuntu pour le routage, la détection et la corrélation. Le décompte par type confirme cette règle : Debian remporte 450 tâches d'analyse syntaxique, Ubuntu 449 à 450 tâches de chacun des trois autres types ; les deux exceptions relèvent du scénario de panne. Ni la version de Python ni la charge n'expliquent donc cette répartition.
+
+La trace de messages de cette campagne ne conserve que la fenêtre terminale de $10\,001$ événements, à cause de la rétention approximative configurée. Ses compteurs par type sont donc exclus des conclusions ; les métriques par tâche, le résultat de reprise et le magasin d'idempotence restent complets.
+
+\subsection{Saturation}
+
+Un test de saturation en boucle ouverte (\texttt{agent3\_saturation\_multivm\_20261104T142325Z}) soumet des tâches de décision HDFS à des débits croissants de 1 à 64 tâches/s, sur des fenêtres de 30~s répétées trois fois, avec 32 coordinateurs concurrents. Jusqu'à 8 tâches/s, le débit atteint suit la charge offerte et la latence médiane reste comprise entre $0{,}06$ et $0{,}22$~s. À partir de 16 tâches/s, le débit atteint plafonne entre $8{,}4$ et $15{,}0$ tâches/s et la latence p95 croît jusqu'à plus de 100~s, sous l'effet de l'attente côté coordinateur. La capacité soutenue de cette topologie se situe donc entre 8 et 16 tâches/s ; la charge de $0{,}5$ tâche/s de l'endurance en est très éloignée. Trois tâches sur $11\,430$ échouent par expiration de délai. L'agent Ubuntu ne reçoit des tâches qu'en saturation, lorsque l'agent Debian ne répond plus dans le délai imparti. Il remporte 143 attributions et en mène 140 à bien, soit $1{,}23\,\%$ des $11\,427$ tâches réussies ; les trois expirations le concernent toutes. La seconde machine n'augmente donc pas la capacité observée.
+
+\begin{figure}[H]
+
+  \centering
+
+  \includegraphics[width=0.80\textwidth]{fig_saturation_multivm.png}
+
+  \caption[Saturation de la topologie à deux machines virtuelles.]{Débit atteint, latence p95 et part des tâches traitées par l'agent Ubuntu selon le débit offert, trois répétitions de 30~s par niveau. Source : \texttt{agent3\_saturation\_multivm\_20261104T142325Z}.}
+
+  \label{fig:saturation-multivm}
+
+\end{figure}
+
+\subsection{Détection HDFS en mode distribué}
+\label{sec:hdfs-distribue}
+
+Le run \texttt{hdfs\_multivm\_cnp\_20261104T135345Z} fait passer par le Contract Net un échantillon de $2\,000$ blocs du test HDFS, dont 29 positifs. Chaque tâche transporte l'identifiant du bloc, son étiquette et son score moyen calculé avec l'état Drain3 gelé ; l'agent attributaire applique le seuil figé $1{,}272943$ et renvoie sa prédiction. Les scores ne sont pas recalculés dans les machines virtuelles : l'expérience évalue la chaîne de décision distribuée, non un parsing distribué.
+
+Les $2\,000$ tâches aboutissent. La matrice de confusion vaut TP~$=29$, FP~$=7$, TN~$=1\,964$, FN~$=0$, soit un F1 de $0{,}892308$, identique au calcul centralisé sur les mêmes scores. La latence de négociation est de $57{,}69$~ms en médiane, $104{,}23$~ms au p95 et $236{,}23$~ms au p99, pour un débit de $14{,}92$ blocs/s en négociation séquentielle.
+
+Toutes les tâches sont attribuées à \texttt{debian-alpha}. Les deux agents ayant le même profil, ils proposent une utilité identique ($0{,}845$) et le coordinateur départage par ordre d'identifiant ; la charge, nulle au moment de chaque appel d'offres séquentiel, ne les distingue pas. L'expérience démontre donc que la détection traverse le protocole sans perte ni altération des prédictions, mais pas un partage effectif de la charge de détection entre les deux hôtes. Un départage aléatoire ou fondé sur l'historique, ou des appels d'offres concurrents, seraient nécessaires pour l'établir.
+
+Redis demeure par ailleurs un point central : aucun basculement du broker, aucune partition réseau, aucun fonctionnement multi-site et aucune charge industrielle ne sont testés. La campagne valide des mécanismes de distribution en laboratoire, pas une architecture hautement disponible.
 
 \section{Corrélation d’incidents}
 
-La campagne synthétique de corrélation atteint une précision de 0,764706, un rappel de 0,866667 et un F1 de 0,812500. Elle vérifie que les règles temporelles et contextuelles rapprochent la majorité des événements appartenant aux incidents construits, tout en produisant encore des associations incorrectes et des omissions.
+Sur le corpus synthétique de référence (16 anomalies réparties en 6 incidents, soit 120 paires), le corrélateur réunit correctement 13 paires (TP), en réunit 4 à tort (FP) et en sépare 2 à tort (FN) : précision $13/17 = 0{,}764706$, rappel $13/15 = 0{,}866667$, F1 $0{,}812500$. Une baseline fondée sur la seule fenêtre temporelle obtient le même rappel avec 31 FP (précision $13/44 = 0{,}295455$).
+
+Un générateur à graine produit en outre des corpus plus grands (20 graines, 80 incidents, 20 anomalies isolées et 40 événements non anomaux par corpus ; \texttt{agent5\_correlation\_20261104T141916Z}). Avec des clés stables, le corrélateur atteint, en comptes agrégés, $7\,076$ TP, 83 FP et $4\,770$ FN : précision $0{,}9884$ (intervalle bootstrap sur graines $[0{,}9808\,;\,0{,}9951]$) et rappel $0{,}5973$ ($[0{,}5837\,;\,0{,}6106]$). La fenêtre seule conserve le même rappel mais ne dépasse pas une précision de $0{,}2302$. Les omissions viennent de la fenêtre fixe, qui fragmente en moyenne 41 des 100 incidents vrais d’une graine. Lorsque 30~\% des incidents enchaînent plusieurs catégories d’événements, le rappel tombe à $0{,}4835$ et la variante réduite à l’hôte et à la fenêtre obtient un meilleur F1 sur chacune des 20 graines ($0{,}7268$ contre $0{,}6496$). Les clés contextuelles apportent donc surtout de la précision ; elles fragmentent les incidents multi-étapes.
 
 Ces métriques décrivent uniquement la qualité du regroupement. Elles ne corrigent pas une erreur de détection produite en amont et, inversement, une alerte correcte peut encore être mal rattachée si les informations contextuelles sont insuffisantes. Détection et corrélation restent donc deux niveaux d’évaluation distincts.
 
@@ -413,10 +797,35 @@ L’état de la gouvernance des modèles doit être lu par niveaux. Le code de c
 
 Le statut retenu est donc : \textbf{IMPLÉMENTÉ} pour l’infrastructure de comparaison, \textbf{TESTÉ} pour les chemins couverts, \textbf{NON ÉVALUÉ} pour le bénéfice global et \textbf{PERSPECTIVE} pour une mise à jour autonome continue. Le terme \textbf{ÉVALUÉ} n’est pas appliqué à une amélioration prédictive qui n’a pas été mesurée.
 
+\section{Comparaison aux règles simples}
+\label{sec:baselines-par-jeu}
+
+Le tableau~\ref{tab:baselines-par-jeu} confronte, sur chaque test, le résultat principal à la meilleure règle simple évaluée sur le même test.
+
+\begin{table}[H]
+\centering
+\caption{Résultat principal et meilleure règle simple, par jeu et par protocole (F1).}
+\label{tab:baselines-par-jeu}
+\small
+\begin{tabularx}{\textwidth}{p{0.29\textwidth}Xcc}
+\toprule
+\textbf{Jeu et protocole} & \textbf{Règle simple} & \textbf{Règle} & \textbf{Modèle} \\
+\midrule
+CICIDS2017, holdout par scénario & Tout positif & 0,473265 & LR 0,233670 \\
+CICIDS2017, séparation temporelle & Tout positif & 0,666667 & LR 0,556615 \\
+HDFS, test complet, niveau bloc & Surprise moyenne du template & 0,872434 & Histogram 0,868373 \\
+BGL, niveau événement & Sévérité absente de l'entraînement & 0,913698 & Histogram 0,913698 \\
+CSE-CIC-IDS2018, 15 vers 16 février & Port de destination inférieur à 1024 & 0,999720 & LR 0,999212 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Aucun résultat principal ne dépasse sa règle simple. Ces règles ne constituent pas des détecteurs recommandables : leur score révèle la structure du test, comme la prévalence des partitions CICIDS2017 ou le port de destination propre au 16 février. Leur intérêt est de fixer le niveau qu'un modèle doit dépasser pour que son score apporte une information.
+
 \section{Synthèse des résultats}
 
 Le résultat le plus transversal de ce chapitre est l’influence du protocole sur ce que l’on peut conclure. Sur CICIDS2017, le F1 du Random Forest passe de $0{,}995142$ sous séparation aléatoire à $0{,}157744$ lorsque le test repose sur des scénarios tenus hors entraînement. HDFS rappelle de son côté que l’unité d’analyse doit correspondre à l’unité des labels, tandis que BGL montre pourquoi la proportion de templates inconnus doit accompagner le score global.
 
-Les campagnes d’architecture conduisent à une lecture différente. Le Contract Net fonctionne dans le laboratoire et rend visibles propositions, refus, attributions et reprises, mais cette organisation ajoute un coût d’orchestration. La mémoire influence certaines décisions sans produire de gain systématique sur les métriques opérationnelles mesurées. La poursuite bornée d'un objectif, l'enchaînement de sous-tâches, la délégation et la reprise d'état sont vérifiés fonctionnellement par les tests du noyau ; aucun gain de débit, de latence ou de qualité prédictive ne leur est attribué sans campagne quantitative dédiée. Le routeur, la couverture multi-format et l’exécution avec modèles réels établissent surtout que les différentes briques peuvent être intégrées et tracées dans une même chaîne.
+Les campagnes d’architecture conduisent à une lecture différente. Le Contract Net fonctionne dans le laboratoire et rend visibles propositions, attributions et reprises, mais il divise le débit du monolithe par 55 à 72 sur les microtâches. Face à une table statique, son avantage reste conditionnel, et un répartiteur au moindre chargé, sans négociation, obtient les mêmes taux d'échec avec un débit supérieur : l'avantage propre de la négociation n'est pas établi. La mémoire n'apporte de gain établi que pour une probabilité d'échec de $0{,}9$. La poursuite bornée d'un objectif, l'enchaînement de sous-tâches, la délégation et la reprise d'état sont vérifiés fonctionnellement par les tests du noyau ; aucun gain de débit, de latence ou de qualité prédictive ne leur est attribué sans campagne quantitative dédiée. Le routeur, la couverture multi-format et l’exécution avec modèles réels établissent surtout que les différentes briques peuvent être intégrées et tracées dans une même chaîne.
 
 La contribution expérimentale réside donc moins dans un score unique que dans cette mise en relation entre résultat, protocole et preuve. Rien dans ces campagnes ne permet de conclure à une performance globale multi-source, à une supériorité universelle des agents ou à une validation d’infrastructure industrielle.

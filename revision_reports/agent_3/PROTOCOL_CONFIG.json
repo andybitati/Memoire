@@ -1,0 +1,89 @@
+{
+  "run_id": "agent3_protocol_design_20261104",
+  "status": "NOT_EXECUTED",
+  "blocker_artifact": "revision_reports/agent_3/BLOCKERS.json",
+  "hdfs_multivm": {
+    "source_run_id": "ds_hdfs_block_20260910T081756Z",
+    "source_result": "experiments/phase_dataset_strengthening/raw/ds_hdfs_block_20260910T081756Z__hdfs_block_result.json",
+    "block_index": "experiments/phase_dataset_strengthening/processed/ds_hdfs_block_20260910T081756Z__hdfs_selected_blocks.csv",
+    "event_input": "experiments/phase_dataset_strengthening/raw/ds_hdfs_block_20260910T081756Z__hdfs_selected_events.csv.gz",
+    "drain3_state": "experiments/phase_dataset_strengthening/processed/ds_hdfs_block_20260910T081756Z__hdfs_drain3_train_state.bin",
+    "partition": "test",
+    "expected_blocks": 2000,
+    "expected_positive_blocks": 29,
+    "frozen_aggregator": "mean",
+    "frozen_threshold": 1.2729429339548877,
+    "task_type": "hdfs.block.evaluate",
+    "required_agents": [
+      "debian-alpha",
+      "ubuntu-beta"
+    ],
+    "metrics": [
+      "f1",
+      "tp",
+      "fp",
+      "tn",
+      "fn",
+      "latency_mean_ms",
+      "latency_median_ms",
+      "latency_p95_ms",
+      "latency_p99_ms",
+      "tasks_by_agent"
+    ]
+  },
+  "saturation": {
+    "baseline_run_id": "cnp_endurance_multivm_20260918T130822Z",
+    "baseline_artifact": "experiments/phase_cnp_endurance/aggregated/cnp_endurance_multivm_20260918T130822Z__summary.json",
+    "offered_load_tasks_sec": [
+      0.5,
+      1.0,
+      2.0,
+      4.0,
+      8.0,
+      16.0,
+      22.120187,
+      32.0
+    ],
+    "repetitions_per_level": 10,
+    "producer": "open_loop",
+    "stop_rule": "p95 latency grows while completion rate plateaus or Redis lag remains positive at the end of the observation window",
+    "metrics": [
+      "offered_tasks_sec",
+      "completed_tasks_sec",
+      "redis_lag",
+      "pending",
+      "losses",
+      "latency_p50_ms",
+      "latency_p95_ms",
+      "latency_p99_ms",
+      "tasks_by_agent"
+    ]
+  },
+  "paired_failure_abcd": {
+    "reference_run_id": "ma_20260909T160812Z_34016",
+    "reference_artifact": "experiments/phase_multi_agent/raw/ma_20260909T160812Z_34016__recovery.json",
+    "architectures": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "repetitions": 10,
+    "failure_point": "after_durable_effect_before_result_commit_or_RESULT",
+    "common_requirements": [
+      "same workload",
+      "same seed",
+      "same durable effect counter",
+      "same idempotency key",
+      "same timeout and retry policy"
+    ],
+    "metrics": [
+      "lost_tasks",
+      "duplicate_effects",
+      "recovered_tasks",
+      "recovery_latency_ms",
+      "pending_final",
+      "lag_final"
+    ]
+  }
+}

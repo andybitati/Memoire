@@ -1,0 +1,24 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre6_approfondissements_scientifiques.tex
+%   (§5.2 « Validité interne », PDF p. 108)
+% Ligne à remplacer : 19 (« Le cas de CSE-CIC-IDS2018 demande encore une
+%   autre lecture. ... ne mettent pas en évidence de fuite triviale parmi les
+%   mécanismes testés. Cela n'exclut toutefois pas ... »).
+% Auteur : Agent 1 (intégrité factuelle), chantier 2026-11-05.
+% Justification : le §4.6.4 (chapitre5_resultats.tex l. 350, 380, 418) établit
+%   un raccourci propre à la journée de test et « un biais structurel entre les
+%   deux journées » ; le §5.2 ne peut pas conclure à l'absence de fuite
+%   triviale. Le terme « fuite » est évité, la note de figure A.9
+%   (annexes.tex l. 214) présentant le mono-feature comme « diagnostic de
+%   dépendance et non preuve de fuite ».
+% Sources des chiffres (agent4_csecic_shortcut_20261104T144738Z,
+%   experiments/phase_revision_20261104/agent_4_csecic/
+%   agent4_csecic_shortcut_20261104T144738Z__printed_summary.txt) :
+%   LR Dst Port seul et règle « port < 1024 », test équilibré du 16 février :
+%   f1 = 0.999720 ; règle sur le 15 février : 0.121517 ; LR 16 -> 15 : 0.234195.
+% Point lié hors périmètre Agent 1 : limites_consolidees.tex l. 13-14
+%   (« un artefact lié aux journées retenues ... ne peut être exclu ») est
+%   en retrait sur le même constat -> Agent 4.
+% ============================================================================
+
+Le cas de CSE-CIC-IDS2018 demande encore une autre lecture. La séparation par journée limite le mélange direct entre lignes d'entraînement et de test, mais elle n'empêche pas un raccourci propre à la journée de test. \texttt{Dst Port} utilisé seul atteint un F1 moyen de $0{,}999720$, et une règle fixe qui déclare attaque tout flux de port de destination inférieur à 1024 obtient le même score sur le 16 février, alors qu'elle n'atteint que $0{,}121517$ sur le 15 ; le transfert inverse, du 16 vers le 15 février, ne dépasse pas $0{,}234195$ (section~\ref{sec:csecic-raccourci}). La permutation des labels indique qu'aucune variable ne code directement le label, mais le score principal repose sur ce biais structurel entre les deux journées : la séparation par journée ne suffit donc pas à garantir que le modèle apprend une logique d'attaque transférable.

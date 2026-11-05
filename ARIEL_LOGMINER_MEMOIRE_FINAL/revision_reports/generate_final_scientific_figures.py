@@ -135,42 +135,107 @@ def cicids_figures() -> None:
         "La régression logistique est le meilleur candidat selon le F1 macro moyen de ce protocole, sans supprimer la fragilité du holdout.")
 
 
+REV = "experiments/phase_revision_20261104"
+HDFS_FULL = f"{REV}/agent_2_hdfs/agent2_hdfs_full_20261104T131314Z__result.json"
+HDFS_CI = f"{REV}/agent_2_hdfs/agent2_hdfs_full_20261104T131314Z__test_block_ci.json"
+HDFS_SAMPLE = "experiments/phase_dataset_strengthening/raw/ds_hdfs_block_20260910T081756Z__hdfs_block_result.json"
+HDFS_SAMPLE_BOOT = "experiments/phase_final_scientific_consolidation/raw/hdfs_block_robustness_20260911T002351Z_bootstrap_replicates.csv"
+BGL_GROUPS = f"{REV}/agent_4_bgl/agent4_bgl_second_protocol_20261104T142629Z__group_metrics.csv"
+ROUTES = f"{REV}/agent_5_router_open_set/routes.csv"
+ROUTER_RESULT = f"{REV}/agent_5_router_open_set/result.json"
+MULTIFORMAT = f"{REV}/agent_5_multiformat/result.json"
+NNBSP = " "
+
+
+def thousands(n: int) -> str:
+    return f"{n:,}".replace(",", NNBSP)
+
+
 def hdfs_bgl_figures() -> None:
-    hpath = REPO / "experiments/phase_dataset_strengthening/raw/ds_hdfs_block_20260910T081756Z__hdfs_block_result.json"
-    h = json.loads(hpath.read_text(encoding="utf-8"))
-    event_f1 = float(h["historical_reference"]["f1"])
-    block_f1 = float(h["block_selection"]["test_f1"])
-    fig, ax = plt.subplots(figsize=(8.5, 6))
-    bars = ax.bar(["Événement\n(protocole historique)", "Bloc\n(protocole final)"], [event_f1, block_f1], color=["#9ca3af", "#2563eb"])
-    bar_labels(ax, bars); ax.set_ylabel("F1"); ax.set_ylim(0, 1.05)
-    ax.set_title("HDFS : effet de l'unité d'évaluation")
-    ax.grid(axis="y", alpha=.25); save(fig, "fig_hdfs_event_vs_block.png", str(hpath.relative_to(REPO)),
-        "Le niveau bloc est l'unité alignée sur les labels finaux ; la valeur événementielle est conservée comme référence historique non équivalente.")
+    full = json.loads((REPO / HDFS_FULL).read_text(encoding="utf-8"))
+    seeds = full["per_seed"]
+    event_f1 = [float(s["event_test"]["f1"]) for s in seeds]
+    aggs: dict[str, list[float]] = {}
+    for s in seeds:
+        for a in s["aggregators"]:
+            aggs.setdefault(a["aggregator"], []).append(float(a["test"]["f1"]))
+    ci = json.loads((REPO / HDFS_CI).read_text(encoding="utf-8"))
+    cm = ci["confusion_matrix_all_seeds"]
+    # L'agrégateur retenu est celui dont le F1 de test vaut le F1 publié pour toutes les graines.
+    selected = [k for k, v in aggs.items() if all(abs(x - ci["f1"]["value"]) < 1e-12 for x in v)]
+    assert selected == ["mean"], selected
+    order = ["maximum", "abnormal_ratio", "mean"]
+    names = {"maximum": "Bloc\nmaximum", "abnormal_ratio": "Bloc\nproportion\nanormale", "mean": "Bloc\nmoyenne"}
+    labels = ["Événement"] + [names[k] for k in order]
+    values = [float(np.mean(event_f1))] + [float(np.mean(aggs[k])) for k in order]
+    fig, ax = plt.subplots(figsize=(10, 6.4))
+    bars = ax.bar(labels, values, color=["#9ca3af", "#93c5fd", "#93c5fd", "#2563eb"])
+    bar_labels(ax, bars)
+    top = bars[-1]
+    ax.annotate("retenu sur validation", (top.get_x() + top.get_width() / 2, values[-1]),
+                xytext=(0, 26), textcoords="offset points", ha="center", fontsize=12, color="#1e3a8a")
+    ax.set_ylabel("F1 de test (moyenne des 5 graines)"); ax.set_ylim(0, 1.05)
+    ax.set_title(f"HDFS, test complet ({thousands(int(cm['n']))} blocs) : unité et agrégation")
+    ax.grid(axis="y", alpha=.25)
+    save(fig, "fig_hdfs_event_vs_block.png", HDFS_FULL,
+         "F1 de test au niveau événement et pour les trois agrégations par bloc ; la moyenne, choisie sur la validation, est la décision retenue.")
 
-    boot = csv("experiments/phase_final_scientific_consolidation/raw/hdfs_block_robustness_20260911T002351Z_bootstrap_replicates.csv")
-    fig, ax = plt.subplots(figsize=(9, 6))
-    ax.hist(boot.f1.astype(float), bins=28, color="#2563eb", alpha=.82, edgecolor="white")
-    ax.axvline(boot.f1.astype(float).median(), color="#dc2626", linestyle="--", label=f"médiane = {boot.f1.median():.3f}")
-    ax.set_xlabel("F1 bootstrap (n = 1000 ré-échantillonnages par block_id)"); ax.set_ylabel("Nombre de réplications")
-    ax.set_title("HDFS bloc : distribution bootstrap"); ax.legend(); ax.grid(axis="y", alpha=.2)
-    save(fig, "fig_hdfs_bootstrap_distribution.png", str(REPO / "experiments/phase_final_scientific_consolidation/raw/hdfs_block_robustness_20260911T002351Z_bootstrap_replicates.csv"),
-         "La dispersion bootstrap quantifie l'incertitude liée aux blocs testés ; elle complète le F1 ponctuel par une distribution et un intervalle empirique.")
+    boot = ci["bootstrap"]
+    counts = np.array([cm["tp"], cm["fp"], cm["tn"], cm["fn"]], dtype=float)
+    rng = np.random.default_rng(int(boot["seed"]))
+    draws = rng.multinomial(int(cm["n"]), counts / counts.sum(), size=int(boot["replicates"]))
+    f1_full = 2 * draws[:, 0] / (2 * draws[:, 0] + draws[:, 1] + draws[:, 3])
+    lo, hi = (float(v) for v in np.quantile(f1_full, [0.025, 0.975]))
+    ref_lo, ref_hi = ci["f1"]["ci95_bootstrap_percentile"]
+    assert abs(lo - ref_lo) < 1e-12 and abs(hi - ref_hi) < 1e-12, (lo, hi, ref_lo, ref_hi)
+    sample = csv(HDFS_SAMPLE_BOOT).f1.astype(float)
+    sample_point = float(json.loads((REPO / HDFS_SAMPLE).read_text(encoding="utf-8"))["block_selection"]["test_f1"])
+    fig, ax = plt.subplots(figsize=(11, 6.4))
+    bins = np.linspace(0.70, 1.0, 121)
+    ax.hist(sample, bins=bins, density=True, color="#9ca3af", alpha=.75,
+            label=f"échantillon de 2{NNBSP}000 blocs ({thousands(len(sample))} réplications)")
+    ax.hist(f1_full, bins=bins, density=True, color="#2563eb", alpha=.85,
+            label=f"test complet ({thousands(int(cm['n']))} blocs, {thousands(len(f1_full))} réplications)")
+    ax.axvspan(lo, hi, color="#2563eb", alpha=.12, label=f"IC 95 % du test complet [{lo:.3f} ; {hi:.3f}]")
+    ax.axvline(ci["f1"]["value"], color="#1e3a8a", linewidth=2.2, label=f"F1 test complet = {ci['f1']['value']:.3f}")
+    ax.axvline(sample_point, color="#dc2626", linestyle="--", linewidth=2.2, label=f"F1 échantillon = {sample_point:.3f}")
+    ax.set_xlabel("F1 bootstrap"); ax.set_ylabel("Densité"); ax.set_xlim(0.70, 1.0)
+    ax.set_title("HDFS bloc : incertitude selon la taille du test")
+    ax.legend(loc="upper right", fontsize=11.5); ax.grid(axis="y", alpha=.2)
+    save(fig, "fig_hdfs_bootstrap_distribution.png", f"{HDFS_CI} ; {HDFS_SAMPLE_BOOT}",
+         "Le bootstrap du test complet est bien plus resserré que celui de l'échantillon de 2 000 blocs, dont le F1 ponctuel sort de l'intervalle du test complet.")
 
-    b = csv("experiments/phase_dataset_strengthening/raw/ds_bgl_known_unknown_20260910T082706Z__bgl_group_metrics.csv")
-    hist = b[b.model.eq("Histogram") & b.group.isin(["KNOWN_TEMPLATE", "UNKNOWN_TEMPLATE"])]
+    b = csv(BGL_GROUPS)
+    b = b[b.protocol.eq("R0_reproduction")]
+    hist = b[b.model.eq("Histogram")].set_index("group").loc[["KNOWN_TEMPLATE", "UNKNOWN_TEMPLATE"]]
+    xl = []
+    for g, r in hist.iterrows():
+        kind = "connu" if g == "KNOWN_TEMPLATE" else "inconnu"
+        pos = int(r.positives)
+        xl.append(f"Template {kind}\n(n = {thousands(int(r.n))}, {thousands(pos)} positif{'s' if pos > 1 else ''})")
     fig, ax = plt.subplots(figsize=(9.5, 6))
-    bars = ax.bar(hist.group, hist.f1.astype(float), color=["#9ca3af", "#2563eb"])
-    bar_labels(ax, bars); ax.set_ylabel("F1"); ax.set_ylim(0, 1.05)
+    bars = ax.bar(xl, hist.f1.astype(float), color=["#9ca3af", "#2563eb"])
+    for bar, (g, r) in zip(bars, hist.iterrows()):
+        if int(r.positives) == 0:
+            ax.text(bar.get_x() + bar.get_width() / 2, 0.05, "F1 non estimable :\naucune anomalie",
+                    ha="center", va="bottom", fontsize=12, color="#374151")
+        else:
+            bar_labels(ax, [bar])
+    ax.set_ylabel("F1 d'Histogram"); ax.set_ylim(0, 1.05)
     ax.set_title("BGL : performance selon la nouveauté du template")
-    ax.grid(axis="y", alpha=.25); save(fig, "fig_bgl_known_unknown.png", str(REPO / "experiments/phase_dataset_strengthening/raw/ds_bgl_known_unknown_20260910T082706Z__bgl_group_metrics.csv"),
-         "Le F1 élevé est porté par les templates inconnus ; le groupe connu ne contient aucune anomalie dans ce test et ne permet pas d'estimer un rappel d'anomalies connu.")
-    all_rows = b[b.group.eq("ALL")]
-    fig, ax = plt.subplots(figsize=(8.5, 6))
-    bars = ax.bar(all_rows.model, all_rows.f1.astype(float), color=["#2563eb", "#d97706"])
-    bar_labels(ax, bars); ax.set_ylabel("F1"); ax.set_ylim(0, 1.05); ax.set_xticklabels(all_rows.model, rotation=12, ha="right")
-    ax.set_title("BGL : Histogram et baseline UnknownTemplate")
-    ax.grid(axis="y", alpha=.25); save(fig, "fig_bgl_histogram_vs_unknown_baseline.png", str(REPO / "experiments/phase_dataset_strengthening/raw/ds_bgl_known_unknown_20260910T082706Z__bgl_group_metrics.csv"),
-         "La comparaison montre que le score d'Histogram dépasse le baseline fondé uniquement sur l'inconnu, tout en restant dépendant de la composition du test.")
+    ax.grid(axis="y", alpha=.25)
+    save(fig, "fig_bgl_known_unknown.png", BGL_GROUPS,
+         "Le F1 est entièrement porté par les templates inconnus ; le groupe connu ne contient aucune anomalie dans ce test.")
+
+    all_rows = b[b.group.eq("ALL")].set_index("model").loc[["UnknownTemplateBaseline", "SeverityNoveltyBaseline", "Histogram"]]
+    fig, ax = plt.subplots(figsize=(10, 6))
+    bars = ax.bar(["Règle « template\ninconnu »", "Règle « sévérité\nabsente du train »", "Histogram"],
+                  all_rows.f1.astype(float), color=["#d97706", "#9ca3af", "#2563eb"])
+    bar_labels(ax, bars); ax.set_ylabel("F1 de test"); ax.set_ylim(0, 1.05)
+    ax.set_title("BGL : Histogram face à deux règles de nouveauté")
+    ax.grid(axis="y", alpha=.25)
+    save(fig, "fig_bgl_histogram_vs_unknown_baseline.png", BGL_GROUPS,
+         "Histogram dépasse la règle du template inconnu mais obtient exactement le F1 de la règle de sévérité absente de l'entraînement.")
 
 
 def cse_figures() -> None:
@@ -208,17 +273,69 @@ def cse_figures() -> None:
 
 
 def routing_and_pipeline_figures() -> None:
-    d = csv("experiments/phase_final_scientific_consolidation/aggregated/router_open_set_final_tradeoff_diagnostic.csv")
-    fig, ax = plt.subplots(figsize=(10, 6)); ax.plot(d.min_top_score, d.unknown_rejection_rate, marker="o", label="Rejet inconnus", color="#dc2626"); ax.plot(d.min_top_score, d.coverage, marker="s", label="Couverture", color="#2563eb")
-    ax.axvline(100, color="#111827", linestyle="--", label="seuil retenu = 100"); ax.set_xlabel("Seuil min_top_score"); ax.set_ylabel("Taux"); ax.set_ylim(-.03, 1.05); ax.set_title("Routeur open-set : compromis rejet / couverture"); ax.legend(); ax.grid(alpha=.25)
-    save(fig, "fig_router_open_set_tradeoff.png", "experiments/phase_final_scientific_consolidation/aggregated/router_open_set_final_tradeoff_diagnostic.csv",
-         "Le seuil 100 rejette les trois fichiers inconnus tout en conservant les 28 fichiers connus ; la courbe expose le compromis plutôt qu'une probabilité calibrée.")
-    f = csv("experiments/phase_dataset_strengthening/aggregated/multiformat_balanced_summary.csv")
-    fig, ax = plt.subplots(figsize=(11, 6.5)); x = np.arange(len(f)); w = .24
-    for j, col in enumerate(["read", "parsed", "normalized"]): ax.bar(x + (j-1)*w, f[col], width=w, label=col)
-    ax.set_xticks(x, f.display_name, rotation=25, ha="right"); ax.set_ylabel("Unités (N = 1000 par source)"); ax.set_ylim(0, 1080); ax.set_title("Couverture multiformat par source"); ax.legend(); ax.grid(axis="y", alpha=.2)
-    save(fig, "fig_multiformat_coverage_by_source.png", "experiments/phase_dataset_strengthening/aggregated/multiformat_balanced_summary.csv",
-         "La lecture, le parsing et la normalisation sont complets pour les unités effectivement présentes ; Apache reste une fixture d'une seule ligne répétée par le protocole.")
+    r = csv(ROUTES)
+    res = json.loads((REPO / ROUTER_RESULT).read_text(encoding="utf-8"))
+    frozen = float(res["policy"]["min_top_score"])
+    d = r[r["mode"].eq("P") & r.stratum.isin(["U", "K"])].copy()
+    # Règle de rejet du routeur : score maximal sous le seuil, ou route de repli.
+    assert ((d.top_score < frozen) | d.original_family.eq("fallback")).eq(d.rejected.astype(bool)).all()
+    thresholds = np.arange(0, 221, 5)
+
+    def rates(sub):
+        u, k = sub[sub.stratum.eq("U")], sub[sub.stratum.eq("K")]
+        rej = lambda x, t: ((x.top_score < t) | x.original_family.eq("fallback")).mean()
+        return (np.array([rej(u, t) for t in thresholds]), np.array([rej(k, t) for t in thresholds]), len(u), len(k))
+
+    cu, ck, nu0, nk0 = rates(d[d.origin.eq("original_31")])
+    au, ak, nu, nk = rates(d)
+    comb = res["summary"]["P"]["combined"]
+    i = int(np.where(thresholds == frozen)[0][0])
+    assert f"{round(au[i] * nu)}/{nu}" == comb["unknown_files_rejected"]
+    assert f"{round(ak[i] * nk)}/{nk}" == comb["known_files_falsely_rejected"]
+    fig, ax = plt.subplots(figsize=(11, 6.6))
+    ax.plot(thresholds, cu, color="#dc2626", alpha=.35, linewidth=2, label=f"Rejet des inconnus, calibration ({nu0} fichiers)")
+    ax.plot(thresholds, ck, color="#2563eb", alpha=.35, linewidth=2, label=f"Faux rejet des connus, calibration ({nk0} fichiers)")
+    ax.plot(thresholds, au, color="#dc2626", marker="o", markersize=5, label=f"Rejet des inconnus, ensemble ({nu} fichiers)")
+    ax.plot(thresholds, ak, color="#2563eb", marker="s", markersize=5, label=f"Faux rejet des connus, ensemble ({nk} fichiers)")
+    ax.axvline(frozen, color="#111827", linestyle="--", label=f"seuil gelé = {frozen:.0f}")
+    ax.annotate(f"{comb['unknown_files_rejected']} inconnus rejetés", (frozen, au[i]), xytext=(10, -24),
+                textcoords="offset points", fontsize=12, color="#991b1b")
+    ax.annotate(f"{comb['known_files_falsely_rejected']} connus rejetés à tort", (frozen, ak[i]), xytext=(-12, 16), ha="right",
+                textcoords="offset points", fontsize=12, color="#1e3a8a")
+    ax.set_xlabel("Seuil min_top_score"); ax.set_ylabel("Proportion de fichiers"); ax.set_ylim(-.03, 1.05)
+    ax.set_title(f"Routeur open-set : rejet selon le seuil ({nu + nk} fichiers)")
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=11); ax.grid(alpha=.25)
+    save(fig, "fig_router_open_set_tradeoff.png", ROUTES,
+         "Le seuil, calibré sur 31 fichiers puis gelé, rejette les 20 inconnus et 3 des 46 connus de l'ensemble élargi ; le balayage est un diagnostic a posteriori.")
+
+    mf = json.loads((REPO / MULTIFORMAT).read_text(encoding="utf-8"))
+    names = {"windows_event": "Windows Event", "linux_auth": "Linux auth", "wazuh": "Wazuh", "syslog": "Syslog",
+             "apache": "Apache (fixture)", "hdfs": "HDFS", "bgl": "BGL", "network_tabular": "Flux réseau"}
+    src = mf["per_source"]
+    labels = [names.get(s["source_id"], s["source_id"]) for s in src]
+    read = [int(s["read"]) for s in src]
+    norm = [int(s["normalized"]) for s in src]
+    fields = [int(str(s["standard_fields_complete_7"]).split("/")[0]) for s in src]
+    assert sum(read) == mf["total_read"] and sum(norm) == mf["total_normalized"]
+    fig, axes = plt.subplots(1, 2, figsize=(15, 6.6))
+    x = np.arange(len(src)); w = .38
+    axes[0].bar(x - w / 2, read, width=w, label="lues", color="#93c5fd")
+    axes[0].bar(x + w / 2, norm, width=w, label="émises dans le schéma", color="#2563eb")
+    axes[0].set_xticks(x, labels, rotation=30, ha="right"); axes[0].set_ylabel("Unités"); axes[0].set_ylim(0, 1150)
+    for xi, v in zip(x, norm):
+        if v < 50:  # la fixture Apache (1 unité) serait sinon invisible
+            axes[0].annotate(f"{v} unité", (xi, v), xytext=(0, 6), textcoords="offset points",
+                             ha="center", va="bottom", fontsize=12, color="#1e3a8a")
+    axes[0].set_title("Unités traitées par source");axes[0].legend(fontsize=11, loc="upper right"); axes[0].grid(axis="y", alpha=.2)
+    bars = axes[1].bar(x, fields, color=["#dc2626" if v == 0 else "#0f766e" for v in fields])
+    for bar, v in zip(bars, fields):
+        axes[1].annotate(f"{v}/7", (bar.get_x() + bar.get_width() / 2, v), xytext=(0, 5),
+                         textcoords="offset points", ha="center", va="bottom", fontsize=12)
+    axes[1].set_xticks(x, labels, rotation=30, ha="right"); axes[1].set_ylabel("Champs standard complets (sur 7)"); axes[1].set_ylim(0, 7.9)
+    axes[1].set_title("Remplissage du schéma commun"); axes[1].grid(axis="y", alpha=.2)
+    fig.suptitle("Multi-format : intégration complète, remplissage inégal")
+    save(fig, "fig_multiformat_coverage_by_source.png", MULTIFORMAT,
+         "Toutes les unités présentes sont émises dans le schéma commun, mais le nombre de champs standard complets varie de 7/7 à 0/7.")
 
 
 def distributed_and_e2e_figures() -> None:
@@ -249,13 +366,113 @@ def distributed_and_e2e_figures() -> None:
     save(fig, "fig_e2e_real_model_latency.png", "experiments/phase_final_scientific_consolidation/aggregated/multisource_cnp_model_inference_by_source.csv", "La comparaison H/M met en regard la voie heuristique et la voie modèles ; les valeurs sont des latences observées, pas des garanties de production.")
 
 
+DIST = f"{REV}/agent_3_distribution"
+PAIRED = f"{DIST}/agent3_paired_failure_abcd_20261104T141803Z__summary.json"
+PAIRED_RUNS = f"{DIST}/agent3_paired_failure_abcd_20261104T141803Z__runs.csv"
+SATURATION = f"{DIST}/agent3_saturation_multivm_20261104T142325Z__saturation_summary.json"
+
+
+def revision_distribution_figures() -> None:
+    s = json.loads((REPO / PAIRED).read_text(encoding="utf-8"))["summary"]
+    runs = csv(PAIRED_RUNS)
+    order = ["A", "B", "C", "D", "A+I", "B+I"]
+    for arch in order:  # le résumé doit correspondre aux exécutions unitaires
+        sub = runs[runs.architecture.eq(arch)]
+        assert int(sub.duplicate_effects.sum()) == s[arch]["duplicate_effects_total"], arch
+        assert int(sub.lost_tasks.sum()) == s[arch]["lost_tasks_total"], arch
+    labels = {"A": "A\nmonolithe", "B": "B\nworkers", "C": "C\nagents", "D": "D\nagents\n+ mémoire",
+              "A+I": "A + I\nmonolithe", "B+I": "B + I\nworkers"}
+    idem = [bool(runs[runs.architecture.eq(a)].idempotency_store.all()) for a in order]
+    colors = ["#2563eb" if v else "#dc2626" for v in idem]
+    dup = [s[a]["duplicate_effects_total"] for a in order]
+    reps = [s[a]["repetitions"] for a in order]
+    lat = [s[a]["recovery_latency_median_ms"] for a in order]
+    fig, axes = plt.subplots(1, 2, figsize=(15, 6.4), gridspec_kw={"width_ratios": [1.25, 1]})
+    x = np.arange(len(order))
+    bars = axes[0].bar(x, dup, color=colors)
+    for b, v, n in zip(bars, dup, reps):
+        axes[0].annotate(f"{v}/{n}", (b.get_x() + b.get_width() / 2, v), xytext=(0, 5),
+                         textcoords="offset points", ha="center", va="bottom", fontsize=13)
+    axes[0].set_xticks(x, [labels[a] for a in order], fontsize=12)
+    axes[0].set_ylabel("Effets dupliqués après reprise"); axes[0].set_ylim(0, max(reps) * 1.18)
+    axes[0].set_title("Doublons selon l'architecture"); axes[0].grid(axis="y", alpha=.2)
+    axes[0].bar([0], [0], color="#dc2626", label="sans magasin d'idempotence")
+    axes[0].bar([0], [0], color="#2563eb", label="avec magasin d'idempotence")
+    axes[0].legend(loc="upper right", fontsize=11.5)
+    bars = axes[1].bar(x, lat, color=colors)
+    for b, v in zip(bars, lat):
+        axes[1].annotate(f"{v:.2f}" if v < 1 else f"{v:.1f}", (b.get_x() + b.get_width() / 2, v),
+                         xytext=(0, 5), textcoords="offset points", ha="center", va="bottom", fontsize=12)
+    axes[1].set_yscale("log"); axes[1].set_ylim(0.01, 40)
+    axes[1].set_xticks(x, [a for a in order], fontsize=12)
+    axes[1].set_ylabel("Latence de reprise médiane (ms, échelle log.)")
+    axes[1].set_title("Coût du rejeu"); axes[1].grid(axis="y", alpha=.2, which="both")
+    lost = sum(s[a]["lost_tasks_total"] for a in order)
+    assert lost == 0, lost
+    fig.suptitle("Panne après persistance, avant RESULT : aucune tâche perdue, doublons selon l'idempotence")
+    save(fig, "fig_paired_failure_abcd.png", PAIRED,
+         "Les doublons disparaissent dès qu'un magasin d'idempotence est présent, y compris pour le monolithe et les workers centralisés ; le gain ne vient pas du Contract Net.")
+
+    t = json.loads((REPO / SATURATION).read_text(encoding="utf-8"))
+    lv = pd.DataFrame(t["levels"])
+    lv["ubuntu"] = lv.tasks_by_agent.apply(lambda d: d.get("ubuntu-beta", 0))
+    lv["share_ubuntu"] = lv.ubuntu / lv.completed_ok
+    tasks = csv(SATURATION.replace("_summary.json", "_tasks.csv"))
+    assert int(lv.submitted.sum()) == len(tasks) and int(lv.failed.sum()) == int(tasks.status.ne("ok").sum())
+    # tasks_by_agent ne compte que les tâches réussies ; les trois échecs sont attribués à Ubuntu.
+    assert int(lv.ubuntu.sum()) == int((tasks.winner.eq("ubuntu-beta") & tasks.status.eq("ok")).sum())
+    fig, axes = plt.subplots(3, 1, figsize=(10, 12.5), sharex=True)
+    rates = sorted(lv.offered_tasks_sec.unique())
+    axes[0].plot(rates, rates, color="#9ca3af", linestyle="--", linewidth=2, label="débit offert")
+    palette = ["#2563eb", "#16a34a", "#d97706"]
+    for (rep, grp), color in zip(lv.groupby("repetition"), palette):
+        g = grp.sort_values("offered_tasks_sec")
+        axes[0].plot(g.offered_tasks_sec, g.completed_tasks_sec, marker="o", color=color, label=f"répétition {rep}")
+        axes[1].plot(g.offered_tasks_sec, g.latency_p95_ms / 1000, marker="o", color=color, label=f"répétition {rep}")
+        axes[2].plot(g.offered_tasks_sec, 100 * g.share_ubuntu, marker="o", color=color, label=f"répétition {rep}")
+    for ax in axes:
+        ax.axvspan(8, 16, color="#fde68a", alpha=.35, zorder=0)
+        ax.grid(alpha=.25, which="both")
+    axes[0].set_xscale("log", base=2); axes[0].set_yscale("log", base=2)
+    axes[0].set_xticks(rates, [f"{r:g}" for r in rates])
+    axes[0].set_yticks([1, 2, 4, 8, 16, 32, 64], ["1", "2", "4", "8", "16", "32", "64"])
+    axes[0].set_ylabel("Débit atteint (tâches/s)"); axes[0].legend(loc="upper left", fontsize=11)
+    axes[0].set_title("Débit atteint : plafond au-delà de 8 tâches/s")
+    axes[1].set_yscale("log"); axes[1].set_ylabel("Latence p95 (s, échelle log.)")
+    axes[1].set_title("Latence p95 : attente côté coordinateur")
+    axes[2].set_ylabel("Tâches traitées par Ubuntu (%)"); axes[2].set_ylim(-0.5, 10)
+    axes[2].set_title("Part de l'agent Ubuntu : marginale, et seulement en saturation")
+    axes[2].set_xlabel("Débit offert (tâches/s, échelle log.)")
+    axes[2].text(8.3, 8.6, "zone du coude (8–16 tâches/s)", fontsize=12, color="#92400e")
+    fig.suptitle("Saturation sur deux VM (3 répétitions, fenêtres de 30 s)", y=0.995)
+    fig.tight_layout()
+    save(fig, "fig_saturation_multivm.png", SATURATION,
+         "Le débit atteint suit la charge jusqu'à 8 tâches/s puis plafonne ; la latence p95 explose et l'agent Ubuntu ne traite qu'une part marginale des tâches, en saturation seulement.")
+
+
+GROUPS = {
+    "architecture": architecture_figures, "cicids": cicids_figures, "hdfs_bgl": hdfs_bgl_figures,
+    "cse": cse_figures, "routing": routing_and_pipeline_figures, "distributed": distributed_and_e2e_figures,
+    "revision_distribution": revision_distribution_figures,
+}
+
+
 def main() -> None:
-    architecture_figures(); cicids_figures(); hdfs_bgl_figures(); cse_figures(); routing_and_pipeline_figures(); distributed_and_e2e_figures()
-    lines = ["# Catalogue des figures scientifiques finales", "", "Toutes les figures sont produites par `revision_reports/generate_final_scientific_figures.py`, à 360 dpi, avec une taille de police minimale de 12 pt pour rester lisibles après réduction A4.", ""]
-    for name, source, caption in CATALOGUE:
-        lines.extend([f"## `{name}`", f"- Source : `{source}`", f"- Caption proposée : {caption}", ""])
-    (TARGET / "revision_reports" / "FIGURE_CATALOGUE.md").write_text("\n".join(lines), encoding="utf-8")
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--only", nargs="+", choices=sorted(GROUPS),
+                        help="ne régénérer que ces groupes (les schémas d'architecture ont été retouchés à la main)")
+    args = parser.parse_args()
+    for name in (args.only or list(GROUPS)):
+        GROUPS[name]()
+    if not args.only:
+        lines = ["# Catalogue des figures scientifiques finales", "", "Toutes les figures sont produites par `revision_reports/generate_final_scientific_figures.py`, à 360 dpi, avec une taille de police minimale de 12 pt pour rester lisibles après réduction A4.", ""]
+        for name, source, caption in CATALOGUE:
+            lines.extend([f"## `{name}`", f"- Source : `{source}`", f"- Caption proposée : {caption}", ""])
+        (TARGET / "revision_reports" / "FIGURE_CATALOGUE.md").write_text("\n".join(lines), encoding="utf-8")
     print(f"Generated {len(CATALOGUE)} figures in {OUT}")
+    for name, source, _ in CATALOGUE:
+        print(f"  {name} <- {source}")
 
 
 if __name__ == "__main__":

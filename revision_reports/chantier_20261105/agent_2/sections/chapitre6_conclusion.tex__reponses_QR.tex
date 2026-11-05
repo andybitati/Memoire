@@ -1,0 +1,77 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre6_conclusion.tex
+%   (Conclusion générale, « Réponse aux questions de recherche », PDF p. 125-126)
+% Passage à remplacer : de « \begin{description} » (premier item
+%   « \item[\textbf{QR1.}] Les résultats apportent un soutien partiel à la
+%   possibilité de rapprocher des journaux hétérogènes [...] ») jusqu'au
+%   « \end{description} » qui suit l'item QR6 (inclus). Les lignes
+%   « \section*{Réponse aux questions de recherche} » et « \addcontentsline »
+%   sont conservées.
+% Auteur : Agent 2 (statut des hypothèses), chantier 2026-11-05.
+% REMPLACE agent_1/sections/chapitre6_conclusion.tex__QR3_QR6.tex (C9), dont il
+%   reprend les corrections QR3 (test étendu 20/20, 3/46, 43) et QR6 (refus non
+%   dénombrés).
+% Hypothèse d'intégration : les QR reformulées de
+%   chapitre1_introduction.tex__question_centrale_QR.tex sont retenues. Si le
+%   coordinateur conserve les anciennes QR, les réponses QR1-QR5 restent
+%   valables ; seule QR6 (devenue la question sur la dépendance au protocole)
+%   devrait revenir à une réponse méthodologique (variante en fin de fichier).
+% Motifs : « QR6 la mieux couverte » (L2 §2.1 : autosatisfaction circulaire) ;
+%   réponses descriptives (L1 C.2) ; utilité pour l'analyste non démontrée
+%   (L1 D.2) ; priorisation jamais mesurée (L2 §2.1) ; absence de scénario
+%   hétérogène conjoint (L3, non-recevabilité).
+% Règle C8 : chaque chiffre figure dans le corps.
+%   7 001, fixture Apache, 7/7 à 0/7 : §4.8 ; 20/20, 3/46, 43 : §4.7 ;
+%   1,23 % : §4.11.3 ; toutes les tâches HDFS distribuées à debian-alpha :
+%   §4.11.4 ; idempotence transposable : §4.9.1 ; coût des agents : §4.9 et
+%   §6.4 ; 0,995142, 0,157744, 0,437429, 0,666667 : §4.2 et tableau 4.3 ;
+%   0,868373 : §4.3 ; 0,913698 et règle de sévérité : §4.4 ; 0,999720 et
+%   0,234195 : §4.6.2 et §4.6.4.
+% ATTENTION Agent 5 : la réponse QR2 dépend de son périmètre (architecture) ;
+%   elle s'en tient aux faits du corps et peut être reformulée par lui. La
+%   phrase « Aucune expérience ne compare l'attribution par Contract Net à une
+%   affectation statique » constate une absence ; l'Agent 5 doit la reprendre
+%   dans le corps (§4.9 ou §6.3) pour respecter C8 au sens strict.
+% Labels utilisés, tous existants : fig:couverture-multiformat,
+%   sec:panne-appariee, sec:cnp-multivm, sec:hdfs-distribue, fig:benchmark-abcd,
+%   fig:routeur-open-set, tab:statut-hypotheses, tab:statut-model-update,
+%   sec:cicids-resultats, tab:cicids-iforest, sec:bgl-resultats,
+%   sec:csecic-raccourci, sec:limites.
+% ============================================================================
+
+\begin{description}
+
+    \item[\textbf{QR1.}]
+    Les adaptateurs lisent et émettent dans le schéma commun les $7\,001$ unités du protocole multiformat, issues de sept sources réelles et d'une fixture Apache d'une seule ligne (figure~\ref{fig:couverture-multiformat}). Cette réponse vérifie une exigence de réalisation. Elle ne montre pas que le schéma rapproche les sources sans perte : le remplissage va de sept champs standard sur sept pour syslog et BGL à aucun pour les flux réseau tabulaires, et la conservation de l'information unité par unité n'est pas mesurée. Aucune expérience n'analyse conjointement un même incident à partir de journaux système et de flux réseau ; l'hétérogénéité établie est celle des formats lus, non un bénéfice de leur combinaison.
+
+    \item[\textbf{QR2.}]
+    L'organisation en agents spécialisés est réalisée : capacités déclarées, handlers, état local, objectifs persistants et échanges Contract Net sont présents dans le code et les traces, et la poursuite bornée d'objectifs, la délégation et la reprise sont vérifiées par les tests du noyau. Cette organisation a un coût : sur les microtâches du protocole, les architectures à agents sont plus lentes que le monolithe et que les workers centralisés (figure~\ref{fig:benchmark-abcd}). L'absence de doublon après une panne provient du magasin d'idempotence, qui produit le même effet dans les architectures de référence (section~\ref{sec:panne-appariee}). En saturation, la seconde machine virtuelle ne traite que $1{,}23\,\%$ des tâches réussies et n'augmente pas la capacité observée ; en détection HDFS distribuée, toutes les tâches sont attribuées au même agent (sections~\ref{sec:cnp-multivm} et~\ref{sec:hdfs-distribue}). Aucune expérience ne compare l'attribution par Contract Net à une affectation statique.
+
+    \item[\textbf{QR3.}]
+    Au seuil gelé, appliqué sans recalibration au corpus étendu, le routeur rejette les $20$ fichiers inconnus et écarte à tort $3$ des $46$ fichiers connus ; les $43$ fichiers connus acceptés sont correctement orientés (figure~\ref{fig:routeur-open-set}). La fonction de sélection d'un traitement compatible est donc vérifiée pour les schémas évalués. Sa valeur relative reste inconnue : aucune comparaison avec une chaîne sans routage n'a été exécutée, et H3 n'est pas tranchée (tableau~\ref{tab:statut-hypotheses}).
+
+    \item[\textbf{QR4.}]
+    Le tableau de bord offre la consultation, le filtrage et l'inspection des anomalies, des incidents candidats et des traces d'audit ; l'exigence de réalisation est satisfaite. Aucune étude auprès d'analystes n'a mesuré le temps d'investigation, l'exactitude du triage ou la charge cognitive : il n'est donc pas établi que cette interface améliore le travail d'un analyste.
+
+    \item[\textbf{QR5.}]
+    L'activation de la mémoire modifie certaines attributions, puisqu'elle entre dans le calcul de l'utilité, mais elle n'apporte aucune amélioration établie du débit, de la latence ou de l'équité, et aucune métrique de priorisation n'a été mesurée : H5 est réfutée (tableau~\ref{tab:statut-hypotheses}). La procédure de mise à jour dispose d'une implémentation, d'un mode \textit{dry-run} et de tests sur certaines branches, sans cycle complet de promotion et de rejet suivi d'une mesure indépendante (tableau~\ref{tab:statut-model-update}).
+
+    \item[\textbf{QR6.}]
+    C'est la question à laquelle les expériences répondent le plus nettement. Sur CICIDS2017, le F1 du Random Forest passe de $0{,}995142$ en séparation aléatoire à $0{,}157744$ lorsque le scénario d'attaque est tenu hors entraînement ; en séparation temporelle, la régression logistique et le Random Forest restent sous la prédiction systématiquement positive, qui atteint $0{,}666667$ (section~\ref{sec:cicids-resultats}). Sur BGL, le F1 de $0{,}913698$ coïncide avec celui de la règle « sévérité absente de l'entraînement » (section~\ref{sec:bgl-resultats}). Sur CSE-CIC-IDS2018, une règle fixe sur le port de destination atteint $0{,}999720$, et le transfert inverse, du 16 vers le 15 février, ne dépasse pas $0{,}234195$ (section~\ref{sec:csecic-raccourci}). Seul HDFS, évalué au niveau du bloc, atteint un F1 de $0{,}868373$ sur la partition de test complète, mais sans baseline évaluée à ce niveau. Dans le protocole principal de trois des quatre jeux publics, le score retenu n'excède donc pas une règle triviale évaluée sur le même test. Ce constat rejoint des critiques déjà publiées sur l'évaluation de la détection par apprentissage \cite{sommer2010outside,arp2022dos,engelen2021troubleshooting} ; il en constitue une réplication sur ces jeux, non une découverte.
+
+\end{description}
+
+% ----------------------------------------------------------------------------
+% VARIANTE pour QR6, à n'utiliser que si le coordinateur conserve l'ancienne
+% formulation (« Comment évaluer le prototype par métriques, captures, latence
+% et ressources ? ») :
+%
+%    \item[\textbf{QR6.}]
+%    Cette question porte sur la méthode plutôt que sur le système. L'évaluation
+%    combine métriques prédictives sous plusieurs partitions, couverture
+%    fonctionnelle, latence, ressources, captures et artefacts reproductibles ;
+%    chaque résultat est rattaché à l'artefact qui le produit (annexe A). La
+%    campagne multi-VM documente la répartition des tâches, la reprise et
+%    l'idempotence ; ses compteurs de messages n'étant pas conclusifs, elle
+%    n'établit pas de décompte des refus.
+% ----------------------------------------------------------------------------

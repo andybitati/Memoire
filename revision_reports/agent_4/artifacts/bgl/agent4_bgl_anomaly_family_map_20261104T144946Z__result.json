@@ -1,0 +1,286 @@
+{
+  "run_id": "agent4_bgl_anomaly_family_map_20261104T144946Z",
+  "generated_at": "2026-11-04T14:52:53.371746+00:00",
+  "input": {
+    "path": "data/raw/Datasets/BGL/BGL.log",
+    "sha256": "666130b15ef44eb32fd02bd053e6c6e007c37696b5e7e8b9d8e45b729876a5d2"
+  },
+  "definition": "anomalie = premier jeton different de '-' ; famille = 6 premiers jetons normalises",
+  "slice_lines": 475000,
+  "anomalous_lines_total": 348460,
+  "top_families": [
+    {
+      "family": "data TLB error interrupt",
+      "count": 152734,
+      "by_slice": {
+        "0": 152659,
+        "4": 1,
+        "5": 30,
+        "6": 33,
+        "8": 1,
+        "9": 10
+      },
+      "first_line": 17742
+    },
+    {
+      "family": "data storage interrupt",
+      "count": 63491,
+      "by_slice": {
+        "0": 36864,
+        "1": 26624,
+        "8": 3
+      },
+      "first_line": 382963
+    },
+    {
+      "family": "Lustre mount FAILED : bglio# :",
+      "count": 31531,
+      "by_slice": {
+        "6": 8092,
+        "7": 20999,
+        "8": 230,
+        "9": 2210
+      },
+      "first_line": 2935895
+    },
+    {
+      "family": "ciod: Error reading message prefix on",
+      "count": 30793,
+      "by_slice": {
+        "8": 6075,
+        "9": 24718
+      },
+      "first_line": 4215995
+    },
+    {
+      "family": "ciod: Error reading message prefix after",
+      "count": 23219,
+      "by_slice": {
+        "5": 6,
+        "6": 7917,
+        "7": 13764,
+        "8": 1196,
+        "9": 336
+      },
+      "first_line": 2418589
+    },
+    {
+      "family": "rts: kernel terminated for reason #",
+      "count": 18587,
+      "by_slice": {
+        "6": 11349,
+        "7": 2118,
+        "8": 5120
+      },
+      "first_line": 3044926
+    },
+    {
+      "family": "Error receiving packet on tree network,",
+      "count": 6145,
+      "by_slice": {
+        "7": 1024,
+        "8": 5120,
+        "9": 1
+      },
+      "first_line": 3662684
+    },
+    {
+      "family": "ciod: failed to read message prefix",
+      "count": 5983,
+      "by_slice": {
+        "0": 3181,
+        "1": 2802
+      },
+      "first_line": 14738
+    },
+    {
+      "family": "rts: kernel terminated for reason #rts:",
+      "count": 4751,
+      "by_slice": {
+        "2": 512,
+        "3": 649,
+        "4": 1709,
+        "5": 1881
+      },
+      "first_line": 1308022
+    },
+    {
+      "family": "rts panic! - stopping execution",
+      "count": 3983,
+      "by_slice": {
+        "0": 133,
+        "1": 2236,
+        "2": 217,
+        "3": 2,
+        "4": 152,
+        "5": 46,
+        "6": 588,
+        "7": 519,
+        "8": 25,
+        "9": 65
+      },
+      "first_line": 33937
+    },
+    {
+      "family": "ciod: Error creating node map from",
+      "count": 3024,
+      "by_slice": {
+        "1": 400,
+        "3": 1536,
+        "5": 32,
+        "6": 1024,
+        "8": 32
+      },
+      "first_line": 870959
+    },
+    {
+      "family": "Microloader Assertion",
+      "count": 1503,
+      "by_slice": {
+        "6": 1486,
+        "7": 17
+      },
+      "first_line": 2956209
+    },
+    {
+      "family": "ciod: LOGIN chdir(/p/gb#/stella/RAPTOR/#) failed: Input/output error",
+      "count": 816,
+      "by_slice": {
+        "9": 816
+      },
+      "first_line": 4673522
+    },
+    {
+      "family": "Error: unable to mount filesystem",
+      "count": 720,
+      "by_slice": {
+        "6": 720
+      },
+      "first_line": 2935879
+    },
+    {
+      "family": "MailboxMonitor::serviceMailboxes() lib_ido_error: -# socket closed",
+      "count": 168,
+      "by_slice": {
+        "2": 6,
+        "4": 5,
+        "6": 100,
+        "7": 11,
+        "8": 46
+      },
+      "first_line": 1099126
+    },
+    {
+      "family": "machine check interrupt",
+      "count": 161,
+      "by_slice": {
+        "0": 5,
+        "1": 6,
+        "2": 6,
+        "3": 2,
+        "4": 4,
+        "5": 13,
+        "6": 29,
+        "7": 76,
+        "8": 16,
+        "9": 4
+      },
+      "first_line": 33892
+    },
+    {
+      "family": "MidplaneSwitchController::receiveTrain() iap failed: R#-M#-L#-U#-A, status=ffbffbff ec#",
+      "count": 160,
+      "by_slice": {
+        "6": 110,
+        "7": 42,
+        "9": 8
+      },
+      "first_line": 3306240
+    },
+    {
+      "family": "Power deactivated: R#-M#-N#",
+      "count": 120,
+      "by_slice": {
+        "3": 30,
+        "4": 20,
+        "5": 10,
+        "7": 60
+      },
+      "first_line": 1513963
+    },
+    {
+      "family": "Power Good signal deactivated: R#-M#-N#. A",
+      "count": 82,
+      "by_slice": {
+        "8": 67,
+        "9": 15
+      },
+      "first_line": 4215732
+    },
+    {
+      "family": "machine check interrupt (bit=#): L# dcache",
+      "count": 72,
+      "by_slice": {
+        "0": 1,
+        "1": 1,
+        "3": 1,
+        "5": 3,
+        "6": 11,
+        "7": 27,
+        "8": 6,
+        "9": 22
+      },
+      "first_line": 158431
+    }
+  ],
+  "test_R0_positive_families": [
+    {
+      "family": "ciod: Error reading message prefix on",
+      "count_in_test": 2874,
+      "first_line_in_log": 4215995,
+      "count_before_test_start": 5468
+    },
+    {
+      "family": "rts panic! - stopping execution",
+      "count_in_test": 4,
+      "first_line_in_log": 33937,
+      "count_before_test_start": 3915
+    },
+    {
+      "family": "machine check interrupt (bit=#): L# dcache",
+      "count_in_test": 2,
+      "first_line_in_log": 158431,
+      "count_before_test_start": 49
+    },
+    {
+      "family": "ciodb exited abnormally due to signal:",
+      "count_in_test": 1,
+      "first_line_in_log": 3014268,
+      "count_before_test_start": 4
+    },
+    {
+      "family": "data storage interrupt",
+      "count_in_test": 1,
+      "first_line_in_log": 382963,
+      "count_before_test_start": 63490
+    },
+    {
+      "family": "idoproxy communication failure: BGLERR_IDO_PKT_TIMEOUT connection lost",
+      "count_in_test": 1,
+      "first_line_in_log": 4268866,
+      "count_before_test_start": 0
+    },
+    {
+      "family": "idoproxy communication failure: socket closed",
+      "count_in_test": 1,
+      "first_line_in_log": 4207914,
+      "count_before_test_start": 4
+    },
+    {
+      "family": "data TLB error interrupt",
+      "count_in_test": 1,
+      "first_line_in_log": 17742,
+      "count_before_test_start": 152723
+    }
+  ]
+}

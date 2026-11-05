@@ -24,14 +24,14 @@ Les adaptateurs intégrés au prototype couvrent plusieurs familles : HDFS, BGL,
 
 Une erreur rencontrée pendant cette chaîne n'est pas silencieusement ignorée. Elle est comptabilisée afin de distinguer les unités réellement traitées de celles qui n'ont pas pu traverser l'adaptateur.
 
-La campagne consacrée à la couverture multi-format porte sur $7\,001$ unités. HDFS et BGL y contribuent chacun pour $1\,000$ unités. Le cas Apache doit être interprété différemment : il repose sur une fixture synthétique d'une seule ligne, réutilisée par le protocole. Cette présence vérifie donc le fonctionnement de la voie Apache, mais elle n'est pas comparable à l'utilisation d'un corpus réel comportant plusieurs milliers d'événements.
+La campagne consacrée à la couverture multi-format porte sur $7\,001$ unités. HDFS et BGL y contribuent chacun pour $1\,000$ unités. Le cas Apache doit être interprété différemment : il repose sur une fixture synthétique d'une seule ligne, réutilisée par le protocole. Cette présence vérifie seulement que la voie Apache s'exécute de bout en bout ; elle ne valide pas le parseur, qui reste à éprouver sur un journal d'accès réel.
 
 La normalisation expose les attributs communs nécessaires au routage, tout en conservant les champs propres à chaque format dans la charge structurée. Lorsqu'une source ne contient pas une adresse réseau, une sévérité ou un identifiant d'hôte, l'adaptateur n'invente pas de valeur équivalente.
 
 
 \section{Routeur et registre de modèles}
 
-Le routeur examine la structure d'un fichier ou d'un échantillon et calcule des scores pour les différentes familles connues. Il retient ensuite le candidat le mieux classé et conserve la marge qui le sépare des autres possibilités. Dans le protocole open-set, un seuil de score principal est fixé avant l'évaluation afin de permettre le rejet des entrées insuffisamment compatibles avec les familles connues.
+Le routeur examine la structure d'un fichier ou d'un échantillon et calcule des scores pour les différentes familles connues. Il retient ensuite le candidat le mieux classé et conserve la marge qui le sépare des autres possibilités. Dans le protocole open-set, un seuil de score principal est fixé avant l'évaluation afin de permettre le rejet des entrées insuffisamment compatibles avec les familles connues ; une entrée dont la meilleure famille est le fallback est également rejetée. Pour les journaux texte, les scores intègrent les colonnes \texttt{dataset} et \texttt{subtype} renseignées par le parseur de format, si bien que le routage reprend en partie la détection de format.
 
 Une fois la famille déterminée, le registre fournit le modèle associé, son prétraitement ainsi que ses métadonnées. Cette séparation protège notamment contre l'utilisation d'un modèle sur un espace de caractéristiques qui ne lui correspond pas.
 
@@ -50,6 +50,7 @@ Le contrat \texttt{ActionOutcome} associe le résultat d'un handler aux éventue
 
 La méthode \texttt{pursue\_goal} exécute la boucle jusqu'à la terminaison, au blocage, à l'échec ou à l'épuisement du budget. \texttt{resume\_goal} recharge l'état persistant ; un budget épuisé ne peut être prolongé que par un nombre d'actions explicitement accordé. Le callback de délégation peut être directement relié à \texttt{ContractNetCoordinator.negotiate}, ce qui conserve un seul mécanisme d'attribution pour les tâches non exécutables localement.
 
+\input{chapters/spec_utilite}
 
 \section{Idempotence et reprise}
 
@@ -75,12 +76,44 @@ Le traitement de HDFS respecte une séparation préalable des données. Drain3 e
 
 Les scores produits au niveau événement sont ensuite agrégés par moyenne selon le \texttt{block\_id}. Ce choix est important, car les labels disponibles dans HDFS portent sur le bloc et non sur chaque ligne prise indépendamment.
 
-BGL suit un protocole différent, fondé sur des fenêtres. L'évaluation Histogram est complétée par une séparation entre templates connus et inconnus ainsi que par le baseline \texttt{UnknownTemplateBaseline}. Cette instrumentation permet de vérifier quelle part de la performance peut être liée à la simple nouveauté d'un template, plutôt que d'attribuer automatiquement l'ensemble du F1 à une modélisation plus générale de la dynamique des journaux.
+\subsection{Détecteur Histogram}
+\label{subsec:histogram}
+
+Le détecteur Histogram attribue à chaque événement un score de rareté calculé à partir des seuls événements normaux de l'entraînement. Soit $N$ le nombre d'événements normaux d'entraînement et, pour un événement $e$, $\tau(e)$ son template Drain3, $s(e)$ sa source et $v(e)$ sa sévérité. Pour chaque attribut $a \in \{\tau, s, v\}$, on note $n_a(x)$ le nombre d'événements normaux d'entraînement prenant la valeur $x$ et l'on définit la fréquence lissée
+\[
+  \tilde{p}_a(x) = \frac{\max\bigl(n_a(x), 1\bigr)}{N}.
+\]
+Le score de rareté de l'événement est la moyenne des log-raretés :
+\[
+  r(e) = -\frac{1}{3}\Bigl[\log \tilde{p}_\tau\bigl(\tau(e)\bigr) + \log \tilde{p}_s\bigl(s(e)\bigr) + \log \tilde{p}_v\bigl(v(e)\bigr)\Bigr].
+\]
+Une valeur jamais observée, en particulier un template inconnu du parseur gelé, reçoit le compte plancher 1 et donc la rareté maximale $\log N$ pour cet attribut.
+
+Pour HDFS, dont les labels portent sur le bloc, les scores sont agrégés par \texttt{block\_id}. Trois agrégateurs sont comparés sur la validation : le maximum, la moyenne $R(b) = \frac{1}{|b|}\sum_{e \in b} r(e)$ et la proportion d'événements dont le score dépasse un seuil événementiel. Pour BGL, l'unité évaluée est l'événement lui-même : aucune fenêtre ni agrégation n'est appliquée.
+
+Le seuil $\theta$ est choisi sur la validation parmi les points de la courbe précision--rappel, en maximisant le F1 ; les ex æquo sont départagés par le FPR le plus faible, puis le MCC le plus élevé, puis le seuil le plus élevé. Une unité est déclarée anormale si son score est supérieur ou égal à $\theta$.
+
+\begin{verbatim}
+Entrée : événements train/validation/test, état Drain3 gelé
+N  <- nombre d'événements normaux du train
+pour a dans {template, source, sévérité} :
+    n_a <- comptes de a sur les événements normaux du train
+pour chaque événement e :
+    r(e) <- -(1/3) * somme_a log(max(n_a[a(e)], 1) / N)
+si HDFS : R(b) <- agrégat_g(r(e) pour e dans b), g choisi sur validation
+si BGL  : R(e) <- r(e)
+theta <- argmax_F1 sur la validation (départage FPR, MCC, seuil)
+prédiction(u) <- [R(u) >= theta]
+\end{verbatim}
+
+L'implémentation correspond à la fonction \texttt{histogram\_scores} de \texttt{scripts/run\_strict\_sequence\_experiments.py} et de \texttt{scripts/run\_hdfs\_block\_strengthening.py}, et à \texttt{select\_threshold} de \texttt{scripts/dataset\_strengthening\_common.py}.
+
+BGL suit un protocole différent : l'unité évaluée est l'événement, sans fenêtre ni agrégation (sous-section~\ref{subsec:histogram}). L'évaluation Histogram est complétée par une séparation entre templates connus et inconnus ainsi que par le baseline \texttt{UnknownTemplateBaseline}. Cette instrumentation permet de vérifier quelle part de la performance peut être liée à la simple nouveauté d'un template, plutôt que d'attribuer automatiquement l'ensemble du F1 à une modélisation plus générale de la dynamique des journaux.
 
 
 \section{Corrélation}
 
-La couche de corrélation reçoit les alertes déjà normalisées et applique des contraintes temporelles et contextuelles pour déterminer lesquelles peuvent appartenir au même ensemble. Lorsqu'un groupe est créé, il reçoit un identifiant d'incident distinct des identifiants utilisés pour les messages.
+La couche de corrélation reçoit les alertes déjà normalisées et regroupe celles qui tombent dans la même fenêtre temporelle fixe (plancher à 15 minutes par défaut) et partagent exactement sept clés : hôte, utilisateur, source, catégorie, sous-catégorie, protocole et port de destination. La liste d’événements publiée pour chaque incident est limitée à vingt identifiants ; le nombre total d’événements reste conservé dans \texttt{event\_count}. Lorsqu'un groupe est créé, il reçoit un identifiant d'incident distinct des identifiants utilisés pour les messages.
 
 Les événements sources restent référencés. Il devient ainsi possible de revenir du groupe corrélé vers les éléments qui l'ont constitué et de vérifier a posteriori pourquoi le rapprochement a été effectué.
 

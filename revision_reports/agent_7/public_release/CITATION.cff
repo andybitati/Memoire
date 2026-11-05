@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: "Si vous utilisez ce logiciel ou ces artefacts, merci de citer le mémoire et l'archive Zenodo ci-dessous."
+title: "Ariel Logminer : prototype multi-agents pour l'analyse de journaux système et réseau hétérogènes"
+type: software
+authors:
+  - family-names: "MARHEGANE BITATI"
+    given-names: "André Olivier"
+    affiliation: "Université de Kinshasa, Faculté polytechnique, Département de génie électrique et informatique"
+    # orcid: "https://orcid.org/[À COMPLÉTER]"
+version: "1.0.0"
+doi: "10.5281/zenodo.[À COMPLÉTER APRÈS PUBLICATION]"
+date-released: "[À COMPLÉTER : AAAA-MM-JJ]"
+license: MIT
+repository-code: "[À COMPLÉTER : URL du dépôt public]"
+keywords:
+  - cybersécurité
+  - journaux système
+  - détection d'anomalies
+  - systèmes multi-agents
+  - Contract Net
+  - Redis Streams
+  - reproductibilité
+abstract: >-
+  Prototype multi-agents léger pour l'analyse de journaux système et réseau
+  hétérogènes : normalisation multi-format, routage open-set, portefeuille de
+  modèles légers, négociation Contract Net sur bus local ou Redis Streams,
+  idempotence et corrélation. L'archive contient le code, les tests, les
+  artefacts des campagnes expérimentales avec manifestes SHA-256 et les
+  sources du mémoire associé. Prototype de laboratoire, non destiné à la
+  production.
+preferred-citation:
+  type: thesis
+  thesis-type: "Mémoire d'ingénieur civil électricien"
+  title: "Détection autonome et distribuée d'anomalies dans les journaux système et réseau à l'aide d'agents intelligents multitâches — Conception et évaluation locale du prototype Ariel Logminer"
+  authors:
+    - family-names: "MARHEGANE BITATI"
+      given-names: "André Olivier"
+  institution:
+    name: "Université de Kinshasa, Faculté polytechnique"
+  year: 2026
+  doi: "10.5281/zenodo.[À COMPLÉTER APRÈS PUBLICATION]"
+references:
+  - type: dataset
+    title: "Loghub: A Large Collection of System Log Datasets for AI-driven Log Analytics"
+    doi: "10.5281/zenodo.8196385"
+    authors:
+      - name: "LOGPAI"
+    license: CC-BY-4.0

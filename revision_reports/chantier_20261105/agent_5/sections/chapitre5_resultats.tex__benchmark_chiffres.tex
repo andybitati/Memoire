@@ -1,0 +1,28 @@
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre5_resultats.tex
+% Passage à remplacer : paragraphe « La mémoire agit bien sur certaines décisions contrôlées »
+% Agent : 5 — Architecture multi-agents
+% Sources : experiments/phase_multi_agent/aggregated/ma_20260909T160812Z_34016__statistics.csv ;
+%           ma_20260909T160812Z_34016__paired_memory_effects.csv
+
+\begin{table}[H]
+\centering
+\caption{Débit moyen du benchmark A--D (tâches/s) et IC à 95~\%, dix répétitions par charge.}
+\label{tab:benchmark-debit}
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{rcccc}
+\toprule
+\textbf{Charge} & \textbf{A, monolithe} & \textbf{B, workers} & \textbf{C, agents} & \textbf{D, agents + mémoire} \\
+\midrule
+100 & $72\,657$ [$56\,283$ ; $89\,030$] & $12\,694$ [$10\,762$ ; $14\,626$] & $1\,309$ [$1\,103$ ; $1\,514$] & $1\,249$ [$1\,094$ ; $1\,404$] \\
+500 & $79\,197$ [$62\,000$ ; $96\,394$] & $15\,537$ [$12\,734$ ; $18\,341$] & $1\,248$ [$1\,123$ ; $1\,373$] & $1\,186$ [$1\,063$ ; $1\,308$] \\
+$1\,000$ & $79\,378$ [$70\,476$ ; $88\,280$] & $16\,766$ [$12\,407$ ; $21\,125$] & $1\,298$ [$1\,217$ ; $1\,379$] & $1\,185$ [$1\,120$ ; $1\,250$] \\
+$5\,000$ & $84\,728$ [$79\,652$ ; $89\,803$] & $14\,714$ [$13\,059$ ; $16\,368$] & $1\,201$ [$1\,124$ ; $1\,278$] & $1\,178$ [$1\,124$ ; $1\,232$] \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Le monolithe traite donc 55 à 72 fois plus de tâches par seconde que les architectures à agents, et les workers centralisés une dizaine de fois plus. Sur ces microtâches, le coût d'orchestration domine entièrement le travail utile. Il ne préjuge pas du rapport observé lorsque la tâche dure plus longtemps, qu'examine la section~\ref{sec:e-cnp}.
+
+La mémoire agit sur le calcul d'utilité et modifie certaines attributions. Aucune différence appariée D $-$ C n'établit pourtant de gain : l'intervalle du débit contient zéro à chaque charge ($-113$ tâches/s [$-229$ ; $4$] pour $1\,000$ tâches), de même que celui de la latence p95, et l'équité diminue à 500 tâches ($-0{,}040$ [$-0{,}064$ ; $-0{,}017$]). Dans ce benchmark, aucune tâche n'échoue et tous les agents réussissent : la mémoire ne dispose d'aucune information utile à exploiter, situation que traite la section~\ref{sec:e-h5}.

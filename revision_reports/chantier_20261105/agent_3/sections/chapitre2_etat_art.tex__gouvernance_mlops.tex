@@ -1,0 +1,48 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre2_etat_art.tex
+% Passage à remplacer : de « \section{Mise à jour et gouvernance des modèles} »
+%   (inclus) à « \section{Tableaux de bord et exploitabilité par l'analyste} »
+%   (exclu).
+% Agent : Agent 3 — État de l'art et positionnement, chantier 2026-11-05.
+% Sources : Sculley et al. ; Breck et al. ; Amershi et al. ; NIST AI RMF 1.0.
+% ============================================================================
+
+\section{Gouvernance des modèles et MLOps}
+
+\subsection{Le modèle comme composant d'un système évolutif}
+
+Le déploiement d'un modèle ne se résume pas à sérialiser un estimateur. Sculley et al.
+montrent que les systèmes d'apprentissage accumulent une dette propre aux dépendances de
+données, aux boucles de rétroaction, à la configuration et aux interactions entre
+composants \cite{sculley2015debt}. Amershi et al. soulignent notamment la difficulté de
+versionner les données, de réutiliser les modèles et de maintenir des composants dont le
+comportement est entremêlé avec celui du système qui les consomme
+\cite{amershi2019software}. Une dérive de distribution, une modification du parseur ou un
+changement de schéma peut donc invalider un modèle sans modification de son code.
+
+\subsection{Promotion, surveillance et retour arrière}
+
+La préparation à la production exige des tests sur les données, les caractéristiques,
+les modèles et l'infrastructure, puis une surveillance après déploiement. La grille de
+Breck et al. regroupe précisément des contrôles de préparation et de monitoring pour
+réduire la dette technique \cite{breck2017mltest}. Le NIST AI RMF ajoute une dimension de
+gouvernance : rôles définis, documentation, mesure des risques, suivi continu et revue
+périodique \cite{nist2023airmf}.
+
+Une procédure minimale de promotion doit ainsi conserver :
+\begin{enumerate}
+    \item la version et la provenance des données, du parseur, des caractéristiques et du modèle ;
+    \item un jeu de comparaison gelé et une règle de décision définie avant son évaluation ;
+    \item les métriques prédictives, les coûts et les contrôles par sous-groupes ;
+    \item une validation explicite, l'identité du décideur et l'artefact promu ;
+    \item les conditions de surveillance, d'alerte, de retrait et de retour arrière.
+\end{enumerate}
+
+Un mode \textit{dry-run}, un registre ou une fonction de comparaison constituent des
+briques de cette chaîne ; ils ne démontrent pas à eux seuls une gouvernance opérationnelle.
+Dans Ariel Logminer, la mémoire persistante et les chemins de promotion fournissent une
+infrastructure auditée par des tests. En l'absence de cycles répétés comprenant candidat,
+décision, déploiement, surveillance et retour arrière, le positionnement doit rester celui
+d'un \textbf{support de gouvernance expérimental}, non d'une plateforme MLOps validée ni
+d'un apprentissage continu autonome.
+

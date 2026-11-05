@@ -1,0 +1,1903 @@
+{
+  "run_id": "agent4_csecic_shortcut_20261104T144738Z",
+  "generated_at": "2026-11-04T14:59:43.451631+00:00",
+  "git_commit": "35da3a9ea6f3ca1a0cfe01766ca1d14fa3da6930",
+  "inputs": {
+    "raw_files": {
+      "2018-02-15": {
+        "path": "data/raw/external/CSE-CIC-IDS2018/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+        "bytes": 375945899,
+        "sha256": "fa2947a8256d81ee9103ae16139d62d0e17aa23e696ee80d9e76fb51c01c9c4b"
+      },
+      "2018-02-16": {
+        "path": "data/raw/external/CSE-CIC-IDS2018/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+        "bytes": 333723605,
+        "sha256": "1a4919faa0c49c7af97230b0c2d076eba23ee6dd81103a3801d51ac316355d8b"
+      }
+    },
+    "published_pools": {
+      "train": {
+        "path": "experiments/phase_dataset_strengthening/processed/external_csecicids2018_20260910T230136Z_train_pool.csv.gz",
+        "sha256": "8cada8131373deff826bd106732a0fed28d553714d0a0cc61fce02108d0db48c"
+      },
+      "test": {
+        "path": "experiments/phase_dataset_strengthening/processed/external_csecicids2018_20260910T230136Z_test_pool.csv.gz",
+        "sha256": "452e6688fd114b3f6206a796aeb38e85d3cbdece75d84688c9f0d8f3e17636b4"
+      }
+    },
+    "published_metrics": "experiments/phase_dataset_strengthening/raw/external_csecicids2018_20260910T230136Z_metrics.csv"
+  },
+  "protocol": {
+    "part1": "pools publies, 10 000/classe/graine, seed_sample identique, seuil 0,5",
+    "part2": "Bernoulli uniforme taux 0.15 par journee (graines 7000/7001), train 50000 lignes a prevalence naturelle, test = echantillon complet de la journee de test a prevalence naturelle ; intra-jour : split aleatoire 50/50 par graine",
+    "models": "RF(120 arbres, max_depth 28, min_samples_leaf 2, class_weight balanced) ; LR(StandardScaler + lbfgs, class_weight balanced, max_iter 1000)",
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "threshold": 0.5,
+    "selection_on_test": false
+  },
+  "part1_summary": [
+    {
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "f1_mean": 0.4008821965129756,
+      "f1_min": 0.12960538619786796,
+      "f1_max": 0.6213765182186234,
+      "precision_mean": 0.6572936920636752,
+      "precision_min": 0.31086614173228344,
+      "precision_max": 0.9985590778097982,
+      "recall_mean": 0.4192600000000001,
+      "recall_min": 0.0693,
+      "recall_max": 0.7674,
+      "fpr_mean": 0.44986000000000004,
+      "fpr_min": 0.0001,
+      "fpr_max": 0.8752,
+      "mcc_mean": 0.015452719695547023,
+      "mcc_min": -0.4989301032986128,
+      "mcc_max": 0.31541838040362336,
+      "pr_auc_mean": 0.7215456902408285,
+      "pr_auc_min": 0.3844664929539367,
+      "pr_auc_max": 0.897537801271792,
+      "prevalence_mean": 0.5,
+      "prevalence_min": 0.5,
+      "prevalence_max": 0.5,
+      "n_seeds": 5
+    },
+    {
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "f1_mean": 0.9992120132601066,
+      "f1_min": 0.9968598913422718,
+      "f1_max": 0.9998500224966256,
+      "precision_mean": 0.9984280282369209,
+      "precision_min": 0.9937394415184339,
+      "precision_max": 0.9997000899730081,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.0015800000000000002,
+      "fpr_min": 0.0003,
+      "fpr_max": 0.0063,
+      "mcc_mean": 0.9984240140793197,
+      "mcc_min": 0.9937197205635337,
+      "mcc_max": 0.9997000449865031,
+      "pr_auc_mean": 0.9993577608221633,
+      "pr_auc_min": 0.9990202401433163,
+      "pr_auc_max": 0.9996175180160976,
+      "prevalence_mean": 0.5,
+      "prevalence_min": 0.5,
+      "prevalence_max": 0.5,
+      "n_seeds": 5
+    },
+    {
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "f1_mean": 0.34329933113434197,
+      "f1_min": 0.041762393424209926,
+      "f1_max": 0.5655125848681495,
+      "precision_mean": 0.28976526190740093,
+      "precision_min": 0.042661938041097316,
+      "precision_max": 0.4524881445464914,
+      "recall_mean": 0.4253800000000001,
+      "recall_min": 0.0409,
+      "recall_max": 0.7538,
+      "fpr_mean": 0.9159,
+      "fpr_min": 0.9121,
+      "fpr_max": 0.9199,
+      "mcc_mean": -0.5219320363037944,
+      "mcc_min": -0.8776488178551238,
+      "mcc_max": -0.21218672657306997,
+      "pr_auc_mean": 0.3730599719732017,
+      "pr_auc_min": 0.33362771357869475,
+      "pr_auc_max": 0.4574476651893389,
+      "prevalence_mean": 0.5,
+      "prevalence_min": 0.5,
+      "prevalence_max": 0.5,
+      "n_seeds": 5
+    },
+    {
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "f1_mean": 0.6610772224287128,
+      "f1_min": 0.6551945203630596,
+      "f1_max": 0.6679357445813713,
+      "precision_mean": 0.4976035174814187,
+      "precision_min": 0.4944237918215613,
+      "precision_max": 0.5014290728576443,
+      "recall_mean": 0.98454,
+      "recall_min": 0.9709,
+      "recall_max": 1.0,
+      "fpr_mean": 0.9939399999999999,
+      "fpr_min": 0.9928,
+      "fpr_max": 0.9945,
+      "mcc_mean": -0.02503053190084182,
+      "mcc_min": -0.08202632081359766,
+      "mcc_max": 0.05346162843842837,
+      "pr_auc_mean": 0.3113795491327608,
+      "pr_auc_min": 0.31050016569390987,
+      "pr_auc_max": 0.31434877996897403,
+      "prevalence_mean": 0.5,
+      "prevalence_min": 0.5,
+      "prevalence_max": 0.5,
+      "n_seeds": 5
+    },
+    {
+      "model": "RandomForest",
+      "feature_set": "DST_PORT_ONLY",
+      "f1_mean": 0.872313708904735,
+      "f1_min": 0.8707582858110778,
+      "f1_max": 0.8740006755995946,
+      "precision_mean": 0.9999741802220502,
+      "precision_min": 0.9998709011102505,
+      "precision_max": 1.0,
+      "recall_mean": 0.77356,
+      "recall_min": 0.7711,
+      "recall_max": 0.7762,
+      "fpr_mean": 2e-05,
+      "fpr_min": 0.0,
+      "fpr_max": 0.0001,
+      "mcc_mean": 0.7941653643795796,
+      "mcc_min": 0.7921311271997954,
+      "mcc_max": 0.796400629749789,
+      "pr_auc_mean": 0.8867600025819777,
+      "pr_auc_min": 0.8855500000000001,
+      "pr_auc_max": 0.8881,
+      "prevalence_mean": 0.5,
+      "prevalence_min": 0.5,
+      "prevalence_max": 0.5,
+      "n_seeds": 5
+    },
+    {
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "f1_mean": 0.9997200789775563,
+      "f1_min": 0.9997000899730081,
+      "f1_max": 0.9997500624843789,
+      "precision_mean": 0.9994403158205027,
+      "precision_min": 0.9994003597841296,
+      "precision_max": 0.9995002498750625,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.00056,
+      "fpr_min": 0.0005,
+      "fpr_max": 0.0006,
+      "mcc_mean": 0.9994401579102385,
+      "mcc_min": 0.9994001798920487,
+      "mcc_max": 0.9995001249375234,
+      "pr_auc_mean": 0.9992276442127741,
+      "pr_auc_min": 0.9990375175334554,
+      "pr_auc_max": 0.9994148172749068,
+      "prevalence_mean": 0.5,
+      "prevalence_min": 0.5,
+      "prevalence_max": 0.5,
+      "n_seeds": 5
+    },
+    {
+      "model": "rule_dst_port_lt_1024",
+      "feature_set": "DST_PORT_RULE",
+      "f1_mean": 0.9997200789775563,
+      "f1_min": 0.9997000899730081,
+      "f1_max": 0.9997500624843789,
+      "precision_mean": 0.9994403158205027,
+      "precision_min": 0.9994003597841296,
+      "precision_max": 0.9995002498750625,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.00056,
+      "fpr_min": 0.0005,
+      "fpr_max": 0.0006,
+      "mcc_mean": 0.9994401579102385,
+      "mcc_min": 0.9994001798920487,
+      "mcc_max": 0.9995001249375234,
+      "pr_auc_mean": null,
+      "pr_auc_min": null,
+      "pr_auc_max": null,
+      "prevalence_mean": 0.5,
+      "prevalence_min": 0.5,
+      "prevalence_max": 0.5,
+      "n_seeds": 5
+    },
+    {
+      "model": "rule_dst_port_in_train_attack_ports",
+      "feature_set": "DST_PORT_RULE",
+      "f1_mean": 0.872313708904735,
+      "f1_min": 0.8707582858110778,
+      "f1_max": 0.8740006755995946,
+      "precision_mean": 0.9999741802220502,
+      "precision_min": 0.9998709011102505,
+      "precision_max": 1.0,
+      "recall_mean": 0.77356,
+      "recall_min": 0.7711,
+      "recall_max": 0.7762,
+      "fpr_mean": 2e-05,
+      "fpr_min": 0.0,
+      "fpr_max": 0.0001,
+      "mcc_mean": 0.7941653643795796,
+      "mcc_min": 0.7921311271997954,
+      "mcc_max": 0.796400629749789,
+      "pr_auc_mean": null,
+      "pr_auc_min": null,
+      "pr_auc_max": null,
+      "prevalence_mean": 0.5,
+      "prevalence_min": 0.5,
+      "prevalence_max": 0.5,
+      "n_seeds": 5
+    }
+  ],
+  "part1_top_importances": {
+    "LogisticRegression|permutation_f1_test_balanced_4000": [
+      {
+        "feature": "Dst Port",
+        "importance": 0.5004331810288466
+      },
+      {
+        "feature": "Fwd Seg Size Min",
+        "importance": 0.1391182039641089
+      },
+      {
+        "feature": "Pkt Len Var",
+        "importance": 0.12019050202456165
+      },
+      {
+        "feature": "PSH Flag Cnt",
+        "importance": 0.04800942080218007
+      },
+      {
+        "feature": "Init Fwd Win Byts",
+        "importance": 0.022728476807975777
+      },
+      {
+        "feature": "Subflow Fwd Byts",
+        "importance": 0.01945425786466104
+      },
+      {
+        "feature": "TotLen Fwd Pkts",
+        "importance": 0.01945425786466104
+      },
+      {
+        "feature": "Bwd Pkt Len Mean",
+        "importance": 0.017783367393975236
+      },
+      {
+        "feature": "Bwd Seg Size Avg",
+        "importance": 0.017783367393975236
+      },
+      {
+        "feature": "ACK Flag Cnt",
+        "importance": 0.015787519479335727
+      }
+    ],
+    "RandomForest|impurity": [
+      {
+        "feature": "Fwd Seg Size Min",
+        "importance": 0.21954506621385464
+      },
+      {
+        "feature": "Flow IAT Mean",
+        "importance": 0.0637870257533476
+      },
+      {
+        "feature": "Flow Pkts/s",
+        "importance": 0.059744288588731743
+      },
+      {
+        "feature": "Init Fwd Win Byts",
+        "importance": 0.05851599068519915
+      },
+      {
+        "feature": "Fwd Header Len",
+        "importance": 0.05210670652660383
+      },
+      {
+        "feature": "Fwd Pkts/s",
+        "importance": 0.05027161230928184
+      },
+      {
+        "feature": "Dst Port",
+        "importance": 0.043622828331706096
+      },
+      {
+        "feature": "Flow IAT Max",
+        "importance": 0.042917791414203266
+      },
+      {
+        "feature": "Flow Duration",
+        "importance": 0.03264520405560007
+      },
+      {
+        "feature": "Fwd IAT Tot",
+        "importance": 0.02381289491933149
+      }
+    ],
+    "RandomForest|permutation_f1_test_balanced_4000": [
+      {
+        "feature": "Dst Port",
+        "importance": 0.21259783418371866
+      },
+      {
+        "feature": "Init Bwd Win Byts",
+        "importance": 0.12319094189851075
+      },
+      {
+        "feature": "Pkt Len Max",
+        "importance": 0.10735860132625151
+      },
+      {
+        "feature": "Init Fwd Win Byts",
+        "importance": 0.0902592534429651
+      },
+      {
+        "feature": "Bwd IAT Max",
+        "importance": 0.08373943003608252
+      },
+      {
+        "feature": "Bwd Pkts/s",
+        "importance": 0.08232209443779988
+      },
+      {
+        "feature": "Flow IAT Min",
+        "importance": 0.07397751428715903
+      },
+      {
+        "feature": "Flow IAT Std",
+        "importance": 0.07037629487877956
+      },
+      {
+        "feature": "Fwd IAT Min",
+        "importance": 0.06274346620742847
+      },
+      {
+        "feature": "Down/Up Ratio",
+        "importance": 0.029989506231577368
+      }
+    ]
+  },
+  "part1_family_predicted_attack_rate": [
+    {
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "Benign",
+      "mean": 0.0015800000000000002,
+      "min": 0.0003,
+      "max": 0.0063
+    },
+    {
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "Hulk_port80",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "SlowHTTPTest_port21",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "Benign",
+      "mean": 0.00056,
+      "min": 0.0005,
+      "max": 0.0006
+    },
+    {
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "Hulk_port80",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "SlowHTTPTest_port21",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "Benign",
+      "mean": 0.9939399999999999,
+      "min": 0.9928,
+      "max": 0.9945
+    },
+    {
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "Hulk_port80",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "SlowHTTPTest_port21",
+      "mean": 0.9317410828721245,
+      "min": 0.871749669457911,
+      "max": 1.0
+    },
+    {
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "Benign",
+      "mean": 0.44986,
+      "min": 0.0001,
+      "max": 0.8752
+    },
+    {
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "Hulk_port80",
+      "mean": 0.5424289845612049,
+      "min": 0.0894770819883796,
+      "max": 0.995201659966282
+    },
+    {
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "SlowHTTPTest_port21",
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "model": "RandomForest",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "Benign",
+      "mean": 2e-05,
+      "min": 0.0,
+      "max": 0.0001
+    },
+    {
+      "model": "RandomForest",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "Hulk_port80",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "model": "RandomForest",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "SlowHTTPTest_port21",
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "Benign",
+      "mean": 0.9159,
+      "min": 0.9121,
+      "max": 0.9199
+    },
+    {
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "Hulk_port80",
+      "mean": 0.5505055218841347,
+      "min": 0.052808263395739186,
+      "max": 0.9775645182207237
+    },
+    {
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "SlowHTTPTest_port21",
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    }
+  ],
+  "part1_dst_port_pools": {
+    "train_2018-02-15|target=0": {
+      "n": 50000,
+      "share_lt_1024": 0.75838,
+      "top_ports": {
+        "53": 16685,
+        "80": 9286,
+        "443": 7756,
+        "3389": 3766,
+        "445": 2907,
+        "0": 947
+      }
+    },
+    "train_2018-02-15|target=1": {
+      "n": 50000,
+      "share_lt_1024": 1.0,
+      "top_ports": {
+        "80": 50000
+      }
+    },
+    "test_2018-02-16|target=0": {
+      "n": 50000,
+      "share_lt_1024": 0.00068,
+      "top_ports": {
+        "0": 18,
+        "50744": 14,
+        "50290": 13,
+        "43162": 13,
+        "43096": 13,
+        "59152": 12
+      }
+    },
+    "test_2018-02-16|target=1": {
+      "n": 50000,
+      "share_lt_1024": 1.0,
+      "top_ports": {
+        "80": 38472,
+        "21": 11528
+      }
+    }
+  },
+  "part2_audit": {
+    "2018-02-15": {
+      "rows_scanned": 1048575,
+      "repeated_header_rows": 0,
+      "label_counts_full_file": {
+        "DoS attacks-GoldenEye": 41508,
+        "Benign": 996077,
+        "DoS attacks-Slowloris": 10990
+      },
+      "sample_rows": 157319,
+      "sample_prevalence": 0.04994310922393354,
+      "full_file_prevalence": 0.050066042009393685
+    },
+    "2018-02-16": {
+      "rows_scanned": 1048574,
+      "repeated_header_rows": 1,
+      "label_counts_full_file": {
+        "DoS attacks-SlowHTTPTest": 139890,
+        "Benign": 446772,
+        "DoS attacks-Hulk": 461912
+      },
+      "sample_rows": 157366,
+      "sample_prevalence": 0.5713559472821321,
+      "full_file_prevalence": 0.573924205635463
+    }
+  },
+  "part2_summary": [
+    {
+      "direction": "15_to_16",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "f1_mean": 0.09591473824406016,
+      "f1_min": 0.03796929724067952,
+      "f1_max": 0.23483680981595093,
+      "precision_mean": 0.999645499525526,
+      "precision_min": 0.9994256174612292,
+      "precision_max": 0.9999164089275265,
+      "recall_mean": 0.05205979179642317,
+      "recall_min": 0.019352255538749,
+      "recall_max": 0.13304119583592847,
+      "fpr_mean": 1.4824917721706644e-05,
+      "fpr_min": 1.4824917721706644e-05,
+      "fpr_max": 1.4824917721706644e-05,
+      "mcc_mean": 0.1413720687209386,
+      "mcc_min": 0.09148973802369381,
+      "mcc_max": 0.248395481603285,
+      "pr_auc_mean": 0.7211167164102485,
+      "pr_auc_min": 0.4617666748916534,
+      "pr_auc_max": 0.9291018262805668,
+      "prevalence_mean": 0.5713559472821321,
+      "prevalence_min": 0.5713559472821321,
+      "prevalence_max": 0.5713559472821321,
+      "n_seeds": 5
+    },
+    {
+      "direction": "15_to_16",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "f1_mean": 0.9943450302539066,
+      "f1_min": 0.9815827683708337,
+      "f1_max": 0.9996720090280905,
+      "precision_mean": 0.9888481833935178,
+      "precision_min": 0.963831657483438,
+      "precision_max": 0.9993442331417901,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.015293385121712574,
+      "fpr_min": 0.0008746701455806921,
+      "fpr_max": 0.05001927239303822,
+      "mcc_mean": 0.9867716021020483,
+      "mcc_min": 0.9568811312105284,
+      "mcc_max": 0.9992347755036864,
+      "pr_auc_mean": 0.9997350119825972,
+      "pr_auc_min": 0.9995784520869635,
+      "pr_auc_max": 0.9999633664596276,
+      "prevalence_mean": 0.5713559472821321,
+      "prevalence_min": 0.5713559472821321,
+      "prevalence_max": 0.5713559472821321,
+      "n_seeds": 5
+    },
+    {
+      "direction": "15_to_16",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "f1_mean": 0.07131569735618899,
+      "f1_min": 0.028258608273544396,
+      "f1_max": 0.22598119822531104,
+      "precision_mean": 0.08460426603324948,
+      "precision_min": 0.03528138528138528,
+      "precision_max": 0.25559002287944077,
+      "recall_mean": 0.0619272177239968,
+      "recall_min": 0.0235674882106949,
+      "recall_max": 0.2025202420144141,
+      "fpr_mean": 0.8166809974204643,
+      "fpr_min": 0.7620600705666084,
+      "fpr_max": 0.8589705577134047,
+      "mcc_mean": -0.7705847387383186,
+      "mcc_min": -0.8510327552149222,
+      "mcc_max": -0.5803299828615248,
+      "pr_auc_mean": 0.42059537658213453,
+      "pr_auc_min": 0.4082076826046266,
+      "pr_auc_max": 0.43698541100219296,
+      "prevalence_mean": 0.5713559472821321,
+      "prevalence_min": 0.5713559472821321,
+      "prevalence_max": 0.5713559472821321,
+      "n_seeds": 5
+    },
+    {
+      "direction": "15_to_16",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "f1_mean": 0.7283968820101407,
+      "f1_min": 0.7283951117358037,
+      "f1_max": 0.7284010126582279,
+      "precision_mean": 0.5728177854490293,
+      "precision_min": 0.5728155958334661,
+      "precision_max": 0.5728228945675096,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.9940463130429625,
+      "fpr_min": 0.9940255581581522,
+      "fpr_max": 0.9940552079935956,
+      "mcc_mean": 0.058398411064409836,
+      "mcc_min": 0.058354687688775636,
+      "mcc_max": 0.05850040230009096,
+      "pr_auc_mean": 0.374890129948035,
+      "pr_auc_min": 0.3746758111544923,
+      "pr_auc_max": 0.3749687480297153,
+      "prevalence_mean": 0.5713559472821321,
+      "prevalence_min": 0.5713559472821321,
+      "prevalence_max": 0.5713559472821321,
+      "n_seeds": 5
+    },
+    {
+      "direction": "15_to_16",
+      "model": "RandomForest",
+      "feature_set": "DST_PORT_ONLY",
+      "f1_mean": 0.8691556461096335,
+      "f1_min": 0.8691556461096335,
+      "f1_max": 0.8691556461096335,
+      "precision_mean": 0.9999710602092347,
+      "precision_min": 0.9999710602092347,
+      "precision_max": 0.9999710602092347,
+      "recall_mean": 0.7686070824806478,
+      "recall_min": 0.7686070824806478,
+      "recall_max": 0.7686070824806478,
+      "fpr_mean": 2.964983544341329e-05,
+      "fpr_min": 2.964983544341329e-05,
+      "fpr_max": 2.964983544341329e-05,
+      "mcc_mean": 0.7664051716906908,
+      "mcc_min": 0.7664051716906908,
+      "mcc_max": 0.7664051716906908,
+      "pr_auc_mean": 0.9007925587361459,
+      "pr_auc_min": 0.9007925587361458,
+      "pr_auc_max": 0.9007925587361458,
+      "prevalence_mean": 0.5713559472821321,
+      "prevalence_min": 0.5713559472821321,
+      "prevalence_max": 0.5713559472821321,
+      "n_seeds": 5
+    },
+    {
+      "direction": "15_to_16",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "f1_mean": 0.9997275855742662,
+      "f1_min": 0.9997275855742663,
+      "f1_max": 0.9997275855742663,
+      "precision_mean": 0.9994553195273508,
+      "precision_min": 0.9994553195273508,
+      "precision_max": 0.9994553195273508,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.0007264209683636256,
+      "fpr_min": 0.0007264209683636256,
+      "fpr_max": 0.0007264209683636256,
+      "mcc_mean": 0.9993644451481669,
+      "mcc_min": 0.9993644451481669,
+      "mcc_max": 0.9993644451481669,
+      "pr_auc_mean": 0.9993258315361537,
+      "pr_auc_min": 0.9993258315361536,
+      "pr_auc_max": 0.9993258315361536,
+      "prevalence_mean": 0.5713559472821321,
+      "prevalence_min": 0.5713559472821321,
+      "prevalence_max": 0.5713559472821321,
+      "n_seeds": 5
+    },
+    {
+      "direction": "15_to_16",
+      "model": "rule_dst_port_lt_1024",
+      "feature_set": "DST_PORT_RULE",
+      "f1_mean": 0.9997275855742662,
+      "f1_min": 0.9997275855742663,
+      "f1_max": 0.9997275855742663,
+      "precision_mean": 0.9994553195273508,
+      "precision_min": 0.9994553195273508,
+      "precision_max": 0.9994553195273508,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.0007264209683636256,
+      "fpr_min": 0.0007264209683636256,
+      "fpr_max": 0.0007264209683636256,
+      "mcc_mean": 0.9993644451481669,
+      "mcc_min": 0.9993644451481669,
+      "mcc_max": 0.9993644451481669,
+      "pr_auc_mean": null,
+      "pr_auc_min": null,
+      "pr_auc_max": null,
+      "prevalence_mean": 0.5713559472821321,
+      "prevalence_min": 0.5713559472821321,
+      "prevalence_max": 0.5713559472821321,
+      "n_seeds": 5
+    },
+    {
+      "direction": "16_to_15",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "f1_mean": 0.14401328058147383,
+      "f1_min": 0.0749231499986557,
+      "f1_max": 0.2516062093459436,
+      "precision_mean": 0.08111780709250867,
+      "precision_min": 0.04029925571709537,
+      "precision_max": 0.1491919263623672,
+      "recall_mean": 0.7220058546519027,
+      "recall_min": 0.5320096729031437,
+      "recall_max": 0.9130711467481227,
+      "fpr_mean": 0.4917918935916822,
+      "fpr_min": 0.24056950930671342,
+      "fpr_max": 0.6726592712528937,
+      "mcc_mean": 0.10765549016955903,
+      "mcc_min": -0.06159075121862913,
+      "mcc_max": 0.27613675674711824,
+      "pr_auc_mean": 0.334772187583273,
+      "pr_auc_min": 0.25641289809917234,
+      "pr_auc_max": 0.4798802409752561,
+      "prevalence_mean": 0.04994310922393354,
+      "prevalence_min": 0.04994310922393354,
+      "prevalence_max": 0.04994310922393354,
+      "n_seeds": 5
+    },
+    {
+      "direction": "16_to_15",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "f1_mean": 0.2341950483305665,
+      "f1_min": 0.11040672412564999,
+      "f1_max": 0.3068573444411278,
+      "precision_mean": 0.14291239863081304,
+      "precision_min": 0.0600004423995753,
+      "precision_max": 0.19500586328205835,
+      "recall_mean": 0.7101438207967418,
+      "recall_min": 0.6884306987399771,
+      "recall_max": 0.746722667684867,
+      "fpr_mean": 0.2735196906237037,
+      "fpr_min": 0.15616009420454696,
+      "fpr_max": 0.568646211077063,
+      "mcc_mean": 0.2291702294884821,
+      "mcc_min": 0.05367475764449573,
+      "mcc_max": 0.3165495898211845,
+      "pr_auc_mean": 0.14084722010751777,
+      "pr_auc_min": 0.04298017788710156,
+      "pr_auc_max": 0.22964086286537694,
+      "prevalence_mean": 0.04994310922393354,
+      "prevalence_min": 0.04994310922393354,
+      "prevalence_max": 0.04994310922393354,
+      "n_seeds": 5
+    },
+    {
+      "direction": "16_to_15",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "f1_mean": 0.12879776456213693,
+      "f1_min": 0.0670733189141899,
+      "f1_max": 0.18384477305752628,
+      "precision_mean": 0.07156061588982397,
+      "precision_min": 0.03581624708019725,
+      "precision_max": 0.10618507839962084,
+      "recall_mean": 0.6909252895507192,
+      "recall_min": 0.5269186712485682,
+      "recall_max": 0.8897798141784397,
+      "fpr_mean": 0.5139500341223856,
+      "fpr_min": 0.30282613640925454,
+      "fpr_max": 0.7456744858224833,
+      "mcc_mean": 0.07782464070799583,
+      "mcc_min": -0.10793797254275751,
+      "mcc_max": 0.17788636355717544,
+      "pr_auc_mean": 0.35397384033213714,
+      "pr_auc_min": 0.30351706562706987,
+      "pr_auc_max": 0.44027569344039225,
+      "prevalence_mean": 0.04994310922393354,
+      "prevalence_min": 0.04994310922393354,
+      "prevalence_max": 0.04994310922393354,
+      "n_seeds": 5
+    },
+    {
+      "direction": "16_to_15",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "f1_mean": 0.290869534660546,
+      "f1_min": 0.12475475272309046,
+      "f1_max": 0.3977723110564439,
+      "precision_mean": 0.19070038595492309,
+      "precision_min": 0.06844078239245815,
+      "precision_max": 0.2718695997384522,
+      "recall_mean": 0.7080310551100929,
+      "recall_min": 0.650375461372025,
+      "recall_max": 0.7585592465317551,
+      "fpr_mean": 0.22298778284781412,
+      "fpr_min": 0.104307449385128,
+      "fpr_max": 0.5037869157377795,
+      "mcc_mean": 0.2851191860394631,
+      "mcc_min": 0.08729427854686465,
+      "mcc_max": 0.4043826521415566,
+      "pr_auc_mean": 0.15262143242608722,
+      "pr_auc_min": 0.1031380250422137,
+      "pr_auc_max": 0.18777772181530505,
+      "prevalence_mean": 0.04994310922393354,
+      "prevalence_min": 0.04994310922393354,
+      "prevalence_max": 0.04994310922393354,
+      "n_seeds": 5
+    },
+    {
+      "direction": "16_to_15",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "f1_mean": 0.1091422809820207,
+      "f1_min": 0.10913636837170539,
+      "f1_max": 0.10914622287667047,
+      "precision_mean": 0.05772104367857152,
+      "precision_min": 0.05771773624823695,
+      "precision_max": 0.05772324872350586,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.8581659552260774,
+      "fpr_min": 0.8581311637740696,
+      "fpr_max": 0.8582181424040893,
+      "mcc_mean": 0.0904809870578539,
+      "mcc_min": 0.09046174805687686,
+      "mcc_max": 0.09049381260386644,
+      "pr_auc_mean": 0.08846677851215476,
+      "pr_auc_min": 0.08846677851215476,
+      "pr_auc_max": 0.08846677851215476,
+      "prevalence_mean": 0.04994310922393354,
+      "prevalence_min": 0.04994310922393354,
+      "prevalence_max": 0.04994310922393354,
+      "n_seeds": 5
+    },
+    {
+      "direction": "16_to_15",
+      "model": "rule_dst_port_lt_1024",
+      "feature_set": "DST_PORT_RULE",
+      "f1_mean": 0.12151722537988634,
+      "f1_min": 0.12151722537988634,
+      "f1_max": 0.12151722537988634,
+      "precision_mean": 0.06468902830608111,
+      "precision_min": 0.06468902830608111,
+      "precision_max": 0.06468902830608111,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.760066103758815,
+      "fpr_min": 0.760066103758815,
+      "fpr_max": 0.760066103758815,
+      "mcc_mean": 0.1245836690964524,
+      "mcc_min": 0.12458366909645241,
+      "mcc_max": 0.12458366909645241,
+      "pr_auc_mean": null,
+      "pr_auc_min": null,
+      "pr_auc_max": null,
+      "prevalence_mean": 0.04994310922393354,
+      "prevalence_min": 0.04994310922393354,
+      "prevalence_max": 0.04994310922393354,
+      "n_seeds": 5
+    },
+    {
+      "direction": "intra_15",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "f1_mean": 0.9985976843225541,
+      "f1_min": 0.9982101764254667,
+      "f1_max": 0.9991047448522828,
+      "precision_mean": 0.9995916744905339,
+      "precision_min": 0.999236641221374,
+      "precision_max": 1.0,
+      "recall_mean": 0.9976058664375242,
+      "recall_min": 0.9969356486210419,
+      "recall_max": 0.998220640569395,
+      "fpr_mean": 2.1409158246177953e-05,
+      "fpr_min": 0.0,
+      "fpr_max": 4.014666916468164e-05,
+      "mcc_mean": 0.9985246953962811,
+      "mcc_min": 0.9981174331097747,
+      "mcc_max": 0.9990583657997784,
+      "pr_auc_mean": 0.9999695416241738,
+      "pr_auc_min": 0.999929706116678,
+      "pr_auc_max": 0.999999412659264,
+      "prevalence_mean": 0.04989829646580218,
+      "prevalence_min": 0.04969488939740656,
+      "prevalence_max": 0.05025425883549453,
+      "n_seeds": 5
+    },
+    {
+      "direction": "intra_15",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "f1_mean": 0.9896859972332196,
+      "f1_min": 0.9884942471235619,
+      "f1_max": 0.9908002520478891,
+      "precision_mean": 0.9798773893584032,
+      "precision_min": 0.977491961414791,
+      "precision_max": 0.9825043739065233,
+      "recall_mean": 0.9996947439462105,
+      "recall_min": 0.9992374173868835,
+      "recall_max": 1.0,
+      "fpr_mean": 0.0010784845750365197,
+      "fpr_min": 0.0009367556138425716,
+      "fpr_max": 0.001218092012796659,
+      "mcc_mean": 0.9891939487384768,
+      "mcc_min": 0.9879476836828427,
+      "mcc_max": 0.9903507723289021,
+      "pr_auc_mean": 0.9933171224389821,
+      "pr_auc_min": 0.992232399778527,
+      "pr_auc_max": 0.9948987911147598,
+      "prevalence_mean": 0.04989829646580218,
+      "prevalence_min": 0.04969488939740656,
+      "prevalence_max": 0.05025425883549453,
+      "n_seeds": 5
+    },
+    {
+      "direction": "intra_15",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "f1_mean": 0.9974774174469229,
+      "f1_min": 0.9967121901871522,
+      "f1_max": 0.9982192826252861,
+      "precision_mean": 0.9979624075462403,
+      "precision_min": 0.9964601769911504,
+      "precision_max": 0.9989816700610998,
+      "recall_mean": 0.9969932139096489,
+      "recall_min": 0.9964249233912156,
+      "recall_max": 0.9974580579562786,
+      "fpr_mean": 0.00010705062832398239,
+      "fpr_min": 5.352889221957552e-05,
+      "fpr_max": 0.000187398771199486,
+      "mcc_mean": 0.9973451678383756,
+      "mcc_min": 0.996538210058453,
+      "mcc_max": 0.9981259329304917,
+      "pr_auc_mean": 0.9996383106376129,
+      "pr_auc_min": 0.9989504770238413,
+      "pr_auc_max": 0.9999550491201047,
+      "prevalence_mean": 0.04989829646580218,
+      "prevalence_min": 0.04969488939740656,
+      "prevalence_max": 0.05025425883549453,
+      "n_seeds": 5
+    },
+    {
+      "direction": "intra_15",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "f1_mean": 0.9812416893724238,
+      "f1_min": 0.9787981432693514,
+      "f1_max": 0.9841788046207935,
+      "precision_mean": 0.9662293297106276,
+      "precision_min": 0.9617850098619329,
+      "precision_max": 0.9724565756823821,
+      "recall_mean": 0.9967380767752168,
+      "recall_min": 0.9961695607763024,
+      "recall_max": 0.9974702757399444,
+      "fpr_mean": 0.0018304597564529207,
+      "fpr_min": 0.0014854267590932206,
+      "fpr_max": 0.0020736618192034465,
+      "mcc_mean": 0.98037437736988,
+      "mcc_min": 0.9778319052330516,
+      "mcc_max": 0.9834145838062909,
+      "pr_auc_mean": 0.9826571160120305,
+      "pr_auc_min": 0.9810333874552374,
+      "pr_auc_max": 0.9840364975162504,
+      "prevalence_mean": 0.04989829646580218,
+      "prevalence_min": 0.04969488939740656,
+      "prevalence_max": 0.05025425883549453,
+      "n_seeds": 5
+    },
+    {
+      "direction": "intra_15",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "f1_mean": 0.16161107725416896,
+      "f1_min": 0.16119796494263527,
+      "f1_max": 0.16283907643508885,
+      "precision_mean": 0.08790920412355326,
+      "precision_min": 0.08766466529258894,
+      "precision_max": 0.088636261715772,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.5449040115768382,
+      "fpr_min": 0.5440587896716506,
+      "fpr_max": 0.5467173406846345,
+      "mcc_mean": 0.20001739730618015,
+      "mcc_min": 0.1995358317000668,
+      "mcc_max": 0.2010296606117352,
+      "pr_auc_mean": 0.08856536942877644,
+      "pr_auc_min": 0.08832358982461684,
+      "pr_auc_max": 0.08928490762072548,
+      "prevalence_mean": 0.04989829646580218,
+      "prevalence_min": 0.04969488939740656,
+      "prevalence_max": 0.05025425883549453,
+      "n_seeds": 5
+    },
+    {
+      "direction": "intra_15",
+      "model": "rule_dst_port_lt_1024",
+      "feature_set": "DST_PORT_RULE",
+      "f1_mean": 0.12148265692453267,
+      "f1_min": 0.12107533198324237,
+      "f1_max": 0.12251096338307532,
+      "precision_mean": 0.06466952365073217,
+      "precision_min": 0.06443863026772638,
+      "precision_max": 0.06525255860019809,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.7595958326322471,
+      "fpr_min": 0.7579878726223781,
+      "fpr_max": 0.7610470251318149,
+      "mcc_mean": 0.12468658473425184,
+      "mcc_min": 0.12418753712133276,
+      "mcc_max": 0.1256658685708529,
+      "pr_auc_mean": null,
+      "pr_auc_min": null,
+      "pr_auc_max": null,
+      "prevalence_mean": 0.04989829646580218,
+      "prevalence_min": 0.04969488939740656,
+      "prevalence_max": 0.05025425883549453,
+      "n_seeds": 5
+    },
+    {
+      "direction": "intra_16",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "f1_mean": 0.9999577287173477,
+      "f1_min": 0.9999220967113683,
+      "f1_max": 0.999977796527377,
+      "precision_mean": 0.9999154619396986,
+      "precision_min": 0.9998442055596359,
+      "precision_max": 0.9999555940407203,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.00011263424010295013,
+      "fpr_min": 5.9131360316944094e-05,
+      "fpr_max": 0.0002073521135104713,
+      "mcc_mean": 0.9999014137256459,
+      "mcc_min": 0.9998184263907283,
+      "mcc_max": 0.9999481437133758,
+      "pr_auc_mean": 0.9999999934663156,
+      "pr_auc_min": 0.9999999786849934,
+      "pr_auc_max": 1.0,
+      "prevalence_mean": 0.5712796919283708,
+      "prevalence_min": 0.5701358616219514,
+      "prevalence_max": 0.5723853945579096,
+      "n_seeds": 5
+    },
+    {
+      "direction": "intra_16",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "f1_mean": 0.9999421488436975,
+      "f1_min": 0.9998664559638542,
+      "f1_max": 0.999977796527377,
+      "precision_mean": 0.9998887572757414,
+      "precision_min": 0.9997551965104375,
+      "precision_max": 0.9999555940407203,
+      "recall_mean": 0.9999955480366841,
+      "recall_min": 0.9999777401834209,
+      "recall_max": 1.0,
+      "fpr_mean": 0.00014818018078868888,
+      "fpr_min": 5.944243000653867e-05,
+      "fpr_max": 0.00032583903551645487,
+      "mcc_mean": 0.9998650993053211,
+      "mcc_min": 0.9996887328968607,
+      "mcc_max": 0.9999480757770934,
+      "pr_auc_mean": 0.9997730666758503,
+      "pr_auc_min": 0.9996646830805083,
+      "pr_auc_max": 0.9999106521203649,
+      "prevalence_mean": 0.5712796919283708,
+      "prevalence_min": 0.5701358616219514,
+      "prevalence_max": 0.5723853945579096,
+      "n_seeds": 5
+    },
+    {
+      "direction": "intra_16",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "f1_mean": 0.9996130647915882,
+      "f1_min": 0.9994994048479859,
+      "f1_max": 0.9996768766225808,
+      "precision_mean": 0.9992264368395547,
+      "precision_min": 0.998999310636216,
+      "precision_max": 0.9993539619951436,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.001031663474070415,
+      "fpr_min": 0.0008574047245956893,
+      "fpr_max": 0.0013329778725673154,
+      "mcc_mean": 0.999097378124248,
+      "mcc_min": 0.9988331525637443,
+      "mcc_max": 0.9992482730465865,
+      "pr_auc_mean": 0.9999999329860874,
+      "pr_auc_min": 0.9999998076835985,
+      "pr_auc_max": 1.0,
+      "prevalence_mean": 0.5712796919283708,
+      "prevalence_min": 0.5701358616219514,
+      "prevalence_max": 0.5723853945579096,
+      "n_seeds": 5
+    },
+    {
+      "direction": "intra_16",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "f1_mean": 0.9985361111462151,
+      "f1_min": 0.9984348115668535,
+      "f1_max": 0.9986865246332287,
+      "precision_mean": 0.9970765237109098,
+      "precision_min": 0.9968745151065104,
+      "precision_max": 0.997376495175419,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.0039072695682986335,
+      "fpr_min": 0.0034887502586997015,
+      "fpr_max": 0.004182611017175403,
+      "mcc_mean": 0.996584504988274,
+      "mcc_min": 0.9963458118428985,
+      "mcc_max": 0.9969437785902747,
+      "pr_auc_mean": 0.9987664417539929,
+      "pr_auc_min": 0.9982776725644372,
+      "pr_auc_max": 0.9990305971525862,
+      "prevalence_mean": 0.5712796919283708,
+      "prevalence_min": 0.5701358616219514,
+      "prevalence_max": 0.5723853945579096,
+      "n_seeds": 5
+    },
+    {
+      "direction": "intra_16",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "f1_mean": 0.9997464531216051,
+      "f1_min": 0.9997220338229245,
+      "f1_max": 0.9997888020630704,
+      "precision_mean": 0.9994930359046801,
+      "precision_min": 0.9994442221332978,
+      "precision_max": 0.9995776933164411,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.0006759115541395304,
+      "fpr_min": 0.0005636142505413663,
+      "fpr_max": 0.0007412678645555358,
+      "mcc_mean": 0.9994085585723136,
+      "mcc_min": 0.9993514728307628,
+      "mcc_max": 0.9995070370357403,
+      "pr_auc_mean": 0.9993700972388933,
+      "pr_auc_min": 0.9993061896680382,
+      "pr_auc_max": 0.9994533755319499,
+      "prevalence_mean": 0.5712796919283708,
+      "prevalence_min": 0.5701358616219514,
+      "prevalence_max": 0.5723853945579096,
+      "n_seeds": 5
+    },
+    {
+      "direction": "intra_16",
+      "model": "rule_dst_port_lt_1024",
+      "feature_set": "DST_PORT_RULE",
+      "f1_mean": 0.9997464531216051,
+      "f1_min": 0.9997220338229245,
+      "f1_max": 0.9997888020630704,
+      "precision_mean": 0.9994930359046801,
+      "precision_min": 0.9994442221332978,
+      "precision_max": 0.9995776933164411,
+      "recall_mean": 1.0,
+      "recall_min": 1.0,
+      "recall_max": 1.0,
+      "fpr_mean": 0.0006759115541395304,
+      "fpr_min": 0.0005636142505413663,
+      "fpr_max": 0.0007412678645555358,
+      "mcc_mean": 0.9994085585723136,
+      "mcc_min": 0.9993514728307628,
+      "mcc_max": 0.9995070370357403,
+      "pr_auc_mean": null,
+      "pr_auc_min": null,
+      "pr_auc_max": null,
+      "prevalence_mean": 0.5712796919283708,
+      "prevalence_min": 0.5701358616219514,
+      "prevalence_max": 0.5723853945579096,
+      "n_seeds": 5
+    }
+  ],
+  "part2_family_predicted_attack_rate": [
+    {
+      "direction": "15_to_16",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "Benign",
+      "mean": 0.015293385121712574,
+      "min": 0.0008746701455806921,
+      "max": 0.05001927239303822
+    },
+    {
+      "direction": "15_to_16",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "DoS attacks-Hulk",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "15_to_16",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "DoS attacks-SlowHTTPTest",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "15_to_16",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "Benign",
+      "mean": 0.0007264209683636256,
+      "min": 0.0007264209683636256,
+      "max": 0.0007264209683636256
+    },
+    {
+      "direction": "15_to_16",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "DoS attacks-Hulk",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "15_to_16",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "DoS attacks-SlowHTTPTest",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "15_to_16",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "Benign",
+      "mean": 0.9940463130429625,
+      "min": 0.9940255581581522,
+      "max": 0.9940552079935956
+    },
+    {
+      "direction": "15_to_16",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-Hulk",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "15_to_16",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-SlowHTTPTest",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "15_to_16",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "Benign",
+      "mean": 1.4824917721706644e-05,
+      "min": 1.4824917721706644e-05,
+      "max": 1.4824917721706644e-05
+    },
+    {
+      "direction": "15_to_16",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "DoS attacks-Hulk",
+      "mean": 0.06773264647575498,
+      "min": 0.02517834662190516,
+      "max": 0.17309389786852272
+    },
+    {
+      "direction": "15_to_16",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "DoS attacks-SlowHTTPTest",
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "direction": "15_to_16",
+      "model": "RandomForest",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "Benign",
+      "mean": 2.964983544341329e-05,
+      "min": 2.964983544341329e-05,
+      "max": 2.964983544341329e-05
+    },
+    {
+      "direction": "15_to_16",
+      "model": "RandomForest",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "DoS attacks-Hulk",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "15_to_16",
+      "model": "RandomForest",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "DoS attacks-SlowHTTPTest",
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "direction": "15_to_16",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "Benign",
+      "mean": 0.8166809974204643,
+      "min": 0.7620600705666084,
+      "max": 0.8589705577134047
+    },
+    {
+      "direction": "15_to_16",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-Hulk",
+      "mean": 0.08057070919009653,
+      "min": 0.03066259568495232,
+      "max": 0.2634899503668225
+    },
+    {
+      "direction": "15_to_16",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-SlowHTTPTest",
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    {
+      "direction": "16_to_15",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "Benign",
+      "mean": 0.2735196906237037,
+      "min": 0.15616009420454696,
+      "max": 0.568646211077063
+    },
+    {
+      "direction": "16_to_15",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "DoS attacks-GoldenEye",
+      "mean": 0.8309735946865381,
+      "min": 0.7971812732868946,
+      "max": 0.8704033695123927
+    },
+    {
+      "direction": "16_to_15",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "DoS attacks-Slowloris",
+      "mean": 0.2672209026128266,
+      "min": 0.21021377672209027,
+      "max": 0.2992874109263658
+    },
+    {
+      "direction": "16_to_15",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "Benign",
+      "mean": 0.8581659552260776,
+      "min": 0.8581311637740696,
+      "max": 0.8582181424040893
+    },
+    {
+      "direction": "16_to_15",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "DoS attacks-GoldenEye",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "16_to_15",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "DoS attacks-Slowloris",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "16_to_15",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "Benign",
+      "mean": 0.22298778284781412,
+      "min": 0.104307449385128,
+      "max": 0.5037869157377795
+    },
+    {
+      "direction": "16_to_15",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-GoldenEye",
+      "mean": 0.8368702413737242,
+      "min": 0.769965980884497,
+      "max": 0.8963226956099142
+    },
+    {
+      "direction": "16_to_15",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-Slowloris",
+      "mean": 0.23574821852731592,
+      "min": 0.20961995249406176,
+      "max": 0.29097387173396677
+    },
+    {
+      "direction": "16_to_15",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "Benign",
+      "mean": 0.4917918935916822,
+      "min": 0.24056950930671342,
+      "max": 0.6726592712528937
+    },
+    {
+      "direction": "16_to_15",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "DoS attacks-GoldenEye",
+      "mean": 0.8290944435444679,
+      "min": 0.6403693503968897,
+      "max": 0.9619309897942654
+    },
+    {
+      "direction": "16_to_15",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "DoS attacks-Slowloris",
+      "mean": 0.3294536817102138,
+      "min": 0.1347980997624703,
+      "max": 0.744061757719715
+    },
+    {
+      "direction": "16_to_15",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "Benign",
+      "mean": 0.5139500341223856,
+      "min": 0.30282613640925454,
+      "max": 0.7456744858224833
+    },
+    {
+      "direction": "16_to_15",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-GoldenEye",
+      "mean": 0.7837680220314271,
+      "min": 0.6353474809654949,
+      "max": 0.954803175117447
+    },
+    {
+      "direction": "16_to_15",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-Slowloris",
+      "mean": 0.35059382422802854,
+      "min": 0.12945368171021376,
+      "max": 0.6514251781472684
+    },
+    {
+      "direction": "intra_15",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "Benign",
+      "mean": 0.00107848457503652,
+      "min": 0.0009367556138425716,
+      "max": 0.001218092012796659
+    },
+    {
+      "direction": "intra_15",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "DoS attacks-GoldenEye",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_15",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "DoS attacks-Slowloris",
+      "mean": 0.9985593098159826,
+      "min": 0.9964200477326969,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_15",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "Benign",
+      "mean": 0.5449040115768382,
+      "min": 0.5440587896716506,
+      "max": 0.5467173406846345
+    },
+    {
+      "direction": "intra_15",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "DoS attacks-GoldenEye",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_15",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "DoS attacks-Slowloris",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_15",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "Benign",
+      "mean": 0.0018304597564529207,
+      "min": 0.0014854267590932206,
+      "max": 0.0020736618192034465
+    },
+    {
+      "direction": "intra_15",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-GoldenEye",
+      "mean": 0.9998703403565641,
+      "min": 0.9993517017828201,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_15",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-Slowloris",
+      "mean": 0.985133494255477,
+      "min": 0.9815043156596794,
+      "max": 0.9884259259259259
+    },
+    {
+      "direction": "intra_15",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "Benign",
+      "mean": 2.1409158246177953e-05,
+      "min": 0.0,
+      "max": 4.014666916468164e-05
+    },
+    {
+      "direction": "intra_15",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "DoS attacks-GoldenEye",
+      "mean": 0.9990292208194852,
+      "min": 0.9980551053484603,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_15",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "DoS attacks-Slowloris",
+      "mean": 0.9923583229619574,
+      "min": 0.9901356350184957,
+      "max": 0.998792270531401
+    },
+    {
+      "direction": "intra_15",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "Benign",
+      "mean": 0.00010705062832398239,
+      "min": 5.352889221957552e-05,
+      "max": 0.000187398771199486
+    },
+    {
+      "direction": "intra_15",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-GoldenEye",
+      "mean": 0.9984456963262952,
+      "min": 0.9977309562398703,
+      "max": 0.9993540051679587
+    },
+    {
+      "direction": "intra_15",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-Slowloris",
+      "mean": 0.991636567690031,
+      "min": 0.9901356350184957,
+      "max": 0.9963768115942029
+    },
+    {
+      "direction": "intra_16",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "Benign",
+      "mean": 0.0001481801807886889,
+      "min": 5.944243000653867e-05,
+      "max": 0.00032583903551645487
+    },
+    {
+      "direction": "intra_16",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "DoS attacks-Hulk",
+      "mean": 0.9999942091090714,
+      "min": 0.9999710455453572,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_16",
+      "model": "LogisticRegression",
+      "feature_set": "ALL",
+      "family": "DoS attacks-SlowHTTPTest",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_16",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "Benign",
+      "mean": 0.0006759115541395304,
+      "min": 0.0005636142505413663,
+      "max": 0.0007412678645555358
+    },
+    {
+      "direction": "intra_16",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "DoS attacks-Hulk",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_16",
+      "model": "LogisticRegression",
+      "feature_set": "DST_PORT_ONLY",
+      "family": "DoS attacks-SlowHTTPTest",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_16",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "Benign",
+      "mean": 0.0039072695682986335,
+      "min": 0.0034887502586997015,
+      "max": 0.004182611017175403
+    },
+    {
+      "direction": "intra_16",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-Hulk",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_16",
+      "model": "LogisticRegression",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-SlowHTTPTest",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_16",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "Benign",
+      "mean": 0.00011263424010295013,
+      "min": 5.9131360316944094e-05,
+      "max": 0.0002073521135104713
+    },
+    {
+      "direction": "intra_16",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "DoS attacks-Hulk",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_16",
+      "model": "RandomForest",
+      "feature_set": "ALL",
+      "family": "DoS attacks-SlowHTTPTest",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_16",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "Benign",
+      "mean": 0.0010316634740704152,
+      "min": 0.0008574047245956893,
+      "max": 0.0013329778725673154
+    },
+    {
+      "direction": "intra_16",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-Hulk",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    {
+      "direction": "intra_16",
+      "model": "RandomForest",
+      "feature_set": "NO_DST_PORT",
+      "family": "DoS attacks-SlowHTTPTest",
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    }
+  ],
+  "part2_dst_port_by_family_sample": {
+    "2018-02-15|Benign": {
+      "n_sample": 149462,
+      "share_dst_port_lt_1024": 0.760066103758815,
+      "top_ports": {
+        "53": 50038,
+        "80": 27814,
+        "443": 23406,
+        "3389": 11229,
+        "445": 8568,
+        "0": 2833
+      }
+    },
+    "2018-02-15|DoS attacks-GoldenEye": {
+      "n_sample": 6173,
+      "share_dst_port_lt_1024": 1.0,
+      "top_ports": {
+        "80": 6173
+      }
+    },
+    "2018-02-15|DoS attacks-Slowloris": {
+      "n_sample": 1684,
+      "share_dst_port_lt_1024": 1.0,
+      "top_ports": {
+        "80": 1684
+      }
+    },
+    "2018-02-16|Benign": {
+      "n_sample": 67454,
+      "share_dst_port_lt_1024": 0.0007264209683636256,
+      "top_ports": {
+        "0": 23,
+        "22": 17,
+        "50134": 16,
+        "46896": 15,
+        "47428": 15,
+        "56516": 15
+      }
+    },
+    "2018-02-16|DoS attacks-Hulk": {
+      "n_sample": 69107,
+      "share_dst_port_lt_1024": 1.0,
+      "top_ports": {
+        "80": 69107
+      }
+    },
+    "2018-02-16|DoS attacks-SlowHTTPTest": {
+      "n_sample": 20805,
+      "share_dst_port_lt_1024": 1.0,
+      "top_ports": {
+        "21": 20805
+      }
+    }
+  },
+  "artifacts": {
+    "part1_published_setting_rows": "revision_reports/agent_4/artifacts/csecic/agent4_csecic_shortcut_20261104T144738Z__part1_published_setting_rows.csv",
+    "part1_importances": "revision_reports/agent_4/artifacts/csecic/agent4_csecic_shortcut_20261104T144738Z__part1_importances.csv",
+    "part1_family_rates": "revision_reports/agent_4/artifacts/csecic/agent4_csecic_shortcut_20261104T144738Z__part1_family_rates.csv",
+    "part2_observed_prevalence_rows": "revision_reports/agent_4/artifacts/csecic/agent4_csecic_shortcut_20261104T144738Z__part2_observed_prevalence_rows.csv",
+    "part2_family_rates": "revision_reports/agent_4/artifacts/csecic/agent4_csecic_shortcut_20261104T144738Z__part2_family_rates.csv"
+  },
+  "elapsed_sec": 737.4918384000193
+}

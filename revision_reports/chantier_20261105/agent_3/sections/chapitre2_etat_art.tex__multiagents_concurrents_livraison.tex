@@ -1,0 +1,103 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre2_etat_art.tex
+% Passage à remplacer : de « \section{Systèmes multi-agents} » (inclus) à
+%   « \section{Routage et spécialisation des traitements} » (exclu), donc les
+%   sections actuelles « Systèmes multi-agents » et « Bus de messages... ».
+% Agent : Agent 3 — État de l'art et positionnement, chantier 2026-11-05.
+% Sources : Wooldridge ; Smith ; FIPA ; documentations officielles Celery, Kafka,
+%   Redis Streams et Temporal.
+% ============================================================================
+
+\section{Agents, files de tâches et moteurs de workflow}
+
+\subsection{Ce qui distingue théoriquement un agent d'un worker}
+
+Un système multi-agent décompose un problème entre des entités qui possèdent un état,
+des capacités et une politique de décision. Wooldridge associe classiquement l'agent à
+l'autonomie, la réactivité, la proactivité et la capacité sociale
+\cite{wooldridge2009introduction}. Ces propriétés excèdent la simple exécution d'une
+fonction reçue dans une file. Elles ne sont cependant pas acquises par le vocabulaire
+employé : un worker muni d'une table de capacités et d'un score fixe reste
+fonctionnellement proche d'un ordonnanceur déterministe si ses décisions ne diffèrent pas
+de celles de cette table.
+
+Le protocole Contract Net de Smith organise une allocation négociée : un gestionnaire
+annonce une tâche, les contractants potentiels soumettent une offre, puis une offre est
+retenue \cite{smith1980contract}. La spécification FIPA précise les actes
+\texttt{cfp}, \texttt{propose}, \texttt{refuse}, \texttt{accept-proposal},
+\texttt{reject-proposal} et les notifications finales
+\cite{fipa2002contractnet,fipa2002aclmessage,fipa2002cal}. Le protocole d'Ariel Logminer
+en reprend la structure sous une nomenclature propre, avec des extensions
+\texttt{ACCEPT} et \texttt{FEEDBACK} ; il revendique une parenté, non une conformité
+FIPA.
+
+\subsection{Le concurrent réel : l'affectation déterministe}
+
+Pour une chaîne de journaux, Contract Net doit être comparé non seulement à un monolithe,
+mais à des mécanismes d'orchestration plus simples. Celery associe des noms de tâches à
+des fonctions et permet aux workers de consommer des files ; Kafka répartit les
+enregistrements entre consommateurs et documente explicitement les garanties de
+livraison ; Redis Streams maintient des groupes de consommateurs et une liste des
+messages livrés mais non acquittés ; Temporal persiste l'historique d'un workflow et
+place ses unités de travail dans des files interrogées par des workers
+\cite{celery2026tasks,kafka2026semantics,redis2026streams,temporal2026tasks}.
+Dans chacun de ces cadres, une table de routage, des files nommées ou l'inscription de
+workers par capacité peuvent affecter une tâche sans appel d'offres.
+
+\begin{table}[H]
+\centering
+\caption{Contract Net et alternatives d'orchestration}
+\label{tab:concurrents-orchestration}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.3cm}p{3cm}p{3.2cm}X}
+\toprule
+\textbf{Mécanisme} & \textbf{Décision d'affectation} & \textbf{État et reprise} &
+\textbf{Question comparative} \\
+\midrule
+Table statique / files nommées & Règle source--pipeline ou type--file fixée à l'avance. &
+Dépendent du broker et du magasin applicatif. &
+La négociation modifie-t-elle l'affectation ou seulement son protocole ? \\
+Groupe de consommateurs & Le broker distribue les messages entre workers d'un groupe. &
+Messages en vol, acquittements et réattribution selon le broker. &
+Une utilité locale améliore-t-elle débit, équité ou compatibilité ? \\
+Moteur de workflow & Graphe ou code de workflow durable, tâches placées dans des files. &
+Historique persistant, reprises et tentatives explicites. &
+Le modèle par objectifs apporte-t-il une propriété absente du workflow ? \\
+Contract Net & Appel à propositions, offres, puis attribution. &
+À construire au-dessus du transport et des magasins. &
+Le coût des offres est-il compensé par de meilleures décisions ? \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Une justification scientifique de l'architecture à agents exige donc un comparateur
+contrôlé : mêmes tâches, mêmes workers, même transport, mêmes mécanismes de reprise et
+seule politique d'affectation différente. Sans cette ablation, la modularité du code et
+la présence de messages Contract Net démontrent une réalisation, pas la supériorité de la
+négociation.
+
+\section{Sémantique de livraison, reprise et idempotence}
+
+Les garanties de transport doivent être séparées des garanties métier. Kafka distingue
+les sémantiques \textit{au plus une fois}, \textit{au moins une fois} et
+\textit{exactement une fois}, et limite sa garantie exactement une fois au périmètre de
+transactions et de traitements compatibles \cite{kafka2026semantics}. Dans Redis
+Streams, un groupe conserve les messages non acquittés dans une liste d'attente ; un
+message peut être relu ou réattribué après une panne, donc traité plusieurs fois
+\cite{redis2026streams}. Celery formule la même contrainte : lorsque l'acquittement a lieu
+après l'exécution, une panne peut provoquer une nouvelle exécution et la tâche doit être
+idempotente \cite{celery2026tasks}.
+
+L'idempotence est ainsi une propriété de l'opération ou de son magasin, non une propriété
+spécifique des agents. Elle consiste à rendre plusieurs tentatives équivalentes à une
+seule du point de vue de l'effet observable, par exemple au moyen d'une clé stable et
+d'une écriture conditionnelle. Le broker peut préserver et réattribuer une tâche ; il ne
+peut pas, à lui seul, annuler un effet externe déjà produit. Inversement, un magasin
+d'idempotence peut protéger un monolithe, des workers centralisés ou des agents.
+
+Une preuve de reprise doit donc documenter séparément : la livraison ou la réattribution,
+le nombre de tentatives, l'effet métier, l'acquittement et la persistance du résultat.
+Elle ne vaut que pour les pannes effectivement injectées. Démontrer la reprise d'un
+worker ne démontre ni la tolérance à une panne du broker, ni le fonctionnement pendant
+une partition réseau, ni une sémantique exactement une fois de bout en bout.
+

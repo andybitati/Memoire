@@ -1,0 +1,127 @@
+% Cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre7_reproductibilite_deploiement.tex
+% Passage à remplacer : fichier entier, de « \chapter{Reproductibilité » à la fin
+% Agent : 6 — Reproductibilité, artefacts et déclaration IA
+% Sources : chapitre 7 actuel ; annexes.tex, tab:preuves-experimentales ;
+%           experiments/phase_revision_20261104/{README.md,MANIFEST_SHA256.csv} ;
+%           HANDOFF.md §3 et §6 ; RETOURS_LECTEURS.md, lecteur 1 E.2.
+
+\chapter{Reproductibilité, déploiement et exploitation}
+\label{chap:reproductibilite}
+
+\section{Portée de la reproductibilité}
+
+La traçabilité expérimentale repose sur quatre éléments : une entrée identifiée, un
+protocole paramétré, un identifiant de campagne et un artefact de sortie. La matrice de
+l'annexe~\ref{tab:preuves-experimentales} relie les résultats principaux à leurs preuves.
+Les fichiers CSV et JSON constituent la référence pour vérifier ou recalculer une valeur ;
+les tableaux et les figures du manuscrit en sont des représentations.
+
+Trois niveaux doivent être distingués. La \emph{traçabilité} permet de retrouver l'origine
+d'une valeur. La \emph{répétabilité} consiste à réexécuter un script dans un environnement
+équivalent. La \emph{reproductibilité indépendante} suppose qu'un tiers reconstruise le
+résultat à partir du code, des données et des instructions remis. Le travail documente les
+deux premiers niveaux ; aucune reproduction indépendante complète par un tiers n'est
+revendiquée.
+
+\section{Paquet de preuves et intégrité}
+
+Les artefacts expérimentaux sont organisés par phase dans le répertoire
+\texttt{experiments}. Le paquet
+\texttt{experiments/phase\_revision\_20261104} regroupe les sorties de consolidation
+utilisées pour HDFS, BGL, CSE-CIC-IDS2018, le routeur open-set, la corrélation, la
+distribution multi-VM et le contrôle Isolation Forest. Son fichier
+\texttt{MANIFEST\_SHA256.csv} recense 54 fichiers avec leur chemin relatif, leur taille et
+leur empreinte SHA-256. Une vérification du manifeste établit l'intégrité binaire du
+paquet ; elle ne prouve ni la provenance officielle des jeux de données ni la validité du
+protocole.
+
+Les données de travail volumineuses ou soumises à des conditions de redistribution ne
+sont pas toutes incluses dans ce paquet. Leur provenance, leur version et, lorsqu'elle est
+disponible, leur empreinte doivent donc accompagner toute reproduction. Les identifiants
+d'accès, mots de passe et secrets de machines virtuelles sont exclus des preuves et doivent
+être fournis par un gestionnaire de secrets ou des variables d'environnement.
+
+\section{Procédure de reproduction}
+
+Pour chaque campagne, la procédure minimale est la suivante :
+
+\begin{enumerate}
+  \item obtenir les données depuis la source documentée et vérifier leur empreinte lorsqu'une
+  valeur de référence est disponible ;
+  \item préparer l'environnement logiciel prévu pour la campagne et consigner les versions ;
+  \item exécuter le script avec les paramètres, partitions et graines documentés ;
+  \item contrôler le schéma des artefacts produits, puis comparer les métriques aux fichiers
+  de référence ;
+  \item vérifier les empreintes du paquet et seulement ensuite reconstruire les tableaux ou
+  les figures.
+\end{enumerate}
+
+Une divergence doit être rapportée avec l'entrée, l'environnement, les paramètres et
+l'artefact concernés. La régénération d'une figure ne constitue pas, à elle seule, une
+reproduction du calcul qui l'alimente.
+
+\section{Paramètres déterminants}
+
+Les paramètres HDFS sont rassemblés dans le
+tableau~\ref{tab:hdfs-parametres-annexe}. L'ordre des blocs selon leur première apparition,
+la partition chronologique, l'échantillon d'ajustement de Drain3, l'état gelé du parseur,
+l'agrégateur et le seuil choisi sur validation doivent être conservés. Une comparaison
+HDFS n'est valide qu'au même niveau d'analyse : événement ou bloc.
+
+Pour BGL, l'unité du protocole principal est l'événement. L'état Drain3 et les histogrammes
+sont appris sur l'entraînement puis gelés ; le seuil est choisi sur validation. La position
+temporelle des segments d'entraînement et de test est déterminante, car elle modifie la
+couverture des templates et des sévérités.
+
+Pour CICIDS2017 et CSE-CIC-IDS2018, la partition, la journée ou le scénario tenu à l'écart,
+la prévalence du test et la règle de calibration du seuil doivent être publiés. Des scores
+issus d'une séparation aléatoire, d'un holdout par scénario ou d'un transfert entre journées
+ne répondent pas à la même question et ne peuvent pas être comparés sans cette information.
+
+Le routeur open-set doit être rejoué avec la politique gelée, sans recalibrer son seuil sur
+les sources évaluées. La corrélation doit publier la génération des incidents synthétiques,
+les graines et la définition des paires positives et négatives. Ces conditions déterminent
+directement les taux rapportés.
+
+\section{Environnement multi-agent}
+
+Le benchmark A--D doit conserver les architectures comparées, les niveaux de charge, le
+nombre de répétitions et les unités de mesure. Les micro-latences dépendent de la machine ;
+une reproduction sur un autre hôte doit publier sa configuration et vérifier les tendances
+relatives plutôt que rechercher une égalité à la décimale.
+
+La campagne multi-VM combine un coordinateur, une instance Redis centrale et deux agents
+dont les profils sont décrits au tableau~\ref{tab:multivm-parametres-annexe}. Une
+reproduction doit conserver la configuration, les versions des systèmes, les métriques par
+tâche, les journaux des agents et le scénario de panne. La campagne HDFS distribuée évalue
+le transport de scores déjà calculés et l'application d'un seuil ; elle ne reproduit ni le
+parsing Drain3 ni le calcul des scores sur les machines virtuelles.
+
+Redis demeure un point central du laboratoire. Une reproduction en réseau doit ajouter
+authentification, contrôle d'accès et protection du transport ; une instance exposée sans
+ces mécanismes ne correspond pas à un déploiement recommandé.
+
+\section{Disponibilité des éléments et vérification externe}
+
+Le dépôt remis avec le mémoire doit contenir le code du prototype, les scripts ayant produit
+les artefacts cités, les fichiers de configuration, la matrice résultats--preuves et les
+instructions de préparation des données. Lorsqu'un jeu public ne peut pas être redistribué,
+la documentation doit fournir sa source, sa version attendue et la procédure de vérification.
+
+La présence d'un chemin dans la matrice ne suffit pas si le script, l'entrée ou les
+dépendances correspondantes manquent. La certification d'une reproductibilité indépendante
+requiert donc une exécution par un tiers et un compte rendu des écarts. Ce contrôle externe
+n'a pas été réalisé dans le cadre du présent travail.
+
+\section{Frontière d'exploitation}
+
+Ariel Logminer peut être exécuté localement avec un bus en mémoire et un magasin
+d'idempotence SQLite, ou avec Redis lorsque plusieurs processus participent au traitement.
+Le passage à une exploitation opérationnelle demanderait cependant des mécanismes non
+évalués ici : gestion des secrets, contrôle d'accès, chiffrement du transport, réplication,
+tests de partition réseau, sauvegarde, reprise après sinistre, supervision et politique de
+rétention.
+
+Une étude de montée en charge devrait fixer au préalable ses objectifs de latence, de
+disponibilité et de reprise, employer des tâches d'inférence représentatives et injecter des
+pannes du transport. Le système évalué reste un prototype de laboratoire.

@@ -1,0 +1,133 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/main.tex, chapitre étoilé « Résumé »
+% Lignes à remplacer : 278 à 382 (de « Ce mémoire présente Ariel \logminer{}, une
+%   architecture multi-agents légère » jusqu'à « pour l'analyse de journaux
+%   hétérogènes. »). Conserver les lignes 275-276 (\chapter*, \addcontentsline)
+%   et le bloc des mots-clés (lignes 384-390).
+% Auteur : Agent 1 (intégrité factuelle), chantier 2026-11-05 ; paragraphe
+%   « hypothèses » réécrit par l'Agent 2 (même date). VERSION À INTÉGRER À LA
+%   PLACE de agent_1/sections/main.tex__resume_fr.tex (décision C7).
+% Modification de l'Agent 2 : seul l'avant-dernier paragraphe (« Aucune des
+%   cinq hypothèses n'est validée [...] ») change ; il reprend les statuts du
+%   tableau 7.1 de agent_2/sections/chapitre6_conclusion.tex__statut_hypotheses_tableau_7.1.tex.
+%   La phrase « la question méthodologique (QR6) est la mieux couverte » est
+%   retirée (L2 §2.1) ; une phrase sur l'absence d'analyse conjointe est
+%   ajoutée (L3, non-recevabilité). Aucun chiffre nouveau (règle C8) ; toutes
+%   les affirmations figurent dans le corps : §4.2.3 (tout positif), §4.4
+%   (règle de sévérité), §4.6.2 (règle de port), §4.3 (HDFS), §4.9 (mémoire),
+%   §4.9.1 (idempotence transposable), §4.8 (schéma commun), tableau 7.1.
+% Statut : définitif pour le paragraphe « hypothèses » ; les paragraphes sur
+%   l'architecture (benchmark, multi-VM) restent ceux de l'Agent 1, corrigés sur
+%   l'exactitude factuelle seulement ; l'Agent 5 part de CE fichier pour les
+%   reformuler au fond.
+% Sources : voir LIVRABLE_1_integrite.md, §4, et LIVRABLE_2_hypotheses.md, §4.
+% ============================================================================
+
+Ce mémoire présente Ariel \logminer{}, une architecture multi-agents légère
+destinée à l'analyse de journaux système et réseau hétérogènes, dont la
+distribution est évaluée dans une topologie de laboratoire. Un agent est ici
+une entité logicielle dotée de capacités, d'un état, d'une mémoire et d'une
+politique locale. Lorsqu'un objectif borné lui est confié, il peut évaluer les
+tâches disponibles, proposer leur exécution ou les refuser, exécuter des
+handlers compatibles, enchaîner des sous-tâches, reprendre un état persistant
+et déléguer une opération exigeant une autre capacité. La négociation repose
+sur un protocole Contract Net explicite et sur un bus local ou Redis Streams.
+L'allocation et la distribution sont évaluées par des campagnes en laboratoire,
+tandis que la poursuite bornée d'objectifs est validée fonctionnellement.
+L'intelligence générale, la définition autonome des finalités et le
+fonctionnement d'un SOC industriel restent hors périmètre.
+
+L'évaluation met particulièrement en évidence l'influence du protocole
+expérimental sur les performances. Sur CICIDS2017, un Random Forest évalué
+avec une séparation aléatoire stratifiée obtient un F1 moyen de
+$0{,}995142$ sur cinq graines. Lorsque chacun des cinq scénarios d'attaque
+est tenu hors entraînement, le F1 moyen tombe à $0{,}157744$. Parmi cinq
+modèles légers comparés sous ce holdout, la régression logistique obtient
+le meilleur F1 moyen, $0{,}233670$, tandis que HistGradientBoosting obtient
+une PR-AUC macro de $0{,}569002$ pour un F1 presque nul au seuil retenu. Un
+changement de modèle modifie donc certaines métriques sans supprimer la
+fragilité inter-scénarios.
+
+Pour HDFS et BGL, le protocole sépare strictement entraînement, validation et
+test. Drain3 est ajusté uniquement sur l'entraînement, puis gelé avant les
+deux partitions suivantes. Au niveau \texttt{block\_id}, Histogram atteint un
+F1 de $0{,}868373$ (IC à 95~\% : $[0{,}856771\,;\,0{,}879493]$) sur les
+$115\,013$ blocs de test HDFS, dont $1\,679$ positifs, avec un rappel de $1$
+et une précision de $0{,}767367$, identiques pour cinq graines. Sur BGL, le F1
+vaut $0{,}913698$, mais $89{,}8081\,\%$ des événements de test portent un
+template inconnu de l'entraînement, et la décision d'Histogram coïncide
+exactement avec la règle « sévérité absente de l'entraînement normal ». Ce
+score mesure donc une nouveauté de sévérité plutôt qu'une modélisation de la
+dynamique des journaux ; la règle « template inconnu » n'atteint que
+$0{,}277885$.
+
+Sur CSE-CIC-IDS2018, une séparation entre le 15 et le 16 février donne un F1
+moyen de $0{,}999212$ à la régression logistique contre $0{,}401375$ au
+Random Forest. L'audit montre cependant que \texttt{Dst Port} seul atteint
+$0{,}999720$, score qu'une règle fixe sur le port de destination (inférieur à
+1024) obtient également, et que le transfert inverse, du 16 vers le
+15 février, ne dépasse pas $0{,}234195$. Le score principal repose donc sur
+un raccourci propre à la journée de test.
+
+La validation multiformat lit, parse et normalise $7\,001/7\,001$ unités, dont
+une seule fixture Apache. Ce résultat mesure la couverture fonctionnelle des
+formats testés ; le remplissage du schéma commun varie de sept champs standard
+sur sept (syslog, BGL) à aucun (flux réseau tabulaires). Une politique
+open-set calibrée uniquement sur les sources connues, puis gelée, rejette
+$20/20$ fichiers inconnus et écarte à tort $3/46$ fichiers connus ; les
+43 fichiers connus acceptés sont correctement orientés et la marge de décision
+n'est pas une probabilité calibrée. Aucune comparaison avec une chaîne sans
+routage n'a été exécutée : le bénéfice prédictif du routage spécialisé n'est
+pas établi.
+
+Le benchmark contrôlé couvre quatre architectures, quatre charges et dix
+répétitions, soit $160$ exécutions et $264\,000$ traitements sans échec. Sur
+les microtâches du protocole, le monolithe domine et les architectures à
+agents ajoutent un coût d'orchestration. Lors d'une panne appariée survenant
+après persistance, les architectures à agents ne dupliquent aucun effet,
+contrairement au monolithe et aux workers centralisés ; doter ces derniers du
+même magasin d'idempotence supprime également les doublons.
+
+Une campagne d'endurance d'une heure, sur deux machines virtuelles Debian et
+Ubuntu reliées à un Redis centralisé sur l'hôte du laboratoire, mène à terme
+$1\,800$ tâches sur $1\,800$, réparties 451 et $1\,349$ selon les profils de
+capacité configurés ; un arrêt contrôlé après persistance conduit à une
+réattribution et à un rejeu sans effet dupliqué. En saturation, la capacité
+de cette topologie se situe entre 8 et 16 tâches/s, et la seconde machine ne
+traite que $1{,}23\,\%$ des tâches réussies : elle n'augmente pas la capacité
+observée. La haute disponibilité n'a pas été évaluée.
+
+Le corrélateur, évalué sur un corpus synthétique contrôlé, obtient une
+précision de $0{,}764706$, un rappel de $0{,}866667$ et un F1 par paires de
+$0{,}812500$. Sur des corpus générés plus grands, son rappel tombe à
+$0{,}5973$ ; lorsque 30~\% des incidents enchaînent plusieurs catégories
+d'événements, une variante réduite à l'hôte et à la fenêtre temporelle obtient
+un meilleur F1 ($0{,}7268$ contre $0{,}6496$).
+
+Dans la campagne CNP multi-source, la condition M exécute réellement les
+artefacts compatibles sur $1400/1401$ unités, avec un seul fallback Apache et
+aucune erreur. Sa latence moyenne est de $0{,}105420$~s, contre $0{,}031027$~s
+pour la condition heuristique H. L'absence de labels homogènes exclut le
+calcul d'une exactitude globale multi-source ; le F1 Linux/auth de
+$0{,}390244$ reste descriptif de la source sélectionnée.
+
+Le dépôt contient aussi une procédure de comparaison des modèles et un mode
+dry-run. Les tests couvrent certaines branches, mais pas un cycle complet et
+répété de promotion et de rejet. Le bénéfice global de cette procédure n'a pas
+été évalué.
+
+Aucune des cinq hypothèses n'est validée. H1 et H2 sont partiellement
+soutenues, mais ce qu'elles établissent relève d'exigences de réalisation :
+chaque unité est lue et émise dans le schéma commun, et le magasin
+d'idempotence supprime les effets dupliqués quelle que soit l'architecture.
+H3 reste non tranchée, faute de comparaison avec une chaîne sans routage. H4
+n'est pas tranchée : sous séparation temporelle pour CICIDS2017, sur
+CSE-CIC-IDS2018 et sur BGL, aucun modèle ne dépasse la règle triviale évaluée
+sur le même test, aucune baseline n'est évaluée au niveau bloc sur HDFS, et
+aucun budget de ressources n'a été fixé. H5 est réfutée selon son propre
+critère : la mémoire n'apporte aucun gain établi, et la priorisation qu'elle
+devait améliorer n'a pas été mesurée. Aucune expérience n'analyse
+conjointement un même incident à partir de journaux système et de flux
+réseau. La contribution principale d'Ariel \logminer{} réside ainsi dans
+l'intégration architecturale et méthodologique d'une chaîne locale, modulaire
+et expérimentalement traçable pour l'analyse de journaux hétérogènes.

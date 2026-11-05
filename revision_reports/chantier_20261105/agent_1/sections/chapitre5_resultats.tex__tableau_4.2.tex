@@ -1,0 +1,32 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre5_resultats.tex
+%   (§4.2.2 « Comparaison de cinq candidats », tableau 4.2, PDF p. 83)
+% Modifications :
+%   (a) ligne 75 (« Une expérience distincte compare \texttt{LogisticRegression},
+%       ... le nombre moyen de lignes de test est $6\,435{,}6$. ... ») :
+%       remplacer le paragraphe par le paragraphe (a) ci-dessous ;
+%   (b) ligne 81 (« \caption{Candidats CICIDS2017 sur holdout fichier/scénario,
+%       cinq graines.} ») : remplacer par la légende (b).
+%   Les valeurs du tableau (l. 95-103) sont exactes et restent inchangées.
+% Auteur : Agent 1 (intégrité factuelle), chantier 2026-11-05.
+% Justification (vérifiée sur les artefacts) :
+%   - 0,157827 = moyenne de 5 évaluations, la graine g tenant hors entraînement
+%     un seul fichier/scénario (42 DDoS, 43 PortScan, 44 Bot, 45 Infiltration,
+%     46 WebAttacks) : docs/memoire/pack_redaction_final/06_reproductibilite_preuves/
+%     cicids_model_candidates_metrics.csv (colonnes seed, heldout_file) et
+%     cicids_model_candidates_summary.csv (f1_mean = 0.157826576...).
+%   - 0,157744 = moyenne de 25 évaluations (5 scénarios x 5 graines) :
+%     experiments/phase_dataset_strengthening/aggregated/cicids_protocol_comparison.csv
+%     (n = 25, f1 = 0.1577441...) ; détail dans
+%     data/processed/final_experiments_2026/cicids_random_vs_holdout_summary.csv
+%     et cicids_holdout_multiseed_raw.csv (25 lignes).
+%   - Mêmes 78 variables et 16 000 lignes d'entraînement dans les deux plans.
+%   Les deux valeurs ne sont donc pas contradictoires : elles proviennent de
+%   deux plans d'expérience ; le texte doit les distinguer.
+% ============================================================================
+
+% --- (a) ligne 75
+Une expérience distincte compare \texttt{LogisticRegression}, \texttt{RandomForest}, \texttt{SGDLogistic}, \texttt{ExtraTrees} et \texttt{HistGradientBoosting} dans un espace commun. La partition est un holdout fichier ou scénario : chacune des graines 42 à 46 tient hors entraînement un scénario différent (DDoS, PortScan, Bot, Infiltration et WebAttacks, dans cet ordre), soit cinq évaluations par modèle, et le nombre moyen de lignes de test est $6\,435{,}6$. Les transformations, tailles et graines sont appariées afin que le modèle soit la principale différence. Ce plan diffère de la comparaison des protocoles (figure~\ref{fig:cicids-protocoles}), où chaque scénario est tenu hors entraînement pour chacune des cinq graines, soit vingt-cinq évaluations : le F1 moyen du Random Forest y vaut $0{,}157744$, contre $0{,}157827$ ici.
+
+% --- (b) ligne 81
+\caption{Candidats CICIDS2017 sur holdout fichier/scénario, une évaluation par graine.}

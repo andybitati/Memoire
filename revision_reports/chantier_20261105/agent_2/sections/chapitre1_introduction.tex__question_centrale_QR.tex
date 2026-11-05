@@ -1,0 +1,83 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre1_introduction.tex
+%   (Introduction générale, section « Question centrale et questions de
+%   recherche », PDF p. 5-6)
+% Passage à remplacer : de « \section*{Question centrale et questions de
+%   recherche} » jusqu'à la fin du paragraphe « Il serait donc insuffisant de
+%   réduire la réponse à une seule métrique de classification. [...] corrélation
+%   et reproductibilité. » (inclus), juste avant « \section*{Hypothèses de
+%   recherche} ».
+% Auteur : Agent 2 (statut des hypothèses), chantier 2026-11-05.
+% Motifs : question centrale « fourre-tout » (L1 C.1, L2 §2.1, L3 §1) ;
+%   priorisation, traitements périodiques, micro-lots et aide à l'analyste
+%   annoncés mais jamais mesurés (L2 §2.1 ; vérifié : aucune métrique de
+%   priorisation dans chapters/*.tex, micro-lots seulement décrits au §2.23.2) ;
+%   QR descriptives et QR6 méthodologique (L1 C.2, L2 §2.1) ; distinction
+%   exigences / hypothèses / propriétés opérationnelles demandée par L1 C.2.
+% Sources de la classification : LIVRABLE_2_hypotheses.md, §6.
+% Dépendances :
+%   - la phrase de la p. 4 intégrée au lot A1-a (« la question centrale y
+%     ajoute les qualificatifs autonome, distribué et multitâche ») devient
+%     fausse : la remplacer par chapitre1_introduction.tex__positionnement_l58.tex ;
+%   - la conclusion doit utiliser les QR reformulées :
+%     chapitre6_conclusion.tex__reponses_QR.tex ;
+%   - le tableau 2.3 (tab:architecture-qr, chapitre3_modele_propose.tex) reste
+%     compatible (mêmes numéros QR1-QR6) ; seule sa ligne QR6 devrait être
+%     alignée (voir LIVRABLE_2, §9, implication pour l'Agent 0).
+%   - label nouveau : tab:nature-qr (défini ici).
+% ============================================================================
+
+\section*{Question centrale et questions de recherche}
+
+\addcontentsline{toc}{section}{Question centrale et questions de recherche}
+
+Les difficultés précédentes conduisent à la question centrale suivante :
+
+\begin{quote}
+
+\textit{Dans quelle mesure une chaîne d'analyse multi-agents légère, exécutée en laboratoire sur un ou deux hôtes, peut-elle lire des journaux système et réseau de formats hétérogènes, les orienter vers un traitement compatible et y détecter des anomalies sous des protocoles d'évaluation stricts, et que coûte cette organisation par rapport à une exécution monolithique ou à des workers centralisés ?}
+
+\end{quote}
+
+La variable principale de la partie prédictive est le F1 obtenu sur un test tenu à l'écart, calculé au niveau de l'unité annotée et rapporté à la meilleure règle triviale évaluée sur le même test. Le débit, la latence, les effets dupliqués après une panne et la répartition des tâches entre machines caractérisent la partie architecturale. L'hétérogénéité visée est celle des formats : chaque source est lue et évaluée séparément, et l'analyse conjointe d'un même incident à partir de journaux système et de flux réseau n'entre pas dans la question. La priorisation des anomalies, les traitements périodiques, l'exécution par micro-lots et l'aide apportée à l'analyste relèvent de la conception (chapitre~\ref{chap:architecture}), mais ne sont pas mesurés ; la question ne les retient donc pas.
+
+Cette question est déclinée en six questions de recherche :
+
+\begin{enumerate}[label=\textbf{QR\arabic*.}, leftmargin=1.6cm]
+
+    \item Quelles sources de formats différents les adaptateurs lisent-ils et projettent-ils dans un schéma commun, et quelle part de ce schéma chaque source remplit-elle effectivement ?
+
+    \item Comment organiser des agents spécialisés pour que l'attribution, la délégation et la reprise des tâches soient explicites, et quel coût cette organisation ajoute-t-elle par rapport à une exécution monolithique ou à des workers centralisés ?
+
+    \item Le routeur oriente-t-il chaque source connue vers un traitement compatible et rejette-t-il les sources dont le schéma lui est inconnu ?
+
+    \item Quelles fonctions de consultation, de filtrage et de validation le tableau de bord met-il à la disposition de l'analyste ?
+
+    \item L'activation de la mémoire persistante modifie-t-elle de façon mesurable le comportement des agents, et la procédure de mise à jour ne remplace-t-elle le modèle actif que conformément à sa règle de promotion ?
+
+    \item Dans quelle mesure les scores de détection obtenus sur des jeux publics dépendent-ils du protocole de séparation, de l'unité d'analyse et des règles triviales évaluées sur le même test ?
+
+\end{enumerate}
+
+Ces questions ne sont pas de même nature, et n'appellent pas le même type de preuve. Une \textbf{exigence de réalisation} est satisfaite ou non par le prototype : elle se vérifie par un test fonctionnel et ne constitue pas, à elle seule, une connaissance nouvelle. Une \textbf{propriété opérationnelle} est une grandeur mesurée, comme un coût, un débit ou une répartition, sans prédiction posée à l'avance. Une \textbf{hypothèse scientifique} compare deux conditions et peut être réfutée par l'observation. Le tableau~\ref{tab:nature-qr} rattache chaque question à ces catégories et aux hypothèses de la section suivante.
+
+\begin{table}[H]
+\centering
+\caption{Nature des questions de recherche et preuves attendues.}
+\label{tab:nature-qr}
+\small
+\begin{tabularx}{\textwidth}{p{0.07\textwidth} p{0.27\textwidth} X p{0.07\textwidth}}
+\toprule
+\textbf{QR} & \textbf{Nature} & \textbf{Preuve attendue} & \textbf{Hyp.} \\
+\midrule
+QR1 & Exigence de réalisation ; propriété opérationnelle & Lecture et émission de chaque unité dans le schéma commun ; remplissage du schéma par source. & H1 \\
+QR2 & Exigence de réalisation ; propriété opérationnelle & Tests du noyau multi-agent ; coût comparé des architectures ; reprise après panne ; répartition des tâches entre machines. & H2 \\
+QR3 & Exigence de réalisation ; hypothèse comparative & Décisions du routeur sur des sources connues et inconnues ; comparaison avec la même chaîne sans routage. & H3 \\
+QR4 & Exigence de réalisation & Fonctions du tableau de bord documentées par captures ; l'utilité pour l'analyste n'est pas mesurée. & --- \\
+QR5 & Hypothèse comparative ; exigence de réalisation & Comparaison mémoire activée et désactivée à tâches identiques ; cycle de promotion et de rejet. & H5 \\
+QR6 & Hypothèse comparative ; propriété mesurée & Comparaison des partitions, des unités d'analyse et des règles triviales sur les quatre jeux publics. & H4 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La réponse ne peut donc pas se réduire à une seule métrique de classification. Les modèles sont évalués selon le protocole qui les produit, et l'architecture selon le coût, la reprise et la répartition qu'elle induit ; les exigences de réalisation sont vérifiées, sans être présentées comme des résultats scientifiques.

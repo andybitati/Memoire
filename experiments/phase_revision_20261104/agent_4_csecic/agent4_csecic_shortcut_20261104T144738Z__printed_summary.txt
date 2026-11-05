@@ -1,0 +1,90 @@
+agent4_csecic_shortcut_20261104T144738Z
+== part1 (reglage publie, test equilibre)
+RandomForest                           ALL            f1=0.400882 [0.129605;0.621377] rec=0.4193 fpr=0.4499
+LogisticRegression                     ALL            f1=0.999212 [0.996860;0.999850] rec=1.0000 fpr=0.0016
+RandomForest                           NO_DST_PORT    f1=0.343299 [0.041762;0.565513] rec=0.4254 fpr=0.9159
+LogisticRegression                     NO_DST_PORT    f1=0.661077 [0.655195;0.667936] rec=0.9845 fpr=0.9939
+RandomForest                           DST_PORT_ONLY  f1=0.872314 [0.870758;0.874001] rec=0.7736 fpr=0.0000
+LogisticRegression                     DST_PORT_ONLY  f1=0.999720 [0.999700;0.999750] rec=1.0000 fpr=0.0006
+rule_dst_port_lt_1024                  DST_PORT_RULE  f1=0.999720 [0.999700;0.999750] rec=1.0000 fpr=0.0006
+rule_dst_port_in_train_attack_ports    DST_PORT_RULE  f1=0.872314 [0.870758;0.874001] rec=0.7736 fpr=0.0000
+== importances
+LogisticRegression|permutation_f1_test_balanced_4000 [('Dst Port', 0.5004), ('Fwd Seg Size Min', 0.1391), ('Pkt Len Var', 0.1202), ('PSH Flag Cnt', 0.048), ('Init Fwd Win Byts', 0.0227), ('Subflow Fwd Byts', 0.0195)]
+RandomForest|impurity [('Fwd Seg Size Min', 0.2195), ('Flow IAT Mean', 0.0638), ('Flow Pkts/s', 0.0597), ('Init Fwd Win Byts', 0.0585), ('Fwd Header Len', 0.0521), ('Fwd Pkts/s', 0.0503)]
+RandomForest|permutation_f1_test_balanced_4000 [('Dst Port', 0.2126), ('Init Bwd Win Byts', 0.1232), ('Pkt Len Max', 0.1074), ('Init Fwd Win Byts', 0.0903), ('Bwd IAT Max', 0.0837), ('Bwd Pkts/s', 0.0823)]
+== familles part1
+{'model': 'LogisticRegression', 'feature_set': 'ALL', 'family': 'Benign', 'mean': 0.0015800000000000002, 'min': 0.0003, 'max': 0.0063}
+{'model': 'LogisticRegression', 'feature_set': 'ALL', 'family': 'Hulk_port80', 'mean': 1.0, 'min': 1.0, 'max': 1.0}
+{'model': 'LogisticRegression', 'feature_set': 'ALL', 'family': 'SlowHTTPTest_port21', 'mean': 1.0, 'min': 1.0, 'max': 1.0}
+{'model': 'LogisticRegression', 'feature_set': 'NO_DST_PORT', 'family': 'Benign', 'mean': 0.9939399999999999, 'min': 0.9928, 'max': 0.9945}
+{'model': 'LogisticRegression', 'feature_set': 'NO_DST_PORT', 'family': 'Hulk_port80', 'mean': 1.0, 'min': 1.0, 'max': 1.0}
+{'model': 'LogisticRegression', 'feature_set': 'NO_DST_PORT', 'family': 'SlowHTTPTest_port21', 'mean': 0.9317410828721245, 'min': 0.871749669457911, 'max': 1.0}
+{'model': 'RandomForest', 'feature_set': 'ALL', 'family': 'Benign', 'mean': 0.44986, 'min': 0.0001, 'max': 0.8752}
+{'model': 'RandomForest', 'feature_set': 'ALL', 'family': 'Hulk_port80', 'mean': 0.5424289845612049, 'min': 0.0894770819883796, 'max': 0.995201659966282}
+{'model': 'RandomForest', 'feature_set': 'ALL', 'family': 'SlowHTTPTest_port21', 'mean': 0.0, 'min': 0.0, 'max': 0.0}
+{'model': 'RandomForest', 'feature_set': 'NO_DST_PORT', 'family': 'Benign', 'mean': 0.9159, 'min': 0.9121, 'max': 0.9199}
+{'model': 'RandomForest', 'feature_set': 'NO_DST_PORT', 'family': 'Hulk_port80', 'mean': 0.5505055218841347, 'min': 0.052808263395739186, 'max': 0.9775645182207237}
+{'model': 'RandomForest', 'feature_set': 'NO_DST_PORT', 'family': 'SlowHTTPTest_port21', 'mean': 0.0, 'min': 0.0, 'max': 0.0}
+== dst port pools {"train_2018-02-15|target=0": {"n": 50000, "share_lt_1024": 0.75838, "top_ports": {"53": 16685, "80": 9286, "443": 7756, "3389": 3766, "445": 2907, "0": 947}}, "train_2018-02-15|target=1": {"n": 50000, "share_lt_1024": 1.0, "top_ports": {"80": 50000}}, "test_2018-02-16|target=0": {"n": 50000, "share_lt_1024": 0.00068, "top_ports": {"0": 18, "50744": 14, "50290": 13, "43162": 13, "43096": 13, "59152": 12}}, "test_2018-02-16|target=1": {"n": 50000, "share_lt_1024": 1.0, "top_ports": {"80": 38472, "21": 11528}}}
+== part2 audit {"2018-02-15": {"rows_scanned": 1048575, "repeated_header_rows": 0, "label_counts_full_file": {"DoS attacks-GoldenEye": 41508, "Benign": 996077, "DoS attacks-Slowloris": 10990}, "sample_rows": 157319, "sample_prevalence": 0.04994310922393354, "full_file_prevalence": 0.050066042009393685}, "2018-02-16": {"rows_scanned": 1048574, "repeated_header_rows": 1, "label_counts_full_file": {"DoS attacks-SlowHTTPTest": 139890, "Benign": 446772, "DoS attacks-Hulk": 461912}, "sample_rows": 157366, "sample_prevalence": 0.5713559472821321, "full_file_prevalence": 0.573924205635463}}
+== part2 (prevalence observee)
+15_to_16  RandomForest             ALL            prev=0.5714 f1=0.095915 [0.037969;0.234837] p=0.9996 rec=0.0521 fpr=0.0000 mcc=0.1414 prauc=0.7211
+15_to_16  LogisticRegression       ALL            prev=0.5714 f1=0.994345 [0.981583;0.999672] p=0.9888 rec=1.0000 fpr=0.0153 mcc=0.9868 prauc=0.9997
+15_to_16  RandomForest             NO_DST_PORT    prev=0.5714 f1=0.071316 [0.028259;0.225981] p=0.0846 rec=0.0619 fpr=0.8167 mcc=-0.7706 prauc=0.4206
+15_to_16  LogisticRegression       NO_DST_PORT    prev=0.5714 f1=0.728397 [0.728395;0.728401] p=0.5728 rec=1.0000 fpr=0.9940 mcc=0.0584 prauc=0.3749
+15_to_16  RandomForest             DST_PORT_ONLY  prev=0.5714 f1=0.869156 [0.869156;0.869156] p=1.0000 rec=0.7686 fpr=0.0000 mcc=0.7664 prauc=0.9008
+15_to_16  LogisticRegression       DST_PORT_ONLY  prev=0.5714 f1=0.999728 [0.999728;0.999728] p=0.9995 rec=1.0000 fpr=0.0007 mcc=0.9994 prauc=0.9993
+15_to_16  rule_dst_port_lt_1024    DST_PORT_RULE  prev=0.5714 f1=0.999728 [0.999728;0.999728] p=0.9995 rec=1.0000 fpr=0.0007 mcc=0.9994
+16_to_15  RandomForest             ALL            prev=0.0499 f1=0.144013 [0.074923;0.251606] p=0.0811 rec=0.7220 fpr=0.4918 mcc=0.1077 prauc=0.3348
+16_to_15  LogisticRegression       ALL            prev=0.0499 f1=0.234195 [0.110407;0.306857] p=0.1429 rec=0.7101 fpr=0.2735 mcc=0.2292 prauc=0.1408
+16_to_15  RandomForest             NO_DST_PORT    prev=0.0499 f1=0.128798 [0.067073;0.183845] p=0.0716 rec=0.6909 fpr=0.5140 mcc=0.0778 prauc=0.3540
+16_to_15  LogisticRegression       NO_DST_PORT    prev=0.0499 f1=0.290870 [0.124755;0.397772] p=0.1907 rec=0.7080 fpr=0.2230 mcc=0.2851 prauc=0.1526
+16_to_15  LogisticRegression       DST_PORT_ONLY  prev=0.0499 f1=0.109142 [0.109136;0.109146] p=0.0577 rec=1.0000 fpr=0.8582 mcc=0.0905 prauc=0.0885
+16_to_15  rule_dst_port_lt_1024    DST_PORT_RULE  prev=0.0499 f1=0.121517 [0.121517;0.121517] p=0.0647 rec=1.0000 fpr=0.7601 mcc=0.1246
+intra_15  RandomForest             ALL            prev=0.0499 f1=0.998598 [0.998210;0.999105] p=0.9996 rec=0.9976 fpr=0.0000 mcc=0.9985 prauc=1.0000
+intra_15  LogisticRegression       ALL            prev=0.0499 f1=0.989686 [0.988494;0.990800] p=0.9799 rec=0.9997 fpr=0.0011 mcc=0.9892 prauc=0.9933
+intra_15  RandomForest             NO_DST_PORT    prev=0.0499 f1=0.997477 [0.996712;0.998219] p=0.9980 rec=0.9970 fpr=0.0001 mcc=0.9973 prauc=0.9996
+intra_15  LogisticRegression       NO_DST_PORT    prev=0.0499 f1=0.981242 [0.978798;0.984179] p=0.9662 rec=0.9967 fpr=0.0018 mcc=0.9804 prauc=0.9827
+intra_15  LogisticRegression       DST_PORT_ONLY  prev=0.0499 f1=0.161611 [0.161198;0.162839] p=0.0879 rec=1.0000 fpr=0.5449 mcc=0.2000 prauc=0.0886
+intra_15  rule_dst_port_lt_1024    DST_PORT_RULE  prev=0.0499 f1=0.121483 [0.121075;0.122511] p=0.0647 rec=1.0000 fpr=0.7596 mcc=0.1247
+intra_16  RandomForest             ALL            prev=0.5713 f1=0.999958 [0.999922;0.999978] p=0.9999 rec=1.0000 fpr=0.0001 mcc=0.9999 prauc=1.0000
+intra_16  LogisticRegression       ALL            prev=0.5713 f1=0.999942 [0.999866;0.999978] p=0.9999 rec=1.0000 fpr=0.0001 mcc=0.9999 prauc=0.9998
+intra_16  RandomForest             NO_DST_PORT    prev=0.5713 f1=0.999613 [0.999499;0.999677] p=0.9992 rec=1.0000 fpr=0.0010 mcc=0.9991 prauc=1.0000
+intra_16  LogisticRegression       NO_DST_PORT    prev=0.5713 f1=0.998536 [0.998435;0.998687] p=0.9971 rec=1.0000 fpr=0.0039 mcc=0.9966 prauc=0.9988
+intra_16  LogisticRegression       DST_PORT_ONLY  prev=0.5713 f1=0.999746 [0.999722;0.999789] p=0.9995 rec=1.0000 fpr=0.0007 mcc=0.9994 prauc=0.9994
+intra_16  rule_dst_port_lt_1024    DST_PORT_RULE  prev=0.5713 f1=0.999746 [0.999722;0.999789] p=0.9995 rec=1.0000 fpr=0.0007 mcc=0.9994
+== familles part2 (15_to_16)
+{'direction': '15_to_16', 'model': 'LogisticRegression', 'feature_set': 'ALL', 'family': 'Benign', 'mean': 0.015293385121712574, 'min': 0.0008746701455806921, 'max': 0.05001927239303822}
+{'direction': '15_to_16', 'model': 'LogisticRegression', 'feature_set': 'ALL', 'family': 'DoS attacks-Hulk', 'mean': 1.0, 'min': 1.0, 'max': 1.0}
+{'direction': '15_to_16', 'model': 'LogisticRegression', 'feature_set': 'ALL', 'family': 'DoS attacks-SlowHTTPTest', 'mean': 1.0, 'min': 1.0, 'max': 1.0}
+{'direction': '15_to_16', 'model': 'LogisticRegression', 'feature_set': 'DST_PORT_ONLY', 'family': 'Benign', 'mean': 0.0007264209683636256, 'min': 0.0007264209683636256, 'max': 0.0007264209683636256}
+{'direction': '15_to_16', 'model': 'LogisticRegression', 'feature_set': 'DST_PORT_ONLY', 'family': 'DoS attacks-Hulk', 'mean': 1.0, 'min': 1.0, 'max': 1.0}
+{'direction': '15_to_16', 'model': 'LogisticRegression', 'feature_set': 'DST_PORT_ONLY', 'family': 'DoS attacks-SlowHTTPTest', 'mean': 1.0, 'min': 1.0, 'max': 1.0}
+{'direction': '15_to_16', 'model': 'LogisticRegression', 'feature_set': 'NO_DST_PORT', 'family': 'Benign', 'mean': 0.9940463130429625, 'min': 0.9940255581581522, 'max': 0.9940552079935956}
+{'direction': '15_to_16', 'model': 'LogisticRegression', 'feature_set': 'NO_DST_PORT', 'family': 'DoS attacks-Hulk', 'mean': 1.0, 'min': 1.0, 'max': 1.0}
+{'direction': '15_to_16', 'model': 'LogisticRegression', 'feature_set': 'NO_DST_PORT', 'family': 'DoS attacks-SlowHTTPTest', 'mean': 1.0, 'min': 1.0, 'max': 1.0}
+{'direction': '15_to_16', 'model': 'RandomForest', 'feature_set': 'ALL', 'family': 'Benign', 'mean': 1.4824917721706644e-05, 'min': 1.4824917721706644e-05, 'max': 1.4824917721706644e-05}
+{'direction': '15_to_16', 'model': 'RandomForest', 'feature_set': 'ALL', 'family': 'DoS attacks-Hulk', 'mean': 0.06773264647575498, 'min': 0.02517834662190516, 'max': 0.17309389786852272}
+{'direction': '15_to_16', 'model': 'RandomForest', 'feature_set': 'ALL', 'family': 'DoS attacks-SlowHTTPTest', 'mean': 0.0, 'min': 0.0, 'max': 0.0}
+{'direction': '15_to_16', 'model': 'RandomForest', 'feature_set': 'DST_PORT_ONLY', 'family': 'Benign', 'mean': 2.964983544341329e-05, 'min': 2.964983544341329e-05, 'max': 2.964983544341329e-05}
+{'direction': '15_to_16', 'model': 'RandomForest', 'feature_set': 'DST_PORT_ONLY', 'family': 'DoS attacks-Hulk', 'mean': 1.0, 'min': 1.0, 'max': 1.0}
+{'direction': '15_to_16', 'model': 'RandomForest', 'feature_set': 'DST_PORT_ONLY', 'family': 'DoS attacks-SlowHTTPTest', 'mean': 0.0, 'min': 0.0, 'max': 0.0}
+{'direction': '15_to_16', 'model': 'RandomForest', 'feature_set': 'NO_DST_PORT', 'family': 'Benign', 'mean': 0.8166809974204643, 'min': 0.7620600705666084, 'max': 0.8589705577134047}
+{'direction': '15_to_16', 'model': 'RandomForest', 'feature_set': 'NO_DST_PORT', 'family': 'DoS attacks-Hulk', 'mean': 0.08057070919009653, 'min': 0.03066259568495232, 'max': 0.2634899503668225}
+{'direction': '15_to_16', 'model': 'RandomForest', 'feature_set': 'NO_DST_PORT', 'family': 'DoS attacks-SlowHTTPTest', 'mean': 0.0, 'min': 0.0, 'max': 0.0}
+{'direction': '16_to_15', 'model': 'LogisticRegression', 'feature_set': 'ALL', 'family': 'Benign', 'mean': 0.2735196906237037, 'min': 0.15616009420454696, 'max': 0.568646211077063}
+{'direction': '16_to_15', 'model': 'LogisticRegression', 'feature_set': 'ALL', 'family': 'DoS attacks-GoldenEye', 'mean': 0.8309735946865381, 'min': 0.7971812732868946, 'max': 0.8704033695123927}
+{'direction': '16_to_15', 'model': 'LogisticRegression', 'feature_set': 'ALL', 'family': 'DoS attacks-Slowloris', 'mean': 0.2672209026128266, 'min': 0.21021377672209027, 'max': 0.2992874109263658}
+{'direction': '16_to_15', 'model': 'LogisticRegression', 'feature_set': 'DST_PORT_ONLY', 'family': 'Benign', 'mean': 0.8581659552260776, 'min': 0.8581311637740696, 'max': 0.8582181424040893}
+{'direction': '16_to_15', 'model': 'LogisticRegression', 'feature_set': 'DST_PORT_ONLY', 'family': 'DoS attacks-GoldenEye', 'mean': 1.0, 'min': 1.0, 'max': 1.0}
+{'direction': '16_to_15', 'model': 'LogisticRegression', 'feature_set': 'DST_PORT_ONLY', 'family': 'DoS attacks-Slowloris', 'mean': 1.0, 'min': 1.0, 'max': 1.0}
+{'direction': '16_to_15', 'model': 'LogisticRegression', 'feature_set': 'NO_DST_PORT', 'family': 'Benign', 'mean': 0.22298778284781412, 'min': 0.104307449385128, 'max': 0.5037869157377795}
+{'direction': '16_to_15', 'model': 'LogisticRegression', 'feature_set': 'NO_DST_PORT', 'family': 'DoS attacks-GoldenEye', 'mean': 0.8368702413737242, 'min': 0.769965980884497, 'max': 0.8963226956099142}
+{'direction': '16_to_15', 'model': 'LogisticRegression', 'feature_set': 'NO_DST_PORT', 'family': 'DoS attacks-Slowloris', 'mean': 0.23574821852731592, 'min': 0.20961995249406176, 'max': 0.29097387173396677}
+{'direction': '16_to_15', 'model': 'RandomForest', 'feature_set': 'ALL', 'family': 'Benign', 'mean': 0.4917918935916822, 'min': 0.24056950930671342, 'max': 0.6726592712528937}
+{'direction': '16_to_15', 'model': 'RandomForest', 'feature_set': 'ALL', 'family': 'DoS attacks-GoldenEye', 'mean': 0.8290944435444679, 'min': 0.6403693503968897, 'max': 0.9619309897942654}
+{'direction': '16_to_15', 'model': 'RandomForest', 'feature_set': 'ALL', 'family': 'DoS attacks-Slowloris', 'mean': 0.3294536817102138, 'min': 0.1347980997624703, 'max': 0.744061757719715}
+{'direction': '16_to_15', 'model': 'RandomForest', 'feature_set': 'NO_DST_PORT', 'family': 'Benign', 'mean': 0.5139500341223856, 'min': 0.30282613640925454, 'max': 0.7456744858224833}
+{'direction': '16_to_15', 'model': 'RandomForest', 'feature_set': 'NO_DST_PORT', 'family': 'DoS attacks-GoldenEye', 'mean': 0.7837680220314271, 'min': 0.6353474809654949, 'max': 0.954803175117447}
+{'direction': '16_to_15', 'model': 'RandomForest', 'feature_set': 'NO_DST_PORT', 'family': 'DoS attacks-Slowloris', 'mean': 0.35059382422802854, 'min': 0.12945368171021376, 'max': 0.6514251781472684}
+== ports part2 {"2018-02-15|Benign": {"n_sample": 149462, "share_dst_port_lt_1024": 0.760066103758815, "top_ports": {"53": 50038, "80": 27814, "443": 23406, "3389": 11229, "445": 8568, "0": 2833}}, "2018-02-15|DoS attacks-GoldenEye": {"n_sample": 6173, "share_dst_port_lt_1024": 1.0, "top_ports": {"80": 6173}}, "2018-02-15|DoS attacks-Slowloris": {"n_sample": 1684, "share_dst_port_lt_1024": 1.0, "top_ports": {"80": 1684}}, "2018-02-16|Benign": {"n_sample": 67454, "share_dst_port_lt_1024": 0.0007264209683636256, "top_ports": {"0": 23, "22": 17, "50134": 16, "46896": 15, "47428": 15, "56516": 15}}, "2018-02-16|DoS attacks-Hulk": {"n_sample": 69107, "share_dst_port_lt_1024": 1.0, "top_ports": {"80": 69107}}, "2018-02-16|DoS attacks-SlowHTTPTest": {"n_sample": 20805, "share_dst_port_lt_1024": 1.0, "top_ports": {"21": 20805}}}

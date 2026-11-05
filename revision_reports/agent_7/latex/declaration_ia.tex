@@ -1,0 +1,101 @@
+% ============================================================
+% Déclaration d'usage de l'IA proposée (agent 7)
+% Remplace intégralement frontmatter/declaration_ia.tex.
+% Les champs [À COMPLÉTER PAR L'AUTEUR] doivent être renseignés ou supprimés
+% avant compilation ; ne laisser aucune mention entre crochets dans la version
+% déposée.
+% ============================================================
+
+\chapter*{Déclaration relative à l'utilisation d'outils d'intelligence artificielle}
+\addcontentsline{toc}{chapter}{Déclaration relative à l'utilisation d'outils d'intelligence artificielle}
+
+Des outils d'intelligence artificielle générative ont été utilisés comme
+assistants au cours de ce travail. La présente déclaration précise les outils,
+les parties concernées, la nature de l'aide et la manière dont les
+propositions ont été vérifiées.
+
+\section*{Outils utilisés}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{p{0.27\textwidth} p{0.20\textwidth} X}
+\toprule
+\textbf{Outil (éditeur)} & \textbf{Période} & \textbf{Usage principal} \\
+\midrule
+elax [À COMPLÉTER PAR L'AUTEUR : modèle GPT et interface utilisés, p.~ex. ChatGPT, version] (OpenAI) &
+[À COMPLÉTER] &
+Relecture critique simulée du manuscrit, reformulation, aide à la structuration. \\
+elax [À COMPLÉTER PAR L'AUTEUR : confirmer l'usage d'OpenAI Codex, suggéré par la configuration \texttt{.codex/} et \texttt{AGENTS.md} du dépôt] &
+[À COMPLÉTER] &
+Assistance à l'écriture, à la révision et au test de scripts Python et PowerShell. \\
+Claude Code, modèle Claude Opus (Anthropic) &
+[À COMPLÉTER : dates] 2026 &
+Révision finale : audit de cohérence entre texte, code et artefacts, propositions de correction rédactionnelle, préparation des fichiers de publication du dépôt. \\
+elax [À COMPLÉTER PAR L'AUTEUR : outil désigné « Luna » dans les notes de travail, ou supprimer cette ligne] &
+[À COMPLÉTER] &
+[À COMPLÉTER] \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section*{Parties concernées et nature de l'aide}
+
+\begin{itemize}
+  \item \textbf{Code du prototype et scripts expérimentaux}
+  (\texttt{src/logminer/}, \texttt{scripts/}, \texttt{tests/}) : génération de
+  propositions de code, refactorisation, écriture de tests, aide au
+  débogage. [À COMPLÉTER PAR L'AUTEUR : préciser les modules principalement
+  rédigés par l'auteur et ceux dont une première version a été proposée par un
+  outil.]
+
+  \item \textbf{Exécution des campagnes} : les campagnes ont été lancées sur
+  les machines de l'auteur ; les artefacts CSV et JSON cités sont produits par
+  les scripts du dépôt et non rédigés par un outil. [À COMPLÉTER PAR
+  L'AUTEUR : indiquer si un agent logiciel a déclenché lui-même certaines
+  exécutions.]
+
+  \item \textbf{Rédaction du manuscrit} : aide à la structuration des
+  chapitres, reformulation, harmonisation terminologique et réduction des
+  répétitions. [À COMPLÉTER PAR L'AUTEUR : chapitres concernés.] La
+  problématique, les hypothèses, le choix des protocoles et l'interprétation
+  des résultats relèvent de l'auteur.
+
+  \item \textbf{Figures et tableaux} : aide à l'écriture du script de
+  génération des figures à partir des artefacts ; aucune valeur n'a été
+  saisie manuellement dans une figure.
+
+  \item \textbf{Bibliographie} : aucun outil n'a été utilisé comme source
+  scientifique. Chaque référence de \texttt{references.bib} renvoie à une
+  publication, une norme, une documentation ou un jeu de données consulté par
+  l'auteur. [À COMPLÉTER PAR L'AUTEUR : confirmer, ou préciser si un outil a
+  suggéré des références ensuite vérifiées.]
+
+  \item \textbf{Résumés multilingues} : [À COMPLÉTER PAR L'AUTEUR : indiquer
+  si l'Abstract et le Bokuse ont été traduits avec assistance, et qui les a
+  relus.]
+\end{itemize}
+
+\section*{Mode de vérification}
+
+\begin{itemize}
+  \item Toute valeur numérique du mémoire est rattachée à un artefact
+  identifié par un \texttt{run\_id} et un chemin du dépôt
+  (tableau~\ref{tab:preuves-experimentales}) ; les valeurs proposées par un
+  outil ont été comparées à ces artefacts avant intégration.
+  \item Les descriptions du comportement du code ont été confrontées au code
+  source et aux tests automatisés du dépôt.
+  \item Les propositions de code ont été relues, exécutées et testées par
+  l'auteur avant intégration. [À COMPLÉTER PAR L'AUTEUR : préciser la
+  procédure, p.~ex. exécution de \texttt{pytest}.]
+  \item Les rapports de révision assistée sont conservés dans le dossier
+  \texttt{revision\_reports/} [À COMPLÉTER PAR L'AUTEUR : préciser s'ils sont
+  publiés avec le dépôt ou conservés à titre privé].
+\end{itemize}
+
+\section*{Responsabilité}
+
+L'auteur assume la responsabilité de la problématique, de la conception du
+prototype, des protocoles, des résultats, de leur interprétation et du
+contenu final du mémoire. Aucune responsabilité scientifique n'est transférée
+à un système automatisé.

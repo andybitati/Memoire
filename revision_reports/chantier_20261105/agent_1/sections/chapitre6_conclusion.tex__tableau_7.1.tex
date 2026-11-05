@@ -1,0 +1,78 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre6_conclusion.tex
+%   (Conclusion générale, « Statut des hypothèses », tableau 7.1, PDF p. 126-127)
+% Lignes à remplacer : 46 à 89 (de « Le statut des hypothèses est résumé dans
+%   le tableau~\ref{tab:statut-hypotheses}. Aucune n'est considérée comme
+%   totalement validée » jusqu'à « \end{table} »).
+% Auteur : Agent 1 (intégrité factuelle), chantier 2026-11-05.
+% RÈGLE : les STATUTS (colonne 3) et les critères (colonne 2) sont repris SANS
+%   CHANGEMENT ; l'Agent 2 statue sur eux. L'Agent 1 corrige seulement :
+%   (i) la phrase d'introduction (l. 46), qui attribue des « éléments
+%       favorables » à « chacune » alors que deux hypothèses sont non tranchées ;
+%   (ii) les « éléments observés » de H1 et H4, qui omettent des faits établis
+%       dans le corps et pertinents pour le critère de décision.
+% Sources des ajouts :
+%   H1 : remplissage 7/7 champs (syslog, BGL) à 0 (flux tabulaires) et fixture
+%        Apache d'une ligne : chapitre5_resultats.tex l. 444 et 458 ;
+%        experiments/phase_revision_20261104/agent_5_multiformat/result.json.
+%   H4 : CICIDS2017 temporel LR 0,556615 et RF 0,437429 contre « tout positif »
+%        0,666667 sur le même test équilibré : tableau 4.3 et
+%        chapitre5_resultats.tex l. 162 ; artefacts
+%        experiments/phase_dataset_strengthening/aggregated/cicids_protocol_comparison.csv
+%        et agent6_cicids_iforest_20261104T141904Z.
+%        BGL : décision d'Histogram identique à la règle de sévérité :
+%        chapitre5_resultats.tex l. 224 ; agent4_bgl_second_protocol_20261104T142629Z
+%        (result.json, hist_pred_equals_severity_novelty = true).
+%        CSE-CIC-IDS2018 : règle « port < 1024 » 0,999720 contre LR 0,999212 :
+%        agent4_csecic_shortcut_20261104T144738Z (printed_summary.txt, part1).
+%        HDFS : seuls comparateurs au même niveau = autres agrégations
+%        d'Histogram (0,718889) ; Isolation Forest de contrôle au niveau
+%        événement : annexes.tex l. 196 ; chapitre5_resultats.tex l. 310-312.
+% Ces ajouts fournissent à l'Agent 2 les faits nécessaires ; ils ne préjugent
+%   pas du statut de H4.
+% ============================================================================
+
+Le statut des hypothèses est résumé dans le tableau~\ref{tab:statut-hypotheses}. Aucune n'est validée : trois sont partiellement soutenues, avec pour chacune une limite qui empêche une généralisation complète, et deux restent non tranchées faute de comparateur ou de campagne décisive.
+
+\begin{table}[H]
+
+\centering
+
+\caption{Statut des hypothèses.}
+
+\label{tab:statut-hypotheses}
+
+\scriptsize
+\begin{tabularx}{\textwidth}{p{0.07\textwidth} p{0.23\textwidth} p{0.20\textwidth} X}
+
+\toprule
+
+\textbf{Hyp.} & \textbf{Critère de décision} & \textbf{Statut} & \textbf{Éléments observés} \\
+
+\midrule
+
+H1 & Normalisation et traçabilité de chaque unité retenue. &
+PARTIELLEMENT SOUTENUE &
+$7\,001/7\,001$ unités présentes sont lues et normalisées, dont une fixture Apache d'une ligne ; le remplissage du schéma commun va de sept champs standard sur sept (syslog, BGL) à aucun (flux réseau tabulaires) ; la conservation champ par champ et la couverture universelle ne sont pas établies. \\
+
+H2 & Reprise sans perte ni doublon avec et sans idempotence. &
+PARTIELLEMENT SOUTENUE &
+Sous la même panne, C et D reprennent sans perte ni doublon, contrairement à A et B qui dupliquent l'effet ; l'ablation montre que l'avantage provient du magasin d'idempotence, transposable à A et B. \\
+
+H3 & Réduction des exécutions incompatibles contre une chaîne sans routage. &
+NON TRANCHÉE &
+Le seuil gelé rejette $20/20$ inconnus et $3/46$ connus ; le comparateur sans routage manque et le gain prédictif n'est pas systématique. \\
+
+H4 & Gain contre baseline sous split strict et budget local prédéfini. &
+PARTIELLEMENT SOUTENUE &
+Des modèles légers et des baselines sont évalués ; les gains dépendent du jeu, du split et du seuil, et le budget local n'est pas un critère de décision préenregistré. Sur le test temporel CICIDS2017, la régression logistique ($0{,}556615$) et le Random Forest ($0{,}437429$) restent sous la prédiction systématiquement positive ($0{,}666667$) ; sur BGL, la décision d'Histogram coïncide avec la règle « sévérité absente de l'entraînement » ; sur CSE-CIC-IDS2018, la règle « port de destination inférieur à 1024 » ($0{,}999720$) dépasse la régression logistique ($0{,}999212$) ; sur HDFS, les seuls comparateurs évalués au niveau bloc sont d'autres agrégations d'Histogram. \\
+
+H5 & Gain mémoire activée/désactivée et promotion conforme à la règle. &
+NON TRANCHÉE &
+La mémoire influence des décisions et le mode \textit{dry-run} existe, mais aucun gain quantitatif ni cycle complet répété de promotion et de rejet n'est démontré. \\
+
+\bottomrule
+
+\end{tabularx}
+
+\end{table}

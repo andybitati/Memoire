@@ -1,0 +1,1335 @@
+{
+  "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+  "generated_at": "2026-11-04T14:08:35.544481+00:00",
+  "git_commit": "35da3a9ea6f3ca1a0cfe01766ca1d14fa3da6930",
+  "reference_run": "ds_bgl_known_unknown_20260910T082706Z",
+  "inputs": {
+    "raw_log": "data/raw/Datasets/BGL/BGL.log",
+    "raw_log_sha256": "666130b15ef44eb32fd02bd053e6c6e007c37696b5e7e8b9d8e45b729876a5d2",
+    "expected_raw_sha256_from_preparation": "666130b15ef44eb32fd02bd053e6c6e007c37696b5e7e8b9d8e45b729876a5d2",
+    "preparation_json": "data/processed/final_experiments_2026/phase_3/prepared/bgl_preparation.json"
+  },
+  "ranges_one_based_inclusive": {
+    "train_R0": [
+      [
+        1399389,
+        1449388
+      ]
+    ],
+    "validation": [
+      [
+        3313574,
+        3333573
+      ]
+    ],
+    "test": [
+      [
+        4263167,
+        4283166
+      ]
+    ],
+    "train_B5": [
+      [
+        5000,
+        14999
+      ],
+      [
+        828393,
+        838392
+      ],
+      [
+        1651786,
+        1661785
+      ],
+      [
+        2475179,
+        2485178
+      ],
+      [
+        3298573,
+        3308572
+      ]
+    ],
+    "train_B10": [
+      [
+        5000,
+        14999
+      ],
+      [
+        370952,
+        380951
+      ],
+      [
+        736905,
+        746904
+      ],
+      [
+        1102857,
+        1112856
+      ],
+      [
+        1468810,
+        1478809
+      ],
+      [
+        1834762,
+        1844761
+      ],
+      [
+        2200715,
+        2210714
+      ],
+      [
+        2566667,
+        2576666
+      ],
+      [
+        2932620,
+        2942619
+      ],
+      [
+        3298573,
+        3308572
+      ]
+    ],
+    "train_B20": [
+      [
+        5000,
+        14999
+      ],
+      [
+        178345,
+        188344
+      ],
+      [
+        351691,
+        361690
+      ],
+      [
+        525037,
+        535036
+      ],
+      [
+        698383,
+        708382
+      ],
+      [
+        871729,
+        881728
+      ],
+      [
+        1045075,
+        1055074
+      ],
+      [
+        1218421,
+        1228420
+      ],
+      [
+        1391767,
+        1401766
+      ],
+      [
+        1565113,
+        1575112
+      ],
+      [
+        1738459,
+        1748458
+      ],
+      [
+        1911805,
+        1921804
+      ],
+      [
+        2085151,
+        2095150
+      ],
+      [
+        2258497,
+        2268496
+      ],
+      [
+        2431843,
+        2441842
+      ],
+      [
+        2605189,
+        2615188
+      ],
+      [
+        2778535,
+        2788534
+      ],
+      [
+        2951881,
+        2961880
+      ],
+      [
+        3125227,
+        3135226
+      ],
+      [
+        3298573,
+        3308572
+      ]
+    ]
+  },
+  "observation_unit": "raw log event (une ligne BGL), pas une fenetre",
+  "label_rule": "premier token '-' = normal, sinon anomalie (rs.parse_bgl)",
+  "drain3_parameters": {
+    "sim_th": 0.4,
+    "depth": 4,
+    "max_children": 100,
+    "parametrize_numeric_tokens": true
+  },
+  "histogram_definition": "score = moyenne de -log(max(count,1)/N_normal_train) sur (template, source, severite) ; scripts/run_strict_sequence_experiments.py::histogram_scores",
+  "threshold_rule": "max F1 sur validation, puis min FPR, max MCC, seuil le plus haut (rs.select_threshold)",
+  "read_sec": 258.2032174000051,
+  "results": [
+    {
+      "protocol": "R0_reproduction",
+      "description": "Reproduction du protocole publie (train lignes 1399389-1449388).",
+      "drain3_fit_partitions": [
+        "train"
+      ],
+      "drain3_state_sha256": "43ef590469a379daf21f7b644b3fc2592ca66e74643353254e60659baf27db82",
+      "drain3_state_path": "revision_reports/agent_4/artifacts/bgl/agent4_bgl_second_protocol_20261104T140311Z__R0_reproduction_drain3_state.bin",
+      "split_rows": {
+        "train": 49999,
+        "validation": 17764,
+        "test": 19908
+      },
+      "split_positives": {
+        "train": 0,
+        "validation": 8126,
+        "test": 2885
+      },
+      "threshold": 10.81975828421028,
+      "threshold_selected_on": "validation_only",
+      "validation_metrics": {
+        "precision": 0.5791049030786773,
+        "recall": 1.0,
+        "f1": 0.733459698528748,
+        "pr_auc": 0.5791049030786773,
+        "mcc": 0.47353924516771523,
+        "fpr": 0.6127827350072629,
+        "tn": 3732,
+        "fp": 5906,
+        "fn": 0,
+        "tp": 8126,
+        "predicted_positive": 14032
+      },
+      "test_metrics_histogram": {
+        "precision": 0.8411078717201166,
+        "recall": 1.0,
+        "f1": 0.9136975455265242,
+        "pr_auc": 0.8411078717201166,
+        "mcc": 0.9023188879563112,
+        "fpr": 0.03201550842977149,
+        "tn": 16478,
+        "fp": 545,
+        "fn": 0,
+        "tp": 2885,
+        "predicted_positive": 3430,
+        "pr_auc_hist": 0.8411078717201166
+      },
+      "coverage": {
+        "test_events": 19908,
+        "test_positives": 2885,
+        "unknown_template_rate_all": 0.898081173397629,
+        "unknown_template_rate_validation": 0.8436725962621031,
+        "unknown_rate_among_positives": 1.0,
+        "unknown_rate_among_negatives": 0.8808083181577865,
+        "positives_known_template": 0,
+        "positives_unknown_template": 2885,
+        "negatives_known_template": 2029,
+        "negatives_unknown_template": 14994,
+        "drain3_clusters": 7,
+        "test_distinct_templates_known": 1
+      },
+      "histogram_decision_decomposition": {
+        "train_normal_events": 49999,
+        "train_positive_events": 0,
+        "train_normal_severities": [
+          "INFO"
+        ],
+        "max_possible_histogram_score_log_n_normal": 10.81975828421028,
+        "threshold_equals_max_possible_score": true,
+        "hist_pred_equals_severity_novelty": true,
+        "hist_pred_equals_sev_and_src_and_tpl_absent": true,
+        "test_severity_by_label": {
+          "ERROR|0": 1,
+          "FAILURE|1": 1,
+          "FATAL|0": 544,
+          "FATAL|1": 2884,
+          "INFO|0": 16478
+        }
+      },
+      "group_rows": [
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "R0_reproduction",
+          "model": "Histogram",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 2885,
+          "fp": 545,
+          "tn": 16478,
+          "fn": 0,
+          "precision": 0.8411078717201166,
+          "recall": 1.0,
+          "f1": 0.9136975455265242,
+          "fpr": 0.03201550842977149
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "R0_reproduction",
+          "model": "Histogram",
+          "group": "KNOWN_TEMPLATE",
+          "n": 2029,
+          "positives": 0,
+          "tp": 0,
+          "fp": 0,
+          "tn": 2029,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "R0_reproduction",
+          "model": "Histogram",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 17879,
+          "positives": 2885,
+          "tp": 2885,
+          "fp": 545,
+          "tn": 14449,
+          "fn": 0,
+          "precision": 0.8411078717201166,
+          "recall": 1.0,
+          "f1": 0.9136975455265242,
+          "fpr": 0.036347872482326266
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "R0_reproduction",
+          "model": "UnknownTemplateBaseline",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 2885,
+          "fp": 14994,
+          "tn": 2029,
+          "fn": 0,
+          "precision": 0.16136249230941327,
+          "recall": 1.0,
+          "f1": 0.27788480061645154,
+          "fpr": 0.8808083181577865
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "R0_reproduction",
+          "model": "UnknownTemplateBaseline",
+          "group": "KNOWN_TEMPLATE",
+          "n": 2029,
+          "positives": 0,
+          "tp": 0,
+          "fp": 0,
+          "tn": 2029,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "R0_reproduction",
+          "model": "UnknownTemplateBaseline",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 17879,
+          "positives": 2885,
+          "tp": 2885,
+          "fp": 14994,
+          "tn": 0,
+          "fn": 0,
+          "precision": 0.16136249230941327,
+          "recall": 1.0,
+          "f1": 0.27788480061645154,
+          "fpr": 1.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "R0_reproduction",
+          "model": "SeverityNoveltyBaseline",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 2885,
+          "fp": 545,
+          "tn": 16478,
+          "fn": 0,
+          "precision": 0.8411078717201166,
+          "recall": 1.0,
+          "f1": 0.9136975455265242,
+          "fpr": 0.03201550842977149
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "R0_reproduction",
+          "model": "SeverityNoveltyBaseline",
+          "group": "KNOWN_TEMPLATE",
+          "n": 2029,
+          "positives": 0,
+          "tp": 0,
+          "fp": 0,
+          "tn": 2029,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "R0_reproduction",
+          "model": "SeverityNoveltyBaseline",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 17879,
+          "positives": 2885,
+          "tp": 2885,
+          "fp": 545,
+          "tn": 14449,
+          "fn": 0,
+          "precision": 0.8411078717201166,
+          "recall": 1.0,
+          "f1": 0.9136975455265242,
+          "fpr": 0.036347872482326266
+        }
+      ],
+      "elapsed_sec": 10.57732800010126
+    },
+    {
+      "protocol": "B5_train_5x10000_lines",
+      "description": "Train = 5 blocs de 10000 lignes repartis uniformement sur lignes 1..3313573.",
+      "drain3_fit_partitions": [
+        "train"
+      ],
+      "drain3_state_sha256": "9806cbbbf8b17b026616edac962b89a515f2d532431523fc083d0369dda74b8e",
+      "drain3_state_path": "revision_reports/agent_4/artifacts/bgl/agent4_bgl_second_protocol_20261104T140311Z__B5_train_5x10000_lines_drain3_state.bin",
+      "split_rows": {
+        "train": 49666,
+        "validation": 17764,
+        "test": 19908
+      },
+      "split_positives": {
+        "train": 1776,
+        "validation": 8126,
+        "test": 2885
+      },
+      "threshold": 7.621022426877778,
+      "threshold_selected_on": "validation_only",
+      "validation_metrics": {
+        "precision": 0.5793526308284614,
+        "recall": 1.0,
+        "f1": 0.7336583604189238,
+        "pr_auc": 0.48011385221273245,
+        "mcc": 0.47402110599300334,
+        "fpr": 0.6121601992114547,
+        "tn": 3738,
+        "fp": 5900,
+        "fn": 0,
+        "tp": 8126,
+        "predicted_positive": 14026
+      },
+      "test_metrics_histogram": {
+        "precision": 0.8583754834870574,
+        "recall": 1.0,
+        "f1": 0.9237912263848863,
+        "pr_auc": 0.74363532006413,
+        "mcc": 0.91344044321341,
+        "fpr": 0.02796216883040592,
+        "tn": 16547,
+        "fp": 476,
+        "fn": 0,
+        "tp": 2885,
+        "predicted_positive": 3361,
+        "pr_auc_hist": 0.74363532006413
+      },
+      "coverage": {
+        "test_events": 19908,
+        "test_positives": 2885,
+        "unknown_template_rate_all": 0.8882861161342174,
+        "unknown_template_rate_validation": 0.7693650078811078,
+        "unknown_rate_among_positives": 0.9986135181975736,
+        "unknown_rate_among_negatives": 0.8695882041943254,
+        "positives_known_template": 4,
+        "positives_unknown_template": 2881,
+        "negatives_known_template": 2220,
+        "negatives_unknown_template": 14803,
+        "drain3_clusters": 131,
+        "test_distinct_templates_known": 30
+      },
+      "histogram_decision_decomposition": {
+        "train_normal_events": 47890,
+        "train_positive_events": 1776,
+        "train_normal_severities": [
+          "FATAL",
+          "INFO"
+        ],
+        "max_possible_histogram_score_log_n_normal": 10.776661993336655,
+        "threshold_equals_max_possible_score": false,
+        "hist_pred_equals_severity_novelty": false,
+        "hist_pred_equals_sev_and_src_and_tpl_absent": false,
+        "test_severity_by_label": {
+          "ERROR|0": 1,
+          "FAILURE|1": 1,
+          "FATAL|0": 544,
+          "FATAL|1": 2884,
+          "INFO|0": 16478
+        }
+      },
+      "group_rows": [
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B5_train_5x10000_lines",
+          "model": "Histogram",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 2885,
+          "fp": 476,
+          "tn": 16547,
+          "fn": 0,
+          "precision": 0.8583754834870574,
+          "recall": 1.0,
+          "f1": 0.9237912263848863,
+          "fpr": 0.02796216883040592
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B5_train_5x10000_lines",
+          "model": "Histogram",
+          "group": "KNOWN_TEMPLATE",
+          "n": 2224,
+          "positives": 4,
+          "tp": 4,
+          "fp": 86,
+          "tn": 2134,
+          "fn": 0,
+          "precision": 0.044444444444444446,
+          "recall": 1.0,
+          "f1": 0.0851063829787234,
+          "fpr": 0.03873873873873874
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B5_train_5x10000_lines",
+          "model": "Histogram",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 17684,
+          "positives": 2881,
+          "tp": 2881,
+          "fp": 390,
+          "tn": 14413,
+          "fn": 0,
+          "precision": 0.8807704066034852,
+          "recall": 1.0,
+          "f1": 0.9366059817945384,
+          "fpr": 0.026346010943727623
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B5_train_5x10000_lines",
+          "model": "UnknownTemplateBaseline",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 2881,
+          "fp": 14803,
+          "tn": 2220,
+          "fn": 4,
+          "precision": 0.16291562994797557,
+          "recall": 0.9986135181975736,
+          "f1": 0.28013029315960913,
+          "fpr": 0.8695882041943254
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B5_train_5x10000_lines",
+          "model": "UnknownTemplateBaseline",
+          "group": "KNOWN_TEMPLATE",
+          "n": 2224,
+          "positives": 4,
+          "tp": 0,
+          "fp": 0,
+          "tn": 2220,
+          "fn": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B5_train_5x10000_lines",
+          "model": "UnknownTemplateBaseline",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 17684,
+          "positives": 2881,
+          "tp": 2881,
+          "fp": 14803,
+          "tn": 0,
+          "fn": 0,
+          "precision": 0.16291562994797557,
+          "recall": 1.0,
+          "f1": 0.2801847799659616,
+          "fpr": 1.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B5_train_5x10000_lines",
+          "model": "SeverityNoveltyBaseline",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 1,
+          "fp": 1,
+          "tn": 17022,
+          "fn": 2884,
+          "precision": 0.5,
+          "recall": 0.0003466204506065858,
+          "f1": 0.0006927606511950121,
+          "fpr": 5.8744052164718324e-05
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B5_train_5x10000_lines",
+          "model": "SeverityNoveltyBaseline",
+          "group": "KNOWN_TEMPLATE",
+          "n": 2224,
+          "positives": 4,
+          "tp": 0,
+          "fp": 0,
+          "tn": 2220,
+          "fn": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B5_train_5x10000_lines",
+          "model": "SeverityNoveltyBaseline",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 17684,
+          "positives": 2881,
+          "tp": 1,
+          "fp": 1,
+          "tn": 14802,
+          "fn": 2880,
+          "precision": 0.5,
+          "recall": 0.0003471017007983339,
+          "f1": 0.000693721817551162,
+          "fpr": 6.755387421468622e-05
+        }
+      ],
+      "elapsed_sec": 8.634956100024283
+    },
+    {
+      "protocol": "B10_train_10x10000_lines",
+      "description": "Train = 10 blocs de 10000 lignes repartis uniformement sur lignes 1..3313573.",
+      "drain3_fit_partitions": [
+        "train"
+      ],
+      "drain3_state_sha256": "bb1e10599ae034ca56abc22a32f85379591b65b314f608928310122054799012",
+      "drain3_state_path": "revision_reports/agent_4/artifacts/bgl/agent4_bgl_second_protocol_20261104T140311Z__B10_train_10x10000_lines_drain3_state.bin",
+      "split_rows": {
+        "train": 94932,
+        "validation": 17764,
+        "test": 19908
+      },
+      "split_positives": {
+        "train": 8335,
+        "validation": 8126,
+        "test": 2885
+      },
+      "threshold": 7.679552975098711,
+      "threshold_selected_on": "validation_only",
+      "validation_metrics": {
+        "precision": 0.9483562161481295,
+        "recall": 0.9265321191238002,
+        "f1": 0.9373171490818549,
+        "pr_auc": 0.925446330874374,
+        "mcc": 0.8857906856552538,
+        "fpr": 0.042539946046897696,
+        "tn": 9228,
+        "fp": 410,
+        "fn": 597,
+        "tp": 7529,
+        "predicted_positive": 7939
+      },
+      "test_metrics_histogram": {
+        "precision": 0.8574631646380525,
+        "recall": 0.9279029462738302,
+        "f1": 0.8912934909272515,
+        "pr_auc": 0.7318444045950017,
+        "mcc": 0.8729568039776605,
+        "fpr": 0.026141103213299655,
+        "tn": 16578,
+        "fp": 445,
+        "fn": 208,
+        "tp": 2677,
+        "predicted_positive": 3122,
+        "pr_auc_hist": 0.7318444045950017
+      },
+      "coverage": {
+        "test_events": 19908,
+        "test_positives": 2885,
+        "unknown_template_rate_all": 0.887181032750653,
+        "unknown_template_rate_validation": 0.4470276964647602,
+        "unknown_rate_among_positives": 0.9982668977469671,
+        "unknown_rate_among_negatives": 0.8683545790988663,
+        "positives_known_template": 5,
+        "positives_unknown_template": 2880,
+        "negatives_known_template": 2241,
+        "negatives_unknown_template": 14782,
+        "drain3_clusters": 112,
+        "test_distinct_templates_known": 34
+      },
+      "histogram_decision_decomposition": {
+        "train_normal_events": 86597,
+        "train_positive_events": 8335,
+        "train_normal_severities": [
+          "ERROR",
+          "FATAL",
+          "INFO"
+        ],
+        "max_possible_histogram_score_log_n_normal": 11.369020451918145,
+        "threshold_equals_max_possible_score": false,
+        "hist_pred_equals_severity_novelty": false,
+        "hist_pred_equals_sev_and_src_and_tpl_absent": false,
+        "test_severity_by_label": {
+          "ERROR|0": 1,
+          "FAILURE|1": 1,
+          "FATAL|0": 544,
+          "FATAL|1": 2884,
+          "INFO|0": 16478
+        }
+      },
+      "group_rows": [
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B10_train_10x10000_lines",
+          "model": "Histogram",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 2677,
+          "fp": 445,
+          "tn": 16578,
+          "fn": 208,
+          "precision": 0.8574631646380525,
+          "recall": 0.9279029462738302,
+          "f1": 0.8912934909272516,
+          "fpr": 0.026141103213299655
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B10_train_10x10000_lines",
+          "model": "Histogram",
+          "group": "KNOWN_TEMPLATE",
+          "n": 2246,
+          "positives": 5,
+          "tp": 5,
+          "fp": 76,
+          "tn": 2165,
+          "fn": 0,
+          "precision": 0.06172839506172839,
+          "recall": 1.0,
+          "f1": 0.11627906976744184,
+          "fpr": 0.03391343150379295
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B10_train_10x10000_lines",
+          "model": "Histogram",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 17662,
+          "positives": 2880,
+          "tp": 2672,
+          "fp": 369,
+          "tn": 14413,
+          "fn": 208,
+          "precision": 0.87865833607366,
+          "recall": 0.9277777777777778,
+          "f1": 0.9025502448910657,
+          "fpr": 0.024962792585577053
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B10_train_10x10000_lines",
+          "model": "UnknownTemplateBaseline",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 2880,
+          "fp": 14782,
+          "tn": 2241,
+          "fn": 5,
+          "precision": 0.16306194089004641,
+          "recall": 0.9982668977469671,
+          "f1": 0.2803328953131844,
+          "fpr": 0.8683545790988663
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B10_train_10x10000_lines",
+          "model": "UnknownTemplateBaseline",
+          "group": "KNOWN_TEMPLATE",
+          "n": 2246,
+          "positives": 5,
+          "tp": 0,
+          "fp": 0,
+          "tn": 2241,
+          "fn": 5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B10_train_10x10000_lines",
+          "model": "UnknownTemplateBaseline",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 17662,
+          "positives": 2880,
+          "tp": 2880,
+          "fp": 14782,
+          "tn": 0,
+          "fn": 0,
+          "precision": 0.16306194089004641,
+          "recall": 1.0,
+          "f1": 0.2804011293934378,
+          "fpr": 1.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B10_train_10x10000_lines",
+          "model": "SeverityNoveltyBaseline",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 1,
+          "fp": 0,
+          "tn": 17023,
+          "fn": 2884,
+          "precision": 1.0,
+          "recall": 0.0003466204506065858,
+          "f1": 0.000693000693000693,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B10_train_10x10000_lines",
+          "model": "SeverityNoveltyBaseline",
+          "group": "KNOWN_TEMPLATE",
+          "n": 2246,
+          "positives": 5,
+          "tp": 0,
+          "fp": 0,
+          "tn": 2241,
+          "fn": 5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B10_train_10x10000_lines",
+          "model": "SeverityNoveltyBaseline",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 17662,
+          "positives": 2880,
+          "tp": 1,
+          "fp": 0,
+          "tn": 14782,
+          "fn": 2879,
+          "precision": 1.0,
+          "recall": 0.00034722222222222224,
+          "f1": 0.0006942034015966678,
+          "fpr": 0.0
+        }
+      ],
+      "elapsed_sec": 8.227185200084932
+    },
+    {
+      "protocol": "B20_train_20x10000_lines",
+      "description": "Train = 20 blocs de 10000 lignes repartis uniformement sur lignes 1..3313573.",
+      "drain3_fit_partitions": [
+        "train"
+      ],
+      "drain3_state_sha256": "56eded4cdfbb3e33d4e66eaf2a6b89ce1ea20d6add971a7b18792f3896f06bb4",
+      "drain3_state_path": "revision_reports/agent_4/artifacts/bgl/agent4_bgl_second_protocol_20261104T140311Z__B20_train_20x10000_lines_drain3_state.bin",
+      "split_rows": {
+        "train": 193616,
+        "validation": 17764,
+        "test": 19908
+      },
+      "split_positives": {
+        "train": 15568,
+        "validation": 8126,
+        "test": 2885
+      },
+      "threshold": 7.842214333540324,
+      "threshold_selected_on": "validation_only",
+      "validation_metrics": {
+        "precision": 0.9885616938427841,
+        "recall": 0.9997538764459759,
+        "f1": 0.9941262848751835,
+        "pr_auc": 0.9842297475060006,
+        "mcc": 0.9891761553584918,
+        "fpr": 0.009753060800996057,
+        "tn": 9544,
+        "fp": 94,
+        "fn": 2,
+        "tp": 8124,
+        "predicted_positive": 8218
+      },
+      "test_metrics_histogram": {
+        "precision": 0.5759632661209823,
+        "recall": 1.0,
+        "f1": 0.7309348872561439,
+        "pr_auc": 0.729619761669374,
+        "mcc": 0.7099992719844441,
+        "fpr": 0.12477236679786172,
+        "tn": 14899,
+        "fp": 2124,
+        "fn": 0,
+        "tp": 2885,
+        "predicted_positive": 5009,
+        "pr_auc_hist": 0.729619761669374
+      },
+      "coverage": {
+        "test_events": 19908,
+        "test_positives": 2885,
+        "unknown_template_rate_all": 0.8441330118545308,
+        "unknown_template_rate_validation": 0.44691510920963745,
+        "unknown_rate_among_positives": 0.9979202772963605,
+        "unknown_rate_among_negatives": 0.8180696704458673,
+        "positives_known_template": 6,
+        "positives_unknown_template": 2879,
+        "negatives_known_template": 3097,
+        "negatives_unknown_template": 13926,
+        "drain3_clusters": 192,
+        "test_distinct_templates_known": 40
+      },
+      "histogram_decision_decomposition": {
+        "train_normal_events": 178048,
+        "train_positive_events": 15568,
+        "train_normal_severities": [
+          "ERROR",
+          "FATAL",
+          "INFO"
+        ],
+        "max_possible_histogram_score_log_n_normal": 12.08980845584306,
+        "threshold_equals_max_possible_score": false,
+        "hist_pred_equals_severity_novelty": false,
+        "hist_pred_equals_sev_and_src_and_tpl_absent": false,
+        "test_severity_by_label": {
+          "ERROR|0": 1,
+          "FAILURE|1": 1,
+          "FATAL|0": 544,
+          "FATAL|1": 2884,
+          "INFO|0": 16478
+        }
+      },
+      "group_rows": [
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B20_train_20x10000_lines",
+          "model": "Histogram",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 2885,
+          "fp": 2124,
+          "tn": 14899,
+          "fn": 0,
+          "precision": 0.5759632661209823,
+          "recall": 1.0,
+          "f1": 0.7309348872561439,
+          "fpr": 0.12477236679786172
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B20_train_20x10000_lines",
+          "model": "Histogram",
+          "group": "KNOWN_TEMPLATE",
+          "n": 3103,
+          "positives": 6,
+          "tp": 6,
+          "fp": 12,
+          "tn": 3085,
+          "fn": 0,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5,
+          "fpr": 0.0038747174685179204
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B20_train_20x10000_lines",
+          "model": "Histogram",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 16805,
+          "positives": 2879,
+          "tp": 2879,
+          "fp": 2112,
+          "tn": 11814,
+          "fn": 0,
+          "precision": 0.576838308956121,
+          "recall": 1.0,
+          "f1": 0.7316391359593392,
+          "fpr": 0.15165876777251186
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B20_train_20x10000_lines",
+          "model": "UnknownTemplateBaseline",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 2879,
+          "fp": 13926,
+          "tn": 3097,
+          "fn": 6,
+          "precision": 0.17131806010116038,
+          "recall": 0.9979202772963605,
+          "f1": 0.2924327069578466,
+          "fpr": 0.8180696704458673
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B20_train_20x10000_lines",
+          "model": "UnknownTemplateBaseline",
+          "group": "KNOWN_TEMPLATE",
+          "n": 3103,
+          "positives": 6,
+          "tp": 0,
+          "fp": 0,
+          "tn": 3097,
+          "fn": 6,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B20_train_20x10000_lines",
+          "model": "UnknownTemplateBaseline",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 16805,
+          "positives": 2879,
+          "tp": 2879,
+          "fp": 13926,
+          "tn": 0,
+          "fn": 0,
+          "precision": 0.17131806010116038,
+          "recall": 1.0,
+          "f1": 0.2925218451534241,
+          "fpr": 1.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B20_train_20x10000_lines",
+          "model": "SeverityNoveltyBaseline",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 1,
+          "fp": 0,
+          "tn": 17023,
+          "fn": 2884,
+          "precision": 1.0,
+          "recall": 0.0003466204506065858,
+          "f1": 0.000693000693000693,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B20_train_20x10000_lines",
+          "model": "SeverityNoveltyBaseline",
+          "group": "KNOWN_TEMPLATE",
+          "n": 3103,
+          "positives": 6,
+          "tp": 0,
+          "fp": 0,
+          "tn": 3097,
+          "fn": 6,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "B20_train_20x10000_lines",
+          "model": "SeverityNoveltyBaseline",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 16805,
+          "positives": 2879,
+          "tp": 1,
+          "fp": 0,
+          "tn": 13926,
+          "fn": 2878,
+          "precision": 1.0,
+          "recall": 0.0003473428273706148,
+          "f1": 0.0006944444444444445,
+          "fpr": 0.0
+        }
+      ],
+      "elapsed_sec": 30.430754599976353
+    },
+    {
+      "protocol": "C_drain3_adapted_on_unlabelled_validation",
+      "description": "Train R0 ; Drain3 ajuste sans label sur train+validation, gele avant test.",
+      "drain3_fit_partitions": [
+        "train",
+        "validation"
+      ],
+      "drain3_state_sha256": "b7a99fa8a4b995dbb8258dbf1e2d17af330e5c163db5a3cb9c7320215c4b470e",
+      "drain3_state_path": "revision_reports/agent_4/artifacts/bgl/agent4_bgl_second_protocol_20261104T140311Z__C_drain3_adapted_on_unlabelled_validation_drain3_state.bin",
+      "split_rows": {
+        "train": 49999,
+        "validation": 17764,
+        "test": 19908
+      },
+      "split_positives": {
+        "train": 0,
+        "validation": 8126,
+        "test": 2885
+      },
+      "threshold": 10.81975828421028,
+      "threshold_selected_on": "validation_only",
+      "validation_metrics": {
+        "precision": 0.5791049030786773,
+        "recall": 1.0,
+        "f1": 0.733459698528748,
+        "pr_auc": 0.5791049030786773,
+        "mcc": 0.47353924516771523,
+        "fpr": 0.6127827350072629,
+        "tn": 3732,
+        "fp": 5906,
+        "fn": 0,
+        "tp": 8126,
+        "predicted_positive": 14032
+      },
+      "test_metrics_histogram": {
+        "precision": 0.8411078717201166,
+        "recall": 1.0,
+        "f1": 0.9136975455265242,
+        "pr_auc": 0.8411078717201166,
+        "mcc": 0.9023188879563112,
+        "fpr": 0.03201550842977149,
+        "tn": 16478,
+        "fp": 545,
+        "fn": 0,
+        "tp": 2885,
+        "predicted_positive": 3430,
+        "pr_auc_hist": 0.8411078717201166
+      },
+      "coverage": {
+        "test_events": 19908,
+        "test_positives": 2885,
+        "unknown_template_rate_all": 0.8901446654611211,
+        "unknown_template_rate_validation": 0.0,
+        "unknown_rate_among_positives": 0.9986135181975736,
+        "unknown_rate_among_negatives": 0.8717617341244199,
+        "positives_known_template": 4,
+        "positives_unknown_template": 2881,
+        "negatives_known_template": 2183,
+        "negatives_unknown_template": 14840,
+        "drain3_clusters": 98,
+        "test_distinct_templates_known": 38
+      },
+      "histogram_decision_decomposition": {
+        "train_normal_events": 49999,
+        "train_positive_events": 0,
+        "train_normal_severities": [
+          "INFO"
+        ],
+        "max_possible_histogram_score_log_n_normal": 10.81975828421028,
+        "threshold_equals_max_possible_score": true,
+        "hist_pred_equals_severity_novelty": true,
+        "hist_pred_equals_sev_and_src_and_tpl_absent": true,
+        "test_severity_by_label": {
+          "ERROR|0": 1,
+          "FAILURE|1": 1,
+          "FATAL|0": 544,
+          "FATAL|1": 2884,
+          "INFO|0": 16478
+        }
+      },
+      "group_rows": [
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "C_drain3_adapted_on_unlabelled_validation",
+          "model": "Histogram",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 2885,
+          "fp": 545,
+          "tn": 16478,
+          "fn": 0,
+          "precision": 0.8411078717201166,
+          "recall": 1.0,
+          "f1": 0.9136975455265242,
+          "fpr": 0.03201550842977149
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "C_drain3_adapted_on_unlabelled_validation",
+          "model": "Histogram",
+          "group": "KNOWN_TEMPLATE",
+          "n": 2187,
+          "positives": 4,
+          "tp": 4,
+          "fp": 124,
+          "tn": 2059,
+          "fn": 0,
+          "precision": 0.03125,
+          "recall": 1.0,
+          "f1": 0.06060606060606061,
+          "fpr": 0.056802565277141545
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "C_drain3_adapted_on_unlabelled_validation",
+          "model": "Histogram",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 17721,
+          "positives": 2881,
+          "tp": 2881,
+          "fp": 421,
+          "tn": 14419,
+          "fn": 0,
+          "precision": 0.8725015142337977,
+          "recall": 1.0,
+          "f1": 0.9319100760148795,
+          "fpr": 0.028369272237196767
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "C_drain3_adapted_on_unlabelled_validation",
+          "model": "UnknownTemplateBaseline",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 2881,
+          "fp": 14840,
+          "tn": 2183,
+          "fn": 4,
+          "precision": 0.16257547542463743,
+          "recall": 0.9986135181975736,
+          "f1": 0.27962729302145006,
+          "fpr": 0.8717617341244199
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "C_drain3_adapted_on_unlabelled_validation",
+          "model": "UnknownTemplateBaseline",
+          "group": "KNOWN_TEMPLATE",
+          "n": 2187,
+          "positives": 4,
+          "tp": 0,
+          "fp": 0,
+          "tn": 2183,
+          "fn": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "C_drain3_adapted_on_unlabelled_validation",
+          "model": "UnknownTemplateBaseline",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 17721,
+          "positives": 2881,
+          "tp": 2881,
+          "fp": 14840,
+          "tn": 0,
+          "fn": 0,
+          "precision": 0.16257547542463743,
+          "recall": 1.0,
+          "f1": 0.2796815843122027,
+          "fpr": 1.0
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "C_drain3_adapted_on_unlabelled_validation",
+          "model": "SeverityNoveltyBaseline",
+          "group": "ALL",
+          "n": 19908,
+          "positives": 2885,
+          "tp": 2885,
+          "fp": 545,
+          "tn": 16478,
+          "fn": 0,
+          "precision": 0.8411078717201166,
+          "recall": 1.0,
+          "f1": 0.9136975455265242,
+          "fpr": 0.03201550842977149
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "C_drain3_adapted_on_unlabelled_validation",
+          "model": "SeverityNoveltyBaseline",
+          "group": "KNOWN_TEMPLATE",
+          "n": 2187,
+          "positives": 4,
+          "tp": 4,
+          "fp": 124,
+          "tn": 2059,
+          "fn": 0,
+          "precision": 0.03125,
+          "recall": 1.0,
+          "f1": 0.06060606060606061,
+          "fpr": 0.056802565277141545
+        },
+        {
+          "run_id": "agent4_bgl_second_protocol_20261104T140311Z",
+          "protocol": "C_drain3_adapted_on_unlabelled_validation",
+          "model": "SeverityNoveltyBaseline",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 17721,
+          "positives": 2881,
+          "tp": 2881,
+          "fp": 421,
+          "tn": 14419,
+          "fn": 0,
+          "precision": 0.8725015142337977,
+          "recall": 1.0,
+          "f1": 0.9319100760148795,
+          "fpr": 0.028369272237196767
+        }
+      ],
+      "elapsed_sec": 7.427332399995066
+    }
+  ],
+  "artifacts": [
+    "revision_reports/agent_4/artifacts/bgl/agent4_bgl_second_protocol_20261104T140311Z__group_metrics.csv"
+  ]
+}

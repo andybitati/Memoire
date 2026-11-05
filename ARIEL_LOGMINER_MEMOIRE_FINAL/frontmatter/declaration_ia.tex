@@ -1,55 +1,61 @@
 \chapter*{Déclaration relative à l'utilisation d'outils d'intelligence artificielle}
 \addcontentsline{toc}{chapter}{Déclaration relative à l'utilisation d'outils d'intelligence artificielle}
 
-Dans le cadre de la réalisation de ce mémoire, des outils d'intelligence
-artificielle générative ont été utilisés comme moyens d'assistance à certaines
-étapes du travail.
+Des outils d'intelligence artificielle générative ont été employés comme assistants pour
+la rédaction, la programmation, le contrôle de cohérence et l'exécution automatisée de
+campagnes expérimentales. Ils ne constituent une source scientifique d'aucune affirmation
+du mémoire. Les références bibliographiques renvoient aux publications, normes,
+documentations et jeux de données effectivement consultés.
 
-Leur utilisation a principalement concerné :
+\section*{Outils et usages}
 
-\begin{itemize}
-    \item l'assistance à la structuration et à la reformulation de certaines
-    parties du manuscrit ;
-    
-    \item l'assistance à la production, à la révision et à la vérification de
-    certains scripts informatiques ;
-    
-    \item l'aide à l'organisation de certains artefacts expérimentaux et de
-    leur documentation ;
-    
-    \item l'assistance à la vérification de la cohérence formelle de certains
-    tableaux, figures et éléments de rédaction.
-\end{itemize}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{p{0.27\textwidth}X}
+\toprule
+\textbf{Outil} & \textbf{Usages} \\
+\midrule
+ChatGPT et OpenAI Codex, modèle GPT-5 (OpenAI) &
+Structuration et reformulation du manuscrit ; assistance à l'écriture, à la révision et
+au test de scripts ; contrôles de cohérence entre texte, code et artefacts. \\
+Copilot SDK dans Visual Studio Code &
+Reprise de l'intégration éditoriale ; vérification des preuves et des compilations ;
+adaptation et exécution contrôlée d'un runner expérimental. \\
+Claude Code, modèle Claude Opus (Anthropic) &
+Audit du manuscrit et du dépôt ; proposition et mise en œuvre de protocoles
+complémentaires ; écriture ou adaptation de scripts ; exécution de campagnes dans
+l'environnement de l'auteur ; agrégation des artefacts et préparation de corrections. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
-Ces outils n'ont pas été considérés comme des sources scientifiques autonomes.
-Les références bibliographiques utilisées dans le mémoire proviennent de
-publications, normes, documentations techniques ou jeux de données identifiables.
+\section*{Parties concernées}
 
-L'auteur demeure responsable :
+L'assistance a concerné le code du prototype et les scripts expérimentaux, la préparation
+et l'exécution de campagnes complémentaires, la documentation des preuves, la génération
+de figures et de tableaux à partir des artefacts, ainsi que la rédaction et
+l'harmonisation du manuscrit. Les valeurs numériques retenues proviennent des fichiers
+CSV ou JSON identifiés dans la matrice résultats--preuves et non de réponses textuelles
+des outils.
 
-\begin{itemize}
-    \item de la définition de la problématique et des objectifs du travail ;
-    
-    \item de la conception et de l'implémentation du prototype Ariel
-    \logminer{} ;
-    
-    \item de la définition et de la validation des protocoles expérimentaux ;
-    
-    \item de l'exécution ou de la vérification des expérimentations ;
-    
-    \item de la vérification des artefacts et des résultats numériques ;
-    
-    \item de l'interprétation scientifique des résultats ;
-    
-    \item du choix et de la vérification des références utilisées ;
-    
-    \item du contenu final présenté dans ce mémoire.
-\end{itemize}
+Les campagnes identifiées par les préfixes \texttt{agent2} à \texttt{agent6} ne sont pas présentées comme préenregistrées. Les protocoles E-H3b, E-H3b stricte, E-H4, E-H5, E-CNP et E-CNP au moindre chargé ont été versionnés et commités avant exécution ; cette qualification ne s'applique qu'aux
+questions, comparateurs, métriques et critères qu'ils définissent. Un incident
+d'exécution ou une correction de runner est documenté séparément et ne modifie pas ces
+critères. Tout autre protocole ne pourra être qualifié de préenregistré que s'il satisfait
+la même procédure avant l'accès aux résultats.
 
-Toute proposition produite à l'aide d'un outil d'intelligence artificielle a
-donc été considérée comme une assistance nécessitant une vérification humaine
-avant son intégration au travail.
+\section*{Vérification et responsabilité}
 
-Cette utilisation s'inscrit dans une démarche d'assistance technique et
-rédactionnelle et ne transfère à aucun système automatisé la responsabilité
-scientifique du mémoire.
+Les propositions ont été contrôlées en reliant les valeurs à un identifiant de campagne
+et à un artefact, en comparant les descriptions du comportement au code et aux journaux,
+et en conservant les résultats défavorables ou contradictoires. Les empreintes SHA-256
+du paquet de preuves permettent de vérifier l'intégrité binaire des artefacts publiés.
+Ces contrôles établissent une traçabilité ; ils ne valent pas reproduction indépendante
+par un tiers.
+
+L'auteur a arrêté les choix retenus dans le manuscrit et demeure responsable de la
+problématique, des résultats présentés, de leur interprétation, du choix des références
+et du contenu final. L'étendue précise de l'assistance est déclarée ci-dessus afin que
+les apports automatisés ne soient pas confondus avec une contribution humaine non
+assistée.

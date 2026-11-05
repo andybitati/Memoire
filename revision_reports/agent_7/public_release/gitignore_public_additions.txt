@@ -1,0 +1,20 @@
+# Ajouts proposés au .gitignore du dépôt public (en plus du .gitignore actuel)
+.secrets/
+.codex/
+.agents/
+graphify-out/
+revision_reports/
+memoire/revision_reports/
+.merge-main-staging
+data/samples/
+data/verification/**
+!data/verification/public_sources/
+!data/verification/public_sources/zenodo_8196385_metadata.json
+!data/verification/public_sources/HDFS_v1/
+!data/verification/public_sources/HDFS_v1/preprocessed/
+!data/verification/public_sources/HDFS_v1/preprocessed/anomaly_label.csv
+memoire/*.toc
+memoire/*.lof
+memoire/*.lot
+memoire/*.pptx
+memoire/build/

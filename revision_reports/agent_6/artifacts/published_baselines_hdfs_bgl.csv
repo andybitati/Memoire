@@ -1,0 +1,22 @@
+source,dataset,model,learning_setting,unit,split,train_composition,precision,recall,f1,where_in_source,verified_from
+Du et al. 2017 (DeepLog),HDFS,DeepLog,semi-supervise (normal seul),session block_id,premiers 100000 logs pour train; reste en test,"4855 sessions normales (train); test 553366 normales / 15200 anormales",,,0.96,"Sec. 5.1.3 texte ('F-measure of 96%'); Tab. 3 (setup); Tab. 4 (FP=833, FN=619)",PDF users.cs.utah.edu/~lifeifei/papers/deeplog.pdf (lu pages 9-10)
+Guo et al. 2021 (LogBERT),HDFS,LogBERT,auto-supervise (normal seul),session block_id,"~5000 sequences normales en train; test 553366 normales / 10647 anormales",~5000 normales,0.8702,0.7810,0.8232,Table 2,arXiv:2103.04475 (lu pages 7-8)
+Guo et al. 2021 (LogBERT),HDFS,DeepLog (reproduit),semi-supervise,session block_id,idem,idem,0.8844,0.6949,0.7734,Table 2,arXiv:2103.04475
+Guo et al. 2021 (LogBERT),HDFS,iForest,non supervise,session block_id,idem,idem,0.5360,0.6941,0.6049,Table 2,arXiv:2103.04475
+Guo et al. 2021 (LogBERT),BGL,LogBERT,auto-supervise (normal seul),fenetre glissante 5 min,"test 10045 normales / 2630 anormales",~5000 normales,0.8940,0.9232,0.9083,Table 2,arXiv:2103.04475
+Guo et al. 2021 (LogBERT),BGL,DeepLog (reproduit),semi-supervise,fenetre glissante 5 min,idem,idem,0.8974,0.8278,0.8612,Table 2,arXiv:2103.04475
+Guo et al. 2021 (LogBERT),BGL,iForest,non supervise,fenetre glissante 5 min,idem,idem,0.9970,0.1811,0.3065,Table 2,arXiv:2103.04475
+Le & Zhang 2022,HDFS,DeepLog,semi-supervise,session block_id,aleatoire 80:20 (460048 / 115013 sessions),,0.835,0.994,0.908,Table 4,arXiv:2202.04301 (lu pages 6-7)
+Le & Zhang 2022,HDFS,LogAnomaly,semi-supervise,session block_id,aleatoire 80:20,,0.886,0.893,0.966,Table 4 (valeurs telles qu'imprimees),arXiv:2202.04301
+Le & Zhang 2022,HDFS,PLELog,semi-supervise,session block_id,aleatoire 80:20,,0.893,0.979,0.934,Table 4,arXiv:2202.04301
+Le & Zhang 2022,HDFS,LogRobust,supervise,session block_id,aleatoire 80:20,,0.961,1.0,0.980,Table 4,arXiv:2202.04301
+Le & Zhang 2022,HDFS,CNN,supervise,session block_id,aleatoire 80:20,,0.966,1.0,0.982,Table 4,arXiv:2202.04301
+Le & Zhang 2022,BGL,DeepLog,semi-supervise,fenetre fixe 1 h,aleatoire 80:20,,0.952,0.903,0.927,Table 2 (random),arXiv:2202.04301
+Le & Zhang 2022,BGL,DeepLog,semi-supervise,fenetre fixe 1 h,chronologique 80:20,,0.270,0.988,0.426,Table 2 (chronological),arXiv:2202.04301
+Le & Zhang 2022,BGL,LogAnomaly,semi-supervise,fenetre fixe 1 h,aleatoire / chronologique,,,,0.931 / 0.483,Table 2,arXiv:2202.04301
+Le & Zhang 2022,BGL,PLELog,semi-supervise,fenetre fixe 1 h,aleatoire / chronologique,,,,0.949 / 0.744,Table 2,arXiv:2202.04301
+Le & Zhang 2022,BGL,LogRobust,supervise,fenetre fixe 1 h,aleatoire / chronologique,,,,0.981 / 0.967,Table 2,arXiv:2202.04301
+Le & Zhang 2022,BGL,CNN,supervise,fenetre fixe 1 h,aleatoire / chronologique,,,,0.978 / 0.908,Table 2,arXiv:2202.04301
+Memoire (ds_hdfs_block_20260910T081756Z),HDFS,Histogram (rarete) + agregation moyenne,score non supervise; agregateur et seuil choisis sur validation etiquetee,bloc block_id,"chronologique (1re apparition) 60/20/20; echantillon 6000/2000/2000 blocs, graine 42",train contient 194 blocs positifs sur 6000,0.805556,1.0,0.892308,aggregated/ds_hdfs_block_20260910T081756Z__hdfs_block_aggregators.csv (ligne mean),artefact local
+Memoire (ds_hdfs_block_20260910T081756Z),HDFS,Histogram (meme run) au niveau evenement,idem,evenement (ligne),idem,idem,0.619048,0.128713,0.213115,raw/ds_hdfs_block_20260910T081756Z__hdfs_block_result.json (event_level.test),artefact local
+Memoire (ds_bgl_known_unknown_20260910T082706Z),BGL,Histogram,score non supervise appris sur train sans positif; seuil choisi sur validation etiquetee,evenement (ligne) avec contexte de fenetre passee,"chronologique: train lignes 1399389-1449388 (juil. 2005), validation 3313574-3333573 (sept.), test 4263167-4283166 (nov.)",49999 evenements dont 0 positif,0.841108,1.0,0.913698,raw/ds_bgl_known_unknown_20260910T082706Z__bgl_known_unknown_result.json (group ALL),artefact local

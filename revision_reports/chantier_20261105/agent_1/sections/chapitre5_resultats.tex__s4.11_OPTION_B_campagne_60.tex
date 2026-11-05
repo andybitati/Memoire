@@ -1,0 +1,31 @@
+% ============================================================================
+% OPTION B — À N'INTÉGRER QUE SUR DÉCISION DU COORDINATEUR (question Q1 du
+%   LIVRABLE_1_integrite.md). Par défaut (option A), ce fichier n'est PAS
+%   intégré et la campagne de 60 tâches disparaît simplement des résumés.
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre5_resultats.tex
+%   (§4.11 « Campagne Contract Net multi-VM »)
+% Emplacement : nouveau paragraphe à insérer après la ligne 594 (fin du
+%   paragraphe « La répartition de 451 tâches pour Debian ... ») et avant la
+%   ligne 596 (« \subsection{Saturation} »).
+%   + une ligne à ajouter au tableau A.2 (voir annexes.tex__tableau_A2.tex,
+%   ligne marquée OPTION B).
+% Auteur : Agent 1 (intégrité factuelle), chantier 2026-11-05.
+% Sources (toutes vérifiées) :
+%   experiments/phase_multi_agent/raw/multivm_cnp_20260909T202632Z_37592__redis_cnp_multivm.json
+%     tasks 60 ; successful_tasks 60 ; failed_tasks 0 ; duration_sec 2.712455 ;
+%     tasks_by_agent debian-alpha 30 / ubuntu-beta 30 ; message_counts.REFUSE 15 ;
+%     FAIL 1 ; reassignments 1 ; idempotence.persistent_effects 1,
+%     duplicate_effects 0 ; mêmes hôtes et versions que l'endurance.
+%   experiments/phase_multi_agent/raw/multivm_cnp_20260909T202632Z_37592__redis_cnp_multivm_tasks.csv
+%     15 tâches de chacun des types parse, route, detect, correlate ; les
+%     15 refus sont tous {"debian-alpha": "capability_missing"} sur les
+%     tâches correlate.synthetic.
+%   Ledger : experiments/phase_multi_agent/manifests/EXPERIMENT_LEDGER.csv l. 10 ;
+%   manifeste : experiments/phase_multi_agent/manifests/
+%     multivm_cnp_20260909T202632Z_37592__sha256.json.
+% Point relevant de l'Agent 5 : l'opportunité scientifique d'ajouter une
+%   campagne de 2,7 s ; l'Agent 6 : son inscription dans la matrice de preuves
+%   et dans phase_revision_20261104/ (manifeste public).
+% ============================================================================
+
+Une campagne courte (\texttt{multivm\_cnp\_20260909T202632Z\_37592}), exécutée sur la même topologie, soumet 60 micro-tâches synthétiques réparties en quatre types (analyse syntaxique, routage, détection et corrélation). Les 60 tâches réussissent en $2{,}7$~s, réparties 30 et 30 entre Debian et Ubuntu. L'agent Debian, dépourvu de la capacité de corrélation, refuse explicitement les 15 tâches de ce type ; une tâche subit un échec contrôlé suivi d'une réattribution, et son rejeu ne produit qu'un effet persistant. Cette campagne documente la branche de refus du protocole ; sa durée ne permet de mesurer ni l'endurance ni la capacité.

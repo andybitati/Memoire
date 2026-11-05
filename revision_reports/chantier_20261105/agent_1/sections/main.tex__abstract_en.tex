@@ -1,0 +1,108 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/main.tex, chapitre étoilé « Abstract »
+% Lignes à remplacer : 399 à 499 (de « This thesis presents Ariel \logminer{}, a
+%   lightweight multi-agent architecture » jusqu'à « rather than a new
+%   machine-learning algorithm. »). Conserver les lignes 396-397 et le bloc
+%   des mots-clés (lignes 501-507).
+% Auteur : Agent 1 (intégrité factuelle), chantier 2026-11-05.
+% Statut : provisoire ; traduction fidèle de main.tex__resume_fr.tex (même
+%   source pour chaque chiffre). Paragraphe « hypotheses » modifiable par
+%   l'Agent 2 ; paragraphes architecture reformulables par l'Agent 5.
+% ============================================================================
+
+This thesis presents Ariel \logminer{}, a lightweight multi-agent architecture
+for heterogeneous system and network log analysis, whose distribution is
+evaluated in a laboratory topology. An agent is defined as a software entity
+with declared capabilities, state, memory, and a local policy. When assigned
+a bounded objective, it can evaluate available tasks, propose or refuse their
+execution, invoke compatible handlers, chain subtasks, resume persistent state,
+and delegate an operation requiring another capability. Negotiation follows an
+explicit Contract Net Protocol over a local bus or Redis Streams. Allocation
+and distribution are evaluated through laboratory campaigns, while bounded
+goal pursuit is functionally validated. General intelligence, autonomous goal
+definition, and operation as an industrial SOC platform remain outside the
+scope of this work.
+
+The evaluation particularly highlights the influence of the experimental
+protocol on measured performance. On CICIDS2017, a Random Forest evaluated
+with a stratified random split reaches a mean F1-score of $0.995142$ over five
+seeds. When each of the five attack scenarios is held out from training, the
+mean F1-score falls to $0.157744$. Among five lightweight models compared
+under this holdout, Logistic Regression achieves the highest mean F1-score,
+$0.233670$, while HistGradientBoosting reaches a macro PR-AUC of $0.569002$
+with a near-zero F1-score at the selected threshold. Changing the classifier
+therefore alters some metrics without eliminating inter-scenario fragility.
+
+For HDFS and BGL, the protocol strictly separates training, validation, and
+test partitions. Drain3 is fitted only on the training partition and frozen
+before validation and test. At the \texttt{block\_id} level, Histogram reaches
+an F1-score of $0.868373$ (95\% CI $[0.856771;0.879493]$) on the
+$115{,}013$ HDFS test blocks, including $1{,}679$ positives, with a recall of
+$1$ and a precision of $0.767367$, identical across five sampling seeds. On
+BGL, F1 is $0.913698$, but 89.8081\% of test events carry a template unseen
+in training, and the Histogram decision coincides exactly with the rule
+``severity absent from normal training''. This score therefore measures
+severity novelty rather than a model of log dynamics; the ``unknown
+template'' rule reaches only $0.277885$.
+
+On CSE-CIC-IDS2018, a February 15 versus February 16 split yields a mean
+F1-score of $0.999212$ for Logistic Regression and $0.401375$ for Random
+Forest. However, \texttt{Dst Port} alone reaches $0.999720$, a score also
+obtained by a fixed destination-port rule (below 1024), and the reverse
+transfer, from February 16 to February 15, does not exceed $0.234195$. The
+primary score therefore rests on a shortcut specific to the test day.
+
+The multi-format validation reads, parses, and normalizes $7{,}001/7{,}001$
+units, including a single Apache fixture. This result measures functional
+coverage of the tested formats; filling of the common schema ranges from seven
+standard fields out of seven (syslog, BGL) to none (tabular network flows). An
+open-set policy calibrated only on known sources and then frozen rejects
+$20/20$ unknown files and wrongly rejects $3/46$ known files; all 43 accepted
+known files are correctly routed, and the decision margin is not a calibrated
+probability. No comparison with a pipeline without routing was run: the
+predictive benefit of specialized routing is not established.
+
+The controlled architecture benchmark covers four architectures, four loads,
+and ten repetitions, yielding 160 runs and $264{,}000$ treatments with no
+failure. On the protocol's microtasks, the monolith dominates and the agent
+architectures add an orchestration cost. Under a paired failure occurring
+after persistence, the agent architectures duplicate no effect, unlike the
+monolith and the centralized workers; equipping the latter with the same
+idempotency store also removes duplicates.
+
+A one-hour endurance campaign on two virtual machines, Debian and Ubuntu,
+connected to a Redis instance centralized on the laboratory host, completes
+$1{,}800$ out of $1{,}800$ tasks, split 451 and $1{,}349$ according to the
+configured capability profiles; a controlled stop after persistence leads to
+a reassignment and a replay with no duplicated effect. Under saturation, the
+capacity of this topology lies between 8 and 16 tasks/s, and the second
+machine processes only 1.23\% of the successful tasks: it does not increase
+the observed capacity. High availability was not evaluated.
+
+The correlation mechanism, evaluated on a controlled synthetic corpus,
+obtains a precision of $0.764706$, a recall of $0.866667$, and a pairwise
+F1-score of $0.812500$. On larger generated corpora, its recall falls to
+$0.5973$; when 30\% of incidents chain several event categories, a variant
+reduced to host and time window obtains a higher F1-score ($0.7268$ versus
+$0.6496$).
+
+In the multi-source CNP campaign, condition M actually runs compatible
+artifacts on $1400/1401$ units, with one Apache fallback and no error. Its
+mean latency is $0.105420$~s, compared with $0.031027$~s for the heuristic H
+condition. The lack of homogeneous labels precludes a global multi-source
+accuracy; the Linux/auth F1 of $0.390244$ remains descriptive of the selected
+source.
+
+The repository also contains a model-comparison procedure and a dry-run mode.
+The tests cover some branches, but not a complete and repeated
+promotion/rejection cycle. Its overall benefit was not evaluated.
+
+No hypothesis is validated: three (H1, H2, and H4) are partially supported
+and two (H3 and H5) remain undecided, for lack of a no-routing comparator for
+the former and of a demonstrated quantitative memory gain for the latter. The
+answers to the research questions remain partial; the methodological question
+(RQ6) is the best covered within the laboratory scope. Ariel \logminer{}
+therefore contributes primarily an architectural and methodological
+integration of a local, modular, and experimentally traceable
+heterogeneous-log analysis pipeline, rather than a new machine-learning
+algorithm.

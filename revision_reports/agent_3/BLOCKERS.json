@@ -1,0 +1,39 @@
+{
+  "run_id": "agent3_access_audit_20261104",
+  "status": "SUPERSEDED",
+  "superseded_by": "hdfs_multivm_cnp_20261104T135345Z (VM et Redis démarrés ensuite ; URL invitée redis://192.168.56.1:6379/0)",
+  "scope": "Accès requis pour les campagnes Redis multi-VM",
+  "working_directory": "E:/Cours/TFE",
+  "checks": [
+    {
+      "command": "rtk VBoxManage list runningvms",
+      "result": "empty_output",
+      "interpretation": "Aucune machine virtuelle n'est active."
+    },
+    {
+      "command": "rtk VBoxManage list vms",
+      "result": [
+        "Debian",
+        "Ubuntu"
+      ],
+      "interpretation": "Les deux machines sont définies dans VirtualBox, mais elles ne sont pas démarrées."
+    },
+    {
+      "command": "rtk docker ps --filter name=logminer-redis --format {{.Names}}_{{.Status}}",
+      "result": "dockerDesktopLinuxEngine pipe not found",
+      "interpretation": "Le moteur Docker Desktop n'est pas accessible ; le conteneur Redis ne peut pas être interrogé."
+    },
+    {
+      "command": "rtk powershell -NoProfile -Command Test-NetConnection_127.0.0.1_6379",
+      "result": false,
+      "interpretation": "Aucun service TCP Redis ne répond sur l'adresse locale et le port configurés."
+    }
+  ],
+  "consequence": "Aucune campagne HDFS distribuée, de saturation ou de reprise multi-VM n'a été exécutée pendant cette phase.",
+  "required_to_unblock": [
+    "Démarrer les machines Debian et Ubuntu.",
+    "Démarrer Redis et vérifier sa joignabilité depuis les deux invités.",
+    "Fournir un mode d'exécution non interactif des workers ou des sessions SSH/guestcontrol valides.",
+    "Implémenter les handlers et orchestrateurs décrits dans PROTOCOLS.md avant de lancer les nouvelles campagnes."
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "experiment_id": "E-H3B-FAMILY-MODELS",
+  "started_at_utc": "2026-11-05T12:35:31.821762+00:00",
+  "completed_at_utc": "2026-11-05T12:41:45.114367+00:00",
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "per_class_per_family": 6000,
+  "common_features": [
+    "duration",
+    "src_port",
+    "dst_port",
+    "packet_count",
+    "byte_count",
+    "rate",
+    "attempts",
+    "hour",
+    "weekday",
+    "numeric_mean",
+    "numeric_std",
+    "numeric_max",
+    "numeric_nonzero_ratio",
+    "protocol",
+    "service",
+    "state",
+    "status"
+  ],
+  "paired_f1_delta_family_minus_global": {
+    "cicids": {
+      "mean": 0.0002675580799941235,
+      "sd": 0.0005986508024347961,
+      "ci95_lower": -0.00047576506888495856,
+      "ci95_upper": 0.0010108812288732055,
+      "non_inferior_margin": -0.01,
+      "non_inferior": true
+    },
+    "linux_auth": {
+      "mean": -0.007526045737518738,
+      "sd": 0.0038660249201894607,
+      "ci95_lower": -0.01232634969707658,
+      "ci95_upper": -0.0027257417779608956,
+      "non_inferior_margin": -0.01,
+      "non_inferior": false
+    },
+    "unsw": {
+      "mean": -0.0012645689740625522,
+      "sd": 0.0013183515385413887,
+      "ci95_lower": -0.00290151861644594,
+      "ci95_upper": 0.0003723806683208356,
+      "non_inferior_margin": -0.01,
+      "non_inferior": true
+    }
+  },
+  "overall_macro_family_delta": {
+    "mean": -0.002841018877195722,
+    "sd": 0.001501584754198999,
+    "ci95_lower": -0.004705482606736271,
+    "ci95_upper": -0.0009765551476551729
+  },
+  "criterion": "Pour chaque famille, borne inférieure de l'IC t apparié à 95 % du delta F1 >= -0,01.",
+  "criterion_met": false
+}

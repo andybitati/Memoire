@@ -7,6 +7,5 @@
 | Linux/auth | linux_auth_logs_* | RandomForest | Supervise | F1=0.916602 |
 | CICIDS | MachineLearningCVE | RandomForest | Supervise | F1 exploratoire=0.997163; F1 strict=0.157827 |
 | CIC-DDoS2019 | DrDoS/UDPLag/SYN | RandomForest | Supervise strict | F1=0.997577; MCC=0.994091 |
-| HDFS | HDFS logs | Drain3 + fenetres + histogramme/IF | Non supervise train-test | F1=0.652789 au mieux, amelioration moderee; HDFS reste difficile |
+| HDFS | HDFS logs | Drain3 + histogramme au niveau bloc | Chronologique 60/20/20, test complet | Histogram F1=0.868373; baseline surprise-template F1=0.872434; avantage non etabli |
 | BGL | BlueGene/L | Drain3 + fenetres + IForest | Non supervise train-test | F1=1.000000 sur split local; resultat favorable a ne pas generaliser seul |
-

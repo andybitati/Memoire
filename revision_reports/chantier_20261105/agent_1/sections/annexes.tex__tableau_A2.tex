@@ -1,0 +1,86 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/annexes.tex
+%   (Annexe A.3 « Matrice résultats--preuves », tableau A.2, PDF p. 131-132)
+% Lignes à remplacer : 47 à 87 (du paragraphe « Pour les campagnes ajoutées
+%   lors de la consolidation finale, les chemins de la troisième colonne ... »
+%   jusqu'à « \end{longtable} »).
+% Auteur : Agent 1 (intégrité factuelle), chantier 2026-11-05.
+% Corrections :
+%   - chemins : le tableau mélangeait des chemins relatifs à
+%     phase_revision_20261104/ et des noms de fichiers nus situés dans quatre
+%     autres répertoires ; chaque ligne porte désormais un préfixe de racine
+%     explicite (vérifié par recherche de chaque fichier sur disque) ;
+%   - ligne « CICIDS scénario RF » : « F1 macro 0,157744 » précisé
+%     (25 évaluations) ;
+%   - ligne « Sélection CICIDS » : ajout de RF 0,157827 (5 évaluations, un
+%     scénario par graine) et PR-AUC HGB 0,569002, cités au tableau 4.2 et
+%     dans les résumés ;
+%   - lignes ajoutées pour des résultats cités dans le corps ou les résumés
+%     sans entrée dans la matrice : règle de sévérité BGL, tableau 4.6
+%     (prévalence observée), corrélation multi-étapes, exécution multi-source
+%     (latences, F1 Linux/auth), endurance (répartition 451/1 349) ;
+%   - ligne « OPTION B » : seulement si le coordinateur introduit la
+%     campagne multivm_cnp_20260909T202632Z_37592 dans le corps.
+%   Toutes les valeurs ont été relues dans les artefacts indiqués le
+%   2026-11-05 ; aucune valeur nouvelle n'est créée.
+% Point Agent 4 : l'ablation du routage (p. 97 et 115) n'a pas d'entrée ; un
+%   artefact candidat existe : docs/memoire/pack_redaction_final/
+%   06_reproductibilite_preuves/family_routing_ablation.csv (non intégré ici,
+%   non relu en détail par l'Agent 1).
+% Point Agent 6 : la matrice exécutable et le manifeste public ne couvrent que
+%   phase_revision_20261104/ ; les autres racines n'ont pas de manifeste unique.
+% ============================================================================
+
+Les chemins de la troisième colonne sont relatifs à la racine du dépôt et
+abrégés par les préfixes suivants : [R]~\texttt{experiments/phase\_revision\_20261104/},
+dont le fichier \texttt{MANIFEST\_SHA256.csv} permet de vérifier l'intégrité ;
+[D]~\texttt{experiments/phase\_dataset\_strengthening/} ;
+[F]~\texttt{experiments/phase\_final\_scientific\_consolidation/} ;
+[M]~\texttt{experiments/phase\_multi\_agent/} ;
+[E]~\texttt{experiments/phase\_cnp\_endurance/} ;
+[P]~\texttt{docs/memoire/pack\_redaction\_final/06\_reproductibilite\_preuves/} ;
+[X]~\texttt{data/processed/final\_experiments\_2026/}.
+
+\begin{longtable}{p{0.20\textwidth} p{0.24\textwidth} p{0.46\textwidth}}
+\caption{Traçabilité des résultats expérimentaux.}\label{tab:preuves-experimentales}\\
+\toprule
+\textbf{Élément} & \textbf{Valeur} & \textbf{Artefact principal} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Élément} & \textbf{Valeur} & \textbf{Artefact principal} \\
+\midrule
+\endhead
+CICIDS random RF & F1 0,995142 ; 5 graines & [D]~\texttt{aggregated/cicids\_protocol\_comparison.csv} \\
+CICIDS scénario RF & F1 moyen 0,157744 ; 25 évaluations (5 scénarios $\times$ 5 graines) & Même synthèse ; détail : [X]~\texttt{cicids\_holdout\_multiseed\_raw.csv} \\
+CICIDS temporel & RF 0,437429 ; LR 0,556615 & [D]~\texttt{aggregated/cicids\_protocol\_comparison.csv}, lundi--jeudi vers vendredi \\
+Sélection CICIDS & LR 0,233670 ; RF 0,157827 (5 évaluations, un scénario par graine) ; PR-AUC HGB 0,569002 & [P]~\texttt{cicids\_model\_candidates\_summary.csv} \\
+Isolation Forest CICIDS & F1 0,115719 / 0,521436 selon le seuil & [R]~\texttt{agent\_6\_iforest\_baselines/agent6\_cicids\_iforest\_20261104T141904Z\_summary.csv} \\
+HDFS bloc, test complet & F1 0,868373 ; IC [0,856771 ; 0,879493] ; 5 graines & [R]~\texttt{agent\_2\_hdfs/agent2\_hdfs\_full\_20261104T131314Z\_\_result.json} et \texttt{\_\_test\_block\_ci.json} \\
+HDFS bloc, échantillon de $2\,000$ blocs & F1 0,892308 & [D]~\texttt{raw/ds\_hdfs\_block\_20260910T081756Z\_\_hdfs\_block\_result.json} \\
+BGL Histogram & F1 0,913698 & [D]~\texttt{raw/ds\_bgl\_known\_unknown\_20260910T082706Z\_\_bgl\_group\_metrics.csv} \\
+BGL baseline & F1 0,277885 & Même artefact, modèle \texttt{UnknownTemplateBaseline} \\
+BGL, règle de sévérité & décision identique à Histogram & [R]~\texttt{agent\_4\_bgl/agent4\_bgl\_second\_protocol\_20261104T142629Z\_\_result.json} \\
+BGL, protocole contigu G & F1 0,941927 ; protocole conçu a posteriori & [R]~\texttt{agent\_4\_bgl/agent4\_bgl\_second\_protocol\_20261104T142629Z\_\_result.json} \\
+CSE-CIC-IDS2018 & LR 0,999212 ; RF 0,401375 & [D]~\texttt{raw/external\_csecicids2018\_20260910T230136Z\_metrics.csv} \\
+Ablation CSE-CIC & top 10 retirées : 0,657859 & [F]~\texttt{aggregated/external\_csecicids2018\_feature\_ablation.csv} \\
+CSE-CIC, raccourci & \texttt{Dst Port} seul et règle port $<1024$ : F1 0,999720 & [R]~\texttt{agent\_4\_csecic/agent4\_csecic\_shortcut\_20261104T144738Z\_\_result.json} \\
+CSE-CIC, prévalence observée & LR 0,994345 ; 16 vers 15 : 0,234195 (tableau~\ref{tab:csecic-prevalence}) & Même artefact \\
+Routeur open-set, calibration & rejet 3/3 ; faux rejet 0/28 & [F]~\texttt{aggregated/router\_open\_set\_final\_tradeoff\_diagnostic.csv} \\
+Routeur open-set étendu & rejet 20/20 ; faux rejet 3/46 & [R]~\texttt{agent\_5\_router\_open\_set/result.json} \\
+Multiformat & $7\,001/7\,001$ & [D]~\texttt{aggregated/multiformat\_balanced\_summary.csv} \\
+Multiformat, remplissage & 7/7 champs (syslog, BGL) à 0/7 (flux tabulaires) ; une fixture Apache & [R]~\texttt{agent\_5\_multiformat/result.json} \\
+E2E modèles & $1\,400/1\,401$ & [F]~\texttt{aggregated/multisource\_cnp\_model\_inference\_by\_source.csv} \\
+E2E latences et F1 & H 0,031027~s ; M 0,105420~s ; F1 Linux/auth 0,390244 & [F]~\texttt{aggregated/multisource\_cnp\_model\_inference\_summary.json} \\
+Benchmark A--D & 160 exécutions ; $264\,000$ tâches & [M]~\texttt{aggregated/ma\_20260909T160812Z\_34016\_\_statistics.csv} \\
+Panne appariée A/B/C/D & doublons A 10, B 10, C 0, D 0 ; A+I et B+I : 0 & [R]~\texttt{agent\_3\_distribution/agent3\_paired\_failure\_abcd\_20261104T141803Z\_\_summary.json} \\
+Endurance CNP multi-VM & $1\,800/1\,800$ ; 1 h ; Debian 451, Ubuntu $1\,349$ & [E]~\texttt{aggregated/cnp\_endurance\_multivm\_20260918T130822Z\_\_summary.json} \\
+% OPTION B (seulement si la campagne de 60 tâches est introduite au §4.11) :
+% Refus CNP multi-VM & $60/60$ ; 30/30 ; 15 refus (corrélation, Debian) & [M]~\texttt{raw/multivm\_cnp\_20260909T202632Z\_37592\_\_redis\_cnp\_multivm.json} \\
+HDFS via CNP multi-VM & $2\,000/2\,000$ ; F1 0,892308 ; Debian $2\,000$, Ubuntu 0 & [R]~\texttt{agent\_3\_distribution/hdfs\_multivm\_cnp\_20261104T135345Z\_\_hdfs\_multivm\_summary.json} \\
+Saturation CNP multi-VM & coude 8--16 tâches/s ; 3 échecs sur $11\,430$ ; Ubuntu 140 tâches réussies & [R]~\texttt{agent\_3\_distribution/agent3\_saturation\_multivm\_20261104T142325Z\_\_saturation\_summary.json} et \texttt{\_\_saturation\_tasks.csv} \\
+Corrélation & F1 0,812500 & [X]~\texttt{correlation\_synthetic\_summary.json} \\
+Corrélation étendue & précision 0,9884 ; rappel 0,5973 & [R]~\texttt{agent\_5\_correlation/result.json} \\
+Corrélation multi-étapes & F1 0,6496 ; hôte + fenêtre 0,7268 & Même artefact \\
+\bottomrule
+\end{longtable}

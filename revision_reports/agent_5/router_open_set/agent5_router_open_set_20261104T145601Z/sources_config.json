@@ -1,0 +1,636 @@
+{
+  "run_id": "agent5_router_open_set_20261104T145601Z",
+  "frozen_before_execution": true,
+  "policy_source": "experiments/phase_final_scientific_consolidation/configs/router_open_set_selected_policy.json",
+  "policy": {
+    "min_top_score": 100.0,
+    "min_decision_margin": 0.0,
+    "min_compatible_rules": 0
+  },
+  "sample_rows": 200,
+  "leak_columns_removed_in_mode_N": [
+    "dataset",
+    "filepath",
+    "subtype"
+  ],
+  "sources": [
+    {
+      "source_id": "win_app_live",
+      "origin": "original_31",
+      "path": "data/raw/windows_events/Application.evtx",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_001.csv",
+      "stratum": "K",
+      "expected": "windows",
+      "schema_group": "windows_host_current"
+    },
+    {
+      "source_id": "win_system_live",
+      "origin": "original_31",
+      "path": "data/raw/windows_events/System.evtx",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_002.csv",
+      "stratum": "K",
+      "expected": "windows",
+      "schema_group": "windows_host_current"
+    },
+    {
+      "source_id": "win_security_admin",
+      "origin": "original_31",
+      "path": "data/raw/windows_events_admin/Security.evtx",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_003.csv",
+      "stratum": "K",
+      "expected": "windows",
+      "schema_group": "windows_host_current"
+    },
+    {
+      "source_id": "win_app_20260518",
+      "origin": "original_31",
+      "path": "data/raw/windows_events/20260518_101329/Application.evtx",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_004.csv",
+      "stratum": "K",
+      "expected": "windows",
+      "schema_group": "windows_host_snapshots"
+    },
+    {
+      "source_id": "win_system_20260518",
+      "origin": "original_31",
+      "path": "data/raw/windows_events/20260518_101329/System.evtx",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_005.csv",
+      "stratum": "K",
+      "expected": "windows",
+      "schema_group": "windows_host_snapshots"
+    },
+    {
+      "source_id": "win_app_20260529",
+      "origin": "original_31",
+      "path": "data/raw/windows_events/20260529_102842/Application.evtx",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_006.csv",
+      "stratum": "K",
+      "expected": "windows",
+      "schema_group": "windows_host_snapshots"
+    },
+    {
+      "source_id": "win_system_20260529",
+      "origin": "original_31",
+      "path": "data/raw/windows_events/20260529_102842/System.evtx",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_007.csv",
+      "stratum": "K",
+      "expected": "windows",
+      "schema_group": "windows_host_snapshots"
+    },
+    {
+      "source_id": "linux_auth_balanced",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/linux_auth_logs_full(balanced).csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_008.csv",
+      "stratum": "K",
+      "expected": "linux_auth",
+      "schema_group": "linux_auth_generated_corpus"
+    },
+    {
+      "source_id": "linux_auth_unbalanced",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/linux_auth_logs_full(new_unbalanced).csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_009.csv",
+      "stratum": "K",
+      "expected": "linux_auth",
+      "schema_group": "linux_auth_generated_corpus"
+    },
+    {
+      "source_id": "linux_auth_multiple",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/linux_auth_logs_multiple_anomalies.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_010.csv",
+      "stratum": "K",
+      "expected": "linux_auth",
+      "schema_group": "linux_auth_generated_corpus"
+    },
+    {
+      "source_id": "linux_2k",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/Linux_2k.log",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_011.csv",
+      "stratum": "K",
+      "expected": "linux",
+      "schema_group": "loghub_linux"
+    },
+    {
+      "source_id": "wazuh_oct_01_05",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/01-05-October.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_012.csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_october_exports"
+    },
+    {
+      "source_id": "wazuh_oct_05_p1",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/05-October-P1.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_013.csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_october_exports"
+    },
+    {
+      "source_id": "wazuh_oct_05_p2",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/05-October-P2.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_014.csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_october_exports"
+    },
+    {
+      "source_id": "wazuh_oct_06_20",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/06-20-October.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_015.csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_october_exports"
+    },
+    {
+      "source_id": "wazuh_oct_20_22",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/20-22-October.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_016.csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_october_exports"
+    },
+    {
+      "source_id": "wazuh_oct_20_p1",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/20-October-P1.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_017.csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_october_exports"
+    },
+    {
+      "source_id": "wazuh_oct_20_p2",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/20-October-P2.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_018.csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_october_exports"
+    },
+    {
+      "source_id": "hdfs_loghub",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/HDFS_1/HDFS.log",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_019.csv",
+      "stratum": "K",
+      "expected": "hdfs",
+      "schema_group": "loghub_hdfs_v1"
+    },
+    {
+      "source_id": "bgl_loghub",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/BGL/BGL.log",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_020.csv",
+      "stratum": "K",
+      "expected": "bgl",
+      "schema_group": "loghub_bgl"
+    },
+    {
+      "source_id": "cicids_monday",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Monday-WorkingHours.pcap_ISCX.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_021.csv",
+      "stratum": "K",
+      "expected": "network_cicids",
+      "schema_group": "cicids2017"
+    },
+    {
+      "source_id": "cicids_tuesday",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Tuesday-WorkingHours.pcap_ISCX.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_022.csv",
+      "stratum": "K",
+      "expected": "network_cicids",
+      "schema_group": "cicids2017"
+    },
+    {
+      "source_id": "cicids_wednesday",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Wednesday-workingHours.pcap_ISCX.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_023.csv",
+      "stratum": "K",
+      "expected": "network_cicids",
+      "schema_group": "cicids2017"
+    },
+    {
+      "source_id": "cicids_thursday_web",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_024.csv",
+      "stratum": "K",
+      "expected": "network_cicids",
+      "schema_group": "cicids2017"
+    },
+    {
+      "source_id": "cicids_thursday_infiltration",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_025.csv",
+      "stratum": "K",
+      "expected": "network_cicids",
+      "schema_group": "cicids2017"
+    },
+    {
+      "source_id": "cicids_friday_morning",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Morning.pcap_ISCX.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_026.csv",
+      "stratum": "K",
+      "expected": "network_cicids",
+      "schema_group": "cicids2017"
+    },
+    {
+      "source_id": "cicids_friday_portscan",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_027.csv",
+      "stratum": "K",
+      "expected": "network_cicids",
+      "schema_group": "cicids2017"
+    },
+    {
+      "source_id": "cicids_friday_ddos",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_028.csv",
+      "stratum": "K",
+      "expected": "network_cicids",
+      "schema_group": "cicids2017"
+    },
+    {
+      "source_id": "open_cloud_service",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/Dataset_csv/cloud_service_log.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_029.csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_ip_ports_proto_logtype"
+    },
+    {
+      "source_id": "open_dns",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/Dataset_csv/DNS_Logs_logs.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_030.csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_dns_query"
+    },
+    {
+      "source_id": "open_virtualization",
+      "origin": "original_31",
+      "path": "data/raw/Datasets/Dataset_csv/virtualization_log.csv",
+      "neutral_artifact": "experiments/phase_dataset_strengthening/processed/router_independent_20260910T094257Z/source_031.csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_ip_ports_proto_logtype"
+    },
+    {
+      "source_id": "u_authentication",
+      "path": "data/raw/Datasets/Dataset_csv/Authentication_Logs_logs.csv",
+      "adapter": "csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_auth_method_status",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_cloud_based_services",
+      "path": "data/raw/Datasets/Dataset_csv/Cloud-Based_Services_logs.csv",
+      "adapter": "csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_service_operation",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_netsec_appliances",
+      "path": "data/raw/Datasets/Dataset_csv/Network_Security_Appliances_Logs.csv",
+      "adapter": "csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_ip_eventtype_description",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_operating_system",
+      "path": "data/raw/Datasets/Dataset_csv/Operating_System_Logs_logs.csv",
+      "adapter": "csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_host_event_details",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_proxy_server",
+      "path": "data/raw/Datasets/Dataset_csv/Proxy_Server_Logs_logs.csv",
+      "adapter": "csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_proxy_url_status",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_security_events",
+      "path": "data/raw/Datasets/Dataset_csv/security_events.csv",
+      "adapter": "csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_eventtype_ip_description",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_server_logs",
+      "path": "data/raw/Datasets/Dataset_csv/Server_Logs_logs.csv",
+      "adapter": "csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_server_message",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_syslog_data",
+      "path": "data/raw/Datasets/Dataset_csv/Syslog_Data_logs.csv",
+      "adapter": "csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_syslog_facility_severity",
+      "label_note": "étiquette discutable : syslog réseau tabulaire, schéma distinct de Linux_2k",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_throughput",
+      "path": "data/raw/Datasets/Dataset_csv/Throughput.csv",
+      "adapter": "csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_metrics_throughput",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_router_log",
+      "path": "data/raw/Datasets/Dataset_csv/router_log_log.csv",
+      "adapter": "csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_ip_ports_proto_logtype",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_switch_log",
+      "path": "data/raw/Datasets/Dataset_csv/switch_log_log.csv",
+      "adapter": "csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_ip_ports_proto_logtype",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_network_one_month",
+      "path": "data/raw/Datasets/Dataset_csv/network_data_one_month.csv",
+      "adapter": "csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_ip_proto_size_event",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_network_flow",
+      "path": "data/raw/Datasets/Dataset_csv/Network_Flow_Data_logs.csv",
+      "adapter": "csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_ip_ports_proto_bytes",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_packet_captures",
+      "path": "data/raw/Datasets/Dataset_csv/Packet_Captures_logs.csv",
+      "adapter": "csv",
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "csv_ip_size_proto",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_darpa_bsm_praudit",
+      "path": "data/raw/Datasets/DARPA_eval_b/DARPA_eval_b/sample_data01.praudit/sample_data01.praudit",
+      "adapter": "text_pipeline",
+      "text_lines": 2000,
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "solaris_bsm_praudit",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_darpa_bsm_list",
+      "path": "data/raw/Datasets/DARPA_eval_b/DARPA_eval_b/bsm.list",
+      "adapter": "text_pipeline",
+      "text_lines": 200,
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "darpa_session_list",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "u_darpa_tcpdump_list",
+      "path": "data/raw/Datasets/DARPA_eval_b/DARPA_eval_b/tcpdump.list",
+      "adapter": "text_pipeline",
+      "text_lines": 200,
+      "stratum": "U",
+      "expected": "unknown",
+      "schema_group": "darpa_session_list",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_cicids2018_thu",
+      "path": "data/raw/external/CSE-CIC-IDS2018/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "network_cicids",
+      "schema_group": "cicflowmeter_2018_names",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_cicids2018_fri",
+      "path": "data/raw/external/CSE-CIC-IDS2018/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "network_cicids",
+      "schema_group": "cicflowmeter_2018_names",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_cicddos_udplag",
+      "path": "data/raw/Datasets/UNSWNB15/UDPLag_data_2_0_per.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "network_cicids",
+      "schema_group": "cicflowmeter_ddos_archive",
+      "label_note": "dossier nommé UNSWNB15 mais contenu de type CIC-DDoS2019 ; provenance inconnue",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_unsw_train",
+      "path": "data/raw/Datasets/UNSW_NB15_training-set.parquet",
+      "adapter": "parquet",
+      "stratum": "K",
+      "expected": "network",
+      "schema_group": "unsw_nb15_parquet",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_unsw_test",
+      "path": "data/raw/Datasets/UNSW_NB15_testing-set.parquet",
+      "adapter": "parquet",
+      "stratum": "K",
+      "expected": "network",
+      "schema_group": "unsw_nb15_parquet",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_linux_auth_labeled",
+      "path": "data/raw/Datasets/linux_auth_logs_labeled.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "linux_auth",
+      "schema_group": "linux_auth_csv",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_linux_2k_structured",
+      "path": "data/raw/Datasets/Dataset_csv/Linux_2k.log_structured.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "linux",
+      "schema_group": "loghub_structured_csv",
+      "label_note": "même contenu que Linux_2k.log, forme structurée Loghub",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_win_samples_app",
+      "path": "data/samples/Application.evtx",
+      "adapter": "windows_evtx",
+      "stratum": "K",
+      "expected": "windows",
+      "schema_group": "windows_evtx",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_wazuh_03_04_january",
+      "path": "data/raw/Datasets/03-04-January.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_export_csv",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_wazuh_04_06_january",
+      "path": "data/raw/Datasets/04-06-January.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_export_csv",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_wazuh_06_07_january",
+      "path": "data/raw/Datasets/06-07-January.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_export_csv",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_wazuh_21_25_december",
+      "path": "data/raw/Datasets/21-25-December.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_export_csv",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_wazuh_25_26_december",
+      "path": "data/raw/Datasets/25-26-December.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_export_csv",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_wazuh_26_27_december",
+      "path": "data/raw/Datasets/26-27-December.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_export_csv",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_wazuh_26_december",
+      "path": "data/raw/Datasets/26-December.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_export_csv",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_wazuh_28_31_december",
+      "path": "data/raw/Datasets/28-31-December.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_export_csv",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_wazuh_31_december_3_january",
+      "path": "data/raw/Datasets/31-December-3-January.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_export_csv",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "k_wazuh_31_december",
+      "path": "data/raw/Datasets/31-December.csv",
+      "adapter": "csv",
+      "stratum": "K",
+      "expected": "wazuh",
+      "schema_group": "wazuh_export_csv",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "a_outside_tcpdump_csv",
+      "path": "data/raw/Datasets/Dataset_csv/outside_tcp_dump_part001.csv",
+      "adapter": "csv",
+      "stratum": "A",
+      "expected": "network_or_unknown",
+      "schema_group": "project_pcap_csv",
+      "origin": "agent5_new"
+    },
+    {
+      "source_id": "a_darpa_sample_pcap_csv",
+      "path": "data/raw/Datasets/Dataset_csv/sample_data01.csv",
+      "adapter": "csv",
+      "stratum": "A",
+      "expected": "network_or_unknown",
+      "schema_group": "project_pcap_csv",
+      "origin": "agent5_new"
+    }
+  ]
+}

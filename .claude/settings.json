@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell($d='revision_reports\\\\agent_5\\\\router_open_set\\\\agent5_router_open_set_20261104T145047Z'; Import-Csv \"$d\\\\routes.csv\" | Select source_id,origin,stratum,expected,mode,original_family,predicted,rejected,top_score,second_score,rejection_reasons | Sort-Object mode,origin,stratum | Format-Table -AutoSize | Out-String -Width 260)",
+      "PowerShell(Remove-Item -Recurse -Force revision_reports\\\\agent_5\\\\router_open_set\\\\agent5_router_open_set_20261104T145047Z -Confirm:$false)",
+      "PowerShell(.venv\\\\Scripts\\\\python.exe revision_reports\\\\agent_5\\\\scripts\\\\agent5_router_open_set_extended.py)",
+      "PowerShell(Get-ChildItem docs\\\\datasets | Select Name; foreach\\($f in 'bgl.csv','hdfs.csv','outside_tcp_dump.csv'\\){ \"--- $f\"; Get-Content \"data\\\\raw\\\\Datasets\\\\Dataset_csv\\\\$f\" -TotalCount 2 | % { $_.Substring\\(0,[Math]::Min\\(200,$_.Length\\)\\) } }; Get-Content data\\\\raw\\\\Datasets\\\\Extra.py -TotalCount 15)",
+      "PowerShell($f='ARIEL_LOGMINER_MEMOIRE_FINAL\\\\chapters\\\\'; \\(Get-Content \"$\\($f\\)chapitre4_implementation.tex\" -Encoding utf8\\)[22,26,33,82]; \"----\"; \\(Get-Content \"$\\($f\\)chapitre6_discussion.tex\" -Encoding utf8\\)[73]; \"----\"; \\(Get-Content \"$\\($f\\)chapitre6_conclusion.tex\" -Encoding utf8\\)[26,100]; \"----\"; \\(Get-Content \"$\\($f\\)chapitre7_reproductibilite_deploiement.tex\" -Encoding utf8\\)[53])"
+    ]
+  }
+}

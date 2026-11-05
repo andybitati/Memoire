@@ -1,0 +1,62 @@
+\section{Limites du travail}
+\label{sec:limites}
+
+Cette section rassemble les limites du travail. Les autres chapitres y renvoient sans les
+reprendre intégralement.
+
+\paragraph{Données et généralisation.}
+CICIDS2017 et CSE-CIC-IDS2018 reposent sur des scénarios construits et sur des
+caractéristiques de flux déjà extraites. Sur CICIDS2017, le F1 du Random Forest passe de
+$0{,}995142$ en séparation aléatoire à $0{,}157744$ en holdout par scénario : le transfert
+vers une attaque absente de l'entraînement n'est pas acquis. Sur CSE-CIC-IDS2018,
+\texttt{Dst Port} seul atteint un F1 de $0{,}999720$ et le retrait des dix premières
+caractéristiques ramène le F1 à $0{,}657859$ ; un artefact lié aux journées retenues ou au
+processus de génération du jeu ne peut être exclu. Aucun de ces résultats ne se transpose
+sans nouvelle évaluation à d'autres capteurs, topologies ou périodes d'observation.
+
+\paragraph{Corpus et incertitude.}
+Le test HDFS couvre les $115\,013$ blocs de la partition finale, dont $1\,679$ positifs.
+L'intervalle bootstrap du F1, $[0{,}856771\,;\,0{,}879493]$, décrit l'incertitude sur ce
+corpus d'un seul système, non sur une population de systèmes distribués. Sur BGL, le groupe
+des templates connus ($2\,029$ événements) ne contient aucune anomalie : le rappel des
+anomalies à template connu ne peut pas être estimé, et $89{,}8081\,\%$ du test relève d'un
+template inconnu de l'entraînement. La politique open-set rejette $20/20$ fichiers inconnus
+mais écarte aussi $3/46$ fichiers connus ; les fichiers partageant un schéma ne sont pas
+indépendants et la \texttt{decision\_margin} n'est pas une probabilité calibrée. La baseline
+HDFS fondée sur la surprise moyenne des templates atteint un F1 de $0{,}872434$, contre
+$0{,}868373$ pour Histogram sur les mêmes blocs ; l'avantage prédictif d'Histogram n'est
+donc pas établi dans ce protocole. La comparaison du routeur à une table statique n'a pas
+été exécutée : après l'évaluation open-set, l'inventaire local ne fournit au plus que 45
+candidats pour les 90 sources indépendantes requises. La voie Apache repose sur une seule
+fixture.
+
+\paragraph{Grandeurs non mesurées.}
+Les sources de la campagne multi-source ne partagent pas de vérité terrain homogène :
+aucune exactitude globale n'est calculée. La couverture multi-format mesure la lecture, le
+parsing et la normalisation des unités présentes, non la complétude des champs ni la
+conservation intégrale du contenu brut. La corrélation est évaluée sur des corpus
+synthétiques construits. L'utilisabilité du tableau de bord, le temps d'investigation et la charge cognitive n'ont fait l'objet d'aucune étude auprès d'analystes. Aucune expérience n'analyse conjointement un même incident à partir de journaux système et de flux réseau réels. La priorisation des anomalies, les traitements périodiques et l'exécution par micro-lots, prévus par la conception, ne sont pas évalués.
+
+\paragraph{Distribution et exploitation.}
+La validation distribuée porte sur deux machines virtuelles et un Redis central. La
+campagne d'endurance dure $3\,605{,}110$~s ; le test de saturation situe le coude entre 8
+et 16 tâches/s et compte trois expirations de délai sur $11\,430$ tâches. Le goulot n'est
+pas isolé. Ni panne du broker, ni partition réseau, ni fonctionnement multi-site, ni charge
+industrielle prolongée, ni vieillissement sur plusieurs jours ne sont testés. TLS, contrôle
+d'accès, gestion des secrets, journalisation protégée contre l'altération, réplication,
+sauvegarde et observabilité distribuée ne sont pas évalués.
+
+\paragraph{Mécanismes adaptatifs.}
+Les poids de la fonction d'utilité sont fixés et non appris
+(section~\ref{sec:spec-utilite}). Le benchmark sur des micro-tâches ne montre pas de gain de débit, de latence ou d'équité lié à la mémoire, et le protocole à fiabilité hétérogène n'établit un gain qu'à une probabilité d'échec de $0{,}9$ (section~\ref{sec:e-h5}). Contract Net n'obtient aucun avantage sur un répartiteur au moindre chargé (section~\ref{sec:e-cnp-moindre}) ; cette comparaison repose sur des tâches synthétiques dans un seul processus et n'a pas été reprise en exécution distribuée. Dans l'expérience de panne
+appariée, l'absence de doublon provient du magasin d'idempotence : le même mécanisme évite
+aussi les doublons lorsqu'il est ajouté aux architectures de référence. La poursuite
+d'objectifs, l'enchaînement, la délégation et la reprise sont vérifiés fonctionnellement,
+sans campagne quantitative dédiée à leur coût. La mise à jour contrôlée des modèles dispose
+d'une implémentation et d'un mode \textit{dry-run}, mais d'aucun cycle complet et répété de
+promotion et de rejet suivi d'une mesure indépendante
+(tableau~\ref{tab:statut-model-update}).
+
+\paragraph{Statut du système.}
+Ariel \logminer{} est en conséquence un prototype de laboratoire. Il ne constitue ni une
+plateforme opérationnelle de SOC ni un système autonome prêt pour la production.

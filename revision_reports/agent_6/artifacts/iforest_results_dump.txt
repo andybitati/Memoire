@@ -1,0 +1,62 @@
+seed 42 done: roc_auc=0.6140
+seed 43 done: roc_auc=0.6347
+seed 44 done: roc_auc=0.6578
+seed 45 done: roc_auc=0.6409
+seed 46 done: roc_auc=0.6478
+COMPLETED agent6_cicids_iforest_20261104T141904Z
+                model               threshold_rule  test_f1_mean  test_f1_sample_std  test_recall_mean  test_fpr_mean  test_pr_auc_mean
+0     IsolationForest                   benign_q99      0.115719            0.011881           0.06350        0.03344          0.571803
+1     IsolationForest                    val_maxf1      0.521436            0.170794           0.51948        0.31234          0.571803
+2  LogisticRegression  predict_default(supervised)      0.556615            0.017124           0.40096        0.03936          0.871448
+3        RandomForest  predict_default(supervised)      0.437429            0.004046           0.28062        0.00240          0.830759
+                                                                     attack_recall  benign_fpr
+threshold_rule source_file                                                                    
+benign_q99     Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv           0.143698    0.102423
+               Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv       0.000255    0.012497
+               Friday-WorkingHours-Morning.pcap_ISCX.csv                  0.008575    0.011769
+val_maxf1      Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv           0.770082    0.419241
+               Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv       0.321471    0.283111
+               Friday-WorkingHours-Morning.pcap_ISCX.csv                  0.349174    0.276566
+                                                                0                                       1                                 2                                 3
+run_id                     agent6_cicids_iforest_20261104T141904Z  agent6_cicids_iforest_20261104T141904Z  cicids_temporal_20260910T083015Z  cicids_temporal_20260910T083015Z
+model                                             IsolationForest                         IsolationForest                LogisticRegression                      RandomForest
+threshold_rule                                         benign_q99                               val_maxf1       predict_default(supervised)       predict_default(supervised)
+test_precision_mean                                       0.65397                                0.659511                          0.910526                          0.991524
+test_precision_sample_std                                0.031457                                0.061423                          0.009345                           0.00365
+test_recall_mean                                           0.0635                                 0.51948                           0.40096                           0.28062
+test_recall_sample_std                                    0.00688                                0.341328                          0.016841                          0.003258
+test_f1_mean                                             0.115719                                0.521436                          0.556615                          0.437429
+test_f1_sample_std                                       0.011881                                0.170794                          0.017124                          0.004046
+test_pr_auc_mean                                         0.571803                                0.571803                          0.871448                          0.830759
+test_pr_auc_sample_std                                   0.009122                                0.009122                          0.009364                          0.026979
+test_roc_auc_mean                                        0.639037                                0.639037                               NaN                               NaN
+test_roc_auc_sample_std                                  0.016395                                0.016395                               NaN                               NaN
+test_mcc_mean                                            0.069723                                0.257523                          0.436298                          0.399112
+test_mcc_sample_std                                       0.01594                                0.100046                          0.016427                          0.003749
+test_fpr_mean                                             0.03344                                 0.31234                           0.03936                            0.0024
+test_fpr_sample_std                                      0.002706                                0.273499                          0.003863                          0.001037
+val_f1_mean                                              0.652534                                0.745131                               NaN                               NaN
+val_f1_sample_std                                        0.052396                                0.003973                               NaN                               NaN
+val_fpr_mean                                                 0.01                                  0.2886                               NaN                               NaN
+val_fpr_sample_std                                            0.0                                0.300118                               NaN                               NaN
+   seed threshold_rule  test_threshold    val_f1  val_fpr   test_f1  test_recall  test_precision  test_fpr  test_roc_auc  test_pr_auc  test_tp  test_fp  test_fn
+0    42     benign_q99        0.634846  0.675584   0.0100  0.123403       0.0681        0.656702    0.0356      0.614019     0.556632      681      356     9319
+1    42      val_maxf1        0.492870  0.745613   0.0794  0.395507       0.2764        0.694996    0.1213      0.614019     0.556632     2764     1213     7236
+2    43     benign_q99        0.643934  0.669126   0.0100  0.129571       0.0714        0.699314    0.0307      0.634703     0.573561      714      307     9286
+3    43      val_maxf1        0.346419  0.746486   0.5160  0.667307       0.7641        0.592280    0.5260      0.634703     0.573561     7641     5260     2359
+4    44     benign_q99        0.636715  0.671402   0.0100  0.098572       0.0535        0.625731    0.0320      0.657760     0.579930      535      320     9465
+5    44      val_maxf1        0.327107  0.739282   0.7026  0.744879       1.0000        0.593472    0.6850      0.657760     0.579930    10000     6850        0
+6    45     benign_q99        0.626164  0.686947   0.0100  0.115767       0.0634        0.665268    0.0319      0.640921     0.577575      634      319     9366
+7    45      val_maxf1        0.513411  0.744071   0.0698  0.400231       0.2775        0.717611    0.1092      0.640921     0.577575     2775     1092     7225
+8    46     benign_q99        0.614869  0.559612   0.0100  0.111283       0.0611        0.622834    0.0370      0.647779     0.571316      611      370     9389
+9    46      val_maxf1        0.495823  0.750203   0.0752  0.399257       0.2794        0.699199    0.1202      0.647779     0.571316     2794     1202     7206
+                                                                     n_attack  attack_recall  n_benign  benign_fpr
+threshold_rule source_file                                                                                        
+benign_q99     Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv        4406.4       0.143698    2365.4    0.102423
+               Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv    5522.8       0.000255    3116.6    0.012497
+               Friday-WorkingHours-Morning.pcap_ISCX.csv                 70.8       0.008575    4518.0    0.011769
+val_maxf1      Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv        4406.4       0.770082    2365.4    0.419241
+               Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv    5522.8       0.321471    3116.6    0.283111
+               Friday-WorkingHours-Morning.pcap_ISCX.csv                 70.8       0.349174    4518.0    0.276566
+
+[exited with code 0]

@@ -1,0 +1,56 @@
+{
+  "run_id": "agent5_provenance_20261104T145837Z",
+  "status": "COMPLETED",
+  "traceability_matrix": "ARIEL_LOGMINER_MEMOIRE_FINAL/evidence/data_traceability/final_data_source_traceability.csv",
+  "n_files": 116,
+  "n_absent_from_traceability_matrix": 110,
+  "n_hash_not_computed": 28,
+  "duplicate_groups_sha256": [
+    [
+      "data/processed/final_experiments_2026/phase_5/samples/apache.log",
+      "experiments/phase_dataset_strengthening/processed/multiformat_balanced_20260910T094422Z/samples/apache.log"
+    ],
+    [
+      "data/processed/parallel_robustness_inputs/apache_access.log",
+      "data/processed/robustness_scalability_inputs/apache_access.log"
+    ]
+  ],
+  "duplicate_groups_zip_entries": [
+    [
+      "data/raw/Datasets/archive.zip",
+      "data/raw/Datasets/UNSWNB15.zip"
+    ]
+  ],
+  "absent_and_used_in_router_config": [
+    "data/raw/Datasets/01-05-October.csv",
+    "data/raw/Datasets/05-October-P1.csv",
+    "data/raw/Datasets/05-October-P2.csv",
+    "data/raw/Datasets/06-20-October.csv",
+    "data/raw/Datasets/20-22-October.csv",
+    "data/raw/Datasets/20-October-P1.csv",
+    "data/raw/Datasets/20-October-P2.csv",
+    "data/raw/Datasets/Dataset_csv/cloud_service_log.csv",
+    "data/raw/Datasets/Dataset_csv/DNS_Logs_logs.csv",
+    "data/raw/Datasets/Dataset_csv/virtualization_log.csv",
+    "data/raw/Datasets/linux_auth_logs_full(balanced).csv",
+    "data/raw/Datasets/linux_auth_logs_full(new_unbalanced).csv",
+    "data/raw/Datasets/linux_auth_logs_multiple_anomalies.csv",
+    "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv",
+    "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv",
+    "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Morning.pcap_ISCX.csv",
+    "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Monday-WorkingHours.pcap_ISCX.csv",
+    "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv",
+    "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv",
+    "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Tuesday-WorkingHours.pcap_ISCX.csv",
+    "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Wednesday-workingHours.pcap_ISCX.csv",
+    "data/raw/windows_events/20260518_101329/Application.evtx",
+    "data/raw/windows_events/20260518_101329/System.evtx",
+    "data/raw/windows_events/20260529_102842/Application.evtx",
+    "data/raw/windows_events/20260529_102842/System.evtx",
+    "data/raw/windows_events/Application.evtx",
+    "data/raw/windows_events/System.evtx",
+    "data/raw/windows_events_admin/Security.evtx"
+  ],
+  "inventory_csv": "revision_reports/agent_5/provenance/agent5_provenance_20261104T145837Z/inventory.csv",
+  "hash_size_limit_bytes": 67108864
+}

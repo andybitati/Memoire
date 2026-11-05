@@ -1,0 +1,409 @@
+{
+  "experiment_id": "E-H5-MEMORY-RELIABILITY",
+  "started_at_utc": "2026-11-05T14:42:28.016795+00:00",
+  "completed_at_utc": "2026-11-05T14:50:12.517762+00:00",
+  "load": 1000,
+  "workers_primary": 3,
+  "seeds": [
+    20261105,
+    20261106,
+    20261107,
+    20261108,
+    20261109,
+    20261110,
+    20261111,
+    20261112,
+    20261113,
+    20261114,
+    20261115,
+    20261116,
+    20261117,
+    20261118,
+    20261119,
+    20261120,
+    20261121,
+    20261122,
+    20261123,
+    20261124,
+    20261125,
+    20261126,
+    20261127,
+    20261128,
+    20261129,
+    20261130,
+    20261131,
+    20261132,
+    20261133,
+    20261134
+  ],
+  "service_sec": 0.002,
+  "environment": {
+    "python": "3.12.3",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "processor_count": 8
+  },
+  "contrasts": {
+    "best_declared_failure_p30": {
+      "scenario": "best_declared_failure_p30",
+      "contrast": "D_minus_C",
+      "workers": 3,
+      "first_execution_failure_rate_delta": {
+        "n": 30,
+        "mean": -0.0027333333333333333,
+        "sd": 0.015706210792908147,
+        "ci95_lower": -0.008598128828621538,
+        "ci95_upper": 0.003131462161954871
+      },
+      "executions_per_task_delta": {
+        "n": 30,
+        "mean": -0.002833333333333325,
+        "sd": 0.015796296670604358,
+        "ci95_lower": -0.008731767448188535,
+        "ci95_upper": 0.003065100781521885
+      },
+      "final_failures_delta": {
+        "n": 30,
+        "mean": 0.1,
+        "sd": 0.5477225575051661,
+        "ci95_lower": -0.10452296421327026,
+        "ci95_upper": 0.3045229642132703
+      },
+      "latency_p95_ms_delta": {
+        "n": 30,
+        "mean": 0.1982183333333331,
+        "sd": 0.708899670140078,
+        "ci95_lower": -0.06648915384276477,
+        "ci95_upper": 0.462925820509431
+      },
+      "jain_executions_delta": {
+        "n": 30,
+        "mean": -0.008702810048584083,
+        "sd": 0.008580384237476545,
+        "ci95_lower": -0.011906778178600294,
+        "ci95_upper": -0.005498841918567872
+      },
+      "throughput_ratio": {
+        "n": 30,
+        "mean": 0.9723136407040965,
+        "sd": 0.04874018010317196,
+        "ci95_lower": 0.9541137583468771,
+        "ci95_upper": 0.990513523061316
+      },
+      "mean_first_execution_failure_rate": {
+        "D": 0.1069,
+        "C": 0.10963333333333333
+      },
+      "mean_throughput_tasks_sec": {
+        "D": 825.0340070313001,
+        "C": 848.4266921325293
+      },
+      "mean_messages_per_task": {
+        "D": 10.248433333333333,
+        "C": 10.296366666666668
+      }
+    },
+    "best_declared_failure_p60": {
+      "scenario": "best_declared_failure_p60",
+      "contrast": "D_minus_C",
+      "workers": 3,
+      "first_execution_failure_rate_delta": {
+        "n": 30,
+        "mean": -0.0302,
+        "sd": 0.023353948200501864,
+        "ci95_lower": -0.03892050757559818,
+        "ci95_upper": -0.021479492424401822
+      },
+      "executions_per_task_delta": {
+        "n": 30,
+        "mean": -0.029700000000000008,
+        "sd": 0.02319802310245573,
+        "ci95_lower": -0.038362284187113155,
+        "ci95_upper": -0.02103771581288686
+      },
+      "final_failures_delta": {
+        "n": 30,
+        "mean": -0.5,
+        "sd": 0.9377154924749757,
+        "ci95_lower": -0.8501487194232997,
+        "ci95_upper": -0.14985128057670022
+      },
+      "latency_p95_ms_delta": {
+        "n": 30,
+        "mean": 0.42871166666666655,
+        "sd": 1.426553399636469,
+        "ci95_lower": -0.10397212717072118,
+        "ci95_upper": 0.9613954605040542
+      },
+      "jain_executions_delta": {
+        "n": 30,
+        "mean": -0.007393721648959313,
+        "sd": 0.008786510224343302,
+        "ci95_lower": -0.010674658487416892,
+        "ci95_upper": -0.004112784810501735
+      },
+      "throughput_ratio": {
+        "n": 30,
+        "mean": 0.9752081200698229,
+        "sd": 0.08899930797367814,
+        "ci95_lower": 0.9419752323052274,
+        "ci95_upper": 1.0084410078344184
+      },
+      "mean_first_execution_failure_rate": {
+        "D": 0.21026666666666666,
+        "C": 0.2404666666666667
+      },
+      "mean_throughput_tasks_sec": {
+        "D": 761.4195353218207,
+        "C": 780.897736945705
+      },
+      "mean_messages_per_task": {
+        "D": 10.565666666666667,
+        "C": 10.676033333333333
+      }
+    },
+    "best_declared_failure_p90": {
+      "scenario": "best_declared_failure_p90",
+      "contrast": "D_minus_C",
+      "workers": 3,
+      "first_execution_failure_rate_delta": {
+        "n": 30,
+        "mean": -0.29929999999999995,
+        "sd": 0.03872729590709713,
+        "ci95_lower": -0.3137610099517569,
+        "ci95_upper": -0.28483899004824303
+      },
+      "executions_per_task_delta": {
+        "n": 30,
+        "mean": -0.29793333333333333,
+        "sd": 0.038800047398952014,
+        "ci95_lower": -0.31242150913860717,
+        "ci95_upper": -0.2834451575280595
+      },
+      "final_failures_delta": {
+        "n": 30,
+        "mean": -1.3666666666666667,
+        "sd": 1.731718965280638,
+        "ci95_lower": -2.0133011554428437,
+        "ci95_upper": -0.7200321778904896
+      },
+      "latency_p95_ms_delta": {
+        "n": 30,
+        "mean": -1.0162916666666684,
+        "sd": 0.5889981290707571,
+        "ci95_lower": -1.2362271826007285,
+        "ci95_upper": -0.7963561507326082
+      },
+      "jain_executions_delta": {
+        "n": 30,
+        "mean": -0.03704707582934686,
+        "sd": 0.010202322107083302,
+        "ci95_lower": -0.040856685513314596,
+        "ci95_upper": -0.033237466145379126
+      },
+      "throughput_ratio": {
+        "n": 30,
+        "mean": 1.2096476740894253,
+        "sd": 0.041099878961495494,
+        "ci95_lower": 1.1943007270651878,
+        "ci95_upper": 1.2249946211136629
+      },
+      "mean_first_execution_failure_rate": {
+        "D": 0.07363333333333334,
+        "C": 0.37293333333333334
+      },
+      "mean_throughput_tasks_sec": {
+        "D": 885.815523487672,
+        "C": 732.41434977463
+      },
+      "mean_messages_per_task": {
+        "D": 10.049533333333333,
+        "C": 11.072733333333334
+      }
+    }
+  },
+  "sensitivity_sequential": {
+    "best_declared_failure_p30": {
+      "scenario": "best_declared_failure_p30",
+      "contrast": "D_minus_C",
+      "workers": 1,
+      "first_execution_failure_rate_delta": {
+        "n": 10,
+        "mean": -0.2694,
+        "sd": 0.03383686352683022,
+        "ci95_lower": -0.2936054339996927,
+        "ci95_upper": -0.24519456600030726
+      },
+      "executions_per_task_delta": {
+        "n": 10,
+        "mean": -0.2694,
+        "sd": 0.033836863526830276,
+        "ci95_lower": -0.29360543399969274,
+        "ci95_upper": -0.24519456600030723
+      },
+      "final_failures_delta": {
+        "n": 10,
+        "mean": 0.0,
+        "sd": 0.0,
+        "ci95_lower": 0.0,
+        "ci95_upper": 0.0
+      },
+      "latency_p95_ms_delta": {
+        "n": 10,
+        "mean": -1.8967050000000003,
+        "sd": 0.8735225750596768,
+        "ci95_lower": -2.521585406574414,
+        "ci95_upper": -1.2718245934255865
+      },
+      "jain_executions_delta": {
+        "n": 10,
+        "mean": -0.3818550694625948,
+        "sd": 0.06522539712886323,
+        "ci95_lower": -0.42851450774222616,
+        "ci95_upper": -0.3351956311829634
+      },
+      "throughput_ratio": {
+        "n": 10,
+        "mean": 1.243704888628003,
+        "sd": 0.06875246061180754,
+        "ci95_lower": 1.1945223411281143,
+        "ci95_upper": 1.292887436127892
+      },
+      "mean_first_execution_failure_rate": {
+        "D": 0.0334,
+        "C": 0.3028
+      },
+      "mean_throughput_tasks_sec": {
+        "D": 321.94076968127007,
+        "C": 259.38356057324006
+      },
+      "mean_messages_per_task": {
+        "D": 10.100200000000001,
+        "C": 10.9084
+      }
+    },
+    "best_declared_failure_p60": {
+      "scenario": "best_declared_failure_p60",
+      "contrast": "D_minus_C",
+      "workers": 1,
+      "first_execution_failure_rate_delta": {
+        "n": 10,
+        "mean": -0.5969,
+        "sd": 0.01623062948050179,
+        "ci95_lower": -0.6085106928868343,
+        "ci95_upper": -0.5852893071131656
+      },
+      "executions_per_task_delta": {
+        "n": 10,
+        "mean": -0.5969,
+        "sd": 0.01623062948050176,
+        "ci95_lower": -0.6085106928868343,
+        "ci95_upper": -0.5852893071131656
+      },
+      "final_failures_delta": {
+        "n": 10,
+        "mean": 0.0,
+        "sd": 0.0,
+        "ci95_lower": 0.0,
+        "ci95_upper": 0.0
+      },
+      "latency_p95_ms_delta": {
+        "n": 10,
+        "mean": -2.65671,
+        "sd": 0.14342418206146337,
+        "ci95_lower": -2.759309479118267,
+        "ci95_upper": -2.554110520881733
+      },
+      "jain_executions_delta": {
+        "n": 10,
+        "mean": -0.4107941689091442,
+        "sd": 0.007581887852820954,
+        "ci95_lower": -0.4162179247448176,
+        "ci95_upper": -0.4053704130734708
+      },
+      "throughput_ratio": {
+        "n": 10,
+        "mean": 1.5176998256973,
+        "sd": 0.03008942319298935,
+        "ci95_lower": 1.4961751490200657,
+        "ci95_upper": 1.5392245023745343
+      },
+      "mean_first_execution_failure_rate": {
+        "D": 0.0056,
+        "C": 0.6024999999999999
+      },
+      "mean_throughput_tasks_sec": {
+        "D": 330.1985044909407,
+        "C": 217.6092236857678
+      },
+      "mean_messages_per_task": {
+        "D": 10.0168,
+        "C": 11.807500000000001
+      }
+    },
+    "best_declared_failure_p90": {
+      "scenario": "best_declared_failure_p90",
+      "contrast": "D_minus_C",
+      "workers": 1,
+      "first_execution_failure_rate_delta": {
+        "n": 10,
+        "mean": -0.8968,
+        "sd": 0.008891943919451292,
+        "ci95_lower": -0.9031609134901225,
+        "ci95_upper": -0.8904390865098776
+      },
+      "executions_per_task_delta": {
+        "n": 10,
+        "mean": -0.8968,
+        "sd": 0.008891943919451256,
+        "ci95_lower": -0.9031609134901225,
+        "ci95_upper": -0.8904390865098776
+      },
+      "final_failures_delta": {
+        "n": 10,
+        "mean": 0.0,
+        "sd": 0.0,
+        "ci95_lower": 0.0,
+        "ci95_upper": 0.0
+      },
+      "latency_p95_ms_delta": {
+        "n": 10,
+        "mean": -2.658475,
+        "sd": 0.5782269884214044,
+        "ci95_lower": -3.0721136693754096,
+        "ci95_upper": -2.2448363306245906
+      },
+      "jain_executions_delta": {
+        "n": 10,
+        "mean": -0.368205137286511,
+        "sd": 0.0013295197755540788,
+        "ci95_lower": -0.3691562184395541,
+        "ci95_upper": -0.3672540561334679
+      },
+      "throughput_ratio": {
+        "n": 10,
+        "mean": 1.7816235657375408,
+        "sd": 0.06038960471979326,
+        "ci95_lower": 1.7384234449534905,
+        "ci95_upper": 1.824823686521591
+      },
+      "mean_first_execution_failure_rate": {
+        "D": 0.004200000000000001,
+        "C": 0.901
+      },
+      "mean_throughput_tasks_sec": {
+        "D": 327.6419341751033,
+        "C": 183.9402421783607
+      },
+      "mean_messages_per_task": {
+        "D": 10.0126,
+        "C": 12.703
+      }
+    }
+  },
+  "level_gain": {
+    "best_declared_failure_p30": false,
+    "best_declared_failure_p60": false,
+    "best_declared_failure_p90": true
+  },
+  "global_decision": "gain_conditionnel"
+}

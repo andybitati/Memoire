@@ -1,0 +1,63 @@
+% Cible : ARIEL_LOGMINER_MEMOIRE_FINAL/frontmatter/declaration_ia.tex
+% Passage à remplacer : fichier entier, de « \chapter*{Déclaration relative » à la fin
+% Agent : 6 — Reproductibilité, artefacts et déclaration IA
+% Sources : déclaration actuelle ; RETOURS_LECTEURS.md, lecteur 1 E.3 et lecteur 2 §2.3/point D ;
+%           HANDOFF.md §3-4 ; artefacts experiments/phase_revision_20261104/ et leur manifeste.
+
+\chapter*{Déclaration relative à l'utilisation d'outils d'intelligence artificielle}
+\addcontentsline{toc}{chapter}{Déclaration relative à l'utilisation d'outils d'intelligence artificielle}
+
+Des outils d'intelligence artificielle générative ont été employés comme assistants pour
+la rédaction, la programmation, le contrôle de cohérence et l'exécution automatisée de
+campagnes expérimentales. Ils ne constituent une source scientifique d'aucune affirmation
+du mémoire. Les références bibliographiques renvoient aux publications, normes,
+documentations et jeux de données effectivement consultés.
+
+\section*{Outils et usages}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{p{0.27\textwidth}X}
+\toprule
+\textbf{Outil} & \textbf{Usages} \\
+\midrule
+ChatGPT et OpenAI Codex, modèle GPT-5 (OpenAI) &
+Structuration et reformulation du manuscrit ; assistance à l'écriture, à la révision et
+au test de scripts ; contrôles de cohérence entre texte, code et artefacts. \\
+Claude Code, modèle Claude Opus (Anthropic) &
+Audit du manuscrit et du dépôt ; proposition et mise en œuvre de protocoles
+complémentaires ; écriture ou adaptation de scripts ; exécution de campagnes dans
+l'environnement de l'auteur ; agrégation des artefacts et préparation de corrections. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section*{Parties concernées}
+
+L'assistance a concerné le code du prototype et les scripts expérimentaux, la préparation
+et l'exécution de campagnes complémentaires, la documentation des preuves, la génération
+de figures et de tableaux à partir des artefacts, ainsi que la rédaction et
+l'harmonisation du manuscrit. Les valeurs numériques retenues proviennent des fichiers
+CSV ou JSON identifiés dans la matrice résultats--preuves et non de réponses textuelles
+des outils.
+
+Les campagnes complémentaires assistées par IA ne sont pas présentées comme
+préenregistrées. Un protocole n'est qualifié de préenregistré que si un document
+horodaté et versionné, antérieur à l'exécution, fixe les comparateurs, les métriques et
+le critère de décision.
+
+\section*{Vérification et responsabilité}
+
+Les propositions ont été contrôlées en reliant les valeurs à un identifiant de campagne
+et à un artefact, en comparant les descriptions du comportement au code et aux journaux,
+et en conservant les résultats défavorables ou contradictoires. Les empreintes SHA-256
+du paquet de preuves permettent de vérifier l'intégrité binaire des artefacts publiés.
+Ces contrôles établissent une traçabilité ; ils ne valent pas reproduction indépendante
+par un tiers.
+
+L'auteur a arrêté les choix retenus dans le manuscrit et demeure responsable de la
+problématique, des résultats présentés, de leur interprétation, du choix des références
+et du contenu final. L'étendue précise de l'assistance est déclarée ci-dessus afin que
+les apports automatisés ne soient pas confondus avec une contribution humaine non
+assistée.

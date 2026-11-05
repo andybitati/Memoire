@@ -1,0 +1,109 @@
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/main.tex ; version intégrée (Agent 2 amendé par l'Agent 5, C7).
+
+Mémoire oyo ezali kolakisa Ariel \logminer{}, architecture moko ya
+multi-agents ya pete mpe oyo ekabolami na environnement ya laboratoire
+mpo na kosala analyse ya ba journaux ya système mpe ya réseau oyo ezali
+ya lolenge ndenge na ndenge. Agent moko ezali awa entité logicielle oyo
+ezali na makoki, état, mémoire mpe politique locale na yango ; ekoki
+kopesa proposition ya mosala, koboya yango, mpe na sima kosala yango na
+nzela ya ba handlers oyo ekokani na mosala yango. Négociation kati na
+ba agents etongami likolo ya protocole Contract Net oyo elimbolami
+polele, mpe transport ekoki kozala local to kosalema na nzela ya Redis.
+Autonomie mpe distribution ezali awa kolakisa bizaleli ya logiciel oyo
+emekami na laboratoire. Intelligence générale mpe fonctionnement ya SOC
+industriel ezali na libanda ya périmètre ya mosala oyo.
+
+Évaluation emonisi mingimingi influence ya protocole expérimental likolo
+ya performances. Na CICIDS2017, Random Forest oyo emekami na séparation
+aléatoire stratifiée ezwi F1 moyen ya $0{,}995142$ mpo na ba graines
+mitano. Tango scénario moko na moko kati na ba scénarios mitano
+elongolami na entraînement, F1 moyen ekiti kino $0{,}157744$.
+Comparaison ya ba modèles légers mitano na holdout oyo emonisi ete
+Logistic Regression ezwi F1 moyen ya malamu koleka, oyo ezali
+$0{,}233670$, nzokande HistGradientBoosting ezwi PR-AUC macro ya
+$0{,}569002$ kasi F1 na yango ekomi pene na zéro na seuil oyo eponamaki.
+Ba résultats oyo ezali kolakisa ete kobongola modèle ekoki kobongola ba
+métriques mosusu, kasi elongolaka te fragilité oyo emonanaka kati na ba
+scénarios.
+
+Mpo na HDFS mpe BGL, protocole ekabolaka na ndenge ya makasi entraînement,
+validation mpe test. Drain3 ebongisami kaka na entraînement mpe na sima
+ekangami liboso ya kosalela ba partitions mibale oyo elandi. Na niveau
+\texttt{block\_id}, Histogram ekomi na F1 ya $0{,}868373$ (IC 95~\% :
+$[0{,}856771\,;\,0{,}879493]$) na ba blocs $115\,013$ ya test HDFS,
+kati na yango $1\,679$ ezali positifs. Na BGL, F1 ezali $0{,}913698$, kasi
+$89{,}8081\,\%$ ya ba événements ya test ezali na template oyo eyebanaki
+te na train, mpe décision ya Histogram ekokani mobimba na règle
+« sévérité absente de l'entraînement normal ». Na yango, score oyo emekaka
+nouveauté ya sévérité, kasi modélisation ya dynamique ya ba journaux te ;
+règle « template inconnu » ekomi kaka na $0{,}277885$.
+
+Na CSE-CIC-IDS2018, séparation kati na mokolo ya 15 mpe ya 16 février
+epesi F1 moyen ya $0{,}999212$ na régression logistique contre
+$0{,}401375$ na Random Forest. Audit emonisi nzokande ete
+\texttt{Dst Port} yango moko ekomi na $0{,}999720$, score oyo règle fixe
+likolo ya port de destination (na nse ya 1024) ezwi mpe, mpe ete transfert
+ya 16 kino 15 février eleki te $0{,}234195$. Na yango, score principal
+etongami likolo ya raccourci oyo ezali kaka ya mokolo ya test.
+
+Validation multiformat etangi, eparse mpe enormalise
+$7\,001/7\,001$ unités, kati na yango fixture moko kaka ya Apache.
+Résultat oyo ezali komeka couverture fonctionnelle ya ba formats oyo
+emekamaki ; remplissage ya schéma commun ekeseni na source : ba champs
+standard 7 na 7 mpo na syslog mpe BGL, kasi ata moko te mpo na ba flux
+réseau tabulaires. Politique open-set oyo ecalibramaki
+kaka na ba sources oyo eyebani, mpe na sima ekangami, eboyi $20/20$
+fichiers inconnus mpe eboyi na libunga $3/46$ fichiers connus ; ba fichiers
+connus 43 oyo endimami etambwisami malamu, mpe marge ya décision ezali te
+probabilité calibrée. Comparaison na chaîne oyo ezali na routage te
+esalemaki te ; yango wana gain prédictif ya routage spécialisé endimisami te.
+
+Benchmark contrôlé esangisi architectures minei, charges minei mpe
+répétitions zomi, elingi koloba $160$ runs mpe $264\,000$ traitements
+kozanga échec. Na ba microtâches ya protocole, monolithe esalaka ba tâches mbala 55 kino 72 koleka ba architectures ya ba agents na seconde moko. Na panne
+appariée oyo esalemi nsima ya persistance, ba architectures ya ba agents
+ezongeli effet moko te, kasi monolithe mpe workers centralisés ezongeli
+yango ; soki magasin d'idempotence moko wana ebakisami na yango, ba doublons elongwe mpe. Ba comparaisons misato oyo ebongisamaki liboso (préenregistrées), na ba tâches synthétiques mpe na processus moko, ebakisi eyebi. Liboso ya table statique, Contract Net abungisi $13~\%$ ya débit na régime nominal mpe akitisi ba échecs ya exécution ya liboso tango ba agents ezali kokweya. Répartiteur ya moindre charge, kozanga négociation, azwi ba taux d'échec kaka wana, mpe Contract Net abungisi wana 11 kino 14~\% ya débit : litomba ya négociation yango moko endimisami te. Mémoire ememi gain oyo endimisami kaka na probabilité d'échec ya $0{,}9$.
+
+Campagne d'endurance ya ngonga moko, na ba machines virtuelles mibale
+(Debian mpe Ubuntu) oyo esangisami na Redis centralisé na hôte ya
+laboratoire, esali $1\,800/1\,800$ tâches ; Debian ezwi 451 mpe Ubuntu
+$1\,349$, engebene na ba profils de capacité oyo ebongisamaki. Arrêt
+contrôlé nsima ya persistance ememi na réattribution moko mpe replay
+kozanga effet dupliqué. Na saturation, capacité ya topologie oyo ezali
+kati na 8 mpe 16 tâches/s, mpe machine ya mibale esali kaka
+$1{,}23\,\%$ ya ba tâches oyo elongaki : ebakisi capacité te. Haute
+disponibilité emekamaki te.
+
+Corrélateur, oyo emekamaki na corpus synthétique contrôlé, ezwi précision
+ya $0{,}764706$, rappel ya $0{,}866667$ mpe F1 pairwise ya
+$0{,}812500$. Na ba corpus générés ya minene, rappel na yango ekiti kino
+$0{,}5973$ ; tango 30~\% ya ba incidents esangisi ba catégories
+d'événements ebele, variante oyo etalaka kaka hôte mpe fenêtre temporelle
+ezwi F1 ya malamu koleka ($0{,}7268$ contre $0{,}6496$).
+
+Na campagne CNP multi-source, condition M esali mpenza ba
+artefacts compatibles na $1400/1401$ unités, na fallback Apache moko
+kaka mpe kozanga erreur. Latence moyenne na yango ezali
+$0{,}105420$~s, contre $0{,}031027$~s mpo na condition heuristique H.
+Lokola ba labels homogènes ezali te, ekoki kosalema te calcul ya
+exactitude globale multi-source ; F1 Linux/auth ya $0{,}390244$ etikali
+kaka résultat descriptif ya source oyo eponamaki.
+
+Dépôt ezali mpe na procédure ya comparaison ya ba modèles mpe mode
+dry-run. Ba tests ezali ko couvrir ba branches mosusu, kasi ezali ko
+couvrir te cycle mobimba mpe oyo ezongelami mingi ya promotion mpe ya
+rejet. Litomba globale ya procédure oyo emekamaki te.
+
+Hypothèse moko te kati na ba hypothèses mitano endimisami mobimba. H1 mpe
+H2 esimbami kaka na ndambo, kasi oyo emonisami ezali ba exigences ya
+réalisation : unité moko na moko etangami mpe ebimisami na schéma commun,
+mpe magasin ya idempotence elongolaka ba effets dupliqués ata architecture
+ezali nini. H3 etikali NON TRANCHÉE, mpo chaîne oyo ezangi routage
+esalemaki te mpo na comparaison. H4 etikali NON TRANCHÉE : na séparation temporelle ya CICIDS2017, na CSE-CIC-IDS2018, na BGL mpe na HDFS na niveau ya bloc, modèle moko te eleki règle simple oyo emekami na test kaka wana ; mpe budget ya ressources etyamaki te. H5 etikali NON TRANCHÉE : gain ya mémoire ezali conditionnel, priorisation ya ba anomalies emekamaki te, mpe cycle ya promotion esalemaki te.
+Expérience moko te esali analyse ya incident moko na nzela ya ba journaux
+système mpe ba flux réseau esika moko.
+Contribution principale ya Ariel \logminer{} ezali bongo na intégration
+architecturale mpe méthodologique ya chaîne locale, modulaire
+mpe oyo ba expériences na yango ekoki kolandelama na ndenge ya polele
+mpo na analyse ya ba journaux hétérogènes.

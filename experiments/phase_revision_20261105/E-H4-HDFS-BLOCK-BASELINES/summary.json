@@ -1,0 +1,36 @@
+{
+  "experiment_id": "E-H4-HDFS-BLOCK-BASELINES",
+  "started_at_utc": "2026-11-05T13:06:17.293241+00:00",
+  "completed_at_utc": "2026-11-05T13:17:00.801396+00:00",
+  "partition_counts": {
+    "train": 345036,
+    "validation": 115012,
+    "test": 115013
+  },
+  "test_positive_blocks": 1679,
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "mean_f1": {
+    "all_positive": 0.028776608507866862,
+    "any_unseen_template": 0.01907566660733952,
+    "histogram_source_result": 0.8683734160848203,
+    "template_only_mean_surprisal": 0.8724343985450765
+  },
+  "best_simple_baseline": "template_only_mean_surprisal",
+  "histogram_minus_best_simple_f1": -0.004060982460256213,
+  "criterion_margin": 0.01,
+  "criterion_met": false,
+  "interpretation_rule": "Histogram dépasse la meilleure baseline simple si la marge moyenne de F1 est au moins 0,01.",
+  "state_sha256": {
+    "42": "deb37a7c9feb396df2d9dde336e707b225ef508e439df9516f9457ef73d06ab7",
+    "43": "1566e50f084abb1056845804632b8b236644ab2729e889cd571fba04e27fe9de",
+    "44": "0376d2266d4b1c8446b522d81143cf52cf5da7022586fc26c91503742128cbbb",
+    "45": "bb4b297159db1adf21d33c70f06361463773dddec44a875c2ebab43a0b64fd42",
+    "46": "c6340e56a8d68011dcc4bf8f723942a43ce48f90e2bed57baae4c44a202930a3"
+  }
+}

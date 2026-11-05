@@ -1,0 +1,10 @@
+run_id,protocol,model,group,n,positives,tp,fp,tn,fn,precision,recall,f1,fpr
+agent4_bgl_contiguous_horizon_20261104T145740Z,G_contiguous_short_horizon,Histogram,ALL,19908,2885,2879,349,16674,6,0.8918835192069393,0.9979202772963605,0.9419270407328643,0.020501674205486695
+agent4_bgl_contiguous_horizon_20261104T145740Z,G_contiguous_short_horizon,Histogram,KNOWN_TEMPLATE,19723,2880,2875,201,16642,5,0.9346553966189857,0.9982638888888888,0.9654130288784418,0.011933741020008312
+agent4_bgl_contiguous_horizon_20261104T145740Z,G_contiguous_short_horizon,Histogram,UNKNOWN_TEMPLATE,185,5,4,148,32,1,0.02631578947368421,0.8,0.05095541401273885,0.8222222222222222
+agent4_bgl_contiguous_horizon_20261104T145740Z,G_contiguous_short_horizon,UnknownTemplateBaseline,ALL,19908,2885,5,180,16843,2880,0.02702702702702703,0.0017331022530329288,0.0032573289902280127,0.010573929389649298
+agent4_bgl_contiguous_horizon_20261104T145740Z,G_contiguous_short_horizon,UnknownTemplateBaseline,KNOWN_TEMPLATE,19723,2880,0,0,16843,2880,0.0,0.0,0.0,0.0
+agent4_bgl_contiguous_horizon_20261104T145740Z,G_contiguous_short_horizon,UnknownTemplateBaseline,UNKNOWN_TEMPLATE,185,5,5,180,0,0,0.02702702702702703,1.0,0.052631578947368425,1.0
+agent4_bgl_contiguous_horizon_20261104T145740Z,G_contiguous_short_horizon,SeverityNoveltyBaseline,ALL,19908,2885,1,1,17022,2884,0.5,0.0003466204506065858,0.0006927606511950121,5.8744052164718324e-05
+agent4_bgl_contiguous_horizon_20261104T145740Z,G_contiguous_short_horizon,SeverityNoveltyBaseline,KNOWN_TEMPLATE,19723,2880,0,0,16843,2880,0.0,0.0,0.0,0.0
+agent4_bgl_contiguous_horizon_20261104T145740Z,G_contiguous_short_horizon,SeverityNoveltyBaseline,UNKNOWN_TEMPLATE,185,5,1,1,179,4,0.5,0.2,0.28571428571428575,0.005555555555555556

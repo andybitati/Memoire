@@ -1,0 +1,30 @@
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre5_resultats.tex
+% Passage : à insérer juste avant « \section{Synthèse des résultats} »
+% Auteur : reprise du coordinateur, complément du périmètre de l'Agent 4 (tableau demandé par MISSION.md)
+% Sources : valeurs déjà présentes au chapitre ; 0,473265 recalculé depuis
+%           data/processed/final_experiments_2026/cicids_holdout_multiseed_raw.csv
+
+\section{Comparaison aux règles simples}
+\label{sec:baselines-par-jeu}
+
+Le tableau~\ref{tab:baselines-par-jeu} confronte, sur chaque test, le résultat principal à la meilleure règle simple évaluée sur le même test.
+
+\begin{table}[H]
+\centering
+\caption{Résultat principal et meilleure règle simple, par jeu et par protocole (F1).}
+\label{tab:baselines-par-jeu}
+\small
+\begin{tabularx}{\textwidth}{p{0.29\textwidth}Xcc}
+\toprule
+\textbf{Jeu et protocole} & \textbf{Règle simple} & \textbf{Règle} & \textbf{Modèle} \\
+\midrule
+CICIDS2017, holdout par scénario & Tout positif & 0,473265 & LR 0,233670 \\
+CICIDS2017, séparation temporelle & Tout positif & 0,666667 & LR 0,556615 \\
+HDFS, test complet, niveau bloc & Surprise moyenne du template & 0,872434 & Histogram 0,868373 \\
+BGL, niveau événement & Sévérité absente de l'entraînement & 0,913698 & Histogram 0,913698 \\
+CSE-CIC-IDS2018, 15 vers 16 février & Port de destination inférieur à 1024 & 0,999720 & LR 0,999212 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Aucun résultat principal ne dépasse sa règle simple. Ces règles ne constituent pas des détecteurs recommandables : leur score révèle la structure du test, comme la prévalence des partitions CICIDS2017 ou le port de destination propre au 16 février. Leur intérêt est de fixer le niveau qu'un modèle doit dépasser pour que son score apporte une information.

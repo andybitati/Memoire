@@ -1,3 +1,7 @@
+## Passation entre agents
+
+Avant toute tâche liée à la révision du mémoire, lire `revision_reports/HANDOFF.md` (état, résultats vérifiés, décisions en attente, procédure, pièges d'environnement) puis `revision_reports/INTEGRATION_CONFLICTS.md`. Mettre `HANDOFF.md` à jour après chaque étape terminée, pour que l'agent suivant puisse reprendre à tout moment.
+
 ## graphify
 
 This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.

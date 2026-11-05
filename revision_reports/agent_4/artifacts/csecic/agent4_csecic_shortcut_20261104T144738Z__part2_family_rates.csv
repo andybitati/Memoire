@@ -1,0 +1,316 @@
+direction,seed,model,feature_set,family,n,predicted_attack_rate
+15_to_16,42,RandomForest,ALL,Benign,67454,1.4824917721706644e-05
+15_to_16,42,RandomForest,ALL,DoS attacks-Hulk,69107,0.02517834662190516
+15_to_16,42,RandomForest,ALL,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,42,LogisticRegression,ALL,Benign,67454,0.02090313398760637
+15_to_16,42,LogisticRegression,ALL,DoS attacks-Hulk,69107,1.0
+15_to_16,42,LogisticRegression,ALL,DoS attacks-SlowHTTPTest,20805,1.0
+15_to_16,42,RandomForest,NO_DST_PORT,Benign,67454,0.8553384528715866
+15_to_16,42,RandomForest,NO_DST_PORT,DoS attacks-Hulk,69107,0.03069153631325336
+15_to_16,42,RandomForest,NO_DST_PORT,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,42,LogisticRegression,NO_DST_PORT,Benign,67454,0.9940552079935956
+15_to_16,42,LogisticRegression,NO_DST_PORT,DoS attacks-Hulk,69107,1.0
+15_to_16,42,LogisticRegression,NO_DST_PORT,DoS attacks-SlowHTTPTest,20805,1.0
+15_to_16,42,RandomForest,DST_PORT_ONLY,Benign,67454,2.964983544341329e-05
+15_to_16,42,RandomForest,DST_PORT_ONLY,DoS attacks-Hulk,69107,1.0
+15_to_16,42,RandomForest,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,42,LogisticRegression,DST_PORT_ONLY,Benign,67454,0.0007264209683636256
+15_to_16,42,LogisticRegression,DST_PORT_ONLY,DoS attacks-Hulk,69107,1.0
+15_to_16,42,LogisticRegression,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,20805,1.0
+15_to_16,43,RandomForest,ALL,Benign,67454,1.4824917721706644e-05
+15_to_16,43,RandomForest,ALL,DoS attacks-Hulk,69107,0.03122693793682261
+15_to_16,43,RandomForest,ALL,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,43,LogisticRegression,ALL,Benign,67454,0.0009339698164675186
+15_to_16,43,LogisticRegression,ALL,DoS attacks-Hulk,69107,1.0
+15_to_16,43,LogisticRegression,ALL,DoS attacks-SlowHTTPTest,20805,1.0
+15_to_16,43,RandomForest,NO_DST_PORT,Benign,67454,0.8208112194977318
+15_to_16,43,RandomForest,NO_DST_PORT,DoS attacks-Hulk,69107,0.031067764481166885
+15_to_16,43,RandomForest,NO_DST_PORT,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,43,LogisticRegression,NO_DST_PORT,Benign,67454,0.994040383075874
+15_to_16,43,LogisticRegression,NO_DST_PORT,DoS attacks-Hulk,69107,1.0
+15_to_16,43,LogisticRegression,NO_DST_PORT,DoS attacks-SlowHTTPTest,20805,1.0
+15_to_16,43,RandomForest,DST_PORT_ONLY,Benign,67454,2.964983544341329e-05
+15_to_16,43,RandomForest,DST_PORT_ONLY,DoS attacks-Hulk,69107,1.0
+15_to_16,43,RandomForest,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,43,LogisticRegression,DST_PORT_ONLY,Benign,67454,0.0007264209683636256
+15_to_16,43,LogisticRegression,DST_PORT_ONLY,DoS attacks-Hulk,69107,1.0
+15_to_16,43,LogisticRegression,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,20805,1.0
+15_to_16,44,RandomForest,ALL,Benign,67454,1.4824917721706644e-05
+15_to_16,44,RandomForest,ALL,DoS attacks-Hulk,69107,0.17309389786852272
+15_to_16,44,RandomForest,ALL,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,44,LogisticRegression,ALL,Benign,67454,0.05001927239303822
+15_to_16,44,LogisticRegression,ALL,DoS attacks-Hulk,69107,1.0
+15_to_16,44,LogisticRegression,ALL,DoS attacks-SlowHTTPTest,20805,1.0
+15_to_16,44,RandomForest,NO_DST_PORT,Benign,67454,0.7862246864529902
+15_to_16,44,RandomForest,NO_DST_PORT,DoS attacks-Hulk,69107,0.2634899503668225
+15_to_16,44,RandomForest,NO_DST_PORT,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,44,LogisticRegression,NO_DST_PORT,Benign,67454,0.9940552079935956
+15_to_16,44,LogisticRegression,NO_DST_PORT,DoS attacks-Hulk,69107,1.0
+15_to_16,44,LogisticRegression,NO_DST_PORT,DoS attacks-SlowHTTPTest,20805,1.0
+15_to_16,44,RandomForest,DST_PORT_ONLY,Benign,67454,2.964983544341329e-05
+15_to_16,44,RandomForest,DST_PORT_ONLY,DoS attacks-Hulk,69107,1.0
+15_to_16,44,RandomForest,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,44,LogisticRegression,DST_PORT_ONLY,Benign,67454,0.0007264209683636256
+15_to_16,44,LogisticRegression,DST_PORT_ONLY,DoS attacks-Hulk,69107,1.0
+15_to_16,44,LogisticRegression,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,20805,1.0
+15_to_16,45,RandomForest,ALL,Benign,67454,1.4824917721706644e-05
+15_to_16,45,RandomForest,ALL,DoS attacks-Hulk,69107,0.031024353538715327
+15_to_16,45,RandomForest,ALL,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,45,LogisticRegression,ALL,Benign,67454,0.0037358792658700743
+15_to_16,45,LogisticRegression,ALL,DoS attacks-Hulk,69107,1.0
+15_to_16,45,LogisticRegression,ALL,DoS attacks-SlowHTTPTest,20805,1.0
+15_to_16,45,RandomForest,NO_DST_PORT,Benign,67454,0.8589705577134047
+15_to_16,45,RandomForest,NO_DST_PORT,DoS attacks-Hulk,69107,0.03066259568495232
+15_to_16,45,RandomForest,NO_DST_PORT,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,45,LogisticRegression,NO_DST_PORT,Benign,67454,0.9940552079935956
+15_to_16,45,LogisticRegression,NO_DST_PORT,DoS attacks-Hulk,69107,1.0
+15_to_16,45,LogisticRegression,NO_DST_PORT,DoS attacks-SlowHTTPTest,20805,1.0
+15_to_16,45,RandomForest,DST_PORT_ONLY,Benign,67454,2.964983544341329e-05
+15_to_16,45,RandomForest,DST_PORT_ONLY,DoS attacks-Hulk,69107,1.0
+15_to_16,45,RandomForest,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,45,LogisticRegression,DST_PORT_ONLY,Benign,67454,0.0007264209683636256
+15_to_16,45,LogisticRegression,DST_PORT_ONLY,DoS attacks-Hulk,69107,1.0
+15_to_16,45,LogisticRegression,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,20805,1.0
+15_to_16,46,RandomForest,ALL,Benign,67454,1.4824917721706644e-05
+15_to_16,46,RandomForest,ALL,DoS attacks-Hulk,69107,0.07813969641280913
+15_to_16,46,RandomForest,ALL,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,46,LogisticRegression,ALL,Benign,67454,0.0008746701455806921
+15_to_16,46,LogisticRegression,ALL,DoS attacks-Hulk,69107,1.0
+15_to_16,46,LogisticRegression,ALL,DoS attacks-SlowHTTPTest,20805,1.0
+15_to_16,46,RandomForest,NO_DST_PORT,Benign,67454,0.7620600705666084
+15_to_16,46,RandomForest,NO_DST_PORT,DoS attacks-Hulk,69107,0.046941699104287554
+15_to_16,46,RandomForest,NO_DST_PORT,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,46,LogisticRegression,NO_DST_PORT,Benign,67454,0.9940255581581522
+15_to_16,46,LogisticRegression,NO_DST_PORT,DoS attacks-Hulk,69107,1.0
+15_to_16,46,LogisticRegression,NO_DST_PORT,DoS attacks-SlowHTTPTest,20805,1.0
+15_to_16,46,RandomForest,DST_PORT_ONLY,Benign,67454,2.964983544341329e-05
+15_to_16,46,RandomForest,DST_PORT_ONLY,DoS attacks-Hulk,69107,1.0
+15_to_16,46,RandomForest,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,20805,0.0
+15_to_16,46,LogisticRegression,DST_PORT_ONLY,Benign,67454,0.0007264209683636256
+15_to_16,46,LogisticRegression,DST_PORT_ONLY,DoS attacks-Hulk,69107,1.0
+15_to_16,46,LogisticRegression,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,20805,1.0
+16_to_15,42,RandomForest,ALL,Benign,149462,0.4520547028676185
+16_to_15,42,RandomForest,ALL,DoS attacks-GoldenEye,6173,0.9619309897942654
+16_to_15,42,RandomForest,ALL,DoS attacks-Slowloris,1684,0.3307600950118765
+16_to_15,42,LogisticRegression,ALL,Benign,149462,0.2145628989308319
+16_to_15,42,LogisticRegression,ALL,DoS attacks-GoldenEye,6173,0.8704033695123927
+16_to_15,42,LogisticRegression,ALL,DoS attacks-Slowloris,1684,0.29334916864608074
+16_to_15,42,RandomForest,NO_DST_PORT,Benign,149462,0.4699187753408893
+16_to_15,42,RandomForest,NO_DST_PORT,DoS attacks-GoldenEye,6173,0.8694313947837357
+16_to_15,42,RandomForest,NO_DST_PORT,DoS attacks-Slowloris,1684,0.32185273159144895
+16_to_15,42,LogisticRegression,NO_DST_PORT,Benign,149462,0.104307449385128
+16_to_15,42,LogisticRegression,NO_DST_PORT,DoS attacks-GoldenEye,6173,0.8857929693827961
+16_to_15,42,LogisticRegression,NO_DST_PORT,DoS attacks-Slowloris,1684,0.20961995249406176
+16_to_15,42,LogisticRegression,DST_PORT_ONLY,Benign,149462,0.858184689084851
+16_to_15,42,LogisticRegression,DST_PORT_ONLY,DoS attacks-GoldenEye,6173,1.0
+16_to_15,42,LogisticRegression,DST_PORT_ONLY,DoS attacks-Slowloris,1684,1.0
+16_to_15,43,RandomForest,ALL,Benign,149462,0.42766054247902474
+16_to_15,43,RandomForest,ALL,DoS attacks-GoldenEye,6173,0.6440952535234084
+16_to_15,43,RandomForest,ALL,DoS attacks-Slowloris,1684,0.13895486935866982
+16_to_15,43,LogisticRegression,ALL,Benign,149462,0.16398817090631732
+16_to_15,43,LogisticRegression,ALL,DoS attacks-GoldenEye,6173,0.840596144500243
+16_to_15,43,LogisticRegression,ALL,DoS attacks-Slowloris,1684,0.21021377672209027
+16_to_15,43,RandomForest,NO_DST_PORT,Benign,149462,0.4377634448890019
+16_to_15,43,RandomForest,NO_DST_PORT,DoS attacks-GoldenEye,6173,0.6419893082779847
+16_to_15,43,RandomForest,NO_DST_PORT,DoS attacks-Slowloris,1684,0.45308788598574823
+16_to_15,43,LogisticRegression,NO_DST_PORT,Benign,149462,0.10838875433220484
+16_to_15,43,LogisticRegression,NO_DST_PORT,DoS attacks-GoldenEye,6173,0.769965980884497
+16_to_15,43,LogisticRegression,NO_DST_PORT,DoS attacks-Slowloris,1684,0.21199524940617578
+16_to_15,43,LogisticRegression,DST_PORT_ONLY,Benign,149462,0.8581579264294603
+16_to_15,43,LogisticRegression,DST_PORT_ONLY,DoS attacks-GoldenEye,6173,1.0
+16_to_15,43,LogisticRegression,DST_PORT_ONLY,DoS attacks-Slowloris,1684,1.0
+16_to_15,44,RandomForest,ALL,Benign,149462,0.6660154420521605
+16_to_15,44,RandomForest,ALL,DoS attacks-GoldenEye,6173,0.6403693503968897
+16_to_15,44,RandomForest,ALL,DoS attacks-Slowloris,1684,0.1347980997624703
+16_to_15,44,LogisticRegression,ALL,Benign,149462,0.568646211077063
+16_to_15,44,LogisticRegression,ALL,DoS attacks-GoldenEye,6173,0.7971812732868946
+16_to_15,44,LogisticRegression,ALL,DoS attacks-Slowloris,1684,0.2992874109263658
+16_to_15,44,RandomForest,NO_DST_PORT,Benign,149462,0.7456744858224833
+16_to_15,44,RandomForest,NO_DST_PORT,DoS attacks-GoldenEye,6173,0.6353474809654949
+16_to_15,44,RandomForest,NO_DST_PORT,DoS attacks-Slowloris,1684,0.12945368171021376
+16_to_15,44,LogisticRegression,NO_DST_PORT,Benign,149462,0.5037869157377795
+16_to_15,44,LogisticRegression,NO_DST_PORT,DoS attacks-GoldenEye,6173,0.8381662076786004
+16_to_15,44,LogisticRegression,NO_DST_PORT,DoS attacks-Slowloris,1684,0.21258907363420426
+16_to_15,44,LogisticRegression,DST_PORT_ONLY,Benign,149462,0.8581378544379173
+16_to_15,44,LogisticRegression,DST_PORT_ONLY,DoS attacks-GoldenEye,6173,1.0
+16_to_15,44,LogisticRegression,DST_PORT_ONLY,DoS attacks-Slowloris,1684,1.0
+16_to_15,45,RandomForest,ALL,Benign,149462,0.6726592712528937
+16_to_15,45,RandomForest,ALL,DoS attacks-GoldenEye,6173,0.9591770613964037
+16_to_15,45,RandomForest,ALL,DoS attacks-Slowloris,1684,0.744061757719715
+16_to_15,45,LogisticRegression,ALL,Benign,149462,0.26424107799975916
+16_to_15,45,LogisticRegression,ALL,DoS attacks-GoldenEye,6173,0.8002591932609752
+16_to_15,45,LogisticRegression,ALL,DoS attacks-Slowloris,1684,0.27850356294536815
+16_to_15,45,RandomForest,NO_DST_PORT,Benign,149462,0.613567328150299
+16_to_15,45,RandomForest,NO_DST_PORT,DoS attacks-GoldenEye,6173,0.954803175117447
+16_to_15,45,RandomForest,NO_DST_PORT,DoS attacks-Slowloris,1684,0.6514251781472684
+16_to_15,45,LogisticRegression,NO_DST_PORT,Benign,149462,0.2857181089507701
+16_to_15,45,LogisticRegression,NO_DST_PORT,DoS attacks-GoldenEye,6173,0.7941033533128139
+16_to_15,45,LogisticRegression,NO_DST_PORT,DoS attacks-Slowloris,1684,0.29097387173396677
+16_to_15,45,LogisticRegression,DST_PORT_ONLY,Benign,149462,0.8582181424040893
+16_to_15,45,LogisticRegression,DST_PORT_ONLY,DoS attacks-GoldenEye,6173,1.0
+16_to_15,45,LogisticRegression,DST_PORT_ONLY,DoS attacks-Slowloris,1684,1.0
+16_to_15,46,RandomForest,ALL,Benign,149462,0.24056950930671342
+16_to_15,46,RandomForest,ALL,DoS attacks-GoldenEye,6173,0.9398995626113721
+16_to_15,46,RandomForest,ALL,DoS attacks-Slowloris,1684,0.2986935866983373
+16_to_15,46,LogisticRegression,ALL,Benign,149462,0.15616009420454696
+16_to_15,46,LogisticRegression,ALL,DoS attacks-GoldenEye,6173,0.8464279928721853
+16_to_15,46,LogisticRegression,ALL,DoS attacks-Slowloris,1684,0.25475059382422804
+16_to_15,46,RandomForest,NO_DST_PORT,Benign,149462,0.30282613640925454
+16_to_15,46,RandomForest,NO_DST_PORT,DoS attacks-GoldenEye,6173,0.8172687510124736
+16_to_15,46,RandomForest,NO_DST_PORT,DoS attacks-Slowloris,1684,0.19714964370546317
+16_to_15,46,LogisticRegression,NO_DST_PORT,Benign,149462,0.11273768583318837
+16_to_15,46,LogisticRegression,NO_DST_PORT,DoS attacks-GoldenEye,6173,0.8963226956099142
+16_to_15,46,LogisticRegression,NO_DST_PORT,DoS attacks-Slowloris,1684,0.25356294536817103
+16_to_15,46,LogisticRegression,DST_PORT_ONLY,Benign,149462,0.8581311637740696
+16_to_15,46,LogisticRegression,DST_PORT_ONLY,DoS attacks-GoldenEye,6173,1.0
+16_to_15,46,LogisticRegression,DST_PORT_ONLY,DoS attacks-Slowloris,1684,1.0
+intra_15,42,RandomForest,ALL,Benign,74744,2.6758000642192015e-05
+intra_15,42,RandomForest,ALL,DoS attacks-GoldenEye,3105,0.9987117552334943
+intra_15,42,RandomForest,ALL,DoS attacks-Slowloris,811,0.9901356350184957
+intra_15,42,LogisticRegression,ALL,Benign,74744,0.0010703200256876805
+intra_15,42,LogisticRegression,ALL,DoS attacks-GoldenEye,3105,1.0
+intra_15,42,LogisticRegression,ALL,DoS attacks-Slowloris,811,0.9975339087546239
+intra_15,42,RandomForest,NO_DST_PORT,Benign,74744,0.00010703200256876806
+intra_15,42,RandomForest,NO_DST_PORT,DoS attacks-GoldenEye,3105,0.9980676328502416
+intra_15,42,RandomForest,NO_DST_PORT,DoS attacks-Slowloris,811,0.9901356350184957
+intra_15,42,LogisticRegression,NO_DST_PORT,Benign,74744,0.002060366049448785
+intra_15,42,LogisticRegression,NO_DST_PORT,DoS attacks-GoldenEye,3105,1.0
+intra_15,42,LogisticRegression,NO_DST_PORT,DoS attacks-Slowloris,811,0.9815043156596794
+intra_15,42,LogisticRegression,DST_PORT_ONLY,Benign,74744,0.5447259980734239
+intra_15,42,LogisticRegression,DST_PORT_ONLY,DoS attacks-GoldenEye,3105,1.0
+intra_15,42,LogisticRegression,DST_PORT_ONLY,DoS attacks-Slowloris,811,1.0
+intra_15,43,RandomForest,ALL,Benign,74747,0.0
+intra_15,43,RandomForest,ALL,DoS attacks-GoldenEye,3085,0.9980551053484603
+intra_15,43,RandomForest,ALL,DoS attacks-Slowloris,828,0.998792270531401
+intra_15,43,LogisticRegression,ALL,Benign,74747,0.001123790921374771
+intra_15,43,LogisticRegression,ALL,DoS attacks-GoldenEye,3085,1.0
+intra_15,43,LogisticRegression,ALL,DoS attacks-Slowloris,828,1.0
+intra_15,43,RandomForest,NO_DST_PORT,Benign,74747,9.364924344789758e-05
+intra_15,43,RandomForest,NO_DST_PORT,DoS attacks-GoldenEye,3085,0.9977309562398703
+intra_15,43,RandomForest,NO_DST_PORT,DoS attacks-Slowloris,828,0.9963768115942029
+intra_15,43,LogisticRegression,NO_DST_PORT,Benign,74747,0.0020736618192034465
+intra_15,43,LogisticRegression,NO_DST_PORT,DoS attacks-GoldenEye,3085,0.9993517017828201
+intra_15,43,LogisticRegression,NO_DST_PORT,DoS attacks-Slowloris,828,0.9879227053140096
+intra_15,43,LogisticRegression,DST_PORT_ONLY,Benign,74747,0.544811162989819
+intra_15,43,LogisticRegression,DST_PORT_ONLY,DoS attacks-GoldenEye,3085,1.0
+intra_15,43,LogisticRegression,DST_PORT_ONLY,DoS attacks-Slowloris,828,1.0
+intra_15,44,RandomForest,ALL,Benign,74726,4.014666916468164e-05
+intra_15,44,RandomForest,ALL,DoS attacks-GoldenEye,3096,1.0
+intra_15,44,RandomForest,ALL,DoS attacks-Slowloris,838,0.9916467780429594
+intra_15,44,LogisticRegression,ALL,Benign,74726,0.0009367556138425716
+intra_15,44,LogisticRegression,ALL,DoS attacks-GoldenEye,3096,1.0
+intra_15,44,LogisticRegression,ALL,DoS attacks-Slowloris,838,0.9964200477326969
+intra_15,44,RandomForest,NO_DST_PORT,Benign,74726,5.352889221957552e-05
+intra_15,44,RandomForest,NO_DST_PORT,DoS attacks-GoldenEye,3096,0.9993540051679587
+intra_15,44,RandomForest,NO_DST_PORT,DoS attacks-Slowloris,838,0.9904534606205251
+intra_15,44,LogisticRegression,NO_DST_PORT,Benign,74726,0.0014854267590932206
+intra_15,44,LogisticRegression,NO_DST_PORT,DoS attacks-GoldenEye,3096,1.0
+intra_15,44,LogisticRegression,NO_DST_PORT,DoS attacks-Slowloris,838,0.9821002386634845
+intra_15,44,LogisticRegression,DST_PORT_ONLY,Benign,74726,0.5467173406846345
+intra_15,44,LogisticRegression,DST_PORT_ONLY,DoS attacks-GoldenEye,3096,1.0
+intra_15,44,LogisticRegression,DST_PORT_ONLY,DoS attacks-Slowloris,838,1.0
+intra_15,45,RandomForest,ALL,Benign,74707,1.3385626514249e-05
+intra_15,45,RandomForest,ALL,DoS attacks-GoldenEye,3089,0.9987050825509873
+intra_15,45,RandomForest,ALL,DoS attacks-Slowloris,864,0.9907407407407407
+intra_15,45,LogisticRegression,ALL,Benign,74707,0.001218092012796659
+intra_15,45,LogisticRegression,ALL,DoS attacks-GoldenEye,3089,1.0
+intra_15,45,LogisticRegression,ALL,DoS attacks-Slowloris,864,0.9988425925925926
+intra_15,45,RandomForest,NO_DST_PORT,Benign,74707,0.000187398771199486
+intra_15,45,RandomForest,NO_DST_PORT,DoS attacks-GoldenEye,3089,0.9987050825509873
+intra_15,45,RandomForest,NO_DST_PORT,DoS attacks-Slowloris,864,0.9907407407407407
+intra_15,45,LogisticRegression,NO_DST_PORT,Benign,74707,0.0019007589650233579
+intra_15,45,LogisticRegression,NO_DST_PORT,DoS attacks-GoldenEye,3089,1.0
+intra_15,45,LogisticRegression,NO_DST_PORT,DoS attacks-Slowloris,864,0.9884259259259259
+intra_15,45,LogisticRegression,DST_PORT_ONLY,Benign,74707,0.5440587896716506
+intra_15,45,LogisticRegression,DST_PORT_ONLY,DoS attacks-GoldenEye,3089,1.0
+intra_15,45,LogisticRegression,DST_PORT_ONLY,DoS attacks-Slowloris,864,1.0
+intra_15,46,RandomForest,ALL,Benign,74751,2.6755494909767092e-05
+intra_15,46,RandomForest,ALL,DoS attacks-GoldenEye,3069,0.9996741609644836
+intra_15,46,RandomForest,ALL,DoS attacks-Slowloris,840,0.9904761904761905
+intra_15,46,LogisticRegression,ALL,Benign,74751,0.0010434643014809166
+intra_15,46,LogisticRegression,ALL,DoS attacks-GoldenEye,3069,1.0
+intra_15,46,LogisticRegression,ALL,DoS attacks-Slowloris,840,1.0
+intra_15,46,RandomForest,NO_DST_PORT,Benign,74751,9.364423218418483e-05
+intra_15,46,RandomForest,NO_DST_PORT,DoS attacks-GoldenEye,3069,0.9983708048224177
+intra_15,46,RandomForest,NO_DST_PORT,DoS attacks-Slowloris,840,0.9904761904761905
+intra_15,46,LogisticRegression,NO_DST_PORT,Benign,74751,0.0016320851894957927
+intra_15,46,LogisticRegression,NO_DST_PORT,DoS attacks-GoldenEye,3069,1.0
+intra_15,46,LogisticRegression,NO_DST_PORT,DoS attacks-Slowloris,840,0.9857142857142858
+intra_15,46,LogisticRegression,DST_PORT_ONLY,Benign,74751,0.5442067664646627
+intra_15,46,LogisticRegression,DST_PORT_ONLY,DoS attacks-GoldenEye,3069,1.0
+intra_15,46,LogisticRegression,DST_PORT_ONLY,DoS attacks-Slowloris,840,1.0
+intra_16,42,RandomForest,ALL,Benign,33646,5.944243000653867e-05
+intra_16,42,RandomForest,ALL,DoS attacks-Hulk,34628,1.0
+intra_16,42,RandomForest,ALL,DoS attacks-SlowHTTPTest,10409,1.0
+intra_16,42,LogisticRegression,ALL,Benign,33646,5.944243000653867e-05
+intra_16,42,LogisticRegression,ALL,DoS attacks-Hulk,34628,1.0
+intra_16,42,LogisticRegression,ALL,DoS attacks-SlowHTTPTest,10409,1.0
+intra_16,42,RandomForest,NO_DST_PORT,Benign,33646,0.0010402425251144266
+intra_16,42,RandomForest,NO_DST_PORT,DoS attacks-Hulk,34628,1.0
+intra_16,42,RandomForest,NO_DST_PORT,DoS attacks-SlowHTTPTest,10409,1.0
+intra_16,42,LogisticRegression,NO_DST_PORT,Benign,33646,0.003655709445402128
+intra_16,42,LogisticRegression,NO_DST_PORT,DoS attacks-Hulk,34628,1.0
+intra_16,42,LogisticRegression,NO_DST_PORT,DoS attacks-SlowHTTPTest,10409,1.0
+intra_16,42,LogisticRegression,DST_PORT_ONLY,Benign,33646,0.000713309160078464
+intra_16,42,LogisticRegression,DST_PORT_ONLY,DoS attacks-Hulk,34628,1.0
+intra_16,42,LogisticRegression,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,10409,1.0
+intra_16,43,RandomForest,ALL,Benign,33823,5.9131360316944094e-05
+intra_16,43,RandomForest,ALL,DoS attacks-Hulk,34580,1.0
+intra_16,43,RandomForest,ALL,DoS attacks-SlowHTTPTest,10280,1.0
+intra_16,43,LogisticRegression,ALL,Benign,33823,8.869704047541613e-05
+intra_16,43,LogisticRegression,ALL,DoS attacks-Hulk,34580,1.0
+intra_16,43,LogisticRegression,ALL,DoS attacks-SlowHTTPTest,10280,1.0
+intra_16,43,RandomForest,NO_DST_PORT,Benign,33823,0.0008574047245956893
+intra_16,43,RandomForest,NO_DST_PORT,DoS attacks-Hulk,34580,1.0
+intra_16,43,RandomForest,NO_DST_PORT,DoS attacks-SlowHTTPTest,10280,1.0
+intra_16,43,LogisticRegression,NO_DST_PORT,Benign,33823,0.0034887502586997015
+intra_16,43,LogisticRegression,NO_DST_PORT,DoS attacks-Hulk,34580,1.0
+intra_16,43,LogisticRegression,NO_DST_PORT,DoS attacks-SlowHTTPTest,10280,1.0
+intra_16,43,LogisticRegression,DST_PORT_ONLY,Benign,33823,0.000650444963486385
+intra_16,43,LogisticRegression,DST_PORT_ONLY,DoS attacks-Hulk,34580,1.0
+intra_16,43,LogisticRegression,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,10280,1.0
+intra_16,44,RandomForest,ALL,Benign,33759,0.0002073521135104713
+intra_16,44,RandomForest,ALL,DoS attacks-Hulk,34537,1.0
+intra_16,44,RandomForest,ALL,DoS attacks-SlowHTTPTest,10387,1.0
+intra_16,44,LogisticRegression,ALL,Benign,33759,0.00032583903551645487
+intra_16,44,LogisticRegression,ALL,DoS attacks-Hulk,34537,0.9999710455453572
+intra_16,44,LogisticRegression,ALL,DoS attacks-SlowHTTPTest,10387,1.0
+intra_16,44,RandomForest,NO_DST_PORT,Benign,33759,0.0013329778725673154
+intra_16,44,RandomForest,NO_DST_PORT,DoS attacks-Hulk,34537,1.0
+intra_16,44,RandomForest,NO_DST_PORT,DoS attacks-SlowHTTPTest,10387,1.0
+intra_16,44,LogisticRegression,NO_DST_PORT,Benign,33759,0.004058177078704938
+intra_16,44,LogisticRegression,NO_DST_PORT,DoS attacks-Hulk,34537,1.0
+intra_16,44,LogisticRegression,NO_DST_PORT,DoS attacks-SlowHTTPTest,10387,1.0
+intra_16,44,LogisticRegression,DST_PORT_ONLY,Benign,33759,0.0007109215320359015
+intra_16,44,LogisticRegression,DST_PORT_ONLY,DoS attacks-Hulk,34537,1.0
+intra_16,44,LogisticRegression,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,10387,1.0
+intra_16,45,RandomForest,ALL,Benign,33711,8.899172376968942e-05
+intra_16,45,RandomForest,ALL,DoS attacks-Hulk,34554,1.0
+intra_16,45,RandomForest,ALL,DoS attacks-SlowHTTPTest,10418,1.0
+intra_16,45,LogisticRegression,ALL,Benign,33711,0.00014831953961614902
+intra_16,45,LogisticRegression,ALL,DoS attacks-Hulk,34554,1.0
+intra_16,45,LogisticRegression,ALL,DoS attacks-SlowHTTPTest,10418,1.0
+intra_16,45,RandomForest,NO_DST_PORT,Benign,33711,0.0008899172376968942
+intra_16,45,RandomForest,NO_DST_PORT,DoS attacks-Hulk,34554,1.0
+intra_16,45,RandomForest,NO_DST_PORT,DoS attacks-SlowHTTPTest,10418,1.0
+intra_16,45,LogisticRegression,NO_DST_PORT,Benign,33711,0.004182611017175403
+intra_16,45,LogisticRegression,NO_DST_PORT,DoS attacks-Hulk,34554,1.0
+intra_16,45,LogisticRegression,NO_DST_PORT,DoS attacks-SlowHTTPTest,10418,1.0
+intra_16,45,LogisticRegression,DST_PORT_ONLY,Benign,33711,0.0005636142505413663
+intra_16,45,LogisticRegression,DST_PORT_ONLY,DoS attacks-Hulk,34554,1.0
+intra_16,45,LogisticRegression,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,10418,1.0
+intra_16,46,RandomForest,ALL,Benign,33726,0.00014825357291110716
+intra_16,46,RandomForest,ALL,DoS attacks-Hulk,34556,1.0
+intra_16,46,RandomForest,ALL,DoS attacks-SlowHTTPTest,10401,1.0
+intra_16,46,LogisticRegression,ALL,Benign,33726,0.00011860285832888572
+intra_16,46,LogisticRegression,ALL,DoS attacks-Hulk,34556,1.0
+intra_16,46,LogisticRegression,ALL,DoS attacks-SlowHTTPTest,10401,1.0
+intra_16,46,RandomForest,NO_DST_PORT,Benign,33726,0.0010377750103777502
+intra_16,46,RandomForest,NO_DST_PORT,DoS attacks-Hulk,34556,1.0
+intra_16,46,RandomForest,NO_DST_PORT,DoS attacks-SlowHTTPTest,10401,1.0
+intra_16,46,LogisticRegression,NO_DST_PORT,Benign,33726,0.004151100041511001
+intra_16,46,LogisticRegression,NO_DST_PORT,DoS attacks-Hulk,34556,1.0
+intra_16,46,LogisticRegression,NO_DST_PORT,DoS attacks-SlowHTTPTest,10401,1.0
+intra_16,46,LogisticRegression,DST_PORT_ONLY,Benign,33726,0.0007412678645555358
+intra_16,46,LogisticRegression,DST_PORT_ONLY,DoS attacks-Hulk,34556,1.0
+intra_16,46,LogisticRegression,DST_PORT_ONLY,DoS attacks-SlowHTTPTest,10401,1.0

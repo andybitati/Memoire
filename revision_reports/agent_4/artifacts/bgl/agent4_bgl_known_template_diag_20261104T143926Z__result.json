@@ -1,0 +1,263 @@
+{
+  "run_id": "agent4_bgl_known_template_diag_20261104T143926Z",
+  "generated_at": "2026-11-04T14:41:54.660306+00:00",
+  "git_commit": "35da3a9ea6f3ca1a0cfe01766ca1d14fa3da6930",
+  "inputs": {
+    "raw_log": "data/raw/Datasets/BGL/BGL.log",
+    "raw_log_sha256": "666130b15ef44eb32fd02bd053e6c6e007c37696b5e7e8b9d8e45b729876a5d2"
+  },
+  "ranges_one_based_inclusive": {
+    "train": [
+      [
+        1,
+        200000
+      ]
+    ],
+    "validation": [
+      [
+        700001,
+        800000
+      ]
+    ],
+    "test": [
+      [
+        800001,
+        950000
+      ]
+    ]
+  },
+  "selection_uses_labels": true,
+  "selection_note": "fenetre choisie apres inspection de la position des familles d'anomalies ; diagnostic, pas estimation",
+  "observation_unit": "raw log event",
+  "results": [
+    {
+      "protocol": "F_recurrent_anomaly_segment",
+      "description": "Diagnostic post hoc : train 1-200000, validation 700001-800000, test 800001-950000.",
+      "drain3_fit_partitions": [
+        "train"
+      ],
+      "drain3_state_sha256": "38980b231fe38b9b94c2d2d73ade4bd103b5adcbfad32a3247966d188c7b89d6",
+      "drain3_state_path": "revision_reports/agent_4/artifacts/bgl/agent4_bgl_known_template_diag_20261104T143926Z__F_recurrent_anomaly_segment_drain3_state.bin",
+      "split_rows": {
+        "train": 199945,
+        "validation": 100000,
+        "test": 149375
+      },
+      "split_positives": {
+        "train": 2769,
+        "validation": 2050,
+        "test": 3400
+      },
+      "threshold": 8.531843798706076,
+      "threshold_selected_on": "validation_only",
+      "validation_metrics": {
+        "precision": 0.14075297680501067,
+        "recall": 0.9975609756097561,
+        "f1": 0.2466976295313348,
+        "pr_auc": 0.1407817833117994,
+        "mcc": 0.3498848633534511,
+        "fpr": 0.1274527820316488,
+        "tn": 85466,
+        "fp": 12484,
+        "fn": 5,
+        "tp": 2045,
+        "predicted_positive": 14529
+      },
+      "test_metrics_histogram": {
+        "precision": 0.8185907046476761,
+        "recall": 0.9635294117647059,
+        "f1": 0.8851661713050527,
+        "pr_auc": 0.7949075299775099,
+        "mcc": 0.8853515512389748,
+        "fpr": 0.004973454358623052,
+        "tn": 145249,
+        "fp": 726,
+        "fn": 124,
+        "tp": 3276,
+        "predicted_positive": 4002,
+        "pr_auc_hist": 0.7949075299775099
+      },
+      "coverage": {
+        "test_events": 149375,
+        "test_positives": 3400,
+        "unknown_template_rate_all": 0.00994142259414226,
+        "unknown_template_rate_validation": 0.12515,
+        "unknown_rate_among_positives": 0.11764705882352941,
+        "unknown_rate_among_negatives": 0.00743277958554547,
+        "positives_known_template": 3000,
+        "positives_unknown_template": 400,
+        "negatives_known_template": 144890,
+        "negatives_unknown_template": 1085,
+        "drain3_clusters": 136,
+        "test_distinct_templates_known": 96
+      },
+      "histogram_decision_decomposition": {
+        "train_normal_events": 197176,
+        "train_positive_events": 2769,
+        "train_normal_severities": [
+          "FATAL",
+          "INFO"
+        ],
+        "max_possible_histogram_score_log_n_normal": 12.191852009890201,
+        "threshold_equals_max_possible_score": false,
+        "hist_pred_equals_severity_novelty": false,
+        "hist_pred_equals_sev_and_src_and_tpl_absent": false,
+        "test_severity_by_label": {
+          "FATAL|0": 2721,
+          "FATAL|1": 3400,
+          "INFO|0": 143254
+        }
+      },
+      "group_rows": [
+        {
+          "run_id": "agent4_bgl_known_template_diag_20261104T143926Z",
+          "protocol": "F_recurrent_anomaly_segment",
+          "model": "Histogram",
+          "group": "ALL",
+          "n": 149375,
+          "positives": 3400,
+          "tp": 3276,
+          "fp": 726,
+          "tn": 145249,
+          "fn": 124,
+          "precision": 0.8185907046476761,
+          "recall": 0.9635294117647059,
+          "f1": 0.8851661713050527,
+          "fpr": 0.004973454358623052
+        },
+        {
+          "run_id": "agent4_bgl_known_template_diag_20261104T143926Z",
+          "protocol": "F_recurrent_anomaly_segment",
+          "model": "Histogram",
+          "group": "KNOWN_TEMPLATE",
+          "n": 147890,
+          "positives": 3000,
+          "tp": 2882,
+          "fp": 144,
+          "tn": 144746,
+          "fn": 118,
+          "precision": 0.9524124256444151,
+          "recall": 0.9606666666666667,
+          "f1": 0.9565217391304348,
+          "fpr": 0.0009938574090689488
+        },
+        {
+          "run_id": "agent4_bgl_known_template_diag_20261104T143926Z",
+          "protocol": "F_recurrent_anomaly_segment",
+          "model": "Histogram",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 1485,
+          "positives": 400,
+          "tp": 394,
+          "fp": 582,
+          "tn": 503,
+          "fn": 6,
+          "precision": 0.4036885245901639,
+          "recall": 0.985,
+          "f1": 0.5726744186046511,
+          "fpr": 0.5364055299539171
+        },
+        {
+          "run_id": "agent4_bgl_known_template_diag_20261104T143926Z",
+          "protocol": "F_recurrent_anomaly_segment",
+          "model": "UnknownTemplateBaseline",
+          "group": "ALL",
+          "n": 149375,
+          "positives": 3400,
+          "tp": 400,
+          "fp": 1085,
+          "tn": 144890,
+          "fn": 3000,
+          "precision": 0.26936026936026936,
+          "recall": 0.11764705882352941,
+          "f1": 0.1637666325486182,
+          "fpr": 0.00743277958554547
+        },
+        {
+          "run_id": "agent4_bgl_known_template_diag_20261104T143926Z",
+          "protocol": "F_recurrent_anomaly_segment",
+          "model": "UnknownTemplateBaseline",
+          "group": "KNOWN_TEMPLATE",
+          "n": 147890,
+          "positives": 3000,
+          "tp": 0,
+          "fp": 0,
+          "tn": 144890,
+          "fn": 3000,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_known_template_diag_20261104T143926Z",
+          "protocol": "F_recurrent_anomaly_segment",
+          "model": "UnknownTemplateBaseline",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 1485,
+          "positives": 400,
+          "tp": 400,
+          "fp": 1085,
+          "tn": 0,
+          "fn": 0,
+          "precision": 0.26936026936026936,
+          "recall": 1.0,
+          "f1": 0.42440318302387264,
+          "fpr": 1.0
+        },
+        {
+          "run_id": "agent4_bgl_known_template_diag_20261104T143926Z",
+          "protocol": "F_recurrent_anomaly_segment",
+          "model": "SeverityNoveltyBaseline",
+          "group": "ALL",
+          "n": 149375,
+          "positives": 3400,
+          "tp": 0,
+          "fp": 0,
+          "tn": 145975,
+          "fn": 3400,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_known_template_diag_20261104T143926Z",
+          "protocol": "F_recurrent_anomaly_segment",
+          "model": "SeverityNoveltyBaseline",
+          "group": "KNOWN_TEMPLATE",
+          "n": 147890,
+          "positives": 3000,
+          "tp": 0,
+          "fp": 0,
+          "tn": 144890,
+          "fn": 3000,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        },
+        {
+          "run_id": "agent4_bgl_known_template_diag_20261104T143926Z",
+          "protocol": "F_recurrent_anomaly_segment",
+          "model": "SeverityNoveltyBaseline",
+          "group": "UNKNOWN_TEMPLATE",
+          "n": 1485,
+          "positives": 400,
+          "tp": 0,
+          "fp": 0,
+          "tn": 1085,
+          "fn": 400,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0
+        }
+      ],
+      "elapsed_sec": 58.291677900007926
+    }
+  ],
+  "artifacts": [
+    "revision_reports/agent_4/artifacts/bgl/agent4_bgl_known_template_diag_20261104T143926Z__group_metrics.csv"
+  ]
+}

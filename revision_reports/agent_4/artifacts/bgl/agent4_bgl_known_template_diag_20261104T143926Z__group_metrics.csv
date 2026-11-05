@@ -1,0 +1,10 @@
+run_id,protocol,model,group,n,positives,tp,fp,tn,fn,precision,recall,f1,fpr
+agent4_bgl_known_template_diag_20261104T143926Z,F_recurrent_anomaly_segment,Histogram,ALL,149375,3400,3276,726,145249,124,0.8185907046476761,0.9635294117647059,0.8851661713050527,0.004973454358623052
+agent4_bgl_known_template_diag_20261104T143926Z,F_recurrent_anomaly_segment,Histogram,KNOWN_TEMPLATE,147890,3000,2882,144,144746,118,0.9524124256444151,0.9606666666666667,0.9565217391304348,0.0009938574090689488
+agent4_bgl_known_template_diag_20261104T143926Z,F_recurrent_anomaly_segment,Histogram,UNKNOWN_TEMPLATE,1485,400,394,582,503,6,0.4036885245901639,0.985,0.5726744186046511,0.5364055299539171
+agent4_bgl_known_template_diag_20261104T143926Z,F_recurrent_anomaly_segment,UnknownTemplateBaseline,ALL,149375,3400,400,1085,144890,3000,0.26936026936026936,0.11764705882352941,0.1637666325486182,0.00743277958554547
+agent4_bgl_known_template_diag_20261104T143926Z,F_recurrent_anomaly_segment,UnknownTemplateBaseline,KNOWN_TEMPLATE,147890,3000,0,0,144890,3000,0.0,0.0,0.0,0.0
+agent4_bgl_known_template_diag_20261104T143926Z,F_recurrent_anomaly_segment,UnknownTemplateBaseline,UNKNOWN_TEMPLATE,1485,400,400,1085,0,0,0.26936026936026936,1.0,0.42440318302387264,1.0
+agent4_bgl_known_template_diag_20261104T143926Z,F_recurrent_anomaly_segment,SeverityNoveltyBaseline,ALL,149375,3400,0,0,145975,3400,0.0,0.0,0.0,0.0
+agent4_bgl_known_template_diag_20261104T143926Z,F_recurrent_anomaly_segment,SeverityNoveltyBaseline,KNOWN_TEMPLATE,147890,3000,0,0,144890,3000,0.0,0.0,0.0,0.0
+agent4_bgl_known_template_diag_20261104T143926Z,F_recurrent_anomaly_segment,SeverityNoveltyBaseline,UNKNOWN_TEMPLATE,1485,400,0,0,1085,400,0.0,0.0,0.0,0.0

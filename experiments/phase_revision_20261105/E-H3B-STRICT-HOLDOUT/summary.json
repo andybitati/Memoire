@@ -1,0 +1,262 @@
+{
+  "experiment_id": "E-H3B-STRICT-HOLDOUT",
+  "started_at_utc": "2026-11-05T15:48:14.688115+00:00",
+  "completed_at_utc": "2026-11-05T16:15:36.880881+00:00",
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "per_class": 6000,
+  "test_positive_cap": 1500,
+  "margin": -0.01,
+  "available_rows_by_category": {
+    "linux_auth": {
+      "normal": 475293,
+      "brute_force": 6233,
+      "privilege_escalation": 6221,
+      "geo_anomaly": 6128,
+      "port_scan": 6125
+    },
+    "cicids": {
+      "normal": 2273097,
+      "other_attack": 266507,
+      "PortScan": 158930,
+      "DDoS": 128027,
+      "WebAttacks": 2180,
+      "Bot": 1966,
+      "Infiltration": 36
+    },
+    "unsw": {
+      "normal": 93000,
+      "Generic": 58871,
+      "Exploits": 44525,
+      "Fuzzers": 24246,
+      "DoS": 16353,
+      "Reconnaissance": 13987,
+      "Analysis": 2677,
+      "Backdoor": 2329,
+      "Shellcode": 1511,
+      "Worms": 174
+    }
+  },
+  "category_holdout": {
+    "families": {
+      "cicids": {
+        "mean": 0.016473961262604954,
+        "sd": 0.028580215236017642,
+        "ci95_lower": -0.01901306305687292,
+        "ci95_upper": 0.05196098558208283,
+        "non_inferior": false,
+        "f1_family": 0.15135029736477912,
+        "f1_common": 0.13487633610217414
+      },
+      "linux_auth": {
+        "mean": 0.16685623999855134,
+        "sd": 0.04733940615288668,
+        "ci95_lower": 0.10807660368216608,
+        "ci95_upper": 0.2256358763149366,
+        "non_inferior": true,
+        "f1_family": 0.21965866487972735,
+        "f1_common": 0.05280242488117598
+      },
+      "unsw": {
+        "mean": 0.009281132351232452,
+        "sd": 0.0034316046894203095,
+        "ci95_lower": 0.005020232352312037,
+        "ci95_upper": 0.013542032350152867,
+        "non_inferior": true,
+        "f1_family": 0.7909953165152817,
+        "f1_common": 0.7817141841640491
+      }
+    },
+    "criterion_met": false,
+    "by_category": [
+      {
+        "family": "cicids",
+        "heldout": "Bot",
+        "family_aware_models": 0.0,
+        "global_common_model": 0.0,
+        "delta": 0.0
+      },
+      {
+        "family": "cicids",
+        "heldout": "DDoS",
+        "family_aware_models": 0.6618853393132871,
+        "global_common_model": 0.551691336848276,
+        "delta": 0.11019400246501113
+      },
+      {
+        "family": "cicids",
+        "heldout": "Infiltration",
+        "family_aware_models": 0.0,
+        "global_common_model": 0.0,
+        "delta": 0.0
+      },
+      {
+        "family": "cicids",
+        "heldout": "PortScan",
+        "family_aware_models": 0.011831648857246557,
+        "global_common_model": 0.005796770278767692,
+        "delta": 0.006034878578478864
+      },
+      {
+        "family": "cicids",
+        "heldout": "WebAttacks",
+        "family_aware_models": 0.08303449865336188,
+        "global_common_model": 0.11689357338382708,
+        "delta": -0.03385907473046521
+      },
+      {
+        "family": "linux_auth",
+        "heldout": "brute_force",
+        "family_aware_models": 0.0,
+        "global_common_model": 0.0,
+        "delta": 0.0
+      },
+      {
+        "family": "linux_auth",
+        "heldout": "geo_anomaly",
+        "family_aware_models": 0.12371475334053741,
+        "global_common_model": 0.12905557305703563,
+        "delta": -0.005340819716498221
+      },
+      {
+        "family": "linux_auth",
+        "heldout": "port_scan",
+        "family_aware_models": 0.710027498215539,
+        "global_common_model": 0.06752089843226648,
+        "delta": 0.6425065997832726
+      },
+      {
+        "family": "linux_auth",
+        "heldout": "privilege_escalation",
+        "family_aware_models": 0.04489240796283283,
+        "global_common_model": 0.01463322803540181,
+        "delta": 0.030259179927431018
+      },
+      {
+        "family": "unsw",
+        "heldout": "Analysis",
+        "family_aware_models": 0.865570420624883,
+        "global_common_model": 0.8654886771070138,
+        "delta": 8.174351786911504e-05
+      },
+      {
+        "family": "unsw",
+        "heldout": "Backdoor",
+        "family_aware_models": 0.9356039279520344,
+        "global_common_model": 0.9345794345949001,
+        "delta": 0.0010244933571342597
+      },
+      {
+        "family": "unsw",
+        "heldout": "DoS",
+        "family_aware_models": 0.9332547105114622,
+        "global_common_model": 0.9323901575514106,
+        "delta": 0.0008645529600515456
+      },
+      {
+        "family": "unsw",
+        "heldout": "Exploits",
+        "family_aware_models": 0.7868174328470259,
+        "global_common_model": 0.7580209889758301,
+        "delta": 0.028796443871195686
+      },
+      {
+        "family": "unsw",
+        "heldout": "Fuzzers",
+        "family_aware_models": 0.339092884892607,
+        "global_common_model": 0.3253159203026243,
+        "delta": 0.01377696458998271
+      },
+      {
+        "family": "unsw",
+        "heldout": "Generic",
+        "family_aware_models": 0.9304779083648939,
+        "global_common_model": 0.925497806926978,
+        "delta": 0.004980101437915829
+      },
+      {
+        "family": "unsw",
+        "heldout": "Reconnaissance",
+        "family_aware_models": 0.7439253429127058,
+        "global_common_model": 0.7562948617035616,
+        "delta": -0.012369518790855771
+      },
+      {
+        "family": "unsw",
+        "heldout": "Shellcode",
+        "family_aware_models": 0.663308250988642,
+        "global_common_model": 0.6130932801926071,
+        "delta": 0.050214970796034916
+      },
+      {
+        "family": "unsw",
+        "heldout": "Worms",
+        "family_aware_models": 0.9209069695432802,
+        "global_common_model": 0.9247465301215165,
+        "delta": -0.003839560578236223
+      }
+    ]
+  },
+  "random_reference": {
+    "families": {
+      "cicids": {
+        "mean": -6.186221297670436e-05,
+        "sd": 0.0007212711401245914,
+        "ci95_lower": -0.0009574386206127936,
+        "ci95_upper": 0.0008337141946593848,
+        "non_inferior": true,
+        "f1_family": 0.99044175504171,
+        "f1_common": 0.9905036172546866
+      },
+      "linux_auth": {
+        "mean": -0.004532142925581328,
+        "sd": 0.0024554259975901943,
+        "ci95_lower": -0.00758095698704264,
+        "ci95_upper": -0.0014833288641200155,
+        "non_inferior": true,
+        "f1_family": 0.8157117462581978,
+        "f1_common": 0.8202438891837792
+      },
+      "unsw": {
+        "mean": -0.00021508617291654542,
+        "sd": 0.0024040563586426793,
+        "ci95_lower": -0.0032001164030960026,
+        "ci95_upper": 0.0027699440572629117,
+        "non_inferior": true,
+        "f1_family": 0.9034618370903587,
+        "f1_common": 0.9036769232632752
+      }
+    },
+    "criterion_met": true,
+    "by_category": [
+      {
+        "family": "cicids",
+        "heldout": "",
+        "family_aware_models": 0.99044175504171,
+        "global_common_model": 0.9905036172546865,
+        "delta": -6.186221297670436e-05
+      },
+      {
+        "family": "linux_auth",
+        "heldout": "",
+        "family_aware_models": 0.8157117462581978,
+        "global_common_model": 0.8202438891837792,
+        "delta": -0.004532142925581328
+      },
+      {
+        "family": "unsw",
+        "heldout": "",
+        "family_aware_models": 0.9034618370903587,
+        "global_common_model": 0.9036769232632753,
+        "delta": -0.00021508617291654542
+      }
+    ]
+  },
+  "criterion": "Pour chaque famille, borne inférieure de l'IC t apparié à 95 % du delta F1, moyen par graine sur les catégories, >= -0,01.",
+  "criterion_met": false
+}

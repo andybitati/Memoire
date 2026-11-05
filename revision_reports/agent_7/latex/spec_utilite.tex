@@ -1,0 +1,223 @@
+% ============================================================
+% Spécification formelle de la fonction d'utilité (agent 7)
+% À insérer dans chapters/chapitre4_implementation.tex
+% (chapitre 3 « Implémentation » du PDF), à la fin de la section
+% « Implémentation des agents », juste avant \section{Idempotence et reprise}.
+% Toutes les références fichier:ligne renvoient au commit 35da3a9.
+% Paquets requis : amsmath, amssymb, booktabs, tabularx (déjà chargés).
+% ============================================================
+
+\subsection{Spécification de la fonction d'utilité}
+\label{sec:spec-utilite}
+
+Cette sous-section décrit la fonction d'utilité telle qu'elle est implémentée
+dans le module \texttt{src/logminer/agents/intelligent\_runtime.py}. Les
+références de la forme \texttt{l.~$n$} renvoient à ce fichier dans la version
+du dépôt identifiée par le commit \texttt{35da3a9} ; les autres fichiers sont
+nommés explicitement. La description se limite au comportement du code.
+
+\paragraph{Notations.}
+Soit un agent $a$ et une tâche $\tau$ de type $t$. On note :
+\begin{itemize}
+  \item $\mathcal{K}_a$ l'ensemble des capacités déclarées par $a$ ; chaque
+  capacité $k$ possède une confiance $c_k$ et un ensemble de types $T_k$, et
+  elle supporte $t$ si $t \in T_k$ ou si $T_k$ contient le joker
+  \texttt{*} (l.~52--53) ;
+  \item $n_a$ le nombre de tâches actives de $a$ et
+  $P_a = \max(1, \texttt{max\_parallel\_tasks})$ (l.~507 et 601) ;
+  \item $\rho_a = \min(1, n_a / P_a)$ le taux de charge (l.~607) ;
+  \item $s_t$ et $e_t$ les nombres cumulés d'exécutions du type $t$ terminées
+  respectivement avec le statut \texttt{ok} et avec un autre statut
+  (l.~268--270) ;
+  \item $D_t$ la liste des durées d'exécution \texttt{elapsed\_sec}, en
+  secondes, des au plus 50 dernières exécutions du type $t$, quel que soit
+  leur statut (l.~271--273) ;
+  \item $\mu \in \{0, 1\}$ l'indicateur d'activation de la mémoire
+  (\texttt{memory\_enabled}, l.~515).
+\end{itemize}
+
+\paragraph{Règles de refus.}
+La méthode \texttt{evaluate} (l.~613--659) applique les contrôles suivants
+dans cet ordre ; le premier contrôle non satisfait produit un refus motivé.
+\begin{enumerate}
+  \item \texttt{capability\_missing} : si la tâche impose
+  \texttt{required\_capability}, aucune capacité ne porte ce nom ; sinon,
+  aucune capacité ne supporte $t$ (\texttt{can\_handle}, l.~579--582 ;
+  contrôle l.~617--618).
+  \item \texttt{model\_missing} : les modèles listés dans
+  \texttt{payload["required\_models"]} ne sont pas tous disponibles, sauf si
+  l'agent annonce le joker \texttt{*}, valeur par défaut (l.~517, 585--593,
+  619--621).
+  \item \texttt{dependency\_unavailable} : même règle pour
+  \texttt{payload["required\_dependencies"]} (l.~518, 622--624).
+  \item \texttt{agent\_unhealthy} : l'agent est déclaré non sain
+  (l.~625--626).
+  \item \texttt{agent\_overloaded} : $n_a \geq P_a$ (l.~627--628).
+  \item \texttt{low\_expected\_utility} : $U < u_{\min}$, avec
+  $u_{\min} = \min(1, \max(0, \texttt{minimum\_utility}))$, de valeur par
+  défaut $0$ (l.~493, 514, 649--658).
+\end{enumerate}
+Les refus 1 à 5 retournent une utilité nulle sans composantes ; le refus 6
+conserve l'utilité calculée et ses composantes dans la réponse. Les six motifs
+sont exercés par le test
+\texttt{test\_all\_standard\_refusal\_reasons\_are\_reachable}
+(\texttt{tests/test\_true\_multi\_agent.py}, l.~238).
+
+\paragraph{Composantes.}
+Lorsque les contrôles 1 à 5 sont satisfaits, les six composantes sont
+calculées comme indiqué au tableau~\ref{tab:spec-utilite}.
+
+\begin{table}[H]
+\centering
+\caption{Composantes de l'utilité telles qu'implémentées.}
+\label{tab:spec-utilite}
+\small
+\begin{tabularx}{\textwidth}{p{0.10\textwidth} p{0.47\textwidth} p{0.12\textwidth} X}
+\toprule
+\textbf{Comp.} & \textbf{Calcul} & \textbf{Domaine} & \textbf{Code} \\
+\midrule
+$C$ & $\min\bigl(1, \max(0, \max_{k \in \mathcal{K}_a(\tau)} c_k)\bigr)$, où
+$\mathcal{K}_a(\tau)$ réunit les capacités qui supportent $t$ et, le cas
+échéant, portent le nom \texttt{required\_capability} &
+$[0, 1]$ & l.~630--633, 636 \\
+$H$ & $\mu\,\dfrac{s_t + 1}{s_t + e_t + 2} + (1 - \mu)\,\dfrac{1}{2}$ &
+$]0, 1[$ & l.~295--298, 637 \\
+$M$ & $1$ & $\{1\}$ & l.~638 \\
+$A$ & $\max(0, 1 - \rho_a)$ & $[0, 1]$ & l.~639 \\
+$L$ & $\max(0, 1 - \rho_a)$ & $[0, 1]$ & l.~640 \\
+$T$ & $\dfrac{1}{1 + \bar d_t}$ si $\mu = 1$ et $D_t \neq \emptyset$,
+$\dfrac{1}{2}$ sinon, avec $\bar d_t$ la moyenne de $D_t$ en secondes &
+$]0, 1]$ & l.~300--304, 634, 641 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Trois propriétés découlent directement de ce calcul. La compatibilité des
+modèles n'intervient que comme filtre (refus 2) : $M$ vaut $1$ pour toute
+offre émise. Les composantes $A$ et $L$ sont calculées par la même expression
+et ne se distinguent que par leur poids. Enfin, $T$ dépend de l'unité de
+temps retenue, la seconde, puisque $\bar d_t$ n'est pas rapporté à une durée
+de référence.
+
+\paragraph{Agrégation.}
+L'utilité est la combinaison convexe
+\[
+U = \min\Bigl(1, \max\bigl(0,\; w_C C + w_H H + w_M M + w_A A + w_L L + w_T T\bigr)\Bigr),
+\]
+avec, par défaut,
+$(w_C, w_H, w_M, w_A, w_L, w_T) = (0{,}30;\, 0{,}20;\, 0{,}20;\, 0{,}15;\, 0{,}10;\, 0{,}05)$
+(l.~60--65, 643--647). Les poids peuvent être remplacés à la construction de
+l'agent (l.~492, 509--513) ; ils doivent être positifs ou nuls et de somme
+égale à $1$ à $10^{-9}$ près, faute de quoi la construction échoue
+(l.~67--72). L'utilité transmise est arrondie à six décimales
+(l.~654 et 659). Avec les poids par défaut, puisque $M = 1$ et $A = L$, toute
+offre émise vérifie
+\[
+U = 0{,}20 + 0{,}30\,C + 0{,}20\,H + 0{,}25\,(1 - \rho_a) + 0{,}05\,T .
+\]
+Lorsque $P_a = 1$, le refus 5 impose $n_a = 0$ pour toute offre, donc
+$\rho_a = 0$ et $U = 0{,}65 + 0{,}30\,C + 0{,}20\,H + 0{,}05\,T$. C'est le cas
+des agents des campagnes Redis, construits avec \texttt{max\_parallel\_tasks=1}
+(\texttt{scripts/logminer\_redis\_cnp\_agent.py}, l.~79) : les écarts entre
+offres y proviennent uniquement des confiances de profil
+(\texttt{scripts/logminer\_redis\_cnp\_agent.py}, l.~28--32), de $H$ et de $T$.
+Ce script ne transmet pas \texttt{minimum\_utility} (l.~74--82) ; le refus 6
+y est donc inactif.
+
+\paragraph{Mise à jour des composantes.}
+$H$ et $T$ ne varient qu'après une exécution locale, par la méthode
+\texttt{learn} appelée à la fin de \texttt{execute\_task}
+(l.~693--699 et 822), et seulement si $\mu = 1$. Les messages
+\texttt{FEEDBACK} et \texttt{REJECT} ne modifient pas la mémoire : l'agent
+Redis se contente de retirer le contrat de sa liste d'attente
+(\texttt{scripts/logminer\_redis\_cnp\_agent.py}, l.~215--216). La mémoire
+n'est écrite sur disque que si un chemin est fourni (l.~531--535) ; le script
+d'agent Redis n'en fournit pas (l.~74--82), si bien que la mémoire y reste
+propre au processus. Le lissage de $H$ et la neutralisation de la composante
+historique en l'absence de mémoire sont vérifiés par les tests
+\texttt{test\_reliability\_uses\_laplace\_smoothing} et
+\texttt{test\_memory\_switch\_changes\_or\_neutralizes\_historical\_component}
+(\texttt{tests/test\_true\_multi\_agent.py}, l.~187 et 294).
+
+\paragraph{Rôle de $U$ dans le Contract Net.}
+Dans le coordinateur local (\texttt{src/logminer/agents/contract\_net.py},
+méthode \texttt{negotiate}, l.~127--282), chaque agent enregistré évalue la
+tâche, dans l'ordre lexicographique des identifiants, et répond par
+\texttt{PROPOSE} ou \texttt{REFUSE} (l.~149--169). Les offres sont classées
+par utilité décroissante, l'égalité étant départagée par l'identifiant de
+l'agent (l.~171). La tâche est attribuée (\texttt{AWARD}) à la première
+offre ; si l'agent retenu ne peut plus réserver de place
+(\texttt{accept}, \texttt{intelligent\_runtime.py}, l.~673--680), il émet un
+refus à l'étape d'acceptation et l'offre suivante est essayée lorsque la
+réattribution est autorisée, ce qui est le cas par défaut (l.~127, 186--202).
+Un \texttt{FAIL} conduit de même à l'offre suivante (l.~232--233). Les offres
+non essayées reçoivent \texttt{REJECT} (l.~235--249) ; en l'absence d'offre,
+le coordinateur émet \texttt{FAIL} avec le motif \texttt{no\_proposal}
+(l.~251--263). Le coordinateur Redis
+(\texttt{src/logminer/agents/redis\_contract\_net.py}, l.~203--295) applique
+le même classement (l.~234) aux utilités lues dans les messages
+\texttt{PROPOSE} (l.~212--216), collectés jusqu'à réponse de tous les agents
+ou expiration de \texttt{response\_timeout\_sec} (l.~149, 168--201) ;
+l'absence de \texttt{RESULT} dans ce délai, ou un \texttt{FAIL}, entraîne un
+\texttt{FEEDBACK} d'erreur et le passage à l'offre suivante (l.~239--264).
+L'utilité utilisée est celle que l'agent a calculée à la réception du
+\texttt{CFP} ; elle n'est pas recalculée à l'attribution
+(\texttt{scripts/logminer\_redis\_cnp\_agent.py}, l.~145--185). Dans les deux
+chemins, le coordinateur ne compare $U$ à aucun seuil : $U$ sert uniquement à
+ordonner les offres.
+
+\paragraph{Rôle de $U$ dans la poursuite d'objectifs.}
+Pour la sélection locale, \texttt{score\_task} (l.~701--726) attribue la
+valeur $-9999$ à une tâche refusée et, sinon,
+\begin{multline*}
+S = \pi + 20\,U
+- 100\,\mathbf{1}[\tau \in \mathcal{E}]
+- 1{,}5\,r\,\mathbf{1}[r \geq 4] \\
++ \bigl(10 + \max(0, 5 - \delta)\bigr)\,\mathbf{1}[\delta < 5]
+- 2\min(\alpha, 5)\,\mathbf{1}[\alpha > 0],
+\end{multline*}
+où $\pi$ est la priorité de la tâche (50 par défaut, l.~116), $\mathcal{E}$
+l'ensemble des identifiants des 200 dernières tâches terminées conservés en
+mémoire (l.~274--275 et 713), $r$ le nombre
+d'occurrences de $t$ parmi les huit derniers types exécutés (l.~716), ces deux
+historiques n'étant alimentés que si $\mu = 1$,
+$\delta$ l'échéance \texttt{deadline\_sec} lorsqu'elle est définie et
+$\alpha$ le nombre de tentatives déjà réalisées. Comme $20\,U \in [0, 20]$, la
+priorité et les termes correctifs peuvent dominer l'utilité.
+\texttt{choose\_tasks} conserve les tâches compatibles de score supérieur à
+$-999$, les trie par score décroissant et retient les premières (l.~728--732).
+
+\texttt{pursue\_goal} (l.~884--901) crée et persiste un \texttt{GoalState}
+(\texttt{start\_goal}, l.~857--878), puis exécute la boucle
+\texttt{\_advance\_goal} (l.~926--1039) tant qu'il reste des tâches en attente
+et que le nombre d'actions est inférieur à \texttt{max\_actions}. À chaque
+itération, la tâche de score $S$ maximal est exécutée localement
+(l.~939--943). Si aucune tâche n'est sélectionnable, l'objectif passe à l'état
+\texttt{blocked} lorsqu'aucun délégué n'est fourni (l.~944--950) ; sinon la
+première tâche en attente est transmise au délégué, par exemple
+\texttt{ContractNetCoordinator.negotiate} (l.~945, 951--970). Le choix de la
+tâche déléguée ne fait donc pas intervenir $U$ ; l'utilité intervient ensuite
+dans la négociation menée par le coordinateur. Les garde-fous
+\texttt{AutonomyLimits} (l.~166--183) valent par défaut
+$\texttt{max\_actions} = 20$, $\texttt{max\_depth} = 5$,
+$\texttt{max\_attempts\_per\_task} = 2$ et
+$\texttt{max\_pending\_tasks} = 100$ ; ils s'appliquent comme suit :
+\begin{itemize}
+  \item chaque exécution locale ou délégation compte pour une action
+  (l.~975) ; à l'épuisement du budget, l'objectif passe à l'état
+  \texttt{budget\_exhausted} s'il reste des tâches (l.~1033--1035) ;
+  \item une tâche en échec, ou dont le handler demande une nouvelle tentative,
+  est replacée en attente tant que le nombre de tentatives suivant reste
+  inférieur à \texttt{max\_attempts\_per\_task}, soit au plus deux exécutions
+  avec la valeur par défaut ; au-delà, l'objectif échoue (l.~990--1002) ;
+  \item une sous-tâche dont la profondeur dépasserait \texttt{max\_depth}, ou
+  dont l'ajout porterait la file au-delà de \texttt{max\_pending\_tasks},
+  fait échouer l'objectif (l.~1011--1030) ; le nombre initial de tâches est
+  soumis à la même borne (l.~868--869) ;
+  \item un handler peut terminer l'objectif par \texttt{goal\_completed}
+  (l.~1005--1009).
+\end{itemize}
+\texttt{resume\_goal} (l.~903--924) laisse inchangé un objectif terminé ou
+échoué, ne reprend un objectif au budget épuisé que si des actions
+supplémentaires sont explicitement accordées, et relance directement un
+objectif bloqué.

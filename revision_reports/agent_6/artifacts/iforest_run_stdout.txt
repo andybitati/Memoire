@@ -1,0 +1,21 @@
+seed 42 done: roc_auc=0.6140
+seed 43 done: roc_auc=0.6347
+seed 44 done: roc_auc=0.6578
+seed 45 done: roc_auc=0.6409
+seed 46 done: roc_auc=0.6478
+COMPLETED agent6_cicids_iforest_20261104T141904Z
+                model               threshold_rule  test_f1_mean  test_f1_sample_std  test_recall_mean  test_fpr_mean  test_pr_auc_mean
+0     IsolationForest                   benign_q99      0.115719            0.011881           0.06350        0.03344          0.571803
+1     IsolationForest                    val_maxf1      0.521436            0.170794           0.51948        0.31234          0.571803
+2  LogisticRegression  predict_default(supervised)      0.556615            0.017124           0.40096        0.03936          0.871448
+3        RandomForest  predict_default(supervised)      0.437429            0.004046           0.28062        0.00240          0.830759
+                                                                     attack_recall  benign_fpr
+threshold_rule source_file                                                                    
+benign_q99     Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv           0.143698    0.102423
+               Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv       0.000255    0.012497
+               Friday-WorkingHours-Morning.pcap_ISCX.csv                  0.008575    0.011769
+val_maxf1      Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv           0.770082    0.419241
+               Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv       0.321471    0.283111
+               Friday-WorkingHours-Morning.pcap_ISCX.csv                  0.349174    0.276566
+
+[exited with code 0]

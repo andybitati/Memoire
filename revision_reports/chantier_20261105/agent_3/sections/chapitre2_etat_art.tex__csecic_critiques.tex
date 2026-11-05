@@ -1,0 +1,34 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre2_etat_art.tex
+% Passage à remplacer : de « \subsection{CSE-CIC-IDS2018} » (inclus) à
+%   « \subsection{HDFS} » (exclu).
+% Agent : Agent 3 — État de l'art et positionnement, chantier 2026-11-05.
+% Sources : Sharafaldin et al. ; source officielle CSE-CIC-IDS2018 ; Liu et al.
+%   (CNS 2022, DOI 10.1109/CNS56114.2022.9947235).
+% ============================================================================
+
+\subsection{CSE-CIC-IDS2018}
+
+CSE-CIC-IDS2018 prolonge la méthode de génération de CICIDS2017 dans une
+infrastructure plus vaste et publie des captures, des journaux et des flux décrits par
+des caractéristiques extraites avec CICFlowMeter
+\cite{sharafaldin2018cicids,cic2018csecicids}. Sa taille et la diversité annoncée des
+scénarios expliquent son emploi fréquent comme benchmark. Elles n'en font toutefois pas
+un jeu indépendant de CICIDS2017 : les deux corpus partagent des principes de génération,
+un extracteur de flux et plusieurs catégories d'attaque.
+
+Liu et al. ont réexaminé CICIDS2017 et CSE-CIC-IDS2018 sur l'ensemble de leur chaîne de
+création. Ils documentent des erreurs dans l'orchestration des attaques, la génération
+des caractéristiques, la documentation et l'étiquetage, puis montrent que ces erreurs
+peuvent déstabiliser les résultats expérimentaux \cite{liu2022error}. Leur conclusion ne
+consiste pas à proscrire le corpus, mais à imposer trois précautions : identifier
+précisément les fichiers utilisés, contrôler leur intégrité, et éviter qu'une variable
+liée au dispositif de collecte serve de substitut à la classe.
+
+Dans ce mémoire, CSE-CIC-IDS2018 est donc traité comme un objet d'audit de la validité
+externe plutôt que comme une preuve autonome de transfert. Une performance élevée sur
+deux journées ne devient interprétable qu'après inversion du sens de transfert, ablation
+des variables dominantes et comparaison avec des règles mono-variable. Cette lecture
+critique rattache directement le protocole du chapitre expérimental aux limites déjà
+établies dans la littérature.
+

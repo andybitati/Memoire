@@ -1,0 +1,228 @@
+{
+  "run_id": "agent5_router_open_set_20261104T145601Z",
+  "status": "COMPLETED",
+  "completed_at": "2026-11-04T14:57:03.187843+00:00",
+  "reference_run": "final_router_open_set_20260911T000746Z",
+  "policy": {
+    "min_top_score": 100.0,
+    "min_decision_margin": 0.0,
+    "min_compatible_rules": 0
+  },
+  "recalibrated": false,
+  "protocol": {
+    "modes": {
+      "P": "trame produite par les adaptateurs du projet",
+      "N": "P sans dataset/subtype/filepath"
+    },
+    "strata": {
+      "U": "inconnu",
+      "K": "connu, source nouvelle ou d'origine",
+      "A": "ambigu, hors taux"
+    },
+    "ci": "Clopper-Pearson bilatéral 95 %",
+    "unit": "fichier ; agrégat secondaire par groupe de schéma",
+    "coverage_metric": "retirée : 28/31 n'est qu'une conséquence de la composition 28 connus / 3 inconnus"
+  },
+  "errors": [],
+  "summary": {
+    "P": {
+      "original_31": {
+        "subset": "original_31",
+        "unknown_files_rejected": "3/3",
+        "unknown_rejection_rate": 1.0,
+        "unknown_rejection_cp95": [
+          0.292402,
+          1.0
+        ],
+        "unknown_schema_groups_all_rejected": "2/2",
+        "unknown_schema_group_cp95": [
+          0.158114,
+          1.0
+        ],
+        "known_files_falsely_rejected": "0/28",
+        "false_rejection_rate": 0.0,
+        "false_rejection_cp95": [
+          0.0,
+          0.123436
+        ],
+        "known_schema_groups_with_false_rejection": "0/8",
+        "known_group_false_rejection_cp95": [
+          0.0,
+          0.369417
+        ],
+        "known_accepted_correct": "28/28",
+        "known_accepted_misrouted": 0
+      },
+      "agent5_new": {
+        "subset": "agent5_new",
+        "unknown_files_rejected": "17/17",
+        "unknown_rejection_rate": 1.0,
+        "unknown_rejection_cp95": [
+          0.804936,
+          1.0
+        ],
+        "unknown_schema_groups_all_rejected": "15/15",
+        "unknown_schema_group_cp95": [
+          0.781981,
+          1.0
+        ],
+        "known_files_falsely_rejected": "3/18",
+        "false_rejection_rate": 0.16666666666666666,
+        "false_rejection_cp95": [
+          0.035785,
+          0.414177
+        ],
+        "known_schema_groups_with_false_rejection": "2/7",
+        "known_group_false_rejection_cp95": [
+          0.036693,
+          0.709579
+        ],
+        "known_accepted_correct": "15/15",
+        "known_accepted_misrouted": 0
+      },
+      "combined": {
+        "subset": "combined",
+        "unknown_files_rejected": "20/20",
+        "unknown_rejection_rate": 1.0,
+        "unknown_rejection_cp95": [
+          0.831567,
+          1.0
+        ],
+        "unknown_schema_groups_all_rejected": "16/16",
+        "unknown_schema_group_cp95": [
+          0.794093,
+          1.0
+        ],
+        "known_files_falsely_rejected": "3/46",
+        "false_rejection_rate": 0.06521739130434782,
+        "false_rejection_cp95": [
+          0.013657,
+          0.178964
+        ],
+        "known_schema_groups_with_false_rejection": "2/15",
+        "known_group_false_rejection_cp95": [
+          0.016576,
+          0.404603
+        ],
+        "known_accepted_correct": "43/43",
+        "known_accepted_misrouted": 0
+      },
+      "ambiguous_A": [
+        {
+          "source_id": "a_outside_tcpdump_csv",
+          "original_family": "network",
+          "predicted": "network",
+          "rejected": false,
+          "top_score": 159.0
+        },
+        {
+          "source_id": "a_darpa_sample_pcap_csv",
+          "original_family": "network",
+          "predicted": "network",
+          "rejected": false,
+          "top_score": 159.0
+        }
+      ]
+    },
+    "N": {
+      "original_31": {
+        "subset": "original_31",
+        "unknown_files_rejected": "3/3",
+        "unknown_rejection_rate": 1.0,
+        "unknown_rejection_cp95": [
+          0.292402,
+          1.0
+        ],
+        "unknown_schema_groups_all_rejected": "2/2",
+        "unknown_schema_group_cp95": [
+          0.158114,
+          1.0
+        ],
+        "known_files_falsely_rejected": "2/28",
+        "false_rejection_rate": 0.07142857142857142,
+        "false_rejection_cp95": [
+          0.00877,
+          0.235035
+        ],
+        "known_schema_groups_with_false_rejection": "2/8",
+        "known_group_false_rejection_cp95": [
+          0.031854,
+          0.650856
+        ],
+        "known_accepted_correct": "26/26",
+        "known_accepted_misrouted": 0
+      },
+      "agent5_new": {
+        "subset": "agent5_new",
+        "unknown_files_rejected": "17/17",
+        "unknown_rejection_rate": 1.0,
+        "unknown_rejection_cp95": [
+          0.804936,
+          1.0
+        ],
+        "unknown_schema_groups_all_rejected": "15/15",
+        "unknown_schema_group_cp95": [
+          0.781981,
+          1.0
+        ],
+        "known_files_falsely_rejected": "3/18",
+        "false_rejection_rate": 0.16666666666666666,
+        "false_rejection_cp95": [
+          0.035785,
+          0.414177
+        ],
+        "known_schema_groups_with_false_rejection": "2/7",
+        "known_group_false_rejection_cp95": [
+          0.036693,
+          0.709579
+        ],
+        "known_accepted_correct": "15/15",
+        "known_accepted_misrouted": 0
+      },
+      "combined": {
+        "subset": "combined",
+        "unknown_files_rejected": "20/20",
+        "unknown_rejection_rate": 1.0,
+        "unknown_rejection_cp95": [
+          0.831567,
+          1.0
+        ],
+        "unknown_schema_groups_all_rejected": "16/16",
+        "unknown_schema_group_cp95": [
+          0.794093,
+          1.0
+        ],
+        "known_files_falsely_rejected": "5/46",
+        "false_rejection_rate": 0.10869565217391304,
+        "false_rejection_cp95": [
+          0.036248,
+          0.235697
+        ],
+        "known_schema_groups_with_false_rejection": "4/15",
+        "known_group_false_rejection_cp95": [
+          0.077872,
+          0.551003
+        ],
+        "known_accepted_correct": "41/41",
+        "known_accepted_misrouted": 0
+      },
+      "ambiguous_A": [
+        {
+          "source_id": "a_outside_tcpdump_csv",
+          "original_family": "network",
+          "predicted": "network",
+          "rejected": false,
+          "top_score": 159.0
+        },
+        {
+          "source_id": "a_darpa_sample_pcap_csv",
+          "original_family": "network",
+          "predicted": "network",
+          "rejected": false,
+          "top_score": 159.0
+        }
+      ]
+    }
+  },
+  "routes_csv": "revision_reports/agent_5/router_open_set/agent5_router_open_set_20261104T145601Z/routes.csv"
+}

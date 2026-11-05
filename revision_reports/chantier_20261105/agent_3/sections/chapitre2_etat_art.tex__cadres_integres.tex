@@ -1,0 +1,72 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre2_etat_art.tex
+% Insertion : immédiatement avant « \section{Systèmes multi-agents} ».
+% Agent : Agent 3 — État de l'art et positionnement, chantier 2026-11-05.
+% Sources : documentations officielles Wazuh, Elastic Security et OpenSearch Security
+%   Analytics ; article LogAI ; article et dépôt Loglizer.
+% ============================================================================
+
+\section{Cadres intégrés et bibliothèques d'analyse de journaux}
+
+L'intégration de l'ingestion, de la détection, de la corrélation et de la restitution
+n'est pas une lacune générale de l'offre existante. Plusieurs plateformes réunissent déjà
+ces fonctions, tandis que des bibliothèques de recherche unifient le parsing et
+l'évaluation de détecteurs. Elles constituent des références de positionnement, même si
+leurs objectifs, leurs coûts et leurs protocoles ne sont pas identiques à ceux d'un
+prototype académique léger.
+
+Wazuh associe des agents de collecte à un serveur d'analyse, un indexeur et un tableau de
+bord ; son architecture documente aussi des déploiements centralisés ou en grappe
+\cite{wazuh2026architecture}. Elastic Security s'appuie sur des données normalisées avec
+ECS et propose des règles de détection, de la corrélation d'événements, des alertes et des
+outils d'investigation \cite{elastic2026ecs,elastic2026security}. OpenSearch Security
+Analytics organise les journaux par types, applique des règles aux détecteurs, produit
+des constats et des alertes, et inclut un moteur de corrélation entre types de journaux
+\cite{opensearch2026securityanalytics}. Ces trois cadres couvrent donc déjà une part
+substantielle de la chaîne fonctionnelle revendiquée par Ariel Logminer.
+
+Du côté de la recherche, Loglizer fournit une boîte à outils de détection d'anomalies
+fondée sur l'apprentissage automatique et associée à une comparaison de méthodes sur des
+journaux système \cite{he2016experience,logpai2026loglizer}. LogAI propose une interface
+commune pour le résumé, le regroupement et la détection d'anomalies, plusieurs familles de
+modèles, le modèle de données OpenTelemetry et une interface interactive
+\cite{cheng2023logai}. Ces bibliothèques réduisent le travail nécessaire pour comparer des
+algorithmes, mais ne se présentent pas comme des SIEM complets.
+
+\begin{table}[H]
+\centering
+\caption{Cadres intégrés et bibliothèques proches du périmètre étudié}
+\label{tab:cadres-integres}
+\scriptsize
+\begin{tabularx}{\textwidth}{p{2.25cm}p{2.1cm}p{3.5cm}X}
+\toprule
+\textbf{Cadre} & \textbf{Nature} & \textbf{Fonctions documentées pertinentes} &
+\textbf{Différence avec l'objet de ce mémoire} \\
+\midrule
+Wazuh \cite{wazuh2026architecture} & Plateforme de sécurité &
+Collecte par agents, analyse, indexation, alertes et tableau de bord ; déploiement en grappe. &
+Plateforme opérationnelle ; ce mémoire ne la compare ni en débit ni en qualité de détection. \\
+Elastic Security \cite{elastic2026security} & SIEM et sécurité des terminaux &
+Normalisation ECS, règles, corrélation, alertes, investigation et réponse. &
+Écosystème intégré et étendu ; Ariel Logminer vise une instrumentation expérimentale plus réduite. \\
+OpenSearch Security Analytics \cite{opensearch2026securityanalytics} & Extension SIEM d'OpenSearch &
+Types de journaux, règles, détecteurs, constats, alertes et corrélation. &
+Alternative directe pour plusieurs fonctions ; aucune comparaison expérimentale n'est réalisée ici. \\
+LogAI \cite{cheng2023logai} & Bibliothèque de recherche &
+Prétraitement, résumé, regroupement, détection, modèles classiques et profonds, interface. &
+Pas d'allocation Contract Net ; cadre plus large pour comparer les méthodes d'analyse. \\
+Loglizer \cite{he2016experience,logpai2026loglizer} & Boîte à outils de recherche &
+Extraction de caractéristiques et détecteurs d'anomalies sur journaux. &
+Centré sur l'analyse algorithmique, sans chaîne SOC intégrée. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Cette comparaison retire toute prétention à combler un vide fonctionnel. Ariel Logminer
+ne remplace pas ces cadres et aucune expérience ne démontre qu'il les surpasse. Son objet
+défendable est plus étroit : rendre explicites, dans une chaîne locale, les unités
+d'analyse, les protocoles de séparation, le routage, l'allocation et les traces de preuve,
+afin d'étudier les limites d'une intégration légère. L'originalité éventuelle doit être
+cherchée dans cette instrumentation et dans les comparaisons contrôlées, pas dans la
+simple coexistence des fonctions.
+

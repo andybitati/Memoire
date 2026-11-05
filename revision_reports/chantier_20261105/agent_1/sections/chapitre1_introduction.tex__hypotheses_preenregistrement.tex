@@ -1,0 +1,22 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre1_introduction.tex
+%   (Introduction générale, section « Hypothèses de recherche », PDF p. 7)
+% Ligne à remplacer : 147 (« Ces hypothèses définissent une observation
+%   susceptible de les réfuter. Les seuils numériques et les budgets sont
+%   fixés dans le protocole avant l'exécution, ... »).
+% Auteur : Agent 1 (intégrité factuelle), chantier 2026-11-05.
+% Sources :
+%   - seuils choisis sur validation : chapitre1_introduction.tex l. 213 ;
+%     chapitre5_resultats.tex l. 173 et 187 (HDFS), l. 224 (BGL) ;
+%   - seuil du routeur gelé puis appliqué sans recalibration :
+%     chapitre5_resultats.tex l. 424-426 ; agent5_router_open_set_20261104T145601Z
+%     (experiments/phase_revision_20261104/agent_5_router_open_set/result.json,
+%     champ "recalibrated": false) ;
+%   - budget H4 non préenregistré : tableau 7.1 (chapitre6_conclusion.tex l. 79) ;
+%   - protocole G conçu en tenant compte de la position des familles
+%     d'anomalies : chapitre5_resultats.tex l. 268.
+% NB : l'Agent 2 (hypothèses) et l'Agent 6 (déclaration IA, calendrier des
+%   campagnes) peuvent compléter cette phrase ; elle ne tranche aucun statut.
+% ============================================================================
+
+Ces hypothèses définissent une observation susceptible de les réfuter. Les seuils de décision des détecteurs sont choisis sur la validation et jamais sur le test, et le seuil du routeur est gelé avant d'être appliqué aux sources supplémentaires. Les critères de décision n'ont en revanche fait l'objet d'aucun préenregistrement : le budget local de temps et de mémoire mentionné par H4 n'a pas été fixé comme critère avant l'exécution (tableau~\ref{tab:statut-hypotheses}), et certains protocoles complémentaires ont été conçus après lecture de résultats antérieurs, comme le protocole contigu G sur BGL (section~\ref{sec:bgl-second-protocole}). Une hypothèse reste non tranchée lorsque le comparateur requis n'a pas été exécuté.

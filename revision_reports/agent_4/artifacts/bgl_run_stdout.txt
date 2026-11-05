@@ -1,0 +1,8 @@
+R0_reproduction F1=0.913698 tp 2885 fp 545 fn 0 tn 16478 unk_pos=1.0000 pos_known 0 eq_sev True
+B5_train_5x10000_lines F1=0.923791 tp 2885 fp 476 fn 0 tn 16547 unk_pos=0.9986 pos_known 4 eq_sev False
+B10_train_10x10000_lines F1=0.891293 tp 2677 fp 445 fn 208 tn 16578 unk_pos=0.9983 pos_known 5 eq_sev False
+B20_train_20x10000_lines F1=0.730935 tp 2885 fp 2124 fn 0 tn 14899 unk_pos=0.9979 pos_known 6 eq_sev False
+C_drain3_adapted_on_unlabelled_validation F1=0.913698 tp 2885 fp 545 fn 0 tn 16478 unk_pos=0.9986 pos_known 4 eq_sev True
+D_chrono_60_20_20_multiblock F1=0.598528 tp 2439 fp 3272 fn 0 tn 91396 unk_pos=0.9971 pos_known 7 eq_sev False
+E_short_horizon_train_before_test F1=0.940466 tp 2883 fp 363 fn 2 tn 16660 unk_pos=0.9979 pos_known 6 eq_sev False
+E:\Cours\TFE\revision_reports\agent_4\artifacts\bgl\agent4_bgl_second_protocol_20261104T142629Z__result.json

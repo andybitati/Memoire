@@ -1,0 +1,212 @@
+% ============================================================================
+% Fichier cible : ARIEL_LOGMINER_MEMOIRE_FINAL/chapters/chapitre6_discussion.tex
+% Passage à remplacer : fichier entier, de « \chapter{Discussion générale} »
+%   jusqu'à la fin.
+% Agent : Agent 3 — État de l'art et positionnement, chantier 2026-11-05.
+% Sources : littérature déjà citée au chapitre 1 et références proposées par
+%   l'Agent 3. Les résultats numériques proviennent exclusivement du corps du mémoire.
+% ============================================================================
+
+\chapter{Discussion générale}
+
+\section{Du score isolé à la validité du protocole}
+
+Le résultat transversal le plus solide ne porte pas sur la supériorité d'un détecteur,
+mais sur la dépendance d'un score à son unité d'analyse, sa partition et ses baselines.
+Cette dépendance est connue en détection d'intrusion : Sommer et Paxson soulignent le
+décalage entre le monde fermé du laboratoire et les réseaux ouverts
+\cite{sommer2010outside}, tandis qu'Arp et al. recensent les biais de sélection, les
+fuites et les comparaisons inadéquates qui fragilisent l'apprentissage appliqué à la
+sécurité \cite{arp2022dos}. Les expériences de ce mémoire en fournissent une réplication
+sur quatre jeux, et non une découverte théorique.
+
+Sur CICIDS2017, une partition aléatoire produit un résultat très favorable, alors que le
+holdout par scénario et la séparation temporelle exposent une faible généralisation. Ce
+contraste rejoint les erreurs de génération, de caractéristiques et d'étiquetage déjà
+documentées pour ce corpus \cite{engelen2021troubleshooting,lanvin2023errors}. Sur
+CSE-CIC-IDS2018, le transfert entre deux journées dépend fortement du port de destination
+et s'effondre lorsque le sens est inversé. Liu et al. ont indépendamment identifié, dans
+CICIDS2017 et CSE-CIC-IDS2018, des erreurs couvrant l'orchestration, l'extraction et les
+labels \cite{liu2022error}. Le résultat du mémoire doit donc être lu comme un audit local
+de deux fichiers, pas comme une validation externe d'un détecteur d'intrusion.
+
+HDFS illustre une autre menace : l'événement n'est pas l'unité annotée, le bloc l'est.
+L'agrégation modifie alors la matrice de confusion et l'interprétation du F1. Sur le test
+complet, la baseline de surprise moyenne des templates atteint un F1 de $0{,}872434$,
+légèrement supérieur aux $0{,}868373$ d'Histogram : son avantage prédictif n'est donc pas
+établi. Sur BGL, le score principal coïncide avec la règle « sévérité absente de l'entraînement normal » ; le
+détecteur ne met en évidence aucune structure plus riche sous ce protocole. Les travaux
+de Le et Zhang montrent précisément que la sélection des données, le regroupement et le
+déséquilibre peuvent transformer l'évaluation des détecteurs de journaux
+\cite{le2022logbased}. L'ensemble de ces observations impose de présenter chaque score
+avec son unité, sa partition et la meilleure règle simple évaluée sur le même test.
+
+La comparaison préenregistrée E-H3b entre modèles communs et spécialisés, sous
+affectation parfaite de la famille, n'établit pas la non-infériorité pour
+\texttt{linux\_auth} : la borne inférieure de l'IC apparié à 95~\% est
+$-0{,}012326$, sous la marge de $-0{,}01$. Cette expérience ne mesure pas la qualité du
+routeur et ne remplace pas une comparaison avec une table statique.
+
+\section{Une intégration qui n'est pas une lacune fonctionnelle}
+
+L'assemblage de l'ingestion, de la détection, de l'alerte et de la visualisation existe
+déjà dans des cadres établis. Wazuh documente une architecture composée d'agents, d'un
+serveur d'analyse, d'un indexeur et d'un tableau de bord
+\cite{wazuh2026architecture}. Elastic Security associe données normalisées, règles,
+corrélation et investigation \cite{elastic2026ecs,elastic2026security}. OpenSearch
+Security Analytics fournit des détecteurs, des règles, des constats, des alertes et un
+moteur de corrélation \cite{opensearch2026securityanalytics}. Dans la recherche, LogAI et
+Loglizer offrent déjà des interfaces ou outils communs pour plusieurs méthodes d'analyse
+de journaux \cite{cheng2023logai,he2016experience,logpai2026loglizer}.
+
+Ariel Logminer ne comble donc pas un vide entre algorithme et plateforme. Il ne compare
+d'ailleurs ni sa couverture, ni son débit, ni sa qualité de détection à ces cadres. Son
+apport défendable est plus restreint : une chaîne locale où l'on peut relier des résultats
+à des protocoles et isoler certains mécanismes. Cette instrumentation a une valeur
+d'ingénierie et de pédagogie expérimentale. Elle devient une contribution scientifique
+seulement lorsque l'expérience oppose effectivement des explications concurrentes. Les
+audits de partitions et de raccourcis satisfont partiellement cette exigence ; la simple
+présence de composants dans une architecture ne la satisfait pas.
+
+\section{Contract Net face à l'affectation statique}
+
+Contract Net est conçu pour allouer une tâche à partir d'offres produites par des
+contractants \cite{smith1980contract,fipa2002contractnet}. Son intérêt théorique apparaît
+lorsque les agents détiennent un état local pertinent, que les offres peuvent diverger et
+que la négociation améliore une décision par rapport à une règle plus simple. Ces
+conditions ne sont pas démontrées par la seule émission de messages
+\texttt{CFP}, \texttt{PROPOSE} et \texttt{AWARD}.
+
+Le concurrent pertinent est une file de tâches avec table de routage ou files nommées.
+Celery affecte des tâches nommées à des workers ; Kafka et Redis répartissent des messages
+entre consommateurs ; Temporal associe des files de tâches à des workers et reconstruit
+l'état d'un workflow depuis son historique
+\cite{celery2026tasks,kafka2026semantics,redis2026streams,temporal2026tasks}. Ces cadres
+peuvent fournir découplage, tentatives, acquittements et reprise sans négociation
+Contract Net.
+
+Dans les campagnes présentées, les poids et les capacités sont configurés, une composante
+de l'utilité est constante, deux composantes sont redondantes dans le contexte évalué et
+le seuil de refus par faible utilité est inactif. La répartition de l'endurance suit les
+profils fixés ; lors de la détection HDFS distribuée, les utilités égales sont départagées
+par un ordre déterministe et toutes les tâches vont au même agent. Ces observations
+rapprochent l'allocation d'une table statique. Elles ne réfutent pas l'intérêt général de
+Contract Net, mais elles ne démontrent pas son bénéfice dans cette instanciation.
+
+Le benchmark montre en outre un coût substantiel de l'orchestration sur les micro-tâches,
+et la seconde machine n'accroît pas la capacité observée dans la campagne de saturation.
+Une comparaison concluante doit conserver transport, workers, tâche et mécanismes de
+reprise, puis changer uniquement la politique d'affectation. Sans cette ablation, la
+conclusion doit rester descriptive : l'échange négocié fonctionne, mais son avantage sur
+une affectation déterministe n'est pas établi.
+
+\section{Reprise, livraison et idempotence}
+
+La reprise observée après l'arrêt d'un worker combine deux mécanismes. Le transport
+conserve ou réattribue une tâche non acquittée ; le magasin d'idempotence empêche que la
+nouvelle tentative répète l'effet métier. Redis Streams documente une sémantique au moins
+une fois pour les groupes de consommateurs : les messages non acquittés restent en
+attente et peuvent être réclamés par un autre consommateur
+\cite{redis2026streams}. Celery avertit de même qu'un acquittement tardif peut conduire à
+plusieurs exécutions et exige des tâches idempotentes \cite{celery2026tasks}. Kafka
+rappelle que l'exactement-une-fois dépend du périmètre transactionnel considéré
+\cite{kafka2026semantics}.
+
+L'ablation appariée du mémoire confirme cette séparation : l'ajout du même magasin aux
+architectures de référence supprime aussi les effets dupliqués. L'idempotence n'est donc
+pas un bénéfice propre aux agents ou à Contract Net. La contribution consiste à l'avoir
+intégrée et testée dans la chaîne, pas à en avoir montré la spécificité architecturale.
+La reprise multi-VM établit un scénario précis d'arrêt après persistance et avant
+publication du résultat. Elle ne couvre pas une panne de Redis, une partition réseau ou
+un basculement de stockage ; ces propriétés requièrent des protocoles distincts.
+
+\section{Hétérogénéité, normalisation et corrélation}
+
+La lecture de plusieurs formats démontre une couverture d'adaptateurs, non une sémantique
+commune complète. ECS spécifie des champs, des types et des conventions d'extension pour
+normaliser des événements \cite{elastic2026ecs}. OCSF fournit une taxonomie et des classes
+d'événements indépendantes du fournisseur et du stockage \cite{ocsf2026schema}. Le
+contrat d'Ariel Logminer reste un schéma local plus réduit. Le fait que les flux
+tabulaires ne renseignent aucun des sept champs standard mesurés interdit de conclure à
+une normalisation homogène. De plus, chaque source publique est évaluée séparément : le
+mémoire ne présente aucun incident réel analysé conjointement à partir d'un journal
+système et d'un flux réseau.
+
+La corrélation met en évidence la même différence entre intégration fonctionnelle et
+validation scientifique. Les cadres classiques distinguent fusion d'alertes similaires,
+corrélation de scénarios, vérification et priorisation
+\cite{cuppens2002alert,valeur2004correlation}. Le mécanisme étudié ici est une règle de
+regroupement par fenêtre et égalité de clés, sans modèle causal. Sur le corpus synthétique
+construit avec ces clés, il obtient une forte précision, mais son rappel diminue et une
+baseline « hôte + fenêtre » le dépasse lorsque les incidents enchaînent plusieurs
+catégories. Cette défaite est informative : ajouter des clés réduit les fusions au prix
+de fragmenter précisément les scénarios multi-étapes. Une validation externe doit porter
+sur des incidents authentifiés, non utilisés pour concevoir les règles.
+
+\section{Mémoire, gouvernance et rôle de l'analyste}
+
+La mémoire persistante assure une traçabilité et fournit un état aux décisions. Elle ne
+démontre pas, par sa présence, une adaptation bénéfique. Les différences appariées ne
+mettent pas en évidence de gain systématique de débit, de latence ou d'équité ; le statut
+de la mémoire doit donc être celui d'une infrastructure réalisée, dont l'effet reste à
+évaluer selon une métrique préalablement choisie.
+
+La littérature MLOps étend cette exigence à tout le cycle de vie. Les dépendances de
+données, les boucles de rétroaction et la configuration créent une dette technique propre
+aux systèmes d'apprentissage \cite{sculley2015debt}. La préparation à la production
+requiert des tests et une surveillance portant sur les données, le modèle et
+l'infrastructure \cite{breck2017mltest}. Les études de terrain soulignent aussi la
+difficulté de versionner les données et de maintenir des modèles liés à leur contexte
+logiciel \cite{amershi2019software}. Enfin, la gouvernance suppose des rôles, une
+documentation, une mesure et une revue continues \cite{nist2023airmf}.
+
+Le registre, le mode \textit{dry-run} et les chemins de promotion du prototype sont donc
+des briques, non une validation MLOps. Aucun cycle répété ne relie candidat, décision,
+déploiement, surveillance et retour arrière. De même, le tableau de bord offre une
+restitution fonctionnelle, mais aucune étude avec des analystes ne mesure le temps de
+triage, l'exactitude ou la charge cognitive. L'exploitabilité humaine et l'amélioration
+produite par la gouvernance restent deux questions ouvertes.
+
+\section{Nature et limites de la contribution}
+
+La contribution de ce travail est une intégration instrumentée accompagnée d'une étude
+critique de ses protocoles. Trois apports sont établis. Premièrement, le prototype relie
+plusieurs familles de sources à des traitements explicites et conserve des artefacts de
+traçabilité. Deuxièmement, les campagnes exposent la fragilité de scores favorables face
+à des partitions, unités et règles triviales mieux choisies. Troisièmement, les ablations
+séparent certains mécanismes : l'idempotence relève du magasin, la reprise de la
+combinaison transport--application, et le coût de l'orchestration n'est pas compensé dans
+les charges étudiées.
+
+Ces apports ne constituent ni un nouvel algorithme, ni un nouveau schéma, ni une preuve de
+supériorité multi-agent. Ils répliquent plusieurs critiques publiées et les illustrent
+dans une chaîne locale. La validité externe est limitée par des jeux publics construits,
+deux fichiers CSE-CIC-IDS2018 dont l'intégrité complète n'est pas établie, une fixture
+Apache minimale, des corpus synthétiques de corrélation et une distribution de décision
+où l'inférence n'est pas recalculée sur les machines virtuelles. La validité de construit
+est limitée lorsque « normalisé », « autonome » ou « distribué » désigne l'existence d'un
+mécanisme plutôt que le bénéfice qu'il produit.
+
+Le positionnement final est donc celui d'un prototype d'ingénierie expérimentale qui
+documente autant ses échecs que ses réussites. Sa valeur scientifique réside dans les
+comparaisons qui excluent une explication simple ; là où le comparateur manque, la
+revendication reste non tranchée.
+
+\section{Priorités de prolongement}
+
+Les prolongements doivent cibler les menaces qui empêchent actuellement de trancher les
+revendications. La première priorité est de comparer Contract Net à une affectation
+statique sur les mêmes tâches et le même transport. La deuxième est d'évaluer un scénario
+réellement hétérogène où un même incident possède des traces système et réseau, mappées à
+un schéma explicite tel qu'ECS ou OCSF. La troisième est de valider la corrélation sur des
+incidents multi-étapes externes au générateur.
+
+Sur le plan prédictif, les prochaines campagnes doivent utiliser des données corrigées ou
+réextraites, des partitions externes, des baselines au même niveau et des règles de seuil
+fixées avant l'exécution. Sur le plan opérationnel, il faut distribuer le calcul complet,
+tester des pannes du broker et des partitions réseau, puis mesurer les charges où le coût
+fixe de l'orchestration pourrait devenir secondaire. Enfin, un cycle de gouvernance doit
+versionner données, parseur, caractéristiques et modèle, puis tester promotion,
+surveillance et retour arrière. Ces expériences ne garantissent pas un résultat favorable ;
+elles déterminent si l'intégration produit une connaissance qui dépasse son propre
+fonctionnement.
