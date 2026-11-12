@@ -11,6 +11,7 @@ Procédure : décision C13-proc de `ETAT_CHANTIER.md`. Une ligne par protocole, 
 | E-CNP-LEAST-LOADED | 5 | `revision_reports/chantier_20261105/agent_5/protocoles/E-CNP-LEAST-LOADED.md` | `15fd66bf90eb0affe9ecc24ef80d20fc418900b040b97b5b487896beb63b9b53` | `2026-11-05T15:39:22Z` | ce commit (`Protocole E-CNP-LEAST-LOADED préenregistré`) |
 | E-H3B-STRICT-HOLDOUT | 4 | `revision_reports/chantier_20261105/agent_4/protocoles/E-H3B-STRICT-HOLDOUT.md` | `a27296a0cf3b5232fd70d3db5a21036740f1d0e63f4173faa3c2d0387a55ad22` | `2026-11-05T15:39:39Z` | ce commit (`Protocole E-H3B-STRICT-HOLDOUT préenregistré`) |
 | E-CICIDS-HOLDOUT-FIX | Coordinateur (refonte 150 p.) | `revision_reports/refonte_150p/cicids_fix/E-CICIDS-HOLDOUT-FIX.md` | `265f797b246c51192fa5139d84add9891c3d27f4dc90332afd8dd13e300aa59d` | `2026-11-05T20:44:54Z` | ce commit (`Protocole E-CICIDS-HOLDOUT-FIX préenregistré`) ; runner commité avec le protocole |
+| E-R2-AGENTS-NO-STORE | Claude Code (phase 2, 2026-11-12) | `revision_reports/phase2_20261112/E-R2-AGENTS-NO-STORE/PROTOCOLE.md` | `8718ca94371b0337cbd8c438fee2e18fb1310a5290de226a433865ea70680a45` | `2026-11-12T12:20:39Z` | ce commit (`Protocole E-R2-AGENTS-NO-STORE préenregistré`) ; runner commité avec le protocole, SHA-256 `b2f42f92d268abd8713eadb61ab28071983ccf1e76bfbaf2aa122e0817de6d64` |
 
 ## Écarts au protocole
 
