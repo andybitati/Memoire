@@ -186,6 +186,8 @@ Tailles d'effet et réplication Contract Net (analyse secondaire, non préenregi
 Endurance sur deux VM & $1\,800/1\,800$ ; 1 h ; Debian 451, Ubuntu $1\,349$ & \texttt{cnp\_endurance\_multivm\_20260918T130822Z\_\_summary.json} \\
 Saturation sur deux VM & Coude 8--16 tâches/s ; 3 échecs sur $11\,430$ & \texttt{agent3\_saturation\_multivm\_20261104T142325Z\_\_saturation\_summary.json} \\
 Détection HDFS répartie sur deux VM & $2\,000/2\,000$ ; F1 0,892308 ; Debian $2\,000$, Ubuntu 0 & \texttt{hdfs\_multivm\_cnp\_20261104T135345Z\_\_hdfs\_multivm\_summary.json} \\
+Cycle de promotion et de rejet, modèle initial fort & 25 décisions, contrôles 25/25 ; 0 promotion ; cycle non exercé & E-R3-GOVERNANCE-CYCLE ; \path{experiments/phase_revision_20261112/E-R3-GOVERNANCE-CYCLE/summary.json} \\
+Cycle de promotion et de rejet, modèle initial faible & 6 promotions, 19 rejets, contrôles 25/25 ; R3 vérifiée ; test i.i.d. $+0{,}0358$ [$0{,}0255$ ; $0{,}0461$] ; test DDoS non confirmé & E-R3-GOVERNANCE-CYCLE-B ; \path{experiments/phase_revision_20261112/}\allowbreak\path{E-R3-GOVERNANCE-CYCLE-B/summary.json} \\
 Évaluation de la corrélation & F1 0,812500 ; corpus étendu : précision 0,9884, rappel 0,5973 & \path{data/processed/final_experiments_2026/correlation_synthetic_summary.json} ; \texttt{agent5\_correlation} \\
 \bottomrule
 \end{longtable}
@@ -209,7 +211,7 @@ H2 & H5a & Contrôle ; précise l'hypothèse initiale sur la mémoire & E-H5-MEM
 H3 & H3 & Programme initial & Routeur open-set ; E-H3B-STRICT-HOLDOUT (E-H3B-FAMILY-MODELS non retenue) \\
 H4 & H4 & Programme initial & Campagnes CICIDS2017 dont E-CICIDS-HOLDOUT-FIX ; HDFS dont E-H4-HDFS-BLOCK-BASELINES ; BGL ; CSE-CIC-IDS2018 \\
 R1, R2 & H1, H2 initiales & Programme initial, reclassées en exigences & Couverture multiformat ; panne appariée A--D ; E-R2-AGENTS-NO-STORE \\
-R3 & H5 initiale (partie) & Programme initial & Aucune campagne de promotion et de rejet \\
+R3 & H5 initiale (partie) & Programme initial & E-R3-GOVERNANCE-CYCLE ; E-R3-GOVERNANCE-CYCLE-B (conçu après lecture du premier) \\
 --- & H5b & Programme initial (priorisation) ; non retenue, faute de mesure & Aucune \\
 \bottomrule
 \end{tabularx}
@@ -318,9 +320,9 @@ Les valeurs qui ne disposent pas de cette définition ne sont pas reprises dans 
 \midrule
 Code de comparaison & IMPLÉMENTÉ & Infrastructure présente dans le dépôt. \\
 Essai à blanc & TESTÉ & Décision simulable sans remplacement du modèle actif. \\
-Comparaison exécutée & PARTIEL & Certaines branches et candidats sont comparés. \\
-Promotion/rejet observé & NON ÉVALUÉ & Pas de cycle complet et répété démontré. \\
-Bénéfice après mise à jour & NON ÉVALUÉ & Aucune amélioration globale mesurée. \\
+Comparaison exécutée & VÉRIFIÉ & 50 décisions sur une validation figée, en deux cycles de 25 (CICIDS2017). \\
+Promotion/rejet observé & VÉRIFIÉ & Premier cycle : 25 rejets, aucune promotion ; second cycle, conçu après lecture du premier : 6 promotions, 19 rejets ; intégrité vérifiée par empreintes. \\
+Bénéfice après mise à jour & PARTIEL & Test i.i.d. : $+0{,}0358$ en F1, IC [$0{,}0255$ ; $0{,}0461$], depuis un modèle initial volontairement faible ; test DDoS : non confirmé. \\
 Mise à jour autonome continue & PERSPECTIVE & Hors du prototype évalué. \\
 \bottomrule
 \end{tabularx}

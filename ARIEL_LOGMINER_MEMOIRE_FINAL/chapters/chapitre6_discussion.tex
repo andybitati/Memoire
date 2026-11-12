@@ -28,7 +28,7 @@ Reprise sans doublon & Magasin d'idempotence & Panne appariée, chaque architect
 Mémoire & Compteur lissé par agent ou répartiteur & Mémoire activée ou non, fiabilité hétérogène, comparateur centralisé & H2 soutenue pour le compteur simulé ; effet non attribuable aux agents \\
 Distribution & Deux machines, Redis & Endurance, saturation, détection HDFS répartie & Exécution répartie démontrée ; capacité non accrue \\
 Corrélation & Hôte, fenêtre, clés & Baselines sur corpus synthétique & En circuit fermé seulement \\
-Gouvernance, interface & Promotion, tableau de bord & Essai à blanc ; aucune mesure auprès d'analystes & Exigence R3 non vérifiée \\
+Gouvernance, interface & Promotion, tableau de bord & Essai à blanc ; deux cycles de promotion et de rejet ; aucune mesure auprès d'analystes & Exigence R3 vérifiée sur un jeu ; interface non évaluée \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -85,8 +85,14 @@ La mémoire persistante fournit un état aux décisions sans démontrer, par sa 
 adaptation bénéfique ; son effet sur la priorisation des anomalies n'a pas été mesuré. De
 même, le registre, l'essai à blanc et les chemins de promotion sont des briques, non une
 validation MLOps : la littérature en exige des tests, une surveillance et des revues
-continues \cite{sculley2015debt,breck2017mltest,nist2023airmf}, qu'aucun cycle répété ne
-réalise ici.
+continues \cite{sculley2015debt,breck2017mltest,nist2023airmf}. Les cycles réalisés
+vérifient que la règle décide comme prévu et que chaque remplacement est réversible ; ils
+montrent aussi ses limites. Avec un seuil de 0,02, un modèle initial déjà à 0,99 ne peut
+plus être remplacé, si bien que le premier cycle n'exerce que le rejet ; dans le second, un
+modèle promu peut faire obstacle à de meilleurs candidats, et la validation, tirée de la
+même distribution, ne prévient pas l'échec sur le scénario DDoS
+(section~\ref{sec:r3-cycle}). Une gouvernance en exploitation devrait donc évaluer les
+candidats sur des données plus récentes que celles de l'entraînement.
 
 \section{Hétérogénéité, normalisation et corrélation}
 

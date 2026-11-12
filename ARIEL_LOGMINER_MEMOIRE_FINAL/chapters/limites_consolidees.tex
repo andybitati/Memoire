@@ -97,8 +97,12 @@ reprise en exécution distribuée. Les campagnes Contract Net antérieures à la
 quelques tâches ; la comparaison reprise avec le coordinateur corrigé n'en perd aucune, et sa
 conclusion est inchangée. Le coordinateur Redis n'a pas reçu cette correction. Dans la panne appariée, l'absence
 de doublon provient du magasin d'idempotence : il l'évite aussi lorsqu'il est ajouté aux
-architectures de référence, et son retrait la fait réapparaître chez les agents. La mise à jour contrôlée des modèles dispose d'un mode
-d'essai à blanc, mais d'aucun cycle complet et répété de promotion et de rejet
+architectures de référence, et son retrait la fait réapparaître chez les agents. La mise à jour contrôlée des modèles n'est vérifiée en
+cycle que sur CICIDS2017, avec des candidats supervisés fixés et des décisions automatiques ;
+le cycle qui l'établit a été conçu après un premier où aucune promotion n'était atteignable,
+et son bénéfice ne vaut que pour un test de même distribution, à partir d'un modèle
+initial volontairement faible. Ni les retours de l'analyste, ni les familles non
+supervisées, ni une mise à jour continue n'ont été éprouvés
 (tableau~\ref{tab:statut-model-update}).
 
 \paragraph{Statut du système.}

@@ -231,7 +231,7 @@ Lorsqu'une évolution est envisagée, le système distingue le modèle courant, 
 \Delta M = M_{\text{candidat}} - M_{\text{courant}}, \qquad
 \text{promouvoir} \iff \Delta M \geq \delta_{\min},
 \]
-où $\delta_{\min}$ est le gain minimal exigé. Le code de comparaison dispose d'un mode d'essai à blanc (\textit{dry-run}) qui calcule la décision sans remplacer le modèle. En cas de promotion, le modèle courant est sauvegardé avant d'être remplacé ; dans l'essai de bout en bout, des empreintes SHA-256 vérifient que la sauvegarde correspond au modèle remplacé et que le nouveau modèle courant est bien le candidat. L'évaluation ne couvre pas une succession de promotions et de rejets en exploitation : l'infrastructure est implémentée, son bénéfice n'est pas mesuré.
+où $\delta_{\min}$ est le gain minimal exigé. Le code de comparaison dispose d'un mode d'essai à blanc (\textit{dry-run}) qui calcule la décision sans remplacer le modèle. En cas de promotion, le modèle courant est sauvegardé avant d'être remplacé ; dans l'essai de bout en bout, des empreintes SHA-256 vérifient que la sauvegarde correspond au modèle remplacé et que le nouveau modèle courant est bien le candidat. Deux cycles de promotion et de rejet sur CICIDS2017 vérifient la règle et ces contrôles d'intégrité (section~\ref{sec:r3-cycle}) ; ils ne mesurent pas le bénéfice d'une succession de mises à jour en exploitation.
 
 \section{Contrat de message, bus et attribution des tâches}
 
