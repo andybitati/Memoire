@@ -7,8 +7,9 @@ qui est nécessaire à la lecture d'un résultat, et renvoient ici pour le déta
 \paragraph{Données et généralisation.}
 Aux réserves de validité externe déjà formulées pour CICIDS2017 s'ajoute l'emploi des CSV
 d'origine, sans les corrections publiées \cite{engelen2021troubleshooting,lanvin2023errors},
-pour toutes les campagnes sauf la répétition du holdout par scénario sur la version corrigée
-(section~\ref{sec:cicids-wtmc}), qui exclut les flux tentés au lieu de les compter comme bénins.
+pour toutes les campagnes sauf les deux répétitions du holdout par scénario sur la version corrigée
+(section~\ref{sec:cicids-wtmc}). La première exclut les flux tentés ; la seconde les compte comme
+bénins selon la recommandation des auteurs. Les deux conduisent à la même décision.
 Le score dépend fortement du protocole (section~\ref{sec:cicids-resultats}), et le défaut
 d'échantillonnage de la première campagne du holdout par scénario est traité plus haut dans ce chapitre (validité interne). La provenance des deux fichiers CSE-CIC-IDS2018 a été
 vérifiée par un nouveau téléchargement depuis la source : leurs empreintes coïncident avec

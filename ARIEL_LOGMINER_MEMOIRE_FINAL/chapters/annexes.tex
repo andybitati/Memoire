@@ -167,6 +167,7 @@ Corpus Linux/auth (provenance) & Jeu Kaggle « linux\_auth\_log-anomalies » (L\
 Couverture multiformat & $7\,001/7\,001$ ; une fixture Apache & \texttt{multiformat\_balanced\_20260910T094422Z} ; \texttt{agent5\_multiformat\_20261104T150111Z} \\
 Adaptateur de flux réseau, remplissage du schéma & CICIDS2017 : 2/7 champs réseau ; CSE-CIC-IDS2018 : 4/7 ; aucune fuite d'étiquette & E-NORM-NETWORK-FLOWS ; \path{experiments/phase_revision_20261112/E-NORM-NETWORK-FLOWS/summary.json} \\
 CICIDS2017 corrigé (WTMC 2021), holdout par scénario & Aucun modèle ne bat le tout positif : F1 0,20 à 0,23 contre 0,34 ; DDoS 0,99 & E-CICIDS-WTMC2021-HOLDOUT ; \path{experiments/phase_revision_20261112/E-CICIDS-WTMC2021-HOLDOUT/decision.json} \\
+CICIDS2017 corrigé, flux tentés comptés bénins & Même décision : F1 0,20 à 0,22 contre 0,34 ; au plus 2 scénarios gagnés sur 5 & E-CICIDS-WTMC2021-ATTEMPTED-BENIGN ; \path{experiments/phase_revision_20261112/E-CICIDS-WTMC2021-ATTEMPTED-BENIGN/decision.json} \\
 Diagnostic de saturation sur deux VM & Deux VM 23,4 t/s ; Debian seule 24,4 ; Ubuntu seule 14,9 ; Ubuntu 0 \% des tâches & E-MULTIVM-SATURATION-DIAG ; \path{experiments/phase_revision_20261112/E-MULTIVM-SATURATION-DIAG/summary.json} \\
 Inférence de bout en bout & $1\,400/1\,401$ & \texttt{multisource\_cnp\_model\_inference\_by\_source.csv} \\
 \multicolumn{3}{l}{\textit{Orchestration et distribution}} \\
