@@ -103,7 +103,7 @@ feedback/.style={-{Latex[length=2.2mm]}, dashed, thick}
 \draw[feedback] (bus.west) -- (audit.east);
 \end{tikzpicture}
 }
-\caption{Architecture logique d'Ariel \logminer{}. Source : auteur.}
+\caption{Architecture logique d'Ariel \logminer{}. Source : nous-même.}
 \label{fig:architecture-logique}
 \end{figure}
 
@@ -161,14 +161,14 @@ avec des composantes bornées entre 0 et 1 : confiance de capacité $C$, fiabili
 \begin{figure}[H]
 \centering
 \input{figures/tikz_architecture_multi_agent.tex}
-\caption[Architecture multi-agents du prototype.]{Architecture multi-agents du prototype. Les identifiants sont ceux des campagnes dans un seul processus ; sur deux machines virtuelles, les agents sont \texttt{debian-alpha} et \texttt{ubuntu-beta}, reliés par Redis Streams. Les mécanismes simples (bus, magasin d'idempotence, compteur de fiabilité) figurent sous les agents. Source : auteur.}
+\caption[Architecture multi-agents du prototype.]{Architecture multi-agents du prototype. Les identifiants sont ceux des campagnes dans un seul processus ; sur deux machines virtuelles, les agents sont \texttt{debian-alpha} et \texttt{ubuntu-beta}, reliés par Redis Streams. Les mécanismes simples (bus, magasin d'idempotence, compteur de fiabilité) figurent sous les agents. Source : nous-même.}
 \label{fig:architecture-multi-agent}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \input{figures/tikz_contract_net_sequence.tex}
-\caption[Séquence Contract Net implémentée.]{Séquence Contract Net implémentée, pour une tâche, trois agents et le magasin d'idempotence. Source : auteur, d'après le code du coordinateur.}
+\caption[Séquence Contract Net implémentée.]{Séquence Contract Net implémentée, pour une tâche, trois agents et le magasin d'idempotence. Source : nous-même, d'après le code du coordinateur.}
 \label{fig:contract-net-sequence}
 \end{figure}
 
@@ -301,7 +301,7 @@ traitement
 -- (envelope.south);
 \end{tikzpicture}
 }
-\caption{Séparation entre le contrat métier et l'enveloppe de transport Redis. Source : auteur.}
+\caption{Séparation entre le contrat métier et l'enveloppe de transport Redis. Source : nous-même.}
 \label{fig:message-transport}
 \end{figure}
 
@@ -351,7 +351,7 @@ arrow/.style={<->, thick, >=Latex}
 \draw[arrow] (redis) -- (vm2);
 \end{tikzpicture}
 }
-\caption{Topologie de la validation multi-VM de laboratoire. Source : auteur.}
+\caption{Topologie de la validation multi-VM de laboratoire. Source : nous-même.}
 \label{fig:topologie-multivm}
 \end{figure}
 

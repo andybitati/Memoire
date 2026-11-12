@@ -14,7 +14,7 @@ tableau~\ref{tab:statut-hypotheses}.
 \centering
 \caption{Mécanismes du prototype : implémentation, évaluation et avantage mesuré.}
 \label{tab:synthese-mecanismes}
-\small
+\footnotesize
 \begin{tabularx}{\textwidth}{p{0.16\textwidth} p{0.19\textwidth} p{0.27\textwidth} X}
 \toprule
 \textbf{Mécanisme} & \textbf{Implémenté} & \textbf{Testé (comparateur)} & \textbf{Supérieur à l'alternative simple ?} \\
@@ -25,8 +25,8 @@ Spécialisation & Modèles par famille & Non-infériorité face à un modèle co
 Détection & Histogram (HBOS), régression logistique, forêts, Isolation Forest & Meilleure règle simple sur le même test & Non sous le critère préenregistré (F1) ; discrimination réelle en MCC et PR-AUC, sans transfert du seuil \\
 Négociation & Contract Net, utilité & Table statique ; répartiteur au moindre chargé & Non : H1 réfutée dans un seul processus \\
 Reprise sans doublon & Magasin d'idempotence & Panne appariée, chaque architecture avec et sans magasin & Exigence R2 satisfaite ; l'effet vient du magasin, non des agents (ablation complète) \\
-Mémoire & Compteur lissé par agent ou répartiteur & Mémoire activée ou non, fiabilité hétérogène, comparateur centralisé & H2 soutenue pour le compteur simulé ; effet non attribuable aux agents \\
-Distribution & Deux machines, Redis & Endurance, saturation, détection HDFS répartie & Exécution répartie démontrée ; capacité non accrue \\
+Mémoire & Compteur lissé par agent ou répartiteur & Mémoire activée ou non, fiabilité hétérogène, comparateur centralisé & H2 soutenue conditionnellement dans Contract Net ($p=0{,}9$), généralement dans le répartiteur centralisé ; effet non attribuable aux agents \\
+Distribution & Deux machines, Redis & Endurance, saturation, détection HDFS répartie, allocation dynamique & Exécution répartie démontrée ; capacité non accrue sous la politique historique, $+25\,\%$ avec allocation par la charge (non confirmé) ; Contract Net non supérieur au moindre chargé \\
 Corrélation & Hôte, fenêtre, clés & Baselines sur corpus synthétique & En circuit fermé seulement \\
 Gouvernance, interface & Promotion, tableau de bord & Essai à blanc ; deux cycles de promotion et de rejet ; aucune mesure auprès d'analystes & Exigence R3 vérifiée sur un jeu ; interface non évaluée \\
 \bottomrule
@@ -79,6 +79,27 @@ Celery exige des tâches idempotentes lorsque l'acquittement est tardif
 \cite{celery2026tasks} ; Kafka rappelle que l'exactement-une-fois dépend du périmètre
 transactionnel \cite{kafka2026semantics}. L'ablation, dans les deux sens, confirme cette
 séparation : l'idempotence n'est pas un bénéfice propre aux agents.
+
+\paragraph{Routage et spécialisation : trois propositions dans H3.}
+H3 réunit trois propositions qui n'appellent pas le même protocole. Nous les distinguons ici
+après coup, pour lire les résultats, sans modifier l'énoncé fixé en introduction.
+\emph{H3a} : le routage réduit les exécutions incompatibles. Avec le routeur, les 43 fichiers
+connus acceptés sont tous orientés vers leur famille, les 20 fichiers inconnus sont rejetés et
+3 fichiers connus sur 46 sont écartés à tort. La chaîne sans routage n'a pas été exécutée ;
+une chaîne unique traiterait d'ailleurs, par construction, chaque fichier inconnu ou d'une
+autre famille avec un traitement incompatible. La comparaison ne serait informative que face
+à une alternative non triviale, comme une table statique, qu'aucun corpus de sources
+indépendantes ne permettait d'exécuter (section~\ref{sec:limites}). H3a reste non tranchée.
+\emph{H3b} : un modèle spécialisé par famille n'est pas inférieur à un modèle commun. C'est la
+seule des trois propositions éprouvée par un protocole fixé avant l'exécution : la
+non-infériorité est établie pour Linux/auth et UNSW-NB15, mais non pour CICIDS2017, dont la
+borne inférieure vaut $-0{,}0190$ pour une marge de $-0{,}01$ (section~\ref{sec:e-h3b}) ;
+selon la règle, H3b n'est pas établie. \emph{H3c} : le routage et la spécialisation réunis
+préservent ou améliorent la performance de bout en bout. Aucune campagne ne la mesure :
+l'évaluation de H3b suppose une affectation parfaite de la famille, et le routeur n'a pas été
+chaîné aux modèles spécialisés sur un corpus étiqueté. Ainsi décomposée, H3 n'est pas réfutée,
+mais une seule de ses trois propositions a été mise à l'épreuve, et elle n'est pas établie.
+L'énoncé initial était sans doute trop large pour être tranché par une seule campagne.
 
 \paragraph{Mémoire et gouvernance.}
 La mémoire persistante fournit un état aux décisions sans démontrer, par sa présence, une

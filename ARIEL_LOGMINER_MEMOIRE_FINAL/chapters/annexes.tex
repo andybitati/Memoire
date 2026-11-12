@@ -58,7 +58,7 @@ sont des représentations.
 
 Les empreintes SHA-256 établissent que les artefacts n'ont pas changé depuis leur
 production ; elles n'établissent pas que les calculs sont exacts. Certaines campagnes ont été
-rejouées à l'identique dans l'environnement de l'auteur ; aucune n'a été reproduite par un
+rejouées à l'identique dans notre environnement ; aucune n'a été reproduite par un
 tiers. Un rejeu reproduit d'ailleurs les défauts d'un programme aussi fidèlement que ses
 résultats (section~\ref{sec:preenregistrement}).
 
@@ -174,8 +174,8 @@ Inférence de bout en bout & $1\,400/1\,401$ & \texttt{multisource\_cnp\_model\_
 \multicolumn{3}{l}{\textit{Orchestration et distribution}} \\
 Benchmark A--D & 160 exécutions ; $264\,000$ tâches ; tableau~\ref{tab:benchmark-debit} & \texttt{ma\_20260909T160812Z\_34016\_\_statistics.csv} \\
 Surcoût relatif estimé sur une inférence réelle & 0,75 à 0,84 ms par tâche ; 0,71 à 0,79\,\% de 105,5 ms (estimation, non mesurée) & \path{experiments/phase_revision_20261112/P1-OVERHEAD-ESTIMATE/overhead_estimate.csv} \\
-Benchmark sur inférence réelle (Isolation Forest HDFS, 21 ms) & C/A 0,988 ; surcoût C 1,3 \% [$-1{,}4$ ; 4,0] ; 3 workers : C/A 0,938 ; additivité indéterminée & E-QR2-REAL-INFERENCE ; \path{experiments/phase_revision_20261112/E-QR2-REAL-INFERENCE/summary.json} \\
-Surcoût intra-tâche (durée totale moins appel au modèle) & C : 0,23 ms micro, 0,39 ms réel, 1,95 \% ; D : 2,05 \% ; additif confirmé & E-QR2-OVERHEAD-DIRECT ; \path{experiments/phase_revision_20261112/E-QR2-OVERHEAD-DIRECT/summary.json} \\
+Benchmark sur inférence réelle (Isolation Forest HDFS, environ 20 ms) & C/A 0,988 ; surcoût C 1,3 \% [$-1{,}4$ ; 4,0] ; 3 workers : C/A 0,938 ; additivité indéterminée & E-QR2-REAL-INFERENCE ; \path{experiments/phase_revision_20261112/E-QR2-REAL-INFERENCE/summary.json} \\
+Surcoût intra-tâche (durée totale moins appel au modèle) & C : 0,23 ms micro, 0,39 ms réel, 1,95 \% ; D : 2,05 \% ; additif en exécution séquentielle seulement ; 3 workers : écart de bout en bout C 1,49 ms & E-QR2-OVERHEAD-DIRECT ; \path{experiments/phase_revision_20261112/E-QR2-OVERHEAD-DIRECT/summary.json} \\
 Panne appariée A--D & Doublons A 10, B 10, C 0, D 0 ; A+I et B+I 0 & \texttt{agent3\_paired\_failure\_abcd\_20261104T141803Z\_\_summary.json} \\
 Agents sans magasin d'idempotence (ablation) & C sans magasin 10, D sans magasin 10 doublons ; contrôles A--D, A+I, B+I reproduits & E-R2-AGENTS-NO-STORE ; \path{experiments/phase_revision_20261112/E-R2-AGENTS-NO-STORE/summary.json} \\
 Mémoire et fiabilité & Contract Net : gain à $p=0{,}9$ seulement ; répartiteur centralisé : gain aux trois niveaux & E-H5-MEMORY-RELIABILITY ; E-H2-MEMORY-CENTRAL ; \path{experiments/phase_revision_20261112/E-H2-MEMORY-CENTRAL/summary.json} \\

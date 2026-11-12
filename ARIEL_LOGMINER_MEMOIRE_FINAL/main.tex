@@ -404,11 +404,15 @@ automatique, reproductibilité.
 \clearpage
 \pagenumbering{arabic}
 
-% Tableaux numérotés de façon continue (1, 2, ...) dans tout le mémoire, annexes comprises
+% Tableaux et figures numérotés de façon continue (1, 2, ...) dans tout le mémoire, annexes comprises
 \counterwithout{table}{chapter}
 \setcounter{table}{0}
 \renewcommand{\thetable}{\arabic{table}}
 \renewcommand{\theHtable}{\arabic{table}}
+\counterwithout{figure}{chapter}
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{\arabic{figure}}
+\renewcommand{\theHfigure}{\arabic{figure}}
 \include{chapters/chapitre1_introduction}
 
 % Chapitre 1
