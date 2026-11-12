@@ -20,8 +20,8 @@ fonctionne en mode \texttt{match\_only} sur la validation et le test, et l'empre
 validation. Ces contrôles écartent les formes de fuite instrumentées dans ce pipeline.
 
 Sur CICIDS2017, une partition aléatoire place dans l'entraînement et le test des
-observations issues des mêmes scénarios. Le F1 de $0{,}9951$ qu'elle produit répond à cette
-question, mais ne décrit pas un transfert vers un scénario ou une période nouvelle ; la
+observations issues des mêmes scénarios. Le F1 presque parfait qu'elle produit
+(section~\ref{sec:cicids-resultats}) répond à cette question, mais ne décrit pas un transfert vers un scénario ou une période nouvelle ; la
 séparation temporelle et le holdout par scénario y répondent mieux et donnent des
 performances nettement plus faibles.
 
@@ -37,8 +37,11 @@ retenait les premières lignes du premier fichier lu : le modèle n'apprenait qu
 scénario d'attaque. Cette campagne a été corrigée, par un tirage aléatoire dans tous les
 fichiers d'entraînement, puis réexécutée selon un protocole versionné avant exécution ;
 seuls les nouveaux résultats sont utilisés (section~\ref{sec:cicids-resultats}). L'audit a
-été mené par lecture du code : aucun test automatisé ne protège ces chargeurs contre une
-régression.
+été mené par lecture du code. Des tests automatisés couvrent désormais les chargeurs de la
+comparaison des modèles spécialisés (CICIDS2017, UNSW-NB15, Linux/auth) : trois d'entre eux
+échouent sur la version fautive, qui retenait les premières lignes et laissait l'étiquette
+parmi les variables, et passent sur la version corrigée. Le chargeur du holdout par
+scénario corrigé n'est couvert par aucun test.
 
 \paragraph{Routeur et variantes BGL.}
 Pour le routeur open-set, le seuil est calibré sur les seules sources connues, puis gelé
@@ -50,12 +53,10 @@ elles sont rapportées en annexe comme exploratoires.
 
 CICIDS2017 repose sur des scénarios construits et des caractéristiques déjà extraites ; il
 permet de comparer des protocoles dans un environnement contrôlé, non de prédire un
-comportement sur d'autres capteurs, topologies ou périodes. HDFS et BGL représentent chacun
-un seul système ; Linux/auth est synthétique. Sur BGL, $89{,}81\,\%$ des unités de test
-utilisent un template absent de l'entraînement : un autre taux de nouveauté changerait
-sensiblement les performances. Les campagnes distribuées portent sur deux machines virtuelles
-et un broker central ; elles ne renseignent ni sur les partitions réseau, ni sur le
-fonctionnement multi-site, ni sur la haute disponibilité du broker.
+comportement sur d'autres capteurs, topologies ou périodes. Sur BGL, un autre taux de
+nouveauté lexicale changerait sensiblement les performances. Les autres réserves de portée,
+propres à chaque jeu et à l'exécution distribuée, sont détaillées à la
+section~\ref{sec:limites}.
 
 \section{Validité de construit}
 
@@ -63,9 +64,7 @@ Une métrique doit représenter la propriété annoncée. Dans HDFS, la vérité
 au niveau du bloc : le F1 au niveau événement ne peut pas être l'indicateur principal, et
 l'agrégation par \texttt{block\_id} aligne la prédiction sur l'unité des étiquettes. Pour
 BGL, un F1 global sans distinction entre templates connus et inconnus masquerait le rôle de
-la nouveauté lexicale. La \texttt{decision\_margin} du routeur mesure un écart entre scores
-heuristiques, non une probabilité. La couverture multi-format vérifie la lecture, le parsing
-et l'émission des unités présentes, non la complétude des champs. L'exécution effective d'un
+la nouveauté lexicale. L'exécution effective d'un
 modèle, établie pour $1\,400$ unités sur $1\,401$, ne dit rien de l'exactitude de sa
 prédiction.
 
@@ -77,10 +76,11 @@ générale de la négociation, ce qui justifie la comparaison au répartiteur au
 
 \section{Validité statistique}
 
-Les comparaisons d'architectures et de mécanismes utilisent trente graines appariées et des
-intervalles de confiance à 95\,\%. Une graine ne crée cependant pas un environnement
-indépendant : les trente répétitions partagent la machine, la charge synthétique et les
-défaillances injectées, et ne reproduisent pas la diversité des charges et des pannes
+Les comparaisons de mécanismes, mémoire et Contract Net, utilisent trente graines appariées ;
+le benchmark des architectures A--D et la panne appariée en utilisent dix. Toutes sont
+assorties d'intervalles de confiance à 95\,\%. Une graine ne crée cependant pas un
+environnement indépendant : les répétitions partagent la machine, la charge synthétique et
+les défaillances injectées, et ne reproduisent pas la diversité des charges et des pannes
 réelles. De même, les mesures par graine et par catégorie d'attaque de la comparaison des
 modèles spécialisés partagent des observations ; l'intervalle est calculé sur les moyennes
 par graine. Sur HDFS, les intervalles sont calculés au niveau du bloc, unité de
@@ -95,12 +95,16 @@ d'échec de $0{,}9$, doit néanmoins être lue avec cette réserve.
 \section{Portée du versionnement des protocoles}
 \label{sec:preenregistrement}
 
-Sept protocoles complémentaires ont été rédigés, assortis de l'empreinte de leur programme,
+Quatorze protocoles complémentaires ont été rédigés, assortis de l'empreinte de leur programme,
 puis versionnés dans le dépôt local avant leur exécution : la comparaison des modèles
 spécialisés, écartée pour un défaut de chargement, et sa version stricte ; les baselines HDFS
 au niveau bloc ; la mémoire sous fiabilité hétérogène ; Contract Net face à la table
-statique, puis face au moindre chargé ; enfin la réexécution corrigée du holdout par
-scénario de CICIDS2017, dont le programme a été versionné avec le protocole. Pour les six
+statique, puis face au moindre chargé ; la réexécution corrigée du holdout par
+scénario de CICIDS2017 ; l'ablation du magasin d'idempotence sur les agents ; la
+comparaison au moindre chargé avec le coordinateur corrigé ; le benchmark sur une
+inférence réelle et sa mesure intra-tâche ; l'adaptateur de flux réseau ; le diagnostic de
+saturation sur deux machines virtuelles ; enfin la répétition du holdout sur CICIDS2017
+corrigé. Pour ces huit derniers, le programme a été versionné avec le protocole. Pour les six
 premiers, les programmes n'ont été versionnés qu'après l'exécution ; leur contenu antérieur
 est garanti par l'empreinte inscrite dans le protocole. L'ordre des versions et des
 exécutions est vérifiable dans l'historique du dépôt. L'antériorité des protocoles n'a pas
@@ -108,7 +112,9 @@ exécutions est vérifiable dans l'historique du dépôt. L'antériorité des pr
 versions antérieures non conservées, ni la justesse du code, comme le montre la campagne
 écartée. Trois de ces protocoles ont été conçus après lecture de résultats antérieurs. Les
 hypothèses générales et leurs grandeurs de décision n'ont pas été fixées avant les
-expériences ; les autres campagnes ne sont pas présentées comme préenregistrées.
+expériences : H3 et H4 viennent du programme initial sans seuil chiffré, H1 et H2 ont été
+formulées après les campagnes principales, au vu de leurs résultats. Les autres campagnes
+ne sont pas présentées comme préenregistrées.
 
 \section{Risques résiduels}
 
@@ -126,10 +132,10 @@ les contrôles réalisés.
 \midrule
 Proximité entraînement/test & Partitions par scénario, temporelle et par bloc & Jeux publics et scénarios limités. \\
 Parsing contaminé & Drain3 ajusté sur l'entraînement, état gelé & Vérifié pour les pipelines HDFS et BGL. \\
-Échantillonnage biaisé & Audit des chargeurs ; holdout CICIDS corrigé et réexécuté & Aucun test automatisé. \\
+Échantillonnage biaisé & Audit des chargeurs ; holdout CICIDS corrigé et réexécuté, puis répété sur la version corrigée du jeu & Tests automatisés pour les chargeurs des modèles spécialisés seulement. \\
 Nouveauté lexicale BGL & Groupes connu/inconnu, règle de sévérité & Aucun positif dans le groupe connu. \\
 Surajustement du rejet & Calibration sur connus seulement & Faux rejets sur des variantes connues ($3/46$). \\
-Confusion distribution/capacité & Saturation sur deux machines & Aucun gain de capacité observé. \\
+Confusion distribution/capacité & Saturation sur deux machines, diagnostic en trois configurations & Aucun gain de capacité : un seul agent exécute tout, en série. \\
 Confusion mémoire/gain & Mémoire activée ou non, fiabilité hétérogène & Gain établi seulement à $p = 0{,}9$. \\
 Confusion négociation/charge & Répartiteur au moindre chargé & Un seul processus ; distribution non testée. \\
 \bottomrule

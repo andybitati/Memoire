@@ -7,6 +7,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
+\addto\captionsfrench{\renewcommand{\tablename}{Tableau}}
 \usepackage{lmodern}
 \usepackage{microtype}
 
@@ -275,15 +276,15 @@ ANNÉE ACADÉMIQUE : 2025--2026
 \chapter*{Résumé}
 \addcontentsline{toc}{chapter}{Résumé}
 
-Ce mémoire conçoit et évalue en laboratoire Ariel \logminer{}, une architecture multi-agents légère pour l'analyse de journaux système et réseau de formats différents. Les agents sont des composants logiciels qui déclarent leurs capacités, conservent un état et se répartissent les tâches par le protocole Contract Net. Le travail ne propose aucun nouvel algorithme : il mesure ce que cette organisation apporte et ce qu'elle coûte, en confrontant chaque mécanisme à une solution plus simple, sur un ou deux hôtes.
+Ce mémoire conçoit et évalue en laboratoire Ariel \logminer{}, une architecture multi-agents légère pour l'analyse de journaux système et réseau de formats différents. Ses agents déclarent leurs capacités, conservent un état et se répartissent les tâches par le protocole Contract Net. La question posée est la suivante : les propriétés qu'une telle architecture semble apporter tiennent-elles à l'organisation en agents, ou à des mécanismes plus simples qu'elle embarque et qu'une organisation centralisée peut reproduire ? Chaque mécanisme est confronté, sur un ou deux hôtes, à une alternative plus simple ; les comparaisons de contrôle suivent des protocoles versionnés avant leur exécution.
 
-Les scores dépendent d'abord du protocole d'évaluation. Sur CICIDS2017, le F1 d'un Random Forest passe de $0{,}9951$ en séparation aléatoire à $0{,}4374$ lorsque les derniers jours de capture sont tenus à l'écart. Dans le holdout par scénario corrigé, aucun des cinq modèles ne dépasse la prédiction systématiquement positive. Sur CICIDS2017, HDFS, BGL et CSE-CIC-IDS2018, aucun modèle retenu ne dépasse la meilleure règle simple évaluée sur le même test ; H4 est donc réfutée dans ce périmètre. Ces constats répliquent des critiques déjà publiées.
+Le prototype fonctionne de bout en bout. Ses adaptateurs lisent tous les formats testés, son routeur écarte les sources inconnues au prix de quelques rejets à tort, et chaque résultat reste rattaché à la donnée et à l'artefact qui l'ont produit. Après une panne contrôlée, aucune tâche n'est perdue ni dupliquée. Le coût de l'organisation en agents est faible sur une tâche réelle : environ $0{,}4$~ms par tâche, soit 2~\% d'une inférence de 20~ms, alors qu'il domine entièrement des microtâches presque vides.
 
-Les adaptateurs lisent tous les formats testés, mais le schéma commun reste vide pour les flux réseau tabulaires. Chaque source est analysée séparément : aucun incident n'est reconstitué à partir de journaux système et de flux réseau. Le routeur écarte tous les fichiers inconnus testés, au prix de quelques rejets à tort.
+Ces propriétés tiennent toutefois à des mécanismes simples. L'absence de doublon provient du magasin d'idempotence : privés de ce magasin, les agents dupliquent l'effet comme les autres architectures. Face à une table statique, Contract Net réduit les échecs, mais, dans un seul processus, un répartiteur au moindre chargé, sans négociation, obtient les mêmes taux d'échec avec un meilleur débit, y compris après correction du coordinateur ; l'exécution répartie, où connaître la charge des agents a un coût, n'a pas été comparée. La mémoire de fiabilité n'apporte de gain établi que lorsque l'agent préféré échoue presque toujours, et une seconde machine virtuelle n'ajoute pas de capacité.
 
-Sur des microtâches, l'organisation en agents est nettement plus lente qu'un monolithe. L'absence de doublon après une panne tient au magasin d'idempotence, et non aux agents. Contract Net réduit les échecs par rapport à une table statique, mais un répartiteur au moindre chargé, sans négociation, obtient les mêmes taux d'échec avec un meilleur débit. La mémoire n'apporte de gain établi que pour une probabilité d'échec de $0{,}9$, et une seconde machine virtuelle n'ajoute pas de capacité.
+En détection, les scores dépendent d'abord du protocole. Sur CICIDS2017, le F1 d'un Random Forest passe de $0{,}9951$ en séparation aléatoire à $0{,}4374$ lorsque le test porte sur une journée et des attaques absentes de l'entraînement. Lorsqu'un scénario d'attaque est tenu à l'écart, aucun modèle ne dépasse en F1 la prédiction systématiquement positive : l'hypothèse selon laquelle un modèle léger bat la meilleure règle simple est réfutée sous son critère préenregistré. Les modèles classent pourtant mieux que le hasard, mais leur seuil ne se transfère pas à une attaque inconnue.
 
-Les exigences de lecture et de reprise sont satisfaites, tandis que le cycle de gouvernance n'est pas vérifié. H4 et l'hypothèse propre à Contract Net sont réfutées dans le périmètre testé ; le routage spécialisé, l'effet général de la mémoire et la priorisation ne sont pas établis. La contribution est méthodologique et d'ingénierie : une chaîne locale traçable et des comparaisons qui isolent l'effet de chaque mécanisme et montrent que, dans les conditions testées, une solution plus simple suffit souvent.
+Ces résultats valent pour un prototype de laboratoire : chaque source est analysée séparément, les flux réseau ne remplissent que deux à quatre des sept champs réseau du schéma, faute d'adresses dans les exports, et la corrélation n'est évaluée que sur des scénarios synthétiques. La contribution est méthodologique et d'ingénierie : une chaîne traçable et une méthode qui attribue chaque propriété au mécanisme qui la produit. Dans les conditions testées, ce mécanisme est le plus souvent une solution simple, que l'organisation en agents embarque sans la rendre nécessaire.
 
 \bigskip
 
@@ -300,15 +301,15 @@ automatique, reproductibilité.
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
 
-This thesis designs and evaluates in a laboratory Ariel \logminer{}, a lightweight multi-agent architecture for analyzing system and network logs of different formats. Its agents are software components that declare capabilities, keep a state and allocate tasks through the Contract Net protocol. The work proposes no new algorithm: it measures what this organization brings and what it costs, by confronting each mechanism with a simpler solution, on one or two hosts.
+This thesis designs and evaluates in a laboratory Ariel \logminer{}, a lightweight multi-agent architecture for analyzing system and network logs of different formats. Its agents declare capabilities, keep a state and allocate tasks through the Contract Net protocol. The question is whether the properties such an architecture appears to provide come from the agent organization, or from simpler mechanisms it embeds and that a centralized organization can reproduce. Each mechanism is confronted, on one or two hosts, with a simpler alternative; the control comparisons follow protocols versioned before their execution.
 
-Scores depend first on the evaluation protocol. On CICIDS2017, the F1 of a Random Forest falls from $0.9951$ under a random split to $0.4374$ when the last capture days are held out. In the corrected scenario holdout, none of the five models exceeds the always-positive predictor. Across CICIDS2017, HDFS, BGL and CSE-CIC-IDS2018, no retained model exceeds the best simple rule evaluated on the same test set; H4 is therefore refuted within this scope. These findings replicate published criticisms.
+The prototype works end to end. Its adapters read every tested format, its router rejects unknown sources at the cost of a few wrongful rejections, and every result remains linked to the data and the artifact that produced it. After a controlled failure, no task is lost or duplicated. The cost of the agent organization is small on a real task: about $0.4$~ms per task, that is 2\,\% of a 20~ms inference, whereas it entirely dominates nearly empty microtasks.
 
-The adapters read every tested format, but the common schema remains empty for tabular network flows. Each source is analyzed separately: no incident is reconstructed from both system logs and network flows. The router rejects all tested unknown files, at the cost of a few wrongful rejections.
+These properties, however, come from simple mechanisms. The absence of duplicates comes from the idempotency store: deprived of it, the agents duplicate the effect like the other architectures. Compared with a static table, Contract Net reduces failures, but, within a single process, a least-loaded dispatcher, without negotiation, reaches the same failure rates with higher throughput, including after the coordinator was corrected; distributed execution, where knowing agent load has a cost, was not compared. Reliability memory yields an established gain only when the preferred agent almost always fails, and a second virtual machine adds no capacity.
 
-On microtasks, the agent organization is markedly slower than a monolith. The absence of duplicates after a failure comes from the idempotency store, not from the agents. Contract Net reduces failures compared with a static table, but a least-loaded dispatcher, without negotiation, reaches the same failure rates with higher throughput. Memory yields an established gain only at a failure probability of $0.9$, and a second virtual machine adds no capacity.
+In detection, scores depend first on the protocol. On CICIDS2017, the F1 of a Random Forest falls from $0.9951$ under a random split to $0.4374$ when the test covers a day and attacks absent from training. When an attack scenario is held out, no model exceeds the always-positive predictor in F1: the hypothesis that a lightweight model beats the best simple rule is refuted under its preregistered criterion. The models nonetheless rank better than chance, but their threshold does not transfer to an unseen attack.
 
-The reading and recovery requirements are satisfied, whereas the governance cycle is not verified. H4 and the Contract-Net-specific hypothesis are refuted within the tested scope; specialized routing, the general effect of memory and prioritization are not established. The contribution is methodological and in engineering: a traceable local pipeline and comparisons that isolate the effect of each mechanism and show that, under the tested conditions, a simpler solution is often sufficient.
+These results hold for a laboratory prototype: each source is analyzed separately, network flows fill only two to four of the seven network fields of the schema, since the exports carry no addresses, and correlation is evaluated only on synthetic scenarios. The contribution is methodological and in engineering: a traceable pipeline and a method that attributes each property to the mechanism producing it. Under the tested conditions, this mechanism is most often a simple solution, which the agent organization embeds without making it necessary.
 
 \bigskip
 
@@ -326,47 +327,54 @@ machine learning, reproducibility.
 
 \addcontentsline{toc}{chapter}{Bokuse}
 
-Mémoire oyo ezali kolakisa Ariel \logminer{}, architecture moko ya
-multi-agents ya pete mpe oyo ekabolami na environnement ya laboratoire
-mpo na kosala analyse ya ba journaux ya système mpe ya réseau oyo ezali
-ya lolenge ndenge na ndenge. Agent moko ezali awa entité logicielle oyo
-ezali na makoki, état, mémoire mpe politique locale na yango ; ekoki
-kopesa proposition ya mosala, koboya yango, mpe na sima kosala yango na
-nzela ya ba handlers oyo ekokani na mosala yango. Négociation kati na
-ba agents etongami likolo ya protocole Contract Net oyo elimbolami
-polele, mpe transport ekoki kozala local to kosalema na nzela ya Redis.
-Autonomie mpe distribution ezali awa kolakisa bizaleli ya logiciel oyo
-emekami na laboratoire. Intelligence générale mpe fonctionnement ya SOC
-industriel ezali na libanda ya périmètre ya mosala oyo.
+Mémoire oyo ezali kolimbola mpe komeka na laboratoire Ariel \logminer{},
+architecture multi-agents ya pete mpo na kosala analyse ya ba journaux
+ya système mpe ya réseau oyo ezali na ba formats ndenge na ndenge. Ba
+agents ezali ba composants logiciels oyo elakisaka makoki na yango,
+ebombaka état mpe ekabolaka misala na nzela ya protocole Contract Net.
+Mosala oyo ezali kopesa algorithme ya sika te : ezali komeka nini
+organisation oyo ememaka mpe nini esengaka, na kokokanisa mécanisme moko
+na moko na solution moko ya pete koleka, na hôte moko to mibale.
 
-Évaluation emonisi mingimingi influence ya protocole expérimental likolo
-ya performances. Na CICIDS2017, F1 ya Random Forest ekiti uta
-$0{,}9951$ na séparation aléatoire kino $0{,}4374$ tango mikolo ya suka
-ya capture elongolami na entraînement. Na holdout corrigé par scénario,
-modèle moko te eleki prédiction tout positif. Na CICIDS2017, HDFS, BGL
-mpe CSE-CIC-IDS2018, modèle moko te eleki règle simple ya malamu koleka
-na test kaka wana ; H4 eréfutami na périmètre oyo.
+Ba scores etalelaka liboso protocole ya évaluation. Na CICIDS2017, F1 ya
+Random Forest ekiti uta $0{,}9951$ na séparation aléatoire kino
+$0{,}4374$ tango test esalemi na mokolo ya mitano (vendredi), nsima ya
+entraînement uta lundi kino jeudi ; na protocole oyo, modèle oyo eleki
+malamu, régression logistique, ekomi kaka $0{,}5566$. Na holdout corrigé
+par scénario, modèle moko te kati na mitano eleki prédiction tout
+positif. Na CICIDS2017, HDFS, BGL mpe CSE-CIC-IDS2018, modèle moko te
+eleki règle simple ya malamu koleka na test kaka wana ; H4 eréfutami na
+critère préenregistré (F1), atako ba modèles ekabolaka malamu koleka
+hasard (MCC, PR-AUC). Ba constats oyo ezongeli ba critiques oyo esilaki
+kobimisama.
 
-Ba adaptateurs etangi ba formats nyonso oyo emekamaki, kasi schéma commun
-etikali mpamba mpo na ba flux réseau tabulaires. Source moko na moko
+Ba adaptateurs etangi ba formats nyonso oyo emekamaki, kasi ba flux réseau
+etondisi kaka ba champs mibale kino minei kati na sambo ya schéma commun. Source moko na moko
 eanalyser séparément : incident moko te ereconstitué na ba journaux ya
 système mpe ba flux réseau esika moko. Routeur eboyi ba fichiers inconnus
-oyo emekamaki, kasi eboyi mpe ba fichiers connus mosusu na libunga.
+nyonso oyo emekamaki, kasi eboyi mpe ba fichiers connus mosusu na
+libunga. Na ba corpus synthétiques oyo etongami na ba clés na ye moko,
+corrélateur esangisi ba anomalies na précision makasi kasi na rappel
+moke.
 
 Na ba microtâches, organisation ya ba agents ezali malembe koleka
-monolithe. Kozanga doublon nsima ya panne ewuti na magasin d'idempotence,
+monolithe ; kasi na inférence ya solo (soki 21~ms), surcoût oyo emekami ezali
+kaka soki 2~\% (worker moko) mpe soki 6~\% (ba workers misato). Kozanga doublon nsima ya panne ewuti na magasin d'idempotence,
 kasi na ba agents te. Contract Net ekitisi ba échecs liboso ya table
-statique, kasi répartiteur ya moindre charge, kozanga négociation, ezwi ba
-taux d'échec kaka wana mpe débit ya malamu koleka. Mémoire ememi gain oyo
-endimisami kaka na probabilité d'échec ya $0{,}9$, mpe machine virtuelle
-ya mibale ebakisi capacité te.
+statique, kasi litomba yango ewumeli te soki ba graines ebongwani ; na
+processus moko, répartiteur ya moindre charge, kozanga négociation, ezwi
+ba taux d'échec kaka wana mpe débit ya malamu koleka. Mémoire ememi gain
+oyo endimisami kaka na probabilité d'échec ya $0{,}9$, mpe machine
+virtuelle ya mibale ebakisi capacité te.
 
-Ba exigences ya lecture mpe reprise esatisfer, kasi cycle ya gouvernance
-everifier te. H4 mpe hypothèse ya Contract Net eréfutami na périmètre oyo
-emekamaki ; routage spécialisé, effet général ya mémoire mpe priorisation
-endimisami te. Contribution ezali méthodologique mpe ya ingénierie :
-chaîne locale oyo ekoki kolandelama mpe ba comparaisons oyo ekabolaka
-effet ya mécanisme moko na moko.
+Exigence ya reprise esatisfer ; exigence ya lecture esatisfer kaka mpo na
+lecture mpe émission ; cycle ya gouvernance everifier te. Hypothèse ya
+Contract Net eréfutami na processus moko, H4 na critère préenregistré ; effet
+général ya mémoire endimisami te, mpe routage spécialisé etikali kozanga eyano. Contribution ezali
+méthodologique mpe ya ingénierie : chaîne locale oyo ekoki kolandelama
+mpe ba comparaisons oyo ekabolaka effet ya mécanisme moko na moko mpe
+emonisaka ete, na ba conditions oyo emekamaki, solution ya pete ekoki
+mingi mingi.
 
 \bigskip
 
@@ -396,7 +404,11 @@ automatique, reproductibilité.
 \clearpage
 \pagenumbering{arabic}
 
-% Introduction générale non numérotée
+% Tableaux numérotés de façon continue (1, 2, ...) dans tout le mémoire, annexes comprises
+\counterwithout{table}{chapter}
+\setcounter{table}{0}
+\renewcommand{\thetable}{\arabic{table}}
+\renewcommand{\theHtable}{\arabic{table}}
 \include{chapters/chapitre1_introduction}
 
 % Chapitre 1
@@ -417,10 +429,6 @@ automatique, reproductibilité.
 % Chapitre 6
 \include{chapters/chapitre6_discussion}
 
-% Chapitre 7
-\include{chapters/chapitre7_reproductibilite_deploiement}
-
-% Conclusion générale non numérotée
 \include{chapters/chapitre6_conclusion}
 
 % ============================================================

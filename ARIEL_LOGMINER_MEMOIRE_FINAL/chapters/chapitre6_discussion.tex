@@ -6,8 +6,8 @@
 Trois niveaux de preuve doivent être distingués pour chaque mécanisme du prototype : sa
 présence dans le code, son évaluation par une expérience, et son avantage mesuré sur une
 alternative plus simple soumise au même protocole. Le tableau~\ref{tab:synthese-mecanismes}
-les distingue mécanisme par mécanisme. Il ne contient aucun chiffre : les valeurs
-figurent au chapitre~\ref{chap:resultats}, et les statuts concordent avec le
+les distingue mécanisme par mécanisme ; les valeurs figurent au
+chapitre~\ref{chap:resultats}, et les statuts concordent avec le
 tableau~\ref{tab:statut-hypotheses}.
 
 \begin{table}[H]
@@ -19,13 +19,13 @@ tableau~\ref{tab:statut-hypotheses}.
 \toprule
 \textbf{Mécanisme} & \textbf{Implémenté} & \textbf{Testé (comparateur)} & \textbf{Supérieur à l'alternative simple ?} \\
 \midrule
-Lecture et normalisation & Adaptateurs, schéma commun & Lecture, émission et remplissage des champs par source & Sans objet : exigence R1, satisfaite ; aucun champ standard renseigné pour les flux tabulaires \\
+Lecture et normalisation & Adaptateurs, schéma commun & Lecture, émission et remplissage des champs par source & Sans objet : exigence R1, satisfaite pour la lecture et l'émission, rattachement non mesuré ; flux tabulaires : deux à quatre champs réseau sur sept avec l'adaptateur ajouté \\
 Routage & Routeur open-set & Rejet des inconnus et faux rejets ; chaîne sans routage non exécutée & Non établi : H3 non tranchée \\
 Spécialisation & Modèles par famille & Non-infériorité face à un modèle commun & Non établi (CICIDS) : H3 non tranchée \\
-Détection & Histogram (HBOS), régression logistique, forêts, Isolation Forest & Meilleure règle simple sur le même test & Non : H4 réfutée dans le périmètre testé (quatre jeux) \\
-Négociation & Contract Net, utilité & Table statique ; répartiteur au moindre chargé & Non : H-CNP réfutée dans un seul processus \\
-Reprise sans doublon & Magasin d'idempotence & Panne appariée, architectures avec et sans magasin & Exigence R2 satisfaite ; l'effet vient du magasin, non des agents \\
-Mémoire & Compteur lissé par agent & Mémoire activée ou non, fiabilité hétérogène & H5a non établie en général : seulement à $p = 0{,}9$, avec une équité moindre ; priorisation (H5b) non mesurée \\
+Détection & Histogram (HBOS), régression logistique, forêts, Isolation Forest & Meilleure règle simple sur le même test & Non sous le critère préenregistré (F1) ; discrimination réelle en MCC et PR-AUC, sans transfert du seuil \\
+Négociation & Contract Net, utilité & Table statique ; répartiteur au moindre chargé & Non : H1 réfutée dans un seul processus \\
+Reprise sans doublon & Magasin d'idempotence & Panne appariée, chaque architecture avec et sans magasin & Exigence R2 satisfaite ; l'effet vient du magasin, non des agents (ablation complète) \\
+Mémoire & Compteur lissé par agent & Mémoire activée ou non, fiabilité hétérogène & H2 non établie en général : seulement à $p = 0{,}9$, avec une équité moindre \\
 Distribution & Deux machines, Redis & Endurance, saturation, détection HDFS répartie & Exécution répartie démontrée ; capacité non accrue \\
 Corrélation & Hôte, fenêtre, clés & Baselines sur corpus synthétique & En circuit fermé seulement \\
 Gouvernance, interface & Promotion, tableau de bord & Essai à blanc ; aucune mesure auprès d'analystes & Exigence R3 non vérifiée \\
@@ -33,13 +33,9 @@ Gouvernance, interface & Promotion, tableau de bord & Essai à blanc ; aucune me
 \end{tabularx}
 \end{table}
 
-La lecture du tableau est univoque. Chaque mécanisme est implémenté, et la plupart sont
-testés ; aucun ne montre d'avantage mesuré sur l'alternative simple qui lui est opposée. Les
-propriétés observées du prototype, reprise sans doublon, répartition selon la charge,
-détection de templates ou de sévérités rares, s'expliquent par des mécanismes simples qu'il
-embarque, et non par l'organisation en agents. Les comparateurs manquants, chaîne sans
-routage et agents sans magasin d'idempotence, laissent les questions correspondantes non
-tranchées ; aucune inférence ne les comble.
+Chaque mécanisme est implémenté, et la plupart sont testés ; aucun ne montre d'avantage
+général sur l'alternative simple qui lui est opposée. Les propriétés observées du prototype
+s'expliquent par des mécanismes simples qu'il embarque, et non par l'organisation en agents.
 
 \section{Du score isolé à la validité du protocole}
 
@@ -48,78 +44,45 @@ d'analyse, à sa partition et à ses baselines. Cette dépendance est connue en 
 d'intrusion : Sommer et Paxson soulignent le décalage entre le monde fermé du laboratoire et
 les réseaux ouverts \cite{sommer2010outside}, et Arp et al. recensent les biais de
 sélection, les fuites et les comparaisons inadéquates qui fragilisent l'apprentissage
-appliqué à la sécurité \cite{arp2022dos}. Les expériences de ce mémoire en fournissent une
-réplication sur quatre jeux, non une découverte théorique.
-
-Sur CICIDS2017, la partition aléatoire produit un score très favorable, que la séparation
-temporelle fait chuter ; une fois l'échantillonnage corrigé, aucun des cinq modèles évalués
-en holdout par scénario ne dépasse la prédiction systématiquement positive
-(section~\ref{sec:cicids-resultats}). Ce contraste rejoint les erreurs de génération, de
-caractéristiques et d'étiquetage documentées pour ce corpus
-\cite{engelen2021troubleshooting,lanvin2023errors,liu2022error}. HDFS illustre une autre
-menace : l'événement n'est pas l'unité annotée, le bloc l'est, et l'agrégation transforme
-l'interprétation du F1. Histogram suit le principe de HBOS \cite{goldstein2012hbos} ; sur
-HDFS, la règle qui le dépasse en est la restriction au seul template, et sur BGL il applique
-exactement la règle « sévérité absente de l'entraînement ». Le et Zhang montrent que la
-sélection des données, le regroupement et le déséquilibre transforment l'évaluation des
-détecteurs de journaux \cite{le2022logbased}. Chaque score doit donc être présenté avec son
-unité, sa partition et la meilleure règle simple évaluée sur le même test.
-
-Sur CSE-CIC-IDS2018, la provenance des deux journées a été vérifiée par un nouveau
-téléchargement dont les empreintes coïncident avec les copies expérimentales. Le score du
-15 vers le 16 février reste néanmoins dominé par une règle fixe sur le port de destination,
-et le transfert inverse échoue (section~\ref{sec:csecic-resultats}). La provenance vérifiée
-ne corrige donc pas le raccourci du protocole ; elle permet seulement d'attribuer ce constat
-aux fichiers effectivement distribués.
-
-La comparaison entre modèles communs et spécialisés, sous affectation parfaite de la famille
-et catégorie d'attaque tenue à l'écart, n'établit pas la non-infériorité pour CICIDS
-(section~\ref{sec:e-h3b}). La spécialisation ne corrige pas la fragilité observée, et
-l'expérience ne mesure ni la qualité du routeur ni l'effet de ses erreurs.
+appliqué à la sécurité \cite{arp2022dos}. Pour CICIDS2017, les erreurs de génération, de
+caractéristiques et d'étiquetage du corpus sont documentées
+\cite{engelen2021troubleshooting,lanvin2023errors,liu2022error} ; le verdict du holdout par
+scénario reste pourtant le même sur la version corrigée. Pour les journaux, Le et Zhang
+montrent que la sélection des données, le regroupement et le déséquilibre transforment
+l'évaluation des détecteurs \cite{le2022logbased}, et Histogram suit le principe de HBOS
+\cite{goldstein2012hbos}, dont la référence qui l'égale est une version réduite. Les
+expériences de ce mémoire en fournissent une réplication sur quatre jeux, non une découverte
+théorique : chaque score doit être présenté avec son unité, sa partition et la meilleure
+règle simple évaluée sur le même test.
 
 \section{Agents ou mécanismes simples}
-
-La question qui organise ce travail oppose deux explications des propriétés du prototype :
-elles tiennent soit à l'organisation en agents et à la négociation, soit à des mécanismes
-simples que le prototype embarque. Les comparaisons disponibles tranchent en faveur de la
-seconde pour la reprise, l'attribution et la détection.
 
 \paragraph{Négociation et équilibrage de charge.}
 Contract Net alloue une tâche à partir d'offres produites par des contractants
 \cite{smith1980contract,fipa2002contractnet}. Son intérêt suppose que les agents détiennent
 un état local pertinent et que la négociation améliore une décision par rapport à une règle
-plus simple. Face à une table statique, Contract Net réduit les échecs à la première
-exécution lorsque des agents défaillent ; face à un répartiteur au moindre chargé, sans offre
-ni message, il n'obtient aucun avantage et perd du débit dans les quatre scénarios
-(section~\ref{sec:e-cnp-moindre}). Ce résultat était prévisible : la théorie de
-l'équilibrage de charge établit depuis longtemps qu'affecter chaque tâche à la file la plus
-courte est une politique très efficace \cite{winston1977shortest}, et qu'interroger
-seulement deux files tirées au hasard en conserve l'essentiel du bénéfice
-\cite{azar1999balanced,mitzenmacher2001power}. Le gain observé face à la table statique
-provient de la prise en compte de la charge, non de la négociation. Le répartiteur lit
-toutefois l'état des agents sans coût de communication ni information périmée : en
-exécution distribuée, où connaître la charge a un coût, la comparaison reste à faire.
-Dans les campagnes Redis, une composante de l'utilité est constante, deux composantes sont
-redondantes et le seuil de refus est inactif ; l'allocation s'y rapproche d'un classement à
-poids fixes.
+plus simple. Le gain observé face à la table statique provient de la prise en compte de la
+charge : un répartiteur au moindre chargé, sans négociation, l'obtient aussi. Ce résultat
+était prévisible : affecter chaque tâche à la file la plus courte est une politique très
+efficace \cite{winston1977shortest}, et interroger seulement deux files tirées au hasard en
+conserve l'essentiel du bénéfice \cite{azar1999balanced,mitzenmacher2001power}. Le
+répartiteur lit toutefois l'état des agents sans coût de communication ni information
+périmée : en exécution distribuée, où connaître la charge a un coût, la comparaison reste à
+faire.
 
 \paragraph{Reprise et idempotence.}
-La reprise après l'arrêt d'un worker combine deux mécanismes : le transport conserve ou
-réattribue une tâche non acquittée, et le magasin d'idempotence empêche que la nouvelle
-tentative répète l'effet métier. Redis Streams documente une sémantique au moins une fois
-\cite{redis2026streams} ; Celery exige des tâches idempotentes lorsque l'acquittement est
-tardif \cite{celery2026tasks} ; Kafka rappelle que l'exactement-une-fois dépend du périmètre
-transactionnel \cite{kafka2026semantics}. L'ablation appariée confirme cette séparation :
-le même magasin, ajouté aux architectures de référence, supprime aussi les doublons.
-L'idempotence n'est donc pas un bénéfice propre aux agents.
+La reprise combine deux mécanismes : le transport conserve ou réattribue une tâche non
+acquittée, et le magasin d'idempotence empêche que la nouvelle tentative répète l'effet
+métier. Redis Streams documente une sémantique au moins une fois \cite{redis2026streams} ;
+Celery exige des tâches idempotentes lorsque l'acquittement est tardif
+\cite{celery2026tasks} ; Kafka rappelle que l'exactement-une-fois dépend du périmètre
+transactionnel \cite{kafka2026semantics}. L'ablation, dans les deux sens, confirme cette
+séparation : l'idempotence n'est pas un bénéfice propre aux agents.
 
 \paragraph{Mémoire et gouvernance.}
 La mémoire persistante fournit un état aux décisions sans démontrer, par sa présence, une
-adaptation bénéfique. Lorsque tous les agents réussissent, elle n'apporte aucun gain ;
-lorsque la fiabilité réelle s'écarte de la confiance déclarée, un gain n'apparaît qu'à une
-probabilité d'échec de $0{,}9$, au prix d'une concentration de la charge
-(section~\ref{sec:e-h5}). Son effet sur la priorisation des anomalies n'a pas été mesuré.
-De même, le registre, l'essai à blanc et les chemins de promotion sont des briques, non une
+adaptation bénéfique ; son effet sur la priorisation des anomalies n'a pas été mesuré. De
+même, le registre, l'essai à blanc et les chemins de promotion sont des briques, non une
 validation MLOps : la littérature en exige des tests, une surveillance et des revues
 continues \cite{sculley2015debt,breck2017mltest,nist2023airmf}, qu'aucun cycle répété ne
 réalise ici.
@@ -129,21 +92,18 @@ réalise ici.
 La lecture de plusieurs formats démontre une couverture d'adaptateurs, non une sémantique
 commune. ECS spécifie des champs, des types et des conventions d'extension
 \cite{elastic2026ecs} ; OCSF fournit une taxonomie d'événements indépendante du fournisseur
-\cite{ocsf2026schema}. Le schéma d'Ariel Logminer est plus réduit, et les flux tabulaires
-n'en renseignent aucun champ standard. Chaque source publique est évaluée séparément : aucun
-incident n'est analysé conjointement à partir d'un journal système et d'un flux réseau.
-L'hétérogénéité étudiée est donc celle des formats.
+\cite{ocsf2026schema}. Le schéma d'Ariel Logminer est plus réduit, et chaque source publique
+est évaluée séparément : l'hétérogénéité étudiée est celle des formats, non celle d'un même
+incident vu par des journaux système et des flux réseau.
 
 La corrélation montre la même différence entre intégration fonctionnelle et validation. Les
 cadres classiques distinguent fusion d'alertes, corrélation de scénarios, vérification et
 priorisation \cite{cuppens2002alert,valeur2004correlation}. Le mécanisme étudié regroupe par
-fenêtre et égalité de clés, sans modèle causal ; sur un corpus construit avec ces mêmes
-clés, sa précision est forte mais son rappel diminue, et une baseline « hôte et fenêtre » le
-dépasse lorsque les incidents enchaînent plusieurs catégories. Ajouter des clés réduit les
-fusions au prix de fragmenter les scénarios multi-étapes. Une validation externe exige des
+fenêtre et égalité de clés, sans modèle causal ; une validation externe exigerait des
 incidents authentifiés, non utilisés pour concevoir les règles.
 
 \section{Nature de la contribution}
+\label{sec:nature-contribution}
 
 L'assemblage de l'ingestion, de la détection, de l'alerte et de la visualisation existe dans
 des cadres établis : Wazuh \cite{wazuh2026architecture}, Elastic Security
@@ -154,32 +114,14 @@ pas un vide entre algorithme et plateforme, et ne se compare à aucun de ces cad
 
 Ce travail ne propose ni algorithme de détection, ni schéma de normalisation, ni protocole
 d'allocation nouveau. Il s'agit d'une étude expérimentale critique de l'intégration et de
-l'orchestration, menée sur un prototype construit à cette fin et sous contraintes de
-laboratoire. Son apport tient à la connaissance obtenue en soumettant une même chaîne à des
-comparateurs contrôlés : à protocole strict, aucun des détecteurs évalués ne dépasse une
-règle simple sur les quatre jeux publics retenus ; l'effet attribué aux agents lors de la
-reprise relève du magasin d'idempotence ; face à un répartiteur au moindre chargé, la
-négociation n'apporte aucun gain de débit ; et le gain de la mémoire n'apparaît que sous une
-défaillance extrême. Les deux premiers constats répliquent, dans une chaîne intégrée, des
-avertissements déjà publiés sur la validité des évaluations ; les deux derniers sont
-conformes à ce que prédit la littérature de l'équilibrage de charge. La contribution est
-donc étroite : un banc instrumenté, des ablations qui attribuent chaque propriété observée à
-son mécanisme effectif, et des résultats négatifs documentés. Ce travail ne démontre ni la
-supériorité d'une architecture multi-agents, ni sa capacité à analyser conjointement des
-journaux système et réseau.
-
-\section{Priorités de prolongement}
-
-Les prolongements doivent viser ce qui empêche de trancher. Il s'agit d'abord d'exécuter
-les comparateurs manquants : une chaîne sans routage, des agents sans magasin
-d'idempotence, et un banc d'architectures fondé sur des tâches d'inférence réelles plutôt
-que sur des micro-tâches. Ensuite, la comparaison entre Contract Net et le moindre chargé doit
-être reprise en exécution distribuée, dernière condition où un avantage de la négociation
-reste possible. Enfin, un scénario réellement hétérogène, où un même incident possède des
-traces système et réseau mappées à un schéma explicite comme ECS ou OCSF, et une validation
-de la corrélation sur des incidents externes au générateur sont nécessaires. Sur le plan
-prédictif, les campagnes futures doivent employer des données corrigées, des seuils calibrés
-sur une validation tenue à l'écart et des règles de décision fixées avant l'exécution ; un
-test automatisé des chargeurs doit précéder chacune d'elles. Ces expériences ne garantissent
-pas un résultat favorable ; elles déterminent si l'intégration produit une connaissance qui
-dépasse son propre fonctionnement.
+l'orchestration, menée sur un prototype construit à cette fin. Ses constats n'ont pas le même
+statut. Celui sur la détection réplique, sur les jeux étudiés, des critiques déjà publiées.
+Ceux sur la reprise, la négociation et la mémoire proviennent de comparaisons
+architecturales exécutées dans ce travail, ce qui en fait sa part propre ; leur issue reste
+conforme à ce que laissaient attendre la documentation des transports à remise au moins une
+fois et la théorie de l'équilibrage de charge, et le résultat sur la mémoire n'a pas
+d'équivalent direct dans les travaux cités. La nouveauté tient donc à la mesure de ces effets
+dans une même chaîne intégrée. La contribution est ainsi étroite : un banc instrumenté, des
+ablations qui attribuent chaque propriété observée à son mécanisme effectif, et des résultats
+négatifs documentés. Ce travail ne démontre ni la supériorité d'une architecture
+multi-agents, ni sa capacité à analyser conjointement des journaux système et réseau.

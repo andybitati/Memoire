@@ -1,0 +1,53 @@
+% Séquence Contract Net telle qu'implémentée (src/logminer/agents/contract_net.py,
+% negotiate ; vérification d'idempotence dans intelligent_runtime.py, execute_task).
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  font=\sffamily\small,
+  head/.style={draw, rounded corners=2pt, align=center, minimum width=2.9cm, minimum height=0.95cm, fill=gray!10},
+  msg/.style={-{Latex[length=2.2mm]}, thick},
+  ret/.style={-{Latex[length=2.2mm]}, dashed},
+  lbl/.style={font=\sffamily\footnotesize, fill=white, inner sep=1pt},
+  note/.style={draw, align=left, font=\sffamily\footnotesize, fill=gray!6, inner sep=3pt},
+  life/.style={densely dotted, gray}
+]
+% Lignes de vie : x en cm
+\def\xC{0} \def\xA{3.8} \def\xB{7.6} \def\xR{11.4} \def\xS{15.2}
+\node[head] at (\xC,0) {Coordinateur};
+\node[head] at (\xA,0) {Agent $a$\\[-3pt]{\footnotesize meilleure offre}};
+\node[head] at (\xB,0) {Agent $b$\\[-3pt]{\footnotesize offre suivante}};
+\node[head] at (\xR,0) {Agent $r$\\[-3pt]{\footnotesize sans la capacité}};
+\node[head] at (\xS,0) {Magasin\\[-3pt]{\footnotesize d'idempotence}};
+\foreach \x in {\xC,\xA,\xB,\xR,\xS} \draw[life] (\x,-0.5) -- (\x,-12.9);
+
+% 1-2. Appel d'offres, offres et refus
+\draw[msg] (\xC,-1.1) -- node[lbl, pos=0.5, above]{1. CFP (tâche, clé d'idempotence)} (\xR,-1.1);
+\foreach \x in {\xA,\xB} \fill (\x,-1.1) circle (1.6pt);
+\draw[ret] (\xA,-1.8) -- node[lbl, above]{2. PROPOSE ($U_a$)} (\xC,-1.8);
+\draw[ret] (\xB,-2.4) -- node[lbl, pos=0.35, above]{2. PROPOSE ($U_b$)} (\xC,-2.4);
+\draw[ret] (\xR,-3.0) -- node[lbl, pos=0.25, above]{2. REFUSE (capacité absente)} (\xC,-3.0);
+\node[note, anchor=west] at (\xC+0.3,-3.8) {Classement fixé à cet instant : $U$ décroissante, égalité départagée par l'identifiant ($U_a \geq U_b$)};
+
+% 3-4. Attribution
+\draw[msg] (\xC,-4.7) -- node[lbl, above]{3. AWARD} (\xA,-4.7);
+\draw[ret] (\xA,-5.4) -- node[lbl, above]{4. ACCEPT} (\xC,-5.4);
+\node[note, anchor=west] at (\xA+0.3,-5.05) {Agent saturé : REFUSE, puis AWARD à l'offre suivante};
+
+% 5-6. Idempotence et exécution
+\draw[msg] (\xA,-6.3) -- node[lbl, pos=0.5, above]{5. réserver la clé} (\xS,-6.3);
+\draw[ret] (\xS,-7.0) -- node[lbl, pos=0.5, above]{clé nouvelle, déjà terminée ou en cours} (\xA,-7.0);
+\node[note, anchor=west, text width=10.2cm] at (\xA+0.3,-7.95) {Clé nouvelle : exécution du handler (détection, etc.).\\Déjà terminée : rejeu du résultat stocké, sans nouvel effet.};
+\draw[msg] (\xA,-8.9) -- node[lbl, pos=0.5, above]{6. enregistrer le résultat} (\xS,-8.9);
+
+% 7-9. Résultat et suites
+\draw[ret] (\xA,-9.6) -- node[lbl, above]{7. RESULT ou FAIL} (\xC,-9.6);
+\draw[msg] (\xC,-10.2) -- node[lbl, above]{8. FEEDBACK (issue)} (\xA,-10.2);
+\draw[msg] (\xC,-10.8) -- node[lbl, pos=0.7, above]{9. REJECT (offre non tentée)} (\xB,-10.8);
+
+% Cas d'échec
+\draw[dashed, gray] (-1.6,-11.35) -- (\xS+1.6,-11.35);
+\node[font=\sffamily\footnotesize\bfseries, anchor=west] at (-1.6,-11.7) {En cas de FAIL à l'étape 7};
+\draw[msg] (\xC,-12.4) -- node[lbl, pos=0.7, above]{AWARD} (\xB,-12.4);
+\node[note, anchor=west, text width=7.2cm] at (\xB+0.3,-12.4) {Offre suivante du classement de l'étape 2, sans nouvel appel d'offres ; puis étapes 4 à 8 avec $b$.};
+\node[note, anchor=north west, text width=18.2cm] at (-1.6,-13.2) {FEEDBACK ne modifie pas la mémoire : le compteur de fiabilité n'est mis à jour qu'après une exécution locale, et seulement si la mémoire est activée. Avec Redis Streams, les mêmes messages transitent par le bus ; l'acquittement du transport est distinct de l'issue métier (figure~\ref{fig:message-transport}).};
+\end{tikzpicture}%
+}

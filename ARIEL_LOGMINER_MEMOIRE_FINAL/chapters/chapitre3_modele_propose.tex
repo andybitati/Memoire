@@ -4,7 +4,7 @@
 
 L'état de l'art a montré qu'une chaîne d'analyse de journaux de formats différents ne se ramène pas au choix d'un algorithme. Avant qu'un modèle intervienne, la source doit être lue, reconnue, transformée puis orientée vers un traitement compatible ; après la détection, les sorties doivent encore être contextualisées, conservées, éventuellement corrélées et présentées à l'analyste. Ariel \logminer{} est conçu autour de ce problème d'intégration : chaque responsabilité est confiée à un composant distinct, de sorte qu'une anomalie candidate contestée puisse être rattachée à l'étape qui l'a produite (lecture, parsing, normalisation, routage, modèle ou corrélation).
 
-Ce chapitre décrit le modèle architectural du prototype : exigences, composants, cycle de vie des données, contrats de communication, routage, mémoire, corrélation et gouvernance des modèles. Les choix de programmation sont présentés au chapitre suivant. Lorsqu'une fonction décrite ici n'est pas implémentée dans le prototype, le texte le signale explicitement.
+Ce chapitre décrit le modèle architectural du prototype : exigences, composants, cycle de vie des données, contrats de communication, routage, mémoire, corrélation et gouvernance des modèles. Les choix de programmation sont présentés au chapitre suivant. Lorsqu'une fonction décrite ici n'est pas implémentée dans le prototype, le texte le signale explicitement. Les propriétés décrites sont des propriétés de conception : ce qui a été effectivement testé, et ce qui s'est révélé supérieur à une alternative plus simple, est établi aux chapitres~\ref{chap:resultats} et suivants ; les frontières de l'architecture (autonomie bornée, distribution de laboratoire, normalisation partielle, absence de haute disponibilité et d'étude d'utilisabilité) sont regroupées dans la section des limites (section~\ref{sec:limites}).
 
 \section{Exigences et principes de conception}
 
@@ -21,15 +21,15 @@ La conception part d'une chaîne fonctionnelle complète, dont les exigences son
 \toprule
 \textbf{ID} & \textbf{Fonction} & \textbf{Exigence} \\
 \midrule
-F1 & Acquisition & Accepter les catégories de fichiers, journaux et exports du périmètre du prototype. \\
-F2 & Parsing & Extraire les champs d'une source dont le format est reconnu ; signaler explicitement les cas non pris en charge. \\
-F3 & Normalisation & Projeter les informations disponibles vers un noyau commun exploitable par les composants transversaux. \\
-F4 & Routage & Identifier une famille probable de données et choisir un traitement compatible. \\
-F5 & Détection & Appliquer un modèle supervisé, non supervisé ou statistique selon la source et le protocole. \\
-F6 & Corrélation & Rapprocher des anomalies candidates à partir d'indices temporels et contextuels. \\
-F7 & Mémoire et audit & Conserver les informations nécessaires à la traçabilité des exécutions, décisions et erreurs. \\
-F8 & Visualisation & Présenter les résultats pour leur consultation, leur filtrage et leur inspection. \\
-F9 & Mise à jour contrôlée & Comparer un modèle candidat au modèle courant avant toute promotion. \\
+EF1 & Acquisition & Accepter les catégories de fichiers, journaux et exports du périmètre du prototype. \\
+EF2 & Parsing & Extraire les champs d'une source dont le format est reconnu ; signaler explicitement les cas non pris en charge. \\
+EF3 & Normalisation & Projeter les informations disponibles vers un noyau commun exploitable par les composants transversaux. \\
+EF4 & Routage & Identifier une famille probable de données et choisir un traitement compatible. \\
+EF5 & Détection & Appliquer un modèle supervisé, non supervisé ou statistique selon la source et le protocole. \\
+EF6 & Corrélation & Rapprocher des anomalies candidates à partir d'indices temporels et contextuels. \\
+EF7 & Mémoire et audit & Conserver les informations nécessaires à la traçabilité des exécutions, décisions et erreurs. \\
+EF8 & Visualisation & Présenter les résultats pour leur consultation, leur filtrage et leur inspection. \\
+EF9 & Mise à jour contrôlée & Comparer un modèle candidat au modèle courant avant toute promotion. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -148,8 +148,9 @@ L'architecture multi-agents repose sur la classe \texttt{MultiTaskIntelligentAge
 
 Le transport et la persistance sont séparés du contrat métier : \texttt{LocalMessageBus} et \texttt{RedisMessageBus} transportent les messages ; \texttt{RedisContractNetCoordinator} et \texttt{RedisContractNetTransport} réalisent la négociation entre processus ; \texttt{SQLiteIdempotencyStore} et \texttt{RedisIdempotencyStore} empêchent qu'une tâche dont la clé a déjà produit un résultat soit exécutée une seconde fois. Le même protocole est ainsi testé en local, sur plusieurs processus et sur deux machines virtuelles. Le cycle de négociation, dérivé du Contract Net \cite{smith1980contract} et de sa spécification FIPA \cite{fipa2002contractnet} (correspondance détaillée au chapitre~\ref{chap:etat-art}), est :
 \begin{center}
-\textit{CFP} $\rightarrow$ \textit{PROPOSE/REFUSE} $\rightarrow$ \textit{AWARD/REJECT} $\rightarrow$ \textit{ACCEPT} $\rightarrow$ \textit{RESULT/FAIL} $\rightarrow$ \textit{FEEDBACK}.
+\textit{CFP} $\rightarrow$ \textit{PROPOSE/REFUSE} $\rightarrow$ \textit{AWARD} $\rightarrow$ \textit{ACCEPT} $\rightarrow$ \textit{RESULT/FAIL} $\rightarrow$ \textit{FEEDBACK}, puis \textit{REJECT} aux offres non tentées.
 \end{center}
+La figure~\ref{fig:architecture-multi-agent} situe le coordinateur et les agents dans la chaîne ; la figure~\ref{fig:contract-net-sequence} détaille ce cycle pour une tâche, y compris la vérification d'idempotence et la réattribution après un échec.
 
 La politique expérimentale fixe l'utilité à
 \[
@@ -159,15 +160,15 @@ avec des composantes bornées entre 0 et 1 : confiance de capacité $C$, fiabili
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{fig_architecture_multi_agent_global.png}
-\caption[Architecture multi-agents.]{Architecture multi-agents. Source : auteur.}
+\input{figures/tikz_architecture_multi_agent.tex}
+\caption[Architecture multi-agents du prototype.]{Architecture multi-agents du prototype. Les identifiants sont ceux des campagnes dans un seul processus ; sur deux machines virtuelles, les agents sont \texttt{debian-alpha} et \texttt{ubuntu-beta}, reliés par Redis Streams. Les mécanismes simples (bus, magasin d'idempotence, compteur de fiabilité) figurent sous les agents. Source : auteur.}
 \label{fig:architecture-multi-agent}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{fig_contract_net_sequence.png}
-\caption[Séquence Contract Net observée dans les campagnes locales et Redis.]{Séquence Contract Net observée dans les campagnes locales et Redis. Source : auteur.}
+\input{figures/tikz_contract_net_sequence.tex}
+\caption[Séquence Contract Net implémentée.]{Séquence Contract Net implémentée, pour une tâche, trois agents et le magasin d'idempotence. Source : auteur, d'après le code du coordinateur.}
 \label{fig:contract-net-sequence}
 \end{figure}
 
@@ -363,11 +364,3 @@ Le tableau de bord est l'extrémité visible de la chaîne. Il reçoit, par l'AP
 Le traitement de journaux expose des informations sensibles : identifiants, noms d'hôtes, adresses réseau, chemins de fichiers. Trois principes encadrent le prototype. Le traitement est \textbf{local} : les expériences ne transmettent aucun journal à un service externe. Les champs transportés entre composants sont ceux du schéma commun et de la charge utile nécessaire, non l'intégralité du contenu disponible. La \textbf{provenance} est explicite : une donnée publique, une collecte locale, un export d'outil et un scénario synthétique se distinguent dans les artefacts. L'anonymisation ou la pseudonymisation des champs sensibles n'est pas implémentée dans le prototype. Ces principes ne valent pas certification : une mise en production exigerait une étude de l'authentification, du chiffrement des communications, de la gestion des secrets, des permissions et de la protection du stockage.
 
 Cinq scénarios d'utilisation découlent de cette architecture. (1) L'\textbf{analyse hors ligne} d'un fichier ou d'un corpus enchaîne identification, parsing, normalisation, routage, traitement et enregistrement des résultats ; c'est le scénario des jeux publics. (2) Le \textbf{traitement par cycles} : le superviseur enchaîne des cycles de découverte et d'analyse de fichiers locaux en conservant sa mémoire ; ce fonctionnement se rapproche d'une supervision continue sans satisfaire les contraintes du temps réel, et ses effets ne sont pas évalués. (3) Le \textbf{traitement distribué} publie une tâche récupérée par un worker doté de la capacité correspondante ; il sert à étudier l'organisation multi-agents et la répartition. (4) La \textbf{validation d'une anomalie} par l'analyste, qui examine le contexte, les scores et l'audit, enrichit la mémoire sans modifier le modèle actif. (5) L'\textbf{évaluation d'un modèle candidat}, produit hors ligne, évalué selon le protocole prévu et comparé au modèle courant, n'aboutit à une promotion que si la règle l'autorise ; un candidat rejeté est conservé comme trace de la comparaison.
-
-\section{Synthèse du chapitre}
-
-\label{sec:synthese-architecture}
-
-L'architecture d'Ariel \logminer{} organise la chaîne autour de responsabilités distinctes. La collecte et le parsing rendent les données exploitables ; la normalisation fournit un noyau commun dans la mesure où les adaptateurs le permettent ; le routeur choisit une famille et un traitement ; les détecteurs produisent des classes, des scores ou des anomalies candidates ; la corrélation regroupe ces dernières et le tableau de bord maintient l'analyste dans la décision. L'audit et la mémoire traversent ces étapes. Le contrat métier, \texttt{AgentMessage} et ses sept champs, reste séparé du transport : les identifiants de Redis appartiennent à l'enveloppe et ne deviennent pas des identifiants métier. L'adaptation est volontairement contrôlée : décisions et retours sont conservés, et un modèle candidat n'est promu qu'après comparaison au modèle courant.
-
-Les propriétés décrites dans ce chapitre sont des propriétés de conception. La correspondance entre composants, questions de recherche et hypothèses est donnée par le tableau~\ref{tab:qr-hypotheses} ; ce qui a été effectivement testé, et ce qui s'est révélé supérieur à une alternative plus simple, est établi aux chapitres~\ref{chap:resultats} et suivants ; les frontières de l'architecture (autonomie bornée, distribution de laboratoire, normalisation partielle, absence de haute disponibilité et d'étude d'utilisabilité) sont regroupées dans la section unique des limites (section~\ref{sec:limites}). Le chapitre suivant montre comment ces principes sont traduits dans le code du prototype.

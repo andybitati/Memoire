@@ -18,13 +18,13 @@ Les conditions d'exécution sont documentées au moyen des fichiers de dépendan
 Cette organisation améliore la reproductibilité des expériences, sans la rendre absolue. Celle-ci dépend encore de la disponibilité des jeux de données publics et, surtout, de l'accès à la même version des fichiers employés pendant les campagnes.
 
 
-\section{Adaptateurs multi-formats}
+\section{Adaptateurs multiformats}
 
 Les adaptateurs intégrés au prototype couvrent plusieurs familles : HDFS, BGL, journaux Linux/auth, événements Windows, exports Wazuh, flux réseau tabulaires, syslog, JSONL, CEF/LEEF ainsi qu'une fixture Apache. Malgré leurs différences, ces adaptateurs suivent une logique commune : lecture de la source, validation minimale, parsing, puis normalisation.
 
 Une erreur rencontrée pendant cette chaîne n'est pas silencieusement ignorée. Elle est comptabilisée afin de distinguer les unités réellement traitées de celles qui n'ont pas pu traverser l'adaptateur.
 
-La campagne consacrée à la couverture multi-format porte sur $7\,001$ unités. HDFS et BGL y contribuent chacun pour $1\,000$ unités. Le cas Apache doit être interprété différemment : il repose sur une fixture synthétique d'une seule ligne, réutilisée par le protocole. Cette présence vérifie seulement que la voie Apache s'exécute de bout en bout ; elle ne valide pas le parseur, qui reste à éprouver sur un journal d'accès réel.
+La campagne consacrée à la couverture multiformat porte sur $7\,001$ unités. HDFS et BGL y contribuent chacun pour $1\,000$ unités. Le cas Apache doit être interprété différemment : il repose sur une fixture synthétique d'une seule ligne, réutilisée par le protocole. Cette présence vérifie seulement que la voie Apache s'exécute de bout en bout ; elle ne valide pas le parseur, qui reste à éprouver sur un journal d'accès réel.
 
 La normalisation expose les attributs communs nécessaires au routage, tout en conservant les champs propres à chaque format dans la charge structurée. Lorsqu'une source ne contient pas une adresse réseau, une sévérité ou un identifiant d'hôte, l'adaptateur n'invente pas de valeur équivalente.
 
@@ -62,6 +62,7 @@ Cette protection a cependant une portée précise. Elle couvre les opérations e
 
 
 \section{Pipeline d'inférence}
+\label{sec:inference-e2e}
 
 Deux conditions de bout en bout ont été instrumentées afin de distinguer le coût d'une décision légère de celui d'une inférence réelle.
 
@@ -122,7 +123,7 @@ La mémoire des agents conserve, par type de tâche, les exécutions réussies e
 
 La présence de cette fonctionnalité est donc testable indépendamment de son bénéfice. Si la mémoire ne produit pas de gain systématique sur une métrique, ce résultat doit rester visible plutôt que d'être interprété comme un défaut d'implémentation.
 
-La gouvernance des modèles suit la même logique. Le code permet d'évaluer un candidat et de simuler une décision en mode \textit{dry-run}, mais la mise à jour autonome en production reste hors du périmètre du prototype.
+La gouvernance des modèles suit la même logique. Le code permet d'évaluer un candidat et de simuler une décision en mode d'essai à blanc, mais la mise à jour autonome en production reste hors du périmètre du prototype.
 
 Pour éviter de confondre présence du code et bénéfice démontré, l'audit distingue cinq niveaux de maturité expérimentale : existence de l'implémentation, test unitaire ou fonctionnel, comparaison effectivement exécutée, promotion observée et bénéfice mesuré après cette promotion. Les preuves actuellement disponibles ne couvrent pas l'ensemble de cette chaîne.
 
