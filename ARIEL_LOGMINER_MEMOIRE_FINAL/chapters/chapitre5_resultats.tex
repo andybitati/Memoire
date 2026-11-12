@@ -392,6 +392,27 @@ Selon la règle de décision, le gain est conditionnel : il n'est établi que po
 
 L'analyse de sensibilité en exécution séquentielle, sur dix graines, ne participe pas à la décision. Elle montre un écart bien plus marqué : le taux de C reste voisin de $p$ ($0{,}303$ ; $0{,}602$ ; $0{,}901$), celui de D tombe à $0{,}033$, $0{,}006$ et $0{,}004$, tandis que l'indice de Jain baisse, selon le niveau, de $0{,}37$ à $0{,}41$. Sans concurrence, le terme de charge ne disperse plus les tâches : C reste sur l'agent défaillant et D se concentre sur un agent qui a réussi. Sous concurrence, l'étalement dû à la charge masque donc une grande partie de l'effet de la mémoire. L'expérience reste synthétique : échecs injectés, processus unique et confiance volontairement erronée. Elle concerne l'attribution entre agents, non la priorisation des anomalies, qui reste non mesurée.
 
+\paragraph{Mémoire greffée sur un répartiteur centralisé.} Un contrôle décidé après la campagne précédente applique le même compteur lissé de Laplace à un répartiteur au moindre chargé. Il compare, sur 30 graines nouvelles et les mêmes trois niveaux, le répartiteur sans mémoire, sa version avec mémoire et D. Les tâches et les échecs potentiels sont appariés ; chaque exécution repart d'un état neuf. Le critère de gain est inchangé.
+
+\begin{table}[H]
+\centering
+\caption{Mémoire activée ou non dans le répartiteur au moindre chargé, 30 graines appariées.}
+\label{tab:e-h2-central}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{0.7cm}>{\centering\arraybackslash}p{2.7cm}>{\centering\arraybackslash}X>{\centering\arraybackslash}p{3.0cm}>{\centering\arraybackslash}p{0.9cm}}
+\toprule
+$p$ & \textbf{Échec initial sans / avec} & \textbf{Delta avec $-$ sans [IC 95~\%]} & \textbf{Débit avec/sans [IC 95~\%]} & \textbf{Gain} \\
+\midrule
+0,3 & 0,1093 / 0,1055 & $-0{,}0038$ [$-0{,}0072$ ; $-0{,}0004$] & 0,987 [0,959 ; 1,015] & oui \\
+0,6 & 0,2435 / 0,2191 & $-0{,}0243$ [$-0{,}0327$ ; $-0{,}0159$] & 1,024 [0,995 ; 1,053] & oui \\
+0,9 & 0,3896 / 0,3496 & $-0{,}0400$ [$-0{,}0527$ ; $-0{,}0273$] & 1,010 [0,972 ; 1,049] & oui \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Le gain est général selon la règle préenregistrée : les trois intervalles du delta sont strictement négatifs et les trois bornes inférieures du rapport de débit dépassent 0,95. Le contraste secondaire D contre le répartiteur sans mémoire n'est favorable qu'à $p=0{,}9$ ; la version centralisée avec mémoire ne surpasse D à aucun niveau. Le compteur lissé apporte donc aussi son effet sans négociation entre agents. Ce résultat soutient H2 pour le mécanisme de mémoire dans cette simulation, mais il relève de l'explication E2 : il ne permet d'attribuer le gain ni à Contract Net ni au caractère multi-agents. Il ne mesure pas davantage le coût d'un compteur partagé en environnement distribué.
+
 \subsection{Contract Net face à une table statique}
 \label{sec:e-cnp}
 

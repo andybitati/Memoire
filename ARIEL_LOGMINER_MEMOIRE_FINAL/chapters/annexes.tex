@@ -167,7 +167,7 @@ Corpus Linux/auth (provenance) & Jeu Kaggle « linux\_auth\_log-anomalies » (L\
 Couverture multiformat & $7\,001/7\,001$ ; une fixture Apache & \texttt{multiformat\_balanced\_20260910T094422Z} ; \texttt{agent5\_multiformat\_20261104T150111Z} \\
 Adaptateur de flux réseau, remplissage du schéma & CICIDS2017 : 2/7 champs réseau ; CSE-CIC-IDS2018 : 4/7 ; aucune fuite d'étiquette & E-NORM-NETWORK-FLOWS ; \path{experiments/phase_revision_20261112/E-NORM-NETWORK-FLOWS/summary.json} \\
 CICIDS2017 corrigé (WTMC 2021), holdout par scénario & Aucun modèle ne bat le tout positif : F1 0,20 à 0,23 contre 0,34 ; DDoS 0,99 & E-CICIDS-WTMC2021-HOLDOUT ; \path{experiments/phase_revision_20261112/E-CICIDS-WTMC2021-HOLDOUT/decision.json} \\
-CICIDS2017 corrigé, flux tentés comptés bénins & Même décision : F1 0,20 à 0,22 contre 0,34 ; au plus 2 scénarios gagnés sur 5 & E-CICIDS-WTMC2021-\allowbreak ATTEMPTED-BENIGN ; \path{experiments/phase_revision_20261112/}\allowbreak\path{E-CICIDS-WTMC2021-ATTEMPTED-BENIGN/decision.json} \\
+CICIDS2017 corrigé, flux tentés comptés bénins & Même décision : F1 0,20 à 0,22 contre 0,34 ; au plus 2 scénarios gagnés sur 5 & E-CICIDS-WTMC2021-\allowbreak ATTEMPTED-BENIGN ; \path{experiments/phase_revision_20261112/}\allowbreak\path{E-CICIDS-WTMC2021-}\allowbreak\path{ATTEMPTED-BENIGN/decision.json} \\
 Diagnostic de saturation sur deux VM & Deux VM 23,4 t/s ; Debian seule 24,4 ; Ubuntu seule 14,9 ; Ubuntu 0 \% des tâches & E-MULTIVM-SATURATION-DIAG ; \path{experiments/phase_revision_20261112/E-MULTIVM-SATURATION-DIAG/summary.json} \\
 Inférence de bout en bout & $1\,400/1\,401$ & \texttt{multisource\_cnp\_model\_inference\_by\_source.csv} \\
 \multicolumn{3}{l}{\textit{Orchestration et distribution}} \\
@@ -177,7 +177,7 @@ Benchmark sur inférence réelle (Isolation Forest HDFS, 21 ms) & C/A 0,988 ; su
 Surcoût intra-tâche (durée totale moins appel au modèle) & C : 0,23 ms micro, 0,39 ms réel, 1,95 \% ; D : 2,05 \% ; additif confirmé & E-QR2-OVERHEAD-DIRECT ; \path{experiments/phase_revision_20261112/E-QR2-OVERHEAD-DIRECT/summary.json} \\
 Panne appariée A--D & Doublons A 10, B 10, C 0, D 0 ; A+I et B+I 0 & \texttt{agent3\_paired\_failure\_abcd\_20261104T141803Z\_\_summary.json} \\
 Agents sans magasin d'idempotence (ablation) & C sans magasin 10, D sans magasin 10 doublons ; contrôles A--D, A+I, B+I reproduits & E-R2-AGENTS-NO-STORE ; \path{experiments/phase_revision_20261112/E-R2-AGENTS-NO-STORE/summary.json} \\
-Mémoire et fiabilité & Gain pour $p = 0{,}9$ seulement ; écart $-0{,}2993$ ; rapport de débit 1,210 & E-H5-MEMORY-RELIABILITY ; \path{experiments/phase_revision_20261105/E-H5-MEMORY-RELIABILITY/summary.json} \\
+Mémoire et fiabilité & Contract Net : gain à $p=0{,}9$ seulement ; répartiteur centralisé : gain aux trois niveaux & E-H5-MEMORY-RELIABILITY ; E-H2-MEMORY-CENTRAL ; \path{experiments/phase_revision_20261112/E-H2-MEMORY-CENTRAL/summary.json} \\
 Contract Net contre table statique & Avantage conditionnel ; rapport de débit nominal 0,867 & E-CNP-STATIC-ASSIGNMENT ; \path{experiments/phase_revision_20261105/E-CNP-STATIC-ASSIGNMENT/summary.json} \\
 Contract Net contre moindre chargé & Aucun avantage ; rapport de débit nominal 0,870 & E-CNP-LEAST-LOADED ; \path{experiments/phase_revision_20261105/E-CNP-LEAST-LOADED/summary.json} \\
 Contract Net à repli corrigé contre moindre chargé & Aucun avantage ; 0 tâche perdue (5 avant correction) ; rapport de débit 0,848 à 0,876 & E-CNP-RECFP-LEAST-LOADED ; \path{experiments/phase_revision_20261112/E-CNP-RECFP-LEAST-LOADED/summary.json} \\
@@ -204,7 +204,7 @@ tableau~\ref{tab:correspondance-hypotheses} donne la correspondance.
 \textbf{Énoncé} & \textbf{Étiquette de travail} & \textbf{Origine} & \textbf{Campagnes} \\
 \midrule
 H1 & H-CNP & Contrôle, après les campagnes principales & E-CNP-LEAST-LOADED ; E-CNP-RECFP-LEAST-LOADED (repli corrigé) ; contexte : E-CNP-STATIC-ASSIGNMENT \\
-H2 & H5a & Contrôle ; précise l'hypothèse initiale sur la mémoire & E-H5-MEMORY-RELIABILITY \\
+H2 & H5a & Contrôle ; précise l'hypothèse initiale sur la mémoire & E-H5-MEMORY-RELIABILITY ; E-H2-MEMORY-CENTRAL (comparateur centralisé) \\
 H3 & H3 & Programme initial & Routeur open-set ; E-H3B-STRICT-HOLDOUT (E-H3B-FAMILY-MODELS non retenue) \\
 H4 & H4 & Programme initial & Campagnes CICIDS2017 dont E-CICIDS-HOLDOUT-FIX ; HDFS dont E-H4-HDFS-BLOCK-BASELINES ; BGL ; CSE-CIC-IDS2018 \\
 R1, R2 & H1, H2 initiales & Programme initial, reclassées en exigences & Couverture multiformat ; panne appariée A--D ; E-R2-AGENTS-NO-STORE \\

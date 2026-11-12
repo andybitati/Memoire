@@ -82,9 +82,12 @@ sont pas évalués.
 
 \paragraph{Mécanismes adaptatifs.}
 La fonction d'utilité est un classement à poids fixes, non appris
-(section~\ref{sec:spec-utilite}). La mémoire n'apporte de gain qu'à une probabilité d'échec
-de $0{,}9$, avec une équité moindre, dans un protocole où la confiance déclarée est
-volontairement éloignée de la fiabilité réelle (section~\ref{sec:e-h5}). Contract Net
+(section~\ref{sec:spec-utilite}). Dans Contract Net, la mémoire n'apporte de gain qu'à une probabilité d'échec
+de $0{,}9$, avec une équité moindre ; greffé sur un répartiteur centralisé au moindre chargé,
+le même compteur satisfait le critère aux trois niveaux $0{,}3$, $0{,}6$ et $0{,}9$.
+La confiance déclarée reste volontairement éloignée de la fiabilité réelle et les échecs sont
+injectés : l'effet observé soutient le mécanisme simple, non le caractère multi-agents
+(section~\ref{sec:e-h5}). Contract Net
 n'obtient aucun avantage sur un répartiteur au moindre chargé
 (section~\ref{sec:e-cnp-moindre}) ; ce répartiteur lit l'état des agents dans un seul
 processus, sans coût de communication ni information périmée, et la comparaison n'a pas été
