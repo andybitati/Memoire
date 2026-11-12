@@ -278,9 +278,9 @@ ANNÉE ACADÉMIQUE : 2025--2026
 
 Ce mémoire conçoit et évalue en laboratoire Ariel \logminer{}, une architecture multi-agents légère pour l'analyse de journaux système et réseau de formats différents. Ses agents déclarent leurs capacités, conservent un état et se répartissent les tâches par le protocole Contract Net. La question posée est la suivante : les propriétés qu'une telle architecture semble apporter tiennent-elles à l'organisation en agents, ou à des mécanismes plus simples qu'elle embarque et qu'une organisation centralisée peut reproduire ? Chaque mécanisme est confronté, sur un ou deux hôtes, à une alternative plus simple ; les comparaisons de contrôle suivent des protocoles versionnés avant leur exécution.
 
-Le prototype fonctionne de bout en bout. Ses adaptateurs lisent tous les formats testés, son routeur écarte les sources inconnues au prix de quelques rejets à tort, et chaque résultat reste rattaché à la donnée et à l'artefact qui l'ont produit. Après une panne contrôlée, aucune tâche n'est perdue ni dupliquée. Le coût de l'organisation en agents est faible sur une tâche réelle : environ $0{,}4$~ms par tâche, soit 2~\% d'une inférence de 20~ms, alors qu'il domine entièrement des microtâches presque vides.
+Le prototype fonctionne de bout en bout. Ses adaptateurs lisent tous les formats testés, son routeur écarte les sources inconnues au prix de quelques rejets à tort, et chaque résultat se rattache à l'unité de journal qui l'a produit, bien que deux voies de préparation et les incidents corrélés ne conservent pas ce lien. Après une panne contrôlée, aucun effet n'est dupliqué, et la tâche est reprise lorsqu'un autre agent sait la traiter ; la mise à jour des modèles ne remplace le modèle actif que lorsqu'un candidat satisfait la règle de promotion. Mesuré à l'intérieur d'une tâche, le coût de l'organisation en agents est faible : environ $0{,}4$~ms, soit 2~\% d'une inférence de 20~ms ; avec trois workers concurrents, les agents restent toutefois 6~\% plus lents que le monolithe, et ce coût domine entièrement des microtâches presque vides.
 
-Ces propriétés tiennent toutefois à des mécanismes simples. L'absence de doublon provient du magasin d'idempotence : privés de ce magasin, les agents dupliquent l'effet comme les autres architectures. Face à une table statique, Contract Net réduit les échecs, mais, dans un seul processus, un répartiteur au moindre chargé, sans négociation, obtient les mêmes taux d'échec avec un meilleur débit, y compris après correction du coordinateur ; l'exécution répartie, où connaître la charge des agents a un coût, n'a pas été comparée. La mémoire de fiabilité n'apporte de gain établi que lorsque l'agent préféré échoue presque toujours, et une seconde machine virtuelle n'ajoute pas de capacité.
+Ces propriétés tiennent toutefois à des mécanismes simples. L'absence de doublon provient du magasin d'idempotence : privés de ce magasin, les agents dupliquent l'effet comme les autres architectures. Face à une table statique, Contract Net réduit les échecs, mais un répartiteur au moindre chargé, sans négociation, obtient les mêmes taux d'échec avec un meilleur débit dans un seul processus, et une capacité équivalente sur deux machines virtuelles. Sur ces machines, la politique d'attribution d'origine laisse la seconde inoccupée ; une attribution selon la charge porte la capacité à 1,25 fois la précédente, gain que la règle préenregistrée ne confirme pas, une tâche ayant échoué. Dans Contract Net, la mémoire de fiabilité ne réduit les échecs que lorsque l'agent préféré échoue presque toujours ; greffée sur un répartiteur centralisé, elle les réduit à tous les niveaux de défaillance simulés, ce qui attribue son effet à un compteur simple plutôt qu'à l'organisation en agents.
 
 En détection, les scores dépendent d'abord du protocole. Sur CICIDS2017, le F1 d'un Random Forest passe de $0{,}9951$ en séparation aléatoire à $0{,}4374$ lorsque le test porte sur une journée et des attaques absentes de l'entraînement. Lorsqu'un scénario d'attaque est tenu à l'écart, aucun modèle ne dépasse en F1 la prédiction systématiquement positive : l'hypothèse selon laquelle un modèle léger bat la meilleure règle simple est réfutée sous son critère préenregistré. Les modèles classent pourtant mieux que le hasard, mais leur seuil ne se transfère pas à une attaque inconnue.
 
@@ -303,9 +303,9 @@ automatique, reproductibilité.
 
 This thesis designs and evaluates in a laboratory Ariel \logminer{}, a lightweight multi-agent architecture for analyzing system and network logs of different formats. Its agents declare capabilities, keep a state and allocate tasks through the Contract Net protocol. The question is whether the properties such an architecture appears to provide come from the agent organization, or from simpler mechanisms it embeds and that a centralized organization can reproduce. Each mechanism is confronted, on one or two hosts, with a simpler alternative; the control comparisons follow protocols versioned before their execution.
 
-The prototype works end to end. Its adapters read every tested format, its router rejects unknown sources at the cost of a few wrongful rejections, and every result remains linked to the data and the artifact that produced it. After a controlled failure, no task is lost or duplicated. The cost of the agent organization is small on a real task: about $0.4$~ms per task, that is 2\,\% of a 20~ms inference, whereas it entirely dominates nearly empty microtasks.
+The prototype works end to end. Its adapters read every tested format, its router rejects unknown sources at the cost of a few wrongful rejections, and every result can be traced to the log unit that produced it, although two preparation paths and the correlated incidents do not keep this link. After a controlled failure, no effect is duplicated, and the task is resumed when another agent can process it; the model update procedure replaces the active model only when a candidate meets the promotion rule. Measured inside a task, the cost of the agent organization is small: about $0.4$~ms, that is 2\,\% of a 20~ms inference; with three concurrent workers, however, the agents remain 6\,\% slower than the monolith, and this cost entirely dominates nearly empty microtasks.
 
-These properties, however, come from simple mechanisms. The absence of duplicates comes from the idempotency store: deprived of it, the agents duplicate the effect like the other architectures. Compared with a static table, Contract Net reduces failures, but, within a single process, a least-loaded dispatcher, without negotiation, reaches the same failure rates with higher throughput, including after the coordinator was corrected; distributed execution, where knowing agent load has a cost, was not compared. Reliability memory yields an established gain only when the preferred agent almost always fails, and a second virtual machine adds no capacity.
+These properties, however, come from simple mechanisms. The absence of duplicates comes from the idempotency store: deprived of it, the agents duplicate the effect like the other architectures. Compared with a static table, Contract Net reduces failures, but a least-loaded dispatcher, without negotiation, reaches the same failure rates with higher throughput within a single process, and an equivalent capacity on two virtual machines. On these machines, the original allocation policy leaves the second one idle; load-aware allocation raises capacity to 1.25 times its previous value, a gain the preregistered rule does not confirm because one task failed. Within Contract Net, reliability memory reduces failures only when the preferred agent almost always fails; grafted onto a centralized dispatcher, it reduces them at every simulated failure level, which attributes its effect to a simple counter rather than to the agent organization.
 
 In detection, scores depend first on the protocol. On CICIDS2017, the F1 of a Random Forest falls from $0.9951$ under a random split to $0.4374$ when the test covers a day and attacks absent from training. When an attack scenario is held out, no model exceeds the always-positive predictor in F1: the hypothesis that a lightweight model beats the best simple rule is refuted under its preregistered criterion. The models nonetheless rank better than chance, but their threshold does not transfer to an unseen attack.
 
@@ -358,19 +358,25 @@ corrélateur esangisi ba anomalies na précision makasi kasi na rappel
 moke.
 
 Na ba microtâches, organisation ya ba agents ezali malembe koleka
-monolithe ; kasi na inférence ya solo (soki 21~ms), surcoût oyo emekami ezali
-kaka soki 2~\% (worker moko) mpe soki 6~\% (ba workers misato). Kozanga doublon nsima ya panne ewuti na magasin d'idempotence,
+monolithe ; kasi na inférence ya solo (soki 20~ms), surcoût oyo emekami na kati
+ya tâche ezali kaka soki 2~\%, mpe soki 6~\% na ba workers misato oyo esalaka
+esika moko. Kozanga doublon nsima ya panne ewuti na magasin d'idempotence,
 kasi na ba agents te. Contract Net ekitisi ba échecs liboso ya table
-statique, kasi litomba yango ewumeli te soki ba graines ebongwani ; na
-processus moko, répartiteur ya moindre charge, kozanga négociation, ezwi
-ba taux d'échec kaka wana mpe débit ya malamu koleka. Mémoire ememi gain
-oyo endimisami kaka na probabilité d'échec ya $0{,}9$, mpe machine
-virtuelle ya mibale ebakisi capacité te.
+statique, mpe litomba yango ezongeli na ba graines mosusu ; kasi
+répartiteur ya moindre charge, kozanga négociation, ezwi ba taux d'échec
+kaka wana mpe débit ya malamu koleka na processus moko, mpe capacité kaka
+wana na ba machines virtuelles mibale. Na ba machines yango, politique ya
+kala etikaka oyo ya mibale kozanga mosala ; soki misala ekabolami na kotala
+charge, capacité emati 25~\%, kasi critère préenregistré endimisi yango te.
+Na Contract Net, mémoire ememi gain kaka na probabilité d'échec ya
+$0{,}9$ ; na répartiteur centralisé, ememi gain na ba niveaux nyonso.
 
-Exigence ya reprise esatisfer ; exigence ya lecture esatisfer kaka mpo na
-lecture mpe émission ; cycle ya gouvernance everifier kaka na jeu moko. Hypothèse ya
+Exigence ya reprise esatisfer, kasi tâche ezongelami kaka soki agent mosusu
+ayebi kosala yango ; exigence ya lecture esatisfer kaka ndambo : résultat
+moko na moko ezongaka na unité na yango, kasi ba voies mibale ya préparation
+mpe ba incidents ebombaka lien yango te ; cycle ya gouvernance everifier kaka na jeu moko. Hypothèse ya
 Contract Net eréfutami na processus moko, H4 na critère préenregistré ; effet
-général ya mémoire endimisami te, mpe routage spécialisé etikali kozanga eyano. Contribution ezali
+ya mémoire endimisami na Contract Net kaka na condition moko, mpe routage spécialisé etikali kozanga eyano. Contribution ezali
 méthodologique mpe ya ingénierie : chaîne locale oyo ekoki kolandelama
 mpe ba comparaisons oyo ekabolaka effet ya mécanisme moko na moko mpe
 emonisaka ete, na ba conditions oyo emekamaki, solution ya pete ekoki
