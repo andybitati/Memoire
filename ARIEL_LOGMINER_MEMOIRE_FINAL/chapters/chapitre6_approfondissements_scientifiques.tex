@@ -95,7 +95,7 @@ d'échec de $0{,}9$, doit néanmoins être lue avec cette réserve.
 \section{Portée du versionnement des protocoles}
 \label{sec:preenregistrement}
 
-Quatorze protocoles complémentaires ont été rédigés, assortis de l'empreinte de leur programme,
+Dix-neuf protocoles complémentaires ont été rédigés, assortis de l'empreinte de leur programme,
 puis versionnés dans le dépôt local avant leur exécution : la comparaison des modèles
 spécialisés, écartée pour un défaut de chargement, et sa version stricte ; les baselines HDFS
 au niveau bloc ; la mémoire sous fiabilité hétérogène ; Contract Net face à la table
@@ -103,14 +103,15 @@ statique, puis face au moindre chargé ; la réexécution corrigée du holdout p
 scénario de CICIDS2017 ; l'ablation du magasin d'idempotence sur les agents ; la
 comparaison au moindre chargé avec le coordinateur corrigé ; le benchmark sur une
 inférence réelle et sa mesure intra-tâche ; l'adaptateur de flux réseau ; le diagnostic de
-saturation sur deux machines virtuelles ; enfin la répétition du holdout sur CICIDS2017
-corrigé. Pour ces huit derniers, le programme a été versionné avec le protocole. Pour les six
+saturation sur deux machines virtuelles ; la répétition du holdout sur CICIDS2017
+corrigé, puis sa variante comptant les flux « Attempted » comme bénins ; la mémoire
+greffée sur un répartiteur centralisé ; l'allocation dynamique sur deux machines virtuelles ; enfin deux cycles de promotion et de rejet des modèles. Pour ces treize derniers, le programme a été versionné avec le protocole. Pour les six
 premiers, les programmes n'ont été versionnés qu'après l'exécution ; leur contenu antérieur
 est garanti par l'empreinte inscrite dans le protocole. L'ordre des versions et des
 exécutions est vérifiable dans l'historique du dépôt. L'antériorité des protocoles n'a pas
 été déposée auprès d'un registre externe : ce versionnement ne garantit ni l'absence de
 versions antérieures non conservées, ni la justesse du code, comme le montre la campagne
-écartée. Trois de ces protocoles ont été conçus après lecture de résultats antérieurs. Les
+écartée. Six de ces protocoles ont été conçus après lecture de résultats antérieurs. Les
 hypothèses générales et leurs grandeurs de décision n'ont pas été fixées avant les
 expériences : H3 et H4 viennent du programme initial sans seuil chiffré, H1 et H2 ont été
 formulées après les campagnes principales, au vu de leurs résultats. Les autres campagnes

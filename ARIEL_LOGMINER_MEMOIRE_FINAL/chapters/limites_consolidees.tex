@@ -7,8 +7,9 @@ qui est nécessaire à la lecture d'un résultat, et renvoient ici pour le déta
 \paragraph{Données et généralisation.}
 Aux réserves de validité externe déjà formulées pour CICIDS2017 s'ajoute l'emploi des CSV
 d'origine, sans les corrections publiées \cite{engelen2021troubleshooting,lanvin2023errors},
-pour toutes les campagnes sauf la répétition du holdout par scénario sur la version corrigée
-(section~\ref{sec:cicids-wtmc}), qui exclut les flux tentés au lieu de les compter comme bénins.
+pour toutes les campagnes sauf les deux répétitions du holdout par scénario sur la version corrigée
+(section~\ref{sec:cicids-wtmc}). La première exclut les flux tentés ; la seconde les compte comme
+bénins selon la recommandation des auteurs. Les deux conduisent à la même décision.
 Le score dépend fortement du protocole (section~\ref{sec:cicids-resultats}), et le défaut
 d'échantillonnage de la première campagne du holdout par scénario est traité plus haut dans ce chapitre (validité interne). La provenance des deux fichiers CSE-CIC-IDS2018 a été
 vérifiée par un nouveau téléchargement depuis la source : leurs empreintes coïncident avec
@@ -43,7 +44,13 @@ connus. Ses scores reprennent pour les journaux texte les colonnes \texttt{datas
 parseur à ne pas reconnaître un format. Sa calibration ne repose que sur trois fichiers
 inconnus, les fichiers d'un même schéma ne sont pas indépendants et la
 \texttt{decision\_margin} n'est pas une probabilité calibrée. La comparaison à une chaîne
-sans routage n'a pas été exécutée ; H3 reste non tranchée. La couverture multiformat mesure
+sans routage n'a pas été exécutée, faute de sources indépendantes : les 68 fichiers du test
+open-set ont déjà servi, et l'inventaire local n'en laisse au plus que 45 autres, dont des
+archives, des fichiers de configuration et des doublons, pour les 90 que demandait le
+protocole envisagé. Constituer ce corpus à partir de dérivés des fichiers déjà évalués
+aurait introduit une pseudo-réplication. Cette limite est donc assumée : H3 reste non
+tranchée, et sa première clause ne pourra être éprouvée que sur un corpus de sources
+nouvelles. La couverture multiformat mesure
 la lecture, le parsing et l'émission des unités présentes ; la voie Apache repose sur une
 seule fixture, et les flux réseau tabulaires ne renseignent aucun des sept champs standard
 mesurés, faute de projection dans leur adaptateur ; avec l'adaptateur ajouté ensuite, ils
@@ -70,7 +77,9 @@ seconde machine ne traite que $1{,}23\,\%$ des tâches réussies : la distributi
 fonctionnelle, mais elle n'accroît pas la capacité observée. Le diagnostic en établit la
 cause : chaque agent exécute une tâche à la fois et le départage des utilités égales attribue
 tout au même agent, si bien que ce dispositif ne pouvait pas montrer un partage de charge ;
-un agent capable de traiter plusieurs tâches en parallèle n'a pas été évalué. Dans la détection HDFS
+un agent capable de traiter plusieurs tâches en parallèle n'a pas été évalué. Un départage par la charge partage les tâches entre les
+deux machines et accroît la capacité observée, mais une tâche sur $2\,520$ échoue, si bien que la correction n'est pas confirmée
+selon la règle préenregistrée ; la comparaison répartie au moindre chargé porte sur des utilités égales, sans défaillance injectée. Dans la détection HDFS
 répartie, les utilités égales sont départagées par un ordre fixe et toutes les tâches vont
 au même agent ; l'inférence n'y est pas recalculée sur les machines virtuelles. La trace de
 messages de l'endurance est tronquée à $10\,001$ événements, ce qui rend ses compteurs non
@@ -81,9 +90,12 @@ sont pas évalués.
 
 \paragraph{Mécanismes adaptatifs.}
 La fonction d'utilité est un classement à poids fixes, non appris
-(section~\ref{sec:spec-utilite}). La mémoire n'apporte de gain qu'à une probabilité d'échec
-de $0{,}9$, avec une équité moindre, dans un protocole où la confiance déclarée est
-volontairement éloignée de la fiabilité réelle (section~\ref{sec:e-h5}). Contract Net
+(section~\ref{sec:spec-utilite}). Dans Contract Net, la mémoire n'apporte de gain qu'à une probabilité d'échec
+de $0{,}9$, avec une équité moindre ; greffé sur un répartiteur centralisé au moindre chargé,
+le même compteur satisfait le critère aux trois niveaux $0{,}3$, $0{,}6$ et $0{,}9$.
+La confiance déclarée reste volontairement éloignée de la fiabilité réelle et les échecs sont
+injectés : l'effet observé soutient le mécanisme simple, non le caractère multi-agents
+(section~\ref{sec:e-h5}). Contract Net
 n'obtient aucun avantage sur un répartiteur au moindre chargé
 (section~\ref{sec:e-cnp-moindre}) ; ce répartiteur lit l'état des agents dans un seul
 processus, sans coût de communication ni information périmée, et la comparaison n'a pas été
@@ -91,8 +103,12 @@ reprise en exécution distribuée. Les campagnes Contract Net antérieures à la
 quelques tâches ; la comparaison reprise avec le coordinateur corrigé n'en perd aucune, et sa
 conclusion est inchangée. Le coordinateur Redis n'a pas reçu cette correction. Dans la panne appariée, l'absence
 de doublon provient du magasin d'idempotence : il l'évite aussi lorsqu'il est ajouté aux
-architectures de référence, et son retrait la fait réapparaître chez les agents. La mise à jour contrôlée des modèles dispose d'un mode
-d'essai à blanc, mais d'aucun cycle complet et répété de promotion et de rejet
+architectures de référence, et son retrait la fait réapparaître chez les agents. La mise à jour contrôlée des modèles n'est vérifiée en
+cycle que sur CICIDS2017, avec des candidats supervisés fixés et des décisions automatiques ;
+le cycle qui l'établit a été conçu après un premier où aucune promotion n'était atteignable,
+et son bénéfice ne vaut que pour un test de même distribution, à partir d'un modèle
+initial volontairement faible. Ni les retours de l'analyste, ni les familles non
+supervisées, ni une mise à jour continue n'ont été éprouvés
 (tableau~\ref{tab:statut-model-update}).
 
 \paragraph{Statut du système.}

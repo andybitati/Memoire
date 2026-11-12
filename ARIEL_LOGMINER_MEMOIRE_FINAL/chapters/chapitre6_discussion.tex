@@ -25,10 +25,10 @@ Spécialisation & Modèles par famille & Non-infériorité face à un modèle co
 Détection & Histogram (HBOS), régression logistique, forêts, Isolation Forest & Meilleure règle simple sur le même test & Non sous le critère préenregistré (F1) ; discrimination réelle en MCC et PR-AUC, sans transfert du seuil \\
 Négociation & Contract Net, utilité & Table statique ; répartiteur au moindre chargé & Non : H1 réfutée dans un seul processus \\
 Reprise sans doublon & Magasin d'idempotence & Panne appariée, chaque architecture avec et sans magasin & Exigence R2 satisfaite ; l'effet vient du magasin, non des agents (ablation complète) \\
-Mémoire & Compteur lissé par agent & Mémoire activée ou non, fiabilité hétérogène & H2 non établie en général : seulement à $p = 0{,}9$, avec une équité moindre \\
+Mémoire & Compteur lissé par agent ou répartiteur & Mémoire activée ou non, fiabilité hétérogène, comparateur centralisé & H2 soutenue pour le compteur simulé ; effet non attribuable aux agents \\
 Distribution & Deux machines, Redis & Endurance, saturation, détection HDFS répartie & Exécution répartie démontrée ; capacité non accrue \\
 Corrélation & Hôte, fenêtre, clés & Baselines sur corpus synthétique & En circuit fermé seulement \\
-Gouvernance, interface & Promotion, tableau de bord & Essai à blanc ; aucune mesure auprès d'analystes & Exigence R3 non vérifiée \\
+Gouvernance, interface & Promotion, tableau de bord & Essai à blanc ; deux cycles de promotion et de rejet ; aucune mesure auprès d'analystes & Exigence R3 vérifiée sur un jeu ; interface non évaluée \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -67,8 +67,9 @@ charge : un répartiteur au moindre chargé, sans négociation, l'obtient aussi.
 efficace \cite{winston1977shortest}, et interroger seulement deux files tirées au hasard en
 conserve l'essentiel du bénéfice \cite{azar1999balanced,mitzenmacher2001power}. Le
 répartiteur lit toutefois l'état des agents sans coût de communication ni information
-périmée : en exécution distribuée, où connaître la charge a un coût, la comparaison reste à
-faire.
+périmée : sur deux machines virtuelles, sous des utilités égales et sans défaillance injectée,
+la négociation n'apporte pas davantage qu'un répartiteur qui lit la charge des agents dans Redis ;
+la comparaison sous défaillances, en exécution répartie, reste à faire.
 
 \paragraph{Reprise et idempotence.}
 La reprise combine deux mécanismes : le transport conserve ou réattribue une tâche non
@@ -84,8 +85,14 @@ La mémoire persistante fournit un état aux décisions sans démontrer, par sa 
 adaptation bénéfique ; son effet sur la priorisation des anomalies n'a pas été mesuré. De
 même, le registre, l'essai à blanc et les chemins de promotion sont des briques, non une
 validation MLOps : la littérature en exige des tests, une surveillance et des revues
-continues \cite{sculley2015debt,breck2017mltest,nist2023airmf}, qu'aucun cycle répété ne
-réalise ici.
+continues \cite{sculley2015debt,breck2017mltest,nist2023airmf}. Les cycles réalisés
+vérifient que la règle décide comme prévu et que chaque remplacement est réversible ; ils
+montrent aussi ses limites. Avec un seuil de 0,02, un modèle initial déjà à 0,99 ne peut
+plus être remplacé, si bien que le premier cycle n'exerce que le rejet ; dans le second, un
+modèle promu peut faire obstacle à de meilleurs candidats, et la validation, tirée de la
+même distribution, ne prévient pas l'échec sur le scénario DDoS
+(section~\ref{sec:r3-cycle}). Une gouvernance en exploitation devrait donc évaluer les
+candidats sur des données plus récentes que celles de l'entraînement.
 
 \section{Hétérogénéité, normalisation et corrélation}
 

@@ -1,0 +1,22 @@
+{
+  "seed": 20261715,
+  "heldout_file": "data/raw/Datasets/MachineLearningCSV/MachineLearningCVE/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv",
+  "rows": {
+    "train": 9600,
+    "validation": 3200,
+    "test_iid": 3200,
+    "test_ddos_file": 8000
+  },
+  "positive_rate": {
+    "train": 0.5,
+    "validation": 0.5,
+    "test_iid": 0.5,
+    "test_ddos_file": 0.5
+  },
+  "sha256": {
+    "train_bundle": "db9beb18da5b5dfd0e2b1e4a95ae3594f5d28b8cb296fa9ab422719bd649980b",
+    "validation": "366bb6e7d9671e850073b367c6863ce47ffe051315458f9910e40df08364cd0f",
+    "test_iid": "995df769fbb47511be289598c5f3fc28253f677ab035779af8eaf5e8ef232ac3",
+    "test_ddos_file": "09006b62f27e0031f84871c8ce9442edeca4345ccd476f83997943febc22b399"
+  }
+}

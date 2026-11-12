@@ -57,6 +57,7 @@ class RedisContractNetTransport:
         self.run_id = run_id
         self.response_stream = f"{self.namespace}:responses"
         self.registry_key = f"{self.namespace}:registry"
+        self.allocations_key = f"{self.namespace}:allocations:{self.run_id}"
 
     def inbox(self, agent_id: str) -> str:
         return f"{self.namespace}:inbox:{agent_id}"
@@ -130,6 +131,69 @@ class RedisContractNetTransport:
         record = {"agent_id": agent_id, "run_id": self.run_id, "updated_at": datetime.now(timezone.utc).isoformat(), **payload}
         self.client.hset(self.registry_key, agent_id, json.dumps(record, ensure_ascii=False))
 
+    def update_perception(self, agent_id: str, perception: dict[str, Any]) -> None:
+        """Actualise l'état léger de l'agent sans effacer ses métadonnées d'inscription."""
+
+        raw = self.client.hget(self.registry_key, agent_id)
+        record = json.loads(raw) if raw else {"agent_id": agent_id, "run_id": self.run_id}
+        record.update(
+            {
+                "agent_id": agent_id,
+                "run_id": self.run_id,
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+                "perception": dict(perception),
+            }
+        )
+        self.client.hset(self.registry_key, agent_id, json.dumps(record, ensure_ascii=False))
+
+    def claim_least_loaded(self, agent_ids: Iterable[str], capacities: dict[str, int] | None = None) -> str:
+        """Choisit et incrémente atomiquement la charge d'allocation la plus faible.
+
+        L'ordre fourni départage les rapports de charge égaux. Le compteur représente
+        les contrats en vol, y compris ceux qui attendent dans la boîte d'un agent.
+        """
+
+        ordered = list(dict.fromkeys(agent_ids))
+        if not ordered:
+            raise ValueError("Aucun agent candidat à allouer")
+        capacities = capacities or {}
+        arguments: list[str] = []
+        for agent_id in ordered:
+            arguments.extend((agent_id, str(max(1, int(capacities.get(agent_id, 1))))))
+        script = """
+local best = false
+local best_ratio = nil
+for index = 1, #ARGV, 2 do
+    local agent_id = ARGV[index]
+    local capacity = tonumber(ARGV[index + 1]) or 1
+    local load = tonumber(redis.call('HGET', KEYS[1], agent_id) or '0')
+    local ratio = load / capacity
+    if best_ratio == nil or ratio < best_ratio then
+        best = agent_id
+        best_ratio = ratio
+    end
+end
+redis.call('HINCRBY', KEYS[1], best, 1)
+return best
+"""
+        return str(self.client.eval(script, 1, self.allocations_key, *arguments))
+
+    def release_allocation(self, agent_id: str) -> None:
+        """Libère atomiquement une allocation et interdit les compteurs négatifs."""
+
+        script = """
+local load = tonumber(redis.call('HGET', KEYS[1], ARGV[1]) or '0')
+if load <= 1 then
+    redis.call('HDEL', KEYS[1], ARGV[1])
+    return 0
+end
+return redis.call('HINCRBY', KEYS[1], ARGV[1], -1)
+"""
+        self.client.eval(script, 1, self.allocations_key, agent_id)
+
+    def allocation_counts(self) -> dict[str, int]:
+        return {str(agent_id): int(value) for agent_id, value in self.client.hgetall(self.allocations_key).items()}
+
     def registered_agents(self) -> dict[str, dict[str, Any]]:
         records = {}
         for agent_id, raw in self.client.hgetall(self.registry_key).items():
@@ -147,13 +211,35 @@ class RedisContractNetCoordinator:
         *,
         coordinator_id: str = "redis-cnp-coordinator",
         response_timeout_sec: float = 10.0,
+        selection_policy: str = "utility_agent_id",
     ):
+        allowed_policies = {"utility_agent_id", "utility_load", "least_loaded"}
+        if selection_policy not in allowed_policies:
+            raise ValueError(f"Politique de sélection inconnue: {selection_policy!r}")
         self.transport = transport
         self.agent_ids = sorted(set(agent_ids))
         self.coordinator_id = coordinator_id
         self.response_timeout_sec = response_timeout_sec
+        self.selection_policy = selection_policy
         self.response_cursor = transport.latest_id(transport.response_stream)
         self.counts: Counter[str] = Counter()
+
+    def _claim_candidate(
+        self,
+        remaining: set[str],
+        proposals: dict[str, float],
+        capacities: dict[str, int],
+    ) -> tuple[str, bool]:
+        if self.selection_policy == "utility_agent_id":
+            return min(remaining, key=lambda agent_id: (-proposals[agent_id], agent_id)), False
+
+        if self.selection_policy == "utility_load":
+            best_utility = max(proposals[agent_id] for agent_id in remaining)
+            candidates = [agent_id for agent_id in remaining if proposals[agent_id] == best_utility]
+        else:
+            candidates = list(remaining)
+        candidates.sort(key=lambda agent_id: (-proposals[agent_id], agent_id))
+        return self.transport.claim_least_loaded(candidates, capacities), True
 
     def _send(self, agent_id: str, message_type: str, payload: dict[str, Any], status: str = "ok") -> None:
         self.transport.send_to_agent(
@@ -209,10 +295,18 @@ class RedisContractNetCoordinator:
             self._send(agent_id, "CFP", cfp_payload)
 
         responses = self._collect(contract_id, set(self.agent_ids), {"PROPOSE", "REFUSE"})
-        proposals = {
-            message.source: float(message.payload.get("utility", 0.0))
+        proposal_messages = {
+            message.source: message
             for message in responses
             if message.message_type == "PROPOSE"
+        }
+        proposals = {
+            message.source: float(message.payload.get("utility", 0.0))
+            for message in proposal_messages.values()
+        }
+        capacities = {
+            agent_id: max(1, int((message.payload.get("perception") or {}).get("max_parallel_tasks", 1)))
+            for agent_id, message in proposal_messages.items()
         }
         refusals = {
             message.source: str(message.payload.get("refusal_reason", ""))
@@ -231,26 +325,32 @@ class RedisContractNetCoordinator:
                 elapsed_sec=round(time.perf_counter() - started, 6),
             )
 
-        ranking = sorted(proposals, key=lambda agent_id: (-proposals[agent_id], agent_id))
         winner = ""
         result = None
         reassignments = 0
         attempted: list[str] = []
-        for candidate in ranking:
+        remaining = set(proposals)
+        while remaining:
+            candidate, allocation_claimed = self._claim_candidate(remaining, proposals, capacities)
             winner = candidate
             attempted.append(candidate)
-            self._send(candidate, "AWARD", {"contract_id": contract_id, "task_id": task.task_id, "utility": proposals[candidate]})
-            terminal = self._collect(
-                contract_id,
-                {candidate},
-                {"ACCEPT", "RESULT", "FAIL"},
-                required_any_type={"RESULT", "FAIL"},
-            )
-            result_messages = [message for message in terminal if message.message_type in {"RESULT", "FAIL"}]
-            candidate_result = None
-            if result_messages:
-                result_payload = result_messages[-1].payload.get("result") or {}
-                candidate_result = TaskResult(**result_payload)
+            try:
+                self._send(candidate, "AWARD", {"contract_id": contract_id, "task_id": task.task_id, "utility": proposals[candidate]})
+                terminal = self._collect(
+                    contract_id,
+                    {candidate},
+                    {"ACCEPT", "RESULT", "FAIL"},
+                    required_any_type={"RESULT", "FAIL"},
+                )
+                result_messages = [message for message in terminal if message.message_type in {"RESULT", "FAIL"}]
+                candidate_result = None
+                if result_messages:
+                    result_payload = result_messages[-1].payload.get("result") or {}
+                    candidate_result = TaskResult(**result_payload)
+            finally:
+                if allocation_claimed:
+                    self.transport.release_allocation(candidate)
+            remaining.remove(candidate)
             if candidate_result is not None and candidate_result.status == "ok":
                 result = candidate_result
                 break
@@ -260,11 +360,11 @@ class RedisContractNetCoordinator:
                 {"contract_id": contract_id, "task_id": task.task_id, "outcome": "error"},
                 "error",
             )
-            if candidate != ranking[-1]:
+            if remaining:
                 reassignments += 1
 
         status = "ok" if result is not None else "error"
-        for agent_id in ranking:
+        for agent_id in sorted(proposals):
             if agent_id not in attempted:
                 self._send(
                     agent_id,

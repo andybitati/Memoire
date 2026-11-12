@@ -178,6 +178,111 @@ class TrueMultiAgentTests(unittest.TestCase):
         self.assertEqual(outcome.winner, "agent-b")
         self.assertEqual(outcome.reassignments, 1)
 
+    def _dynamic_redis_transport(self, *, loads=None, utilities=None):
+        class FakeTransport:
+            response_stream = "responses"
+
+            def __init__(self):
+                self.messages = []
+                self.loads = dict(loads or {})
+                self.utilities = dict(utilities or {"agent-a": 0.9, "agent-b": 0.8})
+                self.claimed = []
+                self.released = []
+
+            def latest_id(self, stream):
+                return "0-0"
+
+            def send_to_agent(self, agent_id, *, source, message_type, payload, status="ok"):
+                contract_id = payload["contract_id"]
+                if message_type == "CFP":
+                    utility = self.utilities[agent_id]
+                    self.messages.append(
+                        AgentMessage(
+                            "run",
+                            agent_id,
+                            source,
+                            "PROPOSE",
+                            {
+                                "contract_id": contract_id,
+                                "utility": utility,
+                                "perception": {"max_parallel_tasks": 1},
+                            },
+                        )
+                    )
+                elif message_type == "AWARD":
+                    self.messages.append(AgentMessage("run", agent_id, source, "ACCEPT", {"contract_id": contract_id}))
+                    self.messages.append(
+                        AgentMessage(
+                            "run",
+                            agent_id,
+                            source,
+                            "RESULT",
+                            {
+                                "contract_id": contract_id,
+                                "result": {
+                                    "task_id": payload["task_id"],
+                                    "task_type": "detect",
+                                    "agent_id": agent_id,
+                                    "status": "ok",
+                                },
+                            },
+                        )
+                    )
+
+            def claim_least_loaded(self, agent_ids, capacities):
+                del capacities
+                ordered = list(agent_ids)
+                winner = min(ordered, key=lambda agent_id: (self.loads.get(agent_id, 0), ordered.index(agent_id)))
+                self.loads[winner] = self.loads.get(winner, 0) + 1
+                self.claimed.append((tuple(ordered), winner))
+                return winner
+
+            def release_allocation(self, agent_id):
+                self.loads[agent_id] -= 1
+                self.released.append(agent_id)
+
+            def read(self, stream, cursor, **kwargs):
+                messages, self.messages = self.messages, []
+                return "1-0", messages
+
+        return FakeTransport()
+
+    def test_redis_historical_policy_keeps_utility_then_agent_id(self):
+        transport = self._dynamic_redis_transport(
+            loads={"agent-a": 10, "agent-b": 0},
+            utilities={"agent-a": 0.9, "agent-b": 0.9},
+        )
+        outcome = RedisContractNetCoordinator(transport, ["agent-a", "agent-b"]).negotiate(
+            AgentTask.create("detect")
+        )
+        self.assertEqual(outcome.winner, "agent-a")
+        self.assertEqual(transport.claimed, [])
+
+    def test_redis_utility_load_uses_load_only_between_equal_utilities(self):
+        transport = self._dynamic_redis_transport(
+            loads={"agent-a": 10, "agent-b": 0},
+            utilities={"agent-a": 0.9, "agent-b": 0.9},
+        )
+        outcome = RedisContractNetCoordinator(
+            transport,
+            ["agent-a", "agent-b"],
+            selection_policy="utility_load",
+        ).negotiate(AgentTask.create("detect"))
+        self.assertEqual(outcome.winner, "agent-b")
+        self.assertEqual(transport.claimed, [(('agent-a', 'agent-b'), 'agent-b')])
+        self.assertEqual(transport.released, ["agent-b"])
+
+    def test_redis_least_loaded_can_choose_lower_utility(self):
+        transport = self._dynamic_redis_transport(loads={"agent-a": 1, "agent-b": 0})
+        outcome = RedisContractNetCoordinator(
+            transport,
+            ["agent-a", "agent-b"],
+            selection_policy="least_loaded",
+        ).negotiate(AgentTask.create("detect"))
+        self.assertEqual(outcome.winner, "agent-b")
+        self.assertEqual(transport.claimed, [(('agent-a', 'agent-b'), 'agent-b')])
+        self.assertEqual(transport.released, ["agent-b"])
+
     def test_agent_message_contract_stays_at_seven_fields(self):
         self.assertEqual(
             [item.name for item in fields(AgentMessage)],

@@ -160,14 +160,16 @@ Campagne BGL, protocole contigu (G) & F1 0,941927 ; conçu après lecture du tes
 Audit CSE-CIC-IDS2018 & LR 0,999212 ; \texttt{Dst Port} seul 0,999720 ; provenance vérifiée par retéléchargement et identité des SHA-256 & \texttt{external\_csecicids2018\_20260910T230136Z\_metrics.csv} ; \texttt{agent4\_csecic\_shortcut\_20261104T144738Z\_\_result.json} \\
 \multicolumn{3}{l}{\textit{Routage, spécialisation, normalisation}} \\
 Évaluation open-set du routeur & Calibration : rejet 3/3, faux rejet 0/28 ; extension : rejet 20/20, faux rejet 3/46 & \texttt{router\_open\_set\_final\_tradeoff\_diagnostic.csv} ; \texttt{agent5\_router\_open\_set\_20261104T145601Z} \\
-Chaîne sans routage & Non exécutée & --- \\
+Chaîne sans routage & Non exécutée : 45 sources locales indépendantes au plus, pour 90 requises & \texttt{sources\_config.json} de \texttt{agent5\_router\_open\_set\_20261104T145601Z} (68 sources déjà employées) \\
 Modèle spécialisé / modèle commun & Non-infériorité non établie ; borne inférieure CICIDS $-0{,}0190$ & E-H3B-STRICT-HOLDOUT ; \path{experiments/phase_revision_20261105/E-H3B-STRICT-HOLDOUT/summary.json} \\
 Première comparaison spécialisé / commun & \textit{Fuite de l'étiquette sur UNSW ; CICIDS réduit aux DDoS ; non retenue} & E-H3B-FAMILY-MODELS ; \path{experiments/phase_revision_20261105/E-H3B-FAMILY-MODELS/summary.json} \\
 Corpus Linux/auth (provenance) & Jeu Kaggle « linux\_auth\_log-anomalies » (L\.{I}N \c{C}ORBACI, licence MIT, première version du 27 octobre 2025), entièrement synthétique (Faker) ; somme des tailles des quatre fichiers : $204\,854\,155$ octets, égale à la taille déclarée par Kaggle & \path{data/raw/Datasets/linux_auth_logs_*.csv} \\
 Couverture multiformat & $7\,001/7\,001$ ; une fixture Apache & \texttt{multiformat\_balanced\_20260910T094422Z} ; \texttt{agent5\_multiformat\_20261104T150111Z} \\
 Adaptateur de flux réseau, remplissage du schéma & CICIDS2017 : 2/7 champs réseau ; CSE-CIC-IDS2018 : 4/7 ; aucune fuite d'étiquette & E-NORM-NETWORK-FLOWS ; \path{experiments/phase_revision_20261112/E-NORM-NETWORK-FLOWS/summary.json} \\
 CICIDS2017 corrigé (WTMC 2021), holdout par scénario & Aucun modèle ne bat le tout positif : F1 0,20 à 0,23 contre 0,34 ; DDoS 0,99 & E-CICIDS-WTMC2021-HOLDOUT ; \path{experiments/phase_revision_20261112/E-CICIDS-WTMC2021-HOLDOUT/decision.json} \\
+CICIDS2017 corrigé, flux tentés comptés bénins & Même décision : F1 0,20 à 0,22 contre 0,34 ; au plus 2 scénarios gagnés sur 5 & E-CICIDS-WTMC2021-\allowbreak ATTEMPTED-BENIGN ; \path{experiments/phase_revision_20261112/}\allowbreak\path{E-CICIDS-WTMC2021-}\allowbreak\path{ATTEMPTED-BENIGN/decision.json} \\
 Diagnostic de saturation sur deux VM & Deux VM 23,4 t/s ; Debian seule 24,4 ; Ubuntu seule 14,9 ; Ubuntu 0 \% des tâches & E-MULTIVM-SATURATION-DIAG ; \path{experiments/phase_revision_20261112/E-MULTIVM-SATURATION-DIAG/summary.json} \\
+Allocation dynamique sur deux VM & Historique 14,4 t/s, Debian 100 \% ; par la charge 18,0 t/s, Ubuntu 35,4 \%, 1 échec sur 2 520 ; moindre chargé 18,05 t/s, 0 échec ; non confirmée & E-MULTIVM-DYNAMIC-ALLOCATION ; \path{experiments/phase_revision_20261112/E-MULTIVM-DYNAMIC-ALLOCATION/summary.json} \\
 Inférence de bout en bout & $1\,400/1\,401$ & \texttt{multisource\_cnp\_model\_inference\_by\_source.csv} \\
 \multicolumn{3}{l}{\textit{Orchestration et distribution}} \\
 Benchmark A--D & 160 exécutions ; $264\,000$ tâches ; tableau~\ref{tab:benchmark-debit} & \texttt{ma\_20260909T160812Z\_34016\_\_statistics.csv} \\
@@ -176,7 +178,7 @@ Benchmark sur inférence réelle (Isolation Forest HDFS, 21 ms) & C/A 0,988 ; su
 Surcoût intra-tâche (durée totale moins appel au modèle) & C : 0,23 ms micro, 0,39 ms réel, 1,95 \% ; D : 2,05 \% ; additif confirmé & E-QR2-OVERHEAD-DIRECT ; \path{experiments/phase_revision_20261112/E-QR2-OVERHEAD-DIRECT/summary.json} \\
 Panne appariée A--D & Doublons A 10, B 10, C 0, D 0 ; A+I et B+I 0 & \texttt{agent3\_paired\_failure\_abcd\_20261104T141803Z\_\_summary.json} \\
 Agents sans magasin d'idempotence (ablation) & C sans magasin 10, D sans magasin 10 doublons ; contrôles A--D, A+I, B+I reproduits & E-R2-AGENTS-NO-STORE ; \path{experiments/phase_revision_20261112/E-R2-AGENTS-NO-STORE/summary.json} \\
-Mémoire et fiabilité & Gain pour $p = 0{,}9$ seulement ; écart $-0{,}2993$ ; rapport de débit 1,210 & E-H5-MEMORY-RELIABILITY ; \path{experiments/phase_revision_20261105/E-H5-MEMORY-RELIABILITY/summary.json} \\
+Mémoire et fiabilité & Contract Net : gain à $p=0{,}9$ seulement ; répartiteur centralisé : gain aux trois niveaux & E-H5-MEMORY-RELIABILITY ; E-H2-MEMORY-CENTRAL ; \path{experiments/phase_revision_20261112/E-H2-MEMORY-CENTRAL/summary.json} \\
 Contract Net contre table statique & Avantage conditionnel ; rapport de débit nominal 0,867 & E-CNP-STATIC-ASSIGNMENT ; \path{experiments/phase_revision_20261105/E-CNP-STATIC-ASSIGNMENT/summary.json} \\
 Contract Net contre moindre chargé & Aucun avantage ; rapport de débit nominal 0,870 & E-CNP-LEAST-LOADED ; \path{experiments/phase_revision_20261105/E-CNP-LEAST-LOADED/summary.json} \\
 Contract Net à repli corrigé contre moindre chargé & Aucun avantage ; 0 tâche perdue (5 avant correction) ; rapport de débit 0,848 à 0,876 & E-CNP-RECFP-LEAST-LOADED ; \path{experiments/phase_revision_20261112/E-CNP-RECFP-LEAST-LOADED/summary.json} \\
@@ -184,6 +186,8 @@ Tailles d'effet et réplication Contract Net (analyse secondaire, non préenregi
 Endurance sur deux VM & $1\,800/1\,800$ ; 1 h ; Debian 451, Ubuntu $1\,349$ & \texttt{cnp\_endurance\_multivm\_20260918T130822Z\_\_summary.json} \\
 Saturation sur deux VM & Coude 8--16 tâches/s ; 3 échecs sur $11\,430$ & \texttt{agent3\_saturation\_multivm\_20261104T142325Z\_\_saturation\_summary.json} \\
 Détection HDFS répartie sur deux VM & $2\,000/2\,000$ ; F1 0,892308 ; Debian $2\,000$, Ubuntu 0 & \texttt{hdfs\_multivm\_cnp\_20261104T135345Z\_\_hdfs\_multivm\_summary.json} \\
+Cycle de promotion et de rejet, modèle initial fort & 25 décisions, contrôles 25/25 ; 0 promotion ; cycle non exercé & E-R3-GOVERNANCE-CYCLE ; \path{experiments/phase_revision_20261112/E-R3-GOVERNANCE-CYCLE/summary.json} \\
+Cycle de promotion et de rejet, modèle initial faible & 6 promotions, 19 rejets, contrôles 25/25 ; R3 vérifiée ; test i.i.d. $+0{,}0358$ [$0{,}0255$ ; $0{,}0461$] ; test DDoS non confirmé & E-R3-GOVERNANCE-CYCLE-B ; \path{experiments/phase_revision_20261112/}\allowbreak\path{E-R3-GOVERNANCE-CYCLE-B/summary.json} \\
 Évaluation de la corrélation & F1 0,812500 ; corpus étendu : précision 0,9884, rappel 0,5973 & \path{data/processed/final_experiments_2026/correlation_synthetic_summary.json} ; \texttt{agent5\_correlation} \\
 \bottomrule
 \end{longtable}
@@ -203,11 +207,11 @@ tableau~\ref{tab:correspondance-hypotheses} donne la correspondance.
 \textbf{Énoncé} & \textbf{Étiquette de travail} & \textbf{Origine} & \textbf{Campagnes} \\
 \midrule
 H1 & H-CNP & Contrôle, après les campagnes principales & E-CNP-LEAST-LOADED ; E-CNP-RECFP-LEAST-LOADED (repli corrigé) ; contexte : E-CNP-STATIC-ASSIGNMENT \\
-H2 & H5a & Contrôle ; précise l'hypothèse initiale sur la mémoire & E-H5-MEMORY-RELIABILITY \\
+H2 & H5a & Contrôle ; précise l'hypothèse initiale sur la mémoire & E-H5-MEMORY-RELIABILITY ; E-H2-MEMORY-CENTRAL (comparateur centralisé) \\
 H3 & H3 & Programme initial & Routeur open-set ; E-H3B-STRICT-HOLDOUT (E-H3B-FAMILY-MODELS non retenue) \\
 H4 & H4 & Programme initial & Campagnes CICIDS2017 dont E-CICIDS-HOLDOUT-FIX ; HDFS dont E-H4-HDFS-BLOCK-BASELINES ; BGL ; CSE-CIC-IDS2018 \\
 R1, R2 & H1, H2 initiales & Programme initial, reclassées en exigences & Couverture multiformat ; panne appariée A--D ; E-R2-AGENTS-NO-STORE \\
-R3 & H5 initiale (partie) & Programme initial & Aucune campagne de promotion et de rejet \\
+R3 & H5 initiale (partie) & Programme initial & E-R3-GOVERNANCE-CYCLE ; E-R3-GOVERNANCE-CYCLE-B (conçu après lecture du premier) \\
 --- & H5b & Programme initial (priorisation) ; non retenue, faute de mesure & Aucune \\
 \bottomrule
 \end{tabularx}
@@ -316,9 +320,9 @@ Les valeurs qui ne disposent pas de cette définition ne sont pas reprises dans 
 \midrule
 Code de comparaison & IMPLÉMENTÉ & Infrastructure présente dans le dépôt. \\
 Essai à blanc & TESTÉ & Décision simulable sans remplacement du modèle actif. \\
-Comparaison exécutée & PARTIEL & Certaines branches et candidats sont comparés. \\
-Promotion/rejet observé & NON ÉVALUÉ & Pas de cycle complet et répété démontré. \\
-Bénéfice après mise à jour & NON ÉVALUÉ & Aucune amélioration globale mesurée. \\
+Comparaison exécutée & VÉRIFIÉ & 50 décisions sur une validation figée, en deux cycles de 25 (CICIDS2017). \\
+Promotion/rejet observé & VÉRIFIÉ & Premier cycle : 25 rejets, aucune promotion ; second cycle, conçu après lecture du premier : 6 promotions, 19 rejets ; intégrité vérifiée par empreintes. \\
+Bénéfice après mise à jour & PARTIEL & Test i.i.d. : $+0{,}0358$ en F1, IC [$0{,}0255$ ; $0{,}0461$], depuis un modèle initial volontairement faible ; test DDoS : non confirmé. \\
 Mise à jour autonome continue & PERSPECTIVE & Hors du prototype évalué. \\
 \bottomrule
 \end{tabularx}

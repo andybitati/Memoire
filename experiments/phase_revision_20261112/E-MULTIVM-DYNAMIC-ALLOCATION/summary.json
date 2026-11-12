@@ -1,0 +1,74 @@
+{
+  "experiment_id": "E-MULTIVM-DYNAMIC-ALLOCATION",
+  "analysed_at_utc": "2026-11-12T17:33:34.255809+00:00",
+  "run_ids": {
+    "utility_agent_id": "e_dynamic_utility-agent-id_20261112T171938Z",
+    "utility_load": "e_dynamic_utility-load_20261112T171938Z",
+    "least_loaded": "e_dynamic_least-loaded_20261112T171938Z"
+  },
+  "policies": {
+    "utility_agent_id": {
+      "capacity_tasks_sec_at_rate32": {
+        "median": 14.405707,
+        "values": [
+          10.722627,
+          14.852274,
+          14.405707
+        ]
+      },
+      "completed": 2520,
+      "failed": 0,
+      "tasks_by_agent": {
+        "debian-alpha": 2520
+      },
+      "agent_shares": {
+        "debian-alpha": 1.0
+      }
+    },
+    "utility_load": {
+      "capacity_tasks_sec_at_rate32": {
+        "median": 18.00483,
+        "values": [
+          20.772076,
+          18.00483,
+          9.03978
+        ]
+      },
+      "completed": 2519,
+      "failed": 1,
+      "tasks_by_agent": {
+        "debian-alpha": 1627,
+        "ubuntu-beta": 892
+      },
+      "agent_shares": {
+        "debian-alpha": 0.6458912266772528,
+        "ubuntu-beta": 0.3541087733227471
+      }
+    },
+    "least_loaded": {
+      "capacity_tasks_sec_at_rate32": {
+        "median": 18.050157,
+        "values": [
+          18.050157,
+          17.983496,
+          19.85952
+        ]
+      },
+      "completed": 2520,
+      "failed": 0,
+      "tasks_by_agent": {
+        "debian-alpha": 1640,
+        "ubuntu-beta": 880
+      },
+      "agent_shares": {
+        "debian-alpha": 0.6507936507936508,
+        "ubuntu-beta": 0.3492063492063492
+      }
+    }
+  },
+  "utility_load_over_historical_capacity": 1.2498400807402232,
+  "utility_load_over_least_loaded_capacity": 0.9974888307065695,
+  "utility_load_least_loaded_max_agent_share_gap": 0.004902424116397963,
+  "least_loaded_equivalent_under_equal_utilities": true,
+  "decision": "allocation_dynamique_non_confirmee"
+}

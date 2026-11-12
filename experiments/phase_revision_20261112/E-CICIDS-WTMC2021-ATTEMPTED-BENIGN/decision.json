@@ -1,0 +1,39 @@
+{
+  "all_positive_f1_mean": 0.34107583315546536,
+  "margin": 0.01,
+  "min_scenarios_won": 4,
+  "models": {
+    "RandomForest": {
+      "f1_mean": 0.20025221347979386,
+      "delta_vs_all_positive": -0.1408236196756715,
+      "scenarios_won": 1,
+      "beats_rule": false
+    },
+    "ExtraTrees": {
+      "f1_mean": 0.2008555775878208,
+      "delta_vs_all_positive": -0.14022025556764456,
+      "scenarios_won": 1,
+      "beats_rule": false
+    },
+    "HistGradientBoosting": {
+      "f1_mean": 0.2007148555594046,
+      "delta_vs_all_positive": -0.14036097759606075,
+      "scenarios_won": 1,
+      "beats_rule": false
+    },
+    "LogisticRegression": {
+      "f1_mean": 0.21750294558110425,
+      "delta_vs_all_positive": -0.1235728875743611,
+      "scenarios_won": 2,
+      "beats_rule": false
+    },
+    "SGDLogistic": {
+      "f1_mean": 0.21783658754367152,
+      "delta_vs_all_positive": -0.12323924561179384,
+      "scenarios_won": 2,
+      "beats_rule": false
+    }
+  },
+  "any_model_beats_rule": false,
+  "decision": "aucun_modele_ne_bat_la_regle"
+}
