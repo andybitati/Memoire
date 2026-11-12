@@ -85,6 +85,8 @@ def main():
             if message.message_type == "CFP":
                 task = AgentTask(**message.payload["task"])
                 evaluation = agent.propose(task)
+                perception = asdict(agent.perceive())
+                transport.update_perception(args.agent_id, perception)
                 pending[contract_id] = (task, evaluation)
                 transport.send_response(
                     source=args.agent_id,
@@ -99,6 +101,7 @@ def main():
                         "refusal_reason": evaluation.refusal_reason,
                         "pid": os.getpid(),
                         "host": socket.gethostname(),
+                        "perception": perception,
                     },
                     status="ok" if evaluation.accepted else "refused",
                 )
@@ -116,6 +119,7 @@ def main():
                         status="refused",
                     )
                     continue
+                transport.update_perception(args.agent_id, asdict(agent.perceive()))
                 transport.send_response(
                     source=args.agent_id,
                     target=message.source,
@@ -130,6 +134,7 @@ def main():
                     payload={"contract_id": contract_id, "result": asdict(result), "pid": os.getpid()},
                     status=result.status,
                 )
+                transport.update_perception(args.agent_id, asdict(agent.perceive()))
                 completed += int(result.status == "ok")
             elif message.message_type in {"REJECT", "FEEDBACK"}:
                 pending.pop(contract_id, None)
