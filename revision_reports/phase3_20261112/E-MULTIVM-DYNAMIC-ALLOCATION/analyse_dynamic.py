@@ -28,7 +28,7 @@ def load(run_id: str) -> dict:
 def aggregate(summary: dict) -> dict:
     top = [level for level in summary["levels"] if float(level["offered_tasks_sec"]) == TOP_RATE]
     all_levels = list(summary["levels"])
-    completed = sum(int(level["completed"]) for level in all_levels)
+    completed = sum(int(level["completed_ok"]) for level in all_levels)
     failed = sum(int(level["failed"]) for level in all_levels)
     by_agent: dict[str, int] = {}
     for level in all_levels:
