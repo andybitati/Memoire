@@ -81,7 +81,7 @@ campagne d'endurance offre environ $0{,}5$ tâche par seconde, loin de la capaci
 répartition de ses tâches suit les profils de confiance déclarés. En saturation, le coude se
 situe entre 8 et 16 tâches/s, avec trois expirations de délai sur $11\,430$ tâches, et la
 seconde machine ne traite que $1{,}23\,\%$ des tâches réussies : la distribution est
-fonctionnelle, mais elle n'accroît pas la capacité observée. Le diagnostic en établit la
+fonctionnelle, mais, sous la politique d'attribution d'origine, elle n'accroît pas la capacité observée. Le diagnostic en établit la
 cause : chaque agent exécute une tâche à la fois et le départage des utilités égales attribue
 tout au même agent, si bien que ce dispositif ne pouvait pas montrer un partage de charge ;
 un agent capable de traiter plusieurs tâches en parallèle n'a pas été évalué. Un départage par la charge partage les tâches entre les
@@ -105,8 +105,9 @@ injectés : l'effet observé soutient le mécanisme simple, non le caractère mu
 (section~\ref{sec:e-h5}). Contract Net
 n'obtient aucun avantage sur un répartiteur au moindre chargé
 (section~\ref{sec:e-cnp-moindre}) ; ce répartiteur lit l'état des agents dans un seul
-processus, sans coût de communication ni information périmée, et la comparaison n'a pas été
-reprise en exécution distribuée. Les campagnes Contract Net antérieures à la correction de la liste de repli perdent
+processus, sans coût de communication ni information périmée ; en exécution répartie, la
+comparaison n'a été reprise que sur deux machines, sous utilités égales et sans défaillance
+injectée (section~\ref{sec:cnp-multivm}). Les campagnes Contract Net antérieures à la correction de la liste de repli perdent
 quelques tâches ; la comparaison reprise avec le coordinateur corrigé n'en perd aucune, et sa
 conclusion est inchangée. Le coordinateur Redis n'a pas reçu cette correction. Dans la panne appariée, l'absence
 de doublon provient du magasin d'idempotence : il l'évite aussi lorsqu'il est ajouté aux

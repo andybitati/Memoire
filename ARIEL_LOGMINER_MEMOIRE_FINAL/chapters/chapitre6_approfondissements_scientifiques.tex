@@ -136,9 +136,9 @@ Parsing contaminé & Drain3 ajusté sur l'entraînement, état gelé & Vérifié
 Échantillonnage biaisé & Audit des chargeurs ; holdout CICIDS corrigé et réexécuté, puis répété sur la version corrigée du jeu & Tests automatisés pour les chargeurs des modèles spécialisés seulement. \\
 Nouveauté lexicale BGL & Groupes connu/inconnu, règle de sévérité & Aucun positif dans le groupe connu. \\
 Surajustement du rejet & Calibration sur connus seulement & Faux rejets sur des variantes connues ($3/46$). \\
-Confusion distribution/capacité & Saturation sur deux machines, diagnostic en trois configurations & Aucun gain de capacité : un seul agent exécute tout, en série. \\
-Confusion mémoire/gain & Mémoire activée ou non, fiabilité hétérogène & Gain établi seulement à $p = 0{,}9$. \\
-Confusion négociation/charge & Répartiteur au moindre chargé & Un seul processus ; distribution non testée. \\
+Confusion distribution/capacité & Saturation sur deux machines, diagnostic en trois configurations, allocation selon la charge & Politique d'origine : aucun gain, un seul agent exécute tout ; selon la charge : $\times 1{,}25$, non confirmé (un échec) ; agents traitant une tâche à la fois. \\
+Confusion mémoire/gain & Mémoire activée ou non, dans Contract Net et dans un répartiteur centralisé & Contract Net : gain à $p = 0{,}9$ seulement ; centralisé : protocole conçu après lecture du premier ; défaillances injectées. \\
+Confusion négociation/charge & Répartiteur au moindre chargé & Un seul processus ; en réparti, deux machines seulement, utilités égales, sans défaillance. \\
 \bottomrule
 \end{tabularx}
 \end{table}
