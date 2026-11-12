@@ -1,0 +1,88 @@
+{
+  "experiment_id": "E-R3-GOVERNANCE-CYCLE-B",
+  "generated_at": "2026-11-12T19:56:49.060697+00:00",
+  "seeds": [
+    20261711,
+    20261712,
+    20261713,
+    20261714,
+    20261715
+  ],
+  "initial_model": "Stump",
+  "cycle": [
+    "RandomForest_small",
+    "LogisticRegression",
+    "RandomForest",
+    "Stump",
+    "HistGradientBoosting"
+  ],
+  "metric": "f1",
+  "min_delta": 0.02,
+  "decisions": 25,
+  "promotions": 6,
+  "rejections": 19,
+  "all_checks_ok": true,
+  "borderline_decisions": 0,
+  "exercised_per_seed": {
+    "20261711": {
+      "promotions": 1,
+      "rejections": 4
+    },
+    "20261712": {
+      "promotions": 1,
+      "rejections": 4
+    },
+    "20261713": {
+      "promotions": 1,
+      "rejections": 4
+    },
+    "20261714": {
+      "promotions": 2,
+      "rejections": 3
+    },
+    "20261715": {
+      "promotions": 1,
+      "rejections": 4
+    }
+  },
+  "r3_decision": "R3_verifiee",
+  "final_minus_initial_test_f1": {
+    "iid": {
+      "n": 5,
+      "mean": 0.03576759692339049,
+      "low": 0.025484879116936848,
+      "high": 0.046050314729844125,
+      "per_seed": [
+        0.03504117433359499,
+        0.02791418643404142,
+        0.04056691161972115,
+        0.047195756838578795,
+        0.028119955391016083
+      ],
+      "label": "benefice_confirme"
+    },
+    "ddos": {
+      "n": 5,
+      "mean": 0.3037893158115663,
+      "low": -0.2132087089859359,
+      "high": 0.8207873406090685,
+      "per_seed": [
+        0.0,
+        0.0,
+        0.7338468794214746,
+        0.7850996996363568,
+        0.0
+      ],
+      "label": "benefice_non_confirme"
+    }
+  },
+  "harmful_promotions_iid": 0,
+  "missed_promotions_iid": 0,
+  "started_at": "2026-11-12T19:48:17.621295+00:00",
+  "duration_s": 511.4,
+  "programs_sha256": {
+    "revision_reports/phase3_20261112/E-R3-GOVERNANCE-CYCLE-B/run_e_r3_governance_cycle_b.py": "9be04487282b785a8311d12edffaa75c21ca8df27e852040a638b5dec5f01f5d",
+    "revision_reports/phase3_20261112/E-R3-GOVERNANCE-CYCLE/train_candidate.py": "2d15e9ff449d450320f6972aec85536e361f00252fcbe87f5f73281f9eb5682b",
+    "scripts/monthly_model_retraining.py": "4f9a75244a52ee438a2f033e638c2f0c5ca040193fd9dad75f3bac26bcda4fb4"
+  }
+}
