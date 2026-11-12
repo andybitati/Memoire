@@ -1,0 +1,109 @@
+{
+  "experiment_id": "E-R2-AGENTS-NO-STORE",
+  "run_id": "e_r2_agents_no_store_20261112T122113Z",
+  "started_at_utc": "2026-11-12T12:21:13.449848+00:00",
+  "completed_at_utc": "2026-11-12T12:21:43.475268+00:00",
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51
+  ],
+  "environment": {
+    "python": "3.12.3",
+    "platform": "Windows-11-10.0.26300-SP0"
+  },
+  "summary": {
+    "A": {
+      "repetitions": 10,
+      "idempotency_store": false,
+      "lost_tasks_total": 0,
+      "duplicate_effects_total": 10,
+      "seeds_with_duplicate": 10,
+      "recovered_tasks_total": 10,
+      "idempotency_replays": 0,
+      "recovery_latency_median_ms": 0.0058
+    },
+    "B": {
+      "repetitions": 10,
+      "idempotency_store": false,
+      "lost_tasks_total": 0,
+      "duplicate_effects_total": 10,
+      "seeds_with_duplicate": 10,
+      "recovered_tasks_total": 10,
+      "idempotency_replays": 0,
+      "recovery_latency_median_ms": 0.006
+    },
+    "C": {
+      "repetitions": 10,
+      "idempotency_store": true,
+      "lost_tasks_total": 0,
+      "duplicate_effects_total": 0,
+      "seeds_with_duplicate": 0,
+      "recovered_tasks_total": 10,
+      "idempotency_replays": 10,
+      "recovery_latency_median_ms": 1.8894
+    },
+    "D": {
+      "repetitions": 10,
+      "idempotency_store": true,
+      "lost_tasks_total": 0,
+      "duplicate_effects_total": 0,
+      "seeds_with_duplicate": 0,
+      "recovered_tasks_total": 10,
+      "idempotency_replays": 10,
+      "recovery_latency_median_ms": 2.09835
+    },
+    "A+I": {
+      "repetitions": 10,
+      "idempotency_store": true,
+      "lost_tasks_total": 0,
+      "duplicate_effects_total": 0,
+      "seeds_with_duplicate": 0,
+      "recovered_tasks_total": 10,
+      "idempotency_replays": 10,
+      "recovery_latency_median_ms": 1.62065
+    },
+    "B+I": {
+      "repetitions": 10,
+      "idempotency_store": true,
+      "lost_tasks_total": 0,
+      "duplicate_effects_total": 0,
+      "seeds_with_duplicate": 0,
+      "recovered_tasks_total": 10,
+      "idempotency_replays": 10,
+      "recovery_latency_median_ms": 1.60575
+    },
+    "C-I": {
+      "repetitions": 10,
+      "idempotency_store": false,
+      "lost_tasks_total": 0,
+      "duplicate_effects_total": 10,
+      "seeds_with_duplicate": 10,
+      "recovered_tasks_total": 10,
+      "idempotency_replays": 0,
+      "recovery_latency_median_ms": 0.13905
+    },
+    "D-I": {
+      "repetitions": 10,
+      "idempotency_store": false,
+      "lost_tasks_total": 0,
+      "duplicate_effects_total": 10,
+      "seeds_with_duplicate": 10,
+      "recovered_tasks_total": 10,
+      "idempotency_replays": 0,
+      "recovery_latency_median_ms": 0.14805
+    }
+  },
+  "decision": {
+    "C-I": "doublon_sans_magasin",
+    "D-I": "doublon_sans_magasin",
+    "conclusion": "absence_de_doublon_due_au_magasin"
+  }
+}
