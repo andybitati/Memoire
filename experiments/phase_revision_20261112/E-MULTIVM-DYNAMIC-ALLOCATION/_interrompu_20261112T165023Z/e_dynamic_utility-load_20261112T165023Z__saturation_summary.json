@@ -1,0 +1,195 @@
+{
+  "run_id": "e_dynamic_utility-load_20261112T165023Z",
+  "created_at": "2026-11-12T16:59:37.148685+00:00",
+  "coordinator_host": "andy-aaron",
+  "agents": {
+    "debian-alpha": {
+      "host": "andy",
+      "os": "Linux-6.12.96+deb13-amd64-x86_64-with-glibc2.41",
+      "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+      "profile": "hdfs-equal-confidence"
+    },
+    "ubuntu-beta": {
+      "host": "andy-VirtualBox",
+      "os": "Linux-5.4.0-70-generic-x86_64-with-glibc2.29",
+      "python": "3.8.10 (default, Mar 18 2025, 20:04:55) \n[GCC 9.4.0]",
+      "profile": "hdfs-equal-confidence"
+    }
+  },
+  "protocol": {
+    "producer": "open_loop, constant rate per window",
+    "window_sec": 15.0,
+    "repetitions": 3,
+    "coordinator_threads": 32,
+    "task": "hdfs.block.evaluate on frozen HDFS scores (ds_hdfs_block_20260910T081756Z)",
+    "latency_origin": "scheduled submission time (includes coordinator-side queueing)",
+    "response_timeout_sec_per_phase": 5.0,
+    "derived_from": "revision_reports/agent_3/run_saturation_multivm.py"
+  },
+  "levels": [
+    {
+      "key": "r1_rate8",
+      "repetition": 1,
+      "offered_tasks_sec": 8.0,
+      "submitted": 120,
+      "completed_ok": 120,
+      "failed": 0,
+      "completed_tasks_sec": 8.009677,
+      "drain_after_window_sec": 0.0,
+      "latency_p50_ms": 64.8889,
+      "latency_p95_ms": 122.83692499999998,
+      "latency_p99_ms": 157.64971500000001,
+      "queue_delay_p95_ms": 1.1523949999999998,
+      "tasks_by_agent": {
+        "debian-alpha": 120
+      }
+    },
+    {
+      "key": "r1_rate16",
+      "repetition": 1,
+      "offered_tasks_sec": 16.0,
+      "submitted": 240,
+      "completed_ok": 240,
+      "failed": 0,
+      "completed_tasks_sec": 13.247782,
+      "drain_after_window_sec": 3.11624,
+      "latency_p50_ms": 3178.7236999999996,
+      "latency_p95_ms": 3984.475685,
+      "latency_p99_ms": 4063.309546,
+      "queue_delay_p95_ms": 1945.4268899999997,
+      "tasks_by_agent": {
+        "debian-alpha": 146,
+        "ubuntu-beta": 94
+      }
+    },
+    {
+      "key": "r1_rate32",
+      "repetition": 1,
+      "offered_tasks_sec": 32.0,
+      "submitted": 480,
+      "completed_ok": 480,
+      "failed": 0,
+      "completed_tasks_sec": 15.607096,
+      "drain_after_window_sec": 15.755242,
+      "latency_p50_ms": 5408.1276,
+      "latency_p95_ms": 15373.934109999998,
+      "latency_p99_ms": 15733.789852,
+      "queue_delay_p95_ms": 12973.821639999998,
+      "tasks_by_agent": {
+        "debian-alpha": 233,
+        "ubuntu-beta": 247
+      }
+    },
+    {
+      "key": "r2_rate8",
+      "repetition": 2,
+      "offered_tasks_sec": 8.0,
+      "submitted": 120,
+      "completed_ok": 120,
+      "failed": 0,
+      "completed_tasks_sec": 8.038907,
+      "drain_after_window_sec": 0.0,
+      "latency_p50_ms": 56.16685,
+      "latency_p95_ms": 79.03847999999999,
+      "latency_p99_ms": 86.697011,
+      "queue_delay_p95_ms": 1.03173,
+      "tasks_by_agent": {
+        "debian-alpha": 120
+      }
+    },
+    {
+      "key": "r2_rate16",
+      "repetition": 2,
+      "offered_tasks_sec": 16.0,
+      "submitted": 240,
+      "completed_ok": 240,
+      "failed": 0,
+      "completed_tasks_sec": 15.979281,
+      "drain_after_window_sec": 0.019449,
+      "latency_p50_ms": 62.142849999999996,
+      "latency_p95_ms": 125.16604499999997,
+      "latency_p99_ms": 233.88207599999998,
+      "queue_delay_p95_ms": 0.9396999999999998,
+      "tasks_by_agent": {
+        "debian-alpha": 232,
+        "ubuntu-beta": 8
+      }
+    },
+    {
+      "key": "r2_rate32",
+      "repetition": 2,
+      "offered_tasks_sec": 32.0,
+      "submitted": 480,
+      "completed_ok": 480,
+      "failed": 0,
+      "completed_tasks_sec": 16.145209,
+      "drain_after_window_sec": 14.730182,
+      "latency_p50_ms": 4415.82185,
+      "latency_p95_ms": 14412.142205,
+      "latency_p99_ms": 14876.280595999999,
+      "queue_delay_p95_ms": 12561.97861,
+      "tasks_by_agent": {
+        "debian-alpha": 192,
+        "ubuntu-beta": 288
+      }
+    },
+    {
+      "key": "r3_rate8",
+      "repetition": 3,
+      "offered_tasks_sec": 8.0,
+      "submitted": 120,
+      "completed_ok": 120,
+      "failed": 0,
+      "completed_tasks_sec": 5.83566,
+      "drain_after_window_sec": 5.563226,
+      "latency_p50_ms": 4398.8677,
+      "latency_p95_ms": 7370.2546999999995,
+      "latency_p99_ms": 7626.355019,
+      "queue_delay_p95_ms": 2585.02692,
+      "tasks_by_agent": {
+        "debian-alpha": 74,
+        "ubuntu-beta": 46
+      }
+    },
+    {
+      "key": "r3_rate16",
+      "repetition": 3,
+      "offered_tasks_sec": 16.0,
+      "submitted": 240,
+      "completed_ok": 240,
+      "failed": 0,
+      "completed_tasks_sec": 11.847215,
+      "drain_after_window_sec": 5.257926,
+      "latency_p50_ms": 4014.73135,
+      "latency_p95_ms": 5691.413750000001,
+      "latency_p99_ms": 5802.565161999999,
+      "queue_delay_p95_ms": 3466.050174999999,
+      "tasks_by_agent": {
+        "debian-alpha": 105,
+        "ubuntu-beta": 135
+      }
+    },
+    {
+      "key": "r3_rate32",
+      "repetition": 3,
+      "offered_tasks_sec": 32.0,
+      "submitted": 480,
+      "completed_ok": 480,
+      "failed": 0,
+      "completed_tasks_sec": 18.192972,
+      "drain_after_window_sec": 11.383814,
+      "latency_p50_ms": 4233.71875,
+      "latency_p95_ms": 11496.410039999999,
+      "latency_p99_ms": 11617.084089,
+      "queue_delay_p95_ms": 10183.99341,
+      "tasks_by_agent": {
+        "debian-alpha": 232,
+        "ubuntu-beta": 248
+      }
+    }
+  ],
+  "artifacts": [
+    "experiments/phase_revision_20261112/E-MULTIVM-DYNAMIC-ALLOCATION/e_dynamic_utility-load_20261112T165023Z__saturation_tasks.csv",
+    "experiments/phase_revision_20261112/E-MULTIVM-DYNAMIC-ALLOCATION/e_dynamic_utility-load_20261112T165023Z__saturation_summary.json"
+  ]
+}
