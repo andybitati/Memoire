@@ -44,7 +44,13 @@ connus. Ses scores reprennent pour les journaux texte les colonnes \texttt{datas
 parseur à ne pas reconnaître un format. Sa calibration ne repose que sur trois fichiers
 inconnus, les fichiers d'un même schéma ne sont pas indépendants et la
 \texttt{decision\_margin} n'est pas une probabilité calibrée. La comparaison à une chaîne
-sans routage n'a pas été exécutée ; H3 reste non tranchée. La couverture multiformat mesure
+sans routage n'a pas été exécutée, faute de sources indépendantes : les 68 fichiers du test
+open-set ont déjà servi, et l'inventaire local n'en laisse au plus que 45 autres, dont des
+archives, des fichiers de configuration et des doublons, pour les 90 que demandait le
+protocole envisagé. Constituer ce corpus à partir de dérivés des fichiers déjà évalués
+aurait introduit une pseudo-réplication. Cette limite est donc assumée : H3 reste non
+tranchée, et sa première clause ne pourra être éprouvée que sur un corpus de sources
+nouvelles. La couverture multiformat mesure
 la lecture, le parsing et l'émission des unités présentes ; la voie Apache repose sur une
 seule fixture, et les flux réseau tabulaires ne renseignent aucun des sept champs standard
 mesurés, faute de projection dans leur adaptateur ; avec l'adaptateur ajouté ensuite, ils

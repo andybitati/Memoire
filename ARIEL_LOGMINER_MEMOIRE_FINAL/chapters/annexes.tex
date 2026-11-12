@@ -160,7 +160,7 @@ Campagne BGL, protocole contigu (G) & F1 0,941927 ; conçu après lecture du tes
 Audit CSE-CIC-IDS2018 & LR 0,999212 ; \texttt{Dst Port} seul 0,999720 ; provenance vérifiée par retéléchargement et identité des SHA-256 & \texttt{external\_csecicids2018\_20260910T230136Z\_metrics.csv} ; \texttt{agent4\_csecic\_shortcut\_20261104T144738Z\_\_result.json} \\
 \multicolumn{3}{l}{\textit{Routage, spécialisation, normalisation}} \\
 Évaluation open-set du routeur & Calibration : rejet 3/3, faux rejet 0/28 ; extension : rejet 20/20, faux rejet 3/46 & \texttt{router\_open\_set\_final\_tradeoff\_diagnostic.csv} ; \texttt{agent5\_router\_open\_set\_20261104T145601Z} \\
-Chaîne sans routage & Non exécutée & --- \\
+Chaîne sans routage & Non exécutée : 45 sources locales indépendantes au plus, pour 90 requises & \texttt{sources\_config.json} de \texttt{agent5\_router\_open\_set\_20261104T145601Z} (68 sources déjà employées) \\
 Modèle spécialisé / modèle commun & Non-infériorité non établie ; borne inférieure CICIDS $-0{,}0190$ & E-H3B-STRICT-HOLDOUT ; \path{experiments/phase_revision_20261105/E-H3B-STRICT-HOLDOUT/summary.json} \\
 Première comparaison spécialisé / commun & \textit{Fuite de l'étiquette sur UNSW ; CICIDS réduit aux DDoS ; non retenue} & E-H3B-FAMILY-MODELS ; \path{experiments/phase_revision_20261105/E-H3B-FAMILY-MODELS/summary.json} \\
 Corpus Linux/auth (provenance) & Jeu Kaggle « linux\_auth\_log-anomalies » (L\.{I}N \c{C}ORBACI, licence MIT, première version du 27 octobre 2025), entièrement synthétique (Faker) ; somme des tailles des quatre fichiers : $204\,854\,155$ octets, égale à la taille déclarée par Kaggle & \path{data/raw/Datasets/linux_auth_logs_*.csv} \\
