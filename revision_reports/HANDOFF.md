@@ -217,7 +217,7 @@ Déclaration IA : préciser ce qui a été écrit/exécuté par l'IA vs l'auteur
 ## 5nonies. Intégration Git demandée par l'auteur (2026-11-12)
 
 - Tous les changements laissés dans le worktree par Claude ont été ajoutés et commités sur `revision-phase2-20261112` sous `c21e5fb` (`Finalise la révision scientifique du mémoire`), avec l'identité Git de l'auteur `andybitati <aoliviermarhegane@gmail.com>`.
-- Étape suivante : fusion explicite de `revision-phase2-20261112` dans `main`, puis contrôle de l'état final. Aucun push distant n'est inclus dans la demande à ce stade.
+- Fusion explicite de `revision-phase2-20261112` dans `main` terminée sans conflit sous `bc4b50d` (`Fusionne la révision scientifique dans main`). La branche `main` locale contient désormais toute la phase 2 et les retouches finales de Claude. Aucun push distant n'est inclus dans la demande à ce stade.
 
 ## 5ter. Prompt de reprise pour Codex
 
