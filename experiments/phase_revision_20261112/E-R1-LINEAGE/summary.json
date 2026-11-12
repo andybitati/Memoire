@@ -1,0 +1,283 @@
+{
+  "experiment_id": "E-R1-LINEAGE",
+  "run_id": "e_r1_lineage_20261112T205748Z",
+  "started_at": "2026-11-12T20:57:48.110283+00:00",
+  "duration_s": 618.7,
+  "config": "experiments/phase_dataset_strengthening/configs/multiformat_balanced_protocol.json",
+  "config_sha256": "fd380e5e04c6ff4138e0e2baa614820f26c55c5cabe22c34a39ce7761f01d7b4",
+  "source_sha256": {
+    "windows_event": "7585ee27c6089ee2e83cf68ceed2ba5b63ac630ba78c3aca4a88a033f6d4ed20",
+    "linux_auth": "fa5f0a3e9532c16320a290fa1e626b632318a577b4bf00025c2063540144d38f",
+    "wazuh": "fd20eb2c552d7090dc3eede662f0185a256ddb1253107ef9c045fb398d577e29",
+    "syslog": "b3e20bc1afe732ab1bf3ed1de4bf9c809e4194e02f7dea911d918e5342e8e173",
+    "apache": "795ff201d7a354d429de197f97dce1ee70701296a85cde137b0381dc11a9ecd4",
+    "hdfs": "0783096174d7832c618337f9609e06e04abd86ddd7089b3c12b407e63bfebc52",
+    "bgl": "666130b15ef44eb32fd02bd053e6c6e007c37696b5e7e8b9d8e45b729876a5d2",
+    "network_tabular": "6ff1580f5f81c0ae28a26f7631721018577f5f7c5e0feac28b795fcfe7b411ee"
+  },
+  "crash_unit": 10,
+  "part_a": [
+    {
+      "source_id": "windows_event",
+      "adapter": "pipeline_evtx_sample",
+      "units": 1000,
+      "normalized_rows": 1000,
+      "adapter_error": "",
+      "rows_with_locator": 1000,
+      "locator_target": {
+        "extrait_de_campagne": 1000
+      },
+      "locators_resolved_in_range": 1000,
+      "locators_unique": 1000,
+      "content_matches": 1000,
+      "linked_units": 1000,
+      "linked_rate": 1.0,
+      "pass": true
+    },
+    {
+      "source_id": "linux_auth",
+      "adapter": "linux_auth_feature_preparation",
+      "units": 1000,
+      "normalized_rows": 1000,
+      "adapter_error": "",
+      "rows_with_locator": 0,
+      "locator_target": {},
+      "locators_resolved_in_range": 0,
+      "locators_unique": 0,
+      "content_matches": 0,
+      "linked_units": 0,
+      "linked_rate": 0.0,
+      "pass": false
+    },
+    {
+      "source_id": "wazuh",
+      "adapter": "wazuh_csv_normalizer",
+      "units": 1000,
+      "normalized_rows": 1000,
+      "adapter_error": "",
+      "rows_with_locator": 1000,
+      "locator_target": {
+        "source_originale": 1000
+      },
+      "locators_resolved_in_range": 1000,
+      "locators_unique": 1000,
+      "content_matches": 943,
+      "linked_units": 943,
+      "linked_rate": 0.943,
+      "pass": false
+    },
+    {
+      "source_id": "syslog",
+      "adapter": "pipeline_text_sample",
+      "units": 1000,
+      "normalized_rows": 1000,
+      "adapter_error": "",
+      "rows_with_locator": 1000,
+      "locator_target": {
+        "extrait_de_campagne": 1000
+      },
+      "locators_resolved_in_range": 1000,
+      "locators_unique": 1000,
+      "content_matches": 626,
+      "linked_units": 626,
+      "linked_rate": 0.626,
+      "pass": false
+    },
+    {
+      "source_id": "apache",
+      "adapter": "pipeline_text_sample",
+      "units": 1,
+      "normalized_rows": 1,
+      "adapter_error": "",
+      "rows_with_locator": 1,
+      "locator_target": {
+        "extrait_de_campagne": 1
+      },
+      "locators_resolved_in_range": 1,
+      "locators_unique": 1,
+      "content_matches": 1,
+      "linked_units": 1,
+      "linked_rate": 1.0,
+      "pass": true
+    },
+    {
+      "source_id": "hdfs",
+      "adapter": "pipeline_text_sample",
+      "units": 1000,
+      "normalized_rows": 1000,
+      "adapter_error": "",
+      "rows_with_locator": 1000,
+      "locator_target": {
+        "extrait_de_campagne": 1000
+      },
+      "locators_resolved_in_range": 1000,
+      "locators_unique": 1000,
+      "content_matches": 1000,
+      "linked_units": 1000,
+      "linked_rate": 1.0,
+      "pass": true
+    },
+    {
+      "source_id": "bgl",
+      "adapter": "pipeline_text_sample",
+      "units": 1000,
+      "normalized_rows": 1000,
+      "adapter_error": "",
+      "rows_with_locator": 1000,
+      "locator_target": {
+        "extrait_de_campagne": 1000
+      },
+      "locators_resolved_in_range": 1000,
+      "locators_unique": 1000,
+      "content_matches": 1000,
+      "linked_units": 1000,
+      "linked_rate": 1.0,
+      "pass": true
+    },
+    {
+      "source_id": "network_tabular",
+      "adapter": "network_feature_preparation",
+      "units": 1000,
+      "normalized_rows": 1000,
+      "adapter_error": "",
+      "rows_with_locator": 0,
+      "locator_target": {},
+      "locators_resolved_in_range": 0,
+      "locators_unique": 0,
+      "content_matches": 0,
+      "linked_units": 0,
+      "linked_rate": 0.0,
+      "pass": false
+    }
+  ],
+  "part_b": [
+    {
+      "source_id": "windows_event",
+      "units": 1000,
+      "results_ok": 1000,
+      "result_matches_task": 1000,
+      "resolves_to_original_unit": 1000,
+      "single_effect": 1000,
+      "crashes_injected": 1,
+      "crashes_recovered_with_lineage": 1,
+      "crashes_replayed_from_store": 1,
+      "linked_units": 1000,
+      "pass": true
+    },
+    {
+      "source_id": "linux_auth",
+      "units": 1000,
+      "results_ok": 999,
+      "result_matches_task": 999,
+      "resolves_to_original_unit": 999,
+      "single_effect": 1000,
+      "crashes_injected": 1,
+      "crashes_recovered_with_lineage": 0,
+      "crashes_replayed_from_store": 0,
+      "linked_units": 999,
+      "pass": false
+    },
+    {
+      "source_id": "wazuh",
+      "units": 1000,
+      "results_ok": 999,
+      "result_matches_task": 999,
+      "resolves_to_original_unit": 999,
+      "single_effect": 1000,
+      "crashes_injected": 1,
+      "crashes_recovered_with_lineage": 0,
+      "crashes_replayed_from_store": 0,
+      "linked_units": 999,
+      "pass": false
+    },
+    {
+      "source_id": "syslog",
+      "units": 1000,
+      "results_ok": 999,
+      "result_matches_task": 999,
+      "resolves_to_original_unit": 999,
+      "single_effect": 1000,
+      "crashes_injected": 1,
+      "crashes_recovered_with_lineage": 0,
+      "crashes_replayed_from_store": 0,
+      "linked_units": 999,
+      "pass": false
+    },
+    {
+      "source_id": "apache",
+      "units": 1,
+      "results_ok": 0,
+      "result_matches_task": 0,
+      "resolves_to_original_unit": 0,
+      "single_effect": 1,
+      "crashes_injected": 1,
+      "crashes_recovered_with_lineage": 0,
+      "crashes_replayed_from_store": 0,
+      "linked_units": 0,
+      "pass": false
+    },
+    {
+      "source_id": "hdfs",
+      "units": 1000,
+      "results_ok": 999,
+      "result_matches_task": 999,
+      "resolves_to_original_unit": 999,
+      "single_effect": 1000,
+      "crashes_injected": 1,
+      "crashes_recovered_with_lineage": 0,
+      "crashes_replayed_from_store": 0,
+      "linked_units": 999,
+      "pass": false
+    },
+    {
+      "source_id": "bgl",
+      "units": 1000,
+      "results_ok": 999,
+      "result_matches_task": 999,
+      "resolves_to_original_unit": 999,
+      "single_effect": 1000,
+      "crashes_injected": 1,
+      "crashes_recovered_with_lineage": 0,
+      "crashes_replayed_from_store": 0,
+      "linked_units": 999,
+      "pass": false
+    },
+    {
+      "source_id": "network_tabular",
+      "units": 1000,
+      "results_ok": 999,
+      "result_matches_task": 999,
+      "resolves_to_original_unit": 999,
+      "single_effect": 1000,
+      "crashes_injected": 1,
+      "crashes_recovered_with_lineage": 0,
+      "crashes_replayed_from_store": 0,
+      "linked_units": 999,
+      "pass": false
+    }
+  ],
+  "part_c": {
+    "candidate_anomalies": 376,
+    "candidate_anomalies_carry_unit_index": false,
+    "candidate_anomalies_resolvable_by_task_id": 376,
+    "incident_columns_with_unit_identifier": [],
+    "note": "Les lignes candidates de la chaîne portent task_id et source_id (pas unit_index) ; les incidents du corrélateur listent des noms d'événements, sans identifiant d'unité ni de tâche."
+  },
+  "sources_failing": [
+    "apache",
+    "bgl",
+    "hdfs",
+    "linux_auth",
+    "network_tabular",
+    "syslog",
+    "wazuh"
+  ],
+  "decision": "R1_rattachement_partiel",
+  "programs_sha256": {
+    "revision_reports/phase4_20261112/E-R1-LINEAGE/run_e_r1_lineage.py": "e69a225d609a2d106bfedcb83475cfd6239fcf0e78935360b3293a1ca19c70f7",
+    "scripts/run_multiformat_validation.py": "fdd229cd64ec923f279d78e392bd06d590c1ba9bca67404d35b8b5b0fa2ce6b0",
+    "scripts/run_multisource_cnp_e2e_strengthening.py": "d553f11ef91e17289138ad153504b8b12321b979bad5990fd8be81db51e6ba39",
+    "src/logminer/agents/intelligent_runtime.py": "31db04180d767cde024a290e572fff77dc67b151258cf7a96bc161f8afdb191e",
+    "src/logminer/agents/idempotency.py": "63950af4ea52fcdc1c149362a8a1b114f3ca15c1a06c91b70696216939871357"
+  }
+}
