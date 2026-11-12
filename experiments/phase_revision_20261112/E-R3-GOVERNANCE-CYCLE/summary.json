@@ -1,0 +1,88 @@
+{
+  "experiment_id": "E-R3-GOVERNANCE-CYCLE",
+  "generated_at": "2026-11-12T19:36:27.184081+00:00",
+  "seeds": [
+    20261701,
+    20261702,
+    20261703,
+    20261704,
+    20261705
+  ],
+  "initial_model": "LogisticRegression",
+  "cycle": [
+    "Stump",
+    "RandomForest",
+    "RandomForest_small",
+    "ExtraTrees",
+    "HistGradientBoosting"
+  ],
+  "metric": "f1",
+  "min_delta": 0.02,
+  "decisions": 25,
+  "promotions": 0,
+  "rejections": 25,
+  "all_checks_ok": true,
+  "borderline_decisions": 0,
+  "exercised_per_seed": {
+    "20261701": {
+      "promotions": 0,
+      "rejections": 5
+    },
+    "20261702": {
+      "promotions": 0,
+      "rejections": 5
+    },
+    "20261703": {
+      "promotions": 0,
+      "rejections": 5
+    },
+    "20261704": {
+      "promotions": 0,
+      "rejections": 5
+    },
+    "20261705": {
+      "promotions": 0,
+      "rejections": 5
+    }
+  },
+  "r3_decision": "cycle_non_exerce",
+  "final_minus_initial_test_f1": {
+    "iid": {
+      "n": 5,
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "per_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "label": "benefice_non_confirme"
+    },
+    "ddos": {
+      "n": 5,
+      "mean": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "per_seed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "label": "benefice_non_confirme"
+    }
+  },
+  "harmful_promotions_iid": 0,
+  "missed_promotions_iid": 0,
+  "started_at": "2026-11-12T19:28:37.580868+00:00",
+  "duration_s": 469.6,
+  "programs_sha256": {
+    "revision_reports/phase3_20261112/E-R3-GOVERNANCE-CYCLE/run_e_r3_governance_cycle.py": "90b2964c04429d0c1ee772995fe3557de0d2d6ed89f730591e354f4dedf48fe8",
+    "revision_reports/phase3_20261112/E-R3-GOVERNANCE-CYCLE/train_candidate.py": "2d15e9ff449d450320f6972aec85536e361f00252fcbe87f5f73281f9eb5682b",
+    "scripts/monthly_model_retraining.py": "4f9a75244a52ee438a2f033e638c2f0c5ca040193fd9dad75f3bac26bcda4fb4"
+  }
+}
