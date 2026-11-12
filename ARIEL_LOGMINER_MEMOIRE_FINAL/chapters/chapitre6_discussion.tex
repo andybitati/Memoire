@@ -67,8 +67,9 @@ charge : un répartiteur au moindre chargé, sans négociation, l'obtient aussi.
 efficace \cite{winston1977shortest}, et interroger seulement deux files tirées au hasard en
 conserve l'essentiel du bénéfice \cite{azar1999balanced,mitzenmacher2001power}. Le
 répartiteur lit toutefois l'état des agents sans coût de communication ni information
-périmée : en exécution distribuée, où connaître la charge a un coût, la comparaison reste à
-faire.
+périmée : sur deux machines virtuelles, sous des utilités égales et sans défaillance injectée,
+la négociation n'apporte pas davantage qu'un répartiteur qui lit la charge des agents dans Redis ;
+la comparaison sous défaillances, en exécution répartie, reste à faire.
 
 \paragraph{Reprise et idempotence.}
 La reprise combine deux mécanismes : le transport conserve ou réattribue une tâche non

@@ -71,7 +71,9 @@ seconde machine ne traite que $1{,}23\,\%$ des tâches réussies : la distributi
 fonctionnelle, mais elle n'accroît pas la capacité observée. Le diagnostic en établit la
 cause : chaque agent exécute une tâche à la fois et le départage des utilités égales attribue
 tout au même agent, si bien que ce dispositif ne pouvait pas montrer un partage de charge ;
-un agent capable de traiter plusieurs tâches en parallèle n'a pas été évalué. Dans la détection HDFS
+un agent capable de traiter plusieurs tâches en parallèle n'a pas été évalué. Un départage par la charge partage les tâches entre les
+deux machines et accroît la capacité observée, mais une tâche sur $2\,520$ échoue, si bien que la correction n'est pas confirmée
+selon la règle préenregistrée ; la comparaison répartie au moindre chargé porte sur des utilités égales, sans défaillance injectée. Dans la détection HDFS
 répartie, les utilités égales sont départagées par un ordre fixe et toutes les tâches vont
 au même agent ; l'inférence n'y est pas recalculée sur les machines virtuelles. La trace de
 messages de l'endurance est tronquée à $10\,001$ événements, ce qui rend ses compteurs non
