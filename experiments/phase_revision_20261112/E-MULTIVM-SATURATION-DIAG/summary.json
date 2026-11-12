@@ -1,0 +1,79 @@
+{
+  "experiment_id": "E-MULTIVM-SATURATION-DIAG",
+  "analysed_at_utc": "2026-11-12T14:44:47.491498+00:00",
+  "run_ids": {
+    "both": "e_multivm_diag_both_20261112T142444Z",
+    "debian": "e_multivm_diag_debian_20261112T142444Z",
+    "ubuntu": "e_multivm_diag_ubuntu_20261112T142444Z"
+  },
+  "capacity_tasks_sec_at_rate32": {
+    "both": {
+      "median": 23.417074,
+      "values": [
+        23.729708,
+        23.417074,
+        23.257022
+      ]
+    },
+    "debian": {
+      "median": 24.390922,
+      "values": [
+        24.398171,
+        24.390922,
+        19.158417
+      ]
+    },
+    "ubuntu": {
+      "median": 14.894614,
+      "values": [
+        11.954013,
+        14.894614,
+        20.127546
+      ]
+    }
+  },
+  "ratio_both_over_debian": 0.9600733420409445,
+  "ratio_ubuntu_over_debian": 0.6106621963696166,
+  "ubuntu_share_in_both": {
+    "rates_2_4_8": 0.0,
+    "all_rates": 0.0
+  },
+  "failed_tasks": {
+    "both": 0,
+    "debian": 0,
+    "ubuntu": 0
+  },
+  "agents": {
+    "both": {
+      "debian-alpha": {
+        "host": "andy",
+        "os": "Linux-6.12.96+deb13-amd64-x86_64-with-glibc2.41",
+        "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+        "profile": "hdfs-equal-confidence"
+      },
+      "ubuntu-beta": {
+        "host": "andy-VirtualBox",
+        "os": "Linux-5.4.0-70-generic-x86_64-with-glibc2.29",
+        "python": "3.8.10 (default, Mar 18 2025, 20:04:55) \n[GCC 9.4.0]",
+        "profile": "hdfs-equal-confidence"
+      }
+    },
+    "debian": {
+      "debian-alpha": {
+        "host": "andy",
+        "os": "Linux-6.12.96+deb13-amd64-x86_64-with-glibc2.41",
+        "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+        "profile": "hdfs-equal-confidence"
+      }
+    },
+    "ubuntu": {
+      "ubuntu-beta": {
+        "host": "andy-VirtualBox",
+        "os": "Linux-5.4.0-70-generic-x86_64-with-glibc2.29",
+        "python": "3.8.10 (default, Mar 18 2025, 20:04:55) \n[GCC 9.4.0]",
+        "profile": "hdfs-equal-confidence"
+      }
+    }
+  },
+  "decision": "goulot_agent_serie_confirme"
+}
