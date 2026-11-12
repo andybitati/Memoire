@@ -42,12 +42,93 @@ Le contrat ne possède pas de champ \texttt{event\_id} de premier niveau. Les id
 \end{tabularx}
 \end{table}
 
+\section{Reproductibilité et disponibilité des éléments}
+\label{chap:reproductibilite}
+
+\subsection{Portée de la reproductibilité}
+
+Trois niveaux doivent être distingués. La \emph{traçabilité} permet de retrouver l'origine
+d'une valeur ; la \emph{répétabilité} consiste à réexécuter un programme dans un
+environnement équivalent ; la \emph{reproductibilité indépendante} suppose qu'un tiers
+reconstruise le résultat à partir du code, des données et des instructions remis. Le
+travail documente les deux premiers niveaux. La matrice du
+tableau~\ref{tab:preuves-experimentales} relie chaque résultat à sa campagne et à son
+artefact ; les fichiers CSV et JSON y font foi, et les tableaux et figures du manuscrit en
+sont des représentations.
+
+Les empreintes SHA-256 établissent que les artefacts n'ont pas changé depuis leur
+production ; elles n'établissent pas que les calculs sont exacts. Certaines campagnes ont été
+rejouées à l'identique dans l'environnement de l'auteur ; aucune n'a été reproduite par un
+tiers. Un rejeu reproduit d'ailleurs les défauts d'un programme aussi fidèlement que ses
+résultats (section~\ref{sec:preenregistrement}).
+
+\subsection{Paquet de preuves et procédure}
+
+Les artefacts sont organisés par campagne. Chaque paquet de consolidation et chaque
+campagne versionnée avant exécution possède un manifeste SHA-256 qui recense le chemin
+relatif, la taille et l'empreinte de chaque fichier ; les protocoles et les empreintes des
+programmes figurent dans un registre versionné avec eux. Les artefacts des campagnes écartées
+pour un défaut de chargement sont conservés et signalés comme non retenus. Les identifiants
+d'accès et les secrets des machines virtuelles sont exclus des preuves.
+
+Pour chaque campagne, la reproduction suit la même procédure : obtenir les données depuis la
+source documentée et vérifier leur empreinte ; préparer l'environnement et en consigner les
+versions ; exécuter le programme avec les paramètres, partitions et graines documentés ;
+comparer les métriques produites aux fichiers de référence ; vérifier les manifestes avant de
+reconstruire tableaux et figures. Une divergence doit être rapportée avec l'entrée,
+l'environnement, les paramètres et l'artefact concernés. La régénération d'une figure ne
+constitue pas une reproduction du calcul qui l'alimente.
+
+\subsection{Paramètres déterminants}
+
+Les paramètres HDFS et ceux de la campagne sur deux machines virtuelles sont rassemblés aux
+tableaux~\ref{tab:hdfs-parametres-annexe} et~\ref{tab:multivm-parametres-annexe}. Pour HDFS
+et BGL, l'ordre des unités, la partition chronologique, l'échantillon d'ajustement de
+Drain3, l'état gelé du parseur, l'agrégateur et le seuil choisi sur validation doivent être
+conservés ; une comparaison n'est valide qu'au même niveau d'analyse. Pour CICIDS2017, le
+scénario ou la période tenus à l'écart, le tirage de l'échantillon, la prévalence du test et
+la règle de seuil doivent être publiés : des scores issus d'une séparation aléatoire, d'un
+holdout par scénario ou d'une séparation temporelle ne répondent pas à la même question. Le
+routeur doit être rejoué avec sa politique gelée, sans recalibration sur les sources
+évaluées. Les micro-latences du banc d'architectures dépendent de la machine : une
+reproduction sur un autre hôte doit vérifier les tendances relatives plutôt qu'une égalité à
+la décimale. La détection HDFS répartie transporte des scores déjà calculés et applique un
+seuil ; elle ne reproduit ni le parsing ni le calcul des scores sur les machines virtuelles.
+
+\subsection{Disponibilité des éléments}
+\label{sec:disponibilite}
+
+Une archive contenant le code du prototype, les programmes qui ont produit les artefacts
+cités, les configurations, les protocoles versionnés, les artefacts et leurs manifestes
+SHA-256 est remise au jury avec le mémoire ; son empreinte SHA-256 est communiquée avec
+elle. Les jeux de données publics n'y sont pas redistribués : l'archive donne pour chacun la
+source, la version attendue, l'empreinte des fichiers utilisés et la procédure de
+préparation. La matrice résultats--preuves renvoie à des chemins relatifs à la racine de
+cette archive.
+
+Aucun dépôt public n'est fourni. Sans lui, un lecteur extérieur au jury ne peut vérifier ni
+les valeurs, faute de pouvoir les recalculer depuis les CSV et JSON, ni l'identité entre le
+code décrit et le code exécuté, ni les partitions et graines effectives, ni l'ordre des
+versions des protocoles. Même avec l'archive, certains éléments restent invérifiables :
+l'antériorité des protocoles vis-à-vis d'un tiers, faute de dépôt auprès d'un registre
+externe avant exécution, et le déroulé des tentatives techniques qui n'ont pas été
+conservées. La certification d'une reproductibilité indépendante requiert une exécution par
+un tiers et un compte rendu des écarts ; ce contrôle n'a pas été réalisé.
+
+\subsection{Frontière d'exploitation}
+
+Ariel \logminer{} s'exécute localement avec un bus en mémoire et un magasin d'idempotence
+SQLite, ou avec Redis lorsque plusieurs processus participent au traitement. Redis demeure
+un point central du laboratoire ; une exécution en réseau exige authentification, contrôle
+d'accès et protection du transport. Les mécanismes requis par une exploitation
+opérationnelle ne sont pas évalués (section~\ref{sec:limites}).
+
 \section{Matrice résultats--preuves}
 
 La matrice ci-dessous relie chaque résultat cité à sa campagne et à son artefact. C'est le
 seul endroit du mémoire où figurent les identifiants de campagne ; le corps du texte emploie
 l'étiquette de la première colonne. Les valeurs sont celles des artefacts, à six décimales.
-Les chemins sont relatifs à la racine du dépôt ; dans les paquets de consolidation, ils sont
+Les chemins sont relatifs à la racine de l'archive remise au jury (section~\ref{sec:disponibilite}) ; dans les paquets de consolidation, ils sont
 abrégés à partir du sous-répertoire de campagne. Chaque paquet possède un manifeste
 \texttt{MANIFEST\_SHA256.csv} qui permet d'en contrôler le chemin, la taille et l'empreinte.
 Cette matrice établit la traçabilité des valeurs, non leur reproduction indépendante.
@@ -71,6 +152,7 @@ CICIDS2017, holdout par scénario d'origine & RF 0,157744 ; LR 0,233670. \textit
 Contrôle Isolation Forest, CICIDS2017 & F1 0,115719 / 0,521436 selon le seuil & \texttt{agent6\_cicids\_iforest\_20261104T141904Z\_summary.csv} \\
 Campagne HDFS, test complet & F1 0,868373, identique pour les cinq graines ; IC [0,856771 ; 0,879493] & \texttt{agent\_2\_hdfs/agent2\_hdfs\_full\_20261104T131314Z\_\_result.json} \\
 Baselines HDFS au niveau bloc & Histogram 0,868373 ; surprise du template 0,872434 ; écart $-0{,}004061$ & E-H4-HDFS-BLOCK-BASELINES ; \path{experiments/phase_revision_20261105/E-H4-HDFS-BLOCK-BASELINES/summary.json} \\
+MCC et PR-AUC face aux références (analyse secondaire, non préenregistrée) & CICIDS2017 temporel : MCC LR 0,436, PR-AUC 0,871 ; holdout : MCC $\leq 0$ sur PortScan et Infiltration ; HDFS : MCC 0,874 / 0,878 & \path{experiments/phase_revision_20261112/P1-H4-SECONDARY-METRICS/SYNTHESE_H4.md} \\
 Campagne HDFS, échantillon de $2\,000$ blocs & F1 0,892308 & \texttt{hdfs\_block\_robustness\_20260911T002351Z} ; \texttt{ds\_hdfs\_block\_20260910T081756Z\_\_hdfs\_block\_result.json} \\
 Campagne BGL, protocole principal & Histogram 0,913698 ; règle « template inconnu » 0,277885 & \texttt{ds\_bgl\_known\_unknown\_20260910T082706Z\_\_bgl\_group\_metrics.csv} \\
 Campagne BGL, second protocole & Variantes exploratoires & \texttt{agent4\_bgl\_second\_protocol\_20261104T142629Z} \\
@@ -82,14 +164,23 @@ Chaîne sans routage & Non exécutée & --- \\
 Modèle spécialisé / modèle commun & Non-infériorité non établie ; borne inférieure CICIDS $-0{,}0190$ & E-H3B-STRICT-HOLDOUT ; \path{experiments/phase_revision_20261105/E-H3B-STRICT-HOLDOUT/summary.json} \\
 Première comparaison spécialisé / commun & \textit{Fuite de l'étiquette sur UNSW ; CICIDS réduit aux DDoS ; non retenue} & E-H3B-FAMILY-MODELS ; \path{experiments/phase_revision_20261105/E-H3B-FAMILY-MODELS/summary.json} \\
 Corpus Linux/auth (provenance) & Jeu Kaggle « linux\_auth\_log-anomalies » (L\.{I}N \c{C}ORBACI, licence MIT, première version du 27 octobre 2025), entièrement synthétique (Faker) ; somme des tailles des quatre fichiers : $204\,854\,155$ octets, égale à la taille déclarée par Kaggle & \path{data/raw/Datasets/linux_auth_logs_*.csv} \\
-Couverture multi-format & $7\,001/7\,001$ ; une fixture Apache & \texttt{multiformat\_balanced\_20260910T094422Z} ; \texttt{agent5\_multiformat\_20261104T150111Z} \\
+Couverture multiformat & $7\,001/7\,001$ ; une fixture Apache & \texttt{multiformat\_balanced\_20260910T094422Z} ; \texttt{agent5\_multiformat\_20261104T150111Z} \\
+Adaptateur de flux réseau, remplissage du schéma & CICIDS2017 : 2/7 champs réseau ; CSE-CIC-IDS2018 : 4/7 ; aucune fuite d'étiquette & E-NORM-NETWORK-FLOWS ; \path{experiments/phase_revision_20261112/E-NORM-NETWORK-FLOWS/summary.json} \\
+CICIDS2017 corrigé (WTMC 2021), holdout par scénario & Aucun modèle ne bat le tout positif : F1 0,20 à 0,23 contre 0,34 ; DDoS 0,99 & E-CICIDS-WTMC2021-HOLDOUT ; \path{experiments/phase_revision_20261112/E-CICIDS-WTMC2021-HOLDOUT/decision.json} \\
+Diagnostic de saturation sur deux VM & Deux VM 23,4 t/s ; Debian seule 24,4 ; Ubuntu seule 14,9 ; Ubuntu 0 \% des tâches & E-MULTIVM-SATURATION-DIAG ; \path{experiments/phase_revision_20261112/E-MULTIVM-SATURATION-DIAG/summary.json} \\
 Inférence de bout en bout & $1\,400/1\,401$ & \texttt{multisource\_cnp\_model\_inference\_by\_source.csv} \\
 \multicolumn{3}{l}{\textit{Orchestration et distribution}} \\
 Benchmark A--D & 160 exécutions ; $264\,000$ tâches ; tableau~\ref{tab:benchmark-debit} & \texttt{ma\_20260909T160812Z\_34016\_\_statistics.csv} \\
+Surcoût relatif estimé sur une inférence réelle & 0,75 à 0,84 ms par tâche ; 0,71 à 0,79\,\% de 105,5 ms (estimation, non mesurée) & \path{experiments/phase_revision_20261112/P1-OVERHEAD-ESTIMATE/overhead_estimate.csv} \\
+Benchmark sur inférence réelle (Isolation Forest HDFS, 21 ms) & C/A 0,988 ; surcoût C 1,3 \% [$-1{,}4$ ; 4,0] ; 3 workers : C/A 0,938 ; additivité indéterminée & E-QR2-REAL-INFERENCE ; \path{experiments/phase_revision_20261112/E-QR2-REAL-INFERENCE/summary.json} \\
+Surcoût intra-tâche (durée totale moins appel au modèle) & C : 0,23 ms micro, 0,39 ms réel, 1,95 \% ; D : 2,05 \% ; additif confirmé & E-QR2-OVERHEAD-DIRECT ; \path{experiments/phase_revision_20261112/E-QR2-OVERHEAD-DIRECT/summary.json} \\
 Panne appariée A--D & Doublons A 10, B 10, C 0, D 0 ; A+I et B+I 0 & \texttt{agent3\_paired\_failure\_abcd\_20261104T141803Z\_\_summary.json} \\
+Agents sans magasin d'idempotence (ablation) & C sans magasin 10, D sans magasin 10 doublons ; contrôles A--D, A+I, B+I reproduits & E-R2-AGENTS-NO-STORE ; \path{experiments/phase_revision_20261112/E-R2-AGENTS-NO-STORE/summary.json} \\
 Mémoire et fiabilité & Gain pour $p = 0{,}9$ seulement ; écart $-0{,}2993$ ; rapport de débit 1,210 & E-H5-MEMORY-RELIABILITY ; \path{experiments/phase_revision_20261105/E-H5-MEMORY-RELIABILITY/summary.json} \\
 Contract Net contre table statique & Avantage conditionnel ; rapport de débit nominal 0,867 & E-CNP-STATIC-ASSIGNMENT ; \path{experiments/phase_revision_20261105/E-CNP-STATIC-ASSIGNMENT/summary.json} \\
 Contract Net contre moindre chargé & Aucun avantage ; rapport de débit nominal 0,870 & E-CNP-LEAST-LOADED ; \path{experiments/phase_revision_20261105/E-CNP-LEAST-LOADED/summary.json} \\
+Contract Net à repli corrigé contre moindre chargé & Aucun avantage ; 0 tâche perdue (5 avant correction) ; rapport de débit 0,848 à 0,876 & E-CNP-RECFP-LEAST-LOADED ; \path{experiments/phase_revision_20261112/E-CNP-RECFP-LEAST-LOADED/summary.json} \\
+Tailles d'effet et réplication Contract Net (analyse secondaire, non préenregistrée) & C $-$ table répliqué ($-0{,}188$ / $-0{,}185$) ; débit autour de 0,95 ; C $-$ moindre chargé : IC dans $\pm 0{,}005$ & \path{experiments/phase_revision_20261112/P1-CNP-EFFECT-SIZES/cnp_effect_sizes.csv} \\
 Endurance sur deux VM & $1\,800/1\,800$ ; 1 h ; Debian 451, Ubuntu $1\,349$ & \texttt{cnp\_endurance\_multivm\_20260918T130822Z\_\_summary.json} \\
 Saturation sur deux VM & Coude 8--16 tâches/s ; 3 échecs sur $11\,430$ & \texttt{agent3\_saturation\_multivm\_20261104T142325Z\_\_saturation\_summary.json} \\
 Détection HDFS répartie sur deux VM & $2\,000/2\,000$ ; F1 0,892308 ; Debian $2\,000$, Ubuntu 0 & \texttt{hdfs\_multivm\_cnp\_20261104T135345Z\_\_hdfs\_multivm\_summary.json} \\
@@ -97,6 +188,30 @@ Détection HDFS répartie sur deux VM & $2\,000/2\,000$ ; F1 0,892308 ; Debian $
 \bottomrule
 \end{longtable}
 }
+
+Les identifiants des campagnes de contrôle ont été attribués avant la numérotation définitive
+des hypothèses ; ils reprennent les étiquettes de travail, sans effet sur les résultats. Le
+tableau~\ref{tab:correspondance-hypotheses} donne la correspondance.
+
+\begin{table}[H]
+\centering
+\caption{Correspondance entre hypothèses, étiquettes de travail et campagnes.}
+\label{tab:correspondance-hypotheses}
+\small
+\begin{tabularx}{\textwidth}{p{0.08\textwidth} p{0.17\textwidth} p{0.22\textwidth} X}
+\toprule
+\textbf{Énoncé} & \textbf{Étiquette de travail} & \textbf{Origine} & \textbf{Campagnes} \\
+\midrule
+H1 & H-CNP & Contrôle, après les campagnes principales & E-CNP-LEAST-LOADED ; E-CNP-RECFP-LEAST-LOADED (repli corrigé) ; contexte : E-CNP-STATIC-ASSIGNMENT \\
+H2 & H5a & Contrôle ; précise l'hypothèse initiale sur la mémoire & E-H5-MEMORY-RELIABILITY \\
+H3 & H3 & Programme initial & Routeur open-set ; E-H3B-STRICT-HOLDOUT (E-H3B-FAMILY-MODELS non retenue) \\
+H4 & H4 & Programme initial & Campagnes CICIDS2017 dont E-CICIDS-HOLDOUT-FIX ; HDFS dont E-H4-HDFS-BLOCK-BASELINES ; BGL ; CSE-CIC-IDS2018 \\
+R1, R2 & H1, H2 initiales & Programme initial, reclassées en exigences & Couverture multiformat ; panne appariée A--D ; E-R2-AGENTS-NO-STORE \\
+R3 & H5 initiale (partie) & Programme initial & Aucune campagne de promotion et de rejet \\
+--- & H5b & Programme initial (priorisation) ; non retenue, faute de mesure & Aucune \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \begin{table}[H]
 \centering
@@ -200,7 +315,7 @@ Les valeurs qui ne disposent pas de cette définition ne sont pas reprises dans 
 \textbf{Niveau} & \textbf{Statut} & \textbf{Interprétation} \\
 \midrule
 Code de comparaison & IMPLÉMENTÉ & Infrastructure présente dans le dépôt. \\
-Dry-run & TESTÉ & Décision simulable sans remplacement du modèle actif. \\
+Essai à blanc & TESTÉ & Décision simulable sans remplacement du modèle actif. \\
 Comparaison exécutée & PARTIEL & Certaines branches et candidats sont comparés. \\
 Promotion/rejet observé & NON ÉVALUÉ & Pas de cycle complet et répété démontré. \\
 Bénéfice après mise à jour & NON ÉVALUÉ & Aucune amélioration globale mesurée. \\

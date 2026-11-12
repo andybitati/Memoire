@@ -1,0 +1,284 @@
+{
+  "run_id": "e_multivm_diag_ubuntu_20261112T142444Z",
+  "created_at": "2026-11-12T14:44:43.473250+00:00",
+  "coordinator_host": "andy-aaron",
+  "agents": {
+    "ubuntu-beta": {
+      "host": "andy-VirtualBox",
+      "os": "Linux-5.4.0-70-generic-x86_64-with-glibc2.29",
+      "python": "3.8.10 (default, Mar 18 2025, 20:04:55) \n[GCC 9.4.0]",
+      "profile": "hdfs-equal-confidence"
+    }
+  },
+  "protocol": {
+    "producer": "open_loop, constant rate per window",
+    "window_sec": 20.0,
+    "repetitions": 3,
+    "coordinator_threads": 32,
+    "task": "hdfs.block.evaluate on frozen HDFS scores (ds_hdfs_block_20260910T081756Z)",
+    "latency_origin": "scheduled submission time (includes coordinator-side queueing)",
+    "response_timeout_sec_per_phase": 5.0,
+    "derived_from": "revision_reports/agent_3/run_saturation_multivm.py"
+  },
+  "levels": [
+    {
+      "key": "r1_rate2",
+      "repetition": 1,
+      "offered_tasks_sec": 2.0,
+      "submitted": 40,
+      "completed_ok": 40,
+      "failed": 0,
+      "completed_tasks_sec": 2.047788,
+      "drain_after_window_sec": 0.0,
+      "latency_p50_ms": 34.693200000000004,
+      "latency_p95_ms": 69.73809499999993,
+      "latency_p99_ms": 134.19213999999997,
+      "queue_delay_p95_ms": 1.2464749999999998,
+      "tasks_by_agent": {
+        "ubuntu-beta": 40
+      }
+    },
+    {
+      "key": "r1_rate4",
+      "repetition": 1,
+      "offered_tasks_sec": 4.0,
+      "submitted": 80,
+      "completed_ok": 80,
+      "failed": 0,
+      "completed_tasks_sec": 4.043214,
+      "drain_after_window_sec": 0.0,
+      "latency_p50_ms": 34.1464,
+      "latency_p95_ms": 58.23560999999997,
+      "latency_p99_ms": 127.16051999999979,
+      "queue_delay_p95_ms": 1.1103249999999998,
+      "tasks_by_agent": {
+        "ubuntu-beta": 80
+      }
+    },
+    {
+      "key": "r1_rate8",
+      "repetition": 1,
+      "offered_tasks_sec": 8.0,
+      "submitted": 160,
+      "completed_ok": 160,
+      "failed": 0,
+      "completed_tasks_sec": 8.037559,
+      "drain_after_window_sec": 0.0,
+      "latency_p50_ms": 35.28815,
+      "latency_p95_ms": 48.77696499999998,
+      "latency_p99_ms": 64.45506599999997,
+      "queue_delay_p95_ms": 1.0361999999999993,
+      "tasks_by_agent": {
+        "ubuntu-beta": 160
+      }
+    },
+    {
+      "key": "r1_rate16",
+      "repetition": 1,
+      "offered_tasks_sec": 16.0,
+      "submitted": 320,
+      "completed_ok": 320,
+      "failed": 0,
+      "completed_tasks_sec": 15.078153,
+      "drain_after_window_sec": 1.222758,
+      "latency_p50_ms": 38.0912,
+      "latency_p95_ms": 1606.5927450000004,
+      "latency_p99_ms": 1914.315441,
+      "queue_delay_p95_ms": 3.180030000000008,
+      "tasks_by_agent": {
+        "ubuntu-beta": 320
+      }
+    },
+    {
+      "key": "r1_rate32",
+      "repetition": 1,
+      "offered_tasks_sec": 32.0,
+      "submitted": 640,
+      "completed_ok": 640,
+      "failed": 0,
+      "completed_tasks_sec": 11.954013,
+      "drain_after_window_sec": 33.538505,
+      "latency_p50_ms": 22655.5845,
+      "latency_p95_ms": 33199.08129,
+      "latency_p99_ms": 33546.974499,
+      "queue_delay_p95_ms": 31131.111435,
+      "tasks_by_agent": {
+        "ubuntu-beta": 640
+      }
+    },
+    {
+      "key": "r2_rate2",
+      "repetition": 2,
+      "offered_tasks_sec": 2.0,
+      "submitted": 40,
+      "completed_ok": 40,
+      "failed": 0,
+      "completed_tasks_sec": 2.047552,
+      "drain_after_window_sec": 0.0,
+      "latency_p50_ms": 38.589600000000004,
+      "latency_p95_ms": 111.12846999999996,
+      "latency_p99_ms": 351.7143509999998,
+      "queue_delay_p95_ms": 1.1272699999999998,
+      "tasks_by_agent": {
+        "ubuntu-beta": 40
+      }
+    },
+    {
+      "key": "r2_rate4",
+      "repetition": 2,
+      "offered_tasks_sec": 4.0,
+      "submitted": 80,
+      "completed_ok": 80,
+      "failed": 0,
+      "completed_tasks_sec": 4.043085,
+      "drain_after_window_sec": 0.0,
+      "latency_p50_ms": 35.29965,
+      "latency_p95_ms": 65.41104999999999,
+      "latency_p99_ms": 113.53302499999964,
+      "queue_delay_p95_ms": 1.062555,
+      "tasks_by_agent": {
+        "ubuntu-beta": 80
+      }
+    },
+    {
+      "key": "r2_rate8",
+      "repetition": 2,
+      "offered_tasks_sec": 8.0,
+      "submitted": 160,
+      "completed_ok": 160,
+      "failed": 0,
+      "completed_tasks_sec": 8.035714,
+      "drain_after_window_sec": 0.0,
+      "latency_p50_ms": 48.79474999999999,
+      "latency_p95_ms": 533.2086549999999,
+      "latency_p99_ms": 674.749633,
+      "queue_delay_p95_ms": 5.193649999999919,
+      "tasks_by_agent": {
+        "ubuntu-beta": 160
+      }
+    },
+    {
+      "key": "r2_rate16",
+      "repetition": 2,
+      "offered_tasks_sec": 16.0,
+      "submitted": 320,
+      "completed_ok": 320,
+      "failed": 0,
+      "completed_tasks_sec": 16.015593,
+      "drain_after_window_sec": 0.0,
+      "latency_p50_ms": 46.4047,
+      "latency_p95_ms": 270.27343,
+      "latency_p99_ms": 408.29453300000006,
+      "queue_delay_p95_ms": 2.2245500000000002,
+      "tasks_by_agent": {
+        "ubuntu-beta": 320
+      }
+    },
+    {
+      "key": "r2_rate32",
+      "repetition": 2,
+      "offered_tasks_sec": 32.0,
+      "submitted": 640,
+      "completed_ok": 640,
+      "failed": 0,
+      "completed_tasks_sec": 14.894614,
+      "drain_after_window_sec": 22.968552,
+      "latency_p50_ms": 12745.7304,
+      "latency_p95_ms": 22570.107105,
+      "latency_p99_ms": 22997.813267,
+      "queue_delay_p95_ms": 20457.49787,
+      "tasks_by_agent": {
+        "ubuntu-beta": 640
+      }
+    },
+    {
+      "key": "r3_rate2",
+      "repetition": 3,
+      "offered_tasks_sec": 2.0,
+      "submitted": 40,
+      "completed_ok": 40,
+      "failed": 0,
+      "completed_tasks_sec": 2.047245,
+      "drain_after_window_sec": 0.0,
+      "latency_p50_ms": 40.18755,
+      "latency_p95_ms": 61.24684999999999,
+      "latency_p99_ms": 73.32121,
+      "queue_delay_p95_ms": 1.0535249999999994,
+      "tasks_by_agent": {
+        "ubuntu-beta": 40
+      }
+    },
+    {
+      "key": "r3_rate4",
+      "repetition": 3,
+      "offered_tasks_sec": 4.0,
+      "submitted": 80,
+      "completed_ok": 80,
+      "failed": 0,
+      "completed_tasks_sec": 4.041958,
+      "drain_after_window_sec": 0.0,
+      "latency_p50_ms": 36.62165,
+      "latency_p95_ms": 165.34369999999987,
+      "latency_p99_ms": 386.626584999999,
+      "queue_delay_p95_ms": 2.9189949999999847,
+      "tasks_by_agent": {
+        "ubuntu-beta": 80
+      }
+    },
+    {
+      "key": "r3_rate8",
+      "repetition": 3,
+      "offered_tasks_sec": 8.0,
+      "submitted": 160,
+      "completed_ok": 160,
+      "failed": 0,
+      "completed_tasks_sec": 8.035705,
+      "drain_after_window_sec": 0.0,
+      "latency_p50_ms": 38.12565,
+      "latency_p95_ms": 75.35597499999997,
+      "latency_p99_ms": 98.04570899999997,
+      "queue_delay_p95_ms": 1.15526,
+      "tasks_by_agent": {
+        "ubuntu-beta": 160
+      }
+    },
+    {
+      "key": "r3_rate16",
+      "repetition": 3,
+      "offered_tasks_sec": 16.0,
+      "submitted": 320,
+      "completed_ok": 320,
+      "failed": 0,
+      "completed_tasks_sec": 16.01476,
+      "drain_after_window_sec": 0.0,
+      "latency_p50_ms": 55.93,
+      "latency_p95_ms": 566.7614350000002,
+      "latency_p99_ms": 725.4227109999999,
+      "queue_delay_p95_ms": 7.011845000000001,
+      "tasks_by_agent": {
+        "ubuntu-beta": 320
+      }
+    },
+    {
+      "key": "r3_rate32",
+      "repetition": 3,
+      "offered_tasks_sec": 32.0,
+      "submitted": 640,
+      "completed_ok": 640,
+      "failed": 0,
+      "completed_tasks_sec": 20.127546,
+      "drain_after_window_sec": 11.797219,
+      "latency_p50_ms": 4810.8922,
+      "latency_p95_ms": 11530.015599999999,
+      "latency_p99_ms": 11840.83576,
+      "queue_delay_p95_ms": 10068.455109999999,
+      "tasks_by_agent": {
+        "ubuntu-beta": 640
+      }
+    }
+  ],
+  "artifacts": [
+    "experiments/phase_revision_20261112/E-MULTIVM-SATURATION-DIAG/e_multivm_diag_ubuntu_20261112T142444Z__saturation_tasks.csv",
+    "experiments/phase_revision_20261112/E-MULTIVM-SATURATION-DIAG/e_multivm_diag_ubuntu_20261112T142444Z__saturation_summary.json"
+  ]
+}

@@ -65,7 +65,15 @@ class ContractNetCoordinator:
         bus: MessageBus | None = None,
         coordinator_id: str = "contract-net-coordinator",
         run_id: str | None = None,
+        fallback_policy: str = "recfp",
     ):
+        # ``recfp`` : après un échec ou un refus à l'attribution, nouvel appel d'offres
+        # aux agents non encore tentés (y compris ceux qui étaient occupés au premier CFP).
+        # ``frozen`` : comportement historique, repli limité au classement du premier CFP ;
+        # conservé pour rejouer à l'identique les campagnes antérieures au 2026-11-12.
+        if fallback_policy not in {"recfp", "frozen"}:
+            raise ValueError(f"fallback_policy inconnue : {fallback_policy}")
+        self.fallback_policy = fallback_policy
         self.agents = {agent.agent_id: agent for agent in agents}
         self.bus = bus
         self.coordinator_id = coordinator_id
@@ -125,7 +133,13 @@ class ContractNetCoordinator:
         }
 
     def negotiate(self, task: AgentTask, *, allow_reassignment: bool = True) -> NegotiationResult:
-        """Négocie, attribue et exécute une tâche selon un cycle CNP observable."""
+        """Négocie, attribue et exécute une tâche selon un cycle CNP observable.
+
+        Chaque agent est tenté au plus une fois. Avec ``fallback_policy="recfp"``, une
+        attribution refusée ou échouée, une fois les offres en cours épuisées, déclenche un
+        nouvel appel d'offres aux agents non encore tentés ; avec ``"frozen"``, le repli se
+        limite au classement du premier appel d'offres.
+        """
 
         timer = perf_counter()
         started_at = datetime.now(timezone.utc).isoformat()
@@ -137,102 +151,120 @@ class ContractNetCoordinator:
             "idempotency_key": task.payload.get("idempotency_key", ""),
             "end_to_end_run_id": task.payload.get("end_to_end_run_id", ""),
         }
-        self._publish(
-            source=self.coordinator_id,
-            target="*",
-            message_type="CFP",
-            payload=common_payload,
-        )
 
         proposals: list[tuple[MultiTaskIntelligentAgent, BidEvaluation]] = []
         refusals: dict[str, str] = {}
-        for agent_id in sorted(self.agents):
-            agent = self.agents[agent_id]
-            evaluation = agent.propose(task)
-            payload = self._evaluation_payload(contract_id, task, evaluation)
-            if evaluation.accepted:
-                proposals.append((agent, evaluation))
-                self._publish(
-                    source=agent.agent_id,
-                    target=self.coordinator_id,
-                    message_type="PROPOSE",
-                    payload=payload,
-                )
-            else:
-                refusals[agent.agent_id] = evaluation.refusal_reason
-                self._publish(
-                    source=agent.agent_id,
-                    target=self.coordinator_id,
-                    message_type="REFUSE",
-                    payload=payload,
-                    status="refused",
-                )
 
-        ranked = sorted(proposals, key=lambda item: (-item[1].utility, item[0].agent_id))
+        def solicit(agent_ids: list[str]) -> list[tuple[MultiTaskIntelligentAgent, BidEvaluation]]:
+            """Diffuse un CFP et retourne les offres reçues, classées par utilité."""
+
+            self._publish(
+                source=self.coordinator_id,
+                target="*",
+                message_type="CFP",
+                payload=common_payload,
+            )
+            offers: list[tuple[MultiTaskIntelligentAgent, BidEvaluation]] = []
+            for agent_id in agent_ids:
+                agent = self.agents[agent_id]
+                evaluation = agent.propose(task)
+                payload = self._evaluation_payload(contract_id, task, evaluation)
+                if evaluation.accepted:
+                    offers.append((agent, evaluation))
+                    refusals.pop(agent.agent_id, None)
+                    self._publish(
+                        source=agent.agent_id,
+                        target=self.coordinator_id,
+                        message_type="PROPOSE",
+                        payload=payload,
+                    )
+                else:
+                    refusals[agent.agent_id] = evaluation.refusal_reason
+                    self._publish(
+                        source=agent.agent_id,
+                        target=self.coordinator_id,
+                        message_type="REFUSE",
+                        payload=payload,
+                        status="refused",
+                    )
+            proposals.extend(offers)
+            return sorted(offers, key=lambda item: (-item[1].utility, item[0].agent_id))
+
         result: TaskResult | None = None
         winner = ""
         reassignments = 0
         attempted: set[str] = set()
-        for index, (agent, evaluation) in enumerate(ranked):
-            if index > 0:
-                reassignments += 1
-            attempted.add(agent.agent_id)
-            self._publish(
-                source=self.coordinator_id,
-                target=agent.agent_id,
-                message_type="AWARD",
-                payload=self._evaluation_payload(contract_id, task, evaluation),
-            )
-            if not agent.accept(task):
-                refusals[agent.agent_id] = "agent_overloaded"
+        stop = False
+        ranked = solicit(sorted(self.agents))
+        while ranked and not stop:
+            for agent, evaluation in ranked:
+                if attempted:
+                    reassignments += 1
+                attempted.add(agent.agent_id)
+                self._publish(
+                    source=self.coordinator_id,
+                    target=agent.agent_id,
+                    message_type="AWARD",
+                    payload=self._evaluation_payload(contract_id, task, evaluation),
+                )
+                if not agent.accept(task):
+                    refusals[agent.agent_id] = "agent_overloaded"
+                    self._publish(
+                        source=agent.agent_id,
+                        target=self.coordinator_id,
+                        message_type="REFUSE",
+                        payload={
+                            "contract_id": contract_id,
+                            "task_id": task.task_id,
+                            "refusal_reason": "agent_overloaded",
+                            "stage": "award_acceptance",
+                        },
+                        status="refused",
+                    )
+                    if allow_reassignment:
+                        continue
+                    stop = True
+                    break
+                winner = agent.agent_id
                 self._publish(
                     source=agent.agent_id,
                     target=self.coordinator_id,
-                    message_type="REFUSE",
+                    message_type="ACCEPT",
+                    payload={"contract_id": contract_id, "task_id": task.task_id},
+                )
+                result = agent.execute_task(task, evaluation.utility, list(evaluation.reasons))
+                terminal_type = "RESULT" if result.status == "ok" else "FAIL"
+                self._publish(
+                    source=agent.agent_id,
+                    target=self.coordinator_id,
+                    message_type=terminal_type,
+                    payload={"contract_id": contract_id, "result": asdict(result)},
+                    status=result.status,
+                )
+                self._publish(
+                    source=self.coordinator_id,
+                    target=agent.agent_id,
+                    message_type="FEEDBACK",
                     payload={
                         "contract_id": contract_id,
                         "task_id": task.task_id,
-                        "refusal_reason": "agent_overloaded",
-                        "stage": "award_acceptance",
+                        "outcome": result.status,
+                        "observed_utility": evaluation.utility,
+                        "elapsed_sec": result.elapsed_sec,
                     },
-                    status="refused",
+                    status=result.status,
                 )
-                if allow_reassignment:
-                    continue
+                if result.status == "ok" or not allow_reassignment:
+                    stop = True
+                    break
+            if stop or self.fallback_policy == "frozen":
                 break
-            winner = agent.agent_id
-            self._publish(
-                source=agent.agent_id,
-                target=self.coordinator_id,
-                message_type="ACCEPT",
-                payload={"contract_id": contract_id, "task_id": task.task_id},
-            )
-            result = agent.execute_task(task, evaluation.utility, list(evaluation.reasons))
-            terminal_type = "RESULT" if result.status == "ok" else "FAIL"
-            self._publish(
-                source=agent.agent_id,
-                target=self.coordinator_id,
-                message_type=terminal_type,
-                payload={"contract_id": contract_id, "result": asdict(result)},
-                status=result.status,
-            )
-            self._publish(
-                source=self.coordinator_id,
-                target=agent.agent_id,
-                message_type="FEEDBACK",
-                payload={
-                    "contract_id": contract_id,
-                    "task_id": task.task_id,
-                    "outcome": result.status,
-                    "observed_utility": evaluation.utility,
-                    "elapsed_sec": result.elapsed_sec,
-                },
-                status=result.status,
-            )
-            if result.status == "ok" or not allow_reassignment:
+            remaining = [agent_id for agent_id in sorted(self.agents) if agent_id not in attempted]
+            if not remaining:
                 break
+            ranked = solicit(remaining)
 
-        for agent, evaluation in ranked:
+        for agent, evaluation in proposals:
             if agent.agent_id == winner or agent.agent_id in attempted:
                 continue
             self._publish(
@@ -248,7 +280,7 @@ class ContractNetCoordinator:
                 status="rejected",
             )
 
-        if not ranked:
+        if not proposals:
             self._publish(
                 source=self.coordinator_id,
                 target="supervisor",

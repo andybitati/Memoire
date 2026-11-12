@@ -65,14 +65,23 @@ w_CC+w_HH+w_MM+w_AA+w_LL+w_TT\right)\right),
 avec, par défaut,
 $(w_C,w_H,w_M,w_A,w_L,w_T)=(0{,}30;0{,}20;0{,}20;0{,}15;0{,}10;0{,}05)$.
 Les poids sont configurables, positifs ou nuls, et leur somme doit être égale à 1 à
-$10^{-9}$ près. Comme $M=1$ et $A=L$, toute offre émise vérifie, avec ces poids,
+$10^{-9}$ près. Le choix des six composantes et de leurs poids est arbitraire : il a été
+fixé a priori par l'auteur, selon ce qui lui paraissait cohérent pour l'application (la
+capacité déclarée en premier, puis la fiabilité observée et la compatibilité du modèle, la
+disponibilité et la charge ensuite, la latence en dernier). Il n'est ni dérivé d'un modèle,
+ni optimisé, ni comparé à d'autres pondérations ; la redondance de $A$ et de $L$ et la
+constance de $M$ en résultent. Comme $M=1$ et $A=L$, toute offre émise vérifie, avec ces poids,
 \[
 U=0{,}20+0{,}30C+0{,}20H+0{,}25(1-\rho_a)+0{,}05T.
 \]
 Dans les campagnes Redis, $P_a=1$. Une offre suppose alors $n_a=0$, donc $\rho_a=0$ et
 \[
-U=0{,}65+0{,}30C+0{,}20H+0{,}05T.
+U=0{,}45+0{,}30C+0{,}20H+0{,}05T.
 \]
+Sans mémoire, $H=T=0{,}5$ et l'utilité se réduit à $U=0{,}575+0{,}30C$ : elle reste
+strictement inférieure à 1 et ne dépend que de la confiance déclarée. Une confiance de
+$0{,}9$ donne ainsi $U=0{,}845$, et les confiances $0{,}95$ et $0{,}78$ donnent
+$0{,}86$ et $0{,}809$.
 Le paramètre \texttt{minimum\_utility} n'y est pas transmis ; le refus pour faible utilité
 y reste donc inactif. L'utilité est ainsi un classement à poids fixes : dans les campagnes
 Redis, trois de ses six termes sont constants ($M=1$, et $A=L=1$ puisque $\rho_a=0$), et

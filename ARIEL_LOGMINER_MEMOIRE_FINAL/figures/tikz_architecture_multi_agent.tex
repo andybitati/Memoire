@@ -1,0 +1,59 @@
+% Architecture multi-agents du prototype (figure vectorielle, fidèle au code :
+% src/logminer/agents/contract_net.py, intelligent_runtime.py, redis_contract_net.py).
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  font=\sffamily\small,
+  node distance=0.6cm and 0.9cm,
+  comp/.style={draw, rounded corners=2pt, align=center, minimum height=1.25cm, minimum width=2.5cm, fill=gray!6},
+  agent/.style={draw, rounded corners=2pt, align=center, minimum height=1.05cm, minimum width=2.35cm, fill=white},
+  store/.style={draw, align=center, minimum height=0.95cm, minimum width=2.35cm, fill=gray!14},
+  note/.style={align=left, font=\sffamily\footnotesize},
+  arrow/.style={-{Latex[length=2.2mm]}, thick},
+  dashedarrow/.style={-{Latex[length=2mm]}, dashed},
+  group/.style={draw, dashed, rounded corners=4pt, inner sep=0.3cm}
+]
+% Flux principal
+\node[comp, minimum width=3.0cm] (sources) {Sources\\[-1pt]{\footnotesize journaux texte,}\\[-3pt]{\footnotesize flux réseau (CSV),}\\[-3pt]{\footnotesize exports d'outils}};
+\node[comp, right=of sources] (adapt) {Adaptateurs\\[-1pt]{\footnotesize lecture, parsing,}\\[-3pt]{\footnotesize schéma commun}};
+\node[comp, right=of adapt] (route) {Routeur open-set\\[-1pt]{\footnotesize scores heuristiques,}\\[-3pt]{\footnotesize seuil gelé}};
+\node[comp, right=1.9cm of route, minimum width=7.9cm, fill=gray!14] (coord) {Coordinateur Contract Net\\[-1pt]{\footnotesize classe les offres par utilité $U$ décroissante ; égalité départagée par l'identifiant}};
+\node[store, below=0.45cm of route, minimum width=2.5cm] (reject) {Rejet ou repli\\[-3pt]{\footnotesize Isolation Forest}};
+
+% Agents
+\node[agent, below=1.05cm of coord.south west, anchor=north west] (a1) {\texttt{agent-alpha}\\[-2pt]{\footnotesize capacités, handlers}};
+\node[agent, right=0.4cm of a1] (a2) {\texttt{agent-beta}\\[-2pt]{\footnotesize capacités, handlers}};
+\node[agent, right=0.4cm of a2] (a3) {\texttt{agent-gamma}\\[-2pt]{\footnotesize capacités, handlers}};
+
+% Mécanismes simples embarqués
+\node[store, below=0.75cm of a1] (bus) {Bus de messages\\[-3pt]{\footnotesize local ou Redis Streams}};
+\node[store, below=0.75cm of a2] (idem) {Magasin\\[-3pt]{\footnotesize d'idempotence}};
+\node[store, below=0.75cm of a3] (fiab) {Compteur de fiabilité\\[-3pt]{\footnotesize ($H$, $T$ de $U$), si mémoire}};
+
+\node[group, fit=(coord) (a1) (a3) (bus) (fiab), label={[font=\sffamily\small\bfseries, anchor=south west]north west:Système multi-agents}] (mas) {};
+
+% Aval : sous la partie gauche, de droite à gauche
+\node[comp] (detect) at (route |- idem) {Détection\\[-1pt]{\footnotesize modèle de la famille,}\\[-3pt]{\footnotesize ou repli}};
+\node[comp] (corr) at (adapt |- idem) {Corrélation\\[-1pt]{\footnotesize clés et fenêtre}\\[-3pt]{\footnotesize $\rightarrow$ incident candidat}};
+\node[comp, minimum width=3.0cm] (dash) at (sources |- idem) {Tableau de bord\\[-1pt]{\footnotesize décisions de l'analyste}\\[-3pt]{\footnotesize enregistrées}};
+
+\path (dash.west) -- (mas.east) coordinate[midway] (mid);
+\node[store, minimum width=14cm, anchor=north] (audit) at ([yshift=-1.3cm]mid |- mas.south) {Audit et preuves : traces JSON, \texttt{run\_id}, empreintes SHA-256};
+
+% Flèches du flux
+\draw[arrow] (sources) -- (adapt);
+\draw[arrow] (adapt) -- (route);
+\draw[arrow] (route) -- node[above, font=\sffamily\footnotesize]{t\^ache} (coord);
+\draw[arrow] (route) -- (reject);
+\foreach \a in {a1,a2,a3} {
+  \draw[{Latex[length=2mm]}-{Latex[length=2mm]}] (coord.south -| \a.north) -- node[right, font=\sffamily\scriptsize, pos=0.45]{CFP, offres} (\a.north);
+}
+\draw[thick] (a1.south) -- (bus.north);
+\draw[thick] (a2.south) -- (idem.north);
+\draw[thick] (a3.south) -- (fiab.north);
+\draw[arrow] (mas.west |- detect) -- node[above, font=\sffamily\footnotesize]{r\'esultat} (detect);
+\draw[arrow] (detect) -- (corr);
+\draw[arrow] (corr) -- (dash);
+\draw[dashedarrow] (mas.south) -- (mas.south |- audit.north);
+\draw[dashedarrow] (dash.south) -- (dash.south |- audit.north);
+\end{tikzpicture}%
+}

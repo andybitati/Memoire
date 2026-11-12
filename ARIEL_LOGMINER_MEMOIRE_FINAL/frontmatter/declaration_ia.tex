@@ -1,67 +1,18 @@
 \chapter*{Déclaration relative à l'utilisation d'outils d'intelligence artificielle}
 \addcontentsline{toc}{chapter}{Déclaration relative à l'utilisation d'outils d'intelligence artificielle}
 
-Des outils d'intelligence artificielle générative ont été utilisés tout au long du travail,
-de mai à novembre 2026 : ChatGPT et OpenAI Codex (modèle GPT-5, OpenAI), Copilot SDK dans
-Visual Studio Code, et Claude Code (modèle Claude Opus, Anthropic). Ils ne sont la source
-d'aucune affirmation scientifique du mémoire ; les références renvoient aux publications,
-normes, documentations et jeux de données consultés.
+Nous avons utilisé des outils d'intelligence artificielle générative (ChatGPT et OpenAI
+Codex, Copilot SDK dans Visual Studio Code, Claude Code) comme aide à la rédaction et à la
+programmation, de mai à novembre 2026. Pour la rédaction, ils ont servi à reformuler,
+structurer et relire le texte. Pour la programmation, ils ont écrit ou modifié du code, y
+compris les programmes des campagnes expérimentales, et ont exécuté ces programmes à notre
+demande. Ils ne sont la source d'aucune affirmation scientifique ni d'aucune valeur : chaque
+valeur provient d'un fichier de résultats identifié dans la matrice résultats--preuves
+(tableau~\ref{tab:preuves-experimentales}).
 
-\section*{Répartition des rôles}
-
-\begin{table}[H]
-\centering
-\small
-\begin{tabularx}{\textwidth}{p{0.22\textwidth}XX}
-\toprule
-\textbf{Activité} & \textbf{Auteur} & \textbf{Outils} \\
-\midrule
-Problématique et objectifs &
-Choix du sujet, des objectifs et des familles de journaux ; questions de positionnement
-(apport face aux plateformes existantes, rôle de chaque composant). &
-Analyse documentaire et reformulation sur demande. \\
-Environnement &
-Installation et configuration des machines virtuelles ; mise en place et exploitation de
-Redis et des environnements expérimentaux. &
-Scripts de déploiement et de lancement. \\
-Prototype &
-Conception de l'architecture d'ensemble ; spécification des capacités attendues et
-validation du fonctionnement. &
-Écriture et adaptation d'une large part du code et des tests. \\
-Campagnes principales &
-Décision des expériences à mener et des jeux à employer. &
-Écriture des scripts ; exécution dans l'environnement de l'auteur ; agrégation. \\
-Campagnes complémentaires &
-Décision de les mener, choix des comparateurs retenus (répartiteur au moindre chargé,
-partition stricte) et exclusion du scénario conjoint ; validation des conclusions. &
-Proposition et rédaction des protocoles, des critères et des scripts ; exécution ;
-analyse selon les règles fixées avant exécution. \\
-Rédaction &
-Plan, arbitrages, passages rédigés directement et contenu final. &
-Structuration, reformulation, contrôles de cohérence, figures et tableaux tirés des
-artefacts. \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-Le prototype et les campagnes principales ont été réalisés de mai à septembre 2026. Les
-campagnes complémentaires, qui contrôlent les conclusions par des comparateurs plus
-simples, ont été conçues et exécutées en novembre 2026, après une première lecture du
-manuscrit ; elles sont postérieures aux résultats qu'elles éprouvent. Sept campagnes ont
-fait l'objet d'un protocole versionné dans le dépôt avant leur exécution ; cette antériorité
-est attestée par l'historique du dépôt et non par un registre externe. L'une de ces campagnes
-a ensuite été invalidée par un défaut de script et retirée des résultats. Les autres
-campagnes de contrôle ne sont pas présentées comme préenregistrées.
-
-\section*{Vérification et responsabilité}
-
-Chaque valeur numérique retenue provient d'un fichier CSV ou JSON identifié dans la matrice
-résultats--preuves, et non d'une réponse textuelle d'un outil. Les descriptions du
-comportement ont été confrontées au code et aux journaux d'exécution ; les résultats
-défavorables ont été conservés, et ceux qu'un défaut de script invalidait ont été retirés.
-Les empreintes SHA-256 attestent l'intégrité des artefacts, non l'exactitude des calculs ;
-aucune reproduction indépendante par un tiers n'a été réalisée.
-
-L'auteur a arrêté les choix présentés, en assume les résultats et l'interprétation, et
-s'engage à justifier en soutenance chaque protocole, chaque script cité et chaque valeur
-retenue.
+Nous avons défini le sujet, la question de recherche et les hypothèses, choisi les campagnes
+à mener, validé chaque protocole avant son exécution, arbitré les décisions d'interprétation
+et arrêté le texte final. Nous en assumons les résultats et l'interprétation, et nous nous
+engageons à justifier en soutenance chaque protocole, chaque script et chaque valeur. La
+chronologie des campagnes et la portée du versionnement de leurs protocoles sont exposées à
+la section~\ref{sec:preenregistrement}.

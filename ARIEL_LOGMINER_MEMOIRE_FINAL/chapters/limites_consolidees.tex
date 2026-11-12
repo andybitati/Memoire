@@ -1,20 +1,16 @@
 \section{Limites du travail}
 \label{sec:limites}
 
-Cette section est la seule qui rassemble les limites du travail ; les autres chapitres y
-renvoient sans les reprendre.
+Cette section rassemble les limites du travail. Les autres chapitres n'en rappellent que ce
+qui est nécessaire à la lecture d'un résultat, et renvoient ici pour le détail.
 
 \paragraph{Données et généralisation.}
-CICIDS2017 repose sur des scénarios construits et sur des caractéristiques de flux déjà
-extraites ; les CSV d'origine sont employés, sans les corrections publiées
-\cite{engelen2021troubleshooting,lanvin2023errors}. Le score dépend fortement du
-protocole : le même Random Forest passe de $0{,}9951$ en séparation aléatoire à $0{,}4374$
-en séparation temporelle. Dans la campagne d'origine du holdout par scénario,
-l'échantillonnage retenait les premières lignes du premier fichier lu, si bien que
-l'entraînement ne couvrait qu'un seul scénario d'attaque ; cette campagne a été corrigée et
-réexécutée, et ses anciens chiffres ne sont plus utilisés. Après correction, aucun des cinq
-modèles évalués ne dépasse la prédiction systématiquement positive
-(section~\ref{sec:cicids-resultats}). La provenance des deux fichiers CSE-CIC-IDS2018 a été
+Aux réserves de validité externe déjà formulées pour CICIDS2017 s'ajoute l'emploi des CSV
+d'origine, sans les corrections publiées \cite{engelen2021troubleshooting,lanvin2023errors},
+pour toutes les campagnes sauf la répétition du holdout par scénario sur la version corrigée
+(section~\ref{sec:cicids-wtmc}), qui exclut les flux tentés au lieu de les compter comme bénins.
+Le score dépend fortement du protocole (section~\ref{sec:cicids-resultats}), et le défaut
+d'échantillonnage de la première campagne du holdout par scénario est traité plus haut dans ce chapitre (validité interne). La provenance des deux fichiers CSE-CIC-IDS2018 a été
 vérifiée par un nouveau téléchargement depuis la source : leurs empreintes coïncident avec
 les copies utilisées par les campagnes. Seules les journées des 15 et 16 février sont
 cependant évaluées, et les fichiers s'arrêtent à une limite de lignes compatible avec une
@@ -47,10 +43,12 @@ connus. Ses scores reprennent pour les journaux texte les colonnes \texttt{datas
 parseur à ne pas reconnaître un format. Sa calibration ne repose que sur trois fichiers
 inconnus, les fichiers d'un même schéma ne sont pas indépendants et la
 \texttt{decision\_margin} n'est pas une probabilité calibrée. La comparaison à une chaîne
-sans routage n'a pas été exécutée ; H3 reste non tranchée. La couverture multi-format mesure
+sans routage n'a pas été exécutée ; H3 reste non tranchée. La couverture multiformat mesure
 la lecture, le parsing et l'émission des unités présentes ; la voie Apache repose sur une
 seule fixture, et les flux réseau tabulaires ne renseignent aucun des sept champs standard
-mesurés.
+mesurés, faute de projection dans leur adaptateur ; avec l'adaptateur ajouté ensuite, ils
+remplissent deux à quatre des sept champs réseau, les adresses IP et le port source étant
+absents des exports utilisés. Le remplissage des autres champs du schéma n'est pas mesuré.
 
 \paragraph{Grandeurs non mesurées.}
 Les sources ne partagent pas de vérité terrain homogène : aucune exactitude globale n'est
@@ -60,8 +58,8 @@ La corrélation est évaluée en circuit fermé, sur des corpus synthétiques co
 clés mêmes du corrélateur. L'utilisabilité du tableau de bord, le temps d'investigation et
 la charge cognitive n'ont fait l'objet d'aucune étude auprès d'analystes. La priorisation
 des anomalies, les traitements périodiques et l'exécution par micro-lots ne sont pas
-évalués. Le budget local de temps et de mémoire associé à H4 n'a jamais été fixé, et il ne
-l'est pas après coup.
+évalués. Dans sa formulation initiale, H4 comportait aussi un budget local de temps et de
+mémoire ; ce budget n'a jamais été fixé, et cette composante de l'hypothèse n'est pas évaluée.
 
 \paragraph{Distribution et exploitation.}
 La validation distribuée porte sur deux machines virtuelles et un Redis central. La
@@ -69,7 +67,10 @@ campagne d'endurance offre environ $0{,}5$ tâche par seconde, loin de la capaci
 répartition de ses tâches suit les profils de confiance déclarés. En saturation, le coude se
 situe entre 8 et 16 tâches/s, avec trois expirations de délai sur $11\,430$ tâches, et la
 seconde machine ne traite que $1{,}23\,\%$ des tâches réussies : la distribution est
-fonctionnelle, mais elle n'accroît pas la capacité observée. Dans la détection HDFS
+fonctionnelle, mais elle n'accroît pas la capacité observée. Le diagnostic en établit la
+cause : chaque agent exécute une tâche à la fois et le départage des utilités égales attribue
+tout au même agent, si bien que ce dispositif ne pouvait pas montrer un partage de charge ;
+un agent capable de traiter plusieurs tâches en parallèle n'a pas été évalué. Dans la détection HDFS
 répartie, les utilités égales sont départagées par un ordre fixe et toutes les tâches vont
 au même agent ; l'inférence n'y est pas recalculée sur les machines virtuelles. La trace de
 messages de l'endurance est tronquée à $10\,001$ événements, ce qui rend ses compteurs non
@@ -86,11 +87,12 @@ volontairement éloignée de la fiabilité réelle (section~\ref{sec:e-h5}). Con
 n'obtient aucun avantage sur un répartiteur au moindre chargé
 (section~\ref{sec:e-cnp-moindre}) ; ce répartiteur lit l'état des agents dans un seul
 processus, sans coût de communication ni information périmée, et la comparaison n'a pas été
-reprise en exécution distribuée. Sous Contract Net, quelques tâches sont perdues, parce que
-la liste de repli est figée au moment de l'appel d'offres. Dans la panne appariée, l'absence
-de doublon provient du magasin d'idempotence, qui l'évite aussi lorsqu'il est ajouté aux
-architectures de référence. La mise à jour contrôlée des modèles dispose d'un mode
-\textit{dry-run}, mais d'aucun cycle complet et répété de promotion et de rejet
+reprise en exécution distribuée. Les campagnes Contract Net antérieures à la correction de la liste de repli perdent
+quelques tâches ; la comparaison reprise avec le coordinateur corrigé n'en perd aucune, et sa
+conclusion est inchangée. Le coordinateur Redis n'a pas reçu cette correction. Dans la panne appariée, l'absence
+de doublon provient du magasin d'idempotence : il l'évite aussi lorsqu'il est ajouté aux
+architectures de référence, et son retrait la fait réapparaître chez les agents. La mise à jour contrôlée des modèles dispose d'un mode
+d'essai à blanc, mais d'aucun cycle complet et répété de promotion et de rejet
 (tableau~\ref{tab:statut-model-update}).
 
 \paragraph{Statut du système.}

@@ -224,6 +224,68 @@ class TrueMultiAgentTests(unittest.TestCase):
                 {"CFP", "PROPOSE", "REFUSE", "AWARD", "REJECT", "ACCEPT", "RESULT", "FEEDBACK"}.issubset(emitted)
             )
 
+    def _busy_fallback_agents(self):
+        """agent-a échoue ; agent-b est occupé au moment du CFP, puis se libère."""
+
+        agent_b = MultiTaskIntelligentAgent(
+            agent_id="agent-b",
+            capabilities=[AgentCapability("detect", ("detect",), confidence=0.70)],
+            handlers={"detect": ok_handler},
+            memory_enabled=False,
+            max_parallel_tasks=1,
+        )
+        agent_b._active_task_ids.add("other-task")
+
+        def failing_handler(task, context):
+            agent_b._active_task_ids.discard("other-task")
+            raise RuntimeError("injected_failure")
+
+        agent_a = MultiTaskIntelligentAgent(
+            agent_id="agent-a",
+            capabilities=[AgentCapability("detect", ("detect",), confidence=0.95)],
+            handlers={"detect": failing_handler},
+            memory_enabled=False,
+        )
+        return agent_a, agent_b
+
+    def test_failed_award_solicits_agents_busy_at_cfp_time(self):
+        agent_a, agent_b = self._busy_fallback_agents()
+        coordinator = ContractNetCoordinator([agent_a, agent_b])
+        outcome = coordinator.negotiate(AgentTask.create("detect"))
+        self.assertEqual(outcome.status, "ok")
+        self.assertEqual(outcome.winner, "agent-b")
+        self.assertEqual(outcome.reassignments, 1)
+        self.assertEqual(outcome.message_counts["CFP"], 2)
+
+    def test_frozen_fallback_policy_keeps_historical_behaviour(self):
+        agent_a, agent_b = self._busy_fallback_agents()
+        coordinator = ContractNetCoordinator([agent_a, agent_b], fallback_policy="frozen")
+        outcome = coordinator.negotiate(AgentTask.create("detect"))
+        self.assertEqual(outcome.status, "error")
+        self.assertEqual(outcome.refusals["agent-b"], "agent_overloaded")
+        self.assertEqual(outcome.message_counts["CFP"], 1)
+
+    def test_fallback_does_not_retry_an_agent_twice(self):
+        attempts = []
+
+        def always_fails(task, context):
+            attempts.append(context.agent_id)
+            raise RuntimeError("injected_failure")
+
+        agents = [
+            MultiTaskIntelligentAgent(
+                agent_id=f"agent-{name}",
+                capabilities=[AgentCapability("detect", ("detect",), confidence=conf)],
+                handlers={"detect": always_fails},
+                memory_enabled=False,
+            )
+            for name, conf in (("a", 0.9), ("b", 0.8), ("c", 0.7))
+        ]
+        outcome = ContractNetCoordinator(agents).negotiate(AgentTask.create("detect"))
+        self.assertEqual(outcome.status, "error")
+        self.assertEqual(sorted(attempts), ["agent-a", "agent-b", "agent-c"])
+        self.assertEqual(outcome.reassignments, 2)
+
     def test_fail_message_is_emitted_when_no_agent_proposes(self):
         agent = MultiTaskIntelligentAgent(
             agent_id="parser",
