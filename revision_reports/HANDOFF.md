@@ -2,6 +2,8 @@
 
 Dernière mise à jour : 2026-11-12, soirée (heure locale, UTC+1). À lire en premier par tout agent qui reprend ce travail.
 
+**PAUSE demandée par l'auteur (2026-11-12, ~18 h 45 heure locale) : « garder ça pour la prochaine fois ».** À la reprise : (1) poser d'abord à l'auteur les 3 questions ouvertes du §5nonies (fichier `--001.ppm`, push vers `origin`, suppression du `.pptx`) ; (2) puis J4(d) R3 ; (3) puis J4(b) à assumer comme limite. État : branche `revision-phase3-20261112` à `1fd06d8`, copie de travail propre, VM éteintes, rien de poussé.
+
 **Chantier courant : §5nonies (phase 3 du jury, ci-dessous).** Les §5octies (phases 0–2, coupes, déclaration IA) sont terminés et fusionnés dans `main` par l'auteur (`7bd1164`, 19 commits **non poussés** vers `origin/main`).
 
 ## 5nonies. Troisième retour du jury (2026-11-12) — EN COURS, PRIORITAIRE
