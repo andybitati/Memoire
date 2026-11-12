@@ -214,6 +214,11 @@ Renvois cassés p. 24 (« efchap :resultats », « efsec :limites ») ; « sept 
 ### Phase 4 — Soutenance
 Déclaration IA : préciser ce qui a été écrit/exécuté par l'IA vs l'auteur (marquer `[À CONFIRMER PAR L'AUTEUR]` ce que les traces ne prouvent pas) ; l'auteur rejoue au moins une campagne.
 
+## 5nonies. Intégration Git demandée par l'auteur (2026-11-12)
+
+- Tous les changements laissés dans le worktree par Claude ont été ajoutés et commités sur `revision-phase2-20261112` sous `c21e5fb` (`Finalise la révision scientifique du mémoire`), avec l'identité Git de l'auteur `andybitati <aoliviermarhegane@gmail.com>`.
+- Étape suivante : fusion explicite de `revision-phase2-20261112` dans `main`, puis contrôle de l'état final. Aucun push distant n'est inclus dans la demande à ce stade.
+
 ## 5ter. Prompt de reprise pour Codex
 
 > Reprendre le plan du §5octies à la première étape non terminée (phase 3 au 2026-11-12 ; phase 2 terminée). Respecter les règles du §1 (aucun chiffre inventé ; corriger l'affirmation, jamais le résultat) et la décision A (ne supprimer aucun fait de chronologie). Toute expérience de la phase 2 attend la décision B de l'auteur et un protocole commité avant exécution. Compiler (`pdflatex`, `bibtex`, `pdflatex` ×2) après chaque lot et cocher le §5octies.
